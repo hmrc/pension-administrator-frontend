@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerPreviousAddressPostCodeLookupId}
+import identifiers.register.partnership.partners.{PartnerNameId, PartnerPreviousAddressPostCodeLookupId}
 import models.{PersonDetails, _}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
@@ -97,13 +97,13 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
     BusinessNameId.toString -> "Test Partnership Name",
     "partners" -> Json.arr(
       Json.obj(
-        PartnerDetailsId.toString ->
+        PartnerNameId.toString ->
           PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now),
         PartnerPreviousAddressPostCodeLookupId.toString ->
           Seq(fakeAddress(testAnswer))
       ),
       Json.obj(
-        PartnerDetailsId.toString ->
+        PartnerNameId.toString ->
           PersonDetails("test", Some("test"), "test", LocalDate.now)
       )
     )

@@ -180,6 +180,10 @@ cya.label.companyName = Company name
 cya.label.partnershipName = Partnership name
 utr.checkYourAnswersLabel = Unique Taxpayer Reference
 
+partnerName.visuallyHidden.text = Change the partner’s name
+directorName.visuallyHidden.text = Change the director’s name
+dob.visuallyHidden.text = Change date of birth
+
 contactDetails.title = Enter contact details
 contactDetails.heading = Enter contact details
 contactDetails.individual.title = Enter your contact details
@@ -1058,6 +1062,7 @@ dob.visuallyHidden.text = {0}’s date of birth
 
 partnerName.heading = What is the partner’s name?
 partnerDob.title = What is the partner’s date of birth?
+partnerName.cya.label = Partner’s name
 
 previousAddressPostCode.heading = What was {0}’s previous contact address?
 previousAddressList.heading = Select {0}’s previous contact address

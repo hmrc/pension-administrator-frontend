@@ -22,7 +22,7 @@ import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.partnership.partners.{PartnerAddressPostCodeLookupId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{PartnerAddressPostCodeLookupId, PartnerNameId}
 import models.{PersonDetails, _}
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -150,7 +150,7 @@ object PartnerAddressPostCodeLookupControllerSpec extends MockitoSugar {
   private val requiredData = Json.obj(
     "partners" -> Seq(
       Json.obj(
-        PartnerDetailsId.toString -> fooBar
+        PartnerNameId.toString -> fooBar
       )
     )
   )

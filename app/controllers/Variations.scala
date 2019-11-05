@@ -76,7 +76,7 @@ trait Variations extends FrontendController {
            DirectorEnterNINOId(_) | DirectorPreviousAddressId(_) | DirectorEnterUTRId(_) | DirectorNameId(_)
       => Some(DirectorsOrPartnersChangedId)
       case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerContactDetailsId(_) |
-           PartnerNinoId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_) | PartnerDetailsId(_)
+           PartnerNinoId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_) | PartnerNameId(_)
       => Some(DirectorsOrPartnersChangedId)
       case _ => None
     }
@@ -98,18 +98,7 @@ trait Variations extends FrontendController {
       case (UpdateMode, DirectorPreviousAddressId(index)) =>
         setCompleteFlag(userAnswers, DirectorNameId(index), index, IsDirectorCompleteId(index))
       case (UpdateMode, PartnerPreviousAddressId(index)) =>
-        setCompleteFlagPerson(userAnswers, PartnerDetailsId(index), index, IsPartnerCompleteId(index))
-      case _ =>
-        doNothing
-    }
-  }
-
-  private def setCompleteFlagPerson(userAnswers: UserAnswers, id: TypedIdentifier[PersonDetails],
-                              index: Int, completeId: TypedIdentifier[Boolean])
-                             (implicit request: DataRequest[AnyContent]): Future[JsValue] = {
-    userAnswers.get(id) match {
-      case Some(details) if !details.isNew =>
-        cacheConnector.save(request.externalId, completeId, true)
+        setCompleteFlag(userAnswers, PartnerNameId(index), index, IsPartnerCompleteId(index))
       case _ =>
         doNothing
     }

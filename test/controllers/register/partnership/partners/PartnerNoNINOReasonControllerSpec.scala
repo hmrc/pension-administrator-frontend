@@ -57,7 +57,7 @@ class PartnerNoNINOReasonControllerSpec extends ControllerWithCommonBehaviour {
 object PartnerNoNINOReasonControllerSpec {
   private val formProvider = new ReasonFormProvider()
   private val index = 0
-  private val partnerName = "test first name test middle name test last name"
+  private val partnerName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test reason"))
 
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =

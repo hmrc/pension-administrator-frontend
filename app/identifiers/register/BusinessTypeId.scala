@@ -17,11 +17,11 @@
 package identifiers.register
 
 import identifiers._
-import identifiers.register.company.directors.DirectorId
 import identifiers.register.company._
-import identifiers.register.partnership.partners.PartnerId
+import identifiers.register.company.directors.DirectorId
 import identifiers.register.partnership._
-import models.{PersonDetails, PersonName}
+import identifiers.register.partnership.partners.PartnerId
+import models.PersonName
 import models.register.BusinessType
 import models.register.BusinessType._
 import play.api.libs.json.{JsResult, JsSuccess}
@@ -37,15 +37,6 @@ case object BusinessTypeId extends TypedIdentifier[BusinessType] {
       case Some(BusinessPartnership) | Some(LimitedPartnership) | Some(LimitedLiabilityPartnership) =>
         removeAllCompany(userAnswers)
       case _ => JsSuccess(userAnswers)
-    }
-  }
-
-  private def removeAllDirectorsOrPartners(personDetailsSeq: Seq[PersonDetails],
-                                           userAnswers: UserAnswers, id: TypedIdentifier[Nothing]): JsResult[UserAnswers] = {
-    if (personDetailsSeq.nonEmpty) {
-      userAnswers.remove(id)
-    } else {
-      JsSuccess(userAnswers)
     }
   }
 
@@ -73,7 +64,7 @@ case object BusinessTypeId extends TypedIdentifier[BusinessType] {
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
       PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
-      .flatMap(answers => removeAllDirectorsOrPartners(answers.allPartners, answers, PartnerId))
+      .flatMap(answers => removeDirectorsOrPartners(answers.allPartners, answers, PartnerId))
   }
 
 }

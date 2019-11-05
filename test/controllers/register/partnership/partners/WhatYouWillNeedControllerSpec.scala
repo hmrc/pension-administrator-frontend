@@ -34,7 +34,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(): String =
-    whatYouWillNeed(frontendAppConfig, routes.PartnerDetailsController.onPageLoad(NormalMode, index = 0))(fakeRequest, messages).toString
+    whatYouWillNeed(frontendAppConfig, routes.PartnerNameController.onPageLoad(NormalMode, index = 0))(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 

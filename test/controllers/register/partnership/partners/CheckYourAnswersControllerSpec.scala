@@ -22,16 +22,17 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.TypedIdentifier
-import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.partnership.partners.IsPartnerCompleteId
+import identifiers.register.{BusinessNameId, DirectorsOrPartnersChangedId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDOBId, PartnerNameId}
 import models.requests.DataRequest
-import models.{CheckMode, Index, NormalMode, UpdateMode}
+import models.{BusinessDetails, CheckMode, Index, NormalMode, PersonName, UpdateMode}
+import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerRow, AnswerSection, Link}
+import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +41,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   val index = Index(0)
   val companyName = "Test Company Name"
-  val partnerName = "test first name test middle name test last name"
+  val partnerName = "test first name test last name"
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   object FakeSectionComplete extends SectionComplete with FakeUserAnswersCacheConnector {
@@ -52,20 +53,23 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   }
 
-  def answersDD: Seq[AnswerRow] = Seq(
+  val userAnswers = UserAnswers(Json.obj(
+    BusinessNameId.toString -> "Test Partnership Name",
+  "partners" -> Json.arr(
+    Json.obj(
+      PartnerNameId.toString ->
+        PersonName("test first name", "test last name")
+    )
+  )
+  ))
+
+  def nameAnswerRow: Seq[AnswerRow] = Seq(
     AnswerRow(
-      "cya.label.name",
+      "partnerName.cya.label",
       Seq("test first name test last name"),
       answerIsMessageKey = false,
-      Some(Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url)),
-      None
-    ),
-    AnswerRow(
-      "cya.label.dob",
-      Seq(DateHelper.formatDate(LocalDate.now)),
-      answerIsMessageKey = false,
-      Some(Link(routes.PartnerDetailsController.onPageLoad(CheckMode, index).url)),
-      None
+      Some(Link(routes.PartnerNameController.onPageLoad(CheckMode, index).url)),
+      Some(Message("partnerName.visuallyHidden.text"))
     ))
 
   def call = controllers.register.partnership.partners.routes.CheckYourAnswersController.onSubmit(0, NormalMode)
@@ -84,10 +88,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector
     )
 
-  def viewAsString(): String = check_your_answers(
+  def viewAsString(answers: Seq[AnswerRow]): String = check_your_answers(
     frontendAppConfig,
     Seq(
-      AnswerSection(Some("partnerCheckYourAnswers.partnerDetails.heading"), answersDD),
+      AnswerSection(Some("partnerCheckYourAnswers.partnerDetails.heading"), answers),
       AnswerSection(Some("partnerCheckYourAnswers.contactDetails.heading"), Seq.empty)
     ),
     call,
@@ -97,11 +101,29 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   "CheckYourAnswers Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "render name row for partner" in {
       val result = controller().onPageLoad(index, NormalMode)(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      contentAsString(result) mustBe viewAsString(nameAnswerRow)
+    }
+
+    "render dob row for partner" in {
+
+      val answers = new FakeDataRetrievalAction(Some(userAnswers.set(PartnerDOBId(0))(LocalDate.now).asOpt.value.json))
+      val result = controller(answers).onPageLoad(index, NormalMode)(fakeRequest)
+
+      val rows = nameAnswerRow ++ Seq(
+      AnswerRow(
+        Message("dob.heading", partnerName),
+        Seq(DateHelper.formatDate(LocalDate.now)),
+        answerIsMessageKey = false,
+        Some(Link(routes.PartnerDOBController.onPageLoad(CheckMode, index).url)),
+        Some(Message("dob.visuallyHidden.text", partnerName))
+      ))
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString(rows)
     }
 
     "redirect to Session Expired page" when {

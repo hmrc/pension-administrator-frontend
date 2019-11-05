@@ -22,7 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.partners.PartnerNinoFormProvider
-import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerNinoId}
+import identifiers.register.partnership.partners.{PartnerNameId, PartnerNinoId}
 import identifiers.register.{BusinessNameId, DirectorsOrPartnersChangedId}
 import models._
 import play.api.data.Form
@@ -47,13 +47,13 @@ class PartnerNinoControllerSpec extends ControllerSpecBase {
     BusinessNameId.toString -> partnershipName,
     "partners" -> Json.arr(
       Json.obj(
-        PartnerDetailsId.toString ->
+        PartnerNameId.toString ->
           PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now()),
         PartnerNinoId.toString ->
           Nino.Yes("CS700100A")
       ),
       Json.obj(
-        PartnerDetailsId.toString ->
+        PartnerNameId.toString ->
           PersonDetails("test", Some("test"), "test", LocalDate.now())
       )
     )

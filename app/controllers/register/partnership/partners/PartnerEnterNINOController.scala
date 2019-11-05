@@ -21,7 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.NINOController
 import forms.register.NINOFormProvider
-import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerEnterNINOId}
+import identifiers.register.partnership.partners.{PartnerNameId, PartnerEnterNINOId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -58,7 +58,7 @@ class PartnerEnterNINOController @Inject()(@PartnershipPartner val navigator: Na
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(PartnerDetailsId(index)).map(_.fullName).getOrElse(Message("thePartner"))
+    request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
   private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

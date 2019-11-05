@@ -18,9 +18,12 @@ package identifiers.register.partnership.partners
 
 import identifiers._
 import identifiers.register.partnership.MoreThanTenPartnersId
-import models.PersonName
+import models.{Index, PersonName}
+import play.api.i18n.Messages
 import play.api.libs.json.{JsPath, JsResult}
 import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersPartner, PersonNameCYA}
+import viewmodels.{AnswerRow, Link, Message}
 
 case class PartnerNameId(index: Int) extends TypedIdentifier[PersonName] {
   override def path: JsPath = JsPath \ "partners" \ index \ PartnerNameId.toString
@@ -37,6 +40,19 @@ object PartnerNameId {
   def collectionPath: JsPath = JsPath \ "partners" \\ PartnerNameId.toString
 
   override def toString: String = "partnerDetails"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[PartnerNameId] =
+    new CheckYourAnswersPartner[PartnerNameId] {
+      private def label(ua: UserAnswers, index: Index): String =
+        dynamicMessage(ua, messageKey = "partnerName.cya.label", index)
+
+      private def hiddenLabel(ua: UserAnswers, index: Index): Message =
+        dynamicMessage(ua, messageKey = "partnerName.visuallyHidden.text", index)
+
+
+      override def row(id: PartnerNameId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        PersonNameCYA[PartnerNameId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+    }
 
 }
 
