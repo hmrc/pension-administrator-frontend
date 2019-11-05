@@ -16,14 +16,12 @@
 
 package controllers.register.partnership.partners
 
-import java.time.LocalDate
-
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
-import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerPreviousAddressPostCodeLookupId}
-import models.{NormalMode, PersonDetails, TolerantAddress}
+import identifiers.register.partnership.partners.{PartnerNameId, PartnerPreviousAddressPostCodeLookupId}
+import models.{NormalMode, PersonName, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -40,7 +38,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
   private val formProvider = new AddressListFormProvider()
   private val form: Form[Int] = formProvider(Seq.empty)
 
-  private val partner = PersonDetails("firstName", Some("middle"), "lastName", LocalDate.now())
+  private val partner = PersonName("firstName", "lastName")
 
   private val addresses = Seq(
     address("test post code 1"),
@@ -59,7 +57,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
   private val validData: JsValue = Json.obj(
     "partners" -> Json.arr(
       Json.obj(
-        PartnerDetailsId.toString -> partner,
+        PartnerNameId.toString -> partner,
         PartnerPreviousAddressPostCodeLookupId.toString -> addresses
       )
     )
@@ -123,7 +121,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
           val validData: JsValue = Json.obj(
             "partners" -> Json.arr(
               Json.obj(
-                PartnerDetailsId.toString -> partner
+                PartnerNameId.toString -> partner
               )
             )
           )
@@ -141,7 +139,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
           val validData: JsValue = Json.obj(
             "partners" -> Json.arr(
               Json.obj(
-                PartnerDetailsId.toString -> partner
+                PartnerNameId.toString -> partner
               )
             )
           )

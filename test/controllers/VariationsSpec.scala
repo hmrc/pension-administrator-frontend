@@ -43,11 +43,11 @@ class VariationsSpec extends ControllerSpecBase {
     override def toString = "testChangeId"
   }
 
-  val testPersonId: TypedIdentifier[PersonDetails] = new TypedIdentifier[PersonDetails] {
+  val testPersonId: TypedIdentifier[PersonName] = new TypedIdentifier[PersonName] {
     override def toString = "personDetailsId"
   }
 
-  val person = PersonDetails("John", None, "Doe", LocalDate.now)
+  val person = PersonName("John", "Doe")
   val validData = UserAnswers(Json.obj(testPersonId.toString -> person))
 
   private val testVariationsNonIndexed = new Variations {
@@ -70,7 +70,7 @@ class VariationsSpec extends ControllerSpecBase {
   def userAnswersWithDirector(isNew: Boolean = false) = UserAnswers(Json.obj(
     "directors" -> Json.arr(
       Json.obj(DirectorNameId.toString ->
-        PersonDetails("", Some(""), "", LocalDate.now(), isNew = isNew))
+        PersonName("", "", isNew = isNew))
     )))
 
   "Variations" must {
@@ -134,7 +134,7 @@ class VariationsSpec extends ControllerSpecBase {
 
     "set the new flag when setNewFalg is called in Update Mode with indexed identifier" in {
       FakeUserAnswersCacheConnector.reset()
-      Await.result(testVariationsIndexed.setNewFlagPerson(testPersonId, UpdateMode, validData)(dataRequest(validData)), Duration.Inf)
+      Await.result(testVariationsIndexed.setNewFlag(testPersonId, UpdateMode, validData)(dataRequest(validData)), Duration.Inf)
       FakeUserAnswersCacheConnector.verify(testPersonId, person.copy(isNew=true))
     }
   }

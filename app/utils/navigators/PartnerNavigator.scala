@@ -19,6 +19,8 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.register.partnership.partners.routes._
+import controllers.register.partnership.routes.{AddPartnerController, PartnershipReviewController, MoreThanTenPartnersController}
+import controllers.routes.SessionExpiredController
 import identifiers.Identifier
 import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
@@ -26,8 +28,6 @@ import models.Mode.journeyMode
 import models._
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
-import controllers.register.partnership.routes.{PartnershipReviewController, AddPartnerController}
-import controllers.routes.SessionExpiredController
 
 @Singleton
 class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
@@ -40,7 +40,8 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
   //noinspection ScalaStyle
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
-    case PartnerDetailsId(index) => checkYourAnswersPage(index, journeyMode(mode))
+    case PartnerNameId(index) => checkYourAnswersPage(index, journeyMode(mode))
+    case PartnerDOBId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case HasPartnerNINOId(index) if hasNino(ua, index) =>
       PartnerEnterNINOController.onPageLoad(mode, index)
     case HasPartnerNINOId(index) => PartnerNoNINOReasonController.onPageLoad(mode, index)
@@ -64,7 +65,8 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
   //noinspection ScalaStyle
   private def normalAndUpdateRoutes(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AddPartnersId => addPartnerRoutes(ua, mode)
-    case PartnerDetailsId(index) => HasPartnerNINOController.onPageLoad(mode, index)
+    case PartnerNameId(index) => PartnerDOBController.onPageLoad(mode, index)
+    case PartnerDOBId(index) => HasPartnerNINOController.onPageLoad(mode, index)
     case HasPartnerNINOId(index) if hasNino(ua, index) => PartnerEnterNINOController.onPageLoad(mode, index)
     case HasPartnerNINOId(index) => PartnerNoNINOReasonController.onPageLoad(mode, index)
     case PartnerEnterNINOId(index) => ninoRoutes(index, ua, mode)
@@ -79,7 +81,6 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case PartnerPreviousAddressId(index) => previousAddressRoutes(index, ua, mode)
     case PartnerContactDetailsId(index) => contactDetailsRoutes(index, ua, mode)
     case CheckYourAnswersId => AddPartnerController.onPageLoad(mode)
-    case _ => sessionExpired
   }
 
   private def checkYourAnswersPage(index: Int, mode: Mode = NormalMode) = CheckYourAnswersController.onPageLoad(index, mode)
@@ -157,7 +158,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
   }
 
   private def redirectBasedOnIsNew(answers: UserAnswers, index: Int, ifNewRoute: Call, ifNotNew: Call): Call = {
-    answers.get(PartnerDetailsId(index)).map { person =>
+    answers.get(PartnerNameId(index)).map { person =>
       if (person.isNew) {
         ifNewRoute
       } else {
@@ -168,14 +169,14 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
   private def addPartnerRoutes(answers: UserAnswers, mode: Mode): Call = {
     answers.get(AddPartnersId) match {
-      case Some(false) if mode == NormalMode => controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
+      case Some(false) if mode == NormalMode => PartnershipReviewController.onPageLoad()
       case Some(false) if mode == UpdateMode => anyMoreChangesPage
       case _ =>
         val index = answers.allPartnersAfterDelete(mode).length
         if (index >= config.maxPartners) {
-          controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode)
+          MoreThanTenPartnersController.onPageLoad(mode)
         } else {
-          controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, answers.partnersCount)
+          PartnerNameController.onPageLoad(mode, answers.partnersCount)
         }
     }
   }

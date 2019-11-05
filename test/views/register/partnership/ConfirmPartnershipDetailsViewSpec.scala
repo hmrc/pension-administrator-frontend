@@ -27,7 +27,7 @@ import views.html.register.partnership.confirmPartnershipDetails
 
 class ConfirmPartnershipDetailsViewSpec extends ViewBehaviours with AddressBehaviours with YesNoViewBehaviours {
 
-  val messageKeyPrefix = "confirmPartnershipDetails"
+  val messageKeyPrefix = "confirmRegisteredAddress"
 
   private val testAddress = TolerantAddress(
     Some("Some Building"),
@@ -58,7 +58,7 @@ class ConfirmPartnershipDetailsViewSpec extends ViewBehaviours with AddressBehav
 
   "ConfirmPartnershipDetails view" must {
 
-    behave like normalPage(createView(), messageKeyPrefix)
+    behave like normalPageWithDynamicTitle(createView(), messageKeyPrefix, "Partnership")
 
     behave like pageWithAddress(address => createView(address)(), "partnershipAddress")
 

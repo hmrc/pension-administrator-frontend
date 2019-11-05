@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressPostCodeLookupId}
-import models.{PersonDetails, _}
+import models.{PersonName, _}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar

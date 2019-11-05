@@ -22,8 +22,8 @@ import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.partnership.partners.{PartnerAddressPostCodeLookupId, PartnerDetailsId}
-import models.{PersonDetails, _}
+import identifiers.register.partnership.partners.{PartnerAddressPostCodeLookupId, PartnerNameId}
+import models.{PersonName, _}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
@@ -144,13 +144,13 @@ object PartnerAddressPostCodeLookupControllerSpec extends MockitoSugar {
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
 
   private val formProvider = new PostCodeLookupFormProvider()
-  private val fooBar = PersonDetails("Foo", None, "Bar", LocalDate.now)
+  private val fooBar = PersonName("Foo", "Bar")
   private val testPostCode = "AB12 1AB"
   private val form = formProvider()
   private val requiredData = Json.obj(
     "partners" -> Seq(
       Json.obj(
-        PartnerDetailsId.toString -> fooBar
+        PartnerNameId.toString -> fooBar
       )
     )
   )

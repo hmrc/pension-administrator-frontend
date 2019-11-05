@@ -22,7 +22,7 @@ import identifiers.register.company.directors.DirectorId
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerId
-import models.{PersonDetails, PersonName}
+import models.PersonName
 import play.api.libs.json.{JsResult, JsSuccess}
 import utils.UserAnswers
 
@@ -48,15 +48,6 @@ case object RegisterAsBusinessId extends TypedIdentifier[Boolean] {
     ))
   }
 
-  private def removeAllDirectorsOrPartners(personDetailsSeq: Seq[PersonDetails],
-                                           userAnswers: UserAnswers, id: TypedIdentifier[Nothing]): JsResult[UserAnswers] = {
-    if (personDetailsSeq.nonEmpty) {
-      userAnswers.remove(id)
-    } else {
-      JsSuccess(userAnswers)
-    }
-  }
-
   private def removeDirectorsOrPartners(personNameSeq: Seq[PersonName],
                                         userAnswers: UserAnswers, id: TypedIdentifier[Nothing]): JsResult[UserAnswers] = {
     if (personNameSeq.nonEmpty) {
@@ -78,7 +69,7 @@ case object RegisterAsBusinessId extends TypedIdentifier[Boolean] {
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
       PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
-      .flatMap(answers => removeAllDirectorsOrPartners(answers.allPartners, answers, PartnerId))
+      .flatMap(answers => removeDirectorsOrPartners(answers.allPartners, answers, PartnerId))
   }
 
 }

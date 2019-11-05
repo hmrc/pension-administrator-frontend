@@ -23,8 +23,8 @@ import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.ContactDetailsFormProvider
-import identifiers.register.partnership.partners.PartnerDetailsId
-import models.{Index, NormalMode, PersonDetails}
+import identifiers.register.partnership.partners.PartnerNameId
+import models.{Index, NormalMode, PersonName}
 import org.scalatest.OptionValues
 import play.api.Application
 import play.api.http.Writeable
@@ -75,7 +75,7 @@ object PartnerContactDetailsControllerSpec extends OptionValues {
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     "partners" -> Json.arr(Json.obj(
-      PartnerDetailsId.toString -> PersonDetails("Test", None, "Partner", LocalDate.now())
+      PartnerNameId.toString -> PersonName("Test", "Partner")
     )))))
 
   val formProvider = new ContactDetailsFormProvider()

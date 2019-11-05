@@ -16,8 +16,6 @@
 
 package utils.navigators
 
-import java.time.LocalDate
-
 import base.SpecBase
 import controllers.register.partnership.partners.routes
 import identifiers.Identifier
@@ -41,19 +39,20 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
 
   //scalastyle:off line.size.limit
   def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Option[Call])] = Seq(
-    (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), Some(moreThanTenPartnersPage(checkMode(mode)))),
-    (AddPartnersId, addPartnersTrue, partnerDetailsPage(mode), Some(partnerDetailsPage(checkMode(mode)))),
-    (PartnerDetailsId(0), emptyAnswers, partnerHasNinoPage(mode), Some(checkYourAnswersPage(mode))),
+    (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), None),
+    (AddPartnersId, addPartnersTrue, partnerDetailsPage(mode), None),
+    (PartnerNameId(0), emptyAnswers, partnerDOBPage(mode), Some(checkYourAnswersPage(mode))),
+    (PartnerDOBId(0), emptyAnswers, partnerHasNinoPage(mode), Some(checkYourAnswersPage(mode))),
     (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(mode), Some(partnerEnterNinoPage(checkMode(mode)))),
     (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(mode), Some(partnerNoNinoPage(checkMode(mode)))),
-    (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), Some(addressListPage(checkMode(mode)))),
-    (PartnerAddressListId(0), emptyAnswers, addressPage(mode), Some(addressPage(checkMode(mode)))),
+    (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), None),
+    (PartnerAddressListId(0), emptyAnswers, addressPage(mode), None),
     (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(mode), Some(checkYourAnswersPage(mode))),
     (PartnerAddressYearsId(0), addressYearsOverAYear, partnerContactDetailsPage(mode), Some(checkYourAnswersPage(mode))),
     (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(mode), Some(paPostCodePage(checkMode(mode)))),
     (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
-    (PartnerPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(mode), Some(paAddressListPage(checkMode(mode)))),
-    (PartnerPreviousAddressListId(0), emptyAnswers, previousAddressPage(mode), Some(previousAddressPage(checkMode(mode)))),
+    (PartnerPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(mode), None),
+    (PartnerPreviousAddressListId(0), emptyAnswers, previousAddressPage(mode), None),
     (PartnerPreviousAddressId(0), defaultAnswers, partnerContactDetailsPage(mode), Some(checkYourAnswersPage(mode))),
     (PartnerContactDetailsId(0), defaultAnswers, checkYourAnswersPage(mode), Some(checkYourAnswersPage(mode))),
     (CheckYourAnswersId, emptyAnswers, addPartnersPage(mode), None)
@@ -114,6 +113,8 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
 
+  private def partnerDOBPage(mode: Mode) = routes.PartnerDOBController.onPageLoad(mode, 0)
+
   private def partnerUniqueTaxReferencePage(mode: Mode) = routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, 0)
 
   private def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
@@ -124,7 +125,7 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private def moreThanTenPartnersPage(mode: Mode) = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode)
 
-  private def partnerDetailsPage(mode: Mode) = routes.PartnerDetailsController.onPageLoad(mode, 0)
+  private def partnerDetailsPage(mode: Mode) = routes.PartnerNameController.onPageLoad(mode, 0)
 
   private def partnerHasNinoPage(mode: Mode): Call = routes.HasPartnerNINOController.onPageLoad(mode, 0)
 
@@ -145,19 +146,19 @@ object PartnerNavigatorSpec extends OptionValues {
   def addressPage(mode: Mode): Call = routes.PartnerAddressController.onPageLoad(mode, 0)
 
   private def partner(index: Int) =
-    PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = index % 2 == 0, isNew = true)
+    PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = (index % 2 == 0), isNew = true)
 
   private def data = {
     (0 to 19).map(index => Json.obj(
-      PartnerDetailsId.toString -> partner(index))
+      PartnerNameId.toString -> partner(index))
     ).toArray
   }
 
-  private def existingPartnerInUpdate(index: Index): UserAnswers = UserAnswers(Json.obj())
-    .set(PartnerDetailsId(index))(partner(index).copy(isNew = false)).asOpt.value
+  val defaultAnswers = UserAnswers(Json.obj())
+    .set(PartnerNameId(0))(partner(0).copy(isNew = true)).asOpt.value
 
-  private val defaultAnswers = UserAnswers(Json.obj())
-    .set(PartnerDetailsId(0))(partner(0).copy(isNew = true)).asOpt.value
+  private def existingPartnerInUpdate(index: Index) = UserAnswers(Json.obj())
+    .set(PartnerNameId(index))(partner(index).copy(isNew = false)).asOpt.value
 
   private val addressYearsOverAYear = defaultAnswers
     .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value

@@ -22,8 +22,8 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
-import identifiers.register.partnership.partners.{PartnerAddressPostCodeLookupId, PartnerDetailsId}
-import models.{Index, NormalMode, PersonDetails, TolerantAddress}
+import identifiers.register.partnership.partners.{PartnerAddressPostCodeLookupId, PartnerNameId}
+import models.{Index, NormalMode, PersonName, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -82,7 +82,7 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
           val validData: JsValue = Json.obj(
             "partners" -> Json.arr(
               Json.obj(
-                PartnerDetailsId.toString -> partner
+                PartnerNameId.toString -> partner
               )
             )
           )
@@ -100,7 +100,7 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
           val validData: JsValue = Json.obj(
             "partners" -> Json.arr(
               Json.obj(
-                PartnerDetailsId.toString -> partner
+                PartnerNameId.toString -> partner
               )
             )
           )
@@ -152,7 +152,7 @@ object PartnerAddressListControllerSpec {
   val formProvider = new AddressListFormProvider()
   val form: Form[Int] = formProvider(Seq.empty)
   val firstIndex = Index(0)
-  val partner = PersonDetails("firstName", Some("middle"), "lastName", LocalDate.now())
+  val partner = PersonName("firstName", "lastName")
 
   val addresses = Seq(
     address("test post code 1"),
@@ -171,7 +171,7 @@ object PartnerAddressListControllerSpec {
   val validData: JsValue = Json.obj(
     "partners" -> Json.arr(
       Json.obj(
-        PartnerDetailsId.toString -> partner,
+        PartnerNameId.toString -> partner,
         PartnerAddressPostCodeLookupId.toString -> addresses
       )
     )

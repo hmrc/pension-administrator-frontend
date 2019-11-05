@@ -56,6 +56,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
 
   private val data =
     UserAnswers(Json.obj())
+    .businessName("Test Partnership Name")
       .set(PartnershipPreviousAddressPostCodeLookupId)(addresses)
       .asOpt.map(_.json)
 
@@ -90,7 +91,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         bind[AuthAction].to(FakeAuthAction),
         bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[DataRetrievalAction].toInstance(getEmptyData)
+        bind[DataRetrievalAction].toInstance(getPartnership)
       )) { implicit app =>
         val request = addToken(FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode)))
         val result = route(app, request).value
@@ -169,7 +170,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         bind[AuthAction].to(FakeAuthAction),
         bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[DataRetrievalAction].toInstance(getEmptyData)
+        bind[DataRetrievalAction].toInstance(getPartnership)
       )) { implicit app =>
         val request =
           addToken(
@@ -191,8 +192,8 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
       routes.PartnershipPreviousAddressListController.onSubmit(NormalMode),
       routes.PartnershipPreviousAddressController.onPageLoad(NormalMode),
       addresses,
-      Message("common.previousAddressList.title"),
-      Message("common.previousAddressList.heading"),
+      Message("previousAddressList.heading", Message("thePartnership").resolve),
+      Message("previousAddressList.heading", "Test Partnership Name"),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

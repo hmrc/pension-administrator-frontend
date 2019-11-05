@@ -22,9 +22,9 @@ import identifiers.TypedIdentifier
 import identifiers.register.company.MoreThanTenDirectorsId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership.MoreThanTenPartnersId
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import models.requests.DataRequest
-import models.{Mode, PersonDetails, PersonName, UpdateMode}
+import models.{Mode, PersonName, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsValue
@@ -55,7 +55,7 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
       saveChangeFlag(mode, id).flatMap { _ =>
         val moreThanTenId = id match {
           case DirectorNameId(_) => MoreThanTenDirectorsId
-          case PartnerDetailsId(_) => MoreThanTenPartnersId
+          case PartnerNameId(_) => MoreThanTenPartnersId
           case _ => throw new RuntimeException("Illegal ID passed into confirm delete controller:" + id)
         }
 
@@ -67,26 +67,6 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
     } else {
       Future.successful(request.userAnswers.json)
     }
-
-  def postPersonDetails(vm: ConfirmDeleteViewModel, id: TypedIdentifier[PersonDetails], postUrl: Call, mode: Mode)
-                       (implicit request: DataRequest[AnyContent]): Future[Result] = {
-
-    form.bindFromRequest().fold(
-      (formWithError: Form[_]) => Future.successful(BadRequest(confirmDelete(appConfig, formWithError, vm, mode))),
-      {
-        case true =>
-          id.retrieve.right.map { details =>
-            saveChangeFlags(id, mode).flatMap { _ =>
-              cacheConnector.save(request.externalId, id, details.copy(isDeleted = true)) map { _ =>
-                Redirect(postUrl)
-              }
-            }
-          }
-        case false =>
-          Future.successful(Redirect(postUrl))
-      }
-    )
-  }
 
   def post(vm: ConfirmDeleteViewModel, id: TypedIdentifier[PersonName], postUrl: Call, mode: Mode)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {

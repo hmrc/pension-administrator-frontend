@@ -84,7 +84,7 @@ class PartnerConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
     )(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
-    .set(PartnerDetailsId(0))(models.PersonDetails("John", None, "Doe", LocalDate.now())).flatMap(_.set(
+    .set(PartnerNameId(0))(models.PersonName("John", "Doe")).flatMap(_.set(
     ExistingCurrentAddressId(0))(testAddress))
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))

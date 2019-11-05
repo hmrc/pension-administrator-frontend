@@ -25,7 +25,7 @@ import controllers.register.company.AddCompanyDirectorsControllerSpec.{johnDoePe
 import forms.register.AddEntityFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.partnership.AddPartnersId
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
 import models.requests.DataRequest
 import models._
 import play.api.data.Form
@@ -198,8 +198,8 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
     addEntity(frontendAppConfig, form, viewmodel(partners), NormalMode)(request, messages).toString
 
   // scalastyle:off magic.number
-  private val johnDoe = PersonDetails("John", None, "Doe", LocalDate.of(1862, 6, 9))
-  private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.of(1969, 7, 16))
+  private val johnDoe = PersonName("John", "Doe")
+  private val joeBloggs = PersonName("Joe", "Bloggs")
   // scalastyle:on magic.number
 
   private def deleteLink(index: Int) = controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, NormalMode).url
@@ -212,10 +212,10 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
 
   private val maxPartners = frontendAppConfig.maxPartners
 
-  private def dataRetrievalAction(partners: PersonDetails*): FakeDataRetrievalAction = {
+  private def dataRetrievalAction(partners: PersonName*): FakeDataRetrievalAction = {
     val validData = Json.obj("partners" ->
       partners.map(d => Json.obj(
-        PartnerDetailsId.toString -> Json.toJson(d),
+        PartnerNameId.toString -> Json.toJson(d),
         IsPartnerCompleteId.toString -> true
       ))
     )

@@ -24,7 +24,7 @@ import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import controllers.register.partnership.partners.routes._
 import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerContactDetailsId, PartnerDetailsId, PartnerUniqueTaxReferenceId}
+import identifiers.register.partnership.partners._
 import models.Mode.{checkMode, _}
 import models._
 import play.api.mvc.Call
@@ -44,20 +44,23 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
 
       Seq(NormalMode, UpdateMode).foreach { mode =>
         s"render the view correctly for name and dob in ${jsLiteral.to(mode)}" in {
-          val retrievalAction = UserAnswers().set(PartnerDetailsId(index))(partnerDetails).asOpt.value.dataRetrievalAction
+          val retrievalAction = UserAnswers().set(PartnerNameId(index))(partnerDetails).flatMap(
+            _.set(PartnerDOBId(0))(LocalDate.now)).asOpt.value.dataRetrievalAction
           val rows = Seq(
             AnswerRow(
-              "cya.label.name",
+              "partnerName.cya.label",
               Seq(s"${partnerDetails.firstName} ${partnerDetails.lastName}"),
               answerIsMessageKey = false,
-              Some(Link(routes.PartnerDetailsController.onPageLoad(checkMode(mode), index).url))
+              Some(Link(routes.PartnerNameController.onPageLoad(checkMode(mode), index).url)),
+              Some(Message("partnerName.visuallyHidden.text"))
             ),
             AnswerRow(
-              "cya.label.dob",
-              Seq(s"${DateHelper.formatDate(partnerDetails.dateOfBirth)}"),
+              messages("dob.heading", partnerDetails.fullName),
+              Seq(s"${DateHelper.formatDate(LocalDate.now)}"),
               answerIsMessageKey = false,
-              Some(Link(routes.PartnerDetailsController.onPageLoad(checkMode(mode), index).url)))
-          )
+              Some(Link(PartnerDOBController.onPageLoad(checkMode(mode), index).url)),
+              Some(Message("dob.visuallyHidden.text", partnerDetails.fullName))
+            ))
           val sections = Seq(AnswerSection(None, rows))
           testRenderedView(
             sections = sections, dataRetrievalAction = retrievalAction, mode = mode
@@ -209,7 +212,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   private val email = "test@test.com"
   private val phone = "1234"
   private val index = Index(0)
-  private val partnerDetails = PersonDetails("Test", None, "Name", LocalDate.now())
+  private val partnerDetails = PersonName("Test", "Name")
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val defaultPartnerName = Message("thePartner").resolve
 

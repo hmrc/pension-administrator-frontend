@@ -114,7 +114,7 @@ common.addressYears.over_a_year = Yes
 common.previousAddress.heading = Previous Address
 common.previousAddress.title = Previous Address
 common.previousAddress.lede = This can be a residential or company address.
-common.previousAddress.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+common.previousAddress.enterPostcode = You can {0}
 common.previousAddress.enterPostcode.link = enter the address manually
 common.address.enterPostcode.formLabel = Postcode
 common.manual.address.title = Address
@@ -168,6 +168,10 @@ cya.label.address.years = Address years
 cya.label.companyName = Company name
 cya.label.partnershipName = Partnership name
 utr.checkYourAnswersLabel = Unique Taxpayer Reference
+
+partnerName.visuallyHidden.text = Change the partner’s name
+directorName.visuallyHidden.text = Change the director’s name
+dob.visuallyHidden.text = Change date of birth
 
 contactDetails.title = Enter contact details
 contactDetails.heading = Enter contact details
@@ -223,10 +227,11 @@ companyDetails.error.companyName.required = Please give an answer for Company na
 companyDetails.error.companyName.length = The name cannot be more than 160 characters
 companyDetails.error.companyName.invalid = The name contains invalid characters
 
-companyPreviousAddress.title = Previous Address of the Company
-companyPreviousAddress.heading = Previous Address of the Company
 previousAddress.checkYourAnswersLabel = {0}’s previous address
 previousAddress.visuallyHidden.text = {0}’s previous address
+
+companyPreviousAddress.title = Previous Address of the Company
+companyPreviousAddress.heading = Previous Address of the Company
 
 address.checkYourAnswersLabel = {0}’s address
 address.visuallyHidden.text = {0}’s address
@@ -432,7 +437,9 @@ directorCheckYourAnswers.directorDetails.heading = Company director details
 directorCheckYourAnswers.contactDetails.heading = Contact details for director
 
 confirmCompanyAddress.title = Is this the registered address for the company?
-confirmCompanyAddress.heading = Is this the registered address for {0}?
+confirmRegisteredAddress.heading = Is this the registered address for {0}?
+confirmRegisteredAddress.title = Is this the registered address for the business?
+confirmRegisteredAddress.error.required = Select yes if these details are correct
 
 whatYouWillNeed.title = What you will need
 whatYouWillNeed.heading = What you will need
@@ -618,20 +625,26 @@ common.contactAddress.title = What is your contact address?
 common.contactAddress.heading = What is your contact address?
 common.contactAddress.lede = This should be an address that HMRC can use to contact you.
 
+companyContactAddress.title = What is the contact address?
+companyContactAddress.heading = What is {0}’s contact address?
+companyContactAddress.lede = You can change any part of the address if you need to.
+contactAddress.visuallyHidden.text = {0}’s contact address
+
 contactAddressList.heading = Select {0}’s contact address
 
 contactAddress.heading = What is {0}’s contact address?
 companyContactAddress.visuallyHidden.text = {0}’s contact address
 
+
 cya.label.individual.contact.address = Contact Address
 cya.label.individual.same.contact.address = Is your contact address the same as your registered address?
-cya.label.company.contact.address = {0}’s contact address
+cya.label.contact.address = {0}’s contact address
 cya.label.company.same.contact.address = Is your contact address the same as your registered address?
 
 cya.label.common.same.contact.address = Is your contact address the same as your registered address?
 
-partnership.sameContactAddress.title = Is your contact address the same as your registered address?
-partnership.sameContactAddress.heading = Is your contact address the same as your registered address?
+partnership.sameContactAddress.title = Can HMRC use this address to contact the partnership?
+partnership.sameContactAddress.heading = Can HMRC use this address to contact {0}?
 partnershipSameContactAddress.checkYourAnswersLabel = Is your contact address the same as your registered address?
 
 interceptPSA.title = You have already registered as a pension scheme administrator
@@ -654,19 +667,16 @@ whatYouWillNeed.partnership.body.item1 = your partnership name, address and prev
 whatYouWillNeed.partnership.body.item2 = the National Insurance numbers and Unique Tax reference numbers of partners associated with your organisation
 whatYouWillNeed.partnership.body.item3 = your contact telephone number and email address
 
-confirmPartnershipDetails.title = Are these details correct?
-confirmPartnershipDetails.heading = Are these details correct?
 confirmPartnershipDetails.error.required = Select yes if these details are correct
 
-partnershipContactAddressPostCodeLookup.title = What is the contact address?
-partnershipContactAddressPostCodeLookup.heading = What is {0}’s contact address?
-partnershipContactAddressPostCodeLookup.lede = This should be an address that HMRC can use to contact {0}.
-partnershipContactAddressPostCodeLookup.enterPostcode = Enter the postcode. You can {0} if the address is overseas.
+partnershipContactAddressPostCodeLookup.title = Which address can we use to contact the partnership?
+partnershipContactAddressPostCodeLookup.heading = Which address can we use to contact {0}?
+partnershipContactAddressPostCodeLookup.enterPostcode = You can {0}.
 partnershipContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
-partnership.contactAddress.title = What is the contact address?
+partnership.contactAddress.title = What is the partnership’s contact address?
 partnership.contactAddress.heading = What is {0}’s contact address?
-partnership.contactAddress.hint = This should be an address that HMRC can use to contact {0}.
+partnership.contactAddress.hint = This can be any address that can be used to contact you. You might receive letters from HMRC when you are a PSA.
 
 partnership.partner.contactDetails.title = Enter the partner’s contact details
 partnership.partner.contactDetails.heading = Enter the partner’s contact details
@@ -1029,3 +1039,11 @@ dob.visuallyHidden.text = {0}’s date of birth
 
 partnerName.heading = What is the partner’s name?
 partnerDob.title = What is the partner’s date of birth?
+partnerName.cya.label = Partner’s name
+
+previousAddressPostCode.heading = What was {0}’s previous contact address?
+previousAddressList.heading = Select {0}’s previous contact address
+previousAddress.partnership.title = The partnership’s previous contact address
+previousAddress.company.title = The company’s previous contact address
+previousAddress.heading = {0}’s previous contact address
+previousAddress.lede = You can change any part of the address if you need to.

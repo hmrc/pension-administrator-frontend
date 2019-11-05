@@ -37,7 +37,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val href = routes.PartnerDetailsController.onPageLoad(NormalMode, request.userAnswers.directorsCount)
+      val href = routes.PartnerNameController.onPageLoad(NormalMode, request.userAnswers.directorsCount)
       Future.successful(Ok(whatYouWillNeed(appConfig, href)))
   }
 }

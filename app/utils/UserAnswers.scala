@@ -24,7 +24,7 @@ import identifiers.register.company._
 import identifiers.register.company.directors.{DirectorNameId, IsDirectorCompleteId}
 import identifiers.register.individual._
 import identifiers.register.partnership._
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import play.api.libs.json._
@@ -92,8 +92,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       .getOrElse(Nil).length
   }
 
-  def allPartners: Seq[PersonDetails] = {
-    getAll[PersonDetails](PartnerDetailsId.collectionPath).getOrElse(Nil)
+  def allPartners: Seq[PersonName] = {
+    getAll[PersonName](PartnerNameId.collectionPath).getOrElse(Nil)
   }
 
   def allPartnersAfterDelete(mode: Mode): Seq[Person] = {
@@ -105,7 +105,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         val editUrl = if (isComplete) {
           controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
         } else {
-          controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, Index(index)).url
+          controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(mode, Index(index)).url
         }
 
         Seq(
@@ -125,7 +125,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   def partnersCount: Int = {
-    getAll[PersonDetails](PartnerDetailsId.collectionPath)
+    getAll[PersonName](PartnerNameId.collectionPath)
       .getOrElse(Nil).length
   }
 

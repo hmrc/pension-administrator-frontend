@@ -19,11 +19,11 @@ package controllers
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
+import models.PersonName
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
-import models.{PersonDetails, PersonName}
 import play.api.libs.json.Reads
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -46,7 +46,7 @@ trait Retrievals {
   private[controllers] def retrievePartnerName(index: Int)
                                               (f: String => Future[Result])
                                               (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    retrieve[PersonDetails](PartnerDetailsId(index)) { partnerDetails =>
+    retrieve[PersonName](PartnerNameId(index)) { partnerDetails =>
       f(partnerDetails.fullName)
     }
   }

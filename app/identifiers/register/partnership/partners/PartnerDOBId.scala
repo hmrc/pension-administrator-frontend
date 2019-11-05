@@ -19,7 +19,12 @@ package identifiers.register.partnership.partners
 import java.time.LocalDate
 
 import identifiers._
+import models.Index
+import play.api.i18n.Messages
 import play.api.libs.json.JsPath
+import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersPartner, DateCYA}
+import viewmodels.{AnswerRow, Link, Message}
 
 case class PartnerDOBId(index: Int) extends TypedIdentifier[LocalDate] {
   override def path: JsPath = JsPath \ "partners" \ index \ PartnerDOBId.toString
@@ -27,4 +32,17 @@ case class PartnerDOBId(index: Int) extends TypedIdentifier[LocalDate] {
 
 object PartnerDOBId {
   override lazy val toString: String = "dateOfBirth"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[PartnerDOBId] =
+    new CheckYourAnswersPartner[PartnerDOBId] {
+      private def label(ua: UserAnswers, index: Index): String =
+        dynamicMessage(ua, messageKey = "dob.heading", index)
+
+      private def hiddenLabel(ua: UserAnswers, index: Index): Message =
+        dynamicMessage(ua, messageKey = "dob.visuallyHidden.text", index)
+
+
+      override def row(id: PartnerDOBId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        DateCYA[PartnerDOBId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+        }
 }

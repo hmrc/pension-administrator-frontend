@@ -16,17 +16,15 @@
 
 package identifiers.register.partnership.partners
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models._
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
+import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
-import utils.checkyouranswers.Ops._
 
 class PartnerPreviousAddressIdSpec extends SpecBase {
   private val personDetails = models.PersonName("test first", "test last")
@@ -36,10 +34,10 @@ class PartnerPreviousAddressIdSpec extends SpecBase {
   private val onwardUrl = "onwardUrl"
 
   "cya" when {
-    val partnerDetails = PersonDetails("test first", None, "test last", LocalDate.now())
+    val partnerDetails = PersonName("test first", "test last")
     def answers: UserAnswers =
       UserAnswers()
-        .set(PartnerDetailsId(0))(partnerDetails).asOpt.value
+        .set(PartnerNameId(0))(partnerDetails).asOpt.value
         .set(PartnerPreviousAddressId(0))(value = address).asOpt.value
 
     "in normal mode" must {

@@ -21,7 +21,7 @@ import identifiers.register.company._
 import identifiers.register.company.directors.DirectorId
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerId
-import models.{PersonDetails, PersonName}
+import models.PersonName
 import models.register.NonUKBusinessType
 import models.register.NonUKBusinessType.{BusinessPartnership, Company}
 import play.api.libs.json.{JsResult, JsSuccess}
@@ -35,15 +35,6 @@ case object NonUKBusinessTypeId extends TypedIdentifier[NonUKBusinessType] {
       case Some(Company) => removeAllPartnership(userAnswers)
       case Some(BusinessPartnership) => removeAllCompany(userAnswers)
       case _ => super.cleanup(value, userAnswers)
-    }
-  }
-
-  private def removeAllDirectorsOrPartners(personDetailsSeq: Seq[PersonDetails],
-                                           userAnswers: UserAnswers, id: TypedIdentifier[Nothing]): JsResult[UserAnswers] = {
-    if (personDetailsSeq.nonEmpty) {
-      userAnswers.remove(id)
-    } else {
-      JsSuccess(userAnswers)
     }
   }
 
@@ -68,6 +59,6 @@ case object NonUKBusinessTypeId extends TypedIdentifier[NonUKBusinessType] {
       PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
       PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
       PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
-      .flatMap(answers => removeAllDirectorsOrPartners(answers.allPartners, answers, PartnerId))
+      .flatMap(answers => removeDirectorsOrPartners(answers.allPartners, answers, PartnerId))
   }
 }

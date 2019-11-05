@@ -16,15 +16,13 @@
 
 package controllers.register.partnership.partners
 
-import java.time.LocalDate
-
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.partnership.partners.{PartnerAddressId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{PartnerAddressId, PartnerNameId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -156,8 +154,8 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form: Form[Address] = formProvider()
 
-  private val jonathanDoe = PersonDetails("Jonathan", None, "Doe", LocalDate.now())
-  private val joeBloggs = PersonDetails("Joe", None, "Bloggs", LocalDate.now())
+  private val jonathanDoe = PersonName("Jonathan", "Doe")
+  private val joeBloggs = PersonName("Joe", "Bloggs")
 
   private val doeResidence = Address("address line 1", "address line 2", Some("test town"), Some("test county"), Some("test post code"), "GB")
   private val bloggsResidence = Address("address line 1", "address line 2", Some("test town 2"), Some("test county 2"), Some("test post code 2"), "GB")
@@ -165,10 +163,10 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
   private val partners = Json.obj(
     "partners" -> Json.arr(
       Json.obj(
-        PartnerDetailsId.toString -> jonathanDoe
+        PartnerNameId.toString -> jonathanDoe
       ),
       Json.obj(
-        PartnerDetailsId.toString -> joeBloggs
+        PartnerNameId.toString -> joeBloggs
       )
     )
   )
@@ -177,11 +175,11 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
   private val partnersWithAddresses = Json.obj(
     "partners" -> Json.arr(
       Json.obj(
-        PartnerDetailsId.toString -> jonathanDoe,
+        PartnerNameId.toString -> jonathanDoe,
         PartnerAddressId.toString -> doeResidence
       ),
       Json.obj(
-        PartnerDetailsId.toString -> joeBloggs,
+        PartnerNameId.toString -> joeBloggs,
         PartnerAddressId.toString -> bloggsResidence
       )
     )

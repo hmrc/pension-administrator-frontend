@@ -16,14 +16,12 @@
 
 package utils.navigators
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
 import identifiers.register.partnership._
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId, _}
 import models._
 import org.scalatest.OptionValues
@@ -39,7 +37,7 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  val navigator = new PartnershipNavigator(countryOptions, frontendAppConfig)
+  val navigator = new PartnershipNavigator(FakeUserAnswersCacheConnector, countryOptions, frontendAppConfig)
 
   //scalastyle:off line.size.limit
   private def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
@@ -50,10 +48,14 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (BusinessNameId, nonUk, nonUkAddress, None),
     (IsRegisteredNameId, isRegisteredNameTrue, confirmPartnershipDetailsPage, None),
     (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, None),
+    (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, hasPayePage, None),
 
-    (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, None),
-
-    (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage, None),
+    (HasPAYEId, hasPAYEYes, payePage(NormalMode), Some(payePage(CheckMode))),
+    (HasPAYEId, hasPAYENo, hasVatPage, Some(checkYourAnswersPage)),
+    (EnterPAYEId, emptyAnswers, hasVatPage, Some(checkYourAnswersPage)),
+    (HasVATId, hasVatYes, enterVatPage(NormalMode), Some(enterVatPage(CheckMode))),
+    (HasVATId, hasVatNo, sameContactAddressPage, Some(checkYourAnswersPage)),
+    (EnterVATId, emptyAnswers, sameContactAddressPage, Some(checkYourAnswersPage)),
 
     (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(NormalMode), Some(addressYearsPage(CheckMode))),
     (PartnershipSameContactAddressId, notSameContactAddressUk, contactPostcodePage(NormalMode), Some(contactPostcodePage(CheckMode))),
@@ -77,24 +79,13 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipPreviousAddressId, emptyAnswers, emailPage, Some(checkYourAnswersPage)),
 
     (PartnershipEmailId, emptyAnswers, phonePage, Some(checkYourAnswersPage)),
-
-    (PartnershipPhoneId, uk, hasVatPage, Some(checkYourAnswersPage)),
-    (PartnershipPhoneId, nonUk, checkYourAnswersPage, Some(checkYourAnswersPage)),
-    (PartnershipPhoneId, emptyAnswers, sessionExpiredPage, Some(checkYourAnswersPage)),
-
-    (HasVATId, hasVatYes, enterVatPage(NormalMode), Some(enterVatPage(CheckMode))),
-    (HasVATId, hasVatNo, payeNumberPage, Some(checkYourAnswersPage)),
-    (EnterVATId, emptyAnswers, payeNumberPage, Some(checkYourAnswersPage)),
-
-    (HasPAYEId, hasPAYEYes, payePage(NormalMode), Some(payePage(CheckMode))),
-    (HasPAYEId, hasPAYENo, checkYourAnswersPage, Some(checkYourAnswersPage)),
-    (EnterPAYEId, emptyAnswers, checkYourAnswersPage, Some(checkYourAnswersPage)),
+    (PartnershipPhoneId, emptyAnswers, checkYourAnswersPage, Some(checkYourAnswersPage)),
 
     (CheckYourAnswersId, emptyAnswers, wynPage, None),
     (CheckYourAnswersId, hasPartner, addPartnersPage(), None),
     (PartnershipReviewId, emptyAnswers, declarationPage, None),
 
-    (PartnershipRegisteredAddressId, nonUkEuAddress, whatYouWillNeedPage, None),
+    (PartnershipRegisteredAddressId, nonUkEuAddress, sameContactAddressPage, None),
     (PartnershipRegisteredAddressId, uKAddress, reconsiderAreYouInUk, None),
     (PartnershipRegisteredAddressId, nonUkNonEuAddress, outsideEuEea, None)
   )
@@ -134,31 +125,37 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 object PartnershipNavigatorSpec extends OptionValues {
 
-  private def sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
+  private lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
 
-  private def anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private lazy val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
-  private def confirmPartnershipDetailsPage: Call = routes.ConfirmPartnershipDetailsController.onPageLoad()
+  private lazy val confirmPartnershipDetailsPage: Call = routes.ConfirmPartnershipDetailsController.onPageLoad()
 
-  private def whatYouWillNeedPage: Call = routes.WhatYouWillNeedController.onPageLoad()
-  private def partnershipNamePage = routes.PartnershipNameController.onPageLoad()
-  private def partnershipIsRegisteredNamePage = routes.PartnershipIsRegisteredNameController.onPageLoad()
+  private lazy val whatYouWillNeedPage: Call = routes.WhatYouWillNeedController.onPageLoad()
 
-  private def sameContactAddressPage: Call = routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
+  private lazy val partnershipNamePage = routes.PartnershipNameController.onPageLoad()
 
-  private def checkYourAnswersPage: Call = routes.CheckYourAnswersController.onPageLoad()
+  private lazy val partnershipIsRegisteredNamePage = routes.PartnershipIsRegisteredNameController.onPageLoad()
 
-  private def emailPage: Call = routes.PartnershipEmailController.onPageLoad(NormalMode)
-  private def phonePage: Call = routes.PartnershipPhoneController.onPageLoad(NormalMode)
-  private def hasVatPage: Call = routes.HasPartnershipVATController.onPageLoad(NormalMode)
+  private lazy val sameContactAddressPage: Call = routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
+
+  private lazy val checkYourAnswersPage: Call = routes.CheckYourAnswersController.onPageLoad()
+
+  private lazy val emailPage: Call = routes.PartnershipEmailController.onPageLoad(NormalMode)
+
+  private lazy val phonePage: Call = routes.PartnershipPhoneController.onPageLoad(NormalMode)
+
+  private lazy val hasVatPage: Call = routes.HasPartnershipVATController.onPageLoad(NormalMode)
+
   private def enterVatPage(mode: Mode): Call = routes.PartnershipEnterVATController.onPageLoad(mode)
 
-  private def payeNumberPage: Call = routes.HasPartnershipPAYEController.onPageLoad(NormalMode)
+  private lazy val payeNumberPage: Call = routes.HasPartnershipPAYEController.onPageLoad(NormalMode)
 
   private def tradingOverAYearPage(mode: Mode): Call = routes.PartnershipTradingOverAYearController.onPageLoad(mode)
 
+  private lazy val wynPage: Call = controllers.register.partnership.partners.routes.WhatYouWillNeedController.onPageLoad()
+
   private def addPartnersPage(): Call = routes.AddPartnerController.onPageLoad(NormalMode)
-  private def wynPage: Call = controllers.register.partnership.partners.routes.WhatYouWillNeedController.onPageLoad()
 
   private def addressYearsPage(mode: Mode): Call = routes.PartnershipAddressYearsController.onPageLoad(mode)
 
@@ -172,22 +169,23 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def contactPreviousAddressListPage(mode: Mode): Call = routes.PartnershipPreviousAddressListController.onPageLoad(mode)
 
-  private def confirmPreviousAddressPage: Call = routes.PartnershipConfirmPreviousAddressController.onPageLoad()
+  private lazy val confirmPreviousAddressPage: Call = routes.PartnershipConfirmPreviousAddressController.onPageLoad()
 
   private def contactPreviousAddressPage(mode: Mode): Call = routes.PartnershipPreviousAddressController.onPageLoad(mode)
 
-  private def declarationPage: Call = controllers.register.routes.DeclarationController.onPageLoad()
+  private lazy val declarationPage: Call = controllers.register.routes.DeclarationController.onPageLoad()
 
-  private def nonUkAddress: Call = routes.PartnershipRegisteredAddressController.onPageLoad()
+  private lazy val nonUkAddress: Call = routes.PartnershipRegisteredAddressController.onPageLoad()
 
-  private def hasPayePage: Call = routes.HasPartnershipPAYEController.onPageLoad(NormalMode)
+  private lazy val hasPayePage: Call = routes.HasPartnershipPAYEController.onPageLoad(NormalMode)
+
   private def payePage(mode: Mode): Call = routes.PartnershipEnterPAYEController.onPageLoad(mode)
 
-  private def reconsiderAreYouInUk: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
+  private lazy val reconsiderAreYouInUk: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
 
-  private def outsideEuEea: Call = routes.OutsideEuEeaController.onPageLoad()
+  private lazy val outsideEuEea: Call = routes.OutsideEuEeaController.onPageLoad()
 
-  private def companyUpdate = controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
+  private lazy val companyUpdate = controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
 
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
   protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
@@ -217,7 +215,8 @@ object PartnershipNavigatorSpec extends OptionValues {
   private val tradingOverAYearNonUk = UserAnswers(Json.obj()).areYouInUk(false).set(PartnershipTradingOverAYearId)(true).asOpt.value
   private val addressYearsOverAYear = UserAnswers().partnershipAddressYears(AddressYears.OverAYear)
   val hasPartner: UserAnswers = UserAnswers(Json.obj())
-    .set(PartnerDetailsId(0))(PersonDetails("first", None, "last", LocalDate.now())).asOpt.value
+    .set(PartnerNameId(0))(PersonName("first", "last")).asOpt.value
+
   private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 
   private val confirmPartnershipDetailsTrue = UserAnswers(Json.obj()).set(ConfirmPartnershipDetailsId)(true).asOpt.value

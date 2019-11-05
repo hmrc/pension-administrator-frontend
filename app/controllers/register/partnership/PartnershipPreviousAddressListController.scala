@@ -21,6 +21,7 @@ import connectors.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.Mode
@@ -58,14 +59,14 @@ class PartnershipPreviousAddressListController @Inject()(
   }
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    PartnershipPreviousAddressPostCodeLookupId.retrieve.right.map {
-      addresses =>
+    (BusinessNameId and PartnershipPreviousAddressPostCodeLookupId).retrieve.right.map {
+      case name ~ addresses =>
         AddressListViewModel(
           postCall = routes.PartnershipPreviousAddressListController.onSubmit(mode),
           manualInputCall = routes.PartnershipPreviousAddressController.onPageLoad(mode),
           addresses = addresses,
-          Message("common.previousAddressList.title"),
-          Message("common.previousAddressList.heading"),
+          Message("previousAddressList.heading", Message("thePartnership")),
+          Message("previousAddressList.heading", name),
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")
         )

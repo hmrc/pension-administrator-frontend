@@ -92,12 +92,12 @@ class PartnerAddressYearsIdSpec extends SpecBase {
   }
 
   "cya" when {
-    val partnerDetails = PersonDetails("test first", None, "test last", LocalDate.now())
+    val partnerDetails = PersonName("test first", "test last")
     val addressYears = AddressYears.OverAYear
     val onwardUrl = "onwardUrl"
     def answers: UserAnswers =
       UserAnswers()
-        .set(PartnerDetailsId(0))(partnerDetails).asOpt.value
+        .set(PartnerNameId(0))(partnerDetails).asOpt.value
         .set(PartnerAddressYearsId(0))(value = AddressYears.OverAYear).asOpt.value
 
     "in normal mode" must {
