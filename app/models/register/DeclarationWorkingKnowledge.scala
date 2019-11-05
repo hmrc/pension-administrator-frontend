@@ -18,13 +18,19 @@ package models.register
 
 import utils.{Enumerable, InputOption, WithName}
 
-sealed trait DeclarationWorkingKnowledge
+sealed trait DeclarationWorkingKnowledge {
+  def hasWorkingKnowledge:Boolean
+}
 
 object DeclarationWorkingKnowledge extends Enumerable.Implicits {
 
-  case object WorkingKnowledge extends WithName("workingKnowledge") with DeclarationWorkingKnowledge
+  case object WorkingKnowledge extends WithName("workingKnowledge") with DeclarationWorkingKnowledge {
+    def hasWorkingKnowledge:Boolean = true
+  }
 
-  case object Adviser extends WithName("adviser") with DeclarationWorkingKnowledge
+  case object Adviser extends WithName("adviser") with DeclarationWorkingKnowledge {
+    def hasWorkingKnowledge:Boolean = false
+  }
 
   val values: Seq[DeclarationWorkingKnowledge] = Seq(
     WorkingKnowledge, Adviser
@@ -38,8 +44,6 @@ object DeclarationWorkingKnowledge extends Enumerable.Implicits {
   implicit val enumerable: Enumerable[DeclarationWorkingKnowledge] =
     Enumerable(values.map(v => v.toString -> v): _*)
 
-  def variationDeclarationWorkingKnowledge(workingKnowledge: Boolean): DeclarationWorkingKnowledge ={
+  def declarationWorkingKnowledge(workingKnowledge: Boolean): DeclarationWorkingKnowledge =
     if(workingKnowledge) WorkingKnowledge else Adviser
-  }
 }
-

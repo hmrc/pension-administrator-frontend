@@ -63,9 +63,9 @@ class IndividualEmailController @Inject()(@Individual val navigator: Navigator,
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.IndividualEmailController.onSubmit(mode),
-      title = Message("email.title", Message("theIndividual").resolve),
-      heading = Message("email.title", entityName),
+      title = Message("individual.email.title"),
+      heading = Message("individual.email.title"),
       mode = mode,
-      entityName = entityName
+      entityName = Message("common.you").resolve
     )
 }

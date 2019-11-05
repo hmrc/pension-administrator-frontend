@@ -62,9 +62,9 @@ class IndividualPhoneController @Inject()(@Individual val navigator: Navigator,
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.IndividualPhoneController.onSubmit(mode),
-      title = Message("phone.title", Message("theIndividual").resolve),
-      heading = Message("phone.title", entityName),
+      title = Message("individual.phone.title"),
+      heading = Message("individual.phone.title"),
       mode = mode,
-      entityName = entityName
+      entityName = Message("common.you").resolve
     )
 }

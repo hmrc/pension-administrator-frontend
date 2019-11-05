@@ -64,8 +64,8 @@ class IndividualPreviousAddressListController @Inject()(
           postCall = routes.IndividualPreviousAddressListController.onSubmit(mode),
           manualInputCall = routes.IndividualPreviousAddressController.onPageLoad(mode),
           addresses = addresses,
-          Message("common.previousAddressList.title"),
-          Message("common.previousAddressList.heading"),
+          Message("individual.previousAddressList.heading"),
+          Message("individual.previousAddressList.heading"),
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link")
         )

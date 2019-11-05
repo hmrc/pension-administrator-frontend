@@ -61,13 +61,11 @@ class IndividualDetailsCorrectViewSpec extends YesNoViewBehaviours {
 
     "display the individual's name" in {
       val doc = asDocument(createView())
-      assertRenderedByIdWithText(doc, "individual-title", messages("individualDetailsCorrect.name"))
       assertRenderedByIdWithText(doc, "individual-value", individual.fullName)
     }
 
     "display the individual's address" in {
       val doc = asDocument(createView())
-      assertRenderedByIdWithText(doc, "address-title", messages("individualDetailsCorrect.address"))
       assertRenderedByIdWithText(doc, "address-value-0", address.addressLine1.value)
       assertRenderedByIdWithText(doc, "address-value-1", address.addressLine2.value)
       assertRenderedByIdWithText(doc, "address-value-2", address.addressLine3.value)

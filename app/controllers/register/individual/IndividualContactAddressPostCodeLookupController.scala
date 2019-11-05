@@ -56,7 +56,8 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
     Message("individualContactAddressPostCodeLookup.enterPostcode"),
     Some(Message("individualContactAddressPostCodeLookup.enterPostcode.link")),
     Message("individualContactAddressPostCodeLookup.formLabel"),
-    psaName = psaName()
+    psaName = psaName(),
+    findAddressMessageKey = "site.save_and_continue"
   )
 
   override protected def form: Form[String] = formProvider()

@@ -59,7 +59,7 @@ class IsRegisteredNameViewSpec extends ViewBehaviours with YesNoViewBehaviours {
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", s"$messageKeyPrefix.heading")
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, viewmodel(NormalMode).postCall.url, s"$messageKeyPrefix.heading")
 
     }
 

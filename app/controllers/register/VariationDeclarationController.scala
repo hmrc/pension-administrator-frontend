@@ -75,7 +75,7 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                 request.user.existingPSAId
               )).asOpt.getOrElse(UserAnswers(json))
                 .set(DeclarationWorkingKnowledgeId)(
-                  DeclarationWorkingKnowledge.variationDeclarationWorkingKnowledge(workingKnowledge))
+                  DeclarationWorkingKnowledge.declarationWorkingKnowledge(workingKnowledge))
                 .asOpt.getOrElse(UserAnswers(json))
 
               pensionsSchemeConnector.updatePsa(psaId, answers).map(_ =>

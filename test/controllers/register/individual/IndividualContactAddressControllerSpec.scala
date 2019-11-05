@@ -53,7 +53,7 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Moc
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.title"),
     heading = Message(s"$messagePrefix.heading"),
-    hint = Some(Message(s"$messagePrefix.lede"))
+    hint = Some("companyContactAddress.lede")
   )
 
   val fakeAuditService = new StubSuccessfulAuditService()

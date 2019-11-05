@@ -61,7 +61,7 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", s"$messageKeyPrefix.heading",
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, viewmodel(NormalMode).postCall.url, s"$messageKeyPrefix.heading",
       expectedHintKey = Some(messages("areYouInUKIndividual.hint")))
 
     "not display dynamic content of CheckMode in NormalMode" in {

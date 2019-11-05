@@ -23,7 +23,7 @@ import base.SpecBase
 import identifiers.register.company.MoreThanTenDirectorsId
 import identifiers.register.individual.IndividualDateOfBirthId
 import play.api.libs.json.{JsObject, Json}
-import viewmodels.{AnswerRow, Link}
+import viewmodels.{AnswerRow, Link, Message}
 
 class CheckYourAnswersHelperSpec extends SpecBase {
 
@@ -88,10 +88,11 @@ class CheckYourAnswersHelperSpec extends SpecBase {
             IndividualDateOfBirthId.toString -> localDate
           ),
           Seq(
-            AnswerRow("cya.label.dob",
+            AnswerRow("individualDateOfBirth.heading",
               Seq(displayDate),
               answerIsMessageKey = false,
-              Some(Link("/register-as-pension-scheme-administrator/register/individual/change/your-date-of-birth")))
+              Some(Link("/register-as-pension-scheme-administrator/register/individual/change/date-of-birth")),
+              Some(Message("individualDateOfBirth.visuallyHidden.text")))
           )
         )
       )

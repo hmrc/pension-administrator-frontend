@@ -65,11 +65,11 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(DeclarationWorkingKnowledge.values.head))
+      contentAsString(result) mustBe viewAsString(form.fill(true))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", DeclarationWorkingKnowledge.options.head.value))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 

@@ -11,10 +11,10 @@ POST       /:mode/business-type                         controllers.register.Bus
 GET        /what-kind-of-business                       controllers.register.NonUKBusinessTypeController.onPageLoad(mode: Mode = NormalMode)
 POST       /what-kind-of-business                       controllers.register.NonUKBusinessTypeController.onSubmit(mode: Mode = NormalMode)
 
-GET        /declaration-working-knowledge               controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
-POST       /declaration-working-knowledge               controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/declaration-working-knowledge         controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode)
-POST       /:mode/declaration-working-knowledge         controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode)
+GET        /working-knowledge-pensions               controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
+POST       /working-knowledge-pensions               controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/working-knowledge-pensions         controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode)
+POST       /:mode/working-knowledge-pensions         controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode)
 
 GET        /:mode/having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onPageLoad(mode: Mode)
 POST       /:mode/having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onSubmit(mode: Mode)

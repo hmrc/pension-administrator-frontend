@@ -66,9 +66,10 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
           addresses = addresses,
           Message("common.contactAddressList.title"),
           Message("common.contactAddressList.heading"),
-          Message("common.selectAddress.text"),
+          Message("individual.selectAddress.text"),
           Message("common.selectAddress.link"),
-          psaName = psaName()
+          psaName = psaName(),
+          selectAddressPostLink = Some(Message("individual.selectAddressPostLink.text"))
         )
     }.left.map(_ => Future.successful(Redirect(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))))
   }

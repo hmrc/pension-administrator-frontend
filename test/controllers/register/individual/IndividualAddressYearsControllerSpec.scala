@@ -36,7 +36,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new AddressYearsFormProvider()
-  val form = formProvider(Message("error.addressYears.required"))
+  private val form = formProvider.applyIndividual()
   val questionText = "individualAddressYears.title"
   val individualDetails = TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName"))
   val name: String = individualDetails.fullName
@@ -92,6 +92,15 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) mustBe viewAsString(boundForm)
+    }
+
+    "return a Bad Request and correct error for individual address years form when no data is submitted" in {
+      val boundForm = form.bind(Map("value" -> ""))
+
+      val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)

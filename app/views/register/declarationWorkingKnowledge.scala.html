@@ -33,11 +33,14 @@
 
         @components.heading(messages("declarationWorkingKnowledge.heading"))
 
-        @components.input_radio(
+        <p>@messages("declarationWorkingKnowledge.p1")</p>
+        <p>@messages("declarationWorkingKnowledge.p2")</p>
+        <p>@messages("declarationWorkingKnowledge.p3")</p>
+
+        @components.input_yes_no(
             field = form("value"),
-            legend = messages("declarationWorkingKnowledge.heading"),
-            legendClass = Some("visually-hidden"),
-            inputs = DeclarationWorkingKnowledge.options
+            label = messages("declarationWorkingKnowledge.heading"),
+            labelClass = Some("visually-hidden")
         )
 
         <div class="subsection">

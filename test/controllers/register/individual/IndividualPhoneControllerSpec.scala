@@ -63,10 +63,10 @@ object IndividualPhoneControllerSpec {
   private def viewModel(mode: Mode)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.IndividualPhoneController.onSubmit(mode),
-      title = Message("phone.title", Message("theIndividual").resolve),
-      heading = Message("phone.title", individualName),
+      title = Message("individual.phone.title"),
+      heading = Message("individual.phone.title"),
       mode = mode,
-      entityName = individualName
+      entityName = Message("common.you").resolve
     )
 }
 

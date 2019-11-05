@@ -71,7 +71,8 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", s"$messageKeyPrefix.title")
+    behave like yesNoPage(createViewUsingForm, messageKeyPrefix,
+      controllers.register.company.routes.ConfirmCompanyDetailsController.onSubmit().url, s"$messageKeyPrefix.title")
   }
 
 }
