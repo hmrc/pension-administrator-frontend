@@ -218,38 +218,38 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   private val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
   private val partnershipUserAnswersIncomplete = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] - "partners" +
     ("partners" -> Json.arr(
-      Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "One", LocalDate.now()))
+      Json.obj(PartnerNameId.toString -> PersonName("John", "One"))
     ))
 
   private val partnershipUserAnswersWithTwoPartners = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
     "partners" + ("partners" -> Json.arr(
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "One", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "One"),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Two", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "Two"),
       IsPartnerCompleteId.toString -> true)
   ))
 
   private val partnershipUserAnswersWithTenPartners = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
     "partners" + ("partners" -> Json.arr(
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "One", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "One"),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Two", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "Two"),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Three", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "Three"),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Four", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "Four"),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Five", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "Five"),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Six", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "Six"),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Seven", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "Seven"),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Eight", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "Eight"),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Nine", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "Nine"),
       IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonDetails("John", None, "Ten", LocalDate.now()),
+    Json.obj(PartnerNameId.toString -> PersonName("John", "Ten"),
       IsPartnerCompleteId.toString -> true)
   ))
   private val partnershipUserAnswersWithAddLinks = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] - "partnershipPreviousAddress" -
@@ -257,7 +257,8 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
     Json.obj(
       PartnerNameId.toString -> PersonName("test first name", "test last name"),
       PartnerDOBId.toString -> LocalDate.now(),
-      PartnerNinoId.toString -> Nino.No("reason"),
+      HasPartnerNINOId.toString -> false,
+      PartnerNoNINOReasonId.toString -> "reason",
       PartnerAddressYearsId.toString -> AddressYears.UnderAYear.toString,
       PartnerUniqueTaxReferenceId.toString -> UniqueTaxReference.No("reason")
     )

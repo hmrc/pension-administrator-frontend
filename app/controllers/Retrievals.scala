@@ -21,9 +21,9 @@ import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
+import models.PersonName
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
-import models.{PersonDetails, PersonName}
 import play.api.libs.json.Reads
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController

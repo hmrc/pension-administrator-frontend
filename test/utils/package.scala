@@ -22,7 +22,7 @@ import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
-import identifiers.register.partnership.partners.{PartnerAddressId, PartnerPreviousAddressId, PartnerPreviousAddressListId}
+import identifiers.register.partnership.partners._
 import identifiers.register.partnership._
 import identifiers.register.{BusinessNameId, RegisterAsBusinessId, RegistrationInfoId, VariationWorkingKnowledgeId}
 import models._
@@ -247,9 +247,24 @@ package object utils {
       answers.set(PartnerPreviousAddressListId(index))(address).asOpt.value
     }
 
+    def partnerHasNINO(index: Int, flag: Boolean): UserAnswers = {
+      answers.set(HasPartnerNINOId(index))(flag).asOpt.value
+    }
+
+    def partnerEnterNINO(index: Int, nino: ReferenceValue): UserAnswers = {
+      answers.set(PartnerEnterNINOId(index))(nino).asOpt.value
+    }
+
+    def partnerNoNINOReason(index: Int, reason: String): UserAnswers = {
+      answers.set(PartnerNoNINOReasonId(index))(reason).asOpt.value
+    }
 
     def partnerAddress(index: Int, address: Address): UserAnswers = {
       answers.set(PartnerAddressId(index))(address).asOpt.value
+    }
+
+    def partnerAddressYears(index: Int, addressYears: AddressYears): UserAnswers = {
+      answers.set(PartnerAddressYearsId(index))(addressYears).asOpt.value
     }
 
     // Non-UK

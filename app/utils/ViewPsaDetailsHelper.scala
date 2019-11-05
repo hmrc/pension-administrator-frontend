@@ -360,14 +360,15 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None)
   }
 
-  private def partnerNino(index: Int): Option[AnswerRow] = userAnswers.get(PartnerNinoId(index)) match {
-    case Some(Nino.Yes(nino)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
+  private def partnerNino(index: Int): Option[AnswerRow] = userAnswers.get(PartnerEnterNINOId(index)) match {
+    case Some(ReferenceValue(nino, false)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
       None))
 
-    case Some(Nino.No(_)) => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerNinoController.onPageLoad(UpdateMode, index).url, "site.add")), None))
+    case Some(ReferenceValue(nino, true)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
+      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, index).url))))
 
-    case _ => None
+    case None => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
+      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
   private def partnerUtr(index: Int): Option[AnswerRow] = userAnswers.get(PartnerUniqueTaxReferenceId(index)) match {

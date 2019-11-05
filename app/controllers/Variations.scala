@@ -76,7 +76,7 @@ trait Variations extends FrontendController {
            DirectorEnterNINOId(_) | DirectorPreviousAddressId(_) | DirectorEnterUTRId(_) | DirectorNameId(_)
       => Some(DirectorsOrPartnersChangedId)
       case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerContactDetailsId(_) |
-           PartnerNinoId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_) | PartnerNameId(_)
+           PartnerEnterNINOId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_) | PartnerNameId(_)
       => Some(DirectorsOrPartnersChangedId)
       case _ => None
     }
@@ -112,17 +112,6 @@ trait Variations extends FrontendController {
         cacheConnector.save(request.externalId, completeId, true)
       case _ =>
         doNothing
-    }
-  }
-
-  def setNewFlagPerson(id: TypedIdentifier[PersonDetails], mode: Mode, userAnswers: UserAnswers)
-                      (implicit request: DataRequest[_]): Future[JsValue] = {
-    if (mode == UpdateMode | mode == CheckUpdateMode) {
-      userAnswers.get(id).fold(doNothing) { details =>
-        cacheConnector.save(request.externalId, id, details.copy(isNew = true))
-      }
-    } else {
-      doNothing
     }
   }
 

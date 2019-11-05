@@ -17,13 +17,13 @@
 package controllers.register.partnership.partners
 
 import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
-import controllers.{ControllerSpecBase, PersonDetailsControllerBehaviour}
 import models.NormalMode
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator}
 
-class PartnerDOBControllerSpec extends ControllerSpecBase with PersonDetailsControllerBehaviour {
+class PartnerDOBControllerSpec extends ControllerSpecBase {
 
   import PartnerDOBControllerSpec._
 
