@@ -25,6 +25,6 @@ class ConfirmPartnershipDetailsFormProvider @Inject() extends FormErrorHelper wi
 
   def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean("confirmPartnershipDetails.error.required")
+      "value" -> boolean("confirmRegisteredAddress.error.required")
     )
 }

@@ -34,6 +34,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
 import utils.{FakeNavigator, Navigator}
+import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
@@ -72,7 +73,7 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
 
 object PartnershipContactAddressListControllerSpec extends PartnershipContactAddressListControllerSpec {
 
-  val testName = "Partnership Name"
+  val testName = "Test Partnership Name"
 
   val addresses: Seq[TolerantAddress] = Seq(
     TolerantAddress(
@@ -98,7 +99,9 @@ object PartnershipContactAddressListControllerSpec extends PartnershipContactAdd
   val viewModel = AddressListViewModel(
     routes.PartnershipContactAddressListController.onSubmit(NormalMode),
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
-    addresses
+    addresses,
+    Message("contactAddressList.heading", Message("thePartnership").resolve),
+    Message("contactAddressList.heading", testName)
   )
 
   val retrieval = new FakeDataRetrievalAction(Some(Json.obj(

@@ -18,7 +18,27 @@ package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
 import models.Address
+import play.api.i18n.Messages
+import utils.{UserAnswers, checkyouranswers}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersBusiness}
+import utils.countryOptions.CountryOptions
+import viewmodels.{AnswerRow, Link, Message}
 
 case object PartnershipContactAddressId extends TypedIdentifier[Address] {
+  self =>
+
   override def toString: String = "partnershipContactAddress"
+
+  implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[self.type] =
+    new CheckYourAnswersBusiness[self.type] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, "cya.label.contact.address")
+
+      private def hiddenLabel(ua: UserAnswers): Message =
+        dynamicMessage(ua, "contactAddress.visuallyHidden.text")
+
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        checkyouranswers.AddressCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      }
+    }
 }

@@ -24,7 +24,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], name: String, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("confirmPartnershipDetails.title"),
+    title = messages("confirmRegisteredAddress.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -32,17 +32,13 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("confirmPartnershipDetails.heading"))
+        @components.heading(messages("confirmRegisteredAddress.heading", name))
 
-        <p>
-            <div>@name,</div>
-            @components.tolerant_address("partnershipAddress", address, countryOptions)
-        </p>
-
+        <p>@components.tolerant_address("partnershipAddress", address, countryOptions)</p>
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("confirmPartnershipDetails.heading"),
+            label = messages("confirmRegisteredAddress.title"),
             labelClass = Some("visually-hidden")
         )
 

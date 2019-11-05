@@ -19,10 +19,8 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId}
-import identifiers.register.{BusinessNameId, BusinessUTRId}
-import identifiers.register.{EnterPAYEId, HasPAYEId}
 import identifiers.register.partnership.{CheckYourAnswersId, _}
+import identifiers.register._
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -52,40 +50,24 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
 
-      val partnershipDetails = AnswerSection(
-        Some("checkyouranswers.partnership.details"),
-        Seq(
-          BusinessNameId.row(None),
-          BusinessUTRId.row(None),
-          HasPAYEId.row(Some(Link(routes.HasPartnershipPAYEController.onPageLoad(CheckMode).url))),
-          EnterPAYEId.row(Some(Link(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url))),
-          HasVATId.row(Some(Link(routes.HasPartnershipVATController.onPageLoad(CheckMode).url))),
-          EnterVATId.row(Some(Link(routes.PartnershipEnterVATController.onPageLoad(CheckMode).url)))
-        ).flatten
-      )
-
-      val partnershipContactDetails = AnswerSection(
-        Some("checkyouranswers.partnership.contact.details.heading"),
-        Seq(
-          PartnershipRegisteredAddressId.row(None),
-          PartnershipSameContactAddressId.row(Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url))),
-          PartnershipContactAddressId.row(Some(Link(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url))),
-          PartnershipAddressYearsId.row(Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))),
-          PartnershipPreviousAddressId.row(Some(Link(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url)))
-        ).flatten
-      )
-
-      val contactDetails = AnswerSection(
-        Some("common.checkYourAnswers.contact.details.heading"),
-        Seq(
-          PartnershipEmailId.row(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url))),
-          PartnershipPhoneId.row(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)))
+      val partnershipDetails = AnswerSection(None, Seq(
+        BusinessNameId.row(None),
+        BusinessUTRId.row(None),
+        HasPAYEId.row(Some(Link(routes.HasPartnershipPAYEController.onPageLoad(CheckMode).url))),
+        EnterPAYEId.row(Some(Link(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url))),
+        HasVATId.row(Some(Link(routes.HasPartnershipVATController.onPageLoad(CheckMode).url))),
+        EnterVATId.row(Some(Link(routes.PartnershipEnterVATController.onPageLoad(CheckMode).url))),
+        PartnershipContactAddressId.row(Some(Link(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url))),
+        PartnershipAddressYearsId.row(Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))),
+        PartnershipPreviousAddressId.row(Some(Link(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url))),
+        PartnershipEmailId.row(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url))),
+        PartnershipPhoneId.row(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)))
         ).flatten
       )
 
       Ok(check_your_answers(
         appConfig,
-        Seq(partnershipDetails, partnershipContactDetails, contactDetails),
+        Seq(partnershipDetails),
         controllers.register.partnership.routes.CheckYourAnswersController.onSubmit(),
         None,
         mode
