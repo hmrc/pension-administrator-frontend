@@ -68,8 +68,6 @@ object CheckYourAnswers {
 
   implicit def uniqueTaxReference[I <: TypedIdentifier[UniqueTaxReference]](implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = UniqueTaxReferenceCYA()()
 
-  implicit def nino[I <: TypedIdentifier[Nino]](implicit r: Reads[Nino]): CheckYourAnswers[I] = NinoCYA()()
-
   implicit def tolerantAddress[I <: TypedIdentifier[TolerantAddress]](implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = TolerantAddressCYA()()
 
   implicit def address[I <: TypedIdentifier[Address]](implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = AddressCYA()()
@@ -224,26 +222,6 @@ case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "
   }
 }
 
-case class NinoCYA[I <: TypedIdentifier[Nino]](
-                                                questionLabel: String = "common.nino",
-                                                ninoLabel: String = "common.nino",
-                                                reasonLabel: String = "partnerNino.checkYourAnswersLabel.reason"
-                                              ) {
-  def apply()(implicit r: Reads[Nino]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
-    override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-      userAnswers.get(id).map {
-        case Nino.Yes(nino) => Seq(
-          AnswerRow(questionLabel, Seq(s"${Nino.Yes}"), true, changeUrl),
-          AnswerRow(ninoLabel, Seq(nino), true, changeUrl)
-        )
-        case Nino.No(reason) => Seq(
-          AnswerRow(questionLabel, Seq(s"${Nino.No}"), true, changeUrl),
-          AnswerRow(reasonLabel, Seq(reason), true, changeUrl)
-        )
-        case _ => Seq.empty[AnswerRow]
-      } getOrElse Seq.empty[AnswerRow]
-  }
-}
 
 case class UniqueTaxReferenceCYA[I <: TypedIdentifier[UniqueTaxReference]](
                                                                             questionLabel: String = "partnerUniqueTaxReference.checkYourAnswersLabel",

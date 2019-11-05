@@ -19,7 +19,9 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.register.partnership.routes._
+import controllers.register.partnership.partners.routes.WhatYouWillNeedController
+import controllers.register.partnership.routes
+import controllers.register.partnership.routes.{AddPartnerController, _}
 import controllers.register.routes._
 import controllers.routes._
 import identifiers.register.partnership._
