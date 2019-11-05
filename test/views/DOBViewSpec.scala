@@ -16,19 +16,21 @@
 
 package views
 
-import forms.PersonDetailsFormProvider
-import models.{Mode, NormalMode, PersonDetails, UpdateMode}
+import java.time.LocalDate
+
+import forms.DOBFormProvider
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.QuestionViewBehaviours
 import views.html.dob
 
-class DOBViewSpec extends QuestionViewBehaviours[PersonDetails] {
+class DOBViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   private val messageKeyPrefix = "dob"
 
-  override val form = new PersonDetailsFormProvider()()
+  override val form = new DOBFormProvider()()
 
   private def viewModel(mode: Mode = NormalMode) =
     CommonFormWithHintViewModel(

@@ -16,15 +16,13 @@
 
 package controllers.register.partnership.partners
 
-import java.time.LocalDate
-
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.UniqueTaxReferenceFormProvider
 import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.partnership.partners.{PartnerNameId, PartnerUniqueTaxReferenceId}
-import models.{NormalMode, PersonDetails, UniqueTaxReference, UpdateMode}
+import models.{NormalMode, PersonName, UniqueTaxReference, UpdateMode}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -37,7 +35,7 @@ class PartnerUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
 
   val formProvider = new UniqueTaxReferenceFormProvider()
   val form = formProvider("partnerUniqueTaxReference.error.required", "partnerUniqueTaxReference.error.reason.required")
-  val personDetails = PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now)
+  val personDetails = PersonName("test first name", "test last name")
 
   private val validData = Json.obj(
     "partners" -> Json.arr(
@@ -49,7 +47,7 @@ class PartnerUniqueTaxReferenceControllerSpec extends ControllerSpecBase {
       ),
       Json.obj(
         PartnerNameId.toString ->
-          PersonDetails("test", Some("test"), "test", LocalDate.now)
+          PersonName("test", "test")
       )
     )
   )

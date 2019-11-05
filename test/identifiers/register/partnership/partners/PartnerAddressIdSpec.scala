@@ -29,7 +29,7 @@ import viewmodels.{AnswerRow, Link, Message}
 import utils.checkyouranswers.Ops._
 
 class PartnerAddressIdSpec extends SpecBase {
-  private val partnerDetails = PersonDetails("test first", None, "test last", LocalDate.now())
+  private val partnerDetails = PersonName("test first", "test last")
   private val address = Address("line1", "line2", None, None, None, "country")
   implicit val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val index = 0
@@ -38,7 +38,7 @@ class PartnerAddressIdSpec extends SpecBase {
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
-        .set(PartnerDetailsId(index))(partnerDetails).asOpt.value
+        .set(PartnerNameId(index))(partnerDetails).asOpt.value
         .partnerAddress(index, address)
 
     "in normal mode" must {

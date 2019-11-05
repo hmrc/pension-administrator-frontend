@@ -25,7 +25,7 @@ import views.html.register.partnership.partners.whatYouWillNeed
 
 class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
-  private def call: Call = controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(NormalMode, index = 0)
+  private def call: Call = controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(NormalMode, index = 0)
 
   private val messageKeyPrefix = "whatYouWillNeed.directorsOrPartners"
 

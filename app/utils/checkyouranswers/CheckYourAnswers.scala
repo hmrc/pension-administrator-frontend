@@ -64,8 +64,6 @@ trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends Check
 
 object CheckYourAnswers {
 
-  implicit def personDetails[I <: TypedIdentifier[PersonDetails]](implicit r: Reads[PersonDetails]): CheckYourAnswers[I] = PersonDetailsCYA()()
-
   implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
 
   implicit def uniqueTaxReference[I <: TypedIdentifier[UniqueTaxReference]](implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = UniqueTaxReferenceCYA()()
@@ -224,17 +222,6 @@ case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "
   }
 }
 
-case class PersonDetailsCYA[I <: TypedIdentifier[PersonDetails]](label: String = "cya.label.name") {
-  def apply()(implicit r: Reads[PersonDetails]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
-    override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-      userAnswers.get(id).map { personDetails =>
-        Seq(
-          AnswerRow("cya.label.name", Seq(s"${personDetails.firstName} ${personDetails.lastName}"), false, changeUrl),
-          AnswerRow("cya.label.dob", Seq(s"${DateHelper.formatDate(personDetails.dateOfBirth)}"), false, changeUrl)
-        )
-      } getOrElse Seq.empty[AnswerRow]
-  }
-}
 
 case class UniqueTaxReferenceCYA[I <: TypedIdentifier[UniqueTaxReference]](
                                                                             questionLabel: String = "partnerUniqueTaxReference.checkYourAnswersLabel",
