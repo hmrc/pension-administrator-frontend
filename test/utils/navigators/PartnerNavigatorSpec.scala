@@ -16,8 +16,6 @@
 
 package utils.navigators
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.partnership.partners.routes
@@ -44,7 +42,8 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
   def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
     (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), false, Some(moreThanTenPartnersPage(checkMode(mode))), false),
     (AddPartnersId, addPartnersTrue, partnerDetailsPage(mode), true, Some(partnerDetailsPage(checkMode(mode))), true),
-    (PartnerDetailsId(0), emptyAnswers, partnerHasNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerNameId(0), emptyAnswers, partnerDOBPage(mode), true, Some(checkYourAnswersPage(mode)), true),
+    (PartnerDOBId(0), emptyAnswers, partnerHasNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
     (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(mode), true, Some(partnerEnterNinoPage(checkMode(mode))), true),
     (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(mode), true, Some(partnerNoNinoPage(checkMode(mode))), true),
     (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
@@ -115,6 +114,8 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
 
+  private def partnerDOBPage(mode: Mode) = routes.PartnerDOBController.onPageLoad(mode, 0)
+
   private def partnerUniqueTaxReferencePage(mode: Mode) = routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, 0)
 
   private def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
@@ -125,7 +126,7 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private def moreThanTenPartnersPage(mode: Mode) = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode)
 
-  private def partnerDetailsPage(mode: Mode) = routes.PartnerDetailsController.onPageLoad(mode, 0)
+  def partnerDetailsPage(mode: Mode) = routes.PartnerNameController.onPageLoad(mode, 0)
 
   private def partnerHasNinoPage(mode: Mode): Call = routes.HasPartnerNINOController.onPageLoad(mode, 0)
 
@@ -146,19 +147,19 @@ object PartnerNavigatorSpec extends OptionValues {
   def addressPage(mode: Mode): Call = routes.PartnerAddressController.onPageLoad(mode, 0)
 
   private def partner(index: Int) =
-    PersonDetails(s"testFirstName$index", None, s"testLastName$index", LocalDate.now, isDeleted = index % 2 == 0, isNew = true)
+    PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = (index % 2 == 0), isNew = true)
 
   private def data = {
     (0 to 19).map(index => Json.obj(
-      PartnerDetailsId.toString -> partner(index))
+      PartnerNameId.toString -> partner(index))
     ).toArray
   }
 
-  private def existingPartnerInUpdate(index: Index): UserAnswers = UserAnswers(Json.obj())
-    .set(PartnerDetailsId(index))(partner(index).copy(isNew = false)).asOpt.value
+  val defaultAnswers = UserAnswers(Json.obj())
+    .set(PartnerNameId(0))(partner(0).copy(isNew = true)).asOpt.value
 
-  private val defaultAnswers = UserAnswers(Json.obj())
-    .set(PartnerDetailsId(0))(partner(0).copy(isNew = true)).asOpt.value
+  private def existingPartnerInUpdate(index: Index) = UserAnswers(Json.obj())
+    .set(PartnerNameId(index))(partner(index).copy(isNew = false)).asOpt.value
 
   private val addressYearsOverAYear = defaultAnswers
     .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value

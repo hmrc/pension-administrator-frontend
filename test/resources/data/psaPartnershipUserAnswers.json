@@ -62,9 +62,9 @@
       "partnerDetails": {
         "firstName": "Partner",
         "lastName": "One",
-        "dateOfBirth": "1950-03-29",
         "isDeleted": false
       },
+      "dateOfBirth": "1950-03-29",
       "nino": {
         "value": "AA999999A"
       },

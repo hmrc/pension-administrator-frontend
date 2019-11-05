@@ -28,7 +28,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
 
-  private val partnerName = "test first name test middle name test last name"
+  private val partnerName = "test first name test last name"
 
   def viewmodel = AlreadyDeletedViewModel(Message("alreadyDeleted.partner.title"), partnerName, onwardRoute)
 

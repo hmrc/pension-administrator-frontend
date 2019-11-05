@@ -18,17 +18,14 @@ package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
-import controllers.{Retrievals, Variations}
 import controllers.actions._
+import controllers.{Retrievals, Variations}
 import identifiers.register.partnership.partners._
 import javax.inject.Inject
 import models.Mode.checkMode
 import models._
-import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.PartnershipPartner
 import utils.checkyouranswers.Ops._
@@ -57,7 +54,8 @@ class CheckYourAnswersController @Inject()(
       val answersSection = Seq(
         AnswerSection(
           None,
-          PartnerDetailsId(index).row(Some(Link(routes.PartnerDetailsController.onPageLoad(checkMode(mode), index).url))) ++
+            PartnerNameId(index).row(Some(Link(routes.PartnerNameController.onPageLoad(checkMode(mode), index).url))) ++
+            PartnerDOBId(index).row(Some(Link(routes.PartnerDOBController.onPageLoad(checkMode(mode), index).url))) ++
             HasPartnerNINOId(index).row(Some(Link(routes.HasPartnerNINOController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerEnterNINOId(index).row(Some(Link(routes.PartnerEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerNoNINOReasonId(index).row(Some(Link(routes.PartnerNoNINOReasonController.onPageLoad(checkMode(mode), index).url))) ++

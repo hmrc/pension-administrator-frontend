@@ -22,7 +22,7 @@ import base.SpecBase
 import controllers.actions._
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
 import play.api.inject.bind
@@ -75,11 +75,11 @@ trait ControllerSpecBase extends SpecBase {
   def getPartner: FakeDataRetrievalAction = new FakeDataRetrievalAction(
     Some(
       Json.obj(
-        BusinessNameId.toString -> BusinessDetails("Test Partnership Name", Some("1234567890")),
+        BusinessNameId.toString -> "Test Partnership Name",
         "partners" -> Json.arr(
           Json.obj(
-            PartnerDetailsId.toString ->
-              PersonDetails("test first name", Some("test middle name"), "test last name", LocalDate.now())
+            PartnerNameId.toString ->
+              PersonName("test first name", "test last name")
           )
         )
       )

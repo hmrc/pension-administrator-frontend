@@ -21,14 +21,12 @@ import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{ConfirmDeleteController, Retrievals}
 import forms.ConfirmDeleteFormProvider
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, NormalMode}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import models.{Index, Mode, NormalMode}
-import play.api.i18n.MessagesApi
 import viewmodels.{ConfirmDeleteViewModel, Message}
 
 class ConfirmDeletePartnerController @Inject()(
@@ -57,7 +55,7 @@ class ConfirmDeletePartnerController @Inject()(
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
 
-      PartnerDetailsId(index).retrieve.right.map { details =>
+      PartnerNameId(index).retrieve.right.map { details =>
         get(viewModel(index, details.fullName, mode), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index), mode)
 
       }
@@ -65,8 +63,8 @@ class ConfirmDeletePartnerController @Inject()(
 
   def onSubmit(index: Index, mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      PartnerDetailsId(index).retrieve.right.map { details =>
-        postPersonDetails(viewModel(index, details.fullName, mode), PartnerDetailsId(index),
+      PartnerNameId(index).retrieve.right.map { details =>
+        post(viewModel(index, details.fullName, mode), PartnerNameId(index),
           controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode), mode)
       }
   }

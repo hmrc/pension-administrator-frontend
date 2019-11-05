@@ -121,9 +121,9 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     "show the edit link in UpdateMode only for newly added partners" in {
       val view = createView(Seq(johnUpdateMode, joeUpdateMode), UpdateMode)
       view mustNot haveLink(
-        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(UpdateMode, 0).url, "person-0-edit")
+        controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(UpdateMode, 0).url, "person-0-edit")
       view must haveLink(
-        controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(UpdateMode, 1).url, "person-1-edit")
+        controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(UpdateMode, 1).url, "person-1-edit")
     }
 
   }
@@ -143,7 +143,7 @@ object AddEntityViewSpec {
     controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url
 
   private def editLink(index: Int, mode: Mode = NormalMode) =
-    controllers.register.partnership.partners.routes.PartnerDetailsController.onPageLoad(mode, index).url
+    controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(mode, index).url
 
   // scalastyle:off magic.number
   private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)

@@ -22,7 +22,7 @@ import identifiers.register.company._
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual._
 import identifiers.register.partnership._
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.register.NonUKBusinessType
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
@@ -128,8 +128,8 @@ class RegisterAsBusinessIdSpec extends WordSpec with MustMatchers with OptionVal
       }
 
       "remove the data for directors " in {
-        result.get(PartnerDetailsId(0)) mustNot be(defined)
-        result.get(PartnerDetailsId(1)) mustNot be(defined)
+        result.get(PartnerNameId(0)) mustNot be(defined)
+        result.get(PartnerNameId(1)) mustNot be(defined)
       }
     }
   }
@@ -189,7 +189,6 @@ object RegisterAsBusinessIdSpec extends OptionValues {
   val contactDetails = ContactDetails("s@s.com", "999")
   val email = "s@s.com"
   val phone = "999"
-  val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
   val personName = PersonName("test first", "test last")
 
   val answersCompany: UserAnswers = UserAnswers(Json.obj())
@@ -227,8 +226,8 @@ object RegisterAsBusinessIdSpec extends OptionValues {
       .flatMap(_.set(PartnershipPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .flatMap(_.set(PartnershipEmailId)(email))
       .flatMap(_.set(PartnershipPhoneId)(phone))
-      .flatMap(_.set(PartnerDetailsId(0))(personDetails))
-      .flatMap(_.set(PartnerDetailsId(1))(personDetails))
+      .flatMap(_.set(PartnerNameId(0))(personName))
+      .flatMap(_.set(PartnerNameId(1))(personName))
       .flatMap(_.set(MoreThanTenPartnersId)(true))
     )
     .asOpt.value
