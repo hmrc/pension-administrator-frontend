@@ -49,8 +49,12 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
       checkYourAnswersPage(index, journeyMode(mode))
     case PartnerNoNINOReasonId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case PartnerUniqueTaxReferenceId(index) => checkYourAnswersPage(index, journeyMode(mode))
+    case PartnerAddressPostCodeLookupId(index) => PartnerAddressListController.onPageLoad(mode, index)
+    case PartnerAddressListId(index) => PartnerAddressController.onPageLoad(mode, index)
     case PartnerAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case PartnerAddressYearsId(index) => partnerAddressYearsCheckRoutes(index, ua, mode)
+    case PartnerPreviousAddressPostCodeLookupId(index) => PartnerPreviousAddressListController.onPageLoad(mode, index)
+    case PartnerPreviousAddressListId(index) => PartnerPreviousAddressController.onPageLoad(mode, index)
     case PartnerPreviousAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case PartnerContactDetailsId(index) => checkYourAnswersPage(index, journeyMode(mode))
   }

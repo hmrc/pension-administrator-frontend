@@ -53,8 +53,12 @@ class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigato
     case DirectorEnterUTRId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case DirectorNoUTRReasonId(index) => checkYourAnswersPage(index, journeyMode(mode))
 
+    case CompanyDirectorAddressPostCodeLookupId(index) => CompanyDirectorAddressListController.onPageLoad(mode, index)
+    case CompanyDirectorAddressListId(index) => DirectorAddressController.onPageLoad(mode, index)
     case DirectorAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case DirectorAddressYearsId(index) => directorAddressYearsCheckRoutes(index, ua, journeyMode(mode))
+    case DirectorPreviousAddressPostCodeLookupId(index) => DirectorPreviousAddressListController.onPageLoad(mode, index)
+    case DirectorPreviousAddressListId(index) => DirectorPreviousAddressController.onPageLoad(mode, index)
     case DirectorPreviousAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
 
     case DirectorEmailId(index) => checkYourAnswersPage(index, journeyMode(mode))

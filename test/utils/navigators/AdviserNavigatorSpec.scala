@@ -62,6 +62,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   navigator.getClass.getSimpleName must {
     appRunning()
+    behave like nonMatchingNavigator(navigator)
     behave like navigatorWithRoutes(navigator, updateModeRoutes(), dataDescriber, UpdateMode)
   }
 }
