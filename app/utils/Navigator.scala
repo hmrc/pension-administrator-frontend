@@ -43,14 +43,11 @@ abstract class Navigator {
       }
     }
 
-    navigateTo(id).fold(defaultPage(id, mode))(x => x)
+    navigateTo(id).getOrElse(defaultPage(id, mode))
   }
 
   private[this] def defaultPage(id: Identifier, mode: Mode): Call = {
     Logger.warn(s"No navigation defined for id $id in mode $mode")
     controllers.routes.IndexController.onPageLoad()
   }
-
-  case class NavigateFrom(userAnswers: UserAnswers)
-
 }
