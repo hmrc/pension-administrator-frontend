@@ -27,7 +27,7 @@ import identifiers.register.partnership.partners.PartnerDetailsId
 import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId, _}
 import models._
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor6
+import org.scalatest.prop.TableFor4
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
@@ -39,96 +39,96 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  val navigator = new PartnershipNavigator(FakeUserAnswersCacheConnector, countryOptions, frontendAppConfig)
+  val navigator = new PartnershipNavigator(countryOptions, frontendAppConfig)
 
   //scalastyle:off line.size.limit
-  private def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+  private def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
 
-    (BusinessUTRId, emptyAnswers, partnershipNamePage, false, None, false),
-    (BusinessNameId, uk, partnershipIsRegisteredNamePage, false, None, false),
-    (BusinessNameId, nonUk, nonUkAddress, false, None, false),
-    (IsRegisteredNameId, isRegisteredNameTrue, confirmPartnershipDetailsPage, false, None, false),
-    (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, false, None, false),
+    (BusinessUTRId, emptyAnswers, partnershipNamePage, None),
+    (BusinessNameId, uk, partnershipIsRegisteredNamePage, None),
+    (BusinessNameId, nonUk, nonUkAddress, None),
+    (IsRegisteredNameId, isRegisteredNameTrue, confirmPartnershipDetailsPage, None),
+    (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, None),
 
-    (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, false, None, false),
+    (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, whatYouWillNeedPage, None),
 
-    (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage, true, None, true),
+    (WhatYouWillNeedId, emptyAnswers, sameContactAddressPage, None),
 
-    (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
-    (PartnershipSameContactAddressId, notSameContactAddressUk, contactPostcodePage(NormalMode), true, Some(contactPostcodePage(CheckMode)), true),
-    (PartnershipSameContactAddressId, notSameContactAddressNonUk, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
-    (PartnershipSameContactAddressId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+    (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(NormalMode), Some(addressYearsPage(CheckMode))),
+    (PartnershipSameContactAddressId, notSameContactAddressUk, contactPostcodePage(NormalMode), Some(contactPostcodePage(CheckMode))),
+    (PartnershipSameContactAddressId, notSameContactAddressNonUk, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
+    (PartnershipSameContactAddressId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
 
-    (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), true, Some(contactAddressListPage(CheckMode)), true),
-    (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
-    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), Some(contactAddressListPage(CheckMode))),
+    (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
+    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode), Some(addressYearsPage(CheckMode))),
 
-    (PartnershipAddressYearsId, addressYearsOverAYear, emailPage, false, Some(checkYourAnswersPage), false),
-    (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(NormalMode), false, Some(tradingOverAYearPage(CheckMode)), false),
-    (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+    (PartnershipAddressYearsId, addressYearsOverAYear, emailPage, Some(checkYourAnswersPage)),
+    (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(NormalMode), Some(tradingOverAYearPage(CheckMode))),
+    (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
 
-    (PartnershipTradingOverAYearId, tradingOverAYearUk, contactPreviousPostCodePage(NormalMode), true, Some(contactPreviousPostCodePage(CheckMode)), true),
-    (PartnershipTradingOverAYearId, tradingOverAYearNonUk, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
-    (PartnershipTradingOverAYearId, tradingUnderAYear, emailPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipTradingOverAYearId, tradingOverAYearUk, contactPreviousPostCodePage(NormalMode), Some(contactPreviousPostCodePage(CheckMode))),
+    (PartnershipTradingOverAYearId, tradingOverAYearNonUk, contactPreviousAddressPage(NormalMode), Some(contactPreviousAddressPage(CheckMode))),
+    (PartnershipTradingOverAYearId, tradingUnderAYear, emailPage, Some(checkYourAnswersPage)),
 
-    (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode), true, Some(contactPreviousAddressListPage(CheckMode)), true),
-    (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(NormalMode), true, Some(contactPreviousAddressPage(CheckMode)), true),
-    (PartnershipPreviousAddressId, emptyAnswers, emailPage, true, Some(checkYourAnswersPage), true),
+    (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode), Some(contactPreviousAddressListPage(CheckMode))),
+    (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(NormalMode), Some(contactPreviousAddressPage(CheckMode))),
+    (PartnershipPreviousAddressId, emptyAnswers, emailPage, Some(checkYourAnswersPage)),
 
-    (PartnershipEmailId, emptyAnswers, phonePage, false, Some(checkYourAnswersPage), true),
+    (PartnershipEmailId, emptyAnswers, phonePage, Some(checkYourAnswersPage)),
 
-    (PartnershipPhoneId, uk, hasVatPage, true, Some(checkYourAnswersPage), true),
-    (PartnershipPhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (PartnershipPhoneId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
+    (PartnershipPhoneId, uk, hasVatPage, Some(checkYourAnswersPage)),
+    (PartnershipPhoneId, nonUk, checkYourAnswersPage, Some(checkYourAnswersPage)),
+    (PartnershipPhoneId, emptyAnswers, sessionExpiredPage, Some(checkYourAnswersPage)),
 
-    (HasVATId, hasVatYes, enterVatPage(NormalMode), true, Some(enterVatPage(CheckMode)), true),
-    (HasVATId, hasVatNo, payeNumberPage, true, Some(checkYourAnswersPage), true),
-    (EnterVATId, emptyAnswers, payeNumberPage, true, Some(checkYourAnswersPage), true),
+    (HasVATId, hasVatYes, enterVatPage(NormalMode), Some(enterVatPage(CheckMode))),
+    (HasVATId, hasVatNo, payeNumberPage, Some(checkYourAnswersPage)),
+    (EnterVATId, emptyAnswers, payeNumberPage, Some(checkYourAnswersPage)),
 
-    (HasPAYEId, hasPAYEYes, payePage(NormalMode), true, Some(payePage(CheckMode)), true),
-    (HasPAYEId, hasPAYENo, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (EnterPAYEId, emptyAnswers, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
+    (HasPAYEId, hasPAYEYes, payePage(NormalMode), Some(payePage(CheckMode))),
+    (HasPAYEId, hasPAYENo, checkYourAnswersPage, Some(checkYourAnswersPage)),
+    (EnterPAYEId, emptyAnswers, checkYourAnswersPage, Some(checkYourAnswersPage)),
 
-    (CheckYourAnswersId, emptyAnswers, wynPage, true, None, true),
-    (CheckYourAnswersId, hasPartner, addPartnersPage(), true, None, true),
-    (PartnershipReviewId, emptyAnswers, declarationPage, true, None, false),
+    (CheckYourAnswersId, emptyAnswers, wynPage, None),
+    (CheckYourAnswersId, hasPartner, addPartnersPage(), None),
+    (PartnershipReviewId, emptyAnswers, declarationPage, None),
 
-    (PartnershipRegisteredAddressId, nonUkEuAddress, whatYouWillNeedPage, false, None, false),
-    (PartnershipRegisteredAddressId, uKAddress, reconsiderAreYouInUk, false, None, false),
-    (PartnershipRegisteredAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false)
+    (PartnershipRegisteredAddressId, nonUkEuAddress, whatYouWillNeedPage, None),
+    (PartnershipRegisteredAddressId, uKAddress, reconsiderAreYouInUk, None),
+    (PartnershipRegisteredAddressId, nonUkNonEuAddress, outsideEuEea, None)
   )
 
-  private def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
-    (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode), true, None, true),
-    (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(UpdateMode), true, None, true),
-    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), false, None, false),
-    (PartnershipAddressYearsId, addressYearsOverAYear, anyMoreChangesPage, false, None, false),
-    (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(UpdateMode), false, None, false),
-    (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+  private def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
+    (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode), None),
+    (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(UpdateMode), None),
+    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), None),
+    (PartnershipAddressYearsId, addressYearsOverAYear, anyMoreChangesPage, None),
+    (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(UpdateMode), None),
+    (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
 
-    (PartnershipEmailId, uk, anyMoreChangesPage, false, None, false),
-    (PartnershipEmailId, nonUk, anyMoreChangesPage, false, None, false),
-    (PartnershipEmailId, emptyAnswers, anyMoreChangesPage, false, None, false),
+    (PartnershipEmailId, uk, anyMoreChangesPage, None),
+    (PartnershipEmailId, nonUk, anyMoreChangesPage, None),
+    (PartnershipEmailId, emptyAnswers, anyMoreChangesPage, None),
 
-    (PartnershipPhoneId, uk, anyMoreChangesPage, false, None, false),
-    (PartnershipPhoneId, nonUk, anyMoreChangesPage, false, None, false),
-    (PartnershipPhoneId, emptyAnswers, anyMoreChangesPage, false, None, false),
+    (PartnershipPhoneId, uk, anyMoreChangesPage, None),
+    (PartnershipPhoneId, nonUk, anyMoreChangesPage, None),
+    (PartnershipPhoneId, emptyAnswers, anyMoreChangesPage, None),
 
-    (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(UpdateMode), false, None, false),
-    (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(UpdateMode), false, None, false),
-    (PartnershipPreviousAddressId, emptyAnswers, anyMoreChangesPage, false, None, false),
-    (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage, false, None, false),
-    (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage, false, None, false),
-    (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousAddressPage(UpdateMode), false, None, false)
+    (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(UpdateMode), None),
+    (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(UpdateMode), None),
+    (PartnershipPreviousAddressId, emptyAnswers, anyMoreChangesPage, None),
+    (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage, None),
+    (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage, None),
+    (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousAddressPage(UpdateMode), None)
   )
 
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes(), dataDescriber, UpdateMode)
+    behave like navigatorWithRoutes(navigator, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, updateRoutes(), dataDescriber, UpdateMode)
   }
 }
 
