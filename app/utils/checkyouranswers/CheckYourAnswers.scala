@@ -22,7 +22,7 @@ import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.register.adviser.AdviserDetails
 import play.api.i18n.Messages
@@ -54,7 +54,7 @@ trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends Ch
 
 trait CheckYourAnswersPartner[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua: UserAnswers, messageKey: String, index: Index)(implicit messages: Messages): Message =
-    ua.get(PartnerDetailsId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartner")))
+    ua.get(PartnerNameId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartner")))
 }
 
 trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {

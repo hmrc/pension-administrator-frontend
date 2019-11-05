@@ -22,7 +22,7 @@ import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.{DirectorAddressId, DirectorNameId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerDetailsId}
+import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
 import models._
 import models.register.adviser.AdviserDetails
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
@@ -196,10 +196,10 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .partnershipAddressYears(AddressYears.UnderAYear)
           .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
           .variationWorkingKnowledge(true)
-          .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .set(PartnerNameId(0))(PersonName("First", "Last"))
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
           .flatMap(_.set(IsPartnerCompleteId(1))(false))
-          .flatMap(_.set(PartnerDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+          .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
 
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
@@ -210,10 +210,10 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
           .variationWorkingKnowledge(true)
-          .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .set(PartnerNameId(0))(PersonName("First", "Last"))
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
           .flatMap(_.set(IsPartnerCompleteId(1))(true))
-          .flatMap(_.set(PartnerDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+          .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
       }
@@ -294,10 +294,10 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .adviserName("test adviser")
           .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
           .adviserDetails(AdviserDetails("email", "234"))
-          .set(PartnerDetailsId(0))(PersonDetails("First", None, "Last", LocalDate.now()))
+          .set(PartnerNameId(0))(PersonName("First", "Last"))
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
           .flatMap(_.set(IsPartnerCompleteId(1))(true))
-          .flatMap(_.set(PartnerDetailsId(1))(PersonDetails("First1", None, "Last1", LocalDate.now))).get
+          .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }

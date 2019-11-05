@@ -16,8 +16,6 @@
 
 package identifiers.register.partnership.partners
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models._
 import models.requests.DataRequest
@@ -30,7 +28,7 @@ import viewmodels.{AnswerRow, Link, Message}
 
 class HasPartnerNINOIdSpec extends SpecBase {
 
-  private val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
+  private val personDetails = PersonName("test first", "test last")
   private val onwardUrl = "onwardUrl"
 
   "Cleanup" when {
@@ -72,7 +70,7 @@ class HasPartnerNINOIdSpec extends SpecBase {
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
-        .set(PartnerDetailsId(0))(personDetails).asOpt.value
+        .set(PartnerNameId(0))(personDetails).asOpt.value
         .set(HasPartnerNINOId(0))(value = false).asOpt.value
 
     "in normal mode" must {

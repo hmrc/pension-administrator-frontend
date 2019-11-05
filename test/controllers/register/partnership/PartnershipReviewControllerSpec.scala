@@ -21,7 +21,7 @@ import java.time.LocalDate
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.partners.PartnerDetailsId
+import identifiers.register.partnership.partners.PartnerNameId
 import models.{NormalMode, PersonDetails}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
@@ -37,7 +37,7 @@ class PartnershipReviewControllerSpec extends ControllerSpecBase {
   val partners: Seq[String] = Seq("partner a", "partner b", "partner c")
 
   def partner(lastName: String, isDeleted: Boolean = false): JsObject = Json.obj(
-    PartnerDetailsId.toString -> PersonDetails("partner", None, lastName, LocalDate.now(), isDeleted)
+    PartnerNameId.toString -> PersonDetails("partner", None, lastName, LocalDate.now(), isDeleted)
   )
 
   val validData: JsObject = Json.obj(

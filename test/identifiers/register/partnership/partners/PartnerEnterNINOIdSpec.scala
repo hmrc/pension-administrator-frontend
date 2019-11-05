@@ -30,7 +30,7 @@ import utils.checkyouranswers.Ops._
 
 class PartnerEnterNINOIdSpec extends SpecBase {
 
-  private val personDetails = PersonDetails("test first", None, "test last", LocalDate.now())
+  private val personDetails = PersonName("test first", "test last")
   private val onwardUrl = "onwardUrl"
 
   "Cleanup" when {
@@ -49,7 +49,7 @@ class PartnerEnterNINOIdSpec extends SpecBase {
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
-        .set(PartnerDetailsId(0))(personDetails).asOpt.value
+        .set(PartnerNameId(0))(personDetails).asOpt.value
         .set(PartnerEnterNINOId(0))(value = ReferenceValue("test-nino")).asOpt.value
 
     "in normal mode" must {

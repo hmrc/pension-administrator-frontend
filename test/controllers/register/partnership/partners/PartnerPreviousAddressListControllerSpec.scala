@@ -22,7 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
-import identifiers.register.partnership.partners.{PartnerDetailsId, PartnerPreviousAddressPostCodeLookupId}
+import identifiers.register.partnership.partners.{PartnerNameId, PartnerPreviousAddressPostCodeLookupId}
 import models.{NormalMode, PersonDetails, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
@@ -59,7 +59,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
   private val validData: JsValue = Json.obj(
     "partners" -> Json.arr(
       Json.obj(
-        PartnerDetailsId.toString -> partner,
+        PartnerNameId.toString -> partner,
         PartnerPreviousAddressPostCodeLookupId.toString -> addresses
       )
     )
@@ -123,7 +123,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
           val validData: JsValue = Json.obj(
             "partners" -> Json.arr(
               Json.obj(
-                PartnerDetailsId.toString -> partner
+                PartnerNameId.toString -> partner
               )
             )
           )
@@ -141,7 +141,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
           val validData: JsValue = Json.obj(
             "partners" -> Json.arr(
               Json.obj(
-                PartnerDetailsId.toString -> partner
+                PartnerNameId.toString -> partner
               )
             )
           )
