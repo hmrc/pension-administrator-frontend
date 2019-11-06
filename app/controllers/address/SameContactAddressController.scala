@@ -66,7 +66,6 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
                       mode: Mode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    val existingValue = request.userAnswers.get(id)
     form.bindFromRequest().fold(
       formWithError => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel, countryOptions))),
       value => {

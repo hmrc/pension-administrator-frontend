@@ -31,14 +31,11 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(
-            headingKey=components.hyphen(messages(viewModel.heading,viewModel.token.getOrElse(""))).toString
-        )
-
         @components.input_yes_no(
             field = form("value"),
-            label = messages("messages__confirmDeleteDirector__title"),
-            labelClass = Some("visually-hidden")
+            label = messages(viewModel.heading, viewModel.token.getOrElse("")),
+            labelClass = Some("visually-hidden"),
+            headingIsLegend = true
         )
 
         <div class="subsection">

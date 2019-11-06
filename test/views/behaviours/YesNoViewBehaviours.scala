@@ -21,18 +21,18 @@ import play.twirl.api.HtmlFormat
 
 trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
 
-  def yesNoPage(createView: (Form[Boolean]) => HtmlFormat.Appendable,
+  def yesNoPage(createView: Form[Boolean] => HtmlFormat.Appendable,
                 messageKeyPrefix: String,
                 expectedFormAction: String,
                 messageKey: String = "title",
                 expectedHintKey: Option[String] = None
-               ) = {
+               ): Unit = {
 
     "behave like a page with a Yes/No question" when {
       "rendered" must {
         "contain a legend for the question" in {
           val doc = asDocument(createView(form))
-          val legends = doc.select("legend > span")
+          val legends = if(expectedHintKey.nonEmpty) doc.select("legend > span") else doc.select("legend")
           legends.size mustBe expectedHintKey.map(_ => 2).getOrElse(1)
           legends.first.text mustBe messages(messageKey)
           expectedHintKey.foreach(key =>
@@ -59,11 +59,11 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
       }
 
       "rendered with a value of true" must {
-        behave like answeredYesNoPage(createView, true)
+        behave like answeredYesNoPage(createView, answer = true)
       }
 
       "rendered with a value of false" must {
-        behave like answeredYesNoPage(createView, false)
+        behave like answeredYesNoPage(createView, answer = false)
       }
 
       "rendered with an error" must {
@@ -75,14 +75,14 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
         "show an error in the value field's label" in {
           val doc = asDocument(createView(form.withError(error)))
           val errorSpan = doc.getElementsByClass("error-notification").first
-          errorSpan.text mustBe s"${messages("site.error")} ${messages(errorMessage)}"
+          errorSpan.text mustBe s"${messages("site.error")}${messages(errorMessage)}"
         }
       }
     }
   }
 
 
-  def answeredYesNoPage(createView: (Form[Boolean]) => HtmlFormat.Appendable, answer: Boolean) = {
+  def answeredYesNoPage(createView: Form[Boolean] => HtmlFormat.Appendable, answer: Boolean): Unit = {
 
     "have only the correct value checked" in {
       val doc = asDocument(createView(form.fill(answer)))

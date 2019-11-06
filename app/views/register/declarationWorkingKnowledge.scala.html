@@ -31,13 +31,12 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("declarationWorkingKnowledge.heading"))
-
         @components.input_radio(
             field = form("value"),
             legend = messages("declarationWorkingKnowledge.heading"),
             legendClass = Some("visually-hidden"),
-            inputs = DeclarationWorkingKnowledge.options
+            inputs = DeclarationWorkingKnowledge.options,
+            headingIsLegend = true
         )
 
         <div class="subsection">

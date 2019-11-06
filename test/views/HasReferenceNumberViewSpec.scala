@@ -29,7 +29,6 @@ import views.html.hasReferenceNumber
 
 class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
   private val messageKeyPrefix = "testPrefix"
-  private val psaName = "psa"
 
   private def pageTitle = Message(s"$messageKeyPrefix.title")
 
@@ -68,7 +67,7 @@ class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
     behave like yesNoPage(
       createView = createViewUsingForm,
       messageKeyPrefix = messageKeyPrefix,
-      messageKey = pageTitle,
+      messageKey = s"$messageKeyPrefix.heading",
       expectedFormAction = postCall.url
     )
 

@@ -32,7 +32,7 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
       postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUKIndividual.title"),
       heading = Message("areYouInUKIndividual.heading"),
-      secondaryLabel= if(mode==NormalMode) Some(Message("areYouInUKIndividual.hint")) else None,
+      secondaryLabel = None,
       p1 = Some("areYouInUKIndividual.check.selectedUkAddress"),
       p2 = Some("areYouInUKIndividual.check.provideNonUkAddress")
     )
@@ -61,17 +61,19 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, "/", s"$messageKeyPrefix.heading",
-      expectedHintKey = Some(messages("areYouInUKIndividual.hint")))
+    behave like yesNoPage(
+      createView = createViewUsingForm,
+      messageKeyPrefix = messageKeyPrefix,
+      expectedFormAction = "/",
+      messageKey = s"$messageKeyPrefix.heading"
+    )
 
     "not display dynamic content of CheckMode in NormalMode" in {
-      createView() must haveDynamicText("areYouInUKIndividual.hint")
       createView() mustNot haveDynamicText("areYouInUKIndividual.check.selectedUkAddress")
       createView() mustNot haveDynamicText("areYouInUKIndividual.check.provideNonUkAddress")
     }
 
     "display dynamic content of CheckMode in NormalMode" in {
-      createView(CheckMode) mustNot haveDynamicText("areYouInUKIndividual.hint")
       createView(CheckMode) must haveDynamicText("areYouInUKIndividual.check.selectedUkAddress")
       createView(CheckMode) must haveDynamicText("areYouInUKIndividual.check.provideNonUkAddress")
     }
