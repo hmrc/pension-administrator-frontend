@@ -21,9 +21,6 @@ import java.time.LocalDate
 import base.SpecBase
 import models.UpdateMode
 import viewmodels.{AnswerRow, AnswerSection, SuperSection, _}
-import models.{CheckUpdateMode, ReferenceValue, UpdateMode}
-import viewmodels._
-import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 
 object ViewPsaDetailsBuilder extends SpecBase {
 
@@ -143,9 +140,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
       None),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, 0).url))),
+      Some(Link(controllers.register.partnership.partners.routes.PartnerEmailController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, 0).url)))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerPhoneController.onPageLoad(UpdateMode, 0).url)))
   )
 
   val directorsSeqAnswersWithAddLinks = Seq(

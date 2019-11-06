@@ -120,29 +120,6 @@ object CheckYourAnswers {
         } getOrElse Seq.empty[AnswerRow]
     }
   }
-
-  implicit def contactDetails[I <: TypedIdentifier[ContactDetails]](implicit r: Reads[ContactDetails]): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        userAnswers.get(id).map { contactDetails =>
-          Seq(
-            AnswerRow(
-              "contactDetails.email",
-              Seq(s"${contactDetails.email}"),
-              false,
-              changeUrl
-            ),
-            AnswerRow(
-              "contactDetails.phone",
-              Seq(s"${contactDetails.phone}"),
-              false,
-              changeUrl
-            ))
-        } getOrElse Seq.empty[AnswerRow]
-      }
-    }
-  }
-
 }
 
 case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None) {

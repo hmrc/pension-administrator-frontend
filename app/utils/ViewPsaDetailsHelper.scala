@@ -398,14 +398,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def partnerPhone(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>
-    AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, index).url)))
+  private def partnerPhone(index: Int): Option[AnswerRow] = userAnswers.get(PartnerPhoneId(index)) map { phone =>
+    AnswerRow("phone.label", Seq(phone), answerIsMessageKey = false,
+      Some(Link(controllers.register.partnership.partners.routes.PartnerPhoneController.onPageLoad(UpdateMode, index).url)))
   }
 
-  private def partnerEmail(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>
-    AnswerRow("email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, index).url)))
+  private def partnerEmail(index: Int): Option[AnswerRow] = userAnswers.get(PartnerEmailId(index)) map { email =>
+    AnswerRow("email.label", Seq(email), answerIsMessageKey = false,
+      Some(Link(controllers.register.partnership.partners.routes.PartnerEmailController.onPageLoad(UpdateMode, index).url)))
   }
 
 
