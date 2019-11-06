@@ -33,8 +33,8 @@ class PartnerNoUTRReasonIdSpec extends SpecBase {
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
-        .set(PartnerNameId(0))(personDetails).asOpt.value
-        .set(PartnerNoUTRReasonId(0))(value = "test-reason").asOpt.value
+        .partnerName(index = 0, personDetails)
+        .partnerNoUTRReason(index = 0, reason = "test-reason")
 
     "in normal mode" must {
       "return answers rows with change links" in {

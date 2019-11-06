@@ -34,12 +34,10 @@ class PartnerEnterUTRIdSpec extends SpecBase {
   "Cleanup" when {
     def answers: UserAnswers =
       UserAnswers(Json.obj())
-        .set(PartnerNoUTRReasonId(0))("reason")
-        .asOpt
-        .value
+        .partnerNoUTRReason(index = 0, reason = "reason")
 
     "remove the data for `PartnerNoUTRReason`" in {
-      val result: UserAnswers = answers.set(PartnerEnterUTRId(0))(ReferenceValue("UTR", isEditable = true)).asOpt.value
+      val result: UserAnswers = answers.partnerEnterUTR(index = 0, ReferenceValue("UTR", isEditable = true))
       result.get(PartnerNoUTRReasonId(0)) mustNot be(defined)
     }
   }
@@ -47,8 +45,8 @@ class PartnerEnterUTRIdSpec extends SpecBase {
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
-        .set(PartnerNameId(0))(personDetails).asOpt.value
-        .set(PartnerEnterUTRId(0))(value = ReferenceValue("test-UTR")).asOpt.value
+        .partnerName(index = 0, personDetails)
+        .partnerEnterUTR(index = 0, ReferenceValue("test-UTR"))
 
     "in normal mode" must {
       "return answers rows with change links" in {

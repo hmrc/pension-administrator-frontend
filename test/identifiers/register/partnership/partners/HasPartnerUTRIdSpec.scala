@@ -27,13 +27,13 @@ import viewmodels.{AnswerRow, Link, Message}
 import utils.checkyouranswers.Ops._
 
 class HasPartnerUTRIdSpec extends SpecBase {
- import HasPartnerUTRIdSpec._
+
+  import HasPartnerUTRIdSpec._
 
   "cya" when {
     def answers: UserAnswers =
       UserAnswers()
-        .set(PartnerNameId(0))(personDetails).asOpt.value
-        .set(HasPartnerUTRId(0))(value = false).asOpt.value
+        .partnerName(index = 0, personDetails).partnerHasUTR(index = 0, flag = false)
 
     "in normal mode" must {
       "return answers rows with change links" in {
@@ -54,10 +54,9 @@ class HasPartnerUTRIdSpec extends SpecBase {
   "Cleanup" must {
 
     def answers(hasUtr: Boolean = true): UserAnswers = UserAnswers(Json.obj())
-      .set(HasPartnerUTRId(0))(hasUtr)
-      .flatMap(_.set(PartnerEnterUTRId(0))(ReferenceValue("test-utr")))
-      .flatMap(_.set(PartnerNoUTRReasonId(0))(value = "reason"))
-      .asOpt.value
+      .partnerHasUTR(index = 0, hasUtr)
+      .partnerEnterUTR(index = 0, ReferenceValue("test-utr"))
+      .partnerNoUTRReason(index = 0, reason = "reason")
 
     "remove the data for `PartnerUTR` when PartnerHasUTR is set to false" in {
       val result: UserAnswers = answers().set(HasPartnerUTRId(0))(value = false).asOpt.value
@@ -71,6 +70,7 @@ class HasPartnerUTRIdSpec extends SpecBase {
     }
   }
 }
+
 object HasPartnerUTRIdSpec {
   private val personDetails = PersonName("test first", "test last")
   private val onwardUrl = "onwardUrl"
