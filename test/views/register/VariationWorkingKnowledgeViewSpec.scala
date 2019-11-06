@@ -16,7 +16,6 @@
 
 package views.register
 
-import controllers.register.company.routes
 import forms.register.VariationWorkingKnowledgeFormProvider
 import models.{CheckUpdateMode, Mode, NormalMode, UpdateMode}
 import play.api.data.Form
@@ -44,7 +43,8 @@ class VariationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
     behave like yesNoPage(createViewUsingForm,
       messageKeyPrefix,
-      routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url, s"$messageKeyPrefix.heading")
+      controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(UpdateMode).url,
+      s"$messageKeyPrefix.heading")
   }
 
   "variationWorkingKnowledge view" when {

@@ -186,8 +186,8 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
       routes.IndividualPreviousAddressListController.onSubmit(NormalMode),
       routes.IndividualPreviousAddressController.onPageLoad(NormalMode),
       addresses,
-      Message("common.previousAddressList.title"),
-      Message("common.previousAddressList.heading"),
+      Message("individual.previousAddressList.heading"),
+      Message("individual.previousAddressList.heading"),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

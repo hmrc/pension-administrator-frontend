@@ -29,5 +29,12 @@ class AddressYearsFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[AddressYears](Message("error.addressYears.required").withArgs(name))
     )
+
+  def applyIndividual()(implicit messages: Messages): Form[AddressYears] = {
+    Form(
+      "value" -> enumerable[AddressYears](Message("error.individual.addressYears.required"))
+    )
+  }
+
 }
 

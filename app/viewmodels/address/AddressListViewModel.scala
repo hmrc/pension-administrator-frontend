@@ -28,5 +28,6 @@ case class AddressListViewModel(
                                  heading: Message = Message("common.selectAddress.heading"),
                                  selectAddress: Message = Message("common.selectAddress.text"),
                                  selectAddressLink: Message = Message("common.selectAddress.link"),
-                                 psaName: Option[String] = None
+                                 psaName: Option[String] = None,
+                                 selectAddressPostLink: Option[Message] = None
                                )

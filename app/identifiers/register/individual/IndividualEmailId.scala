@@ -17,29 +17,11 @@
 package identifiers.register.individual
 
 import identifiers.TypedIdentifier
-import play.api.i18n.Messages
 import play.api.libs.json.JsPath
-import utils.UserAnswers
-import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersIndividual, StringCYA}
-import viewmodels.{AnswerRow, Link, Message}
 
 case object IndividualEmailId extends TypedIdentifier[String] {
-  self =>
 
   override def path: JsPath = JsPath \ "individualContactDetails" \ IndividualEmailId.toString
 
   override def toString: String = "email"
-
-  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
-    new CheckYourAnswersIndividual[self.type] {
-      private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "email.title")
-
-      private def hiddenLabel(ua: UserAnswers): Message =
-        dynamicMessage(ua, "email.visuallyHidden.text")
-
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
-      }
-    }
 }

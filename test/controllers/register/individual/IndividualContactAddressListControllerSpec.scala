@@ -188,8 +188,9 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
       addresses,
       Message("common.contactAddressList.title"),
       Message("common.contactAddressList.heading"),
-      Message("common.selectAddress.text"),
-      Message("common.selectAddress.link")
+      Message("individual.selectAddress.text"),
+      Message("common.selectAddress.link"),
+      selectAddressPostLink = Some(Message("individual.selectAddressPostLink.text"))
     )
   }
 }

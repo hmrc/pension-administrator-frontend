@@ -22,7 +22,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("individualDateOfBirth.title"),
+    title = messages("individualDateOfBirth.heading"),
     appConfig = appConfig,
     bodyClasses = None) {
 
@@ -40,7 +40,7 @@
         )
 
         <div class="subsection">
-            @components.submit_button()
+            @components.submit_button("site.save_and_continue")
         </div>
     }
 }

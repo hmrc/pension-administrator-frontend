@@ -50,7 +50,7 @@
         )
 
         <div class="section">
-            @components.submit_button("site.find_address")
+            @components.submit_button(viewmodel.findAddressMessageKey)
         </div>
         @viewmodel.psaName.map { psaName =>
             @components.return_link(psaName, mode)

@@ -34,30 +34,14 @@
 
         @components.heading(messages("individualDetailsCorrect.heading"))
 
-        <ul>
-            <li class="tabular-data__entry divider--bottom">
-                <div class="tabular-data__data tabular-data__data--6-12">
-                    <h2 id="individual-title" class="bold">@messages("individualDetailsCorrect.name")</h2>
-                </div>
-                <div class="tabular-data__data tabular-data__data--3-12">
-                    <p>
-                        <span id="individual-value" class="address-multi-line">@individual.fullName</span>
-                    </p>
-                </div>
-            </li>
-            <li class="tabular-data__entry divider--bottom">
-                <div class="tabular-data__data tabular-data__data--6-12">
-                    <h2 id="address-title" class="bold std-text">@messages("individualDetailsCorrect.address")</h2>
-                </div>
-                <div class="tabular-data__data tabular-data__data--3-12">
-                    <p>
-                        @for((line, i) <- address.lines(countryOptions).zipWithIndex) {
-                            <span id="address-value-@i" class="address-multi-line">@line</span>
-                        }
-                    </p>
-                </div>
-            </li>
-        </ul>
+
+        <p id="individual-value">@individual.fullName</p>
+        <p>
+            @for((line, i) <- address.lines(countryOptions).zipWithIndex) {
+            <span id="address-value-@i" class="address-multi-line">@line</span>
+            }
+        </p>
+
 
         @components.input_yes_no(
             field = form("value"),
