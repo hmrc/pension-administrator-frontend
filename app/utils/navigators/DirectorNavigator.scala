@@ -26,13 +26,14 @@ import models.Mode._
 import models._
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
+import controllers.register.company.routes.CompanyReviewController
 
 @Singleton
 class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigator {
 
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     normalAndUpdateRoutes(ua, NormalMode) orElse {
-      case MoreThanTenDirectorsId => controllers.register.company.routes.CompanyReviewController.onPageLoad()
+      case MoreThanTenDirectorsId => CompanyReviewController.onPageLoad()
     }
   }
 

@@ -22,7 +22,6 @@ import identifiers.Identifier
 import identifiers.register.adviser._
 import identifiers.register.{AreYouInUKId, PAInDeclarationJourneyId}
 import models._
-import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor4
 import play.api.libs.json.Json
@@ -33,7 +32,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import AdviserNavigatorSpec._
 
-  val navigator = new AdviserNavigator(FakeUserAnswersCacheConnector)
+  val navigator = new AdviserNavigator
 
   def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Next Page (CheckMode)"),
@@ -70,9 +69,9 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 object AdviserNavigatorSpec extends OptionValues {
   private val invalidIdForNavigator = AreYouInUKId
   private val address = Address("line 1", "line 2", Some("line 3"), Some("line 4"), None, "UK")
-  private val adviserUpdated = UserAnswers(Json.obj()).set(IsNewAdviserId)(true).asOpt.get
+  private val adviserUpdated = UserAnswers(Json.obj()).set(IsNewAdviserId)(value = true).asOpt.get
   private val adviserUpdatedWithAddressOnly = UserAnswers(Json.obj())
-    .set(IsNewAdviserId)(true).asOpt.get
+    .set(IsNewAdviserId)(value = true).asOpt.get
     .set(AdviserAddressId)(address).asOpt.get
 
   private val declarationPensionAdvisorTrue = UserAnswers(Json.obj()).set(PAInDeclarationJourneyId)(true).asOpt.get
@@ -81,15 +80,11 @@ object AdviserNavigatorSpec extends OptionValues {
   private def adviserDetailsPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(mode)
   private def adviserAddressListPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressListController.onPageLoad(mode)
   private def adviserAddressPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode)
-  private  def checkYourAnswersPage(mode: Mode): Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
+  private def checkYourAnswersPage(mode: Mode): Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
   private val variationDeclarationFitAndProperPage: Call = controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
   private val defaultPage: Call = controllers.routes.IndexController.onPageLoad()
 
   private val declarationFitAndProperPage: Call = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
   private val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
-
-  implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
-    val externalId: String = "test-external-id"
-  }
 
 }

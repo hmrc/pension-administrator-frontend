@@ -57,7 +57,6 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualDateOfBirthId => countryBasedDobNavigation(ua)
 
     case CheckYourAnswersId => controllers.register.routes.DeclarationController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
   }
 
   //noinspection ScalaStyle
@@ -74,8 +73,6 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualPreviousAddressId => checkYourAnswers
     case IndividualEmailId => checkYourAnswers
     case IndividualPhoneId => checkYourAnswers
-
-    case _ => SessionExpiredController.onPageLoad()
   }
 
   //noinspection ScalaStyle
@@ -92,7 +89,6 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
       anyMoreChanges
     case IndividualPhoneId =>
       anyMoreChanges
-    case _ => SessionExpiredController.onPageLoad()
   }
 
   private def checkYourAnswers: Call = CheckYourAnswersController.onPageLoad()

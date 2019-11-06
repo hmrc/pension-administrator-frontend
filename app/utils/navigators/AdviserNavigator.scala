@@ -16,8 +16,8 @@
 
 package utils.navigators
 
-import connectors.UserAnswersCacheConnector
-import controllers.register.adviser._
+import controllers.register.adviser.routes._
+import controllers.register.routes.{AnyMoreChangesController, DeclarationFitAndProperController, VariationDeclarationFitAndProperController}
 import identifiers.Identifier
 import identifiers.register.PAInDeclarationJourneyId
 import identifiers.register.adviser._
@@ -28,52 +28,49 @@ import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
+class AdviserNavigator @Inject() extends Navigator {
 
-  override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = commonNavigator(ua, NormalMode)
+  override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = normalAndUpdateRoutes(ua, NormalMode)
 
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AdviserNameId => checkYourAnswers(journeyMode(mode))
     case AdviserDetailsId => checkYourAnswers(journeyMode(mode))
-    case AdviserAddressPostCodeLookupId => routes.AdviserAddressListController.onPageLoad(journeyMode(mode))
-    case AdviserAddressListId => routes.AdviserAddressController.onPageLoad(journeyMode(mode))
+    case AdviserAddressPostCodeLookupId => AdviserAddressListController.onPageLoad(journeyMode(mode))
+    case AdviserAddressListId => AdviserAddressController.onPageLoad(journeyMode(mode))
     case AdviserAddressId => checkYourAnswers(journeyMode(mode))
   }
 
-  override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = commonNavigator(ua, UpdateMode)
+  override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = normalAndUpdateRoutes(ua, UpdateMode)
 
-  private def checkYourAnswers(mode: Mode): Call =
-    controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
+  private def checkYourAnswers(mode: Mode): Call = CheckYourAnswersController.onPageLoad(mode)
 
-  private def commonNavigator(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
-    case AdviserNameId => routes.AdviserDetailsController.onPageLoad(mode)
-    case AdviserDetailsId =>
-      adviserCompletionCheckNavigator(ua, routes.AdviserAddressPostCodeLookupController.onPageLoad(mode), mode)
-    case AdviserAddressPostCodeLookupId => routes.AdviserAddressListController.onPageLoad(mode)
-    case AdviserAddressListId => routes.AdviserAddressController.onPageLoad(mode)
+  private def normalAndUpdateRoutes(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
+    case AdviserNameId => AdviserDetailsController.onPageLoad(mode)
+    case AdviserDetailsId => adviserCompletionCheckNavigator(ua, AdviserAddressPostCodeLookupController.onPageLoad(mode), mode)
+    case AdviserAddressPostCodeLookupId => AdviserAddressListController.onPageLoad(mode)
+    case AdviserAddressListId => AdviserAddressController.onPageLoad(mode)
     case AdviserAddressId =>
-      adviserCompletionCheckNavigator(ua, routes.CheckYourAnswersController.onPageLoad(mode), mode)
+      adviserCompletionCheckNavigator(ua, CheckYourAnswersController.onPageLoad(mode), mode)
     case CheckYourAnswersId => checkYourAnswersRoutes(mode, ua)
   }
 
   private def adviserCompletionCheckNavigator(ua: UserAnswers, call: Call, mode: Mode): Call = {
     (mode, ua.get(AdviserAddressId), ua.get(IsNewAdviserId)) match {
       case (NormalMode, _, _) => call
-      case (UpdateMode, Some(_), _) =>
-        controllers.register.routes.AnyMoreChangesController.onPageLoad()
+      case (UpdateMode, Some(_), _) => AnyMoreChangesController.onPageLoad()
       case (_, _, Some(true)) => call
-      case _ => controllers.register.routes.AnyMoreChangesController.onPageLoad()
+      case _ => AnyMoreChangesController.onPageLoad()
     }
   }
 
   private def checkYourAnswersRoutes(mode: Mode, userAnswers: UserAnswers): Call = {
     if (mode == UpdateMode) {
       userAnswers.get(PAInDeclarationJourneyId) match {
-        case Some(true) => controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
-        case _ => controllers.register.routes.AnyMoreChangesController.onPageLoad()
+        case Some(true) => VariationDeclarationFitAndProperController.onPageLoad()
+        case _ => AnyMoreChangesController.onPageLoad()
       }
     } else {
-      controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
+      DeclarationFitAndProperController.onPageLoad()
     }
   }
 }
