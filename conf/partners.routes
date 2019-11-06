@@ -34,15 +34,10 @@ POST        /:index/partners-confirm-delete                  controllers.registe
 GET         /:index/:mode/partners-confirm-delete            controllers.register.partnership.partners.ConfirmDeletePartnerController.onPageLoad(index: Index, mode:Mode)
 POST        /:index/:mode/partners-confirm-delete            controllers.register.partnership.partners.ConfirmDeletePartnerController.onSubmit(index: Index, mode:Mode)
 
-GET        /:index/unique-taxpayer-reference                 controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST       /:index/unique-taxpayer-reference                 controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/:mode/unique-taxpayer-reference           controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onPageLoad(mode: Mode, index: Index)
-POST       /:index/:mode/unique-taxpayer-reference           controllers.register.partnership.partners.PartnerUniqueTaxReferenceController.onSubmit(mode: Mode, index: Index)
-
-GET        /:index/enter-unique-taxpayer-reference                 controllers.register.partnership.partners.PartnerEnterUTRController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST       /:index/enter-unique-taxpayer-reference                 controllers.register.partnership.partners.PartnerEnterUTRController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET        /:index/:mode/enter-unique-taxpayer-reference           controllers.register.partnership.partners.PartnerEnterUTRController.onPageLoad(mode: Mode, index: Index)
-POST       /:index/:mode/enter-unique-taxpayer-reference           controllers.register.partnership.partners.PartnerEnterUTRController.onSubmit(mode: Mode, index: Index)
+GET        /:index/unique-taxpayer-reference                 controllers.register.partnership.partners.PartnerEnterUTRController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST       /:index/unique-taxpayer-reference                 controllers.register.partnership.partners.PartnerEnterUTRController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET        /:index/:mode/unique-taxpayer-reference           controllers.register.partnership.partners.PartnerEnterUTRController.onPageLoad(mode: Mode, index: Index)
+POST       /:index/:mode/unique-taxpayer-reference           controllers.register.partnership.partners.PartnerEnterUTRController.onSubmit(mode: Mode, index: Index)
 
 GET        /:index/have-unique-taxpayer-reference                 controllers.register.partnership.partners.HasPartnerUTRController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/have-unique-taxpayer-reference                 controllers.register.partnership.partners.HasPartnerUTRController.onSubmit(mode: Mode = NormalMode, index: Index)

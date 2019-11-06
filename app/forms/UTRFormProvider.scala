@@ -18,7 +18,6 @@ package forms
 
 import forms.mappings.UtrMapping
 import javax.inject.Inject
-import models.UniqueTaxReference
 import play.api.data.Form
 
 class UTRFormProvider @Inject() extends FormErrorHelper with UtrMapping {

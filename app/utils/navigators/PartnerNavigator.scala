@@ -48,7 +48,12 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case PartnerEnterNINOId(index) =>
       checkYourAnswersPage(index, journeyMode(mode))
     case PartnerNoNINOReasonId(index) => checkYourAnswersPage(index, journeyMode(mode))
-    case PartnerUniqueTaxReferenceId(index) => checkYourAnswersPage(index, journeyMode(mode))
+
+    case HasPartnerUTRId(index) if hasUtr(ua, index) => PartnerEnterUTRController.onPageLoad(mode, index)
+    case HasPartnerUTRId(index) => PartnerNoUTRReasonController.onPageLoad(mode, index)
+    case PartnerEnterUTRId(index) => checkYourAnswersPage(index, journeyMode(mode))
+    case PartnerNoUTRReasonId(index) => checkYourAnswersPage(index, journeyMode(mode))
+
     case PartnerAddressPostCodeLookupId(index) => PartnerAddressListController.onPageLoad(mode, index)
     case PartnerAddressListId(index) => PartnerAddressController.onPageLoad(mode, index)
     case PartnerAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
@@ -71,11 +76,17 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case AddPartnersId => addPartnerRoutes(ua, mode)
     case PartnerNameId(index) => PartnerDOBController.onPageLoad(mode, index)
     case PartnerDOBId(index) => HasPartnerNINOController.onPageLoad(mode, index)
+
     case HasPartnerNINOId(index) if hasNino(ua, index) => PartnerEnterNINOController.onPageLoad(mode, index)
     case HasPartnerNINOId(index) => PartnerNoNINOReasonController.onPageLoad(mode, index)
     case PartnerEnterNINOId(index) => ninoRoutes(index, ua, mode)
     case PartnerNoNINOReasonId(index) => ninoRoutes(index, ua, mode)
-    case PartnerUniqueTaxReferenceId(index) => utrRoutes(index, ua, mode)
+
+    case HasPartnerUTRId(index) if hasUtr(ua, index) => PartnerEnterUTRController.onPageLoad(mode, index)
+    case HasPartnerUTRId(index) => PartnerNoUTRReasonController.onPageLoad(mode, index)
+    case PartnerEnterUTRId(index) => utrRoutes(index, ua, mode)
+    case PartnerNoUTRReasonId(index) => utrRoutes(index, ua, mode)
+
     case PartnerAddressPostCodeLookupId(index) => PartnerAddressListController.onPageLoad(mode, index)
     case PartnerAddressListId(index) => PartnerAddressController.onPageLoad(mode, index)
     case PartnerAddressId(index) => PartnerAddressYearsController.onPageLoad(mode, index)
@@ -94,6 +105,8 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
   private def sessionExpired: Call = SessionExpiredController.onPageLoad()
 
   private def hasNino(answers: UserAnswers, index: Index): Boolean = answers.get(HasPartnerNINOId(index)).getOrElse(false)
+
+  private def hasUtr(answers: UserAnswers, index: Index): Boolean = answers.get(HasPartnerUTRId(index)).getOrElse(false)
 
   private def confirmPreviousAddressRoutes(index: Int, answers: UserAnswers): Call =
     answers.get(PartnerConfirmPreviousAddressId(index)) match {
@@ -119,9 +132,9 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
   private def ninoRoutes(index: Int, answers: UserAnswers, mode: Mode): Call = {
     mode match {
-      case NormalMode => PartnerUniqueTaxReferenceController.onPageLoad(mode, index)
+      case NormalMode => HasPartnerUTRController.onPageLoad(mode, index)
       case UpdateMode => redirectBasedOnIsNew(answers, index,
-        PartnerUniqueTaxReferenceController.onPageLoad(mode, index), anyMoreChangesPage)
+        HasPartnerUTRController.onPageLoad(mode, index), anyMoreChangesPage)
       case _ => sessionExpired
     }
   }
