@@ -16,7 +16,6 @@
 
 import com.google.inject.AbstractModule
 import controllers.actions.{AuthAction, FullAuthentication, _}
-import navigators.VariationsNavigator
 import utils.Navigator
 import utils.annotations._
 import utils.countryOptions.{CountryOptions, CountryOptionsEUAndEEA}

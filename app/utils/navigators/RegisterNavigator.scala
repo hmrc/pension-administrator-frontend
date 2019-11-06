@@ -17,70 +17,70 @@
 package utils.navigators
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
 import controllers.register.individual.routes
+import identifiers.Identifier
 import identifiers.register._
 import javax.inject.Inject
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.{Mode, NormalMode}
+import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
-class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
-                                  appConfig: FrontendAppConfig
+class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
                                  ) extends Navigator {
 
-  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-    case AreYouInUKId => countryOfRegistrationRoutes(from.userAnswers)
-    case RegisterAsBusinessId => individualOrOganisationRoutes(from.userAnswers)
-    case BusinessTypeId => businessTypeRoutes(from.userAnswers)
-    case NonUKBusinessTypeId => nonUkBusinessTypeRoutes(from.userAnswers)
-    case DeclarationId => NavigateTo.save(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
-    case DeclarationWorkingKnowledgeId => declarationWorkingKnowledgeRoutes(from.userAnswers)
-    case DeclarationFitAndProperId => NavigateTo.dontSave(controllers.register.routes.ConfirmationController.onPageLoad())
-    case _ => None
+  override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
+    case AreYouInUKId => countryOfRegistrationRoutes(ua)
+    case RegisterAsBusinessId => individualOrOganisationRoutes(ua)
+    case BusinessTypeId => businessTypeRoutes(ua)
+    case NonUKBusinessTypeId => nonUkBusinessTypeRoutes(ua)
+    case DeclarationId => controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
+    case DeclarationWorkingKnowledgeId => declarationWorkingKnowledgeRoutes(ua)
+    case DeclarationFitAndProperId => controllers.register.routes.ConfirmationController.onPageLoad()
   }
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = None
+  override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
+    case _ => controllers.routes.IndexController.onPageLoad()
+  }
 
-  private def businessTypeRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+  private def businessTypeRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(BusinessTypeId) match {
       case Some(BusinessType.UnlimitedCompany) =>
-        NavigateTo.dontSave(controllers.register.company.routes.CompanyUTRController.onPageLoad())
+        controllers.register.company.routes.CompanyUTRController.onPageLoad()
       case Some(BusinessType.LimitedCompany) =>
-        NavigateTo.dontSave(controllers.register.company.routes.CompanyUTRController.onPageLoad())
+        controllers.register.company.routes.CompanyUTRController.onPageLoad()
       case Some(BusinessType.LimitedLiabilityPartnership) =>
-        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipUTRController.onPageLoad())
+        controllers.register.partnership.routes.PartnershipUTRController.onPageLoad()
       case Some(BusinessType.LimitedPartnership) =>
-        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipUTRController.onPageLoad())
+        controllers.register.partnership.routes.PartnershipUTRController.onPageLoad()
       case Some(BusinessType.BusinessPartnership) =>
-        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipUTRController.onPageLoad())
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        controllers.register.partnership.routes.PartnershipUTRController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
-  private def declarationWorkingKnowledgeRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+  private def declarationWorkingKnowledgeRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(DeclarationWorkingKnowledgeId) match {
       case Some(DeclarationWorkingKnowledge.WorkingKnowledge) =>
-        NavigateTo.save(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
+        controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
       case Some(DeclarationWorkingKnowledge.Adviser) =>
-        NavigateTo.save(controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode))
-      case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
+      case None => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
-  private def countryOfRegistrationRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+  private def countryOfRegistrationRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(AreYouInUKId) match {
       case Some(false) =>
-        NavigateTo.dontSave(controllers.register.routes.NonUKBusinessTypeController.onPageLoad())
+        controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
       case Some(true) =>
-        NavigateTo.dontSave(controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode))
+        controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
       case _ =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
-  private def countryOfRegistrationEditRoutes(userAnswers: UserAnswers): Option[NavigateTo] =
-    NavigateTo.dontSave(
+  private def countryOfRegistrationEditRoutes(userAnswers: UserAnswers): Call =
       (userAnswers.get(AreYouInUKId), userAnswers.get(NonUKBusinessTypeId), userAnswers.get(BusinessNameId)) match {
         case (Some(false), None, _) => controllers.register.routes.RegisterAsBusinessController.onPageLoad()
         case (Some(false), Some(NonUKBusinessType.Company), Some(_)) =>
@@ -91,30 +91,28 @@ class RegisterNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnec
           controllers.register.routes.RegisterAsBusinessController.onPageLoad()
         case _ => controllers.routes.SessionExpiredController.onPageLoad()
       }
-    )
 
-  private def individualOrOganisationRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+  private def individualOrOganisationRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(RegisterAsBusinessId) match {
-      case None => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case None => controllers.routes.SessionExpiredController.onPageLoad()
       case Some(true) =>
-        NavigateTo.dontSave(controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+        controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode)
       case _ =>
-        NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
+        routes.WhatYouWillNeedController.onPageLoad()
     }
   }
 
-  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
-    case AreYouInUKId => countryOfRegistrationEditRoutes(from.userAnswers)
-    case _ => None
+  override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
+    case AreYouInUKId => countryOfRegistrationEditRoutes(ua)
   }
 
-  private def nonUkBusinessTypeRoutes(userAnswers: UserAnswers): Option[NavigateTo] = {
+  private def nonUkBusinessTypeRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(NonUKBusinessTypeId) match {
       case Some(NonUKBusinessType.Company) =>
-        NavigateTo.dontSave(controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad(NormalMode))
+        controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad(NormalMode)
       case Some(NonUKBusinessType.BusinessPartnership) =>
-        NavigateTo.dontSave(controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad())
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        controllers.register.partnership.routes.PartnershipRegisteredNameController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 }

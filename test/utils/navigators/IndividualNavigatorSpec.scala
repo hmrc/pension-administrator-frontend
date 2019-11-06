@@ -17,14 +17,13 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.FakeUserAnswersCacheConnector
 import controllers.register.individual.routes
 import identifiers.Identifier
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
 import models._
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor6
+import org.scalatest.prop.TableFor4
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
@@ -35,88 +34,88 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   import IndividualNavigatorSpec._
 
   //noinspection ScalaStyle
-  def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
+  def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (CheckMode)"),
 
-    (AreYouInUKId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
-    (AreYouInUKId, uk, ukIndividualDetailsPage, false, None, false),
-    (AreYouInUKId, nonUk, nonUkIndividualNamePage, false, Some(nonUkIndividualAddressPage), false),
-    (AreYouInUKId, nonUkNoIndividualDetails, nonUkIndividualNamePage, false, Some(nonUkIndividualNamePage), false),
+    (AreYouInUKId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
+    (AreYouInUKId, uk, ukIndividualDetailsPage, None),
+    (AreYouInUKId, nonUk, nonUkIndividualNamePage, Some(nonUkIndividualAddressPage)),
+    (AreYouInUKId, nonUkNoIndividualDetails, nonUkIndividualNamePage, Some(nonUkIndividualNamePage)),
 
-    (IndividualDetailsCorrectId, detailsCorrect, individualDateOfBirthPage, false, None, false),
-    (IndividualDetailsCorrectId, detailsIncorrect, youWillNeedToUpdatePage, false, None, false),
-    (IndividualDetailsCorrectId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (IndividualDetailsCorrectId, detailsCorrect, individualDateOfBirthPage, None),
+    (IndividualDetailsCorrectId, detailsIncorrect, youWillNeedToUpdatePage, None),
+    (IndividualDetailsCorrectId, emptyAnswers, sessionExpiredPage, None),
 
-    (IndividualDetailsId, emptyAnswers, nonUkIndividualAddressPage, false, None, false),
+    (IndividualDetailsId, emptyAnswers, nonUkIndividualAddressPage, None),
 
-    (IndividualAddressId, nonUkEuAddress, individualDateOfBirthPage, false, None, false),
-    (IndividualAddressId, nonUkButUKAddress, reconsiderAreYouInUk(CheckMode), false, None, false),
-    (IndividualAddressId, nonUkNonEuAddress, outsideEuEea, false, None, false),
+    (IndividualAddressId, nonUkEuAddress, individualDateOfBirthPage, None),
+    (IndividualAddressId, nonUkButUKAddress, reconsiderAreYouInUk(CheckMode), None),
+    (IndividualAddressId, nonUkNonEuAddress, outsideEuEea, None),
 
-    (WhatYouWillNeedId, emptyAnswers, reconsiderAreYouInUk(NormalMode), true, None, false),
+    (WhatYouWillNeedId, emptyAnswers, reconsiderAreYouInUk(NormalMode), None),
 
-    (IndividualDateOfBirthId, emptyAnswers, sessionExpiredPage, false, Some(checkYourAnswersPage), true),
-    (IndividualDateOfBirthId, uk, sameContactAddressPage(NormalMode), false, None, false),
-    (IndividualDateOfBirthId, nonUk, sameContactAddressPage(NormalMode), false, Some(checkYourAnswersPage), true),
-    (IndividualSameContactAddressId, sameContactAddressUk, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (IndividualDateOfBirthId, emptyAnswers, sessionExpiredPage, Some(checkYourAnswersPage)),
+    (IndividualDateOfBirthId, uk, sameContactAddressPage(NormalMode), None),
+    (IndividualDateOfBirthId, nonUk, sameContactAddressPage(NormalMode), Some(checkYourAnswersPage)),
+    (IndividualSameContactAddressId, sameContactAddressUk, addressYearsPage(NormalMode), Some(addressYearsPage(CheckMode))),
 
-    (IndividualSameContactAddressId, sameContactAddressNonUk, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
-    (IndividualSameContactAddressId, ukDifferentContactAddress, contactPostCodeLookupPage(NormalMode), true, Some(contactPostCodeLookupPage(CheckMode)), true),
-    (IndividualSameContactAddressId, nonUkDifferentContactAddress, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
-    (IndividualSameContactAddressId, sameContactAddressIncompleteUk, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
-    (IndividualSameContactAddressId, sameContactAddressIncompleteNonUk, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
+    (IndividualSameContactAddressId, sameContactAddressNonUk, addressYearsPage(NormalMode), Some(addressYearsPage(CheckMode))),
+    (IndividualSameContactAddressId, ukDifferentContactAddress, contactPostCodeLookupPage(NormalMode), Some(contactPostCodeLookupPage(CheckMode))),
+    (IndividualSameContactAddressId, nonUkDifferentContactAddress, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
+    (IndividualSameContactAddressId, sameContactAddressIncompleteUk, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
+    (IndividualSameContactAddressId, sameContactAddressIncompleteNonUk, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
 
-    (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), false, Some(contactAddressListPage(CheckMode)), false),
-    (IndividualContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), true, Some(contactAddressPage(CheckMode)), true),
-    (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), true, Some(addressYearsPage(CheckMode)), true),
+    (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), Some(contactAddressListPage(CheckMode))),
+    (IndividualContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
+    (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), Some(addressYearsPage(CheckMode))),
 
-    (IndividualAddressYearsId, ukAddressYearsOverAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (IndividualAddressYearsId, nonUkAddressYearsOverAYear, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (IndividualAddressYearsId, ukAddressYearsUnderAYear, previousPostCodeLookupPage(NormalMode), true, Some(previousPostCodeLookupPage(CheckMode)), true),
-    (IndividualAddressYearsId, nonUkAddressYearsUnderAYear, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
-    (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
+    (IndividualAddressYearsId, ukAddressYearsOverAYear, emailPage(NormalMode), Some(checkYourAnswersPage)),
+    (IndividualAddressYearsId, nonUkAddressYearsOverAYear, emailPage(NormalMode), Some(checkYourAnswersPage)),
+    (IndividualAddressYearsId, ukAddressYearsUnderAYear, previousPostCodeLookupPage(NormalMode), Some(previousPostCodeLookupPage(CheckMode))),
+    (IndividualAddressYearsId, nonUkAddressYearsUnderAYear, previousAddressPage(NormalMode), Some(previousAddressPage(CheckMode))),
+    (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
 
-    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(NormalMode), false, Some(previousAddressListPage(CheckMode)), false),
-    (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(NormalMode), true, Some(previousAddressPage(CheckMode)), true),
-    (IndividualPreviousAddressId, emptyAnswers, emailPage(NormalMode), true, Some(checkYourAnswersPage), true),
+    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(NormalMode), Some(previousAddressListPage(CheckMode))),
+    (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(NormalMode), Some(previousAddressPage(CheckMode))),
+    (IndividualPreviousAddressId, emptyAnswers, emailPage(NormalMode), Some(checkYourAnswersPage)),
 
-    (IndividualEmailId, emptyAnswers, phonePage(NormalMode), true, Some(checkYourAnswersPage), true),
-    (IndividualPhoneId, nonUk, checkYourAnswersPage, true, Some(checkYourAnswersPage), true),
-    (IndividualPhoneId, uk, individualDateOfBirthPage, true, Some(checkYourAnswersPage), true),
+    (IndividualEmailId, emptyAnswers, phonePage(NormalMode), Some(checkYourAnswersPage)),
+    (IndividualPhoneId, nonUk, checkYourAnswersPage, Some(checkYourAnswersPage)),
+    (IndividualPhoneId, uk, individualDateOfBirthPage, Some(checkYourAnswersPage)),
 
-    (CheckYourAnswersId, emptyAnswers, declarationPage, true, None, false)
+    (CheckYourAnswersId, emptyAnswers, declarationPage, None)
   )
 
-  def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (CheckMode)", "Save(CheckMode"),
-    (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode), false, None, false),
-    (IndividualContactAddressListId, emptyAnswers, contactAddressPage(UpdateMode), true, None, true),
-    (IndividualContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), true, None, true),
-    (IndividualAddressYearsId, ukAddressYearsOverAYear, anyMoreChanges, false, None, false),
-    (IndividualAddressYearsId, ukAddressYearsUnderAYear, confirmPreviousAddress, true, None, true),
-    (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, false, None, false),
-    (IndividualConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
-    (IndividualConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges, false, None, false),
-    (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousAddressPage(UpdateMode), false, None, false),
-    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode), false, None, false),
-    (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(UpdateMode), true, None, true),
-    (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges, false, None, true),
-    (IndividualEmailId, emptyAnswers, anyMoreChanges, false, None, true),
-    (IndividualPhoneId, uk, anyMoreChanges, false, None, true),
-    (IndividualPhoneId, nonUk, anyMoreChanges, false, None, true),
-    (invalidIdForNavigator, emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), true)
+  def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (CheckMode)"),
+    (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode), None),
+    (IndividualContactAddressListId, emptyAnswers, contactAddressPage(UpdateMode), None),
+    (IndividualContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), None),
+    (IndividualAddressYearsId, ukAddressYearsOverAYear, anyMoreChanges, None),
+    (IndividualAddressYearsId, ukAddressYearsUnderAYear, confirmPreviousAddress, None),
+    (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, None),
+    (IndividualConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
+    (IndividualConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges, None),
+    (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousAddressPage(UpdateMode), None),
+    (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode), None),
+    (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(UpdateMode), None),
+    (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges, None),
+    (IndividualEmailId, emptyAnswers, anyMoreChanges, None),
+    (IndividualPhoneId, uk, anyMoreChanges, None),
+    (IndividualPhoneId, nonUk, anyMoreChanges, None),
+    (invalidIdForNavigator, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage))
   )
 
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  val navigator = new IndividualNavigator(FakeUserAnswersCacheConnector, frontendAppConfig, countryOptions)
+  val navigator = new IndividualNavigator(frontendAppConfig, countryOptions)
 
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes(), dataDescriber, UpdateMode)
+    behave like navigatorWithRoutes(navigator, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, updateRoutes(), dataDescriber, UpdateMode)
   }
 }
 
@@ -127,7 +126,6 @@ object IndividualNavigatorSpec extends OptionValues {
 
   lazy val lastPageCall: Call = Call("GET", "http://www.test.com")
 
-  lazy private val whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
   lazy private val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
   lazy private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   lazy private val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)

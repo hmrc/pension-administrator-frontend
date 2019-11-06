@@ -17,7 +17,6 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.FakeUserAnswersCacheConnector
 import controllers.register.routes
 import identifiers.Identifier
 import identifiers.register.{BusinessNameId, _}
@@ -25,7 +24,7 @@ import models.NormalMode
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor6
+import org.scalatest.prop.TableFor4
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{NavigatorBehaviour, UserAnswers}
@@ -35,38 +34,38 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
   import RegisterNavigatorSpec._
 
   //scalastyle:off line.size.limit
-  def routes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
-    (BusinessTypeId, unlimitedCompany, companyUTRPage, false, None, false),
-    (BusinessTypeId, limitedCompany, companyUTRPage, false, None, false),
-    (BusinessTypeId, businessPartnership, partnershipUTRPage, false, None, false),
-    (BusinessTypeId, limitedPartnership, partnershipUTRPage, false, None, false),
-    (BusinessTypeId, limitedLiabilityPartnership, partnershipUTRPage, false, None, false),
+  def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
+    (BusinessTypeId, unlimitedCompany, companyUTRPage, None),
+    (BusinessTypeId, limitedCompany, companyUTRPage, None),
+    (BusinessTypeId, businessPartnership, partnershipUTRPage, None),
+    (BusinessTypeId, limitedPartnership, partnershipUTRPage, None),
+    (BusinessTypeId, limitedLiabilityPartnership, partnershipUTRPage, None),
 
-    (DeclarationId, emptyAnswers, declarationWorkingKnowledgePage, true, None, false),
+    (DeclarationId, emptyAnswers, declarationWorkingKnowledgePage, None),
 
-    (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage, true, None, false),
-    (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserName, true, None, false),
-    (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage, None),
+    (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserName, None),
+    (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, None),
 
-    (DeclarationFitAndProperId, emptyAnswers, confirmation, false, None, false),
+    (DeclarationFitAndProperId, emptyAnswers, confirmation, None),
 
-    (AreYouInUKId, inUk, ukBusinessType, false, Some(registerAsBusiness), false),
-    (AreYouInUKId, notInUk, nonUkBusinessType, false, Some(registerAsBusiness), false),
+    (AreYouInUKId, inUk, ukBusinessType, Some(registerAsBusiness)),
+    (AreYouInUKId, notInUk, nonUkBusinessType, Some(registerAsBusiness)),
 
-    (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, businessWynPage, false, None, false),
-    (RegisterAsBusinessId, registerAsBusinessIdIndividual, individualWynPage, false, None, false),
+    (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, businessWynPage, None),
+    (RegisterAsBusinessId, registerAsBusinessIdIndividual, individualWynPage, None),
 
-    (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyRegisteredName, false, None, false),
-    (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipRegisteredName, false, None, false)
+    (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyRegisteredName, None),
+    (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipRegisteredName, None)
   )
 
   //scalastyle:on line.size.limit
-  val navigator = new RegisterNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
+  val navigator = new RegisterNavigator(frontendAppConfig)
   s"${navigator.getClass.getSimpleName} when toggle is on" must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, routes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, routes(), dataDescriber)
   }
 }
 
