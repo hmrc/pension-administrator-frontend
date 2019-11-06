@@ -124,8 +124,6 @@ object IndividualNavigatorSpec extends OptionValues {
   private def phonePage(mode: Mode): Call = routes.IndividualPhoneController.onPageLoad(mode)
   private lazy val invalidIdForNavigator = AreYouInUKId
 
-  lazy val lastPageCall: Call = Call("GET", "http://www.test.com")
-
   lazy private val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
   lazy private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   lazy private val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
@@ -160,8 +158,6 @@ object IndividualNavigatorSpec extends OptionValues {
     IndividualDetailsCorrectId)(true).asOpt.value
   private val detailsIncorrect = UserAnswers(Json.obj()).set(
     IndividualDetailsCorrectId)(false).asOpt.value
-  private lazy val lastPage =
-    detailsCorrect.lastPage(LastPage(lastPageCall.method, lastPageCall.url))
 
   private def sameContactAddress(areYouInUk: Boolean) = UserAnswers(Json.obj()).areYouInUk(areYouInUk).set(
     IndividualSameContactAddressId)(true)
