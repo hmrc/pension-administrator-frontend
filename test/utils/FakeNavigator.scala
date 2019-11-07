@@ -16,10 +16,9 @@
 
 package utils
 
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import identifiers.Identifier
 import models.requests.IdentifiedRequest
-import models.{Mode, NormalMode, UpdateMode}
+import models.{Mode, NormalMode}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,19 +30,23 @@ class FakeNavigator(val desiredRoute: Call, mode: Mode = NormalMode) extends Nav
 
   def lastUserAnswers: Option[UserAnswers] = userAnswers
 
-  override protected def dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
-
   override def nextPage(id: Identifier, mode: Mode, answers: UserAnswers)
                        (implicit ex: IdentifiedRequest, ec: ExecutionContext, hc: HeaderCarrier): Call = {
     userAnswers = Some(answers)
     desiredRoute
   }
 
-  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = None
+  override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
+    case _ => controllers.routes.IndexController.onPageLoad()
+  }
 
-  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = None
+  override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
+    case _ => controllers.routes.IndexController.onPageLoad()
+  }
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = None
+  override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
+    case _ => controllers.routes.IndexController.onPageLoad()
+  }
 }
 
 object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"), NormalMode)

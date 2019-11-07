@@ -14,93 +14,92 @@
  * limitations under the License.
  */
 
-package navigators
+package utils.navigators
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import identifiers.Identifier
 import identifiers.register._
 import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import models.{CheckUpdateMode, Mode, UpdateMode}
-import utils.{Enumerable, Navigator}
+import play.api.mvc.Call
+import utils.{Enumerable, Navigator, UserAnswers}
 
-class VariationsNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
-                                    config: FrontendAppConfig) extends Navigator with Enumerable.Implicits {
+class VariationsNavigator @Inject()(config: FrontendAppConfig) extends Navigator with Enumerable.Implicits {
 
-  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = None
-
-  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
-    case VariationWorkingKnowledgeId => variationWorkingKnowledgeEditRoute(from)
-    case _ => None
+  override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
+    case _ => controllers.routes.IndexController.onPageLoad()
   }
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
-
-    case ConfirmDeleteAdviserId => deleteAdviserRoute(from)
-
-    case AnyMoreChangesId => anyMoreChangesRoute(from)
-
-    case VariationWorkingKnowledgeId => variationWorkingKnowledgeRoute(from)
-
-    case VariationStillDeclarationWorkingKnowledgeId => variationStillWorkingKnowledgeRoute(from)
-
-    case DeclarationFitAndProperId => declarationFitAndProperRoute(from)
-
-    case DeclarationChangedId => declarationChange(from)
-
-    case DeclarationId => NavigateTo.dontSave(controllers.register.routes.PSAVarianceSuccessController.onPageLoad())
-
-    case _ => None
+  override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
+    case VariationWorkingKnowledgeId => variationWorkingKnowledgeEditRoute(ua)
   }
 
-  private def deleteAdviserRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(ConfirmDeleteAdviserId) match {
-    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))
-    case Some(false) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
+
+    case ConfirmDeleteAdviserId => deleteAdviserRoute(ua)
+
+    case AnyMoreChangesId => anyMoreChangesRoute(ua)
+
+    case VariationWorkingKnowledgeId => variationWorkingKnowledgeRoute(ua)
+
+    case VariationStillDeclarationWorkingKnowledgeId => variationStillWorkingKnowledgeRoute(ua)
+
+    case DeclarationFitAndProperId => declarationFitAndProperRoute(ua)
+
+    case DeclarationChangedId => declarationChange(ua)
+
+    case DeclarationId => controllers.register.routes.PSAVarianceSuccessController.onPageLoad()
   }
 
-  private def anyMoreChangesRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(AnyMoreChangesId) match {
-    case Some(true) => NavigateTo.dontSave(controllers.routes.PsaDetailsController.onPageLoad())
-    case Some(false) => declarationChange(from)
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  private def deleteAdviserRoute(ua: UserAnswers): Call = ua.get(ConfirmDeleteAdviserId) match {
+    case Some(true) => controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
+    case Some(false) => controllers.routes.PsaDetailsController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
-  private def variationWorkingKnowledgeRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
-    case Some(true) => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
-    case Some(false) => NavigateTo.dontSave(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode))
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  private def anyMoreChangesRoute(ua: UserAnswers): Call = ua.get(AnyMoreChangesId) match {
+    case Some(true) => controllers.routes.PsaDetailsController.onPageLoad()
+    case Some(false) => declarationChange(ua)
+    case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
-  private def variationWorkingKnowledgeEditRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(VariationWorkingKnowledgeId) match {
-    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-    case Some(false) => NavigateTo.dontSave(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode))
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  private def variationWorkingKnowledgeRoute(ua: UserAnswers): Call = ua.get(VariationWorkingKnowledgeId) match {
+    case Some(true) => controllers.register.routes.AnyMoreChangesController.onPageLoad()
+    case Some(false) => controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode)
+    case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
-  private def variationStillWorkingKnowledgeRoute(from: NavigateFrom): Option[NavigateTo] =
-    from.userAnswers.get(VariationStillDeclarationWorkingKnowledgeId) match {
-      case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-      case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  private def variationWorkingKnowledgeEditRoute(ua: UserAnswers): Call = ua.get(VariationWorkingKnowledgeId) match {
+    case Some(true) => controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
+    case Some(false) => controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode)
+    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+  }
+
+  private def variationStillWorkingKnowledgeRoute(ua: UserAnswers): Call =
+    ua.get(VariationStillDeclarationWorkingKnowledgeId) match {
+      case Some(true) => controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
+      case Some(false) => controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
 
-  private def declarationFitAndProperRoute(from: NavigateFrom): Option[NavigateTo] = from.userAnswers.get(DeclarationFitAndProperId) match {
-    case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationController.onPageLoad())
-    case Some(false) => NavigateTo.dontSave(controllers.register.routes.VariationNoLongerFitAndProperController.onPageLoad())
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+  private def declarationFitAndProperRoute(ua: UserAnswers): Call = ua.get(DeclarationFitAndProperId) match {
+    case Some(true) => controllers.register.routes.VariationDeclarationController.onPageLoad()
+    case Some(false) => controllers.register.routes.VariationNoLongerFitAndProperController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
-  private def declarationChange(from: NavigateFrom): Option[NavigateTo] = {
-    if (from.userAnswers.isPsaUpdateDetailsInComplete) {
-      NavigateTo.dontSave(controllers.register.routes.IncompleteChangesController.onPageLoad())
+  private def declarationChange(ua: UserAnswers): Call = {
+    if (ua.isPsaUpdateDetailsInComplete) {
+      controllers.register.routes.IncompleteChangesController.onPageLoad()
     } else {
-      from.userAnswers.get(DeclarationChangedId) match {
-        case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
+      ua.get(DeclarationChangedId) match {
+        case Some(true) => controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
         case _ =>
-          if (from.userAnswers.get(AdviserNameId).isDefined) {
-            NavigateTo.dontSave(controllers.register.routes.StillUseAdviserController.onPageLoad())
+          if (ua.get(AdviserNameId).isDefined) {
+            controllers.register.routes.StillUseAdviserController.onPageLoad()
           } else {
-            NavigateTo.dontSave(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode))
+            controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode)
           }
       }
     }
