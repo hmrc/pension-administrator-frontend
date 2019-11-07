@@ -30,13 +30,12 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(messages("nonUKBusinessType.heading"))
-
         @components.input_radio(
             field = form("value"),
             legend = messages("nonUKBusinessType.heading"),
             legendClass = Some("visually-hidden"),
-            inputs = NonUKBusinessType.options
+            inputs = NonUKBusinessType.options,
+            headingIsLegend = true
         )
 
         <div class="subsection">

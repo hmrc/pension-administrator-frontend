@@ -31,9 +31,9 @@
 
             @components.error_summary(form.errors)
 
-            @components.heading(viewModel.heading)
 
-            @if(viewModel.mode==CheckMode){
+            @if(viewModel.mode == CheckMode){
+                @components.heading(viewModel.heading)
                 @viewModel.p1.map{p1 => <p>@messages(p1)</p>}
                 @viewModel.p2.map{p2 => <p>@messages(p2)</p>}
             }
@@ -42,7 +42,8 @@
                 field = form("value"),
                 label = viewModel.heading,
                 labelClass = Some("visually-hidden"),
-                secondaryLabel = viewModel.secondaryLabel
+                secondaryLabel = viewModel.secondaryLabel,
+                headingIsLegend = viewModel.mode != CheckMode
             )
 
             <div class="subsection">

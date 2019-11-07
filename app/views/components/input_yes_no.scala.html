@@ -25,36 +25,43 @@
         labelClass: Option[String] = None,
         noLabelKey: String = "site.no",
         yesLabelKey: String = "site.yes",
-        fieldSetClass: String = "inline"
+        fieldSetClass: String = "inline",
+        headingIsLegend: Boolean = false
 )(implicit messages: Messages)
 
 
-<div class="form-group @if(field.hasErrors){form-field--error}">
-    <fieldset class=@fieldSetClass id="@{field.id}">
+<div class="form-group@if(field.hasErrors){ form-field--error}">
+    <fieldset class=@fieldSetClass id=@{field.id}>
 
         <legend>
-            <span class="bold @if(labelClass.nonEmpty){@labelClass}">@label</span>
+            @if(headingIsLegend){
+                <h1 class="heading-xlarge">@label</h1>
+            } else {
+                <span class="bold @if(labelClass.nonEmpty){@labelClass}">@label</span>
+            }
             @secondaryLabel.map { secLabel =>
                 <span>@secLabel</span>
             }
-            @if(hint.nonEmpty){
+            @hint.map { hint =>
                 <span class="form-hint">@hint</span>
             }
             @field.errors.map { error =>
                 <span class="error-notification" id="error-message-@{field.id}-input">
-                    <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)</span>
+                    <span class="visually-hidden">@messages("site.error")</span>@messages(error.message, error.args: _*)
+                </span>
             }
         </legend>
+
         <div class="multiple-choice">
             <input id="@{field.id}-yes" type="radio" name="@{field.id}" value="true" @if(field.value.contains("true")){checked="checked"} />
-            <label class="block-label selection-button-radio" for="@{field.id}-yes" data-target="@if(yesAssoc.nonEmpty){@yesAssoc}">
+            <label class="block-label selection-button-radio" for="@{field.id}-yes" @if(yesAssoc.nonEmpty){data-target="@yesAssoc"}>
                 @messages(yesLabelKey)
             </label>
         </div>
 
         <div class="multiple-choice">
             <input id="@{field.id}-no" type="radio" name="@{field.id}" value="false" @if(field.value.contains("false")){checked="checked"} />
-            <label class="block-label selection-button-radio" for="@{field.id}-no" data-target="@if(noAssoc.nonEmpty){@noAssoc}">
+            <label class="block-label selection-button-radio" for="@{field.id}-no" @if(noAssoc.nonEmpty){data-target="@noAssoc"}>
                 @messages(noLabelKey)
             </label>
         </div>

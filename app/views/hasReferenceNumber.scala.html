@@ -30,16 +30,16 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(headingKey=viewmodel.heading)
-
         @viewmodel.hint.map{ hint =>
+            @components.heading(viewmodel.heading)
             <p>@messages(hint)</p>
         }
 
         @components.input_yes_no(
             field = form(viewmodel.formFieldName.fold("value")(identity)),
-            label = viewmodel.title,
-            labelClass = Some("visually-hidden")
+            label = viewmodel.heading,
+            labelClass = Some("visually-hidden"),
+            headingIsLegend = viewmodel.hint.isEmpty
         )
 
         <div class="section">
