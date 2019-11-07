@@ -16,8 +16,9 @@
 
 package utils.navigators
 
-import connectors.UserAnswersCacheConnector
-import controllers.register.adviser._
+import controllers.register.adviser.routes._
+import controllers.register.routes.{AnyMoreChangesController, DeclarationFitAndProperController, VariationDeclarationFitAndProperController}
+import identifiers.Identifier
 import identifiers.register.PAInDeclarationJourneyId
 import identifiers.register.adviser._
 import javax.inject.{Inject, Singleton}
@@ -27,58 +28,49 @@ import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class AdviserNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector) extends Navigator {
+class AdviserNavigator @Inject() extends Navigator {
 
-  private def checkYourAnswers(mode: Mode): Call =
-    controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
+  override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = normalAndUpdateRoutes(ua, NormalMode)
 
-  override def routeMap(from: NavigateFrom): Option[NavigateTo] = commonNavigator(from, NormalMode)
+  override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
+    case AdviserNameId => checkYourAnswers(journeyMode(mode))
+    case AdviserDetailsId => checkYourAnswers(journeyMode(mode))
+    case AdviserAddressPostCodeLookupId => AdviserAddressListController.onPageLoad(journeyMode(mode))
+    case AdviserAddressListId => AdviserAddressController.onPageLoad(journeyMode(mode))
+    case AdviserAddressId => checkYourAnswers(journeyMode(mode))
+  }
 
-  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] =
-    from.id match {
-      case AdviserNameId => NavigateTo.dontSave(checkYourAnswers(journeyMode(mode)))
-      case AdviserDetailsId => NavigateTo.dontSave(checkYourAnswers(journeyMode(mode)))
-      case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(journeyMode(mode)))
-      case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(journeyMode(mode)))
-      case AdviserAddressId => NavigateTo.dontSave(checkYourAnswers(journeyMode(mode)))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
-    }
+  override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = normalAndUpdateRoutes(ua, UpdateMode)
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = commonNavigator(from, UpdateMode)
+  private def checkYourAnswers(mode: Mode): Call = CheckYourAnswersController.onPageLoad(mode)
 
-  private def commonNavigator(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
-    case AdviserNameId => NavigateTo.dontSave(routes.AdviserDetailsController.onPageLoad(mode))
-    case AdviserDetailsId =>
-      adviserCompletionCheckNavigator(from, NavigateTo.dontSave(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)), mode)
-    case AdviserAddressPostCodeLookupId => NavigateTo.dontSave(routes.AdviserAddressListController.onPageLoad(mode))
-    case AdviserAddressListId => NavigateTo.dontSave(routes.AdviserAddressController.onPageLoad(mode))
+  private def normalAndUpdateRoutes(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
+    case AdviserNameId => AdviserDetailsController.onPageLoad(mode)
+    case AdviserDetailsId => adviserCompletionCheckNavigator(ua, AdviserAddressPostCodeLookupController.onPageLoad(mode), mode)
+    case AdviserAddressPostCodeLookupId => AdviserAddressListController.onPageLoad(mode)
+    case AdviserAddressListId => AdviserAddressController.onPageLoad(mode)
     case AdviserAddressId =>
-      adviserCompletionCheckNavigator(from, NavigateTo.dontSave(routes.CheckYourAnswersController.onPageLoad(mode)), mode)
-    case CheckYourAnswersId => checkYourAnswersRoutes(mode, from.userAnswers)
-    case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      adviserCompletionCheckNavigator(ua, CheckYourAnswersController.onPageLoad(mode), mode)
+    case CheckYourAnswersId => checkYourAnswersRoutes(mode, ua)
   }
 
-  private def adviserCompletionCheckNavigator(from: NavigateFrom, call: Option[NavigateTo], mode: Mode): Option[NavigateTo] = {
-    (mode, from.userAnswers.get(AdviserAddressId), from.userAnswers.get(IsNewAdviserId)) match {
+  private def adviserCompletionCheckNavigator(ua: UserAnswers, call: Call, mode: Mode): Call = {
+    (mode, ua.get(AdviserAddressId), ua.get(IsNewAdviserId)) match {
       case (NormalMode, _, _) => call
-      case (UpdateMode, Some(_), _) =>
-        NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+      case (UpdateMode, Some(_), _) => AnyMoreChangesController.onPageLoad()
       case (_, _, Some(true)) => call
-      case _ => NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+      case _ => AnyMoreChangesController.onPageLoad()
     }
   }
 
-  private def checkYourAnswersRoutes(mode: Mode, userAnswers: UserAnswers) = {
+  private def checkYourAnswersRoutes(mode: Mode, userAnswers: UserAnswers): Call = {
     if (mode == UpdateMode) {
       userAnswers.get(PAInDeclarationJourneyId) match {
-        case Some(true) => NavigateTo.dontSave(controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad())
-        case _ => NavigateTo.dontSave (controllers.register.routes.AnyMoreChangesController.onPageLoad () )
+        case Some(true) => VariationDeclarationFitAndProperController.onPageLoad()
+        case _ => AnyMoreChangesController.onPageLoad()
       }
     } else {
-      NavigateTo.dontSave(controllers.register.routes.DeclarationFitAndProperController.onPageLoad())
+      DeclarationFitAndProperController.onPageLoad()
     }
-
-
   }
-
 }

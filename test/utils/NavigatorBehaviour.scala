@@ -16,18 +16,13 @@
 
 package utils
 
-import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
-import identifiers.LastPageId
-import models.{CheckMode, LastPage, Mode, NormalMode}
 import models.Mode.checkMode
 import models.requests.IdentifiedRequest
-import org.scalatest.MustMatchers
-import org.scalatest.OptionValues
-import org.scalatest.WordSpec
+import models.{CheckMode, Mode, NormalMode}
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
-import org.scalatest.prop.PropertyChecks
-import org.scalatest.prop.TableFor6
+import org.scalatest.prop.{PropertyChecks, TableFor4}
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
@@ -51,8 +46,7 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
   //scalastyle:off regex
   def navigatorWithRoutes[A <: Identifier, B <: Option[Call]](
                                                                navigator: Navigator,
-                                                               dataCacheConnector: FakeUserAnswersCacheConnector,
-                                                               routes: TableFor6[A, UserAnswers, Call, Boolean, B, Boolean],
+                                                               routes: TableFor4[A, UserAnswers, Call, B],
                                                                describer: UserAnswers => String,
                                                                mode: Mode = NormalMode
                                                              ): Unit = {
@@ -63,15 +57,10 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
 
         try {
           forAll(routes) {
-            (id: Identifier, userAnswers: UserAnswers, call: Call, save: Boolean, _: Option[Call], _: Boolean) =>
+            (id: Identifier, userAnswers: UserAnswers, call: Call, _: Option[Call]) =>
               s"move from $id to $call with data: ${describer(userAnswers)}" in {
                 val result = navigator.nextPage(id, mode, userAnswers)
                 result mustBe call
-              }
-
-              s"move from $id to $call and ${if (!save) "not " else ""}save the page with data: ${describer(userAnswers)}" in {
-                dataCacheConnector.reset()
-                navigator.nextPage(id, mode, userAnswers)
               }
           }
         }
@@ -87,16 +76,11 @@ trait NavigatorBehaviour extends PropertyChecks with OptionValues {
 
         try {
           if (routes.nonEmpty) {
-            forAll(routes) { (id: Identifier, userAnswers: UserAnswers, _: Call, _: Boolean, editCall: Option[Call], save: Boolean) =>
+            forAll(routes) { (id: Identifier, userAnswers: UserAnswers, _: Call, editCall: Option[Call]) =>
               if (editCall.isDefined) {
                 s"move from $id to ${editCall.value} with data: ${describer(userAnswers)}" in {
                   val result = navigator.nextPage(id, checkMode(mode), userAnswers)
                   result mustBe editCall.value
-                }
-
-                s"move from $id to $editCall and ${if (!save) "not " else ""}save the page with data: ${describer(userAnswers)}" in {
-                  dataCacheConnector.reset()
-                  navigator.nextPage(id, checkMode(mode), userAnswers)
                 }
               }
             }

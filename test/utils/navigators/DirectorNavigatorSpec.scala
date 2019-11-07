@@ -16,8 +16,6 @@
 
 package utils.navigators
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.FakeUserAnswersCacheConnector
 import controllers.register.company.directors.routes
@@ -29,7 +27,7 @@ import models._
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatest.mockito.MockitoSugar
-import org.scalatest.prop.TableFor6
+import org.scalatest.prop.TableFor4
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import utils.{NavigatorBehaviour, UserAnswers}
@@ -38,68 +36,68 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
 
   import DirectorNavigatorSpec._
 
-  val navigator = new DirectorNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
+  val navigator = new DirectorNavigator(frontendAppConfig)
 
   //scalastyle:off line.size.limit
-  private def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
-    (AddCompanyDirectorsId, addCompanyDirectorsMoreThan10, moreThanTenDirectorsPage(mode), true, Some(moreThanTenDirectorsPage(checkMode(mode))), true),
-    (AddCompanyDirectorsId, addCompanyDirectorsTrue, directorNamePage(mode), true, None, true),
-    (DirectorNameId(0), emptyAnswers, directorDobPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorDOBId(0), emptyAnswers, directorHasNinoPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (HasDirectorNINOId(index), hasNinoYes, directorEnterNinoPage(mode), true, Some(directorEnterNinoPage(checkMode(mode))), true),
-    (HasDirectorNINOId(index), hasNinoNo, directorNoNinoPage(mode), true, Some(directorNoNinoPage(checkMode(mode))), true),
-    (HasDirectorUTRId(0), hasUtrYes, directorEnterUtrPage(mode), true, Some(directorEnterUtrPage(checkMode(mode))), true),
-    (HasDirectorUTRId(0), hasUtrNo, directorNoUtrReasonPage(mode), true, Some(directorNoUtrReasonPage(checkMode(mode))), true),
-    (CompanyDirectorAddressPostCodeLookupId(index), emptyAnswers, addressListPage(mode), false, Some(addressListPage(checkMode(mode))), false),
-    (CompanyDirectorAddressListId(index), emptyAnswers, addressPage(mode), true, Some(addressPage(checkMode(mode))), true),
-    (DirectorAddressId(index), emptyAnswers, directorAddressYearsPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorAddressYearsId(index), addressYearsOverAYear, directorEmailPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorAddressYearsId(index), addressYearsUnderAYear, paPostCodePage(mode), true, Some(paPostCodePage(checkMode(mode))), true),
-    (DirectorAddressYearsId(index), emptyAnswers, sessionExpiredPage, false, Some(sessionExpiredPage), false),
-    (DirectorPreviousAddressPostCodeLookupId(index), emptyAnswers, paAddressListPage(mode), false, Some(paAddressListPage(checkMode(mode))), false),
-    (DirectorPreviousAddressListId(index), emptyAnswers, previousAddressPage(mode), true, Some(previousAddressPage(checkMode(mode))), true),
-    (DirectorPreviousAddressId(index), defaultAnswers, directorEmailPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorEmailId(index), defaultAnswers, directorPhonePage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (DirectorPhoneId(index), defaultAnswers, checkYourAnswersPage(mode), true, Some(checkYourAnswersPage(mode)), true),
-    (CheckYourAnswersId, emptyAnswers, addDirectorsPage(mode), true, None, false)
+  private def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Option[Call])] = Seq(
+    (AddCompanyDirectorsId, addCompanyDirectorsMoreThan10, moreThanTenDirectorsPage(mode), Some(moreThanTenDirectorsPage(checkMode(mode)))),
+    (AddCompanyDirectorsId, addCompanyDirectorsTrue, directorNamePage(mode), None),
+    (DirectorNameId(0), emptyAnswers, directorDobPage(mode), Some(checkYourAnswersPage(mode))),
+    (DirectorDOBId(0), emptyAnswers, directorHasNinoPage(mode), Some(checkYourAnswersPage(mode))),
+    (HasDirectorNINOId(index), hasNinoYes, directorEnterNinoPage(mode), Some(directorEnterNinoPage(checkMode(mode)))),
+    (HasDirectorNINOId(index), hasNinoNo, directorNoNinoPage(mode), Some(directorNoNinoPage(checkMode(mode)))),
+    (HasDirectorUTRId(0), hasUtrYes, directorEnterUtrPage(mode), Some(directorEnterUtrPage(checkMode(mode)))),
+    (HasDirectorUTRId(0), hasUtrNo, directorNoUtrReasonPage(mode), Some(directorNoUtrReasonPage(checkMode(mode)))),
+    (CompanyDirectorAddressPostCodeLookupId(index), emptyAnswers, addressListPage(mode), None),
+    (CompanyDirectorAddressListId(index), emptyAnswers, addressPage(mode), None),
+    (DirectorAddressId(index), emptyAnswers, directorAddressYearsPage(mode), Some(checkYourAnswersPage(mode))),
+    (DirectorAddressYearsId(index), addressYearsOverAYear, directorEmailPage(mode), Some(checkYourAnswersPage(mode))),
+    (DirectorAddressYearsId(index), addressYearsUnderAYear, paPostCodePage(mode), Some(paPostCodePage(checkMode(mode)))),
+    (DirectorAddressYearsId(index), emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
+    (DirectorPreviousAddressPostCodeLookupId(index), emptyAnswers, paAddressListPage(mode), None),
+    (DirectorPreviousAddressListId(index), emptyAnswers, previousAddressPage(mode), None),
+    (DirectorPreviousAddressId(index), defaultAnswers, directorEmailPage(mode), Some(checkYourAnswersPage(mode))),
+    (DirectorEmailId(index), defaultAnswers, directorPhonePage(mode), Some(checkYourAnswersPage(mode))),
+    (DirectorPhoneId(index), defaultAnswers, checkYourAnswersPage(mode), Some(checkYourAnswersPage(mode))),
+    (CheckYourAnswersId, emptyAnswers, addDirectorsPage(mode), None)
   )
 
-  private def normalOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
-    (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(NormalMode), true, None, true),
-    (DirectorEnterNINOId(index), emptyAnswers, directorHasUtrPage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
-    (DirectorNoNINOReasonId(index), emptyAnswers, directorHasUtrPage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
-    (DirectorEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
-    (DirectorNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode), true, Some(checkYourAnswersPage(NormalMode)), true),
-    (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode), true, None, false)
+  private def normalOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Option[Call])] = Seq(
+    (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(NormalMode), None),
+    (DirectorEnterNINOId(index), emptyAnswers, directorHasUtrPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
+    (DirectorNoNINOReasonId(index), emptyAnswers, directorHasUtrPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
+    (DirectorEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
+    (DirectorNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
+    (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode), None)
   )
 
-  private def updateOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean)] = Seq(
-    (AddCompanyDirectorsId, addCompanyDirectorsFalse, anyMoreChangesPage, true, None, true),
-    (MoreThanTenDirectorsId, emptyAnswers, anyMoreChangesPage, true, None, false),
-    (DirectorEnterNINOId(index), defaultAnswers, directorHasUtrPage(UpdateMode), false, None, true),
-    (DirectorEnterNINOId(index), existingDirectorInUpdate(index), anyMoreChangesPage, false, None, true),
-    (DirectorNoNINOReasonId(index), defaultAnswers, directorHasUtrPage(UpdateMode), false, None, true),
-    (DirectorNoNINOReasonId(index), existingDirectorInUpdate(index), anyMoreChangesPage, false, None, true),
-    (DirectorEnterUTRId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
-    (DirectorEnterUTRId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
-    (DirectorNoUTRReasonId(0), defaultAnswers, addressPostCodePage(UpdateMode), false, None, true),
-    (DirectorNoUTRReasonId(0), existingDirectorInUpdate(0), anyMoreChangesPage, false, None, true),
-    (DirectorAddressYearsId(index), addressYearsOverAYearExistingDirector, anyMoreChangesPage, true, None, true),
-    (DirectorAddressYearsId(index), addressYearsUnderAYearExistingDirector, confirmPreviousAddressPage, true, None, true),
-    (DirectorConfirmPreviousAddressId(index), confirmPreviousAddressNotSame, previousAddressPage(UpdateMode), false, None, true),
-    (DirectorConfirmPreviousAddressId(index), confirmPreviousAddressSame, anyMoreChangesPage, false, None, true),
-    (DirectorPreviousAddressId(index), existingDirectorInUpdate(index), anyMoreChangesPage, false, None, true),
-    (DirectorEmailId(index), existingDirectorInUpdate(index), anyMoreChangesPage, false, None, true),
-    (DirectorPhoneId(index), existingDirectorInUpdate(index), anyMoreChangesPage, false, None, true)
+  private def updateOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Option[Call])] = Seq(
+    (AddCompanyDirectorsId, addCompanyDirectorsFalse, anyMoreChangesPage, None),
+    (MoreThanTenDirectorsId, emptyAnswers, anyMoreChangesPage, None),
+    (DirectorEnterNINOId(index), defaultAnswers, directorHasUtrPage(UpdateMode), None),
+    (DirectorEnterNINOId(index), existingDirectorInUpdate(index), anyMoreChangesPage, None),
+    (DirectorNoNINOReasonId(index), defaultAnswers, directorHasUtrPage(UpdateMode), None),
+    (DirectorNoNINOReasonId(index), existingDirectorInUpdate(index), anyMoreChangesPage, None),
+    (DirectorEnterUTRId(0), defaultAnswers, addressPostCodePage(UpdateMode), None),
+    (DirectorEnterUTRId(0), existingDirectorInUpdate(0), anyMoreChangesPage, None),
+    (DirectorNoUTRReasonId(0), defaultAnswers, addressPostCodePage(UpdateMode), None),
+    (DirectorNoUTRReasonId(0), existingDirectorInUpdate(0), anyMoreChangesPage, None),
+    (DirectorAddressYearsId(index), addressYearsOverAYearExistingDirector, anyMoreChangesPage, None),
+    (DirectorAddressYearsId(index), addressYearsUnderAYearExistingDirector, confirmPreviousAddressPage, None),
+    (DirectorConfirmPreviousAddressId(index), confirmPreviousAddressNotSame, previousAddressPage(UpdateMode), None),
+    (DirectorConfirmPreviousAddressId(index), confirmPreviousAddressSame, anyMoreChangesPage, None),
+    (DirectorPreviousAddressId(index), existingDirectorInUpdate(index), anyMoreChangesPage, None),
+    (DirectorEmailId(index), existingDirectorInUpdate(index), anyMoreChangesPage, None),
+    (DirectorPhoneId(index), existingDirectorInUpdate(index), anyMoreChangesPage, None)
   )
 
-  private def normalRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+  private def normalRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
     normalOnlyRoutes ++ routes(NormalMode): _*
   )
 
-  private def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Save(NormalMode)", "Next Page (Check Mode)", "Save(CheckMode"),
+  private def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode"),
     updateOnlyRoutes ++ routes(UpdateMode): _*
   )
 
@@ -108,8 +106,8 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, normalRoutes(), dataDescriber)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes(), dataDescriber, UpdateMode)
+    behave like navigatorWithRoutes(navigator, normalRoutes(), dataDescriber)
+    behave like navigatorWithRoutes(navigator, updateRoutes(), dataDescriber, UpdateMode)
   }
 }
 
