@@ -259,8 +259,7 @@ companyPreviousAddressPostCodeLookup.postalCode = Postcode
 companyPreviousAddressPostCodeLookup.enterPostcode = You can {0}
 companyPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
-companyContactAddressPostCodeLookup.title = Which address can we use to contact the company?
-companyContactAddressPostCodeLookup.heading = Which address can we use to contact {0}?
+contactAddressPostCodeLookup.heading = Which address can we use to contact {0}?
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
 
@@ -767,9 +766,6 @@ confirmDelete.partner.title = Are you sure you want to delete this person as a p
 confirmDelete.partner.heading = Are you sure you want to delete {0}?
 confirmDelete.partner.body = confirmDeletePartner
 
-partnerPreviousAddress.title = Partner’s previous address
-partnerPreviousAddress.heading = Partner’s previous address
-partnerPreviousAddress.hint = This is usually the partner’s home address.
 partnerPreviousAddress.checkYourAnswersLabel = Previous Address
 
 addEntity.error.required = You must make a selection
@@ -804,8 +800,6 @@ partnerPreviousAddressPostCodeLookup.heading = Partner’s previous address
 partnerPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this partnership.
 partnerPreviousAddressPostCodeLookup.input.text = Postcode
 partnerPreviousAddressPostCodeLookup.checkYourAnswersLabel = Partner’s previous address post code
-partnerPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
-partnerPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 partnerPreviousAddressPostCodeLookup.submit.button = Find address
 
 addEntity.error.required = You must make a selection
