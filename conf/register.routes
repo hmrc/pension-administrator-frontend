@@ -20,7 +20,7 @@ GET        /:mode/having-pensions-working-knowledge    controllers.register.Vari
 POST       /:mode/having-pensions-working-knowledge    controllers.register.VariationWorkingKnowledgeController.onSubmit(mode: Mode)
 
 GET        /declaration-fit-and-proper                  controllers.register.DeclarationFitAndProperController.onPageLoad(mode: Mode = NormalMode)
-POST       /declaration-fit-and-proper                  controllers.register.DeclarationFitAndProperController.onSubmit(mode: Mode = NormalMode)
+GET        /onClick-declaration-fit-and-proper          controllers.register.DeclarationFitAndProperController.onClickAgree(mode: Mode = NormalMode)
 
 GET        /declaration                                 controllers.register.DeclarationController.onPageLoad(mode: Mode = NormalMode)
 POST       /declaration                                 controllers.register.DeclarationController.onSubmit(mode: Mode = NormalMode)

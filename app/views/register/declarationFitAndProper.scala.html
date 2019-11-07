@@ -17,69 +17,43 @@
 @import config.FrontendAppConfig
 @import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
+@import models.NormalMode
 
-@(appConfig: FrontendAppConfig,form: Form[_], cancelCall: Call)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, cancelCall: Call, href: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declarationFitAndProper.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.error_summary(form.errors)
-
     @components.heading(messages("declarationFitAndProper.heading"))
 
-    @helpers.form(action = routes.DeclarationFitAndProperController.onSubmit(), 'id -> "declarationFitAndProperId", 'autoComplete -> "off") {
+    @components.paragraph_text(messages("declarationFitAndProper.declaration"))
 
-        @components.paragraph_text(messages("declarationFitAndProper.declaration"))
+    <ul class="list-bullet">
+        <li>
+            @components.paragraph_text(messages("declarationFitAndProper.statement1"))
+        </li>
+        <li>
+            @components.paragraph_text(messages("declarationFitAndProper.statement2"))
+        </li>
+        <li>
+            @components.paragraph_text(messages("declarationFitAndProper.statement3"))
+        </li>
+        <li>
+            @components.paragraph_text(messages("declarationFitAndProper.statement4"))
+        </li>
+        <li>
+            @components.paragraph_text(messages("declarationFitAndProper.statement5"))
+        </li>
+        <li>
+            @components.paragraph_text(messages("declarationFitAndProper.statement6"))
+        </li>
+    </ul>
 
-        <ul class="list-bullet">
-            <li>
-                @components.paragraph_text(messages("declarationFitAndProper.statement1"))
-            </li>
-            <li>
-                @components.paragraph_text(messages("declarationFitAndProper.statement2"))
-            </li>
-            <li>
-                @components.paragraph_text(messages("declarationFitAndProper.statement3"))
-            </li>
-            <li>
-                @components.paragraph_text(messages("declarationFitAndProper.statement4"))
-            </li>
-            <li>
-                @components.paragraph_text(messages("declarationFitAndProper.statement5"))
-            </li>
-            <li>
-                @components.paragraph_text(messages("declarationFitAndProper.statement6"))
-            </li>
-        </ul>
-
-        <div class="form-group @if(form("agree").hasErrors){form-field--error}">
-            <fieldset class="inline">
-                <legend>
-
-                    <span class="visually-hidden">@messages("common.declaration.legend")</span>
-
-                    @form("agree").errors.map { error =>
-                    <span class="error-notification" id="error-message-agree-input">
-                        <span class="visually-hidden">@messages("site.error")</span>
-                        @messages(error.message, error.args: _*)</span>
-                    }
-                </legend>
-                <div class="multiple-choice">
-                    <input id="agree" name="agree" type="checkbox" value="agreed">
-                    <label for="agree">@messages("declaration.agree")</label>
-                </div>
-            </fieldset>
-        </div>
-
-        <div class="form-group">
-            <div class="section">
-                @components.submit_button("site.save_and_continue")
-            </div>
-
-            <a id="cancel" href="@cancelCall.url">@messages("site.cancel")</a>
-        </div>
-    }
+    <div class="form-group">
+        @components.button_link("site.agreeAndContinue", href.url, "submit")
+        <a id="cancel" href="@cancelCall.url">@messages("site.cancel")</a>
+    </div>
 
 }

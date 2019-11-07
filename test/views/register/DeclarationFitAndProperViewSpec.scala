@@ -28,24 +28,12 @@ class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
 
   val messageKeyPrefix = "declarationFitAndProper"
   private val cancelCall = controllers.routes.IndexController.onPageLoad()
+  private val hrefCall = controllers.register.routes.DeclarationFitAndProperController.onClickAgree()
 
-  private def createView = () => declarationFitAndProper(frontendAppConfig, form, cancelCall)(fakeRequest, messages)
-
-  private def createViewUsingForm(form: Form[_]) = declarationFitAndProper(frontendAppConfig, form, cancelCall)(fakeRequest, messages)
+  private def createView = () => declarationFitAndProper(frontendAppConfig, cancelCall, hrefCall)(fakeRequest, messages)
 
   "DeclarationFitAndProper view" must {
     behave like normalPage(createView, messageKeyPrefix)
-
-    "show an error summary when rendered with an error" in {
-      val doc = asDocument(createViewUsingForm(form.withError(error)))
-      assertRenderedById(doc, "error-summary-heading")
-    }
-
-    "show an error in the value field's label when rendered with an error" in {
-      val doc = asDocument(createViewUsingForm(form.withError(error)))
-      val errorSpan = doc.getElementsByClass("error-notification").first
-      errorSpan.text mustBe s"${messages("site.error")} ${messages(errorMessage)}"
-    }
 
     "display the declaration" in {
       createView must haveDynamicText("declarationFitAndProper.declaration")
@@ -75,15 +63,7 @@ class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
       createView must haveDynamicText("declarationFitAndProper.statement6")
     }
 
-    "have an I Agree checkbox" in {
-      createView must haveCheckBox("agree", "agreed")
-    }
-
-    "have a label for the I Agree checkbox" in {
-      createView must haveLabel("agree", messages("declaration.agree"))
-    }
-
-    behave like pageWithSubmitButton(createView)
+    behave like pageWithContinueButton(createView, hrefCall.url, id = "submit")
 
     "have a cancel link" in {
       createView must haveLink(cancelCall.url, "cancel")

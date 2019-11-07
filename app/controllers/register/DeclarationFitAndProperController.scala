@@ -20,7 +20,6 @@ import config.FrontendAppConfig
 import connectors._
 import controllers.Retrievals
 import controllers.actions._
-import forms.register.DeclarationFormProvider
 import identifiers.register._
 import identifiers.register.company.ContactDetailsId
 import identifiers.register.individual.IndividualEmailId
@@ -30,7 +29,6 @@ import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
 import models.{ExistingPSA, Mode, NormalMode, UserType}
 import play.api.Logger
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.domain.PsaId
@@ -49,7 +47,6 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   @Register navigator: Navigator,
-                                                  formProvider: DeclarationFormProvider,
                                                   dataCacheConnector: UserAnswersCacheConnector,
                                                   pensionsSchemeConnector: PensionsSchemeConnector,
                                                   knownFactsRetrieval: KnownFactsRetrieval,
@@ -57,59 +54,41 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                                                   emailConnector: EmailConnector
                                                  )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
-  private val form: Form[Boolean] = formProvider()
-
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      request.user.userType match {
-        case UserType.Individual =>
-          Future.successful(Ok(
-            declarationFitAndProper(appConfig, form, individual.routes.WhatYouWillNeedController.onPageLoad())))
-
-        case UserType.Organisation =>
-          Future.successful(Ok(
-            declarationFitAndProper(appConfig, form, company.routes.WhatYouWillNeedController.onPageLoad())))
+      val cancelUrl = request.user.userType match {
+        case UserType.Individual => individual.routes.WhatYouWillNeedController.onPageLoad()
+        case UserType.Organisation => company.routes.WhatYouWillNeedController.onPageLoad()
       }
+      Future.successful(Ok(
+        declarationFitAndProper(appConfig, cancelUrl, controllers.register.routes.DeclarationFitAndProperController.onClickAgree())))
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        errors =>
-          request.user.userType match {
-            case UserType.Individual =>
-              Future.successful(BadRequest(
-                declarationFitAndProper(appConfig, errors, individual.routes.WhatYouWillNeedController.onPageLoad())))
+      dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, value = true).flatMap { cacheMap =>
 
-            case UserType.Organisation =>
-              Future.successful(BadRequest(
-                declarationFitAndProper(appConfig, errors, company.routes.WhatYouWillNeedController.onPageLoad())))
-          },
-        success =>
-          dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).flatMap { cacheMap =>
+        val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(
+          request.user.isExistingPSA,
+          request.user.existingPSAId
+        )).asOpt.getOrElse(UserAnswers(cacheMap))
 
-            val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(
-              request.user.isExistingPSA,
-              request.user.existingPSAId
-            )).asOpt.getOrElse(UserAnswers(cacheMap))
-
-            (for {
-              psaResponse <- pensionsSchemeConnector.registerPsa(answers)
-              cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
-              _ <- enrol(psaResponse.psaId)
-              _ <- sendEmail(answers, psaResponse.psaId)
-            } yield {
-              Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
-            }) recoverWith {
-              case _: BadRequestException =>
-                Future.successful(Redirect(controllers.register.routes.SubmissionInvalidController.onPageLoad()))
-              case ex: Upstream4xxResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
-                Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
-              case _ =>
-                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-            }
-          }
-      )
+        (for {
+          psaResponse <- pensionsSchemeConnector.registerPsa(answers)
+          cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
+          _ <- enrol(psaResponse.psaId)
+          _ <- sendEmail(answers, psaResponse.psaId)
+        } yield {
+          Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
+        }) recoverWith {
+          case _: BadRequestException =>
+            Future.successful(Redirect(controllers.register.routes.SubmissionInvalidController.onPageLoad()))
+          case ex: Upstream4xxResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
+            Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
+          case _ =>
+            Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        }
+      }
   }
 
   private def getEmail(answers: UserAnswers): Option[String] = {
@@ -139,4 +118,5 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
   }
 
   case class PSANameNotFoundException() extends Exception("Could not retrieve PSA Name")
+
 }
