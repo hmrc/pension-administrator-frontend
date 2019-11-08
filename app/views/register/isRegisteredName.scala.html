@@ -31,12 +31,11 @@
 
             @components.error_summary(form.errors)
 
-            @components.heading(viewModel.heading)
-
             @components.input_yes_no(
                 field = form("value"),
                 label = viewModel.heading,
-                labelClass = Some("visually-hidden")
+                labelClass = Some("visually-hidden"),
+                headingIsLegend = true
             )
 
             <div class="subsection">

@@ -176,20 +176,22 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
         }
 
         s"render the view correctly for email and phone in ${jsLiteral.to(mode)}" in {
-          val retrievalAction = UserAnswers().set(PartnerContactDetailsId(index))(ContactDetails(email, phone)).asOpt.value.dataRetrievalAction
+          val retrievalAction = UserAnswers().set(PartnerEmailId(index))(email).flatMap(
+            _.set(PartnerPhoneId(index))(phone)).asOpt.value.dataRetrievalAction
           val rows = Seq(
-            AnswerRow(
-              "contactDetails.email",
-              Seq(email),
-              answerIsMessageKey = false,
-              Some(Link(PartnerContactDetailsController.onPageLoad(checkMode(mode), index).url))
+            answerRow(
+              label = messages("email.title", defaultPartnerName),
+              answer = Seq(email),
+              changeUrl = Some(Link(PartnerEmailController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultPartnerName))
             ),
-            AnswerRow(
-              "contactDetails.phone",
-              Seq(phone),
-              answerIsMessageKey = false,
-              Some(Link(PartnerContactDetailsController.onPageLoad(checkMode(mode), index).url))
-            ))
+            answerRow(
+              label = messages("phone.title", defaultPartnerName),
+              answer = Seq(phone),
+              changeUrl = Some(Link(PartnerPhoneController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultPartnerName))
+            )
+          )
 
           val sections = Seq(AnswerSection(None, rows))
 

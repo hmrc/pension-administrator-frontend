@@ -16,8 +16,6 @@
 
 package identifiers.register
 
-import java.time.LocalDate
-
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership._
@@ -64,7 +62,8 @@ class NonUKBusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValu
       }
 
       "remove the data for contact details " in {
-        result.get(ContactDetailsId) mustNot be(defined)
+        result.get(CompanyEmailId) mustNot be(defined)
+        result.get(CompanyPhoneId) mustNot be(defined)
       }
 
       "remove the data for directors " in {
@@ -132,7 +131,6 @@ object NonUKBusinessTypeIdSpec extends OptionValues {
   val tolerantAddress = TolerantAddress(Some("line 1"),Some("line 2"), Some("line 3"), Some("line 4"), None, Some("DE"))
   val tolerantIndividual = TolerantIndividual(Some("firstName"), Some("middleName"), Some("lastName"))
   val address = Address("line 1", "line 2", None, None, None, "GB")
-  val contactDetails = ContactDetails("s@s.com", "999")
   val email = "s@s.com"
   val phone = "999"
   val personName = PersonName("test first", "test last")
@@ -150,7 +148,8 @@ object NonUKBusinessTypeIdSpec extends OptionValues {
       .flatMap(_.set(CompanyAddressYearsId)(AddressYears.OverAYear))
       .flatMap(_.set(CompanyPreviousAddressId)(address))
       .flatMap(_.set(CompanyPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
-      .flatMap(_.set(ContactDetailsId)(contactDetails))
+      .flatMap(_.set(CompanyEmailId)("s@s.com"))
+      .flatMap(_.set(CompanyPhoneId)("999"))
       .flatMap(_.set(DirectorNameId(0))(personName))
       .flatMap(_.set(DirectorNameId(1))(personName))
       .flatMap(_.set(MoreThanTenDirectorsId)(true))

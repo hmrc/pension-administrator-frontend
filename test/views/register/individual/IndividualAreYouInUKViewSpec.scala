@@ -19,6 +19,7 @@ package views.register.individual
 import forms.register.AreYouInUKFormProvider
 import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
+import play.twirl.api.Html
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.behaviours.{ViewBehaviours, YesNoViewBehaviours}
 import views.html.register.areYouInUK
@@ -32,9 +33,9 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
       postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUKIndividual.title"),
       heading = Message("areYouInUKIndividual.heading"),
-      secondaryLabel= if(mode==NormalMode) Some(Message("areYouInUKIndividual.hint")) else None,
       p1 = Some("areYouInUKIndividual.check.selectedUkAddress"),
-      p2 = Some("areYouInUKIndividual.check.provideNonUkAddress")
+      p2 = Some("areYouInUKIndividual.check.provideNonUkAddress"),
+      secondaryLabel = None
     )
 
 
@@ -42,14 +43,14 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
 
   val form: Form[Boolean] = formProvider()
 
-  private def createView(mode: Mode = NormalMode) =
+  private def createView(mode: Mode = NormalMode): () => Html =
     () => areYouInUK(
       frontendAppConfig,
       form,
       viewmodel(mode)
     )(fakeRequest, messages)
 
-  private def createViewUsingForm =
+  private def createViewUsingForm: Form[_] => Html =
     (form: Form[_]) => areYouInUK(
       frontendAppConfig,
       form,
@@ -61,17 +62,19 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
 
     behave like pageWithSubmitButton(createView())
 
-    behave like yesNoPage(createViewUsingForm, messageKeyPrefix, viewmodel(NormalMode).postCall.url, s"$messageKeyPrefix.heading",
-      expectedHintKey = Some(messages("areYouInUKIndividual.hint")))
+    behave like yesNoPage(
+      createView = createViewUsingForm,
+      messageKeyPrefix = messageKeyPrefix,
+      expectedFormAction = viewmodel(NormalMode).postCall.url,
+      messageKey = s"$messageKeyPrefix.heading"
+    )
 
     "not display dynamic content of CheckMode in NormalMode" in {
-      createView() must haveDynamicText("areYouInUKIndividual.hint")
       createView() mustNot haveDynamicText("areYouInUKIndividual.check.selectedUkAddress")
       createView() mustNot haveDynamicText("areYouInUKIndividual.check.provideNonUkAddress")
     }
 
     "display dynamic content of CheckMode in NormalMode" in {
-      createView(CheckMode) mustNot haveDynamicText("areYouInUKIndividual.hint")
       createView(CheckMode) must haveDynamicText("areYouInUKIndividual.check.selectedUkAddress")
       createView(CheckMode) must haveDynamicText("areYouInUKIndividual.check.provideNonUkAddress")
     }

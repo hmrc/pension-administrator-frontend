@@ -23,13 +23,18 @@
         hint: Option[String] = None,
         trackGa: Boolean = false,
         inputs: Seq[InputOption],
-        fieldsetClass: Option[String] = None
+        fieldsetClass: Option[String] = None,
+        headingIsLegend: Boolean = false
 )(implicit messages: Messages)
 
 <div class="form-group @if(field.hasErrors){form-field--error}">
     <fieldset class="form-group @fieldsetClass" id="@{field.id}">
         <legend>
-            <span class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@legend</span>
+            @if(headingIsLegend) {
+                <h1 class="heading-xlarge">@legend</h1>
+            } else {
+                <span class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@legend</span>
+            }
             @if(hint.nonEmpty){
                 <span class="form-hint">@{hint.get}</span>
             }

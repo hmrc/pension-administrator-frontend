@@ -33,10 +33,12 @@
 
         @components.heading(viewModel.heading)
 
+        @components.paragraph_text(messages(viewModel.hint))
+
         @components.input_yes_no(
             field = form("value"),
             label = messages(viewModel.heading),
-            hint = Some(messages(viewModel.hint))
+            labelClass = Some("visually-hidden")
         )
 
         <div class="subsection">

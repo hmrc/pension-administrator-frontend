@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import connectors.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
+import identifiers.register.partnership.partners
 import identifiers.register.partnership.partners._
 import javax.inject.Inject
 import models.Mode.checkMode
@@ -65,7 +66,8 @@ class CheckYourAnswersController @Inject()(
             PartnerAddressId(index).row(Some(Link(routes.PartnerAddressController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerAddressYearsId(index).row(Some(Link(routes.PartnerAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerPreviousAddressId(index).row(Some(Link(routes.PartnerPreviousAddressController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerContactDetailsId(index).row(Some(Link(routes.PartnerContactDetailsController.onPageLoad(checkMode(mode), index).url)))
+            PartnerEmailId(index).row(Some(Link(routes.PartnerEmailController.onPageLoad(checkMode(mode), index).url))) ++
+            PartnerPhoneId(index).row(Some(Link(routes.PartnerPhoneController.onPageLoad(checkMode(mode), index).url)))
         ))
 
       Future.successful(Ok(check_your_answers(

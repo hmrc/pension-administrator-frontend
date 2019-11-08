@@ -50,11 +50,12 @@ class MoreThanTenViewSpec extends YesNoViewBehaviours {
 
     behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like yesNoPage(createViewUsingForm,
-      messageKeyPrefix,
-      routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url,
-      s"$messageKeyPrefix.heading",
-      Some(s"$messageKeyPrefix.hint"))
+    behave like yesNoPage(
+      createView = createViewUsingForm,
+      messageKeyPrefix = messageKeyPrefix,
+      expectedFormAction = routes.MoreThanTenDirectorsController.onSubmit(NormalMode).url,
+      messageKey = s"$messageKeyPrefix.heading"
+    )
 
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
