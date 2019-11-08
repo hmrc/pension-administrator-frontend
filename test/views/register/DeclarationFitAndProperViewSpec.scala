@@ -16,15 +16,10 @@
 
 package views.register
 
-import forms.register.DeclarationFormProvider
-import play.api.data.Form
-import views.behaviours.QuestionViewBehaviours
+import views.behaviours.ViewBehaviours
 import views.html.register.declarationFitAndProper
 
-class DeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Boolean] {
-
-  val form: Form[Boolean] = new DeclarationFormProvider()()
-  override val errorKey = "agree"
+class DeclarationFitAndProperViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "declarationFitAndProper"
   private val cancelCall = controllers.routes.IndexController.onPageLoad()

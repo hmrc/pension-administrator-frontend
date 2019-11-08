@@ -53,7 +53,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
   "DeclarationFitAndProperController" when {
 
-    "calling GET" must {
+    "calling onPageLoad" must {
 
       "return OK and the correct view" in {
         val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -85,6 +85,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
     "calling onClickAgree" must {
 
       "redirect to the next page" when {
+
         "on a valid request and send the email" in {
           val validData = data ++ Json.obj(
             "partnershipContactDetails" -> Json.obj(
