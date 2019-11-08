@@ -392,7 +392,7 @@ hasUTR.error.required = Select yes if {0} has a Unique Taxpayer Reference (UTR)
 hasUTR.visuallyHidden.text = whether {0} has a Unique Taxpayer Reference (UTR)
 
 enterUTR.heading = What is {0}’s UTR?
-enterUTR.error.invalid = {0}'s Unique Taxpayer Reference (UTR) must be 10 numbers
+enterUTR.error.invalid = {0}’s Unique Taxpayer Reference (UTR) must be 10 numbers
 enterUTR.visuallyHidden.text = {0}’s Unique Taxpayer Reference (UTR)
 
 whyNoUTR.heading = Why does {0} not have a UTR?

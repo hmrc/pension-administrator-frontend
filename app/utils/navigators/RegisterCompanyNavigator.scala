@@ -18,142 +18,140 @@ package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
 import controllers.register.company.routes
+import identifiers.Identifier
 import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.{AreYouInUKId, BusinessTypeId, _}
 import models.InternationalRegion._
 import models._
 import models.register.BusinessType
+import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
 class RegisterCompanyNavigator @Inject()(
-                                          val dataCacheConnector: UserAnswersCacheConnector,
                                           countryOptions: CountryOptions,
                                           appConfig: FrontendAppConfig) extends Navigator {
 
   //scalastyle:off cyclomatic.complexity
-  override protected def routeMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+  override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case BusinessUTRId =>
-      NavigateTo.dontSave(routes.CompanyNameController.onPageLoad())
+      routes.CompanyNameController.onPageLoad()
     case BusinessNameId =>
-      regionBasedNameNavigation(from.userAnswers)
+      regionBasedNameNavigation(ua)
     case IsRegisteredNameId =>
-      registeredNameRoutes(from.userAnswers)
+      registeredNameRoutes(ua)
     case ConfirmCompanyAddressId =>
-      crnNavigation(from.userAnswers)
-    case HasCompanyCRNId if hasCrn(from.userAnswers) =>
-      NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+      crnNavigation(ua)
+    case HasCompanyCRNId if hasCrn(ua) =>
+      routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
     case HasCompanyCRNId =>
-      NavigateTo.dontSave(routes.HasCompanyPAYEController.onPageLoad(NormalMode))
+      routes.HasCompanyPAYEController.onPageLoad(NormalMode)
     case CompanyRegistrationNumberId =>
-      NavigateTo.save(routes.HasCompanyPAYEController.onPageLoad(NormalMode))
-    case HasPAYEId if hasPaye(from.userAnswers) =>
-      NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(NormalMode))
+      routes.HasCompanyPAYEController.onPageLoad(NormalMode)
+    case HasPAYEId if hasPaye(ua) =>
+      routes.CompanyEnterPAYEController.onPageLoad(NormalMode)
     case HasPAYEId =>
-      NavigateTo.save(routes.HasCompanyVATController.onPageLoad(NormalMode))
+      routes.HasCompanyVATController.onPageLoad(NormalMode)
     case EnterPAYEId =>
-      NavigateTo.save(routes.HasCompanyVATController.onPageLoad(NormalMode))
-    case HasVATId if hasVat(from.userAnswers) =>
-      NavigateTo.save(routes.CompanyEnterVATController.onPageLoad(NormalMode))
+      routes.HasCompanyVATController.onPageLoad(NormalMode)
+    case HasVATId if hasVat(ua) =>
+      routes.CompanyEnterVATController.onPageLoad(NormalMode)
     case HasVATId =>
-      NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+      routes.CompanySameContactAddressController.onPageLoad(NormalMode)
     case EnterVATId =>
-      NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+      routes.CompanySameContactAddressController.onPageLoad(NormalMode)
     case CompanySameContactAddressId =>
-      sameContactAddress(NormalMode, from.userAnswers)
+      sameContactAddress(NormalMode, ua)
     case CompanyContactAddressPostCodeLookupId =>
-      NavigateTo.save(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
+      routes.CompanyContactAddressListController.onPageLoad(NormalMode)
     case CompanyContactAddressListId =>
-      NavigateTo.save(routes.CompanyContactAddressController.onPageLoad(NormalMode))
+      routes.CompanyContactAddressController.onPageLoad(NormalMode)
     case CompanyContactAddressId =>
-      NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(NormalMode))
+      routes.CompanyAddressYearsController.onPageLoad(NormalMode)
     case CompanyAddressYearsId =>
-      companyAddressYearsIdRoutes(from.userAnswers)
+      companyAddressYearsIdRoutes(ua)
     case CompanyTradingOverAYearId =>
-      hasBeenTradingIdRoutes(from.userAnswers)
+      hasBeenTradingIdRoutes(ua)
     case CompanyPreviousAddressPostCodeLookupId =>
-      NavigateTo.save(routes.CompanyAddressListController.onPageLoad(NormalMode))
+      routes.CompanyAddressListController.onPageLoad(NormalMode)
     case CompanyAddressListId =>
-      NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
+      routes.CompanyPreviousAddressController.onPageLoad(NormalMode)
     case CompanyPreviousAddressId =>
-      NavigateTo.save(routes.CompanyEmailController.onPageLoad(NormalMode))
+      routes.CompanyEmailController.onPageLoad(NormalMode)
     case CompanyEmailId =>
-      NavigateTo.save(routes.CompanyPhoneController.onPageLoad(NormalMode))
+      routes.CompanyPhoneController.onPageLoad(NormalMode)
     case CompanyPhoneId =>
-      NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+      routes.CheckYourAnswersController.onPageLoad()
     case CheckYourAnswersId =>
-      directorRoutes(from.userAnswers, NormalMode)
+      directorRoutes(ua, NormalMode)
     case CompanyReviewId =>
-      NavigateTo.save(controllers.register.routes.DeclarationController.onPageLoad())
+      controllers.register.routes.DeclarationController.onPageLoad()
     case CompanyAddressId =>
-      regionBasedNavigation(from.userAnswers)
+      regionBasedNavigation(ua)
     case WhatYouWillNeedId =>
-      NavigateTo.save(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
-    case _ => None
+      routes.CompanySameContactAddressController.onPageLoad(NormalMode)
   }
 
-  override protected def editRouteMap(from: NavigateFrom, mode: Mode): Option[NavigateTo] = from.id match {
-    case HasCompanyCRNId if hasCrn(from.userAnswers) =>
-      NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode))
+  override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
+    case HasCompanyCRNId if hasCrn(ua) =>
+      routes.CompanyRegistrationNumberController.onPageLoad(CheckMode)
     case HasCompanyCRNId =>
       checkYourAnswers
     case CompanyRegistrationNumberId =>
       checkYourAnswers
-    case HasPAYEId if hasPaye(from.userAnswers) =>
-      NavigateTo.save(routes.CompanyEnterPAYEController.onPageLoad(CheckMode))
+    case HasPAYEId if hasPaye(ua) =>
+      routes.CompanyEnterPAYEController.onPageLoad(CheckMode)
     case HasPAYEId =>
       checkYourAnswers
     case EnterPAYEId =>
       checkYourAnswers
-    case HasVATId if hasVat(from.userAnswers) =>
-      NavigateTo.save(routes.CompanyEnterVATController.onPageLoad(CheckMode))
+    case HasVATId if hasVat(ua) =>
+      routes.CompanyEnterVATController.onPageLoad(CheckMode)
     case HasVATId =>
       checkYourAnswers
     case EnterVATId =>
       checkYourAnswers
     case CompanySameContactAddressId =>
-      sameContactAddress(CheckMode, from.userAnswers)
+      sameContactAddress(CheckMode, ua)
     case CompanyContactAddressPostCodeLookupId =>
-      NavigateTo.save(routes.CompanyContactAddressListController.onPageLoad(CheckMode))
+      routes.CompanyContactAddressListController.onPageLoad(CheckMode)
     case CompanyContactAddressListId =>
-      NavigateTo.save(routes.CompanyContactAddressController.onPageLoad(CheckMode))
+      routes.CompanyContactAddressController.onPageLoad(CheckMode)
     case CompanyContactAddressId =>
       checkYourAnswers
     case CompanyAddressYearsId =>
-      companyAddressYearsCheckIdRoutes(from.userAnswers)
+      companyAddressYearsCheckIdRoutes(ua)
     case CompanyTradingOverAYearId =>
-      hasBeenTradingCheckIdRoutes(from.userAnswers)
+      hasBeenTradingCheckIdRoutes(ua)
     case CompanyPreviousAddressPostCodeLookupId =>
-      NavigateTo.save(routes.CompanyAddressListController.onPageLoad(CheckMode))
+      routes.CompanyAddressListController.onPageLoad(CheckMode)
     case CompanyAddressListId =>
-      NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
+      routes.CompanyPreviousAddressController.onPageLoad(CheckMode)
     case CompanyPreviousAddressId =>
       checkYourAnswers
     case CompanyEmailId =>
       checkYourAnswers
     case CompanyPhoneId =>
       checkYourAnswers
-    case _ => None
   }
 
-  override protected def updateRouteMap(from: NavigateFrom): Option[NavigateTo] = from.id match {
+  override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case CompanyContactAddressPostCodeLookupId =>
-      NavigateTo.save(routes.CompanyContactAddressListController.onPageLoad(UpdateMode))
+      routes.CompanyContactAddressListController.onPageLoad(UpdateMode)
     case CompanyContactAddressListId =>
-      NavigateTo.save(routes.CompanyContactAddressController.onPageLoad(UpdateMode))
+      routes.CompanyContactAddressController.onPageLoad(UpdateMode)
     case CompanyContactAddressId =>
-      NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(UpdateMode))
+      routes.CompanyAddressYearsController.onPageLoad(UpdateMode)
     case CompanyAddressYearsId =>
-      companyAddressYearsUpdateIdRoutes(from.userAnswers)
+      companyAddressYearsUpdateIdRoutes(ua)
     case CompanyConfirmPreviousAddressId =>
-      confirmPreviousAddressRoutes(from.userAnswers)
+      confirmPreviousAddressRoutes(ua)
     case CompanyPreviousAddressPostCodeLookupId =>
-      NavigateTo.save(routes.CompanyAddressListController.onPageLoad(UpdateMode))
+      routes.CompanyAddressListController.onPageLoad(UpdateMode)
     case CompanyAddressListId =>
-      NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(UpdateMode))
+      routes.CompanyPreviousAddressController.onPageLoad(UpdateMode)
     case CompanyPreviousAddressId =>
       anyMoreChanges
     case CompanyEmailId =>
@@ -164,8 +162,8 @@ class RegisterCompanyNavigator @Inject()(
 
   //scalastyle:on cyclomatic.complexity
 
-  private def checkYourAnswers: Option[NavigateTo] =
-    NavigateTo.save(controllers.register.company.routes.CheckYourAnswersController.onPageLoad())
+  private def checkYourAnswers: Call =
+    controllers.register.company.routes.CheckYourAnswersController.onPageLoad()
 
   private def hasPaye(answers: UserAnswers): Boolean = answers.get(HasPAYEId).getOrElse(false)
 
@@ -173,119 +171,119 @@ class RegisterCompanyNavigator @Inject()(
 
   private def hasVat(answers: UserAnswers): Boolean = answers.get(HasVATId).getOrElse(false)
 
-  private def anyMoreChanges: Option[NavigateTo] = NavigateTo.dontSave(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+  private def anyMoreChanges: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
-  private def companyAddressYearsIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
+  private def companyAddressYearsIdRoutes(answers: UserAnswers): Call = {
     answers.get(CompanyAddressYearsId) match {
       case Some(AddressYears.UnderAYear) =>
-        NavigateTo.save(routes.CompanyTradingOverAYearController.onPageLoad(NormalMode))
+        routes.CompanyTradingOverAYearController.onPageLoad(NormalMode)
       case Some(AddressYears.OverAYear) =>
-        NavigateTo.save(routes.CompanyEmailController.onPageLoad(NormalMode))
+        routes.CompanyEmailController.onPageLoad(NormalMode)
       case _ =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
-  private def companyAddressYearsCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
+  private def companyAddressYearsCheckIdRoutes(answers: UserAnswers): Call = {
     answers.get(CompanyAddressYearsId) match {
       case Some(AddressYears.UnderAYear) =>
-        NavigateTo.save(routes.CompanyTradingOverAYearController.onPageLoad(CheckMode))
+        routes.CompanyTradingOverAYearController.onPageLoad(CheckMode)
       case Some(AddressYears.OverAYear) =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+        routes.CheckYourAnswersController.onPageLoad()
       case _ =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
-  private def hasBeenTradingIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
+  private def hasBeenTradingIdRoutes(answers: UserAnswers): Call = {
     (answers.get(CompanyTradingOverAYearId), answers.get(AreYouInUKId)) match {
       case (Some(true), Some(true)) =>
-        NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
+        routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)
       case (Some(true), Some(false)) =>
-        NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(NormalMode))
+        routes.CompanyPreviousAddressController.onPageLoad(NormalMode)
       case (Some(false), _) =>
-        NavigateTo.save(routes.CompanyEmailController.onPageLoad(NormalMode))
+        routes.CompanyEmailController.onPageLoad(NormalMode)
       case _ =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
-  private def hasBeenTradingCheckIdRoutes(answers: UserAnswers): Option[NavigateTo] = {
+  private def hasBeenTradingCheckIdRoutes(answers: UserAnswers): Call = {
     (answers.get(CompanyTradingOverAYearId), answers.get(AreYouInUKId)) match {
       case (Some(true), Some(true)) =>
-        NavigateTo.save(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode))
+        routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode)
       case (Some(true), Some(false)) =>
-        NavigateTo.save(routes.CompanyPreviousAddressController.onPageLoad(CheckMode))
+        routes.CompanyPreviousAddressController.onPageLoad(CheckMode)
       case (Some(false), _) =>
-        NavigateTo.save(routes.CheckYourAnswersController.onPageLoad())
+        routes.CheckYourAnswersController.onPageLoad()
       case _ =>
-        NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
-  private def companyAddressYearsUpdateIdRoutes(answers: UserAnswers): Option[NavigateTo] =
+  private def companyAddressYearsUpdateIdRoutes(answers: UserAnswers): Call =
     answers.get(CompanyAddressYearsId) match {
-      case Some(AddressYears.UnderAYear) => NavigateTo.save(routes.CompanyConfirmPreviousAddressController.onPageLoad())
+      case Some(AddressYears.UnderAYear) => routes.CompanyConfirmPreviousAddressController.onPageLoad()
       case Some(AddressYears.OverAYear) => anyMoreChanges
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
 
-  private def sameContactAddress(mode: Mode, answers: UserAnswers): Option[NavigateTo] = {
+  private def sameContactAddress(mode: Mode, answers: UserAnswers): Call = {
     (answers.get(CompanySameContactAddressId), answers.get(AreYouInUKId)) match {
-      case (Some(true), _) => NavigateTo.save(routes.CompanyAddressYearsController.onPageLoad(mode))
-      case (Some(false), Some(false)) => NavigateTo.save(routes.CompanyContactAddressController.onPageLoad(mode))
-      case (Some(false), Some(true)) => NavigateTo.save(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode))
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case (Some(true), _) => routes.CompanyAddressYearsController.onPageLoad(mode)
+      case (Some(false), Some(false)) => routes.CompanyContactAddressController.onPageLoad(mode)
+      case (Some(false), Some(true)) => routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode)
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
-  private def regionBasedNavigation(answers: UserAnswers): Option[NavigateTo] = {
-    answers.get(CompanyAddressId) flatMap { address =>
+  private def regionBasedNavigation(answers: UserAnswers): Call = {
+    answers.get(CompanyAddressId) map { address =>
       countryOptions.regions(address.country.getOrElse("")) match {
-        case UK => NavigateTo.dontSave(controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode))
-        case EuEea => NavigateTo.dontSave(routes.WhatYouWillNeedController.onPageLoad())
-        case RestOfTheWorld => NavigateTo.dontSave(routes.OutsideEuEeaController.onPageLoad())
-        case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+        case UK => controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
+        case EuEea => routes.WhatYouWillNeedController.onPageLoad()
+        case RestOfTheWorld => routes.OutsideEuEeaController.onPageLoad()
+        case _ => controllers.routes.SessionExpiredController.onPageLoad()
       }
-    }
+    } getOrElse controllers.routes.SessionExpiredController.onPageLoad()
   }
 
-  private def confirmPreviousAddressRoutes(answers: UserAnswers): Option[NavigateTo] = {
+  private def confirmPreviousAddressRoutes(answers: UserAnswers): Call = {
     answers.get(CompanyConfirmPreviousAddressId) match {
-      case Some(false) => NavigateTo.dontSave(routes.CompanyPreviousAddressController.onPageLoad(UpdateMode))
+      case Some(false) => routes.CompanyPreviousAddressController.onPageLoad(UpdateMode)
       case Some(true) => anyMoreChanges
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
-  private def regionBasedNameNavigation(answers: UserAnswers): Option[NavigateTo] = {
+  private def regionBasedNameNavigation(answers: UserAnswers): Call = {
     answers.get(AreYouInUKId) match {
-      case Some(false) => NavigateTo.dontSave(routes.CompanyRegisteredAddressController.onPageLoad())
-      case Some(true) => NavigateTo.dontSave(routes.CompanyIsRegisteredNameController.onPageLoad())
-      case _ => NavigateTo.dontSave(controllers.routes.SessionExpiredController.onPageLoad())
+      case Some(false) => routes.CompanyRegisteredAddressController.onPageLoad()
+      case Some(true) => routes.CompanyIsRegisteredNameController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
-  private def crnNavigation(answers: UserAnswers): Option[NavigateTo] = {
+  private def crnNavigation(answers: UserAnswers): Call = {
     answers.get(BusinessTypeId)
     match {
       case Some(BusinessType.LimitedCompany) =>
-        NavigateTo.dontSave(routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+        routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
       case _ =>
-        NavigateTo.dontSave(routes.HasCompanyCRNController.onPageLoad(NormalMode))
+        routes.HasCompanyCRNController.onPageLoad(NormalMode)
     }
   }
 
-  private def registeredNameRoutes(answers: UserAnswers): Option[NavigateTo] =
+  private def registeredNameRoutes(answers: UserAnswers): Call =
     answers.get(IsRegisteredNameId) match {
-      case Some(true) => NavigateTo.dontSave(routes.ConfirmCompanyDetailsController.onPageLoad())
-      case _ => NavigateTo.dontSave(routes.CompanyUpdateDetailsController.onPageLoad())
+      case Some(true) => routes.ConfirmCompanyDetailsController.onPageLoad()
+      case _ => routes.CompanyUpdateDetailsController.onPageLoad()
     }
 
-  private def directorRoutes(answers: UserAnswers, mode: Mode): Option[NavigateTo] =
+  private def directorRoutes(answers: UserAnswers, mode: Mode): Call =
     if (answers.allDirectorsAfterDelete(mode).isEmpty)
-      NavigateTo.dontSave(controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad())
+      controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad()
       else
-      NavigateTo.save(routes.AddCompanyDirectorsController.onPageLoad(mode))
+      routes.AddCompanyDirectorsController.onPageLoad(mode)
 
 }

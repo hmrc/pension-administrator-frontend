@@ -29,15 +29,14 @@
     @helpers.form(action = RegisterAsBusinessController.onSubmit(), 'autoComplete -> "off") {
         @components.error_summary(form.errors)
 
-        @components.heading(messages("registerAsBusiness.heading"))
-
         @components.input_yes_no(
             field       = form("value"),
             label       = messages("registerAsBusiness.heading"),
             labelClass  = Some("visually-hidden"),
             noLabelKey  = "registerAsBusiness.no.label",
             yesLabelKey = "registerAsBusiness.yes.label",
-            fieldSetClass = "form-group"
+            fieldSetClass = "form-group",
+            headingIsLegend = true
         )
 
         <div class="subsection">

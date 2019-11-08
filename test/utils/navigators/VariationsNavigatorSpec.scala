@@ -17,15 +17,13 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.FakeUserAnswersCacheConnector
 import identifiers.Identifier
-import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import identifiers.register._
+import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import models._
 import models.requests.IdentifiedRequest
-import navigators.VariationsNavigator
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor6
+import org.scalatest.prop.TableFor4
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{NavigatorBehaviour, UserAnswers}
@@ -34,43 +32,43 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import VariationsNavigatorSpec._
 
-  val navigator = new VariationsNavigator(FakeUserAnswersCacheConnector, frontendAppConfig)
+  val navigator = new VariationsNavigator(frontendAppConfig)
 
-  def updateRoutes(): TableFor6[Identifier, UserAnswers, Call, Boolean, Option[Call], Boolean] = Table(
-    ("Id", "User Answers", "Next Page (UpdateMode)", "Save(UpdateMode)", "Next Page (CheckUpdateMode)", "Save(CheckUpdateMode"),
-    (ConfirmDeleteAdviserId, confirmDeleteYes, variationWorkingKnowledgePage(UpdateMode), false, None, false),
-    (ConfirmDeleteAdviserId, confirmDeleteNo, checkYourAnswersPage, false, None, false),
-    (ConfirmDeleteAdviserId, emptyAnswers, sessionExpiredPage, false, None, false),
+  def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
+    ("Id", "User Answers", "Next Page (UpdateMode)", "Next Page (CheckUpdateMode)"),
+    (ConfirmDeleteAdviserId, confirmDeleteYes, variationWorkingKnowledgePage(UpdateMode), None),
+    (ConfirmDeleteAdviserId, confirmDeleteNo, checkYourAnswersPage, None),
+    (ConfirmDeleteAdviserId, emptyAnswers, sessionExpiredPage, None),
 
-    (AnyMoreChangesId, haveMoreChanges, checkYourAnswersPage, false, None, false),
-    (AnyMoreChangesId, noMoreChangesAdviserUnchanged, variationWorkingKnowledgePage(CheckUpdateMode), false, None, false),
-    (AnyMoreChangesId, noMoreChangesAdviserChanged, variationDeclarationFitAndProperPage, false, None, false),
-    (AnyMoreChangesId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (AnyMoreChangesId, haveMoreChanges, checkYourAnswersPage, None),
+    (AnyMoreChangesId, noMoreChangesAdviserUnchanged, variationWorkingKnowledgePage(CheckUpdateMode), None),
+    (AnyMoreChangesId, noMoreChangesAdviserChanged, variationDeclarationFitAndProperPage, None),
+    (AnyMoreChangesId, emptyAnswers, sessionExpiredPage, None),
 
-    (VariationWorkingKnowledgeId, haveWorkingKnowledge, anyMoreChangesPage, false, Some(variationDeclarationFitAndProperPage), false),
-    (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage, false, Some(adviserNamePage), false),
-    (VariationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (VariationWorkingKnowledgeId, haveWorkingKnowledge, anyMoreChangesPage, Some(variationDeclarationFitAndProperPage)),
+    (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage, Some(adviserNamePage)),
+    (VariationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, None),
 
-    (VariationStillDeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, false, None, false),
-    (VariationStillDeclarationWorkingKnowledgeId, stillHaveWorkingKnowledge, variationDeclarationFitAndProperPage, false, None, false),
-    (VariationStillDeclarationWorkingKnowledgeId, stillNotHaveWorkingKnowledge, variationWorkingKnowledgePage(CheckUpdateMode), false, None, false),
+    (VariationStillDeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, None),
+    (VariationStillDeclarationWorkingKnowledgeId, stillHaveWorkingKnowledge, variationDeclarationFitAndProperPage, None),
+    (VariationStillDeclarationWorkingKnowledgeId, stillNotHaveWorkingKnowledge, variationWorkingKnowledgePage(CheckUpdateMode), None),
 
-    (DeclarationFitAndProperId, haveFitAndProper, variationDeclarationPage, false, None, false),
-    (DeclarationFitAndProperId, noFitAndProper, variationNoLongerFitAndProperPage, false, None, false),
-    (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage, false, None, false),
+    (DeclarationFitAndProperId, haveFitAndProper, variationDeclarationPage, None),
+    (DeclarationFitAndProperId, noFitAndProper, variationNoLongerFitAndProperPage, None),
+    (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage, None),
 
-    (DeclarationChangedId, declarationChangedWithIncompleteIndividual, incompleteChangesPage, false, None, false),
-    (DeclarationChangedId, declarationChangedWithCompleteIndividual, variationDeclarationFitAndProperPage, false, None, false),
-    (DeclarationChangedId, declarationNotChangedWithAdviser, variationStillWorkingKnowledgePage, false, None, false),
-    (DeclarationChangedId, completeIndividual, variationWorkingKnowledgePage(CheckUpdateMode), false, None, false),
+    (DeclarationChangedId, declarationChangedWithIncompleteIndividual, incompleteChangesPage, None),
+    (DeclarationChangedId, declarationChangedWithCompleteIndividual, variationDeclarationFitAndProperPage, None),
+    (DeclarationChangedId, declarationNotChangedWithAdviser, variationStillWorkingKnowledgePage, None),
+    (DeclarationChangedId, completeIndividual, variationWorkingKnowledgePage(CheckUpdateMode), None),
 
-    (DeclarationId, emptyAnswers, variationSuccessPage, false, None, false)
+    (DeclarationId, emptyAnswers, variationSuccessPage, None)
   )
 
   navigator.getClass.getSimpleName must {
     appRunning()
     behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, FakeUserAnswersCacheConnector, updateRoutes(), dataDescriber, UpdateMode)
+    behave like navigatorWithRoutes(navigator, updateRoutes(), dataDescriber, UpdateMode)
   }
 }
 

@@ -33,9 +33,7 @@
 
         @components.heading(messages("confirmRegisteredAddress.heading", name ))
 
-        <p>
-            @components.tolerant_address("companyAddress", address, countryOptions)
-        </p>
+        <p>@components.tolerant_address("companyAddress", address, countryOptions)</p>
 
         @components.input_yes_no(
             field = form("value"),

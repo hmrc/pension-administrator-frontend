@@ -32,9 +32,7 @@
 
         @components.error_summary(form.errors)
 
-        @components.heading(
-            headingKey=components.hyphen(messages(viewmodel.heading)).toString
-        )
+        @components.heading(components.hyphen(messages(viewmodel.heading)).toString)
 
         @viewmodel.hint.map{hintText =>
             <p>@messages(hintText)</p>

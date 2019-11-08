@@ -18,7 +18,7 @@ package identifiers.register
 
 import java.time.LocalDate
 
-import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, email, personName, phone}
+import identifiers.register.NonUKBusinessTypeIdSpec.{email, personName, phone}
 import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorNameId
@@ -56,7 +56,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(CompanyAddressYearsId) mustNot be(defined)
         result.get(CompanyPreviousAddressId) mustNot be(defined)
         result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
-        result.get(ContactDetailsId) mustNot be(defined)
+        result.get(CompanyEmailId) mustNot be(defined)
+        result.get(CompanyPhoneId) mustNot be(defined)
         result.get(HasVATId) mustNot be(defined)
         result.get(HasPAYEId) mustNot be(defined)
         result.get(EnterVATId) mustNot be(defined)
@@ -96,7 +97,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(CompanyAddressYearsId) mustNot be(defined)
         result.get(CompanyPreviousAddressId) mustNot be(defined)
         result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
-        result.get(ContactDetailsId) mustNot be(defined)
+        result.get(CompanyEmailId) mustNot be(defined)
+        result.get(CompanyPhoneId) mustNot be(defined)
         result.get(DirectorNameId(0)) mustNot be(defined)
         result.get(DirectorNameId(1)) mustNot be(defined)
         result.get(MoreThanTenDirectorsId) mustNot be(defined)
@@ -309,7 +311,8 @@ object AreYouInUKIdSpec extends OptionValues {
         .flatMap(_.set(CompanyAddressYearsId)(AddressYears.OverAYear))
         .flatMap(_.set(CompanyPreviousAddressId)(address))
         .flatMap(_.set(CompanyPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
-        .flatMap(_.set(ContactDetailsId)(contactDetails))
+        .flatMap(_.set(CompanyEmailId)("s@s.com"))
+        .flatMap(_.set(CompanyPhoneId)("999"))
         .flatMap(_.set(DirectorNameId(0))(personName))
         .flatMap(_.set(DirectorNameId(1))(personName))
         .flatMap(_.set(MoreThanTenDirectorsId)(true))

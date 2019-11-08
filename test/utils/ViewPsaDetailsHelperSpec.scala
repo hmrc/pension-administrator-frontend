@@ -260,7 +260,8 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
       HasPartnerNINOId.toString -> false,
       PartnerNoNINOReasonId.toString -> "reason",
       PartnerAddressYearsId.toString -> AddressYears.UnderAYear.toString,
-      PartnerUniqueTaxReferenceId.toString -> UniqueTaxReference.No("reason")
+      HasPartnerUTRId.toString -> false,
+      PartnerNoUTRReasonId.toString -> "reason"
     )
   ))
 
