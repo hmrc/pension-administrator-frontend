@@ -37,7 +37,8 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
-
+import controllers.register.routes.DeclarationFitAndProperController
+import controllers.register.routes.{SubmissionInvalidController, DuplicateRegistrationController}
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,
@@ -61,7 +62,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
         case UserType.Organisation => company.routes.WhatYouWillNeedController.onPageLoad()
       }
       Future.successful(Ok(
-        declarationFitAndProper(appConfig, cancelUrl, controllers.register.routes.DeclarationFitAndProperController.onClickAgree())))
+        declarationFitAndProper(appConfig, cancelUrl, DeclarationFitAndProperController.onClickAgree())))
   }
 
   def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -82,9 +83,9 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
           Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
         }) recoverWith {
           case _: BadRequestException =>
-            Future.successful(Redirect(controllers.register.routes.SubmissionInvalidController.onPageLoad()))
+            Future.successful(Redirect(SubmissionInvalidController.onPageLoad()))
           case ex: Upstream4xxResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
-            Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
+            Future.successful(Redirect(DuplicateRegistrationController.onPageLoad()))
           case _ =>
             Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
         }
