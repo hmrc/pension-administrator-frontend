@@ -1,8 +1,13 @@
 
-GET         /:index/contact                                  controllers.register.partnership.partners.PartnerContactDetailsController.onPageLoad(mode: Mode = NormalMode, index: Index)
-POST        /:index/contact                                  controllers.register.partnership.partners.PartnerContactDetailsController.onSubmit(mode: Mode = NormalMode, index: Index)
-GET         /:index/:mode/contact                            controllers.register.partnership.partners.PartnerContactDetailsController.onPageLoad(mode: Mode, index: Index)
-POST        /:index/:mode/contact                            controllers.register.partnership.partners.PartnerContactDetailsController.onSubmit(mode: Mode, index: Index)
+GET         /:index/contact-email-address                                  controllers.register.partnership.partners.PartnerEmailController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/contact-email-address                                  controllers.register.partnership.partners.PartnerEmailController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/contact-email-address                            controllers.register.partnership.partners.PartnerEmailController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/contact-email-address                            controllers.register.partnership.partners.PartnerEmailController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/contact-phone-number                                  controllers.register.partnership.partners.PartnerPhoneController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/contact-phone-number                                  controllers.register.partnership.partners.PartnerPhoneController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/contact-phone-number                            controllers.register.partnership.partners.PartnerPhoneController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/contact-phone-number                            controllers.register.partnership.partners.PartnerPhoneController.onSubmit(mode: Mode, index: Index)
 
 GET        /:index/have-national-insurance-number                 controllers.register.partnership.partners.HasPartnerNINOController.onPageLoad(mode: Mode = NormalMode, index: Index)
 POST       /:index/have-national-insurance-number                 controllers.register.partnership.partners.HasPartnerNINOController.onSubmit(mode: Mode = NormalMode, index: Index)
