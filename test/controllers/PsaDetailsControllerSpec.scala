@@ -40,17 +40,17 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
   "Psa details Controller" must {
     "return 200 and  correct view for a GET for PSA company" in {
       when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false, true)))
+        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false)))
 
       val result = controller(userType = UserType.Organisation, psaId = Some("test Psa id")).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name", true)
+      contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name")
     }
 
     "redirect to session expired if psa id not present" in {
       when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false, true)))
+        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false)))
 
       val result = controller(userType = UserType.Organisation, psaId = None).onPageLoad(UpdateMode)(fakeRequest)
 
@@ -82,9 +82,9 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
     )
 
   private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "",
-                           canDeregister: Boolean = true, isUserAnswerUpdated: Boolean = false) = {
+                           isUserAnswerUpdated: Boolean = false) = {
 
-    val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, canDeregister)
+    val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated)
     psa_details(frontendAppConfig, model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))(fakeRequest, messages).toString
   }
 
