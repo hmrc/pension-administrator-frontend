@@ -162,7 +162,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("common.nino", Seq("site.not_entered"), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("utr.label", Seq("site.not_entered"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, 0).url, "site.add"))),
+      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
       Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, 0).url, "site.add")))
   )
