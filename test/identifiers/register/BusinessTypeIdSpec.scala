@@ -72,7 +72,8 @@ class BusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValues wi
       }
 
       "remove the data for contact details " in {
-        result.get(ContactDetailsId) mustNot be(defined)
+        result.get(CompanyEmailId) mustNot be(defined)
+        result.get(CompanyPhoneId) mustNot be(defined)
       }
 
       "remove the data for directors " in {
@@ -141,7 +142,6 @@ object BusinessTypeIdSpec extends OptionValues {
   val tolerantAddress = TolerantAddress(Some("line 1"),Some("line 2"), Some("line 3"), Some("line 4"), None, Some("DE"))
   val tolerantIndividual = TolerantIndividual(Some("firstName"), Some("middleName"), Some("lastName"))
   val address = Address("line 1", "line 2", None, None, None, "GB")
-  val contactDetails = ContactDetails("s@s.com", "999")
   val email = "s@s.com"
   val phone = "999"
   val personName = PersonName("test first", "test last")

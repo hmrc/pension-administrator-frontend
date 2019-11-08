@@ -21,7 +21,7 @@ import connectors._
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register._
-import identifiers.register.company.ContactDetailsId
+import identifiers.register.company.CompanyEmailId
 import identifiers.register.individual.IndividualEmailId
 import identifiers.register.partnership.PartnershipEmailId
 import javax.inject.Inject
@@ -96,7 +96,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
     answers.get(RegistrationInfoId).flatMap { registrationInfo =>
       registrationInfo.legalStatus match {
         case Individual => answers.get(IndividualEmailId)
-        case LimitedCompany => answers.get(ContactDetailsId).map(_.email)
+        case LimitedCompany => answers.get(CompanyEmailId)
         case Partnership => answers.get(PartnershipEmailId)
       }
     }

@@ -48,13 +48,14 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), None),
     (PartnerAddressListId(0), emptyAnswers, addressPage(mode), None),
     (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(mode), Some(checkYourAnswersPage(mode))),
-    (PartnerAddressYearsId(0), addressYearsOverAYear, partnerContactDetailsPage(mode), Some(checkYourAnswersPage(mode))),
+    (PartnerAddressYearsId(0), addressYearsOverAYear, partnerEmailPage(mode), Some(checkYourAnswersPage(mode))),
     (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(mode), Some(paPostCodePage(checkMode(mode)))),
     (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
     (PartnerPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(mode), None),
     (PartnerPreviousAddressListId(0), emptyAnswers, previousAddressPage(mode), None),
-    (PartnerPreviousAddressId(0), defaultAnswers, partnerContactDetailsPage(mode), Some(checkYourAnswersPage(mode))),
-    (PartnerContactDetailsId(0), defaultAnswers, checkYourAnswersPage(mode), Some(checkYourAnswersPage(mode))),
+    (PartnerPreviousAddressId(0), defaultAnswers, partnerEmailPage(mode), Some(checkYourAnswersPage(mode))),
+    (PartnerEmailId(0), defaultAnswers, partnerPhonePage(mode), Some(checkYourAnswersPage(mode))),
+    (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(mode), Some(checkYourAnswersPage(mode))),
     (CheckYourAnswersId, emptyAnswers, addPartnersPage(mode), None)
   )
 
@@ -80,7 +81,8 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressSame(0), anyMoreChangesPage, None),
     (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(0), previousAddressPage(UpdateMode), None),
     (PartnerPreviousAddressId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
-    (PartnerContactDetailsId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None)
+    (PartnerEmailId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
+    (PartnerPhoneId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None)
   )
 
   def normalRoutes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
@@ -119,8 +121,6 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
 
-  private def partnerContactDetailsPage(mode: Mode) = routes.PartnerContactDetailsController.onPageLoad(mode, 0)
-
   private def addPartnersPage(mode: Mode) = controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode)
 
   private def moreThanTenPartnersPage(mode: Mode) = controllers.register.partnership.routes.MoreThanTenPartnersController.onPageLoad(mode)
@@ -132,6 +132,10 @@ object PartnerNavigatorSpec extends OptionValues {
   private def partnerEnterNinoPage(mode: Mode): Call = routes.PartnerEnterNINOController.onPageLoad(mode, 0)
 
   private def partnerNoNinoPage(mode: Mode): Call = routes.PartnerNoNINOReasonController.onPageLoad(mode, 0)
+
+  private def partnerPhonePage(mode: Mode): Call = routes.PartnerPhoneController.onPageLoad(mode, 0)
+
+  private def partnerEmailPage(mode: Mode): Call = routes.PartnerEmailController.onPageLoad(mode, 0)
 
   def paPostCodePage(mode: Mode): Call = routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, 0)
 
