@@ -68,9 +68,8 @@
       "nino": {
         "value": "AA999999A"
       },
-      "partnerUtr": {
-        "hasUtr": true,
-        "utr": "1234567892"
+      "utr": {
+        "value": "1234567892"
       },
       "partnerAddressList": {
         "addressLine1": "5 Other Place",

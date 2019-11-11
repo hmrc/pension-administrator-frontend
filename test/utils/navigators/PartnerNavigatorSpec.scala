@@ -45,6 +45,8 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     (PartnerDOBId(0), emptyAnswers, partnerHasNinoPage(mode), Some(checkYourAnswersPage(mode))),
     (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(mode), Some(partnerEnterNinoPage(checkMode(mode)))),
     (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(mode), Some(partnerNoNinoPage(checkMode(mode)))),
+    (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(mode), Some(partnerEnterUtrPage(checkMode(mode)))),
+    (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(mode), Some(partnerNoUtrReasonPage(checkMode(mode)))),
     (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), None),
     (PartnerAddressListId(0), emptyAnswers, addressPage(mode), None),
     (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(mode), Some(checkYourAnswersPage(mode))),
@@ -61,20 +63,21 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
 
   def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Option[Call])] =
     Seq((AddPartnersId, addPartnersFalse, partnershipReviewPage(NormalMode), None),
-      (PartnerEnterNINOId(0), emptyAnswers, partnerUniqueTaxReferencePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
-      (PartnerNoNINOReasonId(0), emptyAnswers, partnerUniqueTaxReferencePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
-      (PartnerUniqueTaxReferenceId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
+      (PartnerEnterNINOId(0), emptyAnswers, partnerHasUtrPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
+      (PartnerNoNINOReasonId(0), emptyAnswers, partnerHasUtrPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
+      (PartnerEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
+      (PartnerNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
       (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode), None)
     )
 
   def updateOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Option[Call])] = Seq(
     (AddPartnersId, addPartnersFalse, anyMoreChangesPage, None),
-    (PartnerEnterNINOId(0), defaultAnswers, partnerUniqueTaxReferencePage(UpdateMode), None),
+    (PartnerEnterNINOId(0), defaultAnswers, partnerHasUtrPage(UpdateMode), None),
     (PartnerEnterNINOId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
-    (PartnerNoNINOReasonId(0), defaultAnswers, partnerUniqueTaxReferencePage(UpdateMode), None),
+    (PartnerNoNINOReasonId(0), defaultAnswers, partnerHasUtrPage(UpdateMode), None),
     (PartnerNoNINOReasonId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
-    (PartnerUniqueTaxReferenceId(0), defaultAnswers, addressPostCodePage(UpdateMode), None),
-    (PartnerUniqueTaxReferenceId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
+    (PartnerEnterUTRId(0), defaultAnswers, addressPostCodePage(UpdateMode), None),
+    (PartnerEnterUTRId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
     (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, None),
     (PartnerAddressYearsId(0), addressYearsOverAYearExistingPartner, anyMoreChangesPage, None),
     (PartnerAddressYearsId(0), addressYearsUnderAYearExistingPartner, confirmPreviousAddress, None),
@@ -117,8 +120,6 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private def partnerDOBPage(mode: Mode) = routes.PartnerDOBController.onPageLoad(mode, 0)
 
-  private def partnerUniqueTaxReferencePage(mode: Mode) = routes.PartnerUniqueTaxReferenceController.onPageLoad(mode, 0)
-
   private def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
 
   private def addPartnersPage(mode: Mode) = controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode)
@@ -149,6 +150,10 @@ object PartnerNavigatorSpec extends OptionValues {
 
   def addressPage(mode: Mode): Call = routes.PartnerAddressController.onPageLoad(mode, 0)
 
+  def partnerHasUtrPage(mode: Mode): Call = routes.HasPartnerUTRController.onPageLoad(mode, 0)
+  def partnerEnterUtrPage(mode: Mode): Call = routes.PartnerEnterUTRController.onPageLoad(mode, 0)
+  def partnerNoUtrReasonPage(mode: Mode): Call = routes.PartnerNoUTRReasonController.onPageLoad(mode, 0)
+
   private def partner(index: Int) =
     PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = (index % 2 == 0), isNew = true)
 
@@ -168,6 +173,11 @@ object PartnerNavigatorSpec extends OptionValues {
     .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYear = defaultAnswers
     .set(PartnerAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
+
+  private val hasUtrYes = defaultAnswers
+    .set(HasPartnerUTRId(0))(value = true).asOpt.value
+  private val hasUtrNo = defaultAnswers
+    .set(HasPartnerUTRId(0))(value = false).asOpt.value
 
   private val addressYearsOverAYearExistingPartner = existingPartnerInUpdate(0)
     .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value

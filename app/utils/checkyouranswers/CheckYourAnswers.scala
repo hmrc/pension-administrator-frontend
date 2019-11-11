@@ -66,8 +66,6 @@ object CheckYourAnswers {
 
   implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
 
-  implicit def uniqueTaxReference[I <: TypedIdentifier[UniqueTaxReference]](implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = UniqueTaxReferenceCYA()()
-
   implicit def tolerantAddress[I <: TypedIdentifier[TolerantAddress]](implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = TolerantAddressCYA()()
 
   implicit def address[I <: TypedIdentifier[Address]](implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = AddressCYA()()
@@ -196,28 +194,6 @@ case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "
             visuallyHiddenText = hiddenLabel
           ))) getOrElse Seq.empty[AnswerRow]
     }
-  }
-}
-
-
-case class UniqueTaxReferenceCYA[I <: TypedIdentifier[UniqueTaxReference]](
-                                                                            questionLabel: String = "partnerUniqueTaxReference.checkYourAnswersLabel",
-                                                                            utrLabel: String = "common.utr.text",
-                                                                            reasonLabel: String = "partnerUniqueTaxReference.checkYourAnswersLabel.reason"
-                                                                          ) {
-  def apply()(implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
-    override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-      userAnswers.get(id).map {
-        case UniqueTaxReference.Yes(utr) => Seq(
-          AnswerRow(questionLabel, Seq(s"${UniqueTaxReference.Yes}"), true, changeUrl),
-          AnswerRow(utrLabel, Seq(utr), true, changeUrl)
-        )
-        case UniqueTaxReference.No(reason) => Seq(
-          AnswerRow(questionLabel, Seq(s"${UniqueTaxReference.No}"), true, changeUrl),
-          AnswerRow(reasonLabel, Seq(reason), true, changeUrl)
-        )
-        case _ => Seq.empty[AnswerRow]
-      } getOrElse Seq.empty[AnswerRow]
   }
 }
 
