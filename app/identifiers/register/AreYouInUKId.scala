@@ -56,7 +56,7 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
 
   private def removeDeclarationData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(
-      DeclarationWorkingKnowledgeId, AdviserNameId, AdviserDetailsId, AdviserAddressPostCodeLookupId, AdviserAddressListId, AdviserAddressId
+      DeclarationWorkingKnowledgeId, AdviserNameId, AdviserEmailId, AdviserPhoneId, AdviserAddressPostCodeLookupId, AdviserAddressListId, AdviserAddressId
     ))
   }
 

@@ -204,11 +204,13 @@ contactDetails.error.phone.invalid = Enter a phone number, like 01632 960 001, 0
 
 email.title = What is {0}’s email address?
 individual.email.title = What is your email address?
+adviser.email.title = What is the adviser's email address?
 email.visuallyHidden.text = {0}’s email address
 contact.body = We will only use this to contact {0} about pension scheme administration.
 
 phone.title = What is {0}’s phone number?
 individual.phone.title = What is your phone number?
+adviser.phone.title = What is the adviser's phone number?
 phone.visuallyHidden.text = {0}’s phone number
 
 individualPreviousAddress.visuallyHidden.text = your previous address
@@ -420,6 +422,7 @@ thePartnership = the partnership
 theDirector = the director
 thePartner = the partner
 theIndividual = the individual
+theAdviser = the adviser
 
 directorPreviousAddressPostCodeLookup.heading = What was {0}’s previous contact address?
 directorPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this company.

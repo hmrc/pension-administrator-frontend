@@ -19,7 +19,6 @@ package identifiers.register
 import identifiers.register.adviser._
 import models.TolerantAddress
 import models.register.DeclarationWorkingKnowledge
-import models.register.adviser.AdviserDetails
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
@@ -37,7 +36,8 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
     val answersWithAdviser = UserAnswers(Json.obj())
       .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge)
       .flatMap(_.set(AdviserNameId)("test name"))
-      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("a@a", "01234567890")))
+      .flatMap(_.set(AdviserEmailId)("a@a"))
+      .flatMap(_.set(AdviserPhoneId)("01234567890"))
       .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
       .flatMap(_.set(AdviserAddressId)(address.toAddress))
       .flatMap(_.set(AdviserAddressListId)(TolerantAddress(Some("100"),
@@ -51,7 +51,8 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
     val answersWithAdviser2 = UserAnswers(Json.obj())
       .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser)
       .flatMap(_.set(AdviserNameId)("test name"))
-      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("a@a", "01234567890")))
+      .flatMap(_.set(AdviserEmailId)("a@a"))
+      .flatMap(_.set(AdviserPhoneId)("01234567890"))
       .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
       .flatMap(_.set(AdviserAddressId)(address.toAddress))
       .flatMap(_.set(AdviserAddressListId)(TolerantAddress(Some("100"),
@@ -80,8 +81,12 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
         result.get(AdviserAddressId) must be(defined)
       }
 
-      "not remove date for adviser details (when nothing changed)" in {
-        result.get(AdviserDetailsId) must be(defined)
+      "not remove date for adviser email (when nothing changed)" in {
+        result.get(AdviserEmailId) must be(defined)
+      }
+
+      "not remove date for adviser phone (when nothing changed)" in {
+        result.get(AdviserPhoneId) must be(defined)
       }
     }
 
@@ -102,8 +107,12 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
         result.get(AdviserAddressId) mustNot be(defined)
       }
 
-      "remove date for adviser details" in {
-        result.get(AdviserDetailsId) mustNot be(defined)
+      "remove data for adviser email" in {
+        result.get(AdviserEmailId) mustNot be(defined)
+      }
+
+      "remove data for adviser phone" in {
+        result.get(AdviserPhoneId) mustNot be(defined)
       }
     }
 
@@ -122,8 +131,12 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
         result.get(AdviserAddressId) mustBe defined
       }
 
-      "not remove date for adviser details" in {
-        result.get(AdviserDetailsId) mustBe defined
+      "not remove data for adviser email" in {
+        result.get(AdviserEmailId) mustBe defined
+      }
+
+      "not remove data for adviser phone" in {
+        result.get(AdviserPhoneId) mustBe defined
       }
     }
   }

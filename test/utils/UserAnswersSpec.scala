@@ -16,15 +16,12 @@
 
 package utils
 
-import java.time.LocalDate
-
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.{DirectorAddressId, DirectorNameId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
 import models._
-import models.register.adviser.AdviserDetails
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.{JsPath, JsResultException, Json}
 import viewmodels.Person
@@ -293,7 +290,8 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .variationWorkingKnowledge(false)
           .adviserName("test adviser")
           .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
-          .adviserDetails(AdviserDetails("email", "234"))
+          .adviserEmail("email")
+          .adviserPhone("234")
           .set(PartnerNameId(0))(PersonName("First", "Last"))
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
           .flatMap(_.set(IsPartnerCompleteId(1))(true))

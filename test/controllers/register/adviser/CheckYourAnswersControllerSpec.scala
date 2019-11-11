@@ -18,8 +18,7 @@ package controllers.register.adviser
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
-import models.register.adviser.AdviserDetails
+import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import models.{Address, CheckMode, NormalMode}
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
@@ -37,7 +36,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
   val adviserName = "test adviser name"
-  val advDetails = AdviserDetails("test@test.com", "01234567890")
+  val advEmail = "test@test.com"
+  val advPhone = "01234567890"
 
   val address = Address(
     "address-line-1",
@@ -50,7 +50,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   val validData: JsObject = Json.obj(
     AdviserNameId.toString -> adviserName,
-    AdviserDetailsId.toString -> advDetails,
+    "adviserDetails" -> Json.obj(
+      AdviserEmailId.toString -> advEmail,
+      AdviserPhoneId.toString -> advPhone),
     AdviserAddressId.toString -> address
   )
 
@@ -76,18 +78,18 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       None
     ),
     AnswerRow(
-      "contactDetails.email.checkYourAnswersLabel",
-      Seq(advDetails.email),
+      messages("email.title", adviserName),
+      Seq(advEmail),
       false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)),
-      None
+      Some(Link(controllers.register.adviser.routes.AdviserEmailController.onPageLoad(CheckMode).url)),
+      Some(messages("email.visuallyHidden.text", adviserName))
     ),
     AnswerRow(
-      "contactDetails.phone.checkYourAnswersLabel",
-      Seq(advDetails.phone),
+      messages("phone.title", adviserName),
+      Seq(advPhone),
       false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)),
-      None
+      Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(CheckMode).url)),
+      Some(messages("phone.visuallyHidden.text", adviserName))
     )
   )
 
