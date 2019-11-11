@@ -371,14 +371,15 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
-  private def partnerUtr(index: Int): Option[AnswerRow] = userAnswers.get(PartnerUniqueTaxReferenceId(index)) match {
-    case Some(UniqueTaxReference.Yes(utr)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
+  private def partnerUtr(index: Int): Option[AnswerRow] = userAnswers.get(PartnerEnterUTRId(index)) match {
+    case Some(ReferenceValue(utr, false)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
       None))
 
-    case Some(UniqueTaxReference.No(_)) => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, index).url, "site.add")), None))
+    case Some(ReferenceValue(utr, true)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
+      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, index).url)), None))
 
-    case _ => None
+    case None => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
+      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
   private def partnerAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(PartnerAddressId(index)) map { address =>
@@ -398,14 +399,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def partnerPhone(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>
-    AnswerRow("phone.label", Seq(details.phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, index).url)))
+  private def partnerPhone(index: Int): Option[AnswerRow] = userAnswers.get(PartnerPhoneId(index)) map { phone =>
+    AnswerRow("phone.label", Seq(phone), answerIsMessageKey = false,
+      Some(Link(controllers.register.partnership.partners.routes.PartnerPhoneController.onPageLoad(UpdateMode, index).url)))
   }
 
-  private def partnerEmail(index: Int): Option[AnswerRow] = userAnswers.get(PartnerContactDetailsId(index)) map { details =>
-    AnswerRow("email.label", Seq(details.email), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, index).url)))
+  private def partnerEmail(index: Int): Option[AnswerRow] = userAnswers.get(PartnerEmailId(index)) map { email =>
+    AnswerRow("email.label", Seq(email), answerIsMessageKey = false,
+      Some(Link(controllers.register.partnership.partners.routes.PartnerEmailController.onPageLoad(UpdateMode, index).url)))
   }
 
 

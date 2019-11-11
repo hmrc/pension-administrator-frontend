@@ -17,32 +17,9 @@
 package forms.mappings
 
 import forms.behaviours.UtrBehaviours
-import models.UniqueTaxReference
 import play.api.data.Form
 
 class UtrMappingSpec extends UtrBehaviours {
-
-  "A form with a UniqueTaxReference" should {
-    val mapping = uniqueTaxReferenceMapping(
-      requiredKey = "directorUniqueTaxReference.error.required",
-      requiredUtrKey = "common.error.utr.required",
-      utrLengthKey = "common.error.utr.length",
-      utrInvalidKey = "common.error.utr.invalid",
-      requiredReasonKey = "directorUniqueTaxReference.error.reason.required",
-      reasonLengthKey = "common.error.utr.reason.length"
-    )
-
-    val testForm: Form[UniqueTaxReference] = Form("utr" -> mapping)
-
-    behave like formWithUniqueTaxpayerReference(
-      testForm,
-      keyRequired = "directorUniqueTaxReference.error.required",
-      keyUtrRequired = "common.error.utr.required",
-      keyReasonRequired = "directorUniqueTaxReference.error.reason.required",
-      keyUtrLength = "common.error.utr.length",
-      keyReasonLength = "common.error.utr.reason.length"
-    )
-  }
 
   "A form with a UTR" should {
     val mapping = utrMapping()

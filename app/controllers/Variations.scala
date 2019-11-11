@@ -75,8 +75,8 @@ trait Variations extends FrontendController {
       case DirectorAddressId(_) | DirectorAddressYearsId(_) | DirectorEmailId(_) | DirectorPhoneId(_) |
            DirectorEnterNINOId(_) | DirectorPreviousAddressId(_) | DirectorEnterUTRId(_) | DirectorNameId(_)
       => Some(DirectorsOrPartnersChangedId)
-      case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerContactDetailsId(_) |
-           PartnerEnterNINOId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_) | PartnerNameId(_)
+      case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerEmailId(_) | PartnerPhoneId(_) |
+           PartnerEnterNINOId(_) | PartnerPreviousAddressId(_) | PartnerEnterUTRId(_) | PartnerNameId(_)
       => Some(DirectorsOrPartnersChangedId)
       case _ => None
     }

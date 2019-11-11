@@ -102,19 +102,31 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
         }
 
         s"render the view correctly for utr in ${jsLiteral.to(mode)}" in {
-          val utr = "1111111111"
-          val retrievalAction = UserAnswers().set(PartnerUniqueTaxReferenceId(index))(UniqueTaxReference.Yes("1111111111")).asOpt.value.dataRetrievalAction
+          val utr = ReferenceValue("1111111111")
+          val reason = "test reason"
+          val retrievalAction = UserAnswers().partnerHasUTR(index, flag = true).partnerEnterUTR(index, utr)
+            .partnerNoUTRReason(index, reason).dataRetrievalAction
           val rows = Seq(
-            AnswerRow("partnerUniqueTaxReference.checkYourAnswersLabel",
-              Seq(s"${UniqueTaxReference.Yes}"),
+            answerRow(
+              label = messages("hasUTR.heading", defaultPartnerName),
+              answer = Seq("site.yes"),
               answerIsMessageKey = true,
-              Some(Link(PartnerUniqueTaxReferenceController.onPageLoad(checkMode(mode), index).url))
+              changeUrl = Some(Link(HasPartnerUTRController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("hasUTR.visuallyHidden.text", defaultPartnerName))
             ),
-            AnswerRow(
-              "common.utr.text",
-              Seq(utr),
-              answerIsMessageKey = true,
-              Some(Link(PartnerUniqueTaxReferenceController.onPageLoad(checkMode(mode), index).url))))
+            answerRow(
+              label = messages("enterUTR.heading", defaultPartnerName),
+              answer = Seq(utr.value),
+              changeUrl = Some(Link(PartnerEnterUTRController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("enterUTR.visuallyHidden.text", defaultPartnerName))
+            ),
+            answerRow(
+              label = messages("whyNoUTR.heading", defaultPartnerName),
+              answer = Seq(reason),
+              changeUrl = Some(Link(PartnerNoUTRReasonController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("whyNoUTR.visuallyHidden.text", defaultPartnerName))
+            )
+          )
 
           val sections = Seq(AnswerSection(None, rows))
 
@@ -164,20 +176,22 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
         }
 
         s"render the view correctly for email and phone in ${jsLiteral.to(mode)}" in {
-          val retrievalAction = UserAnswers().set(PartnerContactDetailsId(index))(ContactDetails(email, phone)).asOpt.value.dataRetrievalAction
+          val retrievalAction = UserAnswers().set(PartnerEmailId(index))(email).flatMap(
+            _.set(PartnerPhoneId(index))(phone)).asOpt.value.dataRetrievalAction
           val rows = Seq(
-            AnswerRow(
-              "contactDetails.email",
-              Seq(email),
-              answerIsMessageKey = false,
-              Some(Link(PartnerContactDetailsController.onPageLoad(checkMode(mode), index).url))
+            answerRow(
+              label = messages("email.title", defaultPartnerName),
+              answer = Seq(email),
+              changeUrl = Some(Link(PartnerEmailController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultPartnerName))
             ),
-            AnswerRow(
-              "contactDetails.phone",
-              Seq(phone),
-              answerIsMessageKey = false,
-              Some(Link(PartnerContactDetailsController.onPageLoad(checkMode(mode), index).url))
-            ))
+            answerRow(
+              label = messages("phone.title", defaultPartnerName),
+              answer = Seq(phone),
+              changeUrl = Some(Link(PartnerPhoneController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultPartnerName))
+            )
+          )
 
           val sections = Seq(AnswerSection(None, rows))
 

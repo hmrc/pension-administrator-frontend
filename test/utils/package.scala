@@ -239,6 +239,10 @@ package object utils {
 
     //Partners
 
+    def partnerName(index: Int, personName: PersonName): UserAnswers = {
+      answers.set(PartnerNameId(index))(personName).asOpt.value
+    }
+
     def partnerPreviousAddress(index: Int, address: Address): UserAnswers = {
       answers.set(PartnerPreviousAddressId(index))(address).asOpt.value
     }
@@ -257,6 +261,18 @@ package object utils {
 
     def partnerNoNINOReason(index: Int, reason: String): UserAnswers = {
       answers.set(PartnerNoNINOReasonId(index))(reason).asOpt.value
+    }
+
+    def partnerHasUTR(index: Int, flag: Boolean): UserAnswers = {
+      answers.set(HasPartnerUTRId(index))(flag).asOpt.value
+    }
+
+    def partnerEnterUTR(index: Int, nino: ReferenceValue): UserAnswers = {
+      answers.set(PartnerEnterUTRId(index))(nino).asOpt.value
+    }
+
+    def partnerNoUTRReason(index: Int, reason: String): UserAnswers = {
+      answers.set(PartnerNoUTRReasonId(index))(reason).asOpt.value
     }
 
     def partnerAddress(index: Int, address: Address): UserAnswers = {
