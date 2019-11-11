@@ -36,24 +36,29 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Next Page (CheckMode)"),
-    (AdviserNameId, emptyAnswers, adviserDetailsPage(NormalMode), Some(checkYourAnswersPage(Mode.journeyMode(CheckMode)))),
-    (AdviserDetailsId, emptyAnswers, adviserPostCodeLookUpPage(NormalMode), Some(checkYourAnswersPage(Mode.journeyMode(CheckMode)))),
+    (AdviserNameId, emptyAnswers, adviserPostCodeLookUpPage(NormalMode), Some(checkYourAnswersPage(Mode.journeyMode(CheckMode)))),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(NormalMode), Some(adviserAddressListPage(CheckMode))),
     (AdviserAddressListId, emptyAnswers, adviserAddressPage(NormalMode), Some(adviserAddressPage(CheckMode))),
-    (AdviserAddressId, emptyAnswers, checkYourAnswersPage(NormalMode), Some(checkYourAnswersPage(Mode.journeyMode(CheckMode)))),
+    (AdviserAddressId, emptyAnswers, adviserEmailPage(NormalMode), Some(checkYourAnswersPage(CheckMode))),
+    (AdviserEmailId, emptyAnswers, adviserPhonePage(NormalMode), Some(checkYourAnswersPage(CheckMode))),
+    (AdviserPhoneId, emptyAnswers, checkYourAnswersPage(NormalMode), Some(checkYourAnswersPage(Mode.journeyMode(CheckMode)))),
+
     (CheckYourAnswersId, emptyAnswers, declarationFitAndProperPage, None)
   )
 
   def updateModeRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Next Page (CheckMode)"),
-    (AdviserNameId, emptyAnswers, adviserDetailsPage(UpdateMode), Some(checkYourAnswersPage(UpdateMode))),
-    (AdviserDetailsId, emptyAnswers, haveMoreChangesPage, None),
-    (AdviserDetailsId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode),  Some(checkYourAnswersPage(UpdateMode))),
-    (AdviserDetailsId, adviserUpdatedWithAddressOnly, haveMoreChangesPage,  Some(checkYourAnswersPage(UpdateMode))),
+    (AdviserNameId, emptyAnswers, haveMoreChangesPage, Some(checkYourAnswersPage(UpdateMode))),
+    (AdviserNameId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), Some(checkYourAnswersPage(UpdateMode))),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), Some(adviserAddressListPage(UpdateMode))),
     (AdviserAddressListId, emptyAnswers, adviserAddressPage(UpdateMode), Some(adviserAddressPage(UpdateMode))),
     (AdviserAddressId, emptyAnswers, haveMoreChangesPage, Some(checkYourAnswersPage(UpdateMode))),
-    (AdviserAddressId, adviserUpdated, checkYourAnswersPage(UpdateMode), None),
+    (AdviserAddressId, adviserUpdated, adviserEmailPage(UpdateMode), None),
+    (AdviserEmailId, emptyAnswers, haveMoreChangesPage, None),
+    (AdviserEmailId, adviserUpdated, adviserPhonePage(UpdateMode),  Some(checkYourAnswersPage(UpdateMode))),
+    (AdviserPhoneId, emptyAnswers, haveMoreChangesPage,  Some(checkYourAnswersPage(UpdateMode))),
+    (AdviserPhoneId, adviserUpdated, checkYourAnswersPage(UpdateMode),  Some(checkYourAnswersPage(UpdateMode))),
+
     (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage, None),
     (CheckYourAnswersId, declarationPensionAdvisorTrue, variationDeclarationFitAndProperPage, None),
     (invalidIdForNavigator, emptyAnswers, defaultPage, Some(defaultPage))
@@ -77,7 +82,8 @@ object AdviserNavigatorSpec extends OptionValues {
   private val declarationPensionAdvisorTrue = UserAnswers(Json.obj()).set(PAInDeclarationJourneyId)(true).asOpt.get
 
   private def adviserPostCodeLookUpPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(mode)
-  private def adviserDetailsPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(mode)
+  private def adviserEmailPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserEmailController.onPageLoad(mode)
+  private def adviserPhonePage(mode: Mode): Call = controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(mode)
   private def adviserAddressListPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressListController.onPageLoad(mode)
   private def adviserAddressPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode)
   private def checkYourAnswersPage(mode: Mode): Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)

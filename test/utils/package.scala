@@ -22,11 +22,10 @@ import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
-import identifiers.register.partnership.partners._
 import identifiers.register.partnership._
+import identifiers.register.partnership.partners._
 import identifiers.register.{BusinessNameId, RegisterAsBusinessId, RegistrationInfoId, VariationWorkingKnowledgeId}
 import models._
-import models.register.adviser.AdviserDetails
 import org.scalatest.OptionValues
 
 
@@ -180,8 +179,12 @@ package object utils {
       answers.set(AdviserAddressId)(address).asOpt.value
     }
 
-    def adviserDetails(details: AdviserDetails): UserAnswers = {
-      answers.set(AdviserDetailsId)(details).asOpt.value
+    def adviserEmail(email: String): UserAnswers = {
+      answers.set(AdviserEmailId)(email).asOpt.value
+    }
+
+    def adviserPhone(phone: String): UserAnswers = {
+      answers.set(AdviserPhoneId)(phone).asOpt.value
     }
 
     def adviserAddressList(address: TolerantAddress): UserAnswers = {
