@@ -34,9 +34,9 @@ class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
     case RegisterAsBusinessId => individualOrOganisationRoutes(ua)
     case BusinessTypeId => businessTypeRoutes(ua)
     case NonUKBusinessTypeId => nonUkBusinessTypeRoutes(ua)
-    case DeclarationId => controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
     case DeclarationWorkingKnowledgeId => declarationWorkingKnowledgeRoutes(ua)
-    case DeclarationFitAndProperId => controllers.register.routes.ConfirmationController.onPageLoad()
+    case DeclarationFitAndProperId => controllers.register.routes.DeclarationController.onPageLoad()
+    case DeclarationId => controllers.register.routes.ConfirmationController.onPageLoad()
   }
 
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {

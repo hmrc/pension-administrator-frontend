@@ -18,7 +18,25 @@ package identifiers.register.adviser
 
 import identifiers._
 import models.Address
+import play.api.i18n.Messages
+import utils.UserAnswers
+import utils.checkyouranswers.{AddressCYA, CheckYourAnswers, CheckYourAnswersAdviser}
+import utils.countryOptions.CountryOptions
+import viewmodels.{AnswerRow, Link, Message}
 
 case object AdviserAddressId extends TypedIdentifier[Address] {
+  self =>
   override def toString: String = "adviserAddress"
+
+  implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[self.type] =
+    new CheckYourAnswersAdviser[self.type] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, messageKey = "addressFor.label")
+
+      private def hiddenLabel(ua: UserAnswers): Message =
+        dynamicMessage(ua, messageKey = "addressFor.visuallyHidden.text")
+
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        AddressCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+    }
 }

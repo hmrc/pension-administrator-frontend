@@ -16,20 +16,35 @@
 
 package controllers.register
 
-import connectors.FakeUserAnswersCacheConnector
+import config.FrontendAppConfig
+import connectors._
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
-import identifiers.register.DeclarationId
+import identifiers.register.partnership.PartnershipEmailId
+import identifiers.register.{BusinessNameId, PsaSubscriptionResponseId, RegistrationInfoId, _}
+import models.RegistrationCustomerType.UK
+import models.RegistrationIdType.UTR
+import models.RegistrationLegalStatus.Partnership
 import models.UserType.UserType
-import models.{NormalMode, UserType}
+import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse}
+import models.requests.DataRequest
+import models.{BusinessDetails, NormalMode, RegistrationInfo, UserType}
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.mvc.Call
-import play.api.test.Helpers._
-import utils.FakeNavigator
+import play.api.libs.json.{JsString, Json, Writes}
+import play.api.mvc.AnyContent
+import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.domain.PsaId
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, Upstream4xxResponse}
+import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declaration
 
-class DeclarationControllerSpec extends ControllerSpecBase {
+import scala.concurrent.{ExecutionContext, Future}
+
+class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   import DeclarationControllerSpec._
 
@@ -49,94 +64,181 @@ class DeclarationControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
 
-    "redirect to the next page on a valid POST request" in {
-      val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-      val result = controller().onSubmit(NormalMode)(request)
+    "calling onSubmit" must {
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
+      "redirect to the next page" when {
 
-    "save the answer on a valid POST request" in {
-      val request = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-      val result = controller().onSubmit(NormalMode)(request)
+        "on a valid request and send the email" in {
+          val validData = data ++ Json.obj(
+            "partnershipContactDetails" -> Json.obj(
+              PartnershipEmailId.toString -> email
+            )
+          )
 
-      status(result) mustBe SEE_OTHER
-      FakeUserAnswersCacheConnector.verify(DeclarationId, true)
-    }
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
+          when(mockEmailConnector.sendEmail(eqTo(email), any(), eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
 
-    "reject an invalid POST request and display errors" in {
-      val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-      val result = controller().onSubmit(NormalMode)(fakeRequest)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(onwardRoute.url)
+          verify(mockEmailConnector, times(1)).sendEmail(eqTo(email), any(), eqTo(PsaId("A0123456")))(any(), any())
+        }
 
-      status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(formWithErrors)
-    }
+        "on a valid request and not send the email" in {
+          reset(mockEmailConnector)
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
+          val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(data)),
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
 
-    "redirect to Session Expired on a POST request if no cached data is found" in {
-      val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(onwardRoute.url)
+          verify(mockEmailConnector, never()).sendEmail(eqTo(email), any(), eqTo(PsaId("A0123456")))(any(), any())
+        }
+      }
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    }
+      "redirect to Session Expired" when {
+        "no cached data is found" in {
+          val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
 
-    "set cancel link correctly to Individual What You Will Need page on a GET request" in {
-      val result = controller(userType = UserType.Individual).onPageLoad(NormalMode)(fakeRequest)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        }
 
-      contentAsString(result) mustBe viewAsString(cancelCall = individualCancelCall)
-    }
+        "known facts cannot be retrieved" in {
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
+          val result = controller(
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,
+            knownFactsRetrieval = fakeKnownFactsRetrieval(None)).onSubmit(NormalMode)(validRequest)
 
-    "set cancel link correctly to Company What You Will Need page on a GET request" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        }
 
-      contentAsString(result) mustBe viewAsString(cancelCall = companyCancelCall)
-    }
+        "enrolment is not successful" in {
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
+          val result = controller(
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,
+            enrolments = fakeEnrolmentStoreConnector(HttpResponse(BAD_REQUEST))
+          ).onSubmit(NormalMode)(validRequest)
 
-    "set cancel link correctly to Individual What You Will Need page on a POST request" in {
-      val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-      val result = controller(userType = UserType.Individual).onSubmit(NormalMode)()(fakeRequest)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        }
+      }
 
-      contentAsString(result) mustBe viewAsString(formWithErrors, individualCancelCall)
-    }
+      "save the answer and PSA Subscription response on a valid request" in {
+        val result = controller().onSubmit(NormalMode)(validRequest)
 
-    "set cancel link correctly to Company What You Will Need page on a POST request" in {
-      val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-      val result = controller().onSubmit(NormalMode)()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        FakeUserAnswersCacheConnector.verify(DeclarationId, value = true)
+        FakeUserAnswersCacheConnector.verify(PsaSubscriptionResponseId, validPsaResponse)
+      }
 
-      contentAsString(result) mustBe viewAsString(formWithErrors, companyCancelCall)
+      "redirect to Duplicate Registration if a registration already exists for the organization" in {
+        val result = controller(pensionsSchemeConnector = fakePensionsSchemeConnector(
+          Future.failed(Upstream4xxResponse(message = "INVALID_BUSINESS_PARTNER", upstreamResponseCode = FORBIDDEN, reportAs = FORBIDDEN))))
+          .onSubmit(NormalMode)(validRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.register.routes.DuplicateRegistrationController.onPageLoad().url)
+      }
+
+      "redirect to Submission Invalid" when {
+        "response is BAD_REQUEST from downstream" in {
+          val result = controller(pensionsSchemeConnector = fakePensionsSchemeConnector(
+            Future.failed(new BadRequestException("INVALID_PAYLOAD"))))
+            .onSubmit(NormalMode)(validRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.register.routes.SubmissionInvalidController.onPageLoad().url)
+        }
+      }
     }
   }
 
 }
 
-object DeclarationControllerSpec extends ControllerSpecBase {
-
+object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val form: Form[_] = new DeclarationFormProvider()()
-  private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
+  private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+  val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
+  val email = "test@test.com"
+  val businessName = "MyCompany"
+  val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
+  private val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
+    BusinessNameId.toString -> businessName
+  )
 
-  private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
+  private val validPsaResponse = PsaSubscriptionResponse("A0123456")
+  private val knownFacts = Some(KnownFacts(
+    Set(KnownFact("PSAID", "test-psa")),
+    Set(KnownFact("NINO", "test-nino")
+    )))
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
-                         userType: UserType = UserType.Organisation) =
+  private def fakePensionsSchemeConnector(response: Future[PsaSubscriptionResponse] = Future.successful(validPsaResponse)): PensionsSchemeConnector =
+    new PensionsSchemeConnector {
+
+      override def registerPsa
+      (answers: UserAnswers)
+      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+        response
+      }
+
+      override def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
+    }
+
+  private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
+    override def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
+  }
+
+  private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
+    new TaxEnrolmentsConnector {
+      override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(implicit w: Writes[KnownFacts],
+                                                                       hc: HeaderCarrier, ec: ExecutionContext, request: DataRequest[AnyContent]) =
+        enrolResponse.status match {
+          case NO_CONTENT => Future.successful(enrolResponse)
+          case ex => Future.failed(new HttpException("Fail", ex))
+        }
+    }
+
+  }
+
+  val validData = Json.obj(DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString))
+  val dataRetrieval = new FakeDataRetrievalAction(Some(validData))
+
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockEmailConnector = mock[EmailConnector]
+  private val appConfig = app.injector.instanceOf[FrontendAppConfig]
+
+  private def controller(
+                          dataRetrievalAction: DataRetrievalAction = dataRetrieval,
+                          userType: UserType = UserType.Organisation,
+                          fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
+                          pensionsSchemeConnector: PensionsSchemeConnector = fakePensionsSchemeConnector(),
+                          knownFactsRetrieval: KnownFactsRetrieval = fakeKnownFactsRetrieval(),
+                          enrolments: TaxEnrolmentsConnector = fakeEnrolmentStoreConnector()
+                        ): DeclarationController =
     new DeclarationController(
-      frontendAppConfig,
+      appConfig,
       messagesApi,
       FakeAuthAction(userType),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,
-      new DeclarationFormProvider(),
-      FakeUserAnswersCacheConnector
+      fakeUserAnswersCacheConnector,
+      pensionsSchemeConnector,
+      knownFactsRetrieval,
+      enrolments,
+      mockEmailConnector
     )
 
-  private def viewAsString(form: Form[_] = form, cancelCall: Call = companyCancelCall) =
+  private def viewAsString(form: Form[_] = form) =
     declaration(
-      frontendAppConfig,
-      form,
-      cancelCall
+      frontendAppConfig, true
     )(fakeRequest, messages).toString
 
 }

@@ -21,7 +21,7 @@ import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.adviser.AdviserAddressPostCodeLookupId
+import identifiers.register.adviser.{AdviserAddressPostCodeLookupId, AdviserNameId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -51,13 +51,16 @@ class AdviserAddressPostCodeLookupController @Inject()(
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel = PostcodeLookupViewModel(
     controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
     controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
-    Message("common.adviser.address.title"),
-    Message("common.adviser.address.heading"),
+    Message("adviserAddressPostCodeLookup.heading", Message("theAdviser")),
+    Message("adviserAddressPostCodeLookup.heading", entityName),
     Message("adviserAddressPostCodeLookup.enterPostcode"),
     Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),
     Message("adviserAddressPostCodeLookup.formLabel"),
     psaName = psaName()
   )
+
+  private def entityName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(AdviserNameId).getOrElse(Message("theAdviser"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

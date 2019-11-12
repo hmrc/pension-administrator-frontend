@@ -56,26 +56,25 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     AdviserAddressId.toString -> address
   )
 
-  def adviserAddress = Seq(AnswerRow(
-    "cya.label.address",
-    Seq(
-      address.addressLine1,
-      address.addressLine2,
-      address.postcode.value,
-      address.country
-    ),
-    false,
-    Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url)),
-    None
-  ))
-
   def adviserDetails = Seq(
     AnswerRow(
-      "adviserName.checkYourAnswersLabel",
+      messages("adviserName.heading"),
       Seq(adviserName),
       false,
       Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(CheckMode).url)),
-      None
+      Some(messages("adviserName.visuallyHidden.text"))
+    ),
+    AnswerRow(
+      messages("addressFor.label", adviserName),
+      Seq(
+        address.addressLine1,
+        address.addressLine2,
+        address.postcode.value,
+        address.country
+      ),
+      false,
+      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url)),
+      Some(messages("addressFor.visuallyHidden.text", adviserName))
     ),
     AnswerRow(
       messages("email.title", adviserName),
@@ -93,7 +92,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     )
   )
 
-  def sections = Seq(AnswerSection(None, adviserDetails ++ adviserAddress))
+  def sections = Seq(AnswerSection(None, adviserDetails))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CheckYourAnswersController(

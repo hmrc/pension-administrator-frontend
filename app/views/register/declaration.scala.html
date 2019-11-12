@@ -18,21 +18,18 @@
 @import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig, form: Form[_], cancelCall: Call)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, workingKnowledge: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.error_summary(form.errors)
-
     @components.heading(messages("declaration.heading"))
 
-    @helpers.form(action = routes.DeclarationController.onSubmit(), 'autoComplete -> "off") {
-        @components.paragraph_text(messages("declaration.declaration") + ":")
+        @components.paragraph_text(messages("declaration.declaration"))
 
-        <ol class="list-number">
+        <ul class="list-bullet">
             <li>
                 @components.paragraph_text(messages("declaration.statement1"))
             </li>
@@ -45,34 +42,20 @@
             <li>
                 @components.paragraph_text(messages("declaration.statement4"))
             </li>
-        </ol>
-
-             <div class="form-group @if(form("agree").hasErrors){form-field--error}">
-                <fieldset class="inline">
-                    <legend>
-
-                        <span class="visually-hidden">@messages("common.declaration.legend")</span>
-
-                        @form("agree").errors.map { error =>
-                            <span class="error-notification" id="error-message-agree-input">
-                                <span class="visually-hidden">@messages("site.error")</span>
-                                @messages(error.message, error.args: _*)</span>
-                        }
-                    </legend>
-                    <div class="multiple-choice">
-                        <input id="agree" name="agree" type="checkbox" value="agreed">
-                        <label for="agree">@messages("declaration.agree")</label>
-                    </div>
-                </fieldset>
-            </div>
+            <li>
+                @if(workingKnowledge) {
+                @components.paragraph_text(messages("declaration.statement5a"))
+                } else {
+                @components.paragraph_text(messages("declaration.statement5b"))
+                }
+            </li>
+        </ul>
 
         <div class="form-group">
             <div class="section">
-                @components.submit_button("site.save_and_continue")
+                @components.button_link("site.save_and_continue", controllers.register.routes.DeclarationController.onPageLoad().url, "submit")
             </div>
-
-            <a id="cancel" href="@cancelCall.url">@messages("site.cancel")</a>
         </div>
-    }
+
 
 }

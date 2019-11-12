@@ -62,12 +62,15 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
           postCall = routes.AdviserAddressListController.onSubmit(mode),
           manualInputCall = routes.AdviserAddressController.onPageLoad(mode),
           addresses = addresses,
-          Message("common.selectAddress.title"),
-          Message("common.selectAddress.heading"),
+          Message("adviserAddressList.heading", Message("theAdviser")),
+          Message("adviserAddressList.heading", entityName),
           Message("common.selectAddress.text"),
           Message("common.selectAddress.link"),
           psaName = psaName()
         )
     }.left.map(_ => Future.successful(Redirect(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode))))
   }
+
+  private def entityName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(AdviserNameId).getOrElse(Message("theAdviser"))
 }

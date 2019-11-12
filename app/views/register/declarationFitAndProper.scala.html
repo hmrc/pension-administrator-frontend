@@ -19,7 +19,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import models.NormalMode
 
-@(appConfig: FrontendAppConfig, cancelCall: Call, href: Call)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declarationFitAndProper.title"),
@@ -52,8 +52,7 @@
     </ul>
 
     <div class="form-group">
-        @components.button_link("site.agreeAndContinue", href.url, "submit")
-        <a id="cancel" href="@cancelCall.url">@messages("site.cancel")</a>
+        @components.button_link("site.continue", controllers.register.routes.DeclarationFitAndProperController.onClickAgree().url, "submit")
     </div>
 
 }

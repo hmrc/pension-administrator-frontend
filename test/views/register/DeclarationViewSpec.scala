@@ -29,57 +29,42 @@ class DeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
   private val messageKeyPrefix = "declaration"
   private val cancelCall = controllers.routes.IndexController.onPageLoad()
 
-  private def createView = () => declaration(frontendAppConfig, form, cancelCall)(fakeRequest, messages)
-
-  private def createViewUsingForm(form: Form[_]) = declaration(frontendAppConfig, form, cancelCall)(fakeRequest, messages)
+  private def createView(workingKnowledge: Boolean = true) = () =>
+    declaration(frontendAppConfig, workingKnowledge)(fakeRequest, messages)
 
   "Declaration view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
 
-    "show an error summary when rendered with an error" in {
-      val doc = asDocument(createViewUsingForm(form.withError(error)))
-      assertRenderedById(doc, "error-summary-heading")
-    }
-
-    "show an error in the value field's label when rendered with an error" in {
-      val doc = asDocument(createViewUsingForm(form.withError(error)))
-      val errorSpan = doc.getElementsByClass("error-notification").first
-      errorSpan.text mustBe s"${messages("site.error")} ${messages(errorMessage)}"
-    }
 
     "display the declaration" in {
-      createView must haveDynamicText("declaration.declaration")
+      createView() must haveDynamicText("declaration.declaration")
     }
 
     "display the first statement" in {
-      createView must haveDynamicText("declaration.statement1")
+     createView() must haveDynamicText("declaration.statement1")
     }
 
     "display the second statement" in {
-      createView must haveDynamicText("declaration.statement2")
+     createView() must haveDynamicText("declaration.statement2")
     }
 
     "display the third statement" in {
-      createView must haveDynamicText("declaration.statement3")
+     createView() must haveDynamicText("declaration.statement3")
     }
 
     "display the fourth statement" in {
-      createView must haveDynamicText("declaration.statement4")
+     createView() must haveDynamicText("declaration.statement4")
     }
 
-    "have an I Agree checkbox" in {
-      createView must haveCheckBox("agree", "agreed")
+    "display the 5a statement when user has working knowledge" in {
+      createView() must haveDynamicText("declaration.statement5a")
     }
 
-    "have a label for the I Agree checkbox" in {
-      createView must haveLabel("agree", messages("declaration.agree"))
+    "display the 5b statement if no working knowledge" in {
+      createView(false) must haveDynamicText("declaration.statement5b")
     }
 
-    behave like pageWithSubmitButton(createView)
-
-    "have a cancel link" in {
-      createView must haveLink(cancelCall.url, "cancel")
-    }
+    behave like pageWithSubmitButton(createView())
   }
 
 }
