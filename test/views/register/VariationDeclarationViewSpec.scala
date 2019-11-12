@@ -16,47 +16,25 @@
 
 package views.register
 
-import forms.register.VariationDeclarationFormProvider
-import play.api.data.Form
-import views.behaviours.QuestionViewBehaviours
+import play.api.mvc.Call
+import views.behaviours.ViewBehaviours
 import views.html.register.variationDeclaration
 
-class VariationDeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
-
-  val form: Form[Boolean] = new VariationDeclarationFormProvider()()
-
-  override val errorKey = "agree"
+class VariationDeclarationViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "declaration.variations"
 
-  private def returnLink = controllers.routes.PsaDetailsController.onPageLoad().url
+  private def returnLink: String = controllers.routes.PsaDetailsController.onPageLoad().url
+  private val href: Call = controllers.register.routes.VariationDeclarationController.onClickAgree()
 
-  private def createView(isWorkingKnowldge: Boolean = true) = () => variationDeclaration(
-    frontendAppConfig, form, Some("Mark Wright"), isWorkingKnowldge)(fakeRequest, messages)
-
-  private def createViewUsingForm(form: Form[_]) = variationDeclaration(frontendAppConfig, form, Some("Mark Wright"),
-    isWorkingKnowldge = true)(fakeRequest, messages)
+  private def createView(isWorkingKnowledge: Boolean = true) = () => variationDeclaration(
+    frontendAppConfig, Some("Mark Wright"), isWorkingKnowledge, href)(fakeRequest, messages)
 
   "Declaration variation view" must {
-
     appRunning()
-
     behave like normalPage(createView(), messageKeyPrefix)
 
     behave like pageWithReturnLink(createView(), returnLink)
-
-    behave like pageWithSubmitButton(createView())
-
-    "show an error summary when rendered with an error" in {
-      val doc = asDocument(createViewUsingForm(form.withError(error)))
-      assertRenderedById(doc, "error-summary-heading")
-    }
-
-    "show an error in the value field's label when rendered with an error" in {
-      val doc = asDocument(createViewUsingForm(form.withError(error)))
-      val errorSpan = doc.getElementsByClass("error-notification").first
-      errorSpan.text mustBe messages(errorMessage)
-    }
 
     "display the declaration" in {
       createView() must haveDynamicText("declaration.variations.statement0")
@@ -76,22 +54,14 @@ class VariationDeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
     }
 
     "display the thirdTwo statement" in {
-      createView(isWorkingKnowldge = false) must notHaveDynamicText("declaration.variations.statement31")
-      createView(isWorkingKnowldge = false) must haveDynamicText("declaration.variations.statement32")
+      createView(isWorkingKnowledge = false) must notHaveDynamicText("declaration.variations.statement31")
+      createView(isWorkingKnowledge = false) must haveDynamicText("declaration.variations.statement32")
     }
 
     "display the fourth statement" in {
       createView() must haveDynamicText("declaration.variations.statement4")
     }
 
-    "have an Agree checkbox" in {
-      createView() must haveCheckBox("agree", "agreed")
-    }
-
-    "have a label for the I Agree checkbox" in {
-      createView() must haveLabel("agree", messages("declaration.variations.agree"))
-    }
-
+    behave like pageWithContinueButton(createView(), href.url, id = "submit")
   }
-
 }
