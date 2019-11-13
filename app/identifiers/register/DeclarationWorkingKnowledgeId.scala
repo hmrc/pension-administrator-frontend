@@ -30,7 +30,8 @@ case object DeclarationWorkingKnowledgeId extends TypedIdentifier[DeclarationWor
     value match {
       case Some(DeclarationWorkingKnowledge.WorkingKnowledge) =>
         userAnswers.remove(AdviserNameId)
-          .flatMap(_.remove(AdviserDetailsId))
+          .flatMap(_.remove(AdviserEmailId))
+          .flatMap(_.remove(AdviserPhoneId))
           .flatMap(_.remove(AdviserAddressPostCodeLookupId))
           .flatMap(_.remove(AdviserAddressListId))
           .flatMap(_.remove(AdviserAddressId))

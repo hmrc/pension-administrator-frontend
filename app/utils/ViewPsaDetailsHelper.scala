@@ -17,7 +17,7 @@
 package utils
 
 import identifiers.TypedIdentifier
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
@@ -459,11 +459,11 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def pensionAdviserEmail: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) match {
     case Some(false) =>
-      Option(userAnswers.get(AdviserDetailsId).fold[AnswerRow](
+      Option(userAnswers.get(AdviserEmailId).fold[AnswerRow](
         AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add")))) { adviser =>
-        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviser.email), answerIsMessageKey = false,
-          Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
+          Some(Link(controllers.register.adviser.routes.AdviserEmailController.onPageLoad(UpdateMode).url, "site.add")))) { email =>
+        AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(email), answerIsMessageKey = false,
+          Some(Link(controllers.register.adviser.routes.AdviserEmailController.onPageLoad(UpdateMode).url)))
       })
     case _ => None
   }
@@ -471,12 +471,12 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def pensionAdviserPhone: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) match {
 
     case Some(false) =>
-      Option(userAnswers.get(AdviserDetailsId).fold[AnswerRow](
+      Option(userAnswers.get(AdviserPhoneId).fold[AnswerRow](
         AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add")))) {
-        adviser =>
-          AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviser.phone), answerIsMessageKey = false,
-            Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url)))
+          Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(UpdateMode).url, "site.add")))) {
+        phone =>
+          AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(phone), answerIsMessageKey = false,
+            Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(UpdateMode).url)))
       })
     case _ => None
   }

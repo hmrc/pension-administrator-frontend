@@ -13,10 +13,15 @@ POST       /adviser-address-manual             controllers.register.adviser.Advi
 GET        /:mode/adviser-address-manual       controllers.register.adviser.AdviserAddressController.onPageLoad(mode: Mode)
 POST       /:mode/adviser-address-manual       controllers.register.adviser.AdviserAddressController.onSubmit(mode: Mode)
 
-GET        /adviser-details                    controllers.register.adviser.AdviserDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST       /adviser-details                    controllers.register.adviser.AdviserDetailsController.onSubmit(mode: Mode = NormalMode)
-GET        /:mode/adviser-details              controllers.register.adviser.AdviserDetailsController.onPageLoad(mode: Mode)
-POST       /:mode/adviser-details              controllers.register.adviser.AdviserDetailsController.onSubmit(mode: Mode)
+GET        /contact-email-address                    controllers.register.adviser.AdviserEmailController.onPageLoad(mode: Mode = NormalMode)
+POST       /contact-email-address                    controllers.register.adviser.AdviserEmailController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/contact-email-address              controllers.register.adviser.AdviserEmailController.onPageLoad(mode: Mode)
+POST       /:mode/contact-email-address              controllers.register.adviser.AdviserEmailController.onSubmit(mode: Mode)
+
+GET        /contact-phone-number                    controllers.register.adviser.AdviserPhoneController.onPageLoad(mode: Mode = NormalMode)
+POST       /contact-phone-number                    controllers.register.adviser.AdviserPhoneController.onSubmit(mode: Mode = NormalMode)
+GET        /:mode/contact-phone-number              controllers.register.adviser.AdviserPhoneController.onPageLoad(mode: Mode)
+POST       /:mode/contact-phone-number              controllers.register.adviser.AdviserPhoneController.onSubmit(mode: Mode)
 
 GET        /check-your-answers                 controllers.register.adviser.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
 POST       /check-your-answers                 controllers.register.adviser.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
