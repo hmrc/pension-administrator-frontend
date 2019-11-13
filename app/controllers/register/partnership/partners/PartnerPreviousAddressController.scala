@@ -24,7 +24,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.partnership.partners.{PartnerPreviousAddressId, PartnerPreviousAddressListId, PartnerPreviousAddressPostCodeLookupId}
+import identifiers.register.partnership.partners.{PartnerNameId, PartnerPreviousAddressId, PartnerPreviousAddressListId, PartnerPreviousAddressPostCodeLookupId}
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
@@ -52,24 +52,28 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), addressViewModel(mode, index), mode)
+      PartnerNameId(index).retrieve.right.map { pn =>
+        get(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), addressViewModel(mode, index, pn.fullName), mode)
+      }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val vm = addressViewModel(mode, index)
-      post(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), vm, mode,
-        "Partnership Partner Previous Address",
-        PartnerPreviousAddressPostCodeLookupId(index))
+      PartnerNameId(index).retrieve.right.map { pn =>
+        val vm = addressViewModel(mode, index, pn.fullName)
+        post(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), vm, mode,
+          "Partnership Partner Previous Address",
+          PartnerPreviousAddressPostCodeLookupId(index))
+      }
   }
 
-  private def addressViewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) =
+  private def addressViewModel(mode: Mode, index: Index, name:String)(implicit request: DataRequest[AnyContent]) =
     ManualAddressViewModel(
       routes.PartnerPreviousAddressController.onSubmit(mode, index),
       countryOptions.options,
-      Message("partnerPreviousAddress.title"),
-      Message("partnerPreviousAddress.heading"),
-      Some(Message("partnerPreviousAddress.hint")),
+      Message("previousAddress.heading", Message("thePartner")).resolve.capitalize,
+      Message("previousAddress.heading", name),
+      None,
       psaName = psaName()
     )
 

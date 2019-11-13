@@ -18,65 +18,43 @@
 @import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig, form: Form[_], psaNameOpt: Option[String], isWorkingKnowldge:Boolean)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, psaNameOpt: Option[String], isWorkingKnowldge:Boolean, href: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.variations.title"),
     appConfig = appConfig,
     bodyClasses = None) {
 
-    @components.error_summary(form.errors)
-
     @components.heading(messages("declaration.variations.heading"))
 
-    @helpers.form(action = controllers.register.routes.VariationDeclarationController.onSubmit(), 'autoComplete -> "off") {
-        @components.paragraph_text(messages("declaration.variations.statement0"))
+    @components.paragraph_text(messages("declaration.variations.statement0"))
 
-        <ol class="list-bullet">
-            <li>
-                @components.paragraph_text(messages("declaration.variations.statement1"))
-            </li>
-            <li>
-                @components.paragraph_text(messages("declaration.variations.statement2"))
-            </li>
-            <li>
-                @if(isWorkingKnowldge){
+    <ol class="list-bullet">
+        <li>
+            @components.paragraph_text(messages("declaration.variations.statement1"))
+        </li>
+        <li>
+            @components.paragraph_text(messages("declaration.variations.statement2"))
+        </li>
+        <li>
+            @if(isWorkingKnowldge){
                 @components.paragraph_text(messages("declaration.variations.statement31"))
-                } else {
+            } else {
                 @components.paragraph_text(messages("declaration.variations.statement32"))
-                }
-            </li>
-            <li>
-                @components.paragraph_text(messages("declaration.variations.statement4"))
-            </li>
+            }
+        </li>
+        <li>
+            @components.paragraph_text(messages("declaration.variations.statement4"))
+        </li>
 
-        </ol>
+    </ol>
 
-        <div class="form-group @if(form("agree").hasErrors){form-field--error}">
-            <fieldset class="inline">
-                <legend>
+    <div class="subsection">
+        @components.button_link("site.agreeAndContinue", href.url, "submit")
+    </div>
 
-                    <span class="visually-hidden">@messages("common.declaration.legend")</span>
-
-                    @form("agree").errors.map { error =>
-                    <span class="error-notification" id="error-message-agree-input">@messages(error.message, error.args: _*)</span>
-                    }
-                </legend>
-                <div class="multiple-choice">
-                    <input id="agree" name="agree" type="checkbox" value="agreed">
-                    <label for="agree">@messages("declaration.variations.agree")</label>
-                </div>
-            </fieldset>
-        </div>
-
-        <div class="subsection">
-            @components.submit_button("site.agreeAndContinue")
-        </div>
-
-        @psaNameOpt.map { psaName =>
-            @components.return_link(psaName, UpdateMode)
-        }
-
+    @psaNameOpt.map { psaName =>
+        @components.return_link(psaName, UpdateMode)
     }
 
 }

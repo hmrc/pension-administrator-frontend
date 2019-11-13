@@ -53,7 +53,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
   "DeclarationFitAndProperController" when {
 
-    "calling GET" must {
+    "calling onPageLoad" must {
 
       "return OK and the correct view" in {
         val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -82,9 +82,10 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       }
     }
 
-    "calling POST" must {
+    "calling onClickAgree" must {
 
       "redirect to the next page" when {
+
         "on a valid request and send the email" in {
           val validData = data ++ Json.obj(
             "partnershipContactDetails" -> Json.obj(
@@ -95,7 +96,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
           when(mockEmailConnector.sendEmail(eqTo(email), any(), eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
-            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onClickAgree(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -106,7 +107,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           reset(mockEmailConnector)
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(data)),
-            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
+            fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onClickAgree(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -114,17 +115,9 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
         }
       }
 
-      "reject an invalid request and display errors" in {
-        val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-        val result = controller().onSubmit(NormalMode)(fakeRequest)
-
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) mustBe viewAsString(formWithErrors)
-      }
-
       "redirect to Session Expired" when {
         "no cached data is found" in {
-          val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
+          val result = controller(dontGetAnyData).onClickAgree(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -134,7 +127,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(
             fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,
-            knownFactsRetrieval = fakeKnownFactsRetrieval(None)).onSubmit(NormalMode)(validRequest)
+            knownFactsRetrieval = fakeKnownFactsRetrieval(None)).onClickAgree(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -145,42 +138,25 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           val result = controller(
             fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,
             enrolments = fakeEnrolmentStoreConnector(HttpResponse(BAD_REQUEST))
-          ).onSubmit(NormalMode)(validRequest)
+          ).onClickAgree(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
         }
       }
 
-      "set cancel link to What You Will Need page" when {
-
-        "Individual" in {
-          val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-          val result = controller(userType = UserType.Individual).onSubmit(NormalMode)()(fakeRequest)
-
-          contentAsString(result) mustBe viewAsString(formWithErrors, individualCancelCall)
-        }
-
-        "Company" in {
-          val formWithErrors = form.withError("agree", messages("declaration.invalid"))
-          val result = controller().onSubmit(NormalMode)()(fakeRequest)
-
-          contentAsString(result) mustBe viewAsString(formWithErrors, companyCancelCall)
-        }
-      }
-
       "save the answer and PSA Subscription response on a valid request" in {
-        val result = controller().onSubmit(NormalMode)(validRequest)
+        val result = controller().onClickAgree(NormalMode)(validRequest)
 
         status(result) mustBe SEE_OTHER
-        FakeUserAnswersCacheConnector.verify(DeclarationFitAndProperId, true)
+        FakeUserAnswersCacheConnector.verify(DeclarationFitAndProperId, value = true)
         FakeUserAnswersCacheConnector.verify(PsaSubscriptionResponseId, validPsaResponse)
       }
 
       "redirect to Duplicate Registration if a registration already exists for the organization" in {
         val result = controller(pensionsSchemeConnector = fakePensionsSchemeConnector(
           Future.failed(Upstream4xxResponse(message = "INVALID_BUSINESS_PARTNER", upstreamResponseCode = FORBIDDEN, reportAs = FORBIDDEN))))
-          .onSubmit(NormalMode)(validRequest)
+          .onClickAgree(NormalMode)(validRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.routes.DuplicateRegistrationController.onPageLoad().url)
@@ -190,7 +166,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
         "response is BAD_REQUEST from downstream" in {
           val result = controller(pensionsSchemeConnector = fakePensionsSchemeConnector(
             Future.failed(new BadRequestException("INVALID_PAYLOAD"))))
-            .onSubmit(NormalMode)(validRequest)
+            .onClickAgree(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.register.routes.SubmissionInvalidController.onPageLoad().url)
@@ -207,12 +183,12 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   private val form: Form[_] = new DeclarationFormProvider()()
   private val companyCancelCall = controllers.register.company.routes.WhatYouWillNeedController.onPageLoad()
   private val individualCancelCall = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
-  val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+  private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val email = "test@test.com"
   val businessName = "MyCompany"
   val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
-  val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
+  private val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
     BusinessNameId.toString -> businessName
   )
 
@@ -225,13 +201,14 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   private def fakePensionsSchemeConnector(response: Future[PsaSubscriptionResponse] = Future.successful(validPsaResponse)): PensionsSchemeConnector =
     new PensionsSchemeConnector {
 
-    override def registerPsa
-    (answers: UserAnswers)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
-      response
+      override def registerPsa
+      (answers: UserAnswers)
+      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+        response
+      }
+
+      override def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
     }
-    override def updatePsa(psaId:String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
-  }
 
   private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
     override def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
@@ -249,9 +226,11 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
 
   }
 
-  val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  val mockEmailConnector = mock[EmailConnector]
-  val appConfig = app.injector.instanceOf[FrontendAppConfig]
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockEmailConnector = mock[EmailConnector]
+  private val appConfig = app.injector.instanceOf[FrontendAppConfig]
+  private val hrefCall = controllers.register.routes.DeclarationFitAndProperController.onClickAgree()
+
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
                           userType: UserType = UserType.Organisation,
@@ -268,7 +247,6 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,
-      new DeclarationFormProvider(),
       fakeUserAnswersCacheConnector,
       pensionsSchemeConnector,
       knownFactsRetrieval,
@@ -279,8 +257,8 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
   private def viewAsString(form: Form[_] = form, cancelCall: Call = companyCancelCall) =
     declarationFitAndProper(
       frontendAppConfig,
-      form,
-      cancelCall
+      cancelCall,
+      hrefCall
     )(fakeRequest, messages).toString
 
 }

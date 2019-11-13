@@ -183,8 +183,8 @@ object PartnerAddressListControllerSpec {
       postCall = routes.PartnerAddressListController.onSubmit(NormalMode, firstIndex),
       manualInputCall = routes.PartnerAddressController.onPageLoad(NormalMode, firstIndex),
       addresses = addresses,
-      Message("common.selectAddress.title"),
-      Message("common.selectAddress.heading"),
+      Message("contactAddressList.heading", Message("thePartner")),
+      Message("contactAddressList.heading", "firstName lastName"),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )
