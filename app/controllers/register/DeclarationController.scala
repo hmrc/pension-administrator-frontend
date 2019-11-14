@@ -18,7 +18,7 @@ package controllers.register
 
 import com.google.inject.Singleton
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.DeclarationId

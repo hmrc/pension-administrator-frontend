@@ -17,7 +17,8 @@
 package services
 
 import com.google.inject.ImplementedBy
-import connectors.{RegistrationConnector, UserAnswersCacheConnector}
+import connectors.RegistrationConnector
+import connectors.cache.UserAnswersCacheConnector
 import identifiers.register.RegistrationInfoId
 import javax.inject.Inject
 import models.{Address, RegistrationInfo, TolerantIndividual}

@@ -17,6 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import connectors.cache.ICacheConnector
 import identifiers.TypedIdentifier
 import org.scalatest._
 import play.api.http.Status
@@ -33,11 +34,11 @@ class ICacheConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockH
     override def toString: String = "fake-identifier"
   }
 
-  override protected def portConfigKey: String = "microservice.services.pensions-scheme.port"
+  override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private def url(id: String): String = s"/pensions-scheme/journey-cache/psa/$id"
+  private def url(id: String): String = s"/pension-administrator/journey-cache/psa/$id"
 
   private lazy val connector = injector.instanceOf[ICacheConnector]
 

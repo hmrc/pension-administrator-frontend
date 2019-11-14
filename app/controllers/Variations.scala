@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import identifiers.register._
 import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, ConfirmDeleteAdviserId}

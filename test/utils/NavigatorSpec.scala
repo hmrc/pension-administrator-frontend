@@ -16,7 +16,8 @@
 
 package utils
 
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import identifiers.{Identifier, TypedIdentifier}
 import models._
 import models.requests.IdentifiedRequest

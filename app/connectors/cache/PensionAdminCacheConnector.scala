@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package connectors
+package connectors.cache
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import identifiers.TypedIdentifier
-import play.api.http.Status._
-import play.api.libs.json._
 import play.api.libs.ws.WSClient
-import play.api.mvc.Result
-import play.api.mvc.Results.Ok
-import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.http._
-import utils.UserAnswers
 
-import scala.concurrent.{ExecutionContext, Future}
-
+//TODO: Remove this once the old collection row count is 0
 class PensionAdminCacheConnector @Inject()(
                                             config: FrontendAppConfig,
                                             http: WSClient

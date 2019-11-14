@@ -18,7 +18,8 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{IdentityVerificationConnector, UserAnswersCacheConnector}
+import connectors.IdentityVerificationConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.routes
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
 import identifiers.{JourneyId, TypedIdentifier}

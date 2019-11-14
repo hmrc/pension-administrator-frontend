@@ -18,6 +18,7 @@ package controllers.register
 
 import config.FrontendAppConfig
 import connectors._
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register._
@@ -38,7 +39,8 @@ import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
 import controllers.register.routes.DeclarationFitAndProperController
-import controllers.register.routes.{SubmissionInvalidController, DuplicateRegistrationController}
+import controllers.register.routes.{DuplicateRegistrationController, SubmissionInvalidController}
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,

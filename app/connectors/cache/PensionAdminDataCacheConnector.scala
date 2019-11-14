@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-import connectors.cache.{DualCacheConnector, UserAnswersCacheConnector}
-import play.api.inject.{Binding, Module}
-import play.api.{Configuration, Environment}
+package connectors.cache
 
-class DataCacheModule extends Module {
-  override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
-    Seq(bind[UserAnswersCacheConnector].to[DualCacheConnector])
-  }
+import com.google.inject.Inject
+import config.FrontendAppConfig
+import play.api.libs.ws.WSClient
+
+class PensionAdminDataCacheConnector @Inject()(
+                                                config: FrontendAppConfig,
+                                                http: WSClient
+                                              ) extends ICacheConnector(config, http) {
+
+  override protected def url(id: String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/psa-data/$id"
 }
