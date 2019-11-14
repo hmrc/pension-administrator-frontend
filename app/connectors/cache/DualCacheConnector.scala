@@ -53,7 +53,7 @@ class DualCacheConnector @Inject()(
               newSchemeCache.save(cacheId, id, value)
             case _ =>
               Future.failed(
-                new HttpException("Mongo Data cannot exist in both old and new scheme cache", Status.BAD_REQUEST))
+                new HttpException("Mongo Data cannot exist in both old and new cache", Status.BAD_REQUEST))
           }
         }
       }
