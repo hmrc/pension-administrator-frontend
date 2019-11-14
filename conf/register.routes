@@ -23,7 +23,7 @@ GET        /declaration-fit-and-proper                  controllers.register.Dec
 GET        /on-click-declaration-fit-and-proper         controllers.register.DeclarationFitAndProperController.onClickAgree(mode: Mode = NormalMode)
 
 GET        /declaration                                 controllers.register.DeclarationController.onPageLoad(mode: Mode = NormalMode)
-POST       /declaration                                 controllers.register.DeclarationController.onSubmit(mode: Mode = NormalMode)
+GET        /on-click-declaration                        controllers.register.DeclarationController.onClickAgree(mode: Mode = NormalMode)
 
 GET        /confirmation                                controllers.register.ConfirmationController.onPageLoad(mode: Mode = NormalMode)
 POST       /confirmation                                controllers.register.ConfirmationController.onSubmit(mode: Mode = NormalMode)
@@ -55,7 +55,7 @@ POST       /do-you-still-use-an-adviser                 controllers.register.Sti
 
 
 GET        /declare-after-changing-details              controllers.register.VariationDeclarationController.onPageLoad(mode: Mode = UpdateMode)
-POST       /declare-after-changing-details              controllers.register.VariationDeclarationController.onSubmit(mode: Mode = UpdateMode)
+GET        /on-click-declare-after-changing-details     controllers.register.VariationDeclarationController.onClickAgree(mode: Mode = UpdateMode)
 
 GET        /incomplete-changes                          controllers.register.IncompleteChangesController.onPageLoad(mode: Mode = UpdateMode)
 

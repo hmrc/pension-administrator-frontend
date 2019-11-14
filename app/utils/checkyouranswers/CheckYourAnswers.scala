@@ -20,11 +20,11 @@ import java.time.LocalDate
 
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
+import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
 import models._
-import models.register.adviser.AdviserDetails
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import utils.countryOptions.CountryOptions
@@ -62,6 +62,11 @@ trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends Check
     ua.get(DirectorNameId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("theDirector")))
 }
 
+trait CheckYourAnswersAdviser[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String)(implicit messages: Messages): Message =
+    ua.get(AdviserNameId).map(name => Message(messageKey, name)).getOrElse(Message(messageKey, Message("theAdviser")))
+}
+
 object CheckYourAnswers {
 
   implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
@@ -82,19 +87,6 @@ object CheckYourAnswers {
   implicit def personName[I <: TypedIdentifier[PersonName]](implicit rds: Reads[PersonName], messages: Messages): CheckYourAnswers[I] = PersonNameCYA()()
 
   implicit def date[I <: TypedIdentifier[LocalDate]](implicit rds: Reads[LocalDate], messages: Messages): CheckYourAnswers[I] = DateCYA()()
-
-  implicit def adviserDetails[I <: TypedIdentifier[AdviserDetails]](implicit r: Reads[AdviserDetails]): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        userAnswers.get(id).map { adviserDetails =>
-          Seq(
-            AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviserDetails.email), false, changeUrl),
-            AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviserDetails.phone), false, changeUrl)
-          )
-        } getOrElse Seq.empty[AnswerRow]
-      }
-    }
-  }
 
   implicit def paye[I <: TypedIdentifier[Paye]](implicit r: Reads[Paye]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
@@ -211,7 +203,8 @@ case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None,
               visuallyHiddenText = hiddenLabel
             ))
         } getOrElse Seq.empty[AnswerRow]
-    }
+      }
+
 }
 
 case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {

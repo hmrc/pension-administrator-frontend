@@ -19,7 +19,7 @@ package controllers
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import identifiers.register._
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, ConfirmDeleteAdviserId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserPhoneId, ConfirmDeleteAdviserId}
 import identifiers.register.company._
 import identifiers.register.company.directors.{CheckYourAnswersId => DirectorsCheckYourAnswersId, _}
 import identifiers.register.individual._
@@ -55,7 +55,8 @@ trait Variations extends FrontendController {
     PartnershipPhoneId -> PartnershipContactDetailsChangedId,
     VariationWorkingKnowledgeId -> DeclarationChangedId,
     AdviserAddressId -> DeclarationChangedId,
-    AdviserDetailsId -> DeclarationChangedId,
+    AdviserEmailId -> DeclarationChangedId,
+    AdviserPhoneId -> DeclarationChangedId,
     ConfirmDeleteAdviserId -> DeclarationChangedId,
     MoreThanTenDirectorsId -> MoreThanTenDirectorsOrPartnersChangedId,
     MoreThanTenPartnersId -> MoreThanTenDirectorsOrPartnersChangedId,

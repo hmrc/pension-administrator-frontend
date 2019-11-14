@@ -18,34 +18,19 @@ package views.register
 
 import forms.register.DeclarationFormProvider
 import play.api.data.Form
-import views.behaviours.QuestionViewBehaviours
+import views.behaviours.{QuestionViewBehaviours, ViewBehaviours}
 import views.html.register.declaration
 
-class DeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
-
-  val form: Form[Boolean] = new DeclarationFormProvider()()
-  override val errorKey = "agree"
+class DeclarationViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "declaration"
   private val cancelCall = controllers.routes.IndexController.onPageLoad()
+  private val hrefCall = controllers.register.routes.DeclarationController.onClickAgree()
 
-  private def createView = () => declaration(frontendAppConfig, form, cancelCall)(fakeRequest, messages)
-
-  private def createViewUsingForm(form: Form[_]) = declaration(frontendAppConfig, form, cancelCall)(fakeRequest, messages)
+  private def createView = () => declaration(frontendAppConfig, cancelCall, hrefCall)(fakeRequest, messages)
 
   "Declaration view" must {
     behave like normalPage(createView, messageKeyPrefix)
-
-    "show an error summary when rendered with an error" in {
-      val doc = asDocument(createViewUsingForm(form.withError(error)))
-      assertRenderedById(doc, "error-summary-heading")
-    }
-
-    "show an error in the value field's label when rendered with an error" in {
-      val doc = asDocument(createViewUsingForm(form.withError(error)))
-      val errorSpan = doc.getElementsByClass("error-notification").first
-      errorSpan.text mustBe s"${messages("site.error")} ${messages(errorMessage)}"
-    }
 
     "display the declaration" in {
       createView must haveDynamicText("declaration.declaration")
@@ -67,18 +52,10 @@ class DeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
       createView must haveDynamicText("declaration.statement4")
     }
 
-    "have an I Agree checkbox" in {
-      createView must haveCheckBox("agree", "agreed")
-    }
-
-    "have a label for the I Agree checkbox" in {
-      createView must haveLabel("agree", messages("declaration.agree"))
-    }
-
-    behave like pageWithSubmitButton(createView)
+    behave like pageWithContinueButton(createView, hrefCall.url, id = "submit")
 
     "have a cancel link" in {
-      createView must haveLink(cancelCall.url, "cancel")
+      createView must haveLink(cancelCall.url, linkId = "cancel")
     }
   }
 

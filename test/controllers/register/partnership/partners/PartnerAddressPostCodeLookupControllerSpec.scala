@@ -159,8 +159,8 @@ object PartnerAddressPostCodeLookupControllerSpec extends MockitoSugar {
   private def viewModel(index: Int) = PostcodeLookupViewModel(
     routes.PartnerAddressPostCodeLookupController.onSubmit(NormalMode, index),
     routes.PartnerAddressController.onPageLoad(NormalMode, index),
-    Message("partnerAddressPostCodeLookup.title"),
-    Message("partnerAddressPostCodeLookup.heading"),
+    Message("contactAddressPostCodeLookup.heading", Message("thePartner")),
+    Message("contactAddressPostCodeLookup.heading", "Foo Bar"),
     Message("common.postcodeLookup.enterPostcode"),
     Some(Message("common.postcodeLookup.enterPostcode.link")),
     Message("common.address.enterPostcode.formLabel")

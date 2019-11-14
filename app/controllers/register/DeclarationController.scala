@@ -20,11 +20,10 @@ import com.google.inject.Singleton
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import forms.register.DeclarationFormProvider
+import controllers.register.routes.DeclarationController
 import identifiers.register.DeclarationId
 import javax.inject.Inject
 import models.{Mode, NormalMode, UserType}
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -42,38 +41,22 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       @Register navigator: Navigator,
-                                      formProvider: DeclarationFormProvider,
                                       dataCacheConnector: UserAnswersCacheConnector
                                      )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  private val form: Form[Boolean] = formProvider()
-
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      request.user.userType match {
-        case UserType.Individual =>
-          Future.successful(Ok(declaration(appConfig, form, individual.routes.WhatYouWillNeedController.onPageLoad())))
-        case UserType.Organisation =>
-          Future.successful(Ok(declaration(appConfig, form, company.routes.WhatYouWillNeedController.onPageLoad())))
+      val cancelUrl = request.user.userType match {
+        case UserType.Individual => individual.routes.WhatYouWillNeedController.onPageLoad()
+        case UserType.Organisation => company.routes.WhatYouWillNeedController.onPageLoad()
       }
+      Future.successful(Ok(declaration(appConfig, cancelUrl, DeclarationController.onClickAgree())))
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        errors =>
-          request.user.userType match {
-            case UserType.Individual =>
-              Future.successful(BadRequest(
-                declaration(appConfig, errors, individual.routes.WhatYouWillNeedController.onPageLoad())))
-
-            case UserType.Organisation =>
-              Future.successful(BadRequest(
-                declaration(appConfig, errors, company.routes.WhatYouWillNeedController.onPageLoad())))
-          },
-        success => dataCacheConnector.save(request.externalId, DeclarationId, success).map { cacheMap =>
-          Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
-        }
-      )
+      dataCacheConnector.save(request.externalId, DeclarationId, value = true).map { cacheMap =>
+        Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
+      }
   }
 }
