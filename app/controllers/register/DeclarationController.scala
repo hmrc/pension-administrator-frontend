@@ -26,11 +26,14 @@ import identifiers.register.{DeclarationId, _}
 import identifiers.register.company.CompanyEmailId
 import identifiers.register.individual.IndividualEmailId
 import identifiers.register.partnership.PartnershipEmailId
+import controllers.register.routes.DeclarationController
+import identifiers.register.DeclarationId
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
 import models.{ExistingPSA, Mode, NormalMode}
 import play.api.Logger
+import models.{Mode, NormalMode, UserType}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.domain.PsaId
@@ -67,7 +70,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
 
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       dataCacheConnector.save(request.externalId, DeclarationId, value = true).flatMap { cacheMap =>
         val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(

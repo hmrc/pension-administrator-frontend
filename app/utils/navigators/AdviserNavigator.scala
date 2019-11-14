@@ -57,7 +57,7 @@ class AdviserNavigator @Inject() extends Navigator {
   }
 
   private def adviserCompletionCheckNavigator(ua: UserAnswers, call: Call, mode: Mode): Call = {
-    (mode, ua.get(AdviserAddressId), ua.get(IsNewAdviserId)) match {
+    (mode, ua.get(AdviserPhoneId), ua.get(IsNewAdviserId)) match {
       case (NormalMode, _, _) => call
       case (UpdateMode, Some(_), _) => AnyMoreChangesController.onPageLoad()
       case (_, _, Some(true)) => call
