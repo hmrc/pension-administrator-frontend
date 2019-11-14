@@ -50,9 +50,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   val validData: JsObject = Json.obj(
     AdviserNameId.toString -> adviserName,
-    "adviserDetails" -> Json.obj(
-      AdviserEmailId.toString -> advEmail,
-      AdviserPhoneId.toString -> advPhone),
+    AdviserEmailId.toString -> advEmail,
+    AdviserPhoneId.toString -> advPhone,
     AdviserAddressId.toString -> address
   )
 
