@@ -29,6 +29,8 @@
 
     @helpers.form(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
 
+        @components.back_link()
+
         @components.error_summary(form.errors)
 
         @components.input_radio(

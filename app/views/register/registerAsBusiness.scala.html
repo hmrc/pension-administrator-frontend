@@ -27,6 +27,7 @@
 ) {
 
     @helpers.form(action = RegisterAsBusinessController.onSubmit(), 'autoComplete -> "off") {
+
         @components.error_summary(form.errors)
 
         @components.input_yes_no(
