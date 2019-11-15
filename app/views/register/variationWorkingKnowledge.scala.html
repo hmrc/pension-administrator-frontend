@@ -28,6 +28,8 @@
 
     @helpers.form(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
 
+        @components.back_link()
+
         @components.error_summary(form.errors)
 
         @components.heading(messages("variationWorkingKnowledge.heading"))
