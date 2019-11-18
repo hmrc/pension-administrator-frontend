@@ -449,9 +449,9 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def pensionAdviser: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) match {
     case Some(false) =>
       Option(userAnswers.get(AdviserNameId).fold[AnswerRow](
-        AnswerRow("pensions.advisor.label", Seq("site.not_entered"), answerIsMessageKey = true,
+        AnswerRow("adviserName.heading", Seq("site.not_entered"), answerIsMessageKey = true,
           Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode).url, "site.add")))) { adviserName =>
-        AnswerRow("pensions.advisor.label", Seq(adviserName), answerIsMessageKey = false,
+        AnswerRow("adviserName.heading", Seq(adviserName), answerIsMessageKey = false,
           None)
       })
     case _ => None

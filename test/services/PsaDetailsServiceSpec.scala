@@ -225,7 +225,7 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
         AnswerSection(
           None,
           Seq(
-            AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), false, None),
+            AnswerRow("adviserName.heading", Seq("Pension Advisor"), false, None),
             AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false, None),
             AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), false, None))))))
   val organisationSuperSections: Seq[SuperSection] = Seq(
@@ -272,7 +272,7 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
         AnswerSection(
           None,
           Seq(
-            AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), false, None),
+            AnswerRow("adviserName.heading", Seq("Pension Advisor"), false, None),
             AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), false, None),
             AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false, None))))))
 }
