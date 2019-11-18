@@ -38,12 +38,8 @@
     )
 
     @components.review_section(
-        heading = messages("companyReview.directors.heading"),
-        linkMessage = if(directors.lengthCompare(10)<0){
-            "companyReview.directors.editLink"
-        } else {
-            "companyReview.directors.changeLink"
-        },
+        heading = messages("companyReview.directors.heading", companyName),
+        linkMessage = "companyReview.directors.changeLink",
         linkId = "edit-director-details",
         link = AddCompanyDirectorsController.onPageLoad(NormalMode),
         list = Some(directors)
@@ -51,7 +47,7 @@
 
     @helpers.form(action = CompanyReviewController.onSubmit, 'autoComplete -> "off") {
         <div class="section">
-            @components.submit_button("site.confirm")
+            @components.submit_button("site.save_and_continue")
         </div>
     }
 }
