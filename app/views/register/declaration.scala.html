@@ -29,31 +29,31 @@
 
         @components.paragraph_text(messages("declaration.declaration"))
 
-        <ul class="list-bullet">
+        <ul class="list list-bullet">
             <li>
-                @components.paragraph_text(messages("declaration.statement1"))
+                @messages("declaration.statement1")
             </li>
             <li>
-                @components.paragraph_text(messages("declaration.statement2"))
+                @messages("declaration.statement2")
             </li>
             <li>
-                @components.paragraph_text(messages("declaration.statement3"))
+                @messages("declaration.statement3")
             </li>
             <li>
-                @components.paragraph_text(messages("declaration.statement4"))
+                @messages("declaration.statement4")
             </li>
             <li>
                 @if(workingKnowledge) {
-                @components.paragraph_text(messages("declaration.statement5a"))
+                @messages("declaration.statement5a")
                 } else {
-                @components.paragraph_text(messages("declaration.statement5b"))
+                @messages("declaration.statement5b")
                 }
             </li>
         </ul>
 
         <div class="form-group">
             <div class="section">
-                @components.button_link("site.save_and_continue", controllers.register.routes.DeclarationController.onSubmit().url, "submit")
+                @components.button_link("site.agreeAndContinue", controllers.register.routes.DeclarationController.onSubmit().url, "submit")
             </div>
         </div>
 

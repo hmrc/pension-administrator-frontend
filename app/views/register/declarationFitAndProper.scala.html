@@ -30,29 +30,29 @@
 
     @components.paragraph_text(messages("declarationFitAndProper.declaration"))
 
-    <ul class="list-bullet">
+    <ul class="list list-bullet">
         <li>
-            @components.paragraph_text(messages("declarationFitAndProper.statement1"))
+            @messages("declarationFitAndProper.statement1")
         </li>
         <li>
-            @components.paragraph_text(messages("declarationFitAndProper.statement2"))
+            @messages("declarationFitAndProper.statement2")
         </li>
         <li>
-            @components.paragraph_text(messages("declarationFitAndProper.statement3"))
+            @messages("declarationFitAndProper.statement3")
         </li>
         <li>
-            @components.paragraph_text(messages("declarationFitAndProper.statement4"))
+            @messages("declarationFitAndProper.statement4")
         </li>
         <li>
-            @components.paragraph_text(messages("declarationFitAndProper.statement5"))
+            @messages("declarationFitAndProper.statement5")
         </li>
         <li>
-            @components.paragraph_text(messages("declarationFitAndProper.statement6"))
+            @messages("declarationFitAndProper.statement6")
         </li>
     </ul>
 
     <div class="form-group">
-        @components.button_link("site.continue", controllers.register.routes.DeclarationFitAndProperController.onClickAgree().url, "submit")
+        @components.button_link("site.agreeAndContinue", controllers.register.routes.DeclarationFitAndProperController.onClickAgree().url, "submit")
     </div>
 
 }
