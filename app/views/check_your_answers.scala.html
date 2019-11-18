@@ -29,6 +29,8 @@
     ) {
 
         @helpers.form(action = postUrl, 'autoComplete -> "off") {
+
+        @components.back_link()
             @components.heading(
                     headingKey=messages("checkYourAnswers.heading").toString
             )

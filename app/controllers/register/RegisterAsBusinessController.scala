@@ -19,7 +19,7 @@ package controllers.register
 import audit.{AuditService, PSAStartEvent}
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}

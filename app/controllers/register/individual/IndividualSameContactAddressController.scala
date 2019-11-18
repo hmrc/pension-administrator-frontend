@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.SameContactAddressController
 import controllers.register.individual.routes._

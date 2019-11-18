@@ -17,7 +17,7 @@
 package controllers.register.adviser
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider

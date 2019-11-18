@@ -17,7 +17,7 @@
 package controllers.register.individual
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}

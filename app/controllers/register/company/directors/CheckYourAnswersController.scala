@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.company.directors.routes._
 import controllers.{Retrievals, Variations}

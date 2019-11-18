@@ -17,7 +17,7 @@
 package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
@@ -32,6 +32,7 @@ import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import controllers.register.partnership.partners.routes.HasPartnerUTRController
+
 import scala.concurrent.ExecutionContext
 
 class HasPartnerUTRController @Inject()(override val appConfig: FrontendAppConfig,

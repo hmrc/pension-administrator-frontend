@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EnterNumberController
 import forms.register.company.CompanyRegistrationNumberFormProvider

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package connectors
+package connectors.cache
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
@@ -35,7 +35,7 @@ class ICacheConnector @Inject()(
                                             http: WSClient
                                           ) extends UserAnswersCacheConnector {
 
-  protected def url(id: String) = s"${config.pensionsSchemeUrl}/pensions-scheme/journey-cache/psa/$id"
+  protected def url(id: String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/psa/$id"
 
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit
@@ -58,7 +58,7 @@ class ICacheConnector @Inject()(
     modify(cacheId, _ => JsSuccess(UserAnswers(value)))
   }
 
-  private[connectors] def modify(cacheId: String, modification: (UserAnswers) => JsResult[UserAnswers])
+  private[connectors] def modify(cacheId: String, modification: UserAnswers => JsResult[UserAnswers])
                                 (implicit
                                  ec: ExecutionContext,
                                  hc: HeaderCarrier

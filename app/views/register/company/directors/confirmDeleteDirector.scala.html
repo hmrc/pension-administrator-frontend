@@ -29,6 +29,8 @@
 
     @helpers.form(action = ConfirmDeleteDirectorController.onSubmit(mode, index), 'autoComplete -> "off") {
 
+        @components.back_link()
+
         @components.heading(
             headingKey = messages("confirmDeleteDirector.heading", fullName))
 

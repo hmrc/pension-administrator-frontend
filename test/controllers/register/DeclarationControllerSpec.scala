@@ -18,6 +18,7 @@ package controllers.register
 
 import config.FrontendAppConfig
 import connectors._
+import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider

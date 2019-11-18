@@ -17,7 +17,8 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.AllowAccessActionProvider
 import identifiers.TypedIdentifier

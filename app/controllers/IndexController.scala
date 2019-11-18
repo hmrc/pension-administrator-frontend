@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}

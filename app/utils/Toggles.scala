@@ -17,5 +17,5 @@
 package utils
 
 object Toggles {
-
+   val isDataShiftEnabled: String =  "is-data-shift-enabled"
 }

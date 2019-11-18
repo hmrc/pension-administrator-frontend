@@ -17,7 +17,7 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.AllowAccessActionProvider
 import controllers.{Retrievals, Variations}

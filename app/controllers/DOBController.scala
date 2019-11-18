@@ -19,7 +19,7 @@ package controllers
 import java.time.LocalDate
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import forms.DOBFormProvider
 import identifiers.TypedIdentifier

@@ -17,7 +17,8 @@
 package services
 
 import base.SpecBase
-import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
+import connectors.{DeRegistrationConnector, FakeUserAnswersCacheConnector, SubscriptionConnector}
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual._

@@ -18,15 +18,15 @@ package controllers.address
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.FakeAllowAccessProvider
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.address.AddressYearsFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddressYearsId}
-import models.requests.DataRequest
+import identifiers.register.partnership.partners.PartnerAddressYearsId
 import models._
+import models.requests.DataRequest
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
