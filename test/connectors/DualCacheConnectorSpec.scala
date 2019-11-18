@@ -17,14 +17,17 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import config.FeatureSwitchManagementService
 import connectors.cache.{DualCacheConnector, ICacheConnector}
 import identifiers.TypedIdentifier
 import org.scalatest._
 import play.api.http.Status
+import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
-import utils.WireMockHelper
+import utils.{FakeFeatureSwitchManagementService, WireMockHelper}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -41,6 +44,9 @@ class DualCacheConnectorSpec extends AsyncWordSpec with MustMatchers with WireMo
   private def newUrl(id: String): String = s"/pension-administrator/journey-cache/psa-data/$id"
 
   private def oldUrl(id: String): String = s"/pension-administrator/journey-cache/psa/$id"
+
+  override def bindings: Seq[GuiceableModule] =
+    Seq(bind[FeatureSwitchManagementService].toInstance(new FakeFeatureSwitchManagementService(enableToggle = true)))
 
   private lazy val connector = injector.instanceOf[DualCacheConnector]
 
