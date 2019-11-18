@@ -57,11 +57,11 @@ class AdviserNavigator @Inject() extends Navigator {
   }
 
   private def adviserCompletionCheckNavigator(ua: UserAnswers, call: Call, mode: Mode): Call = {
-    (mode, ua.get(AdviserPhoneId), ua.get(IsNewAdviserId)) match {
-      case (NormalMode, _, _) => call
-      case (UpdateMode, Some(_), _) => AnyMoreChangesController.onPageLoad()
-      case (_, _, Some(true)) => call
-      case _ => AnyMoreChangesController.onPageLoad()
+    (mode, ua.get(AdviserEmailId), ua.get(AdviserPhoneId), ua.get(AdviserAddressId), ua.get(IsNewAdviserId)) match {
+      case (NormalMode, _, _, _, _) => call
+      case (UpdateMode, Some(_), Some(_), Some(_), _) => AnyMoreChangesController.onPageLoad()
+      case (_, _, _, _, Some(true)) => call
+      case _ => controllers.routes.PsaDetailsController.onPageLoad()
     }
   }
 

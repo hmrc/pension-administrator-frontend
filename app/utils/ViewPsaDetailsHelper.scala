@@ -108,9 +108,9 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     toOptionSeq(Seq(
       workingKnowledge,
       pensionAdviser,
+      pensionAdviserAddress,
       pensionAdviserEmail,
-      pensionAdviserPhone,
-      pensionAdviserAddress
+      pensionAdviserPhone
     ).flatten).map { seqAnswerRow =>
       SuperSection(
         Some("pensionAdvisor.section.header"),

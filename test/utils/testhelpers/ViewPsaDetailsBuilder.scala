@@ -29,24 +29,24 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url))),
     AnswerRow("pensions.advisor.label", Seq("Pension Adviser"), false,
       None),
+    AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4,", "56765,", "Country of AD"), false,
+      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false,
       Some(Link(controllers.register.adviser.routes.AdviserEmailController.onPageLoad(UpdateMode).url))),
     AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("0044-0987654232"), false,
-      Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(UpdateMode).url))),
-    AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4,", "56765,", "Country of AD"), false,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url))))
+      Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(UpdateMode).url))))
 
   val pensionAdviserSeqAnswersIncomplete = Seq(
     AnswerRow("variationWorkingKnowledge.heading", Seq("No"), false,
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url))),
     AnswerRow("pensions.advisor.label", Seq("site.not_entered"),answerIsMessageKey = true,
       Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode).url, "site.add"))),
+    AnswerRow("cya.label.address", Seq("site.not_entered"), true,
+      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))),
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("site.not_entered"), true,
       Some(Link(controllers.register.adviser.routes.AdviserEmailController.onPageLoad(UpdateMode).url, "site.add"))),
     AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), true,
-      Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(UpdateMode).url, "site.add"))),
-    AnswerRow("cya.label.address", Seq("site.not_entered"), true,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))))
+      Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(UpdateMode).url, "site.add"))))
 
   def individualSeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false,
