@@ -34,24 +34,24 @@
 
         @components.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
 
-        <ul class="list-bullet">
+        <ul class="list list-bullet">
             <li>
-                @components.paragraph_text(messages("declarationFitAndProper.variations.statement1"))
+                @messages("declarationFitAndProper.variations.statement1")
             </li>
             <li>
-                @components.paragraph_text(messages("declarationFitAndProper.variations.statement2"))
+                @messages("declarationFitAndProper.variations.statement2")
             </li>
             <li>
-                @components.paragraph_text(messages("declarationFitAndProper.variations.statement3"))
+                @messages("declarationFitAndProper.variations.statement3")
             </li>
             <li>
-                @components.paragraph_text(messages("declarationFitAndProper.variations.statement4"))
+                @messages("declarationFitAndProper.variations.statement4")
             </li>
             <li>
-                @components.paragraph_text(messages("declarationFitAndProper.variations.statement5"))
+                @messages("declarationFitAndProper.variations.statement5")
             </li>
             <li>
-                @components.paragraph_text(messages("declarationFitAndProper.variations.statement6"))
+                @messages("declarationFitAndProper.variations.statement6")
             </li>
         </ul>
 
@@ -63,7 +63,7 @@
         )
 
         <div class="subsection">
-            @components.submit_button("site.save_and_continue")
+            @components.submit_button("site.agreeAndContinue")
         </div>
 
         @psaNameOpt.map{ psaName =>
