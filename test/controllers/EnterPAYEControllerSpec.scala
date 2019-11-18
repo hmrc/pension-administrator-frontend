@@ -18,7 +18,8 @@ package controllers
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.register.EnterPAYEController
 import forms.EnterPAYEFormProvider
 import identifiers.TypedIdentifier

@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import identifiers.register.company.MoreThanTenDirectorsId
 import identifiers.register.company.directors.DirectorNameId

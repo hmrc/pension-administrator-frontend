@@ -16,7 +16,7 @@
 
 package utils
 
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{PSAUser, UserType}

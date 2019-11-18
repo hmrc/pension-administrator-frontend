@@ -19,7 +19,7 @@ package controllers.register
 import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import forms.register.AddEntityFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest

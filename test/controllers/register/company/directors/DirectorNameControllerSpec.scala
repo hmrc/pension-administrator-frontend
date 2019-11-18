@@ -16,7 +16,8 @@
 
 package controllers.register.company.directors
 
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.{ControllerSpecBase, PersonNameControllerBehaviour}
 import models.requests.DataRequest

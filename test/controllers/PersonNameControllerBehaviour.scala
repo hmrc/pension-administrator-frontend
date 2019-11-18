@@ -16,7 +16,8 @@
 
 package controllers
 
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import forms.PersonNameFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest

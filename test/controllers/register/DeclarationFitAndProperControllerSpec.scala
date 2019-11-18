@@ -18,6 +18,7 @@ package controllers.register
 
 import config.FrontendAppConfig
 import connectors._
+import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
@@ -39,7 +40,7 @@ import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, Upstream4xxResponse, BadRequestException}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, Upstream4xxResponse}
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declarationFitAndProper
 

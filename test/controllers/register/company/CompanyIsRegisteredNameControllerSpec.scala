@@ -16,7 +16,8 @@
 
 package controllers.register.company
 
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{ControllerSpecBase, IsRegisteredNameControllerBehaviour}
 import forms.register.IsRegisteredNameFormProvider

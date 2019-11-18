@@ -17,12 +17,12 @@
 package controllers.register.individual
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.individual.{IndividualEmailId, IndividualDetailsId}
+import identifiers.register.individual.{IndividualDetailsId, IndividualEmailId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest

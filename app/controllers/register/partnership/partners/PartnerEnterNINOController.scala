@@ -17,11 +17,11 @@
 package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.NINOController
 import forms.register.NINOFormProvider
-import identifiers.register.partnership.partners.{PartnerNameId, PartnerEnterNINOId}
+import identifiers.register.partnership.partners.{PartnerEnterNINOId, PartnerNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}

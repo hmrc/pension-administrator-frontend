@@ -19,7 +19,8 @@ package controllers
 import java.time.LocalDate
 
 import config.FrontendAppConfig
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import forms.ConfirmDeleteFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.company.MoreThanTenDirectorsId

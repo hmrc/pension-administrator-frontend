@@ -19,7 +19,8 @@ package controllers.address
 import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.FakeAllowAccessProvider
 import forms.address.PostCodeLookupFormProvider
 import identifiers.TypedIdentifier

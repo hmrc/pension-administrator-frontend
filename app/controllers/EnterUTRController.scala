@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.{Mode, ReferenceValue}
 import models.requests.DataRequest

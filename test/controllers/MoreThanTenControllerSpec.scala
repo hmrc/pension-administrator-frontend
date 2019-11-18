@@ -18,7 +18,8 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import forms.MoreThanTenFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.MoreThanTenDirectorsOrPartnersChangedId
