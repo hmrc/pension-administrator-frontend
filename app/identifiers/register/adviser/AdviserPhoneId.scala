@@ -25,9 +25,8 @@ import viewmodels.{AnswerRow, Link, Message}
 
 case object AdviserPhoneId extends TypedIdentifier[String] {
   self =>
-  override def path: JsPath = JsPath \ "adviserDetails" \ AdviserPhoneId.toString
 
-  override def toString: String = "phone"
+  override def toString: String = "adviserPhone"
 
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswersAdviser[self.type] {

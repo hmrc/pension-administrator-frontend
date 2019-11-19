@@ -93,7 +93,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CheckYourAnswersId, emptyAnswers, whatYouWillNeedDirectorPage, None),
     (CheckYourAnswersId, hasDirector, addCompanyDirectors(NormalMode), None),
 
-    (CompanyReviewId, emptyAnswers, declarationPage, None),
+    (CompanyReviewId, emptyAnswers, declarationWorkingKnowledgePage(NormalMode), None),
 
     (CompanyAddressId, nonUkEuAddress, whatYouWillNeedPage, None),
     (CompanyAddressId, nonUkButUKAddress, reconsiderAreYouInUk, None),
@@ -171,7 +171,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def previousAddressPage(mode: Mode) = routes.CompanyPreviousAddressController.onPageLoad(mode)
 
-  private def declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
+  private def declarationWorkingKnowledgePage(mode: Mode) = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(mode)
 
   private def sameContactAddress(mode: Mode) = routes.CompanySameContactAddressController.onPageLoad(mode)
 

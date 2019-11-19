@@ -18,7 +18,8 @@ package controllers
 
 import java.time.LocalDate
 
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.address.ManualAddressControllerSpec.externalId
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressId, IsDirectorCompleteId}

@@ -48,16 +48,16 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   def updateModeRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Next Page (CheckMode)"),
-    (AdviserNameId, emptyAnswers, haveMoreChangesPage, Some(checkYourAnswersPage(UpdateMode))),
+    (AdviserNameId, emptyAnswers, psaDetailsPage, Some(checkYourAnswersPage(UpdateMode))),
     (AdviserNameId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), Some(checkYourAnswersPage(UpdateMode))),
     (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), Some(adviserAddressListPage(UpdateMode))),
     (AdviserAddressListId, emptyAnswers, adviserAddressPage(UpdateMode), Some(adviserAddressPage(UpdateMode))),
-    (AdviserAddressId, emptyAnswers, haveMoreChangesPage, Some(checkYourAnswersPage(UpdateMode))),
+    (AdviserAddressId, emptyAnswers, psaDetailsPage, Some(checkYourAnswersPage(UpdateMode))),
     (AdviserAddressId, adviserUpdated, adviserEmailPage(UpdateMode), None),
-    (AdviserEmailId, emptyAnswers, haveMoreChangesPage, None),
+    (AdviserEmailId, emptyAnswers, psaDetailsPage, None),
     (AdviserEmailId, adviserUpdated, adviserPhonePage(UpdateMode),  Some(checkYourAnswersPage(UpdateMode))),
-    (AdviserPhoneId, emptyAnswers, haveMoreChangesPage,  Some(checkYourAnswersPage(UpdateMode))),
-    (AdviserPhoneId, adviserUpdated, checkYourAnswersPage(UpdateMode),  Some(checkYourAnswersPage(UpdateMode))),
+    (AdviserPhoneId, emptyAnswers, psaDetailsPage,  Some(checkYourAnswersPage(UpdateMode))),
+    (AdviserPhoneId, adviserUpdated, psaDetailsPage,  Some(checkYourAnswersPage(UpdateMode))),
 
     (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage, None),
     (CheckYourAnswersId, declarationPensionAdvisorTrue, variationDeclarationFitAndProperPage, None),
@@ -92,5 +92,6 @@ object AdviserNavigatorSpec extends OptionValues {
 
   private val declarationFitAndProperPage: Call = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
   private val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private val psaDetailsPage: Call = controllers.routes.PsaDetailsController.onPageLoad()
 
 }

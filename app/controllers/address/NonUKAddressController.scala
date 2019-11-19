@@ -17,7 +17,8 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.{RegistrationConnector, UserAnswersCacheConnector}
+import connectors.RegistrationConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import identifiers.register.RegistrationInfoId

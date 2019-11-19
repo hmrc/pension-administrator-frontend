@@ -18,7 +18,7 @@ package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.register.partnership.routes.{AddPartnerController, _}
 import controllers.register.routes._
 import controllers.routes._
@@ -83,7 +83,7 @@ class PartnershipNavigator @Inject()(
     case CheckYourAnswersId =>
       partnerRoutes(ua)
     case PartnershipReviewId =>
-      DeclarationController.onPageLoad()
+      controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
     case PartnershipRegisteredAddressId =>
       regionBasedNavigation(ua)
   }

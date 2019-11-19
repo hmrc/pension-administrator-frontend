@@ -17,11 +17,12 @@
 package controllers.register.adviser
 
 import base.CSRFRequest
-import connectors.{UserAnswersCacheConnector, FakeUserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
-import identifiers.register.adviser.AdviserAddressPostCodeLookupId
+import identifiers.register.adviser.{AdviserAddressPostCodeLookupId, AdviserNameId}
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
@@ -116,6 +117,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase with CSRFReque
 
 object AdviserAddressListControllerSpec extends ControllerSpecBase {
   private val onwardRoute = routes.AdviserAddressController.onPageLoad(NormalMode)
+  val name = "Adviser name"
   private val addresses = Seq(
     TolerantAddress(
       Some("Address 1 Line 1"),
@@ -137,7 +139,8 @@ object AdviserAddressListControllerSpec extends ControllerSpecBase {
 
   private val data =
     UserAnswers(Json.obj())
-      .set(AdviserAddressPostCodeLookupId)(addresses)
+    .set(AdviserNameId)(name)
+      .flatMap(_.set(AdviserAddressPostCodeLookupId)(addresses))
       .asOpt.map(_.json)
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(data)
@@ -147,8 +150,8 @@ object AdviserAddressListControllerSpec extends ControllerSpecBase {
       routes.AdviserAddressListController.onSubmit(NormalMode),
       routes.AdviserAddressController.onPageLoad(NormalMode),
       addresses,
-      Message("common.selectAddress.title"),
-      Message("common.selectAddress.heading"),
+      Message("adviserAddressList.heading", Message("theAdviser")),
+      Message("adviserAddressList.heading", name),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )

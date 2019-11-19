@@ -17,13 +17,14 @@
 package services
 
 import com.google.inject.ImplementedBy
-import connectors.{DeRegistrationConnector, SubscriptionConnector, UserAnswersCacheConnector}
+import connectors.SubscriptionConnector
+import connectors.cache.UserAnswersCacheConnector
+import identifiers.register._
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
-import identifiers.register._
 import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
 import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
@@ -48,7 +49,6 @@ class PsaDetailServiceImpl @Inject()(
                                       override val messagesApi: MessagesApi,
                                       subscriptionConnector: SubscriptionConnector,
                                       countryOptions: CountryOptions,
-                                      deRegistrationConnector: DeRegistrationConnector,
                                       userAnswersCacheConnector: UserAnswersCacheConnector
                                     ) extends PsaDetailsService with I18nSupport {
 
@@ -64,9 +64,8 @@ class PsaDetailServiceImpl @Inject()(
     for {
       userAnswers <- getUserAnswers(psaId, mode)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
-      canDeregister <- canStopBeingAPsa(psaId)
     } yield {
-      getPsaDetailsViewModel(userAnswers, canDeregister)
+      getPsaDetailsViewModel(userAnswers)
     }
   }
 
@@ -115,7 +114,7 @@ class PsaDetailServiceImpl @Inject()(
     )
   }
 
-  private def getPsaDetailsViewModel(userAnswers: UserAnswers, canDeRegister: Boolean): PsaViewDetailsViewModel = {
+  private def getPsaDetailsViewModel(userAnswers: UserAnswers): PsaViewDetailsViewModel = {
     val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
     val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions, messagesApi)
@@ -137,7 +136,7 @@ class PsaDetailServiceImpl @Inject()(
         throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")
     }
 
-    PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, canDeRegister)
+    PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated)
   }
 
   private def setCompleteAndAddressIdsToUserAnswers(userAnswers: UserAnswers,
@@ -173,9 +172,5 @@ class PsaDetailServiceImpl @Inject()(
         (Nil, Map.empty)
     }
     userAnswers.setAllFlagsToValue(seqOfCompleteIds, value = true).flatMap(ua => ua.setAllExistingAddress(mapOfAddressIds))
-  }
-
-  private def canStopBeingAPsa(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-    deRegistrationConnector.canDeRegister(psaId)
   }
 }

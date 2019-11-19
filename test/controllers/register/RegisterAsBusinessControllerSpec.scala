@@ -18,7 +18,8 @@ package controllers.register
 
 import audit.testdoubles.StubSuccessfulAuditService
 import base.SpecBase
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.behaviours.ControllerWithQuestionPageBehaviours

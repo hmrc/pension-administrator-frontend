@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package connectors
+package connectors.cache
 
 import identifiers.TypedIdentifier
-import play.api.libs.json._
+import play.api.libs.json.{Format, JsValue}
 import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 

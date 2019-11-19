@@ -18,11 +18,11 @@ package controllers.register.adviser
 
 import audit.AuditService
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode}
@@ -54,10 +54,13 @@ class AdviserAddressController @Inject()(
   private def addressViewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.AdviserAddressController.onSubmit(mode),
     countryOptions.options,
-    Message("common.adviser.address.title"),
-    Message("common.adviser.address.heading"),
+    Message("common.adviser.address.heading", Message("theAdviser")),
+    Message("common.adviser.address.heading", entityName),
     psaName = psaName()
   )
+
+  private def entityName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(AdviserNameId).getOrElse(Message("theAdviser"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

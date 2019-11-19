@@ -17,7 +17,7 @@
 package controllers.register.partnership.partners
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
 import forms.ReasonFormProvider
@@ -31,6 +31,7 @@ import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import controllers.register.partnership.partners.routes.PartnerNoUTRReasonController
+
 import scala.concurrent.ExecutionContext
 
 class PartnerNoUTRReasonController @Inject()(

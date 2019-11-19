@@ -19,7 +19,8 @@ package controllers.register
 import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import forms.EmailFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest

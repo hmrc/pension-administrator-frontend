@@ -17,7 +17,24 @@
 package identifiers.register.adviser
 
 import identifiers.TypedIdentifier
+import play.api.i18n.Messages
+import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersAdviser, StringCYA}
+import viewmodels.{AnswerRow, Link, Message}
 
 object AdviserNameId extends TypedIdentifier[String] {
+  self =>
   override def toString: String = "adviserName"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
+    new CheckYourAnswersAdviser[self.type] {
+      private def label(ua: UserAnswers): String =
+        dynamicMessage(ua, messageKey = "adviserName.heading")
+
+      private def hiddenLabel(ua: UserAnswers): Message =
+        dynamicMessage(ua, messageKey = "adviserName.visuallyHidden.text")
+
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+    }
 }
