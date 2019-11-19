@@ -22,11 +22,10 @@ import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
-import identifiers.register.partnership.partners._
 import identifiers.register.partnership._
+import identifiers.register.partnership.partners._
 import identifiers.register.{BusinessNameId, RegisterAsBusinessId, RegistrationInfoId, VariationWorkingKnowledgeId}
 import models._
-import models.register.adviser.AdviserDetails
 import org.scalatest.OptionValues
 
 
@@ -180,8 +179,12 @@ package object utils {
       answers.set(AdviserAddressId)(address).asOpt.value
     }
 
-    def adviserDetails(details: AdviserDetails): UserAnswers = {
-      answers.set(AdviserDetailsId)(details).asOpt.value
+    def adviserEmail(email: String): UserAnswers = {
+      answers.set(AdviserEmailId)(email).asOpt.value
+    }
+
+    def adviserPhone(phone: String): UserAnswers = {
+      answers.set(AdviserPhoneId)(phone).asOpt.value
     }
 
     def adviserAddressList(address: TolerantAddress): UserAnswers = {
@@ -239,6 +242,10 @@ package object utils {
 
     //Partners
 
+    def partnerName(index: Int, personName: PersonName): UserAnswers = {
+      answers.set(PartnerNameId(index))(personName).asOpt.value
+    }
+
     def partnerPreviousAddress(index: Int, address: Address): UserAnswers = {
       answers.set(PartnerPreviousAddressId(index))(address).asOpt.value
     }
@@ -257,6 +264,18 @@ package object utils {
 
     def partnerNoNINOReason(index: Int, reason: String): UserAnswers = {
       answers.set(PartnerNoNINOReasonId(index))(reason).asOpt.value
+    }
+
+    def partnerHasUTR(index: Int, flag: Boolean): UserAnswers = {
+      answers.set(HasPartnerUTRId(index))(flag).asOpt.value
+    }
+
+    def partnerEnterUTR(index: Int, nino: ReferenceValue): UserAnswers = {
+      answers.set(PartnerEnterUTRId(index))(nino).asOpt.value
+    }
+
+    def partnerNoUTRReason(index: Int, reason: String): UserAnswers = {
+      answers.set(PartnerNoUTRReasonId(index))(reason).asOpt.value
     }
 
     def partnerAddress(index: Int, address: Address): UserAnswers = {

@@ -29,6 +29,8 @@
     ) {
 
         @helpers.form(action = postUrl, 'autoComplete -> "off") {
+
+        @components.back_link()
             @components.heading(
                     headingKey=messages("checkYourAnswers.heading").toString
             )
@@ -43,7 +45,7 @@
         }
 
         <div class="section">
-             @components.submit_button("site.confirm")
+             @components.submit_button("site.save_and_continue")
         </div>
         @psaNameOpt.map { psaName =>
             @components.return_link(psaName, mode)

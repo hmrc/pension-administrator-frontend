@@ -209,8 +209,8 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
   private val viewModel = ManualAddressViewModel(
     routes.PartnerAddressController.onSubmit(NormalMode, firstIndex),
     countryOptions.options,
-    Message("partnerAddress.title"),
-    Message("partnerAddress.heading")
+    Message("contactAddress.heading", Message("thePartner")),
+    Message("contactAddress.heading", "Jonathan Doe")
   )
 
   private def viewAsString(form: Form[_] = form) =

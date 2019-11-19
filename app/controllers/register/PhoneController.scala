@@ -17,7 +17,7 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
 import models.Mode
@@ -54,13 +54,14 @@ trait PhoneController extends FrontendController with Retrievals with I18nSuppor
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(phone(appConfig, formWithErrors, viewModel))),
-      value =>
+      value => {
         cacheConnector.save(request.externalId, id, value).flatMap(
           cacheMap =>
             saveChangeFlag(mode, id).map { _ =>
               Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
             }
         )
+      }
     )
   }
 }

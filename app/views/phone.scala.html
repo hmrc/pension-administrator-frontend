@@ -18,7 +18,6 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
 @import models.Mode
-@import models.ContactDetails
 @import viewmodels.CommonFormWithHintViewModel
 
 @(appConfig: FrontendAppConfig, form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
@@ -30,6 +29,8 @@
 ) {
 
     @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
+
+        @components.back_link()
 
         @components.error_summary(form.errors)
 

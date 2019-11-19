@@ -17,7 +17,7 @@
 package controllers.register.adviser
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.ConfirmDeleteAdviserFormProvider
@@ -86,7 +86,7 @@ class ConfirmDeleteAdviserController @Inject()(
   private def deleteAdviserAndSetChangeFlag(value: Boolean, userAnswers: UserAnswers, mode: Mode)
                                            (implicit request: DataRequest[AnyContent]): Future[JsValue] = {
     if (value) {
-      val updatedAnswers = userAnswers.removeAllOf(List(AdviserNameId, AdviserDetailsId, AdviserAddressId,
+      val updatedAnswers = userAnswers.removeAllOf(List(AdviserNameId, AdviserEmailId, AdviserPhoneId, AdviserAddressId,
         AdviserAddressListId, AdviserAddressPostCodeLookupId)).asOpt.getOrElse(userAnswers)
       cacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
         saveChangeFlag(mode, ConfirmDeleteAdviserId)

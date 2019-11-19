@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import models.{PSAUser, UserType}
 import org.mockito.Matchers.{eq => eqTo, _}

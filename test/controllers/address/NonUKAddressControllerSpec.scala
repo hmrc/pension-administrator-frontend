@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.FakeUserAnswersCacheConnector
 import connectors.RegistrationConnector
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.RegistrationInfoId
 import models._

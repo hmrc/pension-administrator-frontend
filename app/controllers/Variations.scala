@@ -16,10 +16,10 @@
 
 package controllers
 
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import identifiers.register._
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, ConfirmDeleteAdviserId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserPhoneId, ConfirmDeleteAdviserId}
 import identifiers.register.company._
 import identifiers.register.company.directors.{CheckYourAnswersId => DirectorsCheckYourAnswersId, _}
 import identifiers.register.individual._
@@ -55,7 +55,8 @@ trait Variations extends FrontendController {
     PartnershipPhoneId -> PartnershipContactDetailsChangedId,
     VariationWorkingKnowledgeId -> DeclarationChangedId,
     AdviserAddressId -> DeclarationChangedId,
-    AdviserDetailsId -> DeclarationChangedId,
+    AdviserEmailId -> DeclarationChangedId,
+    AdviserPhoneId -> DeclarationChangedId,
     ConfirmDeleteAdviserId -> DeclarationChangedId,
     MoreThanTenDirectorsId -> MoreThanTenDirectorsOrPartnersChangedId,
     MoreThanTenPartnersId -> MoreThanTenDirectorsOrPartnersChangedId,
@@ -75,8 +76,8 @@ trait Variations extends FrontendController {
       case DirectorAddressId(_) | DirectorAddressYearsId(_) | DirectorEmailId(_) | DirectorPhoneId(_) |
            DirectorEnterNINOId(_) | DirectorPreviousAddressId(_) | DirectorEnterUTRId(_) | DirectorNameId(_)
       => Some(DirectorsOrPartnersChangedId)
-      case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerContactDetailsId(_) |
-           PartnerEnterNINOId(_) | PartnerPreviousAddressId(_) | PartnerUniqueTaxReferenceId(_) | PartnerNameId(_)
+      case PartnerAddressId(_) | PartnerAddressYearsId(_) | PartnerEmailId(_) | PartnerPhoneId(_) |
+           PartnerEnterNINOId(_) | PartnerPreviousAddressId(_) | PartnerEnterUTRId(_) | PartnerNameId(_)
       => Some(DirectorsOrPartnersChangedId)
       case _ => None
     }

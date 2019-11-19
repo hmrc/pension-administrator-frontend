@@ -19,7 +19,7 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.register.partnership.partners.routes._
-import controllers.register.partnership.routes.{AddPartnerController, PartnershipReviewController, MoreThanTenPartnersController}
+import controllers.register.partnership.routes.{AddPartnerController, MoreThanTenPartnersController, PartnershipReviewController}
 import controllers.routes.SessionExpiredController
 import identifiers.Identifier
 import identifiers.register.partnership.partners._
@@ -48,7 +48,12 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case PartnerEnterNINOId(index) =>
       checkYourAnswersPage(index, journeyMode(mode))
     case PartnerNoNINOReasonId(index) => checkYourAnswersPage(index, journeyMode(mode))
-    case PartnerUniqueTaxReferenceId(index) => checkYourAnswersPage(index, journeyMode(mode))
+
+    case HasPartnerUTRId(index) if hasUtr(ua, index) => PartnerEnterUTRController.onPageLoad(mode, index)
+    case HasPartnerUTRId(index) => PartnerNoUTRReasonController.onPageLoad(mode, index)
+    case PartnerEnterUTRId(index) => checkYourAnswersPage(index, journeyMode(mode))
+    case PartnerNoUTRReasonId(index) => checkYourAnswersPage(index, journeyMode(mode))
+
     case PartnerAddressPostCodeLookupId(index) => PartnerAddressListController.onPageLoad(mode, index)
     case PartnerAddressListId(index) => PartnerAddressController.onPageLoad(mode, index)
     case PartnerAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
@@ -56,7 +61,8 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case PartnerPreviousAddressPostCodeLookupId(index) => PartnerPreviousAddressListController.onPageLoad(mode, index)
     case PartnerPreviousAddressListId(index) => PartnerPreviousAddressController.onPageLoad(mode, index)
     case PartnerPreviousAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
-    case PartnerContactDetailsId(index) => checkYourAnswersPage(index, journeyMode(mode))
+    case PartnerEmailId(index) => checkYourAnswersPage(index, journeyMode(mode))
+    case PartnerPhoneId(index) => checkYourAnswersPage(index, journeyMode(mode))
   }
 
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
@@ -71,11 +77,17 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case AddPartnersId => addPartnerRoutes(ua, mode)
     case PartnerNameId(index) => PartnerDOBController.onPageLoad(mode, index)
     case PartnerDOBId(index) => HasPartnerNINOController.onPageLoad(mode, index)
+
     case HasPartnerNINOId(index) if hasNino(ua, index) => PartnerEnterNINOController.onPageLoad(mode, index)
     case HasPartnerNINOId(index) => PartnerNoNINOReasonController.onPageLoad(mode, index)
     case PartnerEnterNINOId(index) => ninoRoutes(index, ua, mode)
     case PartnerNoNINOReasonId(index) => ninoRoutes(index, ua, mode)
-    case PartnerUniqueTaxReferenceId(index) => utrRoutes(index, ua, mode)
+
+    case HasPartnerUTRId(index) if hasUtr(ua, index) => PartnerEnterUTRController.onPageLoad(mode, index)
+    case HasPartnerUTRId(index) => PartnerNoUTRReasonController.onPageLoad(mode, index)
+    case PartnerEnterUTRId(index) => utrRoutes(index, ua, mode)
+    case PartnerNoUTRReasonId(index) => utrRoutes(index, ua, mode)
+
     case PartnerAddressPostCodeLookupId(index) => PartnerAddressListController.onPageLoad(mode, index)
     case PartnerAddressListId(index) => PartnerAddressController.onPageLoad(mode, index)
     case PartnerAddressId(index) => PartnerAddressYearsController.onPageLoad(mode, index)
@@ -83,7 +95,8 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case PartnerPreviousAddressPostCodeLookupId(index) => PartnerPreviousAddressListController.onPageLoad(mode, index)
     case PartnerPreviousAddressListId(index) => PartnerPreviousAddressController.onPageLoad(mode, index)
     case PartnerPreviousAddressId(index) => previousAddressRoutes(index, ua, mode)
-    case PartnerContactDetailsId(index) => contactDetailsRoutes(index, ua, mode)
+    case PartnerEmailId(index) => emailRoutes(index, ua, mode)
+    case PartnerPhoneId(index) => phoneRoutes(index, ua, mode)
     case CheckYourAnswersId => AddPartnerController.onPageLoad(mode)
   }
 
@@ -95,6 +108,8 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
   private def hasNino(answers: UserAnswers, index: Index): Boolean = answers.get(HasPartnerNINOId(index)).getOrElse(false)
 
+  private def hasUtr(answers: UserAnswers, index: Index): Boolean = answers.get(HasPartnerUTRId(index)).getOrElse(false)
+
   private def confirmPreviousAddressRoutes(index: Int, answers: UserAnswers): Call =
     answers.get(PartnerConfirmPreviousAddressId(index)) match {
       case Some(true) => anyMoreChangesPage
@@ -105,12 +120,12 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
   private def previousAddressRoutes(index: Int, answers: UserAnswers, mode: Mode): Call = {
     mode match {
       case NormalMode =>
-        PartnerContactDetailsController.onPageLoad(mode, index)
+        PartnerEmailController.onPageLoad(mode, index)
       case UpdateMode =>
         redirectBasedOnIsNew(
           answers,
           index,
-          PartnerContactDetailsController.onPageLoad(mode, index),
+          PartnerEmailController.onPageLoad(mode, index),
           anyMoreChangesPage
         )
       case _ => sessionExpired
@@ -119,26 +134,35 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
   private def ninoRoutes(index: Int, answers: UserAnswers, mode: Mode): Call = {
     mode match {
-      case NormalMode => PartnerUniqueTaxReferenceController.onPageLoad(mode, index)
+      case NormalMode => HasPartnerUTRController.onPageLoad(mode, index)
       case UpdateMode => redirectBasedOnIsNew(answers, index,
-        PartnerUniqueTaxReferenceController.onPageLoad(mode, index), anyMoreChangesPage)
+        HasPartnerUTRController.onPageLoad(mode, index), anyMoreChangesPage)
       case _ => sessionExpired
     }
   }
 
+  private def emailRoutes(index: Int, answers: UserAnswers, mode: Mode): Call = {
+    mode match {
+      case NormalMode => PartnerPhoneController.onPageLoad(mode, index)
+      case UpdateMode => redirectBasedOnIsNew(answers, index,
+        PartnerPhoneController.onPageLoad(mode, index), anyMoreChangesPage)
+      case _ => sessionExpired
+    }
+  }
+
+  private def phoneRoutes(index: Int, answers: UserAnswers, mode: Mode): Call = {
+    mode match {
+      case NormalMode => checkYourAnswersPage(index, mode)
+      case UpdateMode => redirectBasedOnIsNew(answers, index, checkYourAnswersPage(index, mode), anyMoreChangesPage)
+      case _ => sessionExpired
+    }
+  }
+  
   private def utrRoutes(index: Int, answers: UserAnswers, mode: Mode): Call = {
     mode match {
       case NormalMode => PartnerAddressPostCodeLookupController.onPageLoad(mode, index)
       case UpdateMode => redirectBasedOnIsNew(answers, index,
         PartnerAddressPostCodeLookupController.onPageLoad(mode, index), anyMoreChangesPage)
-      case _ => sessionExpired
-    }
-  }
-
-  private def contactDetailsRoutes(index: Int, answers: UserAnswers, mode: Mode): Call = {
-    mode match {
-      case NormalMode => checkYourAnswersPage(index, mode)
-      case UpdateMode => redirectBasedOnIsNew(answers, index, checkYourAnswersPage(index, mode), anyMoreChangesPage)
       case _ => sessionExpired
     }
   }
@@ -151,10 +175,10 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
           PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, index),
           PartnerConfirmPreviousAddressController.onPageLoad(index)
         )
-      case (Some(AddressYears.OverAYear), NormalMode) => PartnerContactDetailsController.onPageLoad(mode, index)
+      case (Some(AddressYears.OverAYear), NormalMode) => PartnerEmailController.onPageLoad(mode, index)
       case (Some(AddressYears.OverAYear), UpdateMode) =>
         redirectBasedOnIsNew(answers, index,
-          PartnerContactDetailsController.onPageLoad(mode, index),
+          PartnerEmailController.onPageLoad(mode, index),
           anyMoreChangesPage
         )
       case _ => sessionExpired

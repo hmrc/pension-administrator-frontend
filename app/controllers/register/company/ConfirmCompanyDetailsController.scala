@@ -17,7 +17,8 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.{RegistrationConnector, UserAnswersCacheConnector}
+import connectors.RegistrationConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.company.CompanyAddressFormProvider

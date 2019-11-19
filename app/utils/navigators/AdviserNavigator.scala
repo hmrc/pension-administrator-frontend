@@ -34,7 +34,8 @@ class AdviserNavigator @Inject() extends Navigator {
 
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AdviserNameId => checkYourAnswers(journeyMode(mode))
-    case AdviserDetailsId => checkYourAnswers(journeyMode(mode))
+    case AdviserEmailId => checkYourAnswers(journeyMode(mode))
+    case AdviserPhoneId => checkYourAnswers(journeyMode(mode))
     case AdviserAddressPostCodeLookupId => AdviserAddressListController.onPageLoad(journeyMode(mode))
     case AdviserAddressListId => AdviserAddressController.onPageLoad(journeyMode(mode))
     case AdviserAddressId => checkYourAnswers(journeyMode(mode))
@@ -45,21 +46,24 @@ class AdviserNavigator @Inject() extends Navigator {
   private def checkYourAnswers(mode: Mode): Call = CheckYourAnswersController.onPageLoad(mode)
 
   private def normalAndUpdateRoutes(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
-    case AdviserNameId => AdviserDetailsController.onPageLoad(mode)
-    case AdviserDetailsId => adviserCompletionCheckNavigator(ua, AdviserAddressPostCodeLookupController.onPageLoad(mode), mode)
+    case AdviserNameId => adviserCompletionCheckNavigator(ua, AdviserAddressPostCodeLookupController.onPageLoad(mode), mode)
     case AdviserAddressPostCodeLookupId => AdviserAddressListController.onPageLoad(mode)
     case AdviserAddressListId => AdviserAddressController.onPageLoad(mode)
     case AdviserAddressId =>
-      adviserCompletionCheckNavigator(ua, CheckYourAnswersController.onPageLoad(mode), mode)
+      adviserCompletionCheckNavigator(ua, AdviserEmailController.onPageLoad(mode), mode)
+    case AdviserEmailId => adviserCompletionCheckNavigator(ua, AdviserPhoneController.onPageLoad(mode), mode)
+    case AdviserPhoneId => adviserCompletionCheckNavigator(ua,
+      (if(mode == NormalMode) checkYourAnswers(mode) else controllers.routes.PsaDetailsController.onPageLoad()), mode)
     case CheckYourAnswersId => checkYourAnswersRoutes(mode, ua)
   }
 
   private def adviserCompletionCheckNavigator(ua: UserAnswers, call: Call, mode: Mode): Call = {
-    (mode, ua.get(AdviserAddressId), ua.get(IsNewAdviserId)) match {
-      case (NormalMode, _, _) => call
-      case (UpdateMode, Some(_), _) => AnyMoreChangesController.onPageLoad()
-      case (_, _, Some(true)) => call
-      case _ => AnyMoreChangesController.onPageLoad()
+    (mode, ua.get(AdviserEmailId), ua.get(AdviserPhoneId), ua.get(AdviserAddressId), ua.get(IsNewAdviserId)) match {
+      case (NormalMode, _, _, _, _) => call
+      case (UpdateMode, Some(_), Some(_), Some(_), Some(true)) => checkYourAnswers(mode)
+      case (UpdateMode, Some(_), Some(_), Some(_), _) => AnyMoreChangesController.onPageLoad()
+      case (_, _, _, _, Some(true)) => call
+      case _ => controllers.routes.PsaDetailsController.onPageLoad()
     }
   }
 

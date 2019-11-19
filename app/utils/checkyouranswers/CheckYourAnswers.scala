@@ -20,11 +20,11 @@ import java.time.LocalDate
 
 import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
+import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
 import models._
-import models.register.adviser.AdviserDetails
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import utils.countryOptions.CountryOptions
@@ -62,11 +62,14 @@ trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends Check
     ua.get(DirectorNameId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("theDirector")))
 }
 
+trait CheckYourAnswersAdviser[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String)(implicit messages: Messages): Message =
+    ua.get(AdviserNameId).map(name => Message(messageKey, name)).getOrElse(Message(messageKey, Message("theAdviser")))
+}
+
 object CheckYourAnswers {
 
   implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
-
-  implicit def uniqueTaxReference[I <: TypedIdentifier[UniqueTaxReference]](implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = UniqueTaxReferenceCYA()()
 
   implicit def tolerantAddress[I <: TypedIdentifier[TolerantAddress]](implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = TolerantAddressCYA()()
 
@@ -84,19 +87,6 @@ object CheckYourAnswers {
   implicit def personName[I <: TypedIdentifier[PersonName]](implicit rds: Reads[PersonName], messages: Messages): CheckYourAnswers[I] = PersonNameCYA()()
 
   implicit def date[I <: TypedIdentifier[LocalDate]](implicit rds: Reads[LocalDate], messages: Messages): CheckYourAnswers[I] = DateCYA()()
-
-  implicit def adviserDetails[I <: TypedIdentifier[AdviserDetails]](implicit r: Reads[AdviserDetails]): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        userAnswers.get(id).map { adviserDetails =>
-          Seq(
-            AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq(adviserDetails.email), false, changeUrl),
-            AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq(adviserDetails.phone), false, changeUrl)
-          )
-        } getOrElse Seq.empty[AnswerRow]
-      }
-    }
-  }
 
   implicit def paye[I <: TypedIdentifier[Paye]](implicit r: Reads[Paye]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
@@ -120,29 +110,6 @@ object CheckYourAnswers {
         } getOrElse Seq.empty[AnswerRow]
     }
   }
-
-  implicit def contactDetails[I <: TypedIdentifier[ContactDetails]](implicit r: Reads[ContactDetails]): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        userAnswers.get(id).map { contactDetails =>
-          Seq(
-            AnswerRow(
-              "contactDetails.email",
-              Seq(s"${contactDetails.email}"),
-              false,
-              changeUrl
-            ),
-            AnswerRow(
-              "contactDetails.phone",
-              Seq(s"${contactDetails.phone}"),
-              false,
-              changeUrl
-            ))
-        } getOrElse Seq.empty[AnswerRow]
-      }
-    }
-  }
-
 }
 
 case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None) {
@@ -222,28 +189,6 @@ case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "
   }
 }
 
-
-case class UniqueTaxReferenceCYA[I <: TypedIdentifier[UniqueTaxReference]](
-                                                                            questionLabel: String = "partnerUniqueTaxReference.checkYourAnswersLabel",
-                                                                            utrLabel: String = "common.utr.text",
-                                                                            reasonLabel: String = "partnerUniqueTaxReference.checkYourAnswersLabel.reason"
-                                                                          ) {
-  def apply()(implicit r: Reads[UniqueTaxReference]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
-    override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-      userAnswers.get(id).map {
-        case UniqueTaxReference.Yes(utr) => Seq(
-          AnswerRow(questionLabel, Seq(s"${UniqueTaxReference.Yes}"), true, changeUrl),
-          AnswerRow(utrLabel, Seq(utr), true, changeUrl)
-        )
-        case UniqueTaxReference.No(reason) => Seq(
-          AnswerRow(questionLabel, Seq(s"${UniqueTaxReference.No}"), true, changeUrl),
-          AnswerRow(reasonLabel, Seq(reason), true, changeUrl)
-        )
-        case _ => Seq.empty[AnswerRow]
-      } getOrElse Seq.empty[AnswerRow]
-  }
-}
-
 case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
   def apply()(implicit rds: Reads[String]): CheckYourAnswers[I] =
     new CheckYourAnswers[I] {
@@ -258,7 +203,8 @@ case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None,
               visuallyHiddenText = hiddenLabel
             ))
         } getOrElse Seq.empty[AnswerRow]
-    }
+      }
+
 }
 
 case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {

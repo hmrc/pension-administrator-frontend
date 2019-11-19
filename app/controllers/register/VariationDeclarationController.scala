@@ -18,19 +18,19 @@ package controllers.register
 
 import config.FrontendAppConfig
 import connectors._
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.register.VariationDeclarationFormProvider
+import controllers.register.routes.VariationDeclarationController
 import identifiers.register._
 import javax.inject.Inject
 import models._
 import models.register.DeclarationWorkingKnowledge
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.annotations.Variations
 import utils.{Navigator, UserAnswers}
-import utils.annotations.{Register, Variations}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,12 +41,9 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                @Variations navigator: Navigator,
-                                               formProvider: VariationDeclarationFormProvider,
                                                dataCacheConnector: UserAnswersCacheConnector,
                                                pensionsSchemeConnector: PensionsSchemeConnector
                                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
-
-  private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -54,34 +51,27 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
       val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
 
       Future.successful(Ok(views.html.register.variationDeclaration(
-        appConfig, form, psaName(), workingKnowledge)))
+        appConfig, psaName(), workingKnowledge, VariationDeclarationController.onClickAgree())))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
 
       val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
+      dataCacheConnector.save(request.externalId, DeclarationId, value = true).flatMap { json =>
 
-        form.bindFromRequest().fold(
-          errors => Future.successful(BadRequest(views.html.register.variationDeclaration(
-            appConfig, errors, psaName(), workingKnowledge))),
+        val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
+        val answers = UserAnswers(json).set(ExistingPSAId)(ExistingPSA(
+          request.user.isExistingPSA,
+          request.user.existingPSAId
+        )).asOpt.getOrElse(UserAnswers(json))
+          .set(DeclarationWorkingKnowledgeId)(
+            DeclarationWorkingKnowledge.declarationWorkingKnowledge(workingKnowledge))
+          .asOpt.getOrElse(UserAnswers(json))
 
-          success =>
-            dataCacheConnector.save(request.externalId, DeclarationId, success).flatMap { json =>
-
-              val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-              val answers = UserAnswers(json).set(ExistingPSAId)(ExistingPSA(
-                request.user.isExistingPSA,
-                request.user.existingPSAId
-              )).asOpt.getOrElse(UserAnswers(json))
-                .set(DeclarationWorkingKnowledgeId)(
-                  DeclarationWorkingKnowledge.declarationWorkingKnowledge(workingKnowledge))
-                .asOpt.getOrElse(UserAnswers(json))
-
-              pensionsSchemeConnector.updatePsa(psaId, answers).map(_ =>
-                Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))
-              )
-            }
+        pensionsSchemeConnector.updatePsa(psaId, answers).map(_ =>
+          Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))
         )
+      }
   }
 }

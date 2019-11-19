@@ -18,7 +18,8 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{AddressLookupConnector, UserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
@@ -54,8 +55,8 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
         PostcodeLookupViewModel(
           routes.CompanyContactAddressPostCodeLookupController.onSubmit(mode),
           routes.CompanyContactAddressController.onSubmit(mode),
-          Message("companyContactAddressPostCodeLookup.title"),
-          Message("companyContactAddressPostCodeLookup.heading").withArgs(businessName),
+          Message("contactAddressPostCodeLookup.heading", Message("theCompany")),
+          Message("contactAddressPostCodeLookup.heading").withArgs(businessName),
           Message("common.postcodeLookup.enterPostcode"),
           Some(Message("common.postcodeLookup.enterPostcode.link")),
           Message("address.postcode"),

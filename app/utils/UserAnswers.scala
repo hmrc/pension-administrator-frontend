@@ -19,7 +19,7 @@ package utils
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
 import identifiers.register._
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import identifiers.register.company._
 import identifiers.register.company.directors.{DirectorNameId, IsDirectorCompleteId}
 import identifiers.register.individual._
@@ -239,7 +239,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     if (get(VariationWorkingKnowledgeId).contains(true)) {
       false
     } else {
-      get(AdviserDetailsId).isEmpty | get(AdviserNameId).isEmpty | get(AdviserAddressId).isEmpty
+      get(AdviserEmailId).isEmpty | get(AdviserPhoneId).isEmpty | get(AdviserNameId).isEmpty | get(AdviserAddressId).isEmpty
     }
   }
 

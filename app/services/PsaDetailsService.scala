@@ -17,7 +17,8 @@
 package services
 
 import com.google.inject.ImplementedBy
-import connectors.{SubscriptionConnector, UserAnswersCacheConnector}
+import connectors.SubscriptionConnector
+import connectors.cache.UserAnswersCacheConnector
 import identifiers.register._
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}

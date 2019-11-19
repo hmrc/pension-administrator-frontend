@@ -83,7 +83,7 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
     (CheckYourAnswersId, emptyAnswers, wynPage, None),
     (CheckYourAnswersId, hasPartner, addPartnersPage(), None),
-    (PartnershipReviewId, emptyAnswers, declarationPage, None),
+    (PartnershipReviewId, emptyAnswers, declarationWorkingKnowledgePage(NormalMode), None),
 
     (PartnershipRegisteredAddressId, nonUkEuAddress, sameContactAddressPage, None),
     (PartnershipRegisteredAddressId, uKAddress, reconsiderAreYouInUk, None),
@@ -173,7 +173,7 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private def contactPreviousAddressPage(mode: Mode): Call = routes.PartnershipPreviousAddressController.onPageLoad(mode)
 
-  private lazy val declarationPage: Call = controllers.register.routes.DeclarationController.onPageLoad()
+  private def declarationWorkingKnowledgePage(mode: Mode): Call = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(mode)
 
   private lazy val nonUkAddress: Call = routes.PartnershipRegisteredAddressController.onPageLoad()
 

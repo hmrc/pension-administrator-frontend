@@ -16,7 +16,8 @@
 
 package controllers.register
 
-import connectors.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import forms.UTRFormProvider
 import identifiers.TypedIdentifier

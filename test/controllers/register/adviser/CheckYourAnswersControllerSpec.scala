@@ -18,8 +18,7 @@ package controllers.register.adviser
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.adviser.{AdviserAddressId, AdviserDetailsId, AdviserNameId}
-import models.register.adviser.AdviserDetails
+import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import models.{Address, CheckMode, NormalMode}
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
@@ -37,7 +36,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
   val adviserName = "test adviser name"
-  val advDetails = AdviserDetails("test@test.com", "01234567890")
+  val advEmail = "test@test.com"
+  val advPhone = "01234567890"
 
   val address = Address(
     "address-line-1",
@@ -50,48 +50,48 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   val validData: JsObject = Json.obj(
     AdviserNameId.toString -> adviserName,
-    AdviserDetailsId.toString -> advDetails,
+    AdviserEmailId.toString -> advEmail,
+    AdviserPhoneId.toString -> advPhone,
     AdviserAddressId.toString -> address
   )
 
-  def adviserAddress = Seq(AnswerRow(
-    "cya.label.address",
-    Seq(
-      address.addressLine1,
-      address.addressLine2,
-      address.postcode.value,
-      address.country
-    ),
-    false,
-    Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url)),
-    None
-  ))
-
   def adviserDetails = Seq(
     AnswerRow(
-      "adviserName.checkYourAnswersLabel",
+      messages("adviserName.heading"),
       Seq(adviserName),
       false,
       Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(CheckMode).url)),
-      None
+      Some(messages("adviserName.visuallyHidden.text"))
     ),
     AnswerRow(
-      "contactDetails.email.checkYourAnswersLabel",
-      Seq(advDetails.email),
+      messages("addressFor.label", adviserName),
+      Seq(
+        address.addressLine1,
+        address.addressLine2,
+        address.postcode.value,
+        address.country
+      ),
       false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)),
-      None
+      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url)),
+      Some(messages("addressFor.visuallyHidden.text", adviserName))
     ),
     AnswerRow(
-      "contactDetails.phone.checkYourAnswersLabel",
-      Seq(advDetails.phone),
+      messages("email.title", adviserName),
+      Seq(advEmail),
       false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(CheckMode).url)),
-      None
+      Some(Link(controllers.register.adviser.routes.AdviserEmailController.onPageLoad(CheckMode).url)),
+      Some(messages("email.visuallyHidden.text", adviserName))
+    ),
+    AnswerRow(
+      messages("phone.title", adviserName),
+      Seq(advPhone),
+      false,
+      Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(CheckMode).url)),
+      Some(messages("phone.visuallyHidden.text", adviserName))
     )
   )
 
-  def sections = Seq(AnswerSection(None, adviserDetails ++ adviserAddress))
+  def sections = Seq(AnswerSection(None, adviserDetails))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CheckYourAnswersController(

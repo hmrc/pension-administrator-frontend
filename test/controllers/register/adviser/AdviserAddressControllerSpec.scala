@@ -22,7 +22,7 @@ import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.adviser.AdviserAddressId
+import identifiers.register.adviser.{AdviserAddressId, AdviserNameId}
 import models.{Address, NormalMode, TolerantAddress}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -51,7 +51,9 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(AdviserAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
+      val validData = Json.obj(
+        AdviserNameId.toString -> name,
+        AdviserAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
@@ -159,17 +161,18 @@ object AdviserAddressControllerSpec extends ControllerSpecBase {
 
   val formProvider = new AddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider()
+  val name = "Test Adviser Name"
 
   val addressViewModel = ManualAddressViewModel(
     postCall = routes.AdviserAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
-    title = Message("common.adviser.address.title"),
-    heading = Message("common.adviser.address.heading")
+    Message("common.adviser.address.heading", Message("theAdviser")),
+    Message("common.adviser.address.heading", name)
   )
 
   val fakeAuditService = new StubSuccessfulAuditService()
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getAdviser) =
     new AdviserAddressController(frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute), FakeAllowAccessProvider(),
       FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,

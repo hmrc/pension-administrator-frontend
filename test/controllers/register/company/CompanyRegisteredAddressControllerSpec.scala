@@ -17,7 +17,8 @@
 package controllers.register.company
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
+import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector}
 import controllers.actions._
 import controllers.address.NonUKAddressControllerDataMocks
 import forms.address.NonUKAddressFormProvider

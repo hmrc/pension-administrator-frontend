@@ -17,7 +17,7 @@
 package controllers.address
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import forms.address.ConfirmPreviousAddressFormProvider
 import identifiers.TypedIdentifier

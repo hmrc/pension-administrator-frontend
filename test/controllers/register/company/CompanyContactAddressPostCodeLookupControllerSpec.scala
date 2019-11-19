@@ -17,7 +17,8 @@
 package controllers.register.company
 
 import base.CSRFRequest
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
+import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -90,8 +91,8 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
   val viewModel = PostcodeLookupViewModel(
     routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode),
     routes.CompanyContactAddressController.onPageLoad(NormalMode),
-    Message("companyContactAddressPostCodeLookup.title"),
-    Message("companyContactAddressPostCodeLookup.heading").withArgs(companyName),
+    Message("contactAddressPostCodeLookup.heading", Message("theCompany")),
+    Message("contactAddressPostCodeLookup.heading").withArgs(companyName),
     Message("common.postcodeLookup.enterPostcode"),
     Some(Message("common.postcodeLookup.enterPostcode.link")),
     Message("address.postcode")

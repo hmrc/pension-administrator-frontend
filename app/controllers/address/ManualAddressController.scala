@@ -18,7 +18,7 @@ package controllers.address
 
 import audit.{AddressEvent, AuditService}
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
@@ -92,7 +92,7 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
                     _ =>
                       setCompleteFlagForExistingDirOrPartners(mode, id, UserAnswers(userAnswersJson)).map {answers =>
                         auditEvent.foreach(auditService.sendEvent(_))
-                        Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+                        Redirect(navigator.nextPage(id, mode, UserAnswers(userAnswersJson)))
                       }
                   }
               }

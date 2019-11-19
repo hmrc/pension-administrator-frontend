@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import forms.PersonNameFormProvider
 import identifiers.TypedIdentifier

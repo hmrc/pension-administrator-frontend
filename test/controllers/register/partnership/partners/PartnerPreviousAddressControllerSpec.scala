@@ -82,9 +82,9 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     ManualAddressViewModel(
       routes.PartnerPreviousAddressController.onSubmit(NormalMode, index),
       countryOptions.options,
-      Message("partnerPreviousAddress.title"),
-      Message("partnerPreviousAddress.heading"),
-      Some(Message("partnerPreviousAddress.hint"))
+      Message("previousAddress.heading", Message("thePartner")).resolve.capitalize,
+      Message("previousAddress.heading", "test first name test last name"),
+      None
     )
 
   private def viewAsString(form: Form[_] = form) =

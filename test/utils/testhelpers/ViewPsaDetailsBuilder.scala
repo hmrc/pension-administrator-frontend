@@ -21,35 +21,32 @@ import java.time.LocalDate
 import base.SpecBase
 import models.UpdateMode
 import viewmodels.{AnswerRow, AnswerSection, SuperSection, _}
-import models.{CheckUpdateMode, ReferenceValue, UpdateMode}
-import viewmodels._
-import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 
 object ViewPsaDetailsBuilder extends SpecBase {
 
   val pensionAdviserSeqAnswers = Seq(
     AnswerRow("variationWorkingKnowledge.heading", Seq("No"), false,
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url))),
-    AnswerRow("pensions.advisor.label", Seq("Pension Adviser"), false,
+    AnswerRow("adviserName.heading", Seq("Pension Adviser"), false,
       None),
-    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url))),
-    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("0044-0987654232"), false,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url))),
     AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4,", "56765,", "Country of AD"), false,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url))))
+      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
+    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false,
+      Some(Link(controllers.register.adviser.routes.AdviserEmailController.onPageLoad(UpdateMode).url))),
+    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("0044-0987654232"), false,
+      Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(UpdateMode).url))))
 
   val pensionAdviserSeqAnswersIncomplete = Seq(
     AnswerRow("variationWorkingKnowledge.heading", Seq("No"), false,
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url))),
-    AnswerRow("pensions.advisor.label", Seq("site.not_entered"),answerIsMessageKey = true,
+    AnswerRow("adviserName.heading", Seq("site.not_entered"),answerIsMessageKey = true,
       Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode).url, "site.add"))),
-    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("site.not_entered"), true,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add"))),
-    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), true,
-      Some(Link(controllers.register.adviser.routes.AdviserDetailsController.onPageLoad(UpdateMode).url, "site.add"))),
     AnswerRow("cya.label.address", Seq("site.not_entered"), true,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))))
+      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))),
+    AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("site.not_entered"), true,
+      Some(Link(controllers.register.adviser.routes.AdviserEmailController.onPageLoad(UpdateMode).url, "site.add"))),
+    AnswerRow("contactDetails.phone.checkYourAnswersLabel", Seq("site.not_entered"), true,
+      Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(UpdateMode).url, "site.add"))))
 
   def individualSeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false,
@@ -143,9 +140,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
       None),
     AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, 0).url))),
+      Some(Link(controllers.register.partnership.partners.routes.PartnerEmailController.onPageLoad(UpdateMode, 0).url))),
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerContactDetailsController.onPageLoad(UpdateMode, 0).url)))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerPhoneController.onPageLoad(UpdateMode, 0).url)))
   )
 
   val directorsSeqAnswersWithAddLinks = Seq(
@@ -165,7 +162,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("common.nino", Seq("site.not_entered"), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("utr.label", Seq("site.not_entered"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerUniqueTaxReferenceController.onPageLoad(UpdateMode, 0).url, "site.add"))),
+      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
       Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, 0).url, "site.add")))
   )

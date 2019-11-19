@@ -18,7 +18,7 @@ package identifiers.register
 
 import java.time.LocalDate
 
-import identifiers.register.NonUKBusinessTypeIdSpec.{contactDetails, email, personName, phone}
+import identifiers.register.NonUKBusinessTypeIdSpec.{email, personName, phone}
 import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorNameId
@@ -26,7 +26,6 @@ import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerNameId
 import models._
-import models.register.adviser.AdviserDetails
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
@@ -56,7 +55,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(CompanyAddressYearsId) mustNot be(defined)
         result.get(CompanyPreviousAddressId) mustNot be(defined)
         result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
-        result.get(ContactDetailsId) mustNot be(defined)
+        result.get(CompanyEmailId) mustNot be(defined)
+        result.get(CompanyPhoneId) mustNot be(defined)
         result.get(HasVATId) mustNot be(defined)
         result.get(HasPAYEId) mustNot be(defined)
         result.get(EnterVATId) mustNot be(defined)
@@ -69,7 +69,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
 
       "remove the data for working knowledge and pension adviser " in {
         result.get(DeclarationWorkingKnowledgeId) mustNot be(defined)
-        result.get(AdviserDetailsId) mustNot be(defined)
+        result.get(AdviserEmailId) mustNot be(defined)
+        result.get(AdviserPhoneId) mustNot be(defined)
         result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
         result.get(AdviserAddressListId) mustNot be(defined)
         result.get(AdviserAddressId) mustNot be(defined)
@@ -96,7 +97,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
         result.get(CompanyAddressYearsId) mustNot be(defined)
         result.get(CompanyPreviousAddressId) mustNot be(defined)
         result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
-        result.get(ContactDetailsId) mustNot be(defined)
+        result.get(CompanyEmailId) mustNot be(defined)
+        result.get(CompanyPhoneId) mustNot be(defined)
         result.get(DirectorNameId(0)) mustNot be(defined)
         result.get(DirectorNameId(1)) mustNot be(defined)
         result.get(MoreThanTenDirectorsId) mustNot be(defined)
@@ -104,7 +106,8 @@ class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with
 
       "remove the data for working knowledge and pension adviser " in {
         result.get(DeclarationWorkingKnowledgeId) mustNot be(defined)
-        result.get(AdviserDetailsId) mustNot be(defined)
+        result.get(AdviserEmailId) mustNot be(defined)
+        result.get(AdviserPhoneId) mustNot be(defined)
         result.get(AdviserAddressPostCodeLookupId) mustNot be(defined)
         result.get(AdviserAddressListId) mustNot be(defined)
         result.get(AdviserAddressId) mustNot be(defined)
@@ -309,13 +312,15 @@ object AreYouInUKIdSpec extends OptionValues {
         .flatMap(_.set(CompanyAddressYearsId)(AddressYears.OverAYear))
         .flatMap(_.set(CompanyPreviousAddressId)(address))
         .flatMap(_.set(CompanyPreviousAddressPostCodeLookupId)(Seq(tolerantAddress)))
-        .flatMap(_.set(ContactDetailsId)(contactDetails))
+        .flatMap(_.set(CompanyEmailId)("s@s.com"))
+        .flatMap(_.set(CompanyPhoneId)("999"))
         .flatMap(_.set(DirectorNameId(0))(personName))
         .flatMap(_.set(DirectorNameId(1))(personName))
         .flatMap(_.set(MoreThanTenDirectorsId)(true))
         .flatMap(_.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser))
         .flatMap(_.set(AdviserNameId)("name"))
-        .flatMap(_.set(AdviserDetailsId)(AdviserDetails("email@test.com", "678")))
+        .flatMap(_.set(AdviserEmailId)("email@test.com"))
+        .flatMap(_.set(AdviserPhoneId)("678"))
         .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(tolerantAddress)))
         .flatMap(_.set(AdviserAddressListId)(tolerantAddress))
         .flatMap(_.set(CompanySameContactAddressId)(false))
@@ -354,7 +359,8 @@ object AreYouInUKIdSpec extends OptionValues {
       .flatMap(_.set(MoreThanTenPartnersId)(true))
       .flatMap(_.set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser))
       .flatMap(_.set(AdviserNameId)("name"))
-      .flatMap(_.set(AdviserDetailsId)(AdviserDetails("email@test.com", "678")))
+      .flatMap(_.set(AdviserEmailId)("email@test.com"))
+      .flatMap(_.set(AdviserPhoneId)("678"))
       .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .flatMap(_.set(AdviserAddressListId)(tolerantAddress))
       .flatMap(_.set(AdviserAddressId)(address))

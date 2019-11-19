@@ -18,7 +18,7 @@ package controllers.register.partnership.partners
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.UserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
@@ -45,29 +45,33 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map{vm =>
-        get(vm, mode)
+      PartnerNameId(index).retrieve.right.flatMap { pn =>
+        viewModel(mode, index, pn.fullName).right.map { vm =>
+          get(vm, mode)
+        }
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(vm => post(vm, PartnerAddressListId(index), PartnerAddressId(index), mode))
+      PartnerNameId(index).retrieve.right.flatMap { pn =>
+        viewModel(mode, index, pn.fullName).right.map(vm => post(vm, PartnerAddressListId(index), PartnerAddressId(index), mode))
+      }
   }
 
-  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+  private def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
     PartnerAddressPostCodeLookupId(index).retrieve.right.map {
       addresses =>
-            AddressListViewModel(
-              postCall = routes.PartnerAddressListController.onSubmit(mode, index),
-              manualInputCall = routes.PartnerAddressController.onPageLoad(mode, index),
-              addresses = addresses,
-              Message("common.selectAddress.title"),
-              Message("common.selectAddress.heading"),
-              Message("common.selectAddress.text"),
-              Message("common.selectAddress.link"),
-              psaName = psaName()
-            )
+        AddressListViewModel(
+          postCall = routes.PartnerAddressListController.onSubmit(mode, index),
+          manualInputCall = routes.PartnerAddressController.onPageLoad(mode, index),
+          addresses = addresses,
+          Message("contactAddressList.heading", Message("thePartner")),
+          Message("contactAddressList.heading", name),
+          Message("common.selectAddress.text"),
+          Message("common.selectAddress.link"),
+          psaName = psaName()
+        )
     }.left.map(_ => Future.successful(Redirect(routes.PartnerAddressPostCodeLookupController.onPageLoad(mode, index))))
   }
 

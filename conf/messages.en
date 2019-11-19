@@ -75,9 +75,10 @@ site.no = No
 site.yes = Yes
 site.continue = Continue
 site.save_and_continue = Save and continue
+site.register = Register
 site.confirm_address = Confirm address
-site.service_name = Register as a pension scheme administrator
-pension.scheme.administrator.title = Register as a pension scheme administrator - GOV.UK
+site.service_name = register as a pension scheme administrator
+pension.scheme.administrator.title = register as a pension scheme administrator - GOV.UK
 site.textarea.char_limit = (Limit is {0} characters)
 site.find_address = Find address
 site.agreeAndContinue = Agree and continue
@@ -95,6 +96,7 @@ site.exit = Exit to GOV.UK
 site.error = Error:
 
 common.you = you
+common.selectContactAddress.heading = Select the contact address for {0}
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
 common.selectAddress.text = Select the address from the list below, or
@@ -135,7 +137,7 @@ common.manual.address.checkyouranswers = Address
 common.firstname = First name
 common.postcodeLookup.enterPostcode = You can {0}
 common.postcodeLookup.enterPostcode.link = enter the address manually
-common.adviser.address.heading = Pension adviser’s address
+common.adviser.address.heading = Which address can we use to contact {0}?
 common.adviser.address.title = Pension adviser’s address
 common.error.dateOfBirth.required = Enter the date of birth
 common.error.dateOfBirth.invalid = Enter a valid date in the format 01 01 2001
@@ -181,7 +183,7 @@ cya.label.companyName = Company name
 cya.label.partnershipName = Partnership name
 utr.checkYourAnswersLabel = Unique Taxpayer Reference
 
-partnerName.visuallyHidden.text = Change the partner’s name
+partnerName.visuallyHidden.text = the partner’s name
 directorName.visuallyHidden.text = Change the director’s name
 dob.visuallyHidden.text = Change date of birth
 
@@ -205,11 +207,13 @@ contactDetails.error.phone.invalid = Enter a phone number, like 01632 960 001, 0
 
 email.title = What is {0}’s email address?
 individual.email.title = What is your email address?
+adviser.email.title = What is the adviser's email address?
 email.visuallyHidden.text = {0}’s email address
 contact.body = We will only use this to contact {0} about pension scheme administration.
 
 phone.title = What is {0}’s phone number?
 individual.phone.title = What is your phone number?
+adviser.phone.title = What is the adviser's phone number?
 phone.visuallyHidden.text = {0}’s phone number
 
 individualPreviousAddress.visuallyHidden.text = your previous address
@@ -251,6 +255,8 @@ companyPreviousAddress.heading = Previous Address of the Company
 
 address.checkYourAnswersLabel = {0}’s address
 address.visuallyHidden.text = {0}’s address
+addressFor.label = Address for {0}
+addressFor.visuallyHidden.text = the address for {0}
 
 companyPreviousAddressPostCodeLookup.title = What was the previous contact address for the company?
 companyPreviousAddressPostCodeLookup.heading = What was the previous contact address for {0} ?
@@ -260,8 +266,7 @@ companyPreviousAddressPostCodeLookup.postalCode = Postcode
 companyPreviousAddressPostCodeLookup.enterPostcode = You can {0}
 companyPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
-companyContactAddressPostCodeLookup.title = Which address can we use to contact the company?
-companyContactAddressPostCodeLookup.heading = Which address can we use to contact {0}?
+contactAddressPostCodeLookup.heading = Which address can we use to contact {0}?
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
 
@@ -394,7 +399,7 @@ hasUTR.error.required = Select yes if {0} has a Unique Taxpayer Reference (UTR)
 hasUTR.visuallyHidden.text = whether {0} has a Unique Taxpayer Reference (UTR)
 
 enterUTR.heading = What is {0}’s UTR?
-enterUTR.error.invalid = {0}'s Unique Taxpayer Reference (UTR) must be 10 numbers
+enterUTR.error.invalid = {0}’s Unique Taxpayer Reference (UTR) must be 10 numbers
 enterUTR.visuallyHidden.text = {0}’s Unique Taxpayer Reference (UTR)
 
 whyNoUTR.heading = Why does {0} not have a UTR?
@@ -416,11 +421,13 @@ directorUniqueTaxReference.error.required = Select yes if the director has a UTR
 directorUniqueTaxReference.error.reason.required = You need to tell us why the director does not have a UTR
 
 theCompany = the company
+
 theBusiness = the business
 thePartnership = the partnership
 theDirector = the director
 thePartner = the partner
 theIndividual = the individual
+theAdviser = the person or business
 
 directorPreviousAddressPostCodeLookup.heading = What was {0}’s previous contact address?
 directorPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this company.
@@ -558,11 +565,13 @@ declarationWorkingKnowledge.p3 = If you do not have that knowledge, you must be 
 
 declaration.title = Declaration
 declaration.heading = Declaration
-declaration.declaration = I declare/understand
-declaration.statement1 = that the information shown is complete and correct and that I may be liable to a penalty if a false statement is made in this registration, and that any false statement may also lead to prosecution
-declaration.statement2 = that as a scheme administrator I am responsible for discharging the functions conferred or imposed on the scheme administrator of a pension scheme by the Finance Act 2004, and I intend to discharge those functions at all times, whether resident in the United Kingdom or another EU member state or non-member EEA state. I will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008. I understand that I may be liable to a penalty and where the scheme is registered the pension scheme may be de-registered if I fail to discharge those functions properly
-declaration.statement3 = that as a scheme administrator I must make returns of information to HMRC, when they are reasonably required; provide information to members to enable them to meet their own tax obligations and pay any tax charges due to be paid by the scheme administrator under part 4 of the Finance Act 2004
-declaration.statement4 = that where HMRC believes that a scheme administrator, or one of the persons that make up the scheme administrator of the pension scheme, is not a fit and proper person to be a scheme administrator, HMRC may refuse to register a scheme or, if the scheme is already registered, HMRC may de-register a scheme
+declaration.declaration = By continuing you declare that:
+declaration.statement1 = The information shown is complete and correct and that I may be liable to a penalty if a false statement is made in this registration, and that any false statement may also lead to prosecution.
+declaration.statement2 = I understand that as a scheme administrator I am responsible for discharging the functions conferred or imposed on the scheme administrator of a pension scheme by the Finance Act 2004, and I intend to discharge those functions at all times, whether resident in the United Kingdom or another EU member state or non-member EEA state. I will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008. I understand that I may be liable to a penalty and where the scheme is registered the pension scheme may be de-registered if I fail to discharge those functions properly
+declaration.statement3 = I understand that as scheme administrator I must make returns of information to HMRC, when they are reasonably required; provide information to members to enable them to meet their own tax obligations and pay any tax charges due to be paid by the scheme administrator under part 4 of the Finance Act 2004.
+declaration.statement4 = I understand that where HMRC believes that a scheme administrator, or one of the persons that make up the I understand that where HMRC believes that a scheme administrator, or one of the persons that make up the HMRC may refuse to register a scheme or, if the scheme is already registered, HMRC may de-register a scheme
+declaration.statement5a = I have a working knowledge of pension scheme administrator duties and liabilities.
+declaration.statement5b = I don’t have a working knowledge of pension scheme administrator duties and liabilities. I have appointed an adviser who does have that knowledge
 declaration.agree = I agree
 declaration.invalid = You need to agree to all the declarations before you can continue
 
@@ -573,6 +582,7 @@ adviserName.error.required = Enter the name of your pension adviser
 adviserName.error.length = Enter a name using less than 108 characters
 adviserName.error.invalid = Enter a name using only letters
 adviserName.checkYourAnswersLabel = Name
+adviserName.visuallyHidden.text = the name of the person or business that has working knowledge of pensions and pensions tax legislation
 
 adviserDetails.title = What are the person’s contact details?
 adviserDetails.heading = What are {0}’s contact details?
@@ -596,9 +606,9 @@ declarationFitAndProper.statement5 = I have not been disqualified from acting as
 declarationFitAndProper.statement6 = I have not been disqualified from acting as a pension scheme trustee
 
 adviserAddressPostCodeLookup.title = Pension adviser’s address
-adviserAddressPostCodeLookup.heading = Pension adviser’s address
+adviserAddressPostCodeLookup.heading = What is {0}’s postcode?
 adviserAddressPostCodeLookup.hint = This is usually the registered business address but you can enter any address you have for this company.
-adviserAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
+adviserAddressPostCodeLookup.enterPostcode = You can {0}
 adviserAddressPostCodeLookup.enterPostcode.link = enter the address manually
 adviserAddressPostCodeLookup.formLabel = Postcode
 
@@ -768,9 +778,6 @@ confirmDelete.partner.title = Are you sure you want to delete this person as a p
 confirmDelete.partner.heading = Are you sure you want to delete {0}?
 confirmDelete.partner.body = confirmDeletePartner
 
-partnerPreviousAddress.title = Partner’s previous address
-partnerPreviousAddress.heading = Partner’s previous address
-partnerPreviousAddress.hint = This is usually the partner’s home address.
 partnerPreviousAddress.checkYourAnswersLabel = Previous Address
 
 addEntity.error.required = You must make a selection
@@ -805,8 +812,6 @@ partnerPreviousAddressPostCodeLookup.heading = Partner’s previous address
 partnerPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this partnership.
 partnerPreviousAddressPostCodeLookup.input.text = Postcode
 partnerPreviousAddressPostCodeLookup.checkYourAnswersLabel = Partner’s previous address post code
-partnerPreviousAddressPostCodeLookup.enterPostcode = Enter the postcode, or if you have an overseas address, {0}
-partnerPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 partnerPreviousAddressPostCodeLookup.submit.button = Find address
 
 addEntity.error.required = You must make a selection
@@ -1070,3 +1075,5 @@ previousAddress.partnership.title = The partnership’s previous contact address
 previousAddress.company.title = The company’s previous contact address
 previousAddress.heading = {0}’s previous contact address
 previousAddress.lede = You can change any part of the address if you need to.
+
+adviserAddressList.heading = What is the address for {0}?

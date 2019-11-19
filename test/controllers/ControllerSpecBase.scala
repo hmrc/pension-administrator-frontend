@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import controllers.actions._
+import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
@@ -85,6 +86,9 @@ trait ControllerSpecBase extends SpecBase {
       )
     )
   )
+
+  def getAdviser: FakeDataRetrievalAction = new FakeDataRetrievalAction(
+    Some(Json.obj(AdviserNameId.toString -> "Test Adviser Name")))
 
   def modules(dataRetrievalAction: DataRetrievalAction): Seq[GuiceableModule] = Seq(
     bind[AuthAction].toInstance(FakeAuthAction),
