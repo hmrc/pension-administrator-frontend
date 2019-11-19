@@ -36,17 +36,17 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
 
   val fakeCall = Call("method", "url")
 
-  def createView(canBeDeregistered: Boolean = true, isUserAnswerUpdated: Boolean=false): () => HtmlFormat.Appendable = () =>
+  def createView(isUserAnswerUpdated: Boolean=false): () => HtmlFormat.Appendable = () =>
     psa_details(
       frontendAppConfig,
-      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated, canBeDeregistered),
+      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated),
       controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     )(fakeRequest, messages)
 
   def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     psa_details(
       frontendAppConfig,
-      PsaViewDetailsViewModel(sections, secondaryHeader, false, true),
+      PsaViewDetailsViewModel(sections, secondaryHeader, isUserAnswerUpdated = false),
       controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     )(fakeRequest, messages)
 
@@ -59,18 +59,8 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
       assertPageTitleEqualsMessage(doc, secondaryHeader)
     }
 
-    "display the stop being a psa link when can be de-registered" in {
-      val doc = Jsoup.parse(createView().apply().toString())
-      doc must haveLinkWithUrlAndContent(
-        "deregister-link",
-        frontendAppConfig.deregisterPsaUrl,
-        messages("psaDetails.deregister.link.text")
-      )
-    }
-
-
     "display the declaration button when user answer is updated" in {
-      val doc = Jsoup.parse(createView(true, true).apply().toString())
+      val doc = Jsoup.parse(createView(true).apply().toString())
       doc must haveLinkWithUrlAndContent(
         "declaration-link",
         controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url,
@@ -79,7 +69,7 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
     }
 
     "do not display the stop being a psa link when cannot be de-registered" in {
-      val doc = Jsoup.parse(createView(false).apply().toString())
+      val doc = Jsoup.parse(createView().apply().toString())
       doc mustNot haveLinkWithUrlAndContent(
         "deregister-link",
         frontendAppConfig.deregisterPsaUrl,
@@ -136,5 +126,5 @@ object PsaDetailsViewSpec {
   val superSection = SuperSection(Some(superSectionHeading), Seq(answerSection))
   val superSection2 = SuperSection(Some(superSectionHeading), Seq(answerSection))
 
-  val seqSuperSection = Seq(superSection, superSection2)
+  val seqSuperSection: Seq[SuperSection] = Seq(superSection, superSection2)
 }

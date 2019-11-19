@@ -34,13 +34,6 @@
             headingKey=psaDetails.header
         )
 
-        @if(psaDetails.canDeregister) {
-            <p>
-                <a id="deregister-link" href="@appConfig.deregisterPsaUrl">@messages("psaDetails.deregister.link.text")</a>
-                @messages("psaDetails.deregister.text")
-            </p>
-        }
-
             <h2 id="psadetails-header" class="heading-large">@messages("psaDetails.header")</h2>
 
         @for((section, i) <- psaDetails.superSections.zipWithIndex){
@@ -53,6 +46,6 @@
             @components.button_link("psaDetails.declaration.link.text", nextPage.url, "declaration-link")
         }
 
-        <p><a id="return-to-overview" href="@appConfig.schemesOverviewUrl">@messages("site.return_to_overview")</a></p>
+        <p><a id="return-to-overview" href="@appConfig.schemesOverviewUrl">@messages("site.return_to", psaDetails.header)</a></p>
 
     }
