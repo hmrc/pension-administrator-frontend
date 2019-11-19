@@ -72,14 +72,14 @@ object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
-
+  private val name = "Test Adviser Name"
   private val validPostcode = "ZZ1 1ZZ"
 
   def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
     controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
     controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
-    Message("common.adviser.address.title"),
-    Message("common.adviser.address.heading"),
+    Message("adviserAddressPostCodeLookup.heading", Message("theAdviser")),
+    Message("adviserAddressPostCodeLookup.heading", name),
     Message("adviserAddressPostCodeLookup.enterPostcode"),
     Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),
     Message("adviserAddressPostCodeLookup.formLabel"),
@@ -108,7 +108,7 @@ object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(getEmptyData),
+      bind[DataRetrievalAction].toInstance(getAdviser),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind(classOf[Navigator]).qualifiedWith(classOf[Adviser]).toInstance(fakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)

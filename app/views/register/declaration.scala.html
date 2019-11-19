@@ -18,7 +18,7 @@
 @import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig, cancelCall: Call, href: Call)(implicit request: Request[_], messages: Messages)
+@(appConfig: FrontendAppConfig, workingKnowledge: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("declaration.title"),
@@ -29,26 +29,35 @@
 
     @components.heading(messages("declaration.heading"))
 
-    @components.paragraph_text(messages("declaration.declaration") + ":")
+        @components.paragraph_text(messages("declaration.declaration"))
 
-    <ol class="list-number">
-        <li>
-            @components.paragraph_text(messages("declaration.statement1"))
-        </li>
-        <li>
-            @components.paragraph_text(messages("declaration.statement2"))
-        </li>
-        <li>
-            @components.paragraph_text(messages("declaration.statement3"))
-        </li>
-        <li>
-            @components.paragraph_text(messages("declaration.statement4"))
-        </li>
-    </ol>
+        <ul class="list list-bullet">
+            <li>
+                @messages("declaration.statement1")
+            </li>
+            <li>
+                @messages("declaration.statement2")
+            </li>
+            <li>
+                @messages("declaration.statement3")
+            </li>
+            <li>
+                @messages("declaration.statement4")
+            </li>
+            <li>
+                @if(workingKnowledge) {
+                @messages("declaration.statement5a")
+                } else {
+                @messages("declaration.statement5b")
+                }
+            </li>
+        </ul>
 
-    <div class="form-group">
-        @components.button_link("site.agreeAndContinue", href.url, "submit")
-        <a id="cancel" href="@cancelCall.url">@messages("site.cancel")</a>
-    </div>
+        <div class="form-group">
+            <div class="section">
+                @components.button_link("site.agreeAndContinue", controllers.register.routes.DeclarationController.onSubmit().url, "submit")
+            </div>
+        </div>
+
 
 }

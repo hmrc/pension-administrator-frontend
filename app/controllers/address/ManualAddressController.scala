@@ -92,7 +92,7 @@ trait ManualAddressController extends FrontendController with Retrievals with I1
                     _ =>
                       setCompleteFlagForExistingDirOrPartners(mode, id, UserAnswers(userAnswersJson)).map {answers =>
                         auditEvent.foreach(auditService.sendEvent(_))
-                        Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+                        Redirect(navigator.nextPage(id, mode, UserAnswers(userAnswersJson)))
                       }
                   }
               }

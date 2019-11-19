@@ -87,7 +87,7 @@ class RegisterCompanyNavigator @Inject()(
     case CheckYourAnswersId =>
       directorRoutes(ua, NormalMode)
     case CompanyReviewId =>
-      controllers.register.routes.DeclarationController.onPageLoad()
+      controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
     case CompanyAddressId =>
       regionBasedNavigation(ua)
     case WhatYouWillNeedId =>

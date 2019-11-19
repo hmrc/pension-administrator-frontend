@@ -48,10 +48,10 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val adviserName = AdviserNameId.row(Some(Link(routes.AdviserNameController.onPageLoad(checkMode(mode)).url)))
-      val details = AdviserEmailId.row(Some(Link(routes.AdviserEmailController.onPageLoad(checkMode(mode)).url))) ++
-                    AdviserPhoneId.row(Some(Link(routes.AdviserPhoneController.onPageLoad(checkMode(mode)).url)))
       val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressController.onPageLoad(checkMode(mode)).url)))
-      val sections = Seq(AnswerSection(None, adviserName ++ details ++ address))
+      val details = AdviserEmailId.row(Some(Link(routes.AdviserEmailController.onPageLoad(checkMode(mode)).url))) ++
+        AdviserPhoneId.row(Some(Link(routes.AdviserPhoneController.onPageLoad(checkMode(mode)).url)))
+      val sections = Seq(AnswerSection(None, adviserName ++ address ++ details ))
       Ok(check_your_answers(appConfig, sections, routes.CheckYourAnswersController.onSubmit(mode), psaName() , mode))
   }
 

@@ -18,17 +18,27 @@ package controllers.register
 
 import com.google.inject.Singleton
 import config.FrontendAppConfig
+import connectors._
 import connectors.cache.UserAnswersCacheConnector
+import controllers.Retrievals
 import controllers.actions._
-import controllers.register.routes.DeclarationController
-import identifiers.register.DeclarationId
+import controllers.register.routes.{DuplicateRegistrationController, SubmissionInvalidController}
+import identifiers.register.company.CompanyEmailId
+import identifiers.register.individual.IndividualEmailId
+import identifiers.register.partnership.PartnershipEmailId
+import identifiers.register.{DeclarationId, _}
 import javax.inject.Inject
-import models.{Mode, NormalMode, UserType}
+import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
+import models.requests.DataRequest
+import models.{ExistingPSA, Mode, NormalMode}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.domain.PsaId
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, Upstream4xxResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.annotations.Register
-import utils.{Navigator, UserAnswers}
+import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declaration
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,22 +51,78 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       @Register navigator: Navigator,
-                                      dataCacheConnector: UserAnswersCacheConnector
-                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                      dataCacheConnector: UserAnswersCacheConnector,
+                                      pensionsSchemeConnector: PensionsSchemeConnector,
+                                      knownFactsRetrieval: KnownFactsRetrieval,
+                                      enrolments: TaxEnrolmentsConnector,
+                                      emailConnector: EmailConnector
+                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val cancelUrl = request.user.userType match {
-        case UserType.Individual => individual.routes.WhatYouWillNeedController.onPageLoad()
-        case UserType.Organisation => company.routes.WhatYouWillNeedController.onPageLoad()
+      DeclarationWorkingKnowledgeId.retrieve.right.map {
+        workingKnowledge =>
+          workingKnowledge.hasWorkingKnowledge
+          Future.successful(Ok(declaration(appConfig, workingKnowledge.hasWorkingKnowledge)))
       }
-      Future.successful(Ok(declaration(appConfig, cancelUrl, DeclarationController.onClickAgree())))
+
   }
 
-  def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      dataCacheConnector.save(request.externalId, DeclarationId, value = true).map { cacheMap =>
-        Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
+      dataCacheConnector.save(request.externalId, DeclarationId, value = true).flatMap { cacheMap =>
+        val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(
+          request.user.isExistingPSA,
+          request.user.existingPSAId
+        )).asOpt.getOrElse(UserAnswers(cacheMap))
+
+        (for {
+          psaResponse <- pensionsSchemeConnector.registerPsa(answers)
+          cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
+          _ <- enrol(psaResponse.psaId)
+          _ <- sendEmail(answers, psaResponse.psaId)
+        } yield {
+          Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
+        }) recoverWith {
+          case _: BadRequestException =>
+            Future.successful(Redirect(SubmissionInvalidController.onPageLoad()))
+          case ex: Upstream4xxResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
+            Future.successful(Redirect(DuplicateRegistrationController.onPageLoad()))
+          case _ =>
+            Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        }
       }
   }
+
+  private def getEmail(answers: UserAnswers): Option[String] = {
+    answers.get(RegistrationInfoId).flatMap { registrationInfo =>
+      registrationInfo.legalStatus match {
+        case Individual => answers.get(IndividualEmailId)
+        case LimitedCompany => answers.get(CompanyEmailId)
+        case Partnership => answers.get(PartnershipEmailId)
+      }
+    }
+  }
+
+  private def sendEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier): Future[EmailStatus] = {
+    getEmail(answers) map { email =>
+      emailConnector.sendEmail(email, appConfig.emailTemplateId, PsaId(psaId))
+    } getOrElse Future.successful(EmailNotSent)
+  }
+
+  private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {
+    knownFactsRetrieval.retrieve(psaId) map { knownFacts =>
+      enrolments.enrol(psaId, knownFacts)
+    } getOrElse Future.failed(KnownFactsRetrievalException())
+  }
+
+  case class KnownFactsRetrievalException() extends Exception {
+    def apply(): Unit = Logger.error("Could not retrieve Known Facts")
+  }
+
+  case class PSANameNotFoundException() extends Exception("Could not retrieve PSA Name")
+
 }
+
+
+

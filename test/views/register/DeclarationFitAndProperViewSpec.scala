@@ -25,7 +25,7 @@ class DeclarationFitAndProperViewSpec extends ViewBehaviours {
   private val cancelCall = controllers.routes.IndexController.onPageLoad()
   private val hrefCall = controllers.register.routes.DeclarationFitAndProperController.onClickAgree()
 
-  private def createView = () => declarationFitAndProper(frontendAppConfig, cancelCall, hrefCall)(fakeRequest, messages)
+  private def createView = () => declarationFitAndProper(frontendAppConfig)(fakeRequest, messages)
 
   "DeclarationFitAndProper view" must {
     behave like normalPage(createView, messageKeyPrefix)
@@ -59,9 +59,5 @@ class DeclarationFitAndProperViewSpec extends ViewBehaviours {
     }
 
     behave like pageWithContinueButton(createView, hrefCall.url, id = "submit")
-
-    "have a cancel link" in {
-      createView must haveLink(cancelCall.url, "cancel")
-    }
   }
 }

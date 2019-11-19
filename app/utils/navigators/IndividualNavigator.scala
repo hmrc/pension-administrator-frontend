@@ -56,7 +56,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualPhoneId => countryBasedContactDetailsNavigation(ua)
     case IndividualDateOfBirthId => countryBasedDobNavigation(ua)
 
-    case CheckYourAnswersId => controllers.register.routes.DeclarationController.onPageLoad()
+    case CheckYourAnswersId => controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
     case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 

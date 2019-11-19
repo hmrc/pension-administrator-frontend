@@ -18,45 +18,53 @@ package views.register
 
 import forms.register.DeclarationFormProvider
 import play.api.data.Form
-import views.behaviours.{QuestionViewBehaviours, ViewBehaviours}
+import views.behaviours.QuestionViewBehaviours
 import views.html.register.declaration
 
-class DeclarationViewSpec extends ViewBehaviours {
+class DeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
+
+  val form: Form[Boolean] = new DeclarationFormProvider()()
+  override val errorKey = "agree"
 
   private val messageKeyPrefix = "declaration"
   private val cancelCall = controllers.routes.IndexController.onPageLoad()
-  private val hrefCall = controllers.register.routes.DeclarationController.onClickAgree()
 
-  private def createView = () => declaration(frontendAppConfig, cancelCall, hrefCall)(fakeRequest, messages)
+  private def createView(workingKnowledge: Boolean = true) = () =>
+    declaration(frontendAppConfig, workingKnowledge)(fakeRequest, messages)
 
   "Declaration view" must {
-    behave like normalPage(createView, messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
+
 
     "display the declaration" in {
-      createView must haveDynamicText("declaration.declaration")
+      createView() must haveDynamicText("declaration.declaration")
     }
 
     "display the first statement" in {
-      createView must haveDynamicText("declaration.statement1")
+     createView() must haveDynamicText("declaration.statement1")
     }
 
     "display the second statement" in {
-      createView must haveDynamicText("declaration.statement2")
+     createView() must haveDynamicText("declaration.statement2")
     }
 
     "display the third statement" in {
-      createView must haveDynamicText("declaration.statement3")
+     createView() must haveDynamicText("declaration.statement3")
     }
 
     "display the fourth statement" in {
-      createView must haveDynamicText("declaration.statement4")
+     createView() must haveDynamicText("declaration.statement4")
     }
 
-    behave like pageWithContinueButton(createView, hrefCall.url, id = "submit")
-
-    "have a cancel link" in {
-      createView must haveLink(cancelCall.url, linkId = "cancel")
+    "display the 5a statement when user has working knowledge" in {
+      createView() must haveDynamicText("declaration.statement5a")
     }
+
+    "display the 5b statement if no working knowledge" in {
+      createView(false) must haveDynamicText("declaration.statement5b")
+    }
+
+    behave like pageWithSubmitButton(createView())
   }
 
 }

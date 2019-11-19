@@ -83,7 +83,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualPhoneId, nonUk, checkYourAnswersPage, Some(checkYourAnswersPage)),
     (IndividualPhoneId, uk, individualDateOfBirthPage, Some(checkYourAnswersPage)),
 
-    (CheckYourAnswersId, emptyAnswers, declarationPage, None)
+    (CheckYourAnswersId, emptyAnswers, declarationWorkingKnowledgePage, None)
   )
 
   def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
@@ -128,7 +128,7 @@ object IndividualNavigatorSpec extends OptionValues {
   lazy private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   lazy private val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
   lazy private val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
-  lazy private val declarationPage = controllers.register.routes.DeclarationController.onPageLoad()
+  lazy private val declarationWorkingKnowledgePage = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   lazy private val ukIndividualDetailsPage = routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
   lazy private val nonUkIndividualNamePage = routes.IndividualNameController.onPageLoad(NormalMode)
   lazy private val nonUkIndividualAddressPage = routes.IndividualRegisteredAddressController.onPageLoad(NormalMode)

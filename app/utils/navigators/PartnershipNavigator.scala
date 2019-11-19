@@ -83,7 +83,7 @@ class PartnershipNavigator @Inject()(
     case CheckYourAnswersId =>
       partnerRoutes(ua)
     case PartnershipReviewId =>
-      DeclarationController.onPageLoad()
+      controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
     case PartnershipRegisteredAddressId =>
       regionBasedNavigation(ua)
   }

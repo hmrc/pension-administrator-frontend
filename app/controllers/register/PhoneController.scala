@@ -55,11 +55,10 @@ trait PhoneController extends FrontendController with Retrievals with I18nSuppor
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(phone(appConfig, formWithErrors, viewModel))),
       value => {
-        val nextPage = navigator.nextPage(id, mode, request.userAnswers)
         cacheConnector.save(request.externalId, id, value).flatMap(
           cacheMap =>
             saveChangeFlag(mode, id).map { _ =>
-              Redirect(nextPage)
+              Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
             }
         )
       }

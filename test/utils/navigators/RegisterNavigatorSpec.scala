@@ -42,13 +42,13 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (BusinessTypeId, limitedPartnership, partnershipUTRPage, None),
     (BusinessTypeId, limitedLiabilityPartnership, partnershipUTRPage, None),
 
-    (DeclarationId, emptyAnswers, declarationWorkingKnowledgePage, None),
 
     (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage, None),
     (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserName, None),
     (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, None),
 
-    (DeclarationFitAndProperId, emptyAnswers, confirmation, None),
+    (DeclarationFitAndProperId, emptyAnswers, declarationPage, None),
+    (DeclarationId, emptyAnswers, confirmation, None),
 
     (AreYouInUKId, inUk, ukBusinessType, Some(registerAsBusiness)),
     (AreYouInUKId, notInUk, nonUkBusinessType, Some(registerAsBusiness)),
@@ -75,7 +75,7 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
   lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad()
   lazy val partnershipUTRPage: Call = controllers.register.partnership.routes.PartnershipUTRController.onPageLoad()
-  lazy val declarationWorkingKnowledgePage: Call = routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
+  lazy val declarationPage: Call = routes.DeclarationController.onPageLoad()
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
   lazy val adviserName: Call = controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
   lazy val confirmation: Call = routes.ConfirmationController.onPageLoad()
@@ -92,8 +92,6 @@ object RegisterNavigatorSpec extends OptionValues {
 
   lazy val individualWynPage: Call = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
   lazy val businessWynPage: Call = controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode)
-  private val isCompanyRegisteredInUKPage = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
-  private val isIndividualBasedInUKPage = controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(NormalMode)
 
   val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
