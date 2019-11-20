@@ -24,7 +24,7 @@ import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Enumerable
 import viewmodels.{AlreadyDeletedViewModel, Message}
 import views.html.alreadyDeleted
@@ -38,7 +38,7 @@ class AlreadyDeletedController @Inject()(
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction
-                                        ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                        ) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

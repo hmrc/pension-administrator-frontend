@@ -26,17 +26,17 @@ import models.{Address, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait ConfirmPreviousAddressController extends FrontendController with Retrievals with I18nSupport {
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait ConfirmPreviousAddressController extends FrontendBaseController with Retrievals with I18nSupport {
+  implicit val executionContext = ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 

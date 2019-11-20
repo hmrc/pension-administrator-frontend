@@ -43,7 +43,7 @@ import models.{Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Variations
 import utils.{Navigator, UserAnswers}
 import views.html.register.anyMoreChanges
@@ -59,7 +59,7 @@ class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: AnyMoreChangesFormProvider)(implicit val ec: ExecutionContext)
-  extends FrontendController with Retrievals with I18nSupport {
+  extends FrontendBaseController with Retrievals with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 

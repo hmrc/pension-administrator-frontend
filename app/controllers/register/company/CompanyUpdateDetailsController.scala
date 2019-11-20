@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.company.companyUpdateDetails
 
 class CompanyUpdateDetailsController @Inject()(appConfig: FrontendAppConfig,
@@ -30,7 +30,7 @@ class CompanyUpdateDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                authenticate: AuthAction,
                                                allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction) extends FrontendController with I18nSupport {
+                                               requireData: DataRequiredAction) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>

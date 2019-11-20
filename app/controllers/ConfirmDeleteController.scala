@@ -29,13 +29,13 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Call, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewmodels.ConfirmDeleteViewModel
 import views.html.confirmDelete
 
 import scala.concurrent.Future
 
-trait ConfirmDeleteController extends FrontendController with I18nSupport with Retrievals with Variations {
+trait ConfirmDeleteController extends FrontendBaseController with I18nSupport with Retrievals with Variations {
 
   protected def appConfig: FrontendAppConfig
 

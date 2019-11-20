@@ -24,7 +24,7 @@ import identifiers.register.individual.{CheckYourAnswersId, IndividualDetailsId,
 import models.{CheckMode, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
 import utils.checkyouranswers.Ops._
 import utils.{CheckYourAnswersFactory, Enumerable, Navigator}
@@ -43,7 +43,7 @@ class CheckYourAnswersController @Inject()(
                                             @Individual navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             checkYourAnswersFactory: CheckYourAnswersFactory
-                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   import CheckYourAnswersController._
 

@@ -25,14 +25,14 @@ import models.{Mode, ReferenceValue}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.enterNINO
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait NINOController extends FrontendController with Retrievals with I18nSupport with Variations {
+trait NINOController extends FrontendBaseController with Retrievals with I18nSupport with Variations {
 
   protected implicit def ec: ExecutionContext
 

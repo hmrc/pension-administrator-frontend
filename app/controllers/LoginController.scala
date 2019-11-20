@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
 
 import scala.concurrent.ExecutionContext
@@ -32,7 +32,7 @@ class LoginController @Inject()(appConfig: FrontendAppConfig,
                                 override val messagesApi: MessagesApi,
                                 dataCacheConnector: UserAnswersCacheConnector,
                                 @AuthWithNoIV authenticate: AuthAction
-                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                               )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate {
     implicit request =>

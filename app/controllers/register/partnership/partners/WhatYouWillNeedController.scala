@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.partnership.partners.whatYouWillNeed
 
 import scala.concurrent.Future
@@ -33,7 +33,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction
-                                         ) extends FrontendController with I18nSupport with Retrievals {
+                                         ) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>

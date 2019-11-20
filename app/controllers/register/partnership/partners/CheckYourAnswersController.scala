@@ -27,7 +27,7 @@ import models.Mode.checkMode
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.PartnershipPartner
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
@@ -48,7 +48,7 @@ class CheckYourAnswersController @Inject()(
                                             sectionComplete: SectionComplete,
                                             implicit val countryOptions: CountryOptions,
                                             override val cacheConnector: UserAnswersCacheConnector
-                                          )(implicit ec: ExecutionContext) extends FrontendController with Retrievals with Variations with I18nSupport {
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

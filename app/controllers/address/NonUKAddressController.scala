@@ -30,7 +30,7 @@ import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{AnyContent, Request, Result}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.ManualAddressViewModel
@@ -38,7 +38,7 @@ import views.html.address.nonukAddress
 
 import scala.concurrent.Future
 
-trait NonUKAddressController extends FrontendController with Retrievals with I18nSupport {
+trait NonUKAddressController extends FrontendBaseController with Retrievals with I18nSupport {
 
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
 

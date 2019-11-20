@@ -24,14 +24,14 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.enterVAT
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait VATNumberController extends FrontendController with I18nSupport {
+trait VATNumberController extends FrontendBaseController with I18nSupport {
 
   implicit def ec: ExecutionContext
 

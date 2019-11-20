@@ -31,7 +31,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import services.RegistrationService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import utils.annotations.Individual
 import views.html.register.individual.individualDateOfBirth
@@ -49,7 +49,7 @@ class IndividualDateOfBirthController @Inject()(
                                                  requireData: DataRequiredAction,
                                                  formProvider: IndividualDateOfBirthFormProvider,
                                                  registrationService: RegistrationService
-                                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                               )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form = formProvider()
 

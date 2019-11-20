@@ -29,12 +29,12 @@ import models._
 import models.requests.DataRequest
 import play.api.libs.json._
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait Variations extends FrontendController {
+trait Variations extends FrontendBaseController {
 
   protected def cacheConnector: UserAnswersCacheConnector
 

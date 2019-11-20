@@ -20,11 +20,11 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.agentCannotRegister
 
 class AgentCannotRegisterController @Inject()(frontendAppConfig: FrontendAppConfig,
-                                              override val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
+                                              override val messagesApi: MessagesApi) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action {
     implicit request =>

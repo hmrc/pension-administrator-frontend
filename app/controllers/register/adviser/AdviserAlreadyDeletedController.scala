@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Enumerable
 import views.html.alreadyDeletedAdviser
 
@@ -36,7 +36,7 @@ class AdviserAlreadyDeletedController @Inject()(
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction
-                                        ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                        ) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
 
   def continueCall = controllers.routes.PsaDetailsController.onPageLoad().url

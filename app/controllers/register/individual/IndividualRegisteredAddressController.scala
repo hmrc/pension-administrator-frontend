@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
@@ -51,7 +51,7 @@ class IndividualRegisteredAddressController @Inject()(
                                                        requireData: DataRequiredAction,
                                                        formProvider: NonUKAddressFormProvider,
                                                        val countryOptions: CountryOptions
-                                                     )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
+                                                     )(implicit val ec: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
   protected val form: Form[Address] = formProvider()
 

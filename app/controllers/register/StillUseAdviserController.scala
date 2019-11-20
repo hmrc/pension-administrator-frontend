@@ -29,7 +29,7 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.AnyContent
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.register.stillUseAdviser
 
@@ -45,7 +45,7 @@ class StillUseAdviserController @Inject()(
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: StillUseAdviserFormProvider
-                                                     ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
+                                                     ) extends FrontendBaseController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
 
   private val form = formProvider()
 

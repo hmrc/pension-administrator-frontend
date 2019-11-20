@@ -24,14 +24,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsNull
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
 import scala.concurrent.Future
 
-trait MoreThanTenController extends FrontendController with I18nSupport with Variations {
+trait MoreThanTenController extends FrontendBaseController with I18nSupport with Variations {
 
   protected def appConfig: FrontendAppConfig
 

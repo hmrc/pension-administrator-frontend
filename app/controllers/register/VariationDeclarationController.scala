@@ -28,7 +28,7 @@ import models._
 import models.register.DeclarationWorkingKnowledge
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Variations
 import utils.{Navigator, UserAnswers}
 
@@ -43,7 +43,7 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                                                @Variations navigator: Navigator,
                                                dataCacheConnector: UserAnswersCacheConnector,
                                                pensionsSchemeConnector: PensionsSchemeConnector
-                                              )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                              )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

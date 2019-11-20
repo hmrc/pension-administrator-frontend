@@ -20,12 +20,12 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 class LogoutController @Inject()(
                                   appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi
-                                ) extends FrontendController with I18nSupport {
+                                ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action {
     implicit request =>

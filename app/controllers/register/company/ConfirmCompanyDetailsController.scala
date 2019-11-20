@@ -34,7 +34,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.http.NotFoundException
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
@@ -53,7 +53,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 registrationConnector: RegistrationConnector,
                                                 formProvider: CompanyAddressFormProvider,
                                                 countryOptions: CountryOptions
-                                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                               )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 

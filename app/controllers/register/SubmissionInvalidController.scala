@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.submissionInvalid
 
 class SubmissionInvalidController @Inject()(appConfig: FrontendAppConfig,
@@ -31,7 +31,7 @@ class SubmissionInvalidController @Inject()(appConfig: FrontendAppConfig,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction
-                                           ) extends FrontendController with I18nSupport {
+                                           ) extends FrontendBaseController with I18nSupport {
 
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
