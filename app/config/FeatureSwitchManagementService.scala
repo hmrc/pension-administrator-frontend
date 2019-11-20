@@ -31,9 +31,10 @@ trait FeatureSwitchManagementService {
   def reset(name: String): Unit
 }
 
-class FeatureSwitchManagementServiceProductionImpl @Inject()(override val runModeConfiguration: Configuration,
-                                                             environment: Environment) extends
-  FeatureSwitchManagementService with ServicesConfig {
+class FeatureSwitchManagementServiceProductionImpl @Inject()(runModeConfiguration: Configuration,
+                                                             environment: Environment,
+                                                             servicesConfig: ServicesConfig) extends
+  FeatureSwitchManagementService {
 
   override protected def mode:Mode = environment.mode
 
