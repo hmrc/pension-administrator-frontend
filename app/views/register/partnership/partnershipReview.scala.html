@@ -14,15 +14,20 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import models.{Mode, NormalMode, CheckMode}
 @import controllers.register.partnership.routes._
 
-@(appConfig: FrontendAppConfig, partnershipName: String, partners: Seq[String])(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(partnershipName: String, partners: Seq[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("partnershipReview.title")) {
+    title = messages("partnershipReview.title")
+) {
 
     @components.back_link()
 
@@ -47,7 +52,7 @@
         list = Some(partners)
     )
 
-    @helpers.form(action = PartnershipReviewController.onSubmit, 'autoComplete -> "off") {
+    @formHelper(action = PartnershipReviewController.onSubmit, 'autoComplete -> "off") {
         <div class="section">
             @components.submit_button("site.confirm")
         </div>
