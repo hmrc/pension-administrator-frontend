@@ -23,7 +23,7 @@ import identifiers.register.individual.IndividualAddressId
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import views.html.register.individual.outsideEuEea
@@ -31,19 +31,20 @@ import views.html.register.individual.outsideEuEea
 import scala.concurrent.Future
 
 class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       countryOptions: CountryOptions
+                                       countryOptions: CountryOptions,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       val view: outsideEuEea
                                       ) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
 
       IndividualAddressId.retrieve.right.map { address =>
-        Future.successful(Ok(outsideEuEea(appConfig, countryOptions.getCountryNameFromCode(address.toAddress))))
+        Future.successful(Ok(view(countryOptions.getCountryNameFromCode(address.toAddress))))
       }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }

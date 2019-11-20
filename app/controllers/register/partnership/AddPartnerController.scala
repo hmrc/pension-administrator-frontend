@@ -24,14 +24,15 @@ import controllers.register.AddEntityController
 import forms.register.AddEntityFormProvider
 import identifiers.register.partnership.AddPartnersId
 import javax.inject.Inject
+import models.Mode
 import models.requests.DataRequest
-import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{EntityViewModel, Message, Person}
+import views.html.register.addEntity
 
 class AddPartnerController @Inject()(
                                       override val appConfig: FrontendAppConfig,
@@ -42,7 +43,9 @@ class AddPartnerController @Inject()(
                                       allowAccess: AllowAccessActionProvider,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
-                                      formProvider: AddEntityFormProvider
+                                      formProvider: AddEntityFormProvider,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val view: addEntity
                                     ) extends AddEntityController with Retrievals {
 
   private val form: Form[Boolean] = formProvider()

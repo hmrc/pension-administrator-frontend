@@ -25,36 +25,37 @@ import identifiers.register.{BusinessNameId, HasPAYEId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.hasReferenceNumber
 
 import scala.concurrent.ExecutionContext
 
 class HasPartnershipPAYEController @Inject()(override val appConfig: FrontendAppConfig,
-                                             override val messagesApi: MessagesApi,
                                              override val dataCacheConnector: UserAnswersCacheConnector,
                                              @Partnership override val navigator: Navigator,
                                              authenticate: AuthAction,
                                              allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
-                                             formProvider: HasReferenceNumberFormProvider
+                                             formProvider: HasReferenceNumberFormProvider,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             val view: hasReferenceNumber
                                         )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, partnershipName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.partnership.routes.HasPartnershipPAYEController.onSubmit(mode),
-      title = Message("hasPAYE.heading", Message("thePartnership").resolve),
+      title = Message("hasPAYE.heading", Message("thePartnership")),
       heading = Message("hasPAYE.heading", partnershipName),
       mode = mode,
       hint = Some(Message("hasPAYE.hint")),
       entityName = partnershipName
     )
 
-  private def form(partnershipName: String) = formProvider("hasPAYE.error.required", partnershipName)
+  private def form(partnershipName: String) = formProvider("hasPAYE.error.required", partnershipName)(implicitly)
 
   private def partnershipName(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)

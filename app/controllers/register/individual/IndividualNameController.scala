@@ -25,7 +25,7 @@ import javax.inject.Inject
 import models.{Mode, TolerantIndividual}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
 import utils.{Navigator, UserAnswers}
@@ -43,8 +43,10 @@ class IndividualNameController @Inject()(
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          formProvider : IndividualNameFormProvider
-                                        )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                          formProvider : IndividualNameFormProvider,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: individualName
+                                        )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
   val form : Form[TolerantIndividual] =  formProvider()
@@ -64,7 +66,7 @@ class IndividualNameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(individualName(appConfig, preparedForm, viewModel(mode)))
+      Ok(view(preparedForm, viewModel(mode)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -72,7 +74,7 @@ class IndividualNameController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(individualName(appConfig, formWithErrors, viewModel(mode)))),
+          Future.successful(BadRequest(view(formWithErrors, viewModel(mode)))),
         value =>
           dataCacheConnector.save(request.externalId, IndividualDetailsId, value).map(cacheMap =>
             Redirect(navigator.nextPage(IndividualDetailsId, mode, UserAnswers(cacheMap))))

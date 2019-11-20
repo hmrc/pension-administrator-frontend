@@ -26,22 +26,24 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.dob
 
 import scala.concurrent.Future
 
 class PartnerDOBController @Inject()(
                                            val appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
                                            val cacheConnector: UserAnswersCacheConnector,
                                            @PartnershipPartner val navigator: Navigator,
                                            override val allowAccess: AllowAccessActionProvider,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction
+                                           requireData: DataRequiredAction,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: dob
                                          ) extends DOBController with Retrievals{
 
   private[partners] def viewModel(mode: Mode,

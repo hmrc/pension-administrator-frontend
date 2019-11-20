@@ -24,7 +24,6 @@ import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{AddressYears, Mode}
 import play.api.data.Form
-import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
@@ -33,7 +32,7 @@ import views.html.address.addressYears
 
 import scala.concurrent.Future
 
-trait AddressYearsController extends FrontendBaseController with Retrievals with I18nSupport with Variations {
+trait AddressYearsController extends FrontendBaseController with Retrievals with Variations {
 
   protected def appConfig: FrontendAppConfig
 
@@ -51,7 +50,7 @@ trait AddressYearsController extends FrontendBaseController with Retrievals with
     val filledForm =
       request.userAnswers.get(id).map(form.fill).getOrElse(form)
 
-    Future.successful(Ok(view(filledForm, viewmodel, mode)))
+    Future.successful(Ok(view(filledForm, viewmodel, mode)(request, implicitly)))
   }
 
   protected def post(
@@ -62,7 +61,7 @@ trait AddressYearsController extends FrontendBaseController with Retrievals with
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(view(formWithErrors, viewmodel, mode))),
+        Future.successful(BadRequest(view(formWithErrors, viewmodel, mode)(request, implicitly))),
       addressYears =>
         cacheConnector.save(request.externalId, id, addressYears).flatMap {
           answers =>

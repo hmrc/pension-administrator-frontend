@@ -23,7 +23,8 @@ import forms.address.ConfirmPreviousAddressFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Address, Mode}
-import play.api.i18n.I18nSupport
+import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
@@ -34,7 +35,7 @@ import views.html.address.sameContactAddress
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ConfirmPreviousAddressController extends FrontendBaseController with Retrievals with I18nSupport {
+trait ConfirmPreviousAddressController extends FrontendBaseController with Retrievals {
   implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
@@ -51,7 +52,8 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
 
   protected  def view: sameContactAddress
 
-  protected def form(name: String) = formProvider(Message("confirmPreviousAddress.error", name))
+  protected def form(name: String)(implicit mesages: Messages): Form[Boolean] =
+    formProvider(Message("confirmPreviousAddress.error", name))
 
   protected def get(
                      id: TypedIdentifier[Boolean],
@@ -59,10 +61,10 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id) match {
-      case None => form(viewModel.psaName)
-      case Some(value) => form(viewModel.psaName).fill(value)
+      case None => form(viewModel.psaName)(implicitly)
+      case Some(value) => form(viewModel.psaName)(implicitly).fill(value)
     }
-    Future.successful(Ok(view(preparedForm, viewModel, countryOptions)))
+    Future.successful(Ok(view(preparedForm, viewModel, countryOptions)(request, implicitly)))
   }
 
   protected def post(
@@ -72,8 +74,8 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
                       mode: Mode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    form(viewModel.psaName).bindFromRequest().fold(
-      formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),
+    form(viewModel.psaName)(implicitly).bindFromRequest().fold(
+      formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions)(request, implicitly))),
       { case true => dataCacheConnector.save(request.externalId, id, true).flatMap { _ =>
         dataCacheConnector.save(request.externalId, contactId, viewModel.address.toAddress).map {
           cacheMap =>

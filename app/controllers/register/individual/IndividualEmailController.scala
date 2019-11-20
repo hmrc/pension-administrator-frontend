@@ -21,28 +21,29 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
-import identifiers.register.BusinessNameId
 import identifiers.register.individual.{IndividualDetailsId, IndividualEmailId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import controllers.register.individual.routes.IndividualEmailController
+import views.html.email
+
+import scala.concurrent.ExecutionContext
 
 class IndividualEmailController @Inject()(@Individual val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
-                                       val messagesApi: MessagesApi,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        val allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       formProvider: EmailFormProvider
-                               ) extends EmailAddressController {
+                                       formProvider: EmailFormProvider,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: email
+                                         )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
   private val form = formProvider()
 

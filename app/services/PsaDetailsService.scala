@@ -16,7 +16,7 @@
 
 package services
 
-import com.google.inject.ImplementedBy
+import com.google.inject.{ImplementedBy, Inject}
 import connectors.SubscriptionConnector
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.register._
@@ -26,12 +26,12 @@ import identifiers.register.individual._
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
 import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
-import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import models.requests.OptionalDataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json._
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.{UserAnswers, ViewPsaDetailsHelper}
@@ -49,7 +49,8 @@ class PsaDetailServiceImpl @Inject()(
                                       override val messagesApi: MessagesApi,
                                       subscriptionConnector: SubscriptionConnector,
                                       countryOptions: CountryOptions,
-                                      userAnswersCacheConnector: UserAnswersCacheConnector
+                                      userAnswersCacheConnector: UserAnswersCacheConnector,
+                                      controllerComponents: MessagesControllerComponents
                                     ) extends PsaDetailsService with I18nSupport {
 
   override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)(

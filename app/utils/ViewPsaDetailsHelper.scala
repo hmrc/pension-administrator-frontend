@@ -36,8 +36,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
                            override val messagesApi: MessagesApi
                           )(implicit messages: Messages) extends I18nSupport {
 
-  import ViewPsaDetailsHelper._
-
   private val individualDetailsSection = SuperSection(
     None,
     Seq(AnswerSection(
@@ -496,9 +494,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
   val companySections: Seq[SuperSection] = Seq(companyDetailsSection, directorsSuperSection) ++ pensionAdviserSection.toSeq
   val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection, partnersSuperSection) ++ pensionAdviserSection.toSeq
-}
-
-object ViewPsaDetailsHelper {
 
   def addressYearsAnswer(userAnswers: UserAnswers, id: TypedIdentifier[AddressYears]): String = {
     userAnswers.get(id) match {

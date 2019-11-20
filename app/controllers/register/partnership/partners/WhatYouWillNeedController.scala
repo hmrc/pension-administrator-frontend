@@ -22,7 +22,7 @@ import controllers.actions._
 import javax.inject.Inject
 import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.partnership.partners.whatYouWillNeed
 
@@ -32,12 +32,14 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction
+                                          requireData: DataRequiredAction,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: whatYouWillNeed
                                          ) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val href = routes.PartnerNameController.onPageLoad(NormalMode, request.userAnswers.directorsCount)
-      Future.successful(Ok(whatYouWillNeed(appConfig, href)))
+      Future.successful(Ok(view(href)))
   }
 }

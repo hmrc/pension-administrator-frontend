@@ -26,10 +26,11 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.personName
 
 import scala.concurrent.Future
 
@@ -41,8 +42,10 @@ class PartnerNameController @Inject()(
                                            override val allowAccess: AllowAccessActionProvider,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction
-                                         ) extends PersonNameController with Retrievals{
+                                           requireData: DataRequiredAction,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: personName
+                                            ) extends PersonNameController with Retrievals{
 
   private[partners] def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

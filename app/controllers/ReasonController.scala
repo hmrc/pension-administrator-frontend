@@ -41,17 +41,19 @@ trait ReasonController extends FrontendBaseController with Retrievals with I18nS
 
   protected def navigator: Navigator
 
+  protected def view: reason
+
   def get(id: TypedIdentifier[String], viewmodel: CommonFormWithHintViewModel, form: Form[String])
          (implicit request: DataRequest[AnyContent]): Future[Result] = {
     val preparedForm = request.userAnswers.get(id).fold(form)(form.fill)
-    Future.successful(Ok(reason(appConfig, preparedForm, viewmodel)))
+    Future.successful(Ok(view(preparedForm, viewmodel)))
   }
 
   def post(id: TypedIdentifier[String], mode: Mode, viewmodel: CommonFormWithHintViewModel, form: Form[String])
           (implicit request: DataRequest[AnyContent]): Future[Result] =
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(reason(appConfig, formWithErrors, viewmodel))),
+        Future.successful(BadRequest(view(formWithErrors, viewmodel))),
       reason => {
         dataCacheConnector.save(request.externalId, id, reason).map { cacheMap =>
           Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))

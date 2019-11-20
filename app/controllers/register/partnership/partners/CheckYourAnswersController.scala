@@ -20,13 +20,12 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
-import identifiers.register.partnership.partners
 import identifiers.register.partnership.partners._
 import javax.inject.Inject
 import models.Mode.checkMode
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.PartnershipPartner
 import utils.checkyouranswers.Ops._
@@ -47,7 +46,9 @@ class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             sectionComplete: SectionComplete,
                                             implicit val countryOptions: CountryOptions,
-                                            override val cacheConnector: UserAnswersCacheConnector
+                                            override val cacheConnector: UserAnswersCacheConnector,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: check_your_answers
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -70,8 +71,7 @@ class CheckYourAnswersController @Inject()(
             PartnerPhoneId(index).row(Some(Link(routes.PartnerPhoneController.onPageLoad(checkMode(mode), index).url)))
         ))
 
-      Future.successful(Ok(check_your_answers(
-        appConfig,
+      Future.successful(Ok(view(
         answersSection,
         routes.CheckYourAnswersController.onSubmit(index, mode),
         psaName(),

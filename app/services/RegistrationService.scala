@@ -16,11 +16,10 @@
 
 package services
 
-import com.google.inject.ImplementedBy
+import com.google.inject.{ImplementedBy, Inject}
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.register.RegistrationInfoId
-import javax.inject.Inject
 import models.{Address, RegistrationInfo, TolerantIndividual}
 import org.joda.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier

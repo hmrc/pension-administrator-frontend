@@ -24,26 +24,25 @@ import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Mode, PersonName}
 import play.api.data.Form
-import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.personName
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-trait PersonNameController extends FrontendBaseController with I18nSupport with Variations {
+trait PersonNameController extends FrontendBaseController with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
-
-  protected implicit def ec : ExecutionContext
 
   def appConfig: FrontendAppConfig
 
   def cacheConnector: UserAnswersCacheConnector
 
   def navigator: Navigator
+
+  protected def view: personName
 
   private val form = new PersonNameFormProvider()()
 
@@ -57,7 +56,7 @@ trait PersonNameController extends FrontendBaseController with I18nSupport with 
       case Some(value) => form.fill(value)
     }
 
-    Ok(personName(appConfig, preparedForm, viewModel, mode))
+    Ok(view(preparedForm, viewModel, mode)(request, implicitly))
 
   }
 
@@ -69,7 +68,7 @@ trait PersonNameController extends FrontendBaseController with I18nSupport with 
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(personName(appConfig, formWithErrors, viewModel, mode))),
+        Future.successful(BadRequest(view(formWithErrors, viewModel, mode)(request, implicitly))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
           setNewFlag(id, mode, UserAnswers(cacheMap)).map { updatedUserAnswers =>

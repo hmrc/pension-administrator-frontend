@@ -20,15 +20,14 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register.individual.{CheckYourAnswersId, IndividualDetailsId, IndividualEmailId, IndividualPhoneId}
-import models.{CheckMode, Mode}
+import identifiers.register.individual.{CheckYourAnswersId, IndividualDetailsId}
+import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
-import utils.checkyouranswers.Ops._
 import utils.{CheckYourAnswersFactory, Enumerable, Navigator}
-import viewmodels.{AnswerSection, Link, Message}
+import viewmodels.{AnswerSection, Message}
 import views.html.check_your_answers
 
 import scala.concurrent.ExecutionContext

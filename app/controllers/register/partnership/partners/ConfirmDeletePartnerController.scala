@@ -25,9 +25,11 @@ import identifiers.register.partnership.partners.PartnerNameId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, NormalMode}
+import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import viewmodels.{ConfirmDeleteViewModel, Message}
+import views.html.confirmDelete
 
 class ConfirmDeletePartnerController @Inject()(
                                                 val appConfig: FrontendAppConfig,
@@ -37,10 +39,12 @@ class ConfirmDeletePartnerController @Inject()(
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 val cacheConnector: UserAnswersCacheConnector,
-                                                formProvider: ConfirmDeleteFormProvider
+                                                formProvider: ConfirmDeleteFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: confirmDelete
                                               ) extends ConfirmDeleteController with Retrievals {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   private def viewModel(index: Index, name: String, mode:Mode)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
     routes.ConfirmDeletePartnerController.onSubmit(index, mode),

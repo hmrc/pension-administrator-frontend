@@ -26,29 +26,30 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.hasReferenceNumber
 
 import scala.concurrent.ExecutionContext
 
 class HasPartnershipVATController @Inject()(override val appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
                                             override val dataCacheConnector: UserAnswersCacheConnector,
                                             @Partnership override val navigator: Navigator,
                                             authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            formProvider: HasReferenceNumberFormProvider
+                                            formProvider: HasReferenceNumberFormProvider,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: hasReferenceNumber
                                        )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.HasPartnershipVATController.onSubmit(mode),
-      title = Message("hasVAT.heading", Message("thePartnership").resolve),
+      title = Message("hasVAT.heading", Message("thePartnership")),
       heading = Message("hasVAT.heading", entityName),
       mode = mode,
       hint = None,
@@ -56,10 +57,10 @@ class HasPartnershipVATController @Inject()(override val appConfig: FrontendAppC
     )
 
   private def partnershipName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership"))
 
   private def form(partnershipName: String): Form[Boolean] =
-    formProvider("hasVAT.error.required", partnershipName)
+    formProvider("hasVAT.error.required", partnershipName)(implicitly)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

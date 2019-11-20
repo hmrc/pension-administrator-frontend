@@ -27,7 +27,6 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
@@ -39,18 +38,17 @@ class PartnerAddressYearsController @Inject()(
                                                val appConfig: FrontendAppConfig,
                                                val cacheConnector: UserAnswersCacheConnector,
                                                @PartnershipPartner val navigator: Navigator,
-                                               override val messagesApi: MessagesApi,
                                                authenticate: AuthAction,
                                                override val allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: AddressYearsFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
-                                               view: addressYears
+                                               val view: addressYears
                                              ) extends AddressYearsController with Retrievals {
 
 
-  private def form(partnerName: String): Form[AddressYears] = formProvider(partnerName)
+  private def form(partnerName: String): Form[AddressYears] = formProvider(partnerName)(implicitly)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -66,12 +64,12 @@ class PartnerAddressYearsController @Inject()(
   }
 
   private def entityName(index: Int)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner").resolve)
+    request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
   private def viewmodel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
     AddressYearsViewModel(
       postCall = routes.PartnerAddressYearsController.onSubmit(mode, index),
-      title = Message("addressYears.heading", Message("thePartner").resolve),
+      title = Message("addressYears.heading", Message("thePartner")),
       heading = Message("addressYears.heading", partnerName),
       legend = Message("addressYears.heading", partnerName),
       psaName = psaName()
