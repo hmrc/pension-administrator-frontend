@@ -14,15 +14,20 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import models.{Mode, CheckMode}
 @import controllers.register.company.routes._
 
-@(appConfig: FrontendAppConfig, companyName: String, directors: Seq[String])(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(companyName: String, directors: Seq[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("companyReview.title")) {
+    title = messages("companyReview.title")
+) {
 
     @components.back_link()
 
@@ -47,7 +52,7 @@
         list = Some(directors)
     )
 
-    @helpers.form(action = CompanyReviewController.onSubmit, 'autoComplete -> "off") {
+    @formHelper(action = CompanyReviewController.onSubmit, 'autoComplete -> "off") {
         <div class="section">
             @components.submit_button("site.confirm")
         </div>
