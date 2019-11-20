@@ -14,15 +14,19 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
 @import models.NormalMode
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template
+)
+
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declarationFitAndProper.title")) {
+    title = messages("declarationFitAndProper.title")
+) {
 
     @components.back_link()
 

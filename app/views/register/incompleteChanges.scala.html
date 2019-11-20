@@ -14,22 +14,22 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
 @import models.Mode
-@import viewmodels.{Message}
+@import viewmodels.Message
 
-@(appConfig: FrontendAppConfig, psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template
+)
 
-@main_template(
-    title = messages("incompleteChanges.title")) {
+@(psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
+
+@main_template(messages("incompleteChanges.title")) {
 
         @components.back_link()
 
-        @components.heading(
-            headingKey=messages("incompleteChanges.heading")
-        )
+        @components.heading(messages("incompleteChanges.heading"))
 
         <p>@messages("incompleteChanges.p1")</p>
 

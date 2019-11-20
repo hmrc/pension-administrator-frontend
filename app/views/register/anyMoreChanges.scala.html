@@ -20,16 +20,21 @@
 @import utils.DateHelper._
 @import models.UpdateMode
 
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
 @(
-    appConfig: FrontendAppConfig,
     form: Form[_],
     psaNameOpt: Option[String]
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("anyMoreChanges.title")) {
+    title = messages("anyMoreChanges.title")
+) {
 
-    @helpers.form(action = AnyMoreChangesController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = AnyMoreChangesController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 

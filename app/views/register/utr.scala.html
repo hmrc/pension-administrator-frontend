@@ -19,31 +19,35 @@
 @import models.Mode
 @import utils.FormHelpers
 
-@(appConfig: FrontendAppConfig, form: Form[_], businessType: String, href: Call)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_], businessType: String, href: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("utr.title", businessType)) {
+    title = messages("utr.title", businessType)
+) {
+    @components.back_link()
 
-     @helpers.form(action = href, 'autoComplete -> "off") {
+    @components.error_summary(form.errors)
 
-        @components.back_link()
+    @components.heading(messages("utr.heading", businessType))
 
-       @components.error_summary(form.errors)
+    <p>@messages("utr.p1")</p>
+    <p>@messages("utr.p2")</p>
+    <p>@messages("utr.p3")</p>
 
-       @components.heading(messages("utr.heading", businessType))
+    @formHelper(action = href, 'autoComplete -> "off") {
+        @components.input_text(
+            field = form("value"),
+            label = messages("utr.heading", businessType),
+            labelClass = Some("visually-hidden")
+        )
 
-       <p>@messages("utr.p1")</p>
-       <p>@messages("utr.p2")</p>
-       <p>@messages("utr.p3")</p>
-
-       @components.input_text(
-           field = form("value"),
-           label = messages("utr.heading", businessType),
-           labelClass = Some("visually-hidden")
-       )
-
-       <div class="section">
-           @components.submit_button("site.save_and_continue")
-       </div>
-     }
+        <div class="section">
+            @components.submit_button("site.save_and_continue")
+        </div>
     }
+}
