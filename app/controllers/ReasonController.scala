@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait ReasonController extends FrontendController with Retrievals with I18nSupport {
 
-  protected implicit def ec: ExecutionContext
+  protected implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
