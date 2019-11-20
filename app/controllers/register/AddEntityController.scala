@@ -27,14 +27,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsResultException
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import viewmodels.EntityViewModel
 import views.html.register.addEntity
 
 import scala.concurrent.Future
 
-trait AddEntityController extends FrontendController with Retrievals with I18nSupport {
+trait AddEntityController extends FrontendBaseController with Retrievals with I18nSupport {
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
   protected def appConfig: FrontendAppConfig
 

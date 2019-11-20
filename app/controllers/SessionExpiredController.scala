@@ -23,11 +23,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.session_expired
 
+import scala.concurrent.ExecutionContext
+
 class SessionExpiredController @Inject()(val appConfig: FrontendAppConfig,
                                          override val messagesApi: MessagesApi,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: session_expired
-                                        ) extends FrontendBaseController with I18nSupport {
+                                        )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
     Ok(view())

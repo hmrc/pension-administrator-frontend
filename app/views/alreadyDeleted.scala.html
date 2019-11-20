@@ -14,18 +14,20 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
 @import models.Mode
 @import viewmodels.{AlreadyDeletedViewModel, Message}
 
-@(appConfig: FrontendAppConfig, viewmodel: AlreadyDeletedViewModel)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template
+)
+
+@(viewmodel: AlreadyDeletedViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = Message(viewmodel.title),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = Message(viewmodel.title)
+) {
 
         @components.back_link()
 

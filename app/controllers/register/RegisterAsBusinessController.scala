@@ -27,7 +27,7 @@ import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.{AuthWithNoIV, Register}
 import utils.{Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
@@ -43,7 +43,7 @@ class RegisterAsBusinessController @Inject()(
                                               cache: UserAnswersCacheConnector,
                                               @Register navigator: Navigator,
                                               auditService: AuditService
-)(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+)(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 

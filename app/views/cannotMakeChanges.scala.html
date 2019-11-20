@@ -18,14 +18,17 @@
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
 @import models.Mode
-@import viewmodels.{Message}
+@import viewmodels.Message
 
-@(appConfig: FrontendAppConfig, psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template
+)
+
+@(psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("cannotMakeChanges.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("cannotMakeChanges.title")
+) {
 
         @components.back_link()
 

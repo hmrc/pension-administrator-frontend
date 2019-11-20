@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.duplicateRegistration
 
 import scala.concurrent.Future
@@ -32,7 +32,7 @@ class DuplicateRegistrationController @Inject()(appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
                                                 authenticate: AuthAction,
                                                 allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction) extends FrontendController with I18nSupport with Retrievals {
+                                                getData: DataRetrievalAction) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>

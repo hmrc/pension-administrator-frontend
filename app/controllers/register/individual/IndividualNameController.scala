@@ -26,7 +26,7 @@ import models.{Mode, TolerantIndividual}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
 import utils.{Navigator, UserAnswers}
 import viewmodels.{Message, PersonDetailsViewModel}
@@ -44,7 +44,7 @@ class IndividualNameController @Inject()(
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider : IndividualNameFormProvider
-                                        )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                        )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
   val form : Form[TolerantIndividual] =  formProvider()

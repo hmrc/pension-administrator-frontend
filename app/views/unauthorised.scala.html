@@ -14,14 +14,15 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@this(
+    main_template: main_template
+)
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("unauthorised.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("unauthorised.title")
+) {
 
     <h1 class="heading-xlarge">@messages("unauthorised.heading")</h1>
 

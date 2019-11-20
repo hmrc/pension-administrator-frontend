@@ -26,14 +26,14 @@ import models.{Mode, PersonName}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.personName
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PersonNameController extends FrontendController with I18nSupport with Variations {
+trait PersonNameController extends FrontendBaseController with I18nSupport with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 

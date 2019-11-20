@@ -25,16 +25,16 @@ import models.requests.DataRequest
 import models.{Address, Mode, TolerantAddress}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait AddressListController extends FrontendController with I18nSupport {
+trait AddressListController extends FrontendBaseController with I18nSupport {
 
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+  implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 

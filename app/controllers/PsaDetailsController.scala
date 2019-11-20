@@ -45,7 +45,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
       request.user.alreadyEnrolledPsaId.map { psaId =>
         psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId, mode).map { psaDetails =>
           val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
-          Ok(view(appConfig, psaDetails, nextPage))
+          Ok(view(psaDetails, nextPage))
         }
       }.getOrElse(
         Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))

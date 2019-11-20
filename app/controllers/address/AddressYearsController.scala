@@ -18,7 +18,6 @@ package controllers.address
 
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
 import controllers.actions.AllowAccessActionProvider
 import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
@@ -27,14 +26,14 @@ import models.{AddressYears, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
 import scala.concurrent.Future
 
-trait AddressYearsController extends FrontendController with Retrievals with I18nSupport with Variations {
+trait AddressYearsController extends FrontendBaseController with Retrievals with I18nSupport with Variations {
 
   protected def appConfig: FrontendAppConfig
 

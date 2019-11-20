@@ -25,14 +25,14 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.OrganisationNameViewModel
 import views.html.organisationName
 
 import scala.concurrent.Future
 
-trait OrganisationNameController extends FrontendController with Retrievals with I18nSupport with NameCleansing {
+trait OrganisationNameController extends FrontendBaseController with Retrievals with I18nSupport with NameCleansing {
 
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
 

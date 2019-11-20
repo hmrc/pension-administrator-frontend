@@ -24,14 +24,14 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.reason
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait ReasonController extends FrontendController with Retrievals with I18nSupport {
+trait ReasonController extends FrontendBaseController with Retrievals with I18nSupport {
 
   protected implicit val executionContext: ExecutionContext
 

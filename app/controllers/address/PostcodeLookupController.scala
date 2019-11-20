@@ -27,7 +27,7 @@ import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -35,7 +35,7 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.Future
 
-trait PostcodeLookupController extends FrontendController with Retrievals with I18nSupport {
+trait PostcodeLookupController extends FrontendBaseController with Retrievals with I18nSupport {
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
   protected def appConfig: FrontendAppConfig
 

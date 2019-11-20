@@ -27,14 +27,14 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.dob
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait DOBController extends FrontendController with I18nSupport with Variations {
+trait DOBController extends FrontendBaseController with I18nSupport with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 

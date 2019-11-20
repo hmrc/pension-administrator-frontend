@@ -22,7 +22,7 @@ import javax.inject.Inject
 import models.UpdateMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.cannotMakeChanges
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +32,7 @@ class CannotMakeChangesController @Inject()(val appConfig: FrontendAppConfig,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction
-                                           )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                           )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
     Future.successful(Ok(cannotMakeChanges(appConfig, psaName(), UpdateMode)))

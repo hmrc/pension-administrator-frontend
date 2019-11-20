@@ -28,14 +28,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsNull, JsValue}
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
 import scala.concurrent.Future
 
-trait ManualAddressController extends FrontendController with Retrievals with I18nSupport with Variations {
+trait ManualAddressController extends FrontendBaseController with Retrievals with I18nSupport with Variations {
 
   protected def appConfig: FrontendAppConfig
 

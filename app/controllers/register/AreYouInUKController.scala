@@ -25,14 +25,14 @@ import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.AreYouInUKViewModel
 import views.html.register.areYouInUK
 
 import scala.concurrent.Future
 
-trait AreYouInUKController extends FrontendController with I18nSupport {
+trait AreYouInUKController extends FrontendBaseController with I18nSupport {
   implicit val ec = play.api.libs.concurrent.Execution.defaultContext
   protected val appConfig: FrontendAppConfig
   protected val dataCacheConnector: UserAnswersCacheConnector

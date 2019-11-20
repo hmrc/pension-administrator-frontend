@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.{CheckUpdateMode, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.register.variationWorkingKnowledge
 
@@ -43,7 +43,7 @@ class VariationWorkingKnowledgeController @Inject()(
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: VariationWorkingKnowledgeFormProvider
-                                                   ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
+                                                   ) extends FrontendBaseController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
 
   private val form = formProvider()
 

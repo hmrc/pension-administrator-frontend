@@ -16,12 +16,16 @@
 
 @import config.FrontendAppConfig
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    appConfig: FrontendAppConfig
+)
+
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("agentCannotRegister.title"),
-    appConfig = appConfig,
-    bodyClasses = None){
+    title = messages("agentCannotRegister.title")
+){
 
         @components.back_link()
 

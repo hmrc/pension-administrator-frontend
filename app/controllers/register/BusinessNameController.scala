@@ -27,14 +27,14 @@ import models.register.BusinessType
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import views.html.register.businessName
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait BusinessNameController extends FrontendController with I18nSupport with Retrievals {
+trait BusinessNameController extends FrontendBaseController with I18nSupport with Retrievals {
 
   protected implicit def ec : ExecutionContext
 
