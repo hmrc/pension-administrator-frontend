@@ -23,9 +23,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], address: TolerantAddress, name: String, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("confirmCompanyAddress.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("confirmCompanyAddress.title")) {
 
     @helpers.form(action = ConfirmCompanyDetailsController.onSubmit(), 'autoComplete -> "off") {
 

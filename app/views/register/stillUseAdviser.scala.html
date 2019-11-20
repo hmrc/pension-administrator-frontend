@@ -27,9 +27,7 @@
     personWithWorkingKnowledgeName:String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("stillUseAdviser.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("stillUseAdviser.title")) {
 
     @helpers.form(action = StillUseAdviserController.onSubmit(), 'autoComplete -> "off") {
 

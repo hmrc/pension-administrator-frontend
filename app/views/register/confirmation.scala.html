@@ -31,9 +31,7 @@
     } else {
        messages("confirmation.newPSA.title")
     }
-    ,
-    appConfig = appConfig,
-    bodyClasses = None) {
+    ) {
 
     <div class="govuk-box-highlight">
          @if(request.user.isExistingPSA){

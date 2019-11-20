@@ -27,9 +27,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("anyMoreChanges.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("anyMoreChanges.title")) {
 
     @helpers.form(action = AnyMoreChangesController.onSubmit(), 'autoComplete -> "off") {
 

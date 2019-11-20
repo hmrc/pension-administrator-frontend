@@ -23,9 +23,7 @@
 @(appConfig: FrontendAppConfig, psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("incompleteChanges.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("incompleteChanges.title")) {
 
         @components.back_link()
 

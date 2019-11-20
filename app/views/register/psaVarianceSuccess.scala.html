@@ -24,9 +24,7 @@
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
 
 @main_template(
-   title= messages("psaVarianceSuccess.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+   title= messages("psaVarianceSuccess.title")) {
 
     <div class="govuk-box-highlight">
         @components.heading(messages("psaVarianceSuccess.heading"))

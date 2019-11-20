@@ -22,9 +22,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${messages("adviserName.title")}",
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = s"${messages("adviserName.title")}") {
 
     @helpers.form(action = AdviserNameController.onSubmit(mode), 'autoComplete -> "off") {
 

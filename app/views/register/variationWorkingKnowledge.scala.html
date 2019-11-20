@@ -22,9 +22,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("variationWorkingKnowledge.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("variationWorkingKnowledge.title")) {
 
     @helpers.form(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
 

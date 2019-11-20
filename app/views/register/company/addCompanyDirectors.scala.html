@@ -30,9 +30,7 @@
 }
 
 @main_template(
-    title = messages("addCompanyDirectors.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("addCompanyDirectors.title")) {
 
     @helpers.form(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
 

@@ -23,9 +23,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], businessType: String, href: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("businessName.title", businessType),
-appConfig = appConfig,
-bodyClasses = None) {
+title = messages("businessName.title", businessType)) {
 
     @helpers.form(action = href, 'autoComplete -> "off") {
 

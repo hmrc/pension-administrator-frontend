@@ -19,9 +19,7 @@
 @(appConfig: FrontendAppConfig, organisationName: String, country: String, organisationType: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("outsideEuEea.title"),
-    appConfig = appConfig,
-    bodyClasses = None
+    title = messages("outsideEuEea.title")
     ) {
 
         @components.back_link()

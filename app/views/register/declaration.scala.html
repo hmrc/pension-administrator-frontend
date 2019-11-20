@@ -21,9 +21,7 @@
 @(appConfig: FrontendAppConfig, workingKnowledge: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("declaration.title")) {
 
     @components.back_link()
 

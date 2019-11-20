@@ -23,9 +23,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declarationWorkingKnowledge.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("declarationWorkingKnowledge.title")) {
 
     @helpers.form(action = DeclarationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
 

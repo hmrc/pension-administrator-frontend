@@ -20,9 +20,7 @@
 @(appConfig: FrontendAppConfig, href: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("whatYouWillNeed.main.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("whatYouWillNeed.main.title")) {
 
     @components.back_link()
 

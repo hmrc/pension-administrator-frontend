@@ -24,9 +24,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], viewModel: PersonDetailsViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(viewModel.title),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages(viewModel.title)) {
 
     @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
 

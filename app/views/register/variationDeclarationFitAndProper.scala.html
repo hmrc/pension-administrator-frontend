@@ -22,9 +22,7 @@
 @(appConfig: FrontendAppConfig,form: Form[_], psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declarationFitAndProper.variations.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("declarationFitAndProper.variations.title")) {
 
     @components.back_link()
 

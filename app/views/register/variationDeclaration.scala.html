@@ -21,9 +21,7 @@
 @(appConfig: FrontendAppConfig, psaNameOpt: Option[String], isWorkingKnowldge:Boolean, href: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.variations.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("declaration.variations.title")) {
 
     @components.back_link()
 

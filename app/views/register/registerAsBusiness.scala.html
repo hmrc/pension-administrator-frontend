@@ -21,9 +21,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("registerAsBusiness.title"),
-    appConfig = appConfig,
-    bodyClasses = None
+    title = messages("registerAsBusiness.title")
 ) {
 
     @helpers.form(action = RegisterAsBusinessController.onSubmit(), 'autoComplete -> "off") {

@@ -29,9 +29,7 @@
 )
 
 @main_template(
-    title = viewModel.title,
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = viewModel.title) {
 
     @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
 

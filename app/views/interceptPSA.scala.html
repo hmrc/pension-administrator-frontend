@@ -19,9 +19,7 @@
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("interceptPSA.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("interceptPSA.title")) {
 
     @components.heading(messages("interceptPSA.heading"))
 

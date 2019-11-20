@@ -24,9 +24,7 @@
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode, individual: TolerantIndividual, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("individualDetailsCorrect.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("individualDetailsCorrect.title")) {
 
     @helpers.form(action = IndividualDetailsCorrectController.onSubmit(mode), 'autoComplete -> "off") {
 

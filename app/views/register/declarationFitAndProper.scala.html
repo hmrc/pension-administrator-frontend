@@ -22,9 +22,7 @@
 @(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declarationFitAndProper.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("declarationFitAndProper.title")) {
 
     @components.back_link()
 
