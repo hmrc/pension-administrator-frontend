@@ -31,6 +31,7 @@ import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
+import views.html.address.sameContactAddress
 
 class CompanyConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                         val messagesApi: MessagesApi,

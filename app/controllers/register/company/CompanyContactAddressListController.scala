@@ -26,23 +26,26 @@ import identifiers.register.BusinessNameId
 import identifiers.register.company._
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
+import views.html.address.addressList
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyContactAddressListController @Inject()(override val appConfig: FrontendAppConfig,
-                                                    override val messagesApi: MessagesApi,
                                                     override val cacheConnector: UserAnswersCacheConnector,
                                                     @RegisterCompany override val navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     override val allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction) extends AddressListController with Retrievals {
+                                                    requireData: DataRequiredAction,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: addressList
+                                                   )(implicit val executionContext: ExecutionContext
+                                                    ) extends AddressListController with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

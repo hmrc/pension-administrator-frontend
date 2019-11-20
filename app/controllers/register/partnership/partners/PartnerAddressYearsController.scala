@@ -28,22 +28,25 @@ import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
+import views.html.address.addressYears
 
 class PartnerAddressYearsController @Inject()(
                                                val appConfig: FrontendAppConfig,
                                                val cacheConnector: UserAnswersCacheConnector,
                                                @PartnershipPartner val navigator: Navigator,
-                                               val messagesApi: MessagesApi,
+                                               override val messagesApi: MessagesApi,
                                                authenticate: AuthAction,
                                                override val allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
-                                               formProvider: AddressYearsFormProvider
+                                               formProvider: AddressYearsFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               view: addressYears
                                              ) extends AddressYearsController with Retrievals {
 
 

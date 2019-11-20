@@ -28,11 +28,12 @@ import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
+import views.html.address.addressYears
 
 class DirectorAddressYearsController @Inject()(
                                                 @CompanyDirector override val navigator: Navigator,
@@ -43,7 +44,9 @@ class DirectorAddressYearsController @Inject()(
                                                 authenticate: AuthAction,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
-                                                formProvider: AddressYearsFormProvider
+                                                formProvider: AddressYearsFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: addressYears
                                               ) extends AddressYearsController with Retrievals {
 
   private def form(directorName: String): Form[AddressYears] = formProvider(directorName)

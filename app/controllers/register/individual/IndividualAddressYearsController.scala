@@ -25,11 +25,12 @@ import javax.inject.Inject
 import models.{AddressYears, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
+import views.html.address.addressYears
 
 class IndividualAddressYearsController @Inject()(
                                                   @Individual override val navigator: Navigator,
@@ -40,7 +41,9 @@ class IndividualAddressYearsController @Inject()(
                                                   override val allowAccess: AllowAccessActionProvider,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
-                                                  formProvider: AddressYearsFormProvider
+                                                  formProvider: AddressYearsFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  view: addressYears
                                                 ) extends controllers.address.AddressYearsController {
 
   private def viewmodel(mode: Mode): Retrieval[AddressYearsViewModel] =

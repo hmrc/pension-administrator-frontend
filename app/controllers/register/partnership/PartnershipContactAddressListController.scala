@@ -26,24 +26,27 @@ import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
 import javax.inject.Inject
 import models.Mode
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
+import views.html.address.addressList
+
+import scala.concurrent.ExecutionContext
 
 class PartnershipContactAddressListController @Inject()(
                                                          val cacheConnector: UserAnswersCacheConnector,
                                                          @Partnership val navigator: Navigator,
                                                          val appConfig: FrontendAppConfig,
-                                                         val messagesApi: MessagesApi,
                                                          override val allowAccess: AllowAccessActionProvider,
                                                          authenticate: AuthAction,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
-                                                         formProvider: AddressListFormProvider
-                                                       ) extends AddressListController with Retrievals {
+                                                         formProvider: AddressListFormProvider,
+                                                         val controllerComponents: MessagesControllerComponents,
+                                                         val view: addressList
+                                                       )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def viewModel(mode: Mode) = Retrieval { implicit request =>
     (BusinessNameId and PartnershipContactAddressPostCodeLookupId).retrieve.right map { case name ~ addresses =>

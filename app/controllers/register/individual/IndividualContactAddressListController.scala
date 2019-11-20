@@ -25,24 +25,27 @@ import identifiers.register.individual.{IndividualContactAddressId, IndividualCo
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
+import views.html.address.addressList
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualContactAddressListController @Inject()(@Individual override val navigator: Navigator,
                                                        override val appConfig: FrontendAppConfig,
-                                                       override val messagesApi: MessagesApi,
                                                        override val cacheConnector: UserAnswersCacheConnector,
                                                        authenticate: AuthAction,
                                                        override val allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction
-                                                      ) extends AddressListController with Retrievals with I18nSupport {
+                                                       requireData: DataRequiredAction,
+                                                       val controllerComponents: MessagesControllerComponents,
+                                                       val view: addressList
+                                                      )(implicit val executionContext: ExecutionContext)
+                                                      extends AddressListController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

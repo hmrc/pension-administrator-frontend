@@ -29,16 +29,16 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
+import views.html.address.manualAddress
 
 class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                     val messagesApi: MessagesApi,
                                                      val cacheConnector: UserAnswersCacheConnector,
                                                      @Partnership val navigator: Navigator,
                                                      override val allowAccess: AllowAccessActionProvider,
@@ -47,7 +47,9 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
                                                      requireData: DataRequiredAction,
                                                      formProvider: AddressFormProvider,
                                                      val countryOptions: CountryOptions,
-                                                     val auditService: AuditService
+                                                     val auditService: AuditService,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     val view: manualAddress
                                                     ) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = PartnershipPreviousAddressController.onSubmit _
