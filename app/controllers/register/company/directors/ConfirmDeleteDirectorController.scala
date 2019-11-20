@@ -28,11 +28,8 @@ import models.requests.DataRequest
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import viewmodels.{ConfirmDeleteViewModel, Message}
-import views.html.confirmDelete
-
-import scala.concurrent.Future
 
 class ConfirmDeleteDirectorController @Inject()(
                                                  val appConfig: FrontendAppConfig,
@@ -42,7 +39,8 @@ class ConfirmDeleteDirectorController @Inject()(
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  val cacheConnector: UserAnswersCacheConnector,
-                                                 formProvider: ConfirmDeleteFormProvider
+                                                 formProvider: ConfirmDeleteFormProvider,
+                                                 val controllerComponents: MessagesControllerComponents
                                                ) extends ConfirmDeleteController with Retrievals {
 
   val form: Form[Boolean] = formProvider()

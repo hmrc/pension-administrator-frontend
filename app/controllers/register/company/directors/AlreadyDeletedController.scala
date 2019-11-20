@@ -23,7 +23,7 @@ import identifiers.register.company.directors.DirectorNameId
 import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Enumerable
 import viewmodels.{AlreadyDeletedViewModel, Message}
@@ -37,13 +37,14 @@ class AlreadyDeletedController @Inject()(
                                           val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction
-                                        ) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                          requireData: DataRequiredAction,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          view: alreadyDeleted) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       DirectorNameId(index).retrieve.right.map { directorDetails =>
-        Future.successful(Ok(alreadyDeleted(appConfig, viewmodel(directorDetails.fullName))))
+        Future.successful(Ok(view(viewmodel(directorDetails.fullName))))
       }
   }
 

@@ -46,6 +46,8 @@ trait DOBController extends FrontendBaseController with I18nSupport with Variati
 
   def navigator: Navigator
 
+  val view: dob
+
   private val form = new DOBFormProvider()()
 
   def get[I <: TypedIdentifier[LocalDate]](
@@ -57,7 +59,7 @@ trait DOBController extends FrontendBaseController with I18nSupport with Variati
       case Some(value) => form.fill(value)
     }
 
-    Ok(dob(appConfig, preparedForm, viewModel))
+    Ok(view(preparedForm, viewModel))
 
   }
 

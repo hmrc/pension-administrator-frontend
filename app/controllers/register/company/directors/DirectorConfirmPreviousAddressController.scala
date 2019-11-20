@@ -25,23 +25,27 @@ import identifiers.register.company.directors.{DirectorConfirmPreviousAddressId,
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
+import views.html.address.sameContactAddress
+
+import scala.concurrent.ExecutionContext
 
 class DirectorConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                         val messagesApi: MessagesApi,
                                                          val dataCacheConnector: UserAnswersCacheConnector,
                                                          @CompanyDirector val navigator: Navigator,
                                                          authenticate: AuthAction,
                                                          allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
-                                                         val countryOptions: CountryOptions
-                                                       ) extends ConfirmPreviousAddressController with I18nSupport {
+                                                         val countryOptions: CountryOptions,
+                                                         val controllerComponents: MessagesControllerComponents,
+                                                         val view: sameContactAddress
+                                                        )(implicit val executionContext: ExecutionContext) extends ConfirmPreviousAddressController {
   private[controllers] val title: Message = "confirmPreviousAddress.title"
   private[controllers] val heading: Message = "confirmPreviousAddress.heading"
 

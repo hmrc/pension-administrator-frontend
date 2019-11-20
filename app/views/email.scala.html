@@ -14,28 +14,30 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
 @import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = viewModel.title
 ) {
+    @components.back_link()
 
-    @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
+    @components.error_summary(form.errors)
 
-        @components.back_link()
+    @components.heading(messages(viewModel.heading))
 
-        @components.error_summary(form.errors)
+    @components.paragraph_text(messages("contact.body", viewModel.entityName))
 
-        @components.heading(messages(viewModel.heading))
-
-        @components.paragraph_text(messages("contact.body", viewModel.entityName))
-
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
         @components.input_text(
             field = form("value"),
             label = messages("contactDetails.email"),

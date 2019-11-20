@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.Mode.checkMode
 import models.{Mode, _}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.CompanyDirector
 import utils.checkyouranswers.Ops._
@@ -47,7 +47,9 @@ class CheckYourAnswersController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             sectionComplete: SectionComplete,
                                             override val cacheConnector: UserAnswersCacheConnector,
-                                            implicit val countryOptions: CountryOptions
+                                            implicit val countryOptions: CountryOptions,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: check_your_answers
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController
   with Retrievals with Variations with I18nSupport with Enumerable.Implicits {
 
@@ -70,8 +72,7 @@ class CheckYourAnswersController @Inject()(
             DirectorPhoneId(index).row(Some(Link(DirectorPhoneController.onPageLoad(checkMode(mode), index).url)))
         ))
 
-      Future.successful(Ok(check_your_answers(
-        appConfig,
+      Future.successful(Ok(view(
         answersSection,
         controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
         psaName(),

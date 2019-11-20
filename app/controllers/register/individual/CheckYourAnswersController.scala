@@ -23,7 +23,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import identifiers.register.individual.{CheckYourAnswersId, IndividualDetailsId, IndividualEmailId, IndividualPhoneId}
 import models.{CheckMode, Mode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
 import utils.checkyouranswers.Ops._
@@ -42,7 +42,9 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             @Individual navigator: Navigator,
                                             override val messagesApi: MessagesApi,
-                                            checkYourAnswersFactory: CheckYourAnswersFactory
+                                            checkYourAnswersFactory: CheckYourAnswersFactory,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: check_your_answers
                                           )(implicit val ec: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   import CheckYourAnswersController._
@@ -70,7 +72,7 @@ class CheckYourAnswersController @Inject()(
         ).flatten
       )
       val sections = Seq(section)
-      Ok(check_your_answers(appConfig, sections, postUrl, None, mode))
+      Ok(view(sections, postUrl, None, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
