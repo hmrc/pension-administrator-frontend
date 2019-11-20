@@ -36,11 +36,11 @@ import utils.{Navigator, UserAnswers}
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait NonUKAddressController extends FrontendBaseController with Retrievals with I18nSupport {
 
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+  implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
@@ -56,7 +56,7 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
 
   protected def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
-    nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
+    view(preparedForm, viewModel)(request, messages)
 
   protected def get(id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {

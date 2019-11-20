@@ -22,10 +22,9 @@ import controllers.Retrievals
 import forms.address.ConfirmPreviousAddressFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Address, Mode, TolerantAddress}
-import play.api.data.Form
+import models.{Address, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
@@ -36,9 +35,11 @@ import views.html.address.sameContactAddress
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ConfirmPreviousAddressController extends FrontendBaseController with Retrievals with I18nSupport {
-  implicit val executionContext = ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
+
+  protected def controllerComponents: MessagesControllerComponents
 
   protected def dataCacheConnector: UserAnswersCacheConnector
 
@@ -47,6 +48,8 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
   protected def formProvider: ConfirmPreviousAddressFormProvider = new ConfirmPreviousAddressFormProvider()
 
   protected def countryOptions: CountryOptions
+
+  protected  def view: sameContactAddress
 
   protected def form(name: String) = formProvider(Message("confirmPreviousAddress.error", name))
 
@@ -59,7 +62,7 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
       case None => form(viewModel.psaName)
       case Some(value) => form(viewModel.psaName).fill(value)
     }
-    Future.successful(Ok(sameContactAddress(appConfig, preparedForm, viewModel, countryOptions)))
+    Future.successful(Ok(view(preparedForm, viewModel, countryOptions)))
   }
 
   protected def post(
@@ -70,7 +73,7 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form(viewModel.psaName).bindFromRequest().fold(
-      formWithError => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel, countryOptions))),
+      formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),
       { case true => dataCacheConnector.save(request.externalId, id, true).flatMap { _ =>
         dataCacheConnector.save(request.externalId, contactId, viewModel.address.toAddress).map {
           cacheMap =>

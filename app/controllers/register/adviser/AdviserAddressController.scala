@@ -28,16 +28,16 @@ import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Adviser
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
+import views.html.address.manualAddress
 
 class AdviserAddressController @Inject()(
                                           override val appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           override val cacheConnector: UserAnswersCacheConnector,
                                           @Adviser override val navigator: Navigator,
                                           override val allowAccess: AllowAccessActionProvider,
@@ -46,7 +46,9 @@ class AdviserAddressController @Inject()(
                                           requireData: DataRequiredAction,
                                           formProvider: AddressFormProvider,
                                           val countryOptions: CountryOptions,
-                                          val auditService: AuditService
+                                          val auditService: AuditService,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: manualAddress
                                         ) extends ManualAddressController {
 
   protected val form: Form[Address] = formProvider()

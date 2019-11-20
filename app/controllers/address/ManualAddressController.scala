@@ -26,7 +26,6 @@ import models.requests.DataRequest
 import models.{Address, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.{JsNull, JsValue}
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
@@ -49,6 +48,8 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
 
   protected val allowAccess: AllowAccessActionProvider
 
+  protected def view: manualAddress
+
   protected def get(
                      id: TypedIdentifier[Address],
                      selectedId: TypedIdentifier[TolerantAddress],
@@ -61,7 +62,7 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
       case (_, Some(value)) => form.fill(value)
       case _ => form
     }
-    Future.successful(Ok(manualAddress(appConfig, preparedForm, viewModel, mode)))
+    Future.successful(Ok(view(preparedForm, viewModel, mode)))
   }
 
   protected def post(
@@ -73,7 +74,7 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
                       postCodeLookupIdForCleanup: TypedIdentifier[Seq[TolerantAddress]]
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
-      (formWithError: Form[_]) => Future.successful(BadRequest(manualAddress(appConfig, formWithError, viewModel, mode))),
+      (formWithError: Form[_]) => Future.successful(BadRequest(view(formWithError, viewModel, mode))),
       address => {
         val existingAddress = request.userAnswers.get(id)
         val selectedAddress = request.userAnswers.get(selectedId)

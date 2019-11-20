@@ -46,11 +46,13 @@ trait AddressListController extends FrontendBaseController with I18nSupport {
 
   protected val allowAccess: AllowAccessActionProvider
 
+  protected def view: addressList
+
   protected def get(viewModel: AddressListViewModel, mode: Mode)
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val form = formProvider(viewModel.addresses)
-    Future.successful(Ok(addressList(appConfig, form, viewModel, mode)))
+    Future.successful(Ok(view(form, viewModel, mode)))
   }
 
   protected def post(viewModel: AddressListViewModel, navigatorId: TypedIdentifier[TolerantAddress], dataId: TypedIdentifier[Address], mode: Mode)
@@ -58,7 +60,7 @@ trait AddressListController extends FrontendBaseController with I18nSupport {
 
     formProvider(viewModel.addresses).bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(addressList(appConfig, formWithErrors, viewModel, mode))),
+        Future.successful(BadRequest(view(formWithErrors, viewModel, mode))),
       addressIndex => {
         val address = viewModel.addresses(addressIndex).copy(country = Some("GB"))
         cacheConnector.save(request.externalId, navigatorId, address).map {
