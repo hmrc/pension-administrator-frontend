@@ -22,28 +22,30 @@ import controllers.actions._
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Enumerable
 import views.html.alreadyDeletedAdviser
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdviserAlreadyDeletedController @Inject()(
                                           appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction
-                                        ) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                          requireData: DataRequiredAction,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: alreadyDeletedAdviser
+                                               )(implicit val executionContext: ExecutionContext)
+                                        extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
 
   def continueCall = controllers.routes.PsaDetailsController.onPageLoad().url
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-        Future.successful(Ok(alreadyDeletedAdviser(appConfig, continueCall)))
+        Future.successful(Ok(view(continueCall)))
   }
 
 

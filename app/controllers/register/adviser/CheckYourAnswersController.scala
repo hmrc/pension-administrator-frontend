@@ -19,12 +19,12 @@ package controllers.register.adviser
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId, CheckYourAnswersId}
+import identifiers.register.adviser._
 import javax.inject.Inject
 import models.Mode
 import models.Mode._
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.Adviser
@@ -37,13 +37,14 @@ import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
                                             @Adviser navigator: Navigator,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            implicit val countryOptions: CountryOptions
-                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
+                                            implicit val countryOptions: CountryOptions,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: check_your_answers
+                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
@@ -52,7 +53,7 @@ class CheckYourAnswersController @Inject()(
       val details = AdviserEmailId.row(Some(Link(routes.AdviserEmailController.onPageLoad(checkMode(mode)).url))) ++
         AdviserPhoneId.row(Some(Link(routes.AdviserPhoneController.onPageLoad(checkMode(mode)).url)))
       val sections = Seq(AnswerSection(None, adviserName ++ address ++ details ))
-      Ok(check_your_answers(appConfig, sections, routes.CheckYourAnswersController.onSubmit(mode), psaName() , mode))
+      Ok(view(sections, routes.CheckYourAnswersController.onSubmit(mode), psaName() , mode))
   }
 
   def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
