@@ -17,9 +17,9 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import play.api.Mode.Mode
+import play.api.Mode
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -36,7 +36,7 @@ class FeatureSwitchManagementServiceProductionImpl @Inject()(runModeConfiguratio
                                                              servicesConfig: ServicesConfig) extends
   FeatureSwitchManagementService {
 
-  override protected def mode:Mode = environment.mode
+  protected def mode:Mode = environment.mode
 
   override def change(name: String, newValue: Boolean): Boolean =
     runModeConfiguration.getBoolean(s"features.$name").getOrElse(false)
@@ -48,13 +48,14 @@ class FeatureSwitchManagementServiceProductionImpl @Inject()(runModeConfiguratio
 }
 
 @Singleton
-class FeatureSwitchManagementServiceTestImpl @Inject()(override val runModeConfiguration: Configuration,
-                                                             environment: Environment) extends
-  FeatureSwitchManagementService with ServicesConfig {
+class FeatureSwitchManagementServiceTestImpl @Inject()(runModeConfiguration: Configuration,
+                                                             environment: Environment,
+                                                       servicesConfig: ServicesConfig) extends
+  FeatureSwitchManagementService {
 
   private lazy val featureSwitches: ArrayBuffer[FeatureSwitch] = new ArrayBuffer[FeatureSwitch]()
 
-  override protected def mode:Mode = environment.mode
+  protected def mode:Mode = environment.mode
 
   override def change(name: String, newValue: Boolean): Boolean = {
     val featureSwitch = runModeConfiguration.getBoolean(s"features.$name")
