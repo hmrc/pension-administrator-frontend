@@ -1,53 +1,47 @@
-import sbt.Keys._
-import sbt.Tests.{Group, SubProcess}
-import sbt._
-import scoverage.ScoverageKeys
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
+import com.typesafe.sbt.digest.Import._
 import com.typesafe.sbt.web.Import._
 import net.ground5hark.sbt.concat.Import._
-import com.typesafe.sbt.uglify.Import._
-import com.typesafe.sbt.digest.Import._
 import play.sbt.PlayImport.PlayKeys
+import play.sbt.routes.RoutesKeys
+import sbt.Keys._
+import sbt._
+import scoverage.ScoverageKeys
+import uk.gov.hmrc.DefaultBuildSettings
+import uk.gov.hmrc.DefaultBuildSettings._
+import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
-trait MicroService {
+lazy val appName: String = "pension-administrator-frontend"
 
-  import uk.gov.hmrc._
-  import DefaultBuildSettings._
-  import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt, SbtAutoBuildPlugin}
-  import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-  import uk.gov.hmrc.versioning.SbtGitVersioning
-  import play.sbt.routes.RoutesKeys.routesGenerator
-  import play.sbt.routes.RoutesKeys
 
-  import TestPhases._
-
-  val appName: String
-
-  lazy val appDependencies: Seq[ModuleID] = ???
-  lazy val plugins: Seq[Plugins] = Seq.empty
-  lazy val playSettings: Seq[Setting[_]] = Seq.empty
-
-  lazy val microservice = Project(appName, file("."))
-    .enablePlugins(Seq(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory) ++ plugins: _*)
-    .settings(playSettings: _*)
+  lazy val root = Project(appName, file("."))
+    .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
+    .settings(DefaultBuildSettings.scalaSettings: _*)
+    .settings(DefaultBuildSettings.defaultSettings(): _*)
+    .settings(SbtDistributablesPlugin.publishingSettings: _*)
+    .settings(inConfig(Test)(testSettings): _*)
     .settings(majorVersion := 0)
-    .settings(RoutesKeys.routesImport ++= Seq("models.Mode", "models.CheckMode", "models.NormalMode", "models.UpdateMode", "models.Index"))
+    .settings(RoutesKeys.routesImport ++= Seq("models.Mode", "models.CheckMode", "models.NormalMode", "models.UpdateMode", "models.Index"),
+    TwirlKeys.templateImports ++= Seq(
+      "play.twirl.api.HtmlFormat",
+      "play.twirl.api.HtmlFormat._",
+      "uk.gov.hmrc.play.views.html.helpers._",
+      "uk.gov.hmrc.play.views.html.layouts._"
+    ))
     .settings(
       ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
         ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;.*UserAnswersCacheConnector;" +
         ".*ControllerConfiguration;.*LanguageSwitchController",
       ScoverageKeys.coverageMinimum := 80,
       ScoverageKeys.coverageFailOnMinimum := true,
-      ScoverageKeys.coverageHighlighting := true,
-      parallelExecution in Test := false
+      ScoverageKeys.coverageHighlighting := true
     )
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
     .settings(defaultSettings(): _*)
     .settings(
       scalacOptions ++= Seq("-Xfatal-warnings", "-feature"),
-      libraryDependencies ++= appDependencies,
+      libraryDependencies ++= AppDependencies(),
       retrieveManaged := true,
       evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
     )
@@ -73,7 +67,7 @@ trait MicroService {
           "javascripts/autocomplete/location-autocomplete.min.js"
         ))),
       // prevent removal of unused code which generates warning errors due to use of third-party libs
-      UglifyKeys.compressOptions := Seq("unused=false", "dead_code=false"),
+    //  uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
       pipelineStages := Seq(digest),
       // below line required to force asset pipeline to operate in dev rather than only prod
       pipelineStages in Assets := Seq(concat, uglify),
@@ -88,12 +82,10 @@ trait MicroService {
         "urls.loginContinue" -> "http://localhost:8201/register-as-pension-scheme-administrator"
       )
     )
-}
 
-private object TestPhases {
-
-  def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
-    tests map {
-      test => new Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))
-    }
-}
+lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+  fork        := true,
+  javaOptions ++= Seq(
+    "-Dconfig.resource=test.application.conf"
+  )
+)
