@@ -54,6 +54,8 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
 
   protected val countryOptions: CountryOptions
 
+  protected def view: nonukAddress
+
   protected def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
     view(preparedForm, viewModel)(request, messages)

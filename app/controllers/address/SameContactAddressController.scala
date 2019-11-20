@@ -31,10 +31,10 @@ import utils.{Navigator, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait SameContactAddressController extends FrontendBaseController with Retrievals with I18nSupport {
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+  implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
@@ -46,6 +46,8 @@ trait SameContactAddressController extends FrontendBaseController with Retrieval
 
   protected def countryOptions: CountryOptions
 
+  protected def view: sameContactAddress
+
   protected def get(
                      id: TypedIdentifier[Boolean],
                      viewModel: SameContactAddressViewModel
@@ -55,7 +57,7 @@ trait SameContactAddressController extends FrontendBaseController with Retrieval
       case None => form
       case Some(value) => form.fill(value)
     }
-    Future.successful(Ok(sameContactAddress(appConfig, preparedForm, viewModel, countryOptions)))
+    Future.successful(Ok(view(preparedForm, viewModel, countryOptions)))
   }
 
   protected def post(
@@ -67,7 +69,7 @@ trait SameContactAddressController extends FrontendBaseController with Retrieval
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
-      formWithError => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel, countryOptions))),
+      formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),
       value => {
         if (value) {
           dataCacheConnector.save(request.externalId, id, value).flatMap { _ =>
