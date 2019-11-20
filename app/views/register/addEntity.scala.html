@@ -24,16 +24,23 @@
 @import viewmodels.{Person, EntityViewModel, Message}
 @import models.Mode
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewmodel: EntityViewModel, mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF,
+    appConfig: FrontendAppConfig
+)
+
+@(form: Form[_], viewmodel: EntityViewModel, mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
 
 @disableSubmission = @{
     viewmodel.entities.exists(!_.isComplete)
 }
 
 @main_template(
-    title = messages(viewmodel.title)) {
+    title = messages(viewmodel.title)
+) {
 
-        @helpers.form(action = viewmodel.postCall, 'autoComplete -> "off") {
+        @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
         @components.back_link()
 

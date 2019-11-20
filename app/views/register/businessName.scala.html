@@ -14,20 +14,22 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
 @import controllers.register.routes._
 @import models.Mode
 
-@(appConfig: FrontendAppConfig, form: Form[_], businessType: String, href: Call)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_], businessType: String, href: Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("businessName.title", businessType)) {
-
-    @helpers.form(action = href, 'autoComplete -> "off") {
-
-        @components.back_link()
+    title = messages("businessName.title", businessType)
+) {
+    @components.back_link()
 
     @components.error_summary(form.errors)
 
@@ -35,14 +37,15 @@ title = messages("businessName.title", businessType)) {
 
     <p>@messages("businessName.p1")</p>
 
-    @components.input_text(
-        field = form("value"),
-        label = messages("businessName.heading"),
-        labelClass = Some("visually-hidden")
-    )
+    @formHelper(action = href, 'autoComplete -> "off") {
+        @components.input_text(
+            field = form("value"),
+            label = messages("businessName.heading"),
+            labelClass = Some("visually-hidden")
+        )
 
-    <div class="section">
-        @components.submit_button("site.save_and_continue")
-    </div>
-}
+        <div class="section">
+            @components.submit_button("site.save_and_continue")
+        </div>
+    }
 }

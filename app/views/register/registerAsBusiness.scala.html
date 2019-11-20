@@ -14,20 +14,22 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.routes.RegisterAsBusinessController
 
-@(appConfig: FrontendAppConfig, form: Form[_])(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("registerAsBusiness.title")
 ) {
+    @components.error_summary(form.errors)
 
-    @helpers.form(action = RegisterAsBusinessController.onSubmit(), 'autoComplete -> "off") {
-
-        @components.error_summary(form.errors)
-
+    @formHelper(action = RegisterAsBusinessController.onSubmit(), 'autoComplete -> "off") {
         @components.input_yes_no(
             field       = form("value"),
             label       = messages("registerAsBusiness.heading"),

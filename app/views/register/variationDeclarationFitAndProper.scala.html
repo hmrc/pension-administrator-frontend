@@ -14,15 +14,20 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
 @import models.Mode
 
-@(appConfig: FrontendAppConfig,form: Form[_], psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_], psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declarationFitAndProper.variations.title")) {
+    title = messages("declarationFitAndProper.variations.title")
+) {
 
     @components.back_link()
 
@@ -30,30 +35,30 @@
 
     @components.heading(messages("declarationFitAndProper.variations.heading", psaNameOpt.getOrElse("")))
 
-    @helpers.form(action = routes.VariationDeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
+    @components.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
 
-        @components.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
+    <ul class="list list-bullet">
+        <li>
+            @messages("declarationFitAndProper.variations.statement1")
+        </li>
+        <li>
+            @messages("declarationFitAndProper.variations.statement2")
+        </li>
+        <li>
+            @messages("declarationFitAndProper.variations.statement3")
+        </li>
+        <li>
+            @messages("declarationFitAndProper.variations.statement4")
+        </li>
+        <li>
+            @messages("declarationFitAndProper.variations.statement5")
+        </li>
+        <li>
+            @messages("declarationFitAndProper.variations.statement6")
+        </li>
+    </ul>
 
-        <ul class="list list-bullet">
-            <li>
-                @messages("declarationFitAndProper.variations.statement1")
-            </li>
-            <li>
-                @messages("declarationFitAndProper.variations.statement2")
-            </li>
-            <li>
-                @messages("declarationFitAndProper.variations.statement3")
-            </li>
-            <li>
-                @messages("declarationFitAndProper.variations.statement4")
-            </li>
-            <li>
-                @messages("declarationFitAndProper.variations.statement5")
-            </li>
-            <li>
-                @messages("declarationFitAndProper.variations.statement6")
-            </li>
-        </ul>
+    @formHelper(action = routes.VariationDeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
 
         @components.input_yes_no(
             field = form("value"),
@@ -65,10 +70,9 @@
         <div class="subsection">
             @components.submit_button("site.agreeAndContinue")
         </div>
-
-        @psaNameOpt.map{ psaName =>
-            @components.return_link(psaName, UpdateMode)
-        }
     }
 
+    @psaNameOpt.map{ psaName =>
+        @components.return_link(psaName, UpdateMode)
+    }
 }
