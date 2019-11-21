@@ -27,10 +27,11 @@ import javax.inject.Inject
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import utils.annotations.Variations
+import views.html.register.variationDeclarationFitAndProper
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,8 +43,10 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
                                                            requireData: DataRequiredAction,
                                                            @Variations navigator: Navigator,
                                                            formProvider: VariationDeclarationFitAndProperFormProvider,
-                                                           dataCacheConnector: UserAnswersCacheConnector
-                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                                           dataCacheConnector: UserAnswersCacheConnector,
+                                                           val controllerComponents: MessagesControllerComponents,
+                                                           val view: variationDeclarationFitAndProper
+                                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -53,13 +56,13 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
         case None => form
         case Some(value) => form.fill(value)
       }
-      Future.successful(Ok(views.html.register.variationDeclarationFitAndProper(appConfig, preparedForm, psaName())))
+      Future.successful(Ok(view(preparedForm, psaName())))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(views.html.register.variationDeclarationFitAndProper(appConfig, errors, psaName()))),
+        errors => Future.successful(BadRequest(view(errors, psaName()))),
         success => {
           dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).map { json =>
             Redirect(navigator.nextPage(DeclarationFitAndProperId, mode, UserAnswers(json)))

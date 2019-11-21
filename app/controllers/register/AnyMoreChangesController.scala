@@ -42,7 +42,7 @@ import javax.inject.Inject
 import models.{Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Variations
 import utils.{Navigator, UserAnswers}
@@ -58,21 +58,24 @@ class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
                                          allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         formProvider: AnyMoreChangesFormProvider)(implicit val ec: ExecutionContext)
+                                         formProvider: AnyMoreChangesFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: anyMoreChanges
+                                        )(implicit val ec: ExecutionContext)
   extends FrontendBaseController with Retrievals with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(Ok(anyMoreChanges(appConfig, form, psaName())))
+      Future.successful(Ok(anyMoreChanges(form, psaName())))
   }
 
   def onSubmit(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(anyMoreChanges(appConfig, formWithErrors, psaName()))),
+          Future.successful(BadRequest(anyMoreChanges(formWithErrors, psaName()))),
         value =>
           dataCacheConnector.save(request.externalId, AnyMoreChangesId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AnyMoreChangesId, UpdateMode, UserAnswers(cacheMap))))

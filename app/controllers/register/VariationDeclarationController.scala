@@ -27,10 +27,11 @@ import javax.inject.Inject
 import models._
 import models.register.DeclarationWorkingKnowledge
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Variations
 import utils.{Navigator, UserAnswers}
+import views.html.register.variationDeclaration
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,16 +43,15 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                                                requireData: DataRequiredAction,
                                                @Variations navigator: Navigator,
                                                dataCacheConnector: UserAnswersCacheConnector,
-                                               pensionsSchemeConnector: PensionsSchemeConnector
+                                               pensionsSchemeConnector: PensionsSchemeConnector,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: variationDeclaration
                                               )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-
       val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
-
-      Future.successful(Ok(views.html.register.variationDeclaration(
-        appConfig, psaName(), workingKnowledge, VariationDeclarationController.onClickAgree())))
+      Future.successful(Ok(view(psaName(), workingKnowledge, VariationDeclarationController.onClickAgree())))
   }
 
   def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

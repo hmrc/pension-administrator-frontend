@@ -21,22 +21,24 @@ import controllers.actions.AuthAction
 import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import views.html.register.whatYouWillNeed
+import controllers.register.routes._
 
 import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           override val messagesApi: MessagesApi,
                                           @RegisterCompany navigator: Navigator,
-                                          authenticate: AuthAction
+                                          authenticate: AuthAction,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: whatYouWillNeed
                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   def onPageLoad(mode: Mode): Action[AnyContent] = authenticate {
     implicit request =>
-      val href = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
-      Ok(whatYouWillNeed(appConfig, href))
+      Ok(view(BusinessTypeAreYouInUKController.onPageLoad(NormalMode)))
   }
 }

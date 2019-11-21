@@ -33,7 +33,7 @@ import models.requests.DataRequest
 import models.{ExistingPSA, Mode, NormalMode}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, Upstream4xxResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -55,7 +55,9 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       pensionsSchemeConnector: PensionsSchemeConnector,
                                       knownFactsRetrieval: KnownFactsRetrieval,
                                       enrolments: TaxEnrolmentsConnector,
-                                      emailConnector: EmailConnector
+                                      emailConnector: EmailConnector,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val view: declaration
                                      )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -63,7 +65,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
       DeclarationWorkingKnowledgeId.retrieve.right.map {
         workingKnowledge =>
           workingKnowledge.hasWorkingKnowledge
-          Future.successful(Ok(declaration(appConfig, workingKnowledge.hasWorkingKnowledge)))
+          Future.successful(Ok(view(workingKnowledge.hasWorkingKnowledge)))
       }
 
   }

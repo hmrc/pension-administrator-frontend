@@ -33,7 +33,7 @@ import views.html.register.areYouInUK
 import scala.concurrent.{ExecutionContext, Future}
 
 trait AreYouInUKController extends FrontendBaseController with I18nSupport {
-  implicit val ec = ExecutionContext
+  implicit val executionContext: ExecutionContext
   protected val appConfig: FrontendAppConfig
   protected val dataCacheConnector: UserAnswersCacheConnector
   protected val navigator: Navigator
@@ -44,7 +44,7 @@ trait AreYouInUKController extends FrontendBaseController with I18nSupport {
   protected val formProvider: AreYouInUKFormProvider
   protected def view: areYouInUK
 
-  protected val form = formProvider()
+  protected val form: Form[Boolean] = formProvider()
 
   protected def viewmodel(mode: Mode): AreYouInUKViewModel
 

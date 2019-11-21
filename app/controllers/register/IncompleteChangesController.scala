@@ -23,7 +23,7 @@ import controllers.actions._
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.incompleteChanges
 
@@ -35,11 +35,13 @@ class IncompleteChangesController @Inject()(appConfig: FrontendAppConfig,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            dataCacheConnector: UserAnswersCacheConnector
-                                      )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                            dataCacheConnector: UserAnswersCacheConnector,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: incompleteChanges
+                                           )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(Ok(incompleteChanges(appConfig, psaName(), mode)))
+      Future.successful(Ok(view(psaName(), mode)))
   }
 }

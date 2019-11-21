@@ -28,41 +28,41 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.AnyContent
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.register.stillUseAdviser
 
 import scala.concurrent.Future
 
-class StillUseAdviserController @Inject()(
-                                                       appConfig: FrontendAppConfig,
-                                                       override val messagesApi: MessagesApi,
-                                                       override val cacheConnector: UserAnswersCacheConnector,
-                                                       @annotations.Variations navigator: Navigator,
-                                                       authenticate: AuthAction,
-                                                       allowAccess: AllowAccessActionProvider,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       formProvider: StillUseAdviserFormProvider
-                                                     ) extends FrontendBaseController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
+class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
+                                          override val messagesApi: MessagesApi,
+                                          override val cacheConnector: UserAnswersCacheConnector,
+                                          @annotations.Variations navigator: Navigator,
+                                          authenticate: AuthAction,
+                                          allowAccess: AllowAccessActionProvider,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: StillUseAdviserFormProvider,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: stillUseAdviser
+                                         ) extends FrontendBaseController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
 
   private val form = formProvider()
 
   private def adviserName()(implicit request: DataRequest[AnyContent]) =
     request.userAnswers.get(AdviserNameId).getOrElse("")
 
-  def onPageLoad(mode: Mode) = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-
-      Ok(stillUseAdviser(appConfig, form, mode, psaName(), adviserName()))
+      Ok(view(form, mode, psaName(), adviserName()))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(stillUseAdviser(appConfig, formWithErrors, mode, psaName(), adviserName()))),
+          Future.successful(BadRequest(view(formWithErrors, mode, psaName(), adviserName()))),
         value => {
           cacheConnector.save(request.externalId, VariationStillDeclarationWorkingKnowledgeId, value).map(cacheMap =>
             Redirect(navigator.nextPage(VariationStillDeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
