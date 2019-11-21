@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.{JsString, JsValue, Json}
 import play.api.{Configuration, Logger}
-import play.modules.reactivemongo.MongoDbConnection
+import play.modules.reactivemongo.{MongoDbConnection, ReactiveMongoComponent}
 import reactivemongo.api.DefaultDB
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
@@ -43,8 +43,9 @@ object DatedCacheMap {
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
 }
 
-class ReactiveMongoRepository(config: Configuration, mongo: () => DefaultDB)
-  extends ReactiveRepository[DatedCacheMap, BSONObjectID](config.underlying.getString("appName"), mongo, DatedCacheMap.formats) {
+@Singleton
+class SessionRepository(config: Configuration, component: ReactiveMongoComponent)
+  extends ReactiveRepository[DatedCacheMap, BSONObjectID](config.underlying.getString("appName"), component.mongoConnector.db, DatedCacheMap.formats) {
 
   val fieldName = "lastUpdated"
   val createdIndexName = "userAnswersExpiry"
@@ -98,12 +99,3 @@ class ReactiveMongoRepository(config: Configuration, mongo: () => DefaultDB)
   }
 }
 
-@Singleton
-class SessionRepository @Inject()(config: Configuration) {
-
-  class DbConnection extends MongoDbConnection
-
-  private lazy val sessionRepository: ReactiveMongoRepository = new ReactiveMongoRepository(config, new DbConnection().db)
-
-  def apply(): ReactiveMongoRepository = sessionRepository
-}

@@ -45,8 +45,11 @@ trait RetryHelper  {
       case e: Upstream5xxResponse =>
         if ( currentAttempt < config.retryAttempts) {
           val wait = Math.ceil(currentWait * config.retryWaitFactor).toInt
+          val call: Callable[Future[Int]] = new Callable[Future[Int]](){
+            def call(): Future[Int] = Future.successful(1)
+          }
           Logger.warn(s"Failure, retrying after $wait ms, attempt $currentAttempt")
-          after(wait.milliseconds, as.scheduler, ec, Future.successful(1)).flatMap { _ =>
+          after(wait.milliseconds, as.scheduler, ec, call).flatMap { _ =>
             retryWithBackOff(currentAttempt + 1, wait.toInt, f, config)
           }
         } else {
