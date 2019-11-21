@@ -24,6 +24,7 @@ import forms.register.VariationWorkingKnowledgeFormProvider
 import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.{PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{CheckUpdateMode, Mode}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -44,9 +45,9 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
                                                     formProvider: VariationWorkingKnowledgeFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: variationWorkingKnowledge
-                                                   )(implicit val executionContext: ExecutionContext, messages: Messages) extends FrontendBaseController with Enumerable.Implicits with Variations with Retrievals {
+                                                   )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Enumerable.Implicits with Variations with Retrievals {
 
-  private val form = formProvider()
+  private def form()(implicit request: DataRequest[AnyContent]) = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>

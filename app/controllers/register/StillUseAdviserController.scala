@@ -45,9 +45,10 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
                                           formProvider: StillUseAdviserFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: stillUseAdviser
-                                         )(implicit val executionContext: ExecutionContext, messages: Messages) extends FrontendBaseController with Enumerable.Implicits with Variations with Retrievals {
+                                         )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Enumerable.Implicits with Variations with Retrievals {
 
-  private val form = formProvider()
+  private def form()(implicit request: DataRequest[AnyContent]): Form[Boolean] =
+    formProvider()
 
   private def adviserName()(implicit request: DataRequest[AnyContent]) =
     request.userAnswers.get(AdviserNameId).getOrElse("")

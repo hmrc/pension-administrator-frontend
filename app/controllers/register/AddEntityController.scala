@@ -46,19 +46,13 @@ trait AddEntityController extends FrontendBaseController with Retrievals {
   protected def view: addEntity
 
   protected def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
-                   (implicit request: DataRequest[AnyContent],
-                    messages: Messages): Future[Result] = {
+                   (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
     Future.successful(Ok(view(form, viewmodel, mode)))
   }
 
-  protected def post(
-                      id: TypedIdentifier[Boolean],
-                      form: Form[Boolean],
-                      viewmodel: EntityViewModel,
-                      mode: Mode
-                    )(implicit request: DataRequest[AnyContent],
-                      messages: Messages): Future[Result] = {
+  protected def post(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
+                    (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
     if (viewmodel.entities.isEmpty || viewmodel.entities.lengthCompare(viewmodel.maxLimit) >= 0) {
       Future.successful(Redirect(navigator.nextPage(id, mode, request.userAnswers)))

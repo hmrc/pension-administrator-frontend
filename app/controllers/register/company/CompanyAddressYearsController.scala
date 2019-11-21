@@ -48,9 +48,10 @@ class CompanyAddressYearsController @Inject()(@RegisterCompany override val navi
                                               formProvider: AddressYearsFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               val view: addressYears
-                                             )(implicit val executionContext: ExecutionContext, messages: Messages) extends AddressYearsController with Retrievals {
+                                             )(implicit val executionContext: ExecutionContext) extends AddressYearsController with Retrievals {
 
-  private def form(companyName: String): Form[AddressYears] = formProvider(companyName)
+  private def form(companyName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[AddressYears] = formProvider(companyName)
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)

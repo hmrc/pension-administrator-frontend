@@ -22,6 +22,7 @@ import controllers.actions._
 import forms.register.individual.IndividualNameFormProvider
 import identifiers.register.individual.IndividualDetailsId
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Mode, TolerantIndividual}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -34,27 +35,25 @@ import views.html.register.individual.individualName
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualNameController @Inject()(
-                                          val appConfig: FrontendAppConfig,
-                                          val dataCacheConnector: UserAnswersCacheConnector,
-                                          @Individual val navigator: Navigator,
-                                          authenticate: AuthAction,
-                                          allowAccess: AllowAccessActionProvider,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider : IndividualNameFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val view: individualName
-                                          )(implicit val executionContext: ExecutionContext, messages: Messages
-                                          ) extends FrontendBaseController {
+class IndividualNameController @Inject()(val appConfig: FrontendAppConfig,
+                                         val dataCacheConnector: UserAnswersCacheConnector,
+                                         @Individual val navigator: Navigator,
+                                         authenticate: AuthAction,
+                                         allowAccess: AllowAccessActionProvider,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: IndividualNameFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: individualName
+                                        )(implicit val executionContext: ExecutionContext) extends FrontendBaseController {
 
 
-  val form : Form[TolerantIndividual] =  formProvider()
+  val form: Form[TolerantIndividual] = formProvider()
 
-  private[individual] def viewModel(mode: Mode) =
+  private[individual] def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     PersonDetailsViewModel(
       title = "individualName.title",
-      heading = Message("individualName.title"),
+      heading = Message("individualName.title").resolve,
       postCall = routes.IndividualNameController.onSubmit(mode)
     )
 

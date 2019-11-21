@@ -45,9 +45,10 @@ class HasPartnershipVATController @Inject()(override val appConfig: FrontendAppC
                                             formProvider: HasReferenceNumberFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             val view: hasReferenceNumber
-                                       )(implicit val executionContext: ExecutionContext, messages: Messages) extends HasReferenceNumberController {
+                                           )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
-  private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, entityName: String)
+                       (implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.HasPartnershipVATController.onSubmit(mode),
       title = Message("hasVAT.heading", Message("thePartnership")),

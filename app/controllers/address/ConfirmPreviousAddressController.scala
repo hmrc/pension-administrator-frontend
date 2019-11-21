@@ -55,11 +55,8 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
   protected def form(name: String)(implicit mesages: Messages): Form[Boolean] =
     formProvider(Message("confirmPreviousAddress.error", name))
 
-  protected def get(
-                     id: TypedIdentifier[Boolean],
-                     viewModel: SameContactAddressViewModel
-                   )(implicit request: DataRequest[AnyContent],
-                     messages: Messages): Future[Result] = {
+  protected def get(id: TypedIdentifier[Boolean], viewModel: SameContactAddressViewModel)
+                   (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id) match {
       case None => form(viewModel.psaName)(implicitly)
@@ -68,13 +65,8 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
     Future.successful(Ok(view(preparedForm, viewModel, countryOptions)))
   }
 
-  protected def post(
-                      id: TypedIdentifier[Boolean],
-                      contactId: TypedIdentifier[Address],
-                      viewModel: SameContactAddressViewModel,
-                      mode: Mode
-                    )(implicit request: DataRequest[AnyContent],
-                      messages: Messages): Future[Result] = {
+  protected def post(id: TypedIdentifier[Boolean], contactId: TypedIdentifier[Address], viewModel: SameContactAddressViewModel, mode: Mode)
+                    (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
     form(viewModel.psaName)(implicitly).bindFromRequest().fold(
       formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),

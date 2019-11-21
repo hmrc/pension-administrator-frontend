@@ -47,11 +47,8 @@ trait PersonNameController extends FrontendBaseController with Variations {
 
   private val form = new PersonNameFormProvider()()
 
-  def get[I <: TypedIdentifier[PersonName]](
-                                             id: I, viewModel: CommonFormWithHintViewModel,
-                                             mode: Mode
-                                              )(implicit request: DataRequest[AnyContent],
-                                                messages: Messages): Result = {
+  def get[I <: TypedIdentifier[PersonName]](id: I, viewModel: CommonFormWithHintViewModel, mode: Mode)
+                                           (implicit request: DataRequest[AnyContent], messages: Messages): Result = {
 
     val preparedForm = request.userAnswers.get(id) match {
       case None => form
@@ -62,12 +59,8 @@ trait PersonNameController extends FrontendBaseController with Variations {
 
   }
 
-  def post[I <: TypedIdentifier[PersonName]](
-                                                 id: I,
-                                                 viewModel: CommonFormWithHintViewModel,
-                                                 mode: Mode
-                                               )(implicit request: DataRequest[AnyContent],
-                                                 messages: Messages): Future[Result] = {
+  def post[I <: TypedIdentifier[PersonName]](id: I, viewModel: CommonFormWithHintViewModel, mode: Mode)
+                                            (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>

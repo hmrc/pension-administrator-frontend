@@ -45,8 +45,7 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
                                           formProvider: HasReferenceNumberFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: hasReferenceNumber
-                                         )(implicit val executionContext: ExecutionContext,
-                                           messages: Messages) extends HasReferenceNumberController {
+                                         )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(

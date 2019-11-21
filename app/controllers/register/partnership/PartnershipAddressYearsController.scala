@@ -48,10 +48,11 @@ class PartnershipAddressYearsController @Inject()(val appConfig: FrontendAppConf
                                                   formProvider: AddressYearsFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   val view: addressYears
-                                                 )(implicit val executionContext: ExecutionContext, messages: Messages) extends AddressYearsController with Retrievals {
+                                                 )(implicit val executionContext: ExecutionContext) extends AddressYearsController with Retrievals {
 
 
-  private def viewModel(mode: Mode, partnershipName: String)(implicit request: DataRequest[AnyContent]) =
+  private def viewModel(mode: Mode, partnershipName: String)
+                       (implicit request: DataRequest[AnyContent]) =
     AddressYearsViewModel(
       routes.PartnershipAddressYearsController.onSubmit(mode),
       Message("addressYears.heading", Message("thePartnership")),
@@ -60,7 +61,8 @@ class PartnershipAddressYearsController @Inject()(val appConfig: FrontendAppConf
       psaName = psaName()
     )
 
-  def form(partnershipName: String): Form[AddressYears] = formProvider(partnershipName)
+  def form(partnershipName: String)
+          (implicit request: DataRequest[AnyContent]): Form[AddressYears] = formProvider(partnershipName)
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))

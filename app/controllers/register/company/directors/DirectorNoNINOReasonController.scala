@@ -45,10 +45,10 @@ class DirectorNoNINOReasonController @Inject()(@CompanyDirector val navigator: N
                                                formProvider: ReasonFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: reason
-                                              )(implicit val executionContext: ExecutionContext,
-                                                messages: Messages) extends ReasonController {
+                                              )(implicit val executionContext: ExecutionContext) extends ReasonController {
 
-  private def form(directorName: String): Form[String] = formProvider(directorName)
+  private def form(directorName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[String] = formProvider(directorName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

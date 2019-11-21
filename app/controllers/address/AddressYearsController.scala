@@ -46,8 +46,7 @@ trait AddressYearsController extends FrontendBaseController with Retrievals with
   protected def view: addressYears
 
   protected def get(id: TypedIdentifier[AddressYears], form: Form[AddressYears], viewmodel: AddressYearsViewModel, mode: Mode)
-                   (implicit request: DataRequest[AnyContent],
-                    messages: Messages): Future[Result] = {
+                   (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
     val filledForm =
       request.userAnswers.get(id).map(form.fill).getOrElse(form)
@@ -55,13 +54,8 @@ trait AddressYearsController extends FrontendBaseController with Retrievals with
     Future.successful(Ok(view(filledForm, viewmodel, mode)))
   }
 
-  protected def post(
-                      id: TypedIdentifier[AddressYears],
-                      mode: Mode,
-                      form: Form[AddressYears],
-                      viewmodel: AddressYearsViewModel
-                    )(implicit request: DataRequest[AnyContent],
-                      messages: Messages): Future[Result] = {
+  protected def post(id: TypedIdentifier[AddressYears], mode: Mode, form: Form[AddressYears], viewmodel: AddressYearsViewModel)
+                    (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, viewmodel, mode))),
