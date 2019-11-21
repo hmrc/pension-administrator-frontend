@@ -22,9 +22,9 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import viewmodels.Message
 
-class ConfirmDeleteAdviserFormProvider @Inject()(implicit messages: Messages) extends Mappings {
+class ConfirmDeleteAdviserFormProvider extends Mappings {
 
-  def apply(name: String): Form[Boolean] =
+  def apply(name: String)(implicit messages: Messages): Form[Boolean] =
     Form(
       "value" -> boolean(Message("confirmDelete.adviser.required", name))
     )

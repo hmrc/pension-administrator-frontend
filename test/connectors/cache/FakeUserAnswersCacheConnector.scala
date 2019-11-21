@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package connectors
+package connectors.cache
 
-import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import org.scalatest.Matchers
 import play.api.libs.json._

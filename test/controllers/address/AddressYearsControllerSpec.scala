@@ -16,9 +16,10 @@
 
 package controllers.address
 
+import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.FakeAllowAccessProvider
 import forms.address.AddressYearsFormProvider
@@ -42,6 +43,8 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import scala.concurrent.Future
 
 object AddressYearsControllerSpec {
@@ -53,7 +56,9 @@ object AddressYearsControllerSpec {
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: AddressYearsFormProvider
+                                  formProvider: AddressYearsFormProvider,
+                                  stubMessagesControllerComponents(),
+                                  val view: addressYears
                                 ) extends AddressYearsController {
 
     override val allowAccess = FakeAllowAccessProvider()
@@ -72,9 +77,11 @@ object AddressYearsControllerSpec {
 
 }
 
-class AddressYearsControllerSpec extends WordSpec with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
+class AddressYearsControllerSpec extends SpecBase with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
 
   import AddressYearsControllerSpec._
+
+  val view: addressYears = app.injector.instanceOf[addressYears]
 
   val viewmodel = AddressYearsViewModel(
     postCall = Call("GET", "www.example.com"),
@@ -99,7 +106,7 @@ class AddressYearsControllerSpec extends WordSpec with MustMatchers with OptionV
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual addressYears(appConfig, formProvider("error")(messages), viewmodel, NormalMode)(request, messages).toString
+          contentAsString(result) mustEqual view(formProvider("error")(messages), viewmodel, NormalMode)(request, messages).toString
       }
     }
 
@@ -118,8 +125,7 @@ class AddressYearsControllerSpec extends WordSpec with MustMatchers with OptionV
           val result = controller.onPageLoad(viewmodel, answers)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual addressYears(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider("error")(messages).fill(AddressYears.OverAYear),
             viewmodel,
             NormalMode
@@ -193,8 +199,7 @@ class AddressYearsControllerSpec extends WordSpec with MustMatchers with OptionV
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual addressYears(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider("error")(messages).bind(Map.empty[String, String]),
             viewmodel,
             NormalMode
