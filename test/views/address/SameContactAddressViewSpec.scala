@@ -32,7 +32,7 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
   val messageKeyPrefix = "individual.same.contact.address"
 
   val formProvider = new SameContactAddressFormProvider()
-  val form = formProvider()
+  val form = formProvider("error.required")
 
   val testAddress = TolerantAddress(
     Some("address line 1"),

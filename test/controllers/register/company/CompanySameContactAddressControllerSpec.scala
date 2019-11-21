@@ -71,7 +71,7 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
       implicit app => addToken(FakeRequest(routes.CompanySameContactAddressController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe sameContactAddress(frontendAppConfig, formProvider(), viewModel, countryOptions)(request, messages).toString()
+        contentAsString(result) mustBe sameContactAddress(frontendAppConfig, formProvider("error.required"), viewModel, countryOptions)(request, messages).toString()
       }
     )
   }

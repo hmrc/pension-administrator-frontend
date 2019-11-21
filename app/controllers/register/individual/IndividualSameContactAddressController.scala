@@ -50,7 +50,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   private[controllers] val title: Message = "individual.same.contact.address.title"
   private[controllers] val heading: Message = "individual.same.contact.address.heading"
 
-  protected val form: Form[Boolean] = formProvider()
+  protected val form: Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(Message("you")))
 
   private def viewmodel(mode: Mode) =
     Retrieval(
@@ -72,14 +72,14 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
-        get(IndividualSameContactAddressId, vm)
+        get(IndividualSameContactAddressId, vm, form)
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
-        post(IndividualSameContactAddressId, IndividualContactAddressListId, IndividualContactAddressId, vm, mode)
+        post(IndividualSameContactAddressId, IndividualContactAddressListId, IndividualContactAddressId, vm, mode, form)
       }
   }
 

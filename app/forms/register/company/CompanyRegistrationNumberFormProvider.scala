@@ -26,7 +26,7 @@ class CompanyRegistrationNumberFormProvider @Inject() extends FormErrorHelper wi
   def apply(): Form[String] =
     Form(
       "value" -> crnMapping(
-        "companyRegistrationNumber.error.required",
+        "companyRegistrationNumber.error.invalid",
         "companyRegistrationNumber.error.invalid"
       )
     )

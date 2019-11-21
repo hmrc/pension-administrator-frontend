@@ -49,7 +49,7 @@ class CompanySameContactAddressController @Inject()(
                                                      val countryOptions: CountryOptions
                                                    ) extends SameContactAddressController {
 
-  val form: Form[Boolean] = formProvider()
+  def form(name: String): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
 
   private[controllers] val postCall = CompanySameContactAddressController.onSubmit _
   private[controllers] val title: Message = "company.same.contact.address.title"
@@ -75,14 +75,14 @@ class CompanySameContactAddressController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
-        get(CompanySameContactAddressId, vm)
+        get(CompanySameContactAddressId, vm, form(vm.psaName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
-        post(CompanySameContactAddressId, CompanyAddressListId, CompanyContactAddressId, vm, mode)
+        post(CompanySameContactAddressId, CompanyAddressListId, CompanyContactAddressId, vm, mode, form(vm.psaName))
       }
   }
 
