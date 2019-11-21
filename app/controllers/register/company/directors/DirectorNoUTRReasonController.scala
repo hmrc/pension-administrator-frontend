@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -47,10 +47,10 @@ class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Na
                                               formProvider: ReasonFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               val view: reason
-                                             )(implicit val executionContext: ExecutionContext,
-                                               messages: Messages) extends ReasonController {
+                                             )(implicit val executionContext: ExecutionContext) extends ReasonController {
 
-  private def form(directorName: String): Form[String] = formProvider(directorName)
+  private def form(directorName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[String] = formProvider(directorName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

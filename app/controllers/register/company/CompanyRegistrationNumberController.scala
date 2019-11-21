@@ -45,8 +45,7 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
                                                     formProvider: CompanyRegistrationNumberFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: enterNumber
-                                                   )(implicit val executionContext: ExecutionContext,
-                                                     messages: Messages) extends EnterNumberController {
+                                                   )(implicit val executionContext: ExecutionContext) extends EnterNumberController {
 
   private val form = formProvider()
 

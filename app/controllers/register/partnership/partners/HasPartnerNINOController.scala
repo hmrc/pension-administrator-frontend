@@ -26,7 +26,6 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
@@ -45,7 +44,7 @@ class HasPartnerNINOController @Inject()(override val appConfig: FrontendAppConf
                                          formProvider: HasReferenceNumberFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          val view: hasReferenceNumber
-                                       )(implicit val executionContext: ExecutionContext, messages: Messages) extends HasReferenceNumberController {
+                                       )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -60,7 +59,8 @@ class HasPartnerNINOController @Inject()(override val appConfig: FrontendAppConf
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
-  private def form(companyName: String): Form[Boolean] =
+  private def form(companyName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider("hasNINO.error.required", companyName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =

@@ -25,6 +25,7 @@ import identifiers.register.{BusinessTypeId, BusinessUTRId}
 import javax.inject.Inject
 import models.NormalMode
 import models.register.BusinessType
+import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
@@ -43,7 +44,7 @@ class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConf
                                          requireData: DataRequiredAction,
                                          val controllerComponents: MessagesControllerComponents,
                                          val view: utr
-                                        )(implicit messages: Messages, val executionContext: ExecutionContext) extends UTRController with I18nSupport with Retrievals {
+                                        )(implicit val executionContext: ExecutionContext) extends UTRController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -62,6 +63,7 @@ class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConf
 
   def href: Call = routes.PartnershipUTRController.onSubmit()
 
-  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").resolve.toLowerCase()
+  def toString(businessType: BusinessType)
+              (implicit request: DataRequest[AnyContent]): String = Message(s"businessType.${businessType.toString}").toLowerCase()
 
 }

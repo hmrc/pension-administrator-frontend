@@ -25,7 +25,7 @@ import identifiers.register.company.directors.DirectorNameId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -43,9 +43,10 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        val view: personName
-                                      )(implicit val executionContext: ExecutionContext, messages: Messages) extends PersonNameController with Retrievals {
+                                      )(implicit val executionContext: ExecutionContext) extends PersonNameController with Retrievals with I18nSupport {
 
-  private[directors] def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]) =
+  private[directors] def viewModel(mode: Mode, index: Index, name: String)
+                                  (implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorNameController.onSubmit(mode, index),
       title = "directorName.heading",

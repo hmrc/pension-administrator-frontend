@@ -22,7 +22,7 @@ import controllers.actions._
 import identifiers.register.partnership.partners.PartnerNameId
 import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
-import play.api.i18n.Messages
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Enumerable
@@ -31,15 +31,14 @@ import views.html.alreadyDeleted
 
 import scala.concurrent.Future
 
-class AlreadyDeletedController @Inject()(
-                                          appConfig: FrontendAppConfig,
-                                          authenticate: AuthAction,
-                                          allowAccess: AllowAccessActionProvider,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val view: alreadyDeleted
-                                        )(implicit messages: Messages) extends FrontendBaseController with Retrievals with Enumerable.Implicits {
+class AlreadyDeletedController @Inject()(appConfig: FrontendAppConfig,
+                                         authenticate: AuthAction,
+                                         allowAccess: AllowAccessActionProvider,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: alreadyDeleted
+                                        ) extends FrontendBaseController with Retrievals with Enumerable.Implicits with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

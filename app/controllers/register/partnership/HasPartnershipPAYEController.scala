@@ -25,7 +25,7 @@ import identifiers.register.{BusinessNameId, HasPAYEId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.Messages
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
@@ -44,7 +44,7 @@ class HasPartnershipPAYEController @Inject()(override val appConfig: FrontendApp
                                              formProvider: HasReferenceNumberFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              val view: hasReferenceNumber
-                                        )(implicit val executionContext: ExecutionContext, messages: Messages) extends HasReferenceNumberController {
+                                            )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, partnershipName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -56,7 +56,8 @@ class HasPartnershipPAYEController @Inject()(override val appConfig: FrontendApp
       entityName = partnershipName
     )
 
-  private def form(partnershipName: String) = formProvider("hasPAYE.error.required", partnershipName)
+  private def form(partnershipName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider("hasPAYE.error.required", partnershipName)
 
   private def partnershipName(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)

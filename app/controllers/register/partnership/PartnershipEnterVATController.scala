@@ -26,7 +26,6 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
@@ -45,9 +44,10 @@ class PartnershipEnterVATController @Inject()(val appConfig: FrontendAppConfig,
                                               formProvider: EnterVATFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               val view: enterVAT
-                                             )(implicit val executionContext: ExecutionContext, messages: Messages) extends VATNumberController {
+                                             )(implicit val executionContext: ExecutionContext) extends VATNumberController {
 
-  private def form(partnershipName: String): Form[String] = formProvider(partnershipName)
+  private def form(partnershipName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[String] = formProvider(partnershipName)
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(

@@ -26,8 +26,8 @@ import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyTradingOverAYearId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -46,8 +46,7 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
                                                   formProvider: HasReferenceNumberFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   val view: hasReferenceNumber
-                                                 )(implicit val executionContext: ExecutionContext,
-                                                   messages: Messages) extends HasReferenceNumberController {
+                                                 )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -59,7 +58,8 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
       entityName = companyName
     )
 
-  private def form(companyName: String): Form[Boolean] = formProvider("trading.error.required", companyName)
+  private def form(companyName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider("trading.error.required", companyName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

@@ -45,9 +45,10 @@ class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navi
                                             formProvider: NINOFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             val view: enterNINO
-                                           )(implicit val executionContext: ExecutionContext, messages: Messages) extends NINOController {
+                                           )(implicit val executionContext: ExecutionContext) extends NINOController {
 
-  private def form(directorName: String): Form[ReferenceValue] = formProvider(directorName)
+  private def form(directorName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] = formProvider(directorName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

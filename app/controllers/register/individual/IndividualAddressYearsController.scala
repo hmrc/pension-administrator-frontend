@@ -23,9 +23,10 @@ import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{AddressYears, Mode}
 import play.api.data.Form
-import play.api.i18n.Messages
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
@@ -45,7 +46,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
                                                  formProvider: AddressYearsFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  val view: addressYears
-                                                )(implicit val executionContext: ExecutionContext, messages: Messages) extends AddressYearsController {
+                                                )(implicit val executionContext: ExecutionContext) extends AddressYearsController with I18nSupport {
 
   private def viewmodel(mode: Mode): Retrieval[AddressYearsViewModel] =
     Retrieval(
@@ -63,7 +64,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
         }
     )
 
-  private val form: Form[AddressYears] = formProvider.applyIndividual()
+  private def form()(implicit request: DataRequest[AnyContent]): Form[AddressYears] = formProvider.applyIndividual()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

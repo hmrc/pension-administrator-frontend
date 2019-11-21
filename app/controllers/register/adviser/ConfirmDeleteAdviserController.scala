@@ -36,19 +36,17 @@ import views.html.confirmDelete
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmDeleteAdviserController @Inject()(
-                                                val appConfig: FrontendAppConfig,
-                                                authenticate: AuthAction,
-                                                allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                val cacheConnector: UserAnswersCacheConnector,
-                                                formProvider: ConfirmDeleteAdviserFormProvider,
-                                                @annotations.Variations navigator: Navigator,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                val view: confirmDelete
-                                              )(implicit val executionContext: ExecutionContext
-                                                ) extends FrontendBaseController with I18nSupport with Retrievals with Variations {
+class ConfirmDeleteAdviserController @Inject()(val appConfig: FrontendAppConfig,
+                                               authenticate: AuthAction,
+                                               allowAccess: AllowAccessActionProvider,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               val cacheConnector: UserAnswersCacheConnector,
+                                               formProvider: ConfirmDeleteAdviserFormProvider,
+                                               @annotations.Variations navigator: Navigator,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: confirmDelete
+                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals with Variations {
 
   private def viewModel(name: String)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
     routes.ConfirmDeleteAdviserController.onSubmit(),

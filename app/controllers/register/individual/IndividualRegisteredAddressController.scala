@@ -26,8 +26,9 @@ import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId
 import javax.inject.Inject
 import models.InternationalRegion.RestOfTheWorld
 import models._
+import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -52,7 +53,7 @@ class IndividualRegisteredAddressController @Inject()(
                                                        val countryOptions: CountryOptions,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        val view: nonukAddress
-                                                     )(implicit val executionContext: ExecutionContext, messages: Messages) extends FrontendBaseController with Retrievals {
+                                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
   protected val form: Form[Address] = formProvider()
 
@@ -67,7 +68,7 @@ class IndividualRegisteredAddressController @Inject()(
       }
   }
 
-  private def addressViewModel(companyName: String, mode: Mode) = ManualAddressViewModel(
+  private def addressViewModel(companyName: String, mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.IndividualRegisteredAddressController.onSubmit(mode),
     countryOptions.options,
     Message("individualRegisteredNonUKAddress.title"),
