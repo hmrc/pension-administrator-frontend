@@ -14,30 +14,35 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.OrganisationNameViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewModel: OrganisationNameViewModel)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_], viewModel: OrganisationNameViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(viewModel.title)) {
+    title = messages(viewModel.title)
+) {
+    @components.back_link()
 
-      @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
+    @components.error_summary(form.errors)
 
-        @components.back_link()
+    @components.heading(messages(viewModel.heading), "heading-xlarge", None)
 
-      @components.error_summary(form.errors)
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
-      @components.heading(messages(viewModel.heading), "heading-xlarge", None)
+        @components.input_text(
+            field = form("value"),
+            label = messages(viewModel.heading),
+            labelClass = Some("visually-hidden")
+        )
 
-      @components.input_text(
-        field = form("value"),
-        label = messages(viewModel.heading),
-        labelClass = Some("visually-hidden")
-      )
-    <div class="section">
-          @components.submit_button("site.save_and_continue")
-    </div>
+        <div class="section">
+              @components.submit_button("site.save_and_continue")
+        </div>
     }
 }

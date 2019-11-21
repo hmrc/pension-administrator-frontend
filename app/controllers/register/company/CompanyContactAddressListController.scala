@@ -44,12 +44,11 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
                                                     requireData: DataRequiredAction,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: addressList
-                                                   )(implicit val executionContext: ExecutionContext
-                                                    ) extends AddressListController with Retrievals {
+                                                   )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map{vm =>
+      viewmodel(mode).right.map { vm =>
         get(vm, mode)
       }
   }

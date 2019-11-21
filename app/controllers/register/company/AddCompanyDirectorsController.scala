@@ -28,7 +28,7 @@ import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.JsResultException
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -37,16 +37,17 @@ import views.html.register.company.addCompanyDirectors
 
 import scala.concurrent.ExecutionContext
 
-class AddCompanyDirectorsController @Inject()(
-                                               appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
-                                               dataCacheConnector: UserAnswersCacheConnector,
-                                               @CompanyDirector navigator: Navigator,
-                                               authenticate: AuthAction,
-                                               allowAccess: AllowAccessActionProvider,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               formProvider: AddCompanyDirectorsFormProvider
+class AddCompanyDirectorsController @Inject()(appConfig: FrontendAppConfig,
+                                              override val messagesApi: MessagesApi,
+                                              dataCacheConnector: UserAnswersCacheConnector,
+                                              @CompanyDirector navigator: Navigator,
+                                              authenticate: AuthAction,
+                                              allowAccess: AllowAccessActionProvider,
+                                              getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              formProvider: AddCompanyDirectorsFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val view: addCompanyDirectors
                                              )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
@@ -54,31 +55,27 @@ class AddCompanyDirectorsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete(mode)
-      Ok(addCompanyDirectors(appConfig, form, mode, directors, psaName()))
+      Ok(view(form, mode, directors, psaName()))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete(mode)
 
-      if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
+      if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0)
         Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers))
-      }
-      else {
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            BadRequest(addCompanyDirectors(appConfig, formWithErrors, mode, directors, psaName())),
-          value => {
-            request.userAnswers.set(AddCompanyDirectorsId)(value).fold(
-              errors => {
-                Logger.error("Unable to set user answer", JsResultException(errors))
-                InternalServerError
-              },
-              userAnswers => Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, userAnswers))
-            )
-          }
-        )
-      }
+      else form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          BadRequest(view(formWithErrors, mode, directors, psaName())),
+        value =>
+          request.userAnswers.set(AddCompanyDirectorsId)(value).fold(
+            errors => {
+              Logger.error("Unable to set user answer", JsResultException(errors))
+              InternalServerError
+            },
+            userAnswers => Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, userAnswers))
+          )
+      )
   }
 
 }

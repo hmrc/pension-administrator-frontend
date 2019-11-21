@@ -27,10 +27,11 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.enterPAYE
 
 import scala.concurrent.ExecutionContext
 
@@ -42,8 +43,10 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
                                            allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           formProvider: EnterPAYEFormProvider
-                                          )(implicit val ec: ExecutionContext) extends EnterPAYEController {
+                                           formProvider: EnterPAYEFormProvider,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: enterPAYE
+                                          )(implicit val executionContext: ExecutionContext) extends EnterPAYEController {
 
   protected def form(companyName: String): Form[String] = formProvider(companyName)
 

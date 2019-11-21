@@ -27,10 +27,11 @@ import identifiers.register.BusinessNameId
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormViewModel, Message}
+import views.html.register.isRegisteredName
 
 class CompanyIsRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
@@ -40,7 +41,10 @@ class CompanyIsRegisteredNameController @Inject()(override val appConfig: Fronte
                                                   override val allowAccess: AllowAccessActionProvider,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
-                                                  formProvider: IsRegisteredNameFormProvider) extends IsRegisteredNameController with Retrievals {
+                                                  formProvider: IsRegisteredNameFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  val view: isRegisteredName
+                                                 ) extends IsRegisteredNameController with Retrievals {
 
   val form: Form[Boolean] = formProvider("isRegisteredName.company.error")
 

@@ -14,27 +14,30 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
 @import models.Mode
 @import viewmodels.MoreThanTenViewModel
 
-@(appConfig: FrontendAppConfig, form: Form[_], viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_], viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(viewModel.title)) {
+    title = messages(viewModel.title)
+) {
+    @components.back_link()
 
-    @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
+    @components.error_summary(form.errors)
 
-        @components.back_link()
+    @components.heading(viewModel.heading)
 
-        @components.error_summary(form.errors)
+    @components.paragraph_text(messages(viewModel.hint))
 
-        @components.heading(viewModel.heading)
-
-        @components.paragraph_text(messages(viewModel.hint))
-
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
         @components.input_yes_no(
             field = form("value"),
             label = messages(viewModel.heading),
@@ -44,8 +47,9 @@
         <div class="subsection">
             @components.submit_button("site.save_and_continue")
         </div>
-        @viewModel.psaName.map { psaName =>
-            @components.return_link(psaName, mode)
-        }
+    }
+
+    @viewModel.psaName.map { psaName =>
+        @components.return_link(psaName, mode)
     }
 }

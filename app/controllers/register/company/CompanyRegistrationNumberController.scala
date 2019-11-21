@@ -27,23 +27,25 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.register.company.enterNumber
 
 import scala.concurrent.ExecutionContext
 
-class CompanyRegistrationNumberController @Inject()(
-                                                     val appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
-                                                     val cacheConnector: UserAnswersCacheConnector,
-                                                     @RegisterCompany val navigator: Navigator,
-                                                     authenticate: AuthAction,
-                                                     allowAccess: AllowAccessActionProvider,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: CompanyRegistrationNumberFormProvider
+class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppConfig,
+                                                    override val messagesApi: MessagesApi,
+                                                    val cacheConnector: UserAnswersCacheConnector,
+                                                    @RegisterCompany val navigator: Navigator,
+                                                    authenticate: AuthAction,
+                                                    allowAccess: AllowAccessActionProvider,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    formProvider: CompanyRegistrationNumberFormProvider,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: enterNumber
                                                    )(implicit val ec: ExecutionContext) extends EnterNumberController {
 
   private val form = formProvider()

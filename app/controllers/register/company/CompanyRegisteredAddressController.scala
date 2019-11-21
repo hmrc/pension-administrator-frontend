@@ -29,7 +29,7 @@ import javax.inject.Inject
 import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -49,7 +49,9 @@ class CompanyRegisteredAddressController @Inject()(
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: NonUKAddressFormProvider,
-                                                    val countryOptions: CountryOptions
+                                                    val countryOptions: CountryOptions,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: nonukAddress
                                                   ) extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()

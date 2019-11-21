@@ -24,11 +24,15 @@ import controllers.register.OrganisationNameController
 import forms.BusinessNameFormProvider
 import identifiers.register.BusinessNameId
 import models.Mode
+import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{Message, OrganisationNameViewModel}
+import views.html.organisationName
+
+import scala.concurrent.ExecutionContext
 
 class CompanyRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
                                                 override val messagesApi: MessagesApi,
@@ -38,9 +42,12 @@ class CompanyRegisteredNameController @Inject()(override val appConfig: Frontend
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: BusinessNameFormProvider,
-                                                val cacheConnector: UserAnswersCacheConnector) extends OrganisationNameController {
+                                                val cacheConnector: UserAnswersCacheConnector,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: organisationName
+                                               )(implicit val executionContext: ExecutionContext) extends OrganisationNameController {
 
-  override val form = formProvider()
+  override val form: Form[String] = formProvider()
 
   private def companyNameViewModel(mode: Mode) =
     OrganisationNameViewModel(

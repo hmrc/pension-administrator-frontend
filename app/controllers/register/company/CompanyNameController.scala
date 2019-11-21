@@ -22,25 +22,27 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.register.BusinessNameController
 import forms.BusinessNameFormProvider
 import javax.inject.Inject
+import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.Call
+import play.api.mvc.{Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 
 import scala.concurrent.ExecutionContext
 
-class CompanyNameController @Inject()(
-                                       override val appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
-                                       override val cacheConnector: UserAnswersCacheConnector,
-                                       @RegisterCompany override val navigator: Navigator,
-                                       override val authenticate: AuthAction,
-                                       override val allowAccess: AllowAccessActionProvider,
-                                       override val getData: DataRetrievalAction,
-                                       override val requireData: DataRequiredAction,
-                                       formProvider: BusinessNameFormProvider
+class CompanyNameController @Inject()(override val appConfig: FrontendAppConfig,
+                                      override val messagesApi: MessagesApi,
+                                      override val cacheConnector: UserAnswersCacheConnector,
+                                      @RegisterCompany override val navigator: Navigator,
+                                      override val authenticate: AuthAction,
+                                      override val allowAccess: AllowAccessActionProvider,
+                                      override val getData: DataRetrievalAction,
+                                      override val requireData: DataRequiredAction,
+                                      formProvider: BusinessNameFormProvider,
+                                      val controllerComponents: MessagesControllerComponents
                                      )(implicit val ec: ExecutionContext) extends BusinessNameController {
 
   def href: Call = routes.CompanyNameController.onSubmit()
-  val form = formProvider()
+
+  val form: Form[String] = formProvider()
 }

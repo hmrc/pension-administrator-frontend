@@ -47,12 +47,14 @@ trait UTRController extends FrontendBaseController with I18nSupport with Variati
 
   private val form = new UTRFormProvider()()
 
+  protected def view: utr
+
   def get[I <: TypedIdentifier[String]](
                                                 id: I, entity: String, href: Call
                                               )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id).fold(form)(form.fill)
-    Future.successful(Ok(utr(appConfig, preparedForm, entity, href)))
+    Future.successful(Ok(view(preparedForm, entity, href)))
 
   }
 
@@ -62,7 +64,7 @@ trait UTRController extends FrontendBaseController with I18nSupport with Variati
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(utr(appConfig, formWithErrors, entity, href))),
+        Future.successful(BadRequest(view(formWithErrors, entity, href))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
             Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap))))

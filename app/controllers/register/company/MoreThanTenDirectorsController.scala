@@ -25,20 +25,22 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{Message, MoreThanTenViewModel}
+import views.html.moreThanTen
 
-class MoreThanTenDirectorsController @Inject()(
-                                                val appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                val cacheConnector: UserAnswersCacheConnector,
-                                                @CompanyDirector val navigator: Navigator,
-                                                authenticate: AuthAction,
-                                                allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction
+class MoreThanTenDirectorsController @Inject()(val appConfig: FrontendAppConfig,
+                                               override val messagesApi: MessagesApi,
+                                               val cacheConnector: UserAnswersCacheConnector,
+                                               @CompanyDirector val navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               allowAccess: AllowAccessActionProvider,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: moreThanTen
                                               ) extends MoreThanTenController with Retrievals {
 
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): MoreThanTenViewModel =

@@ -25,11 +25,13 @@ import identifiers.register.{BusinessNameId, EnterVATId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
+import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.enterVAT
 
 import scala.concurrent.ExecutionContext
 
@@ -41,10 +43,12 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          formProvider: EnterVATFormProvider
-                                          )(implicit val ec: ExecutionContext) extends VATNumberController {
+                                          formProvider: EnterVATFormProvider,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: enterVAT
+                                         )(implicit val executionContext: ExecutionContext) extends VATNumberController {
 
-  private def form(companyName: String) = formProvider(companyName)
+  private def form(companyName: String): Form[String] = formProvider(companyName)
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(

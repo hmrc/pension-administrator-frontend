@@ -28,10 +28,11 @@ import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.hasReferenceNumber
 
 import scala.concurrent.ExecutionContext
 
@@ -43,8 +44,10 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
                                          allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         formProvider: HasReferenceNumberFormProvider
-                                       )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                         formProvider: HasReferenceNumberFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: hasReferenceNumber
+                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(

@@ -26,10 +26,11 @@ import javax.inject.Inject
 import models.NormalMode
 import models.register.BusinessType
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.Message
+import views.html.register.utr
 
 class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
                                      override val messagesApi: MessagesApi,
@@ -38,7 +39,9 @@ class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
                                      authenticate: AuthAction,
                                      override val allowAccess: AllowAccessActionProvider,
                                      getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction
+                                     requireData: DataRequiredAction,
+                                     val controllerComponents: MessagesControllerComponents,
+                                     val view: utr
                                     ) extends UTRController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -56,7 +59,7 @@ class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
             }
   }
 
-  def href: Call = routes.CompanyUTRController.onSubmit
-  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").toLowerCase()
+  def href: Call = routes.CompanyUTRController.onSubmit()
+  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").resolve.toLowerCase()
 
 }

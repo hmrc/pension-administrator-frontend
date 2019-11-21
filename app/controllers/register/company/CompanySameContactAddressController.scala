@@ -28,26 +28,30 @@ import javax.inject.{Inject, Singleton}
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
+import views.html.address.sameContactAddress
+
+import scala.concurrent.ExecutionContext
 
 @Singleton()
-class CompanySameContactAddressController @Inject()(
-                                                     @RegisterCompany val navigator: Navigator,
-                                                     val appConfig: FrontendAppConfig,
-                                                     val messagesApi: MessagesApi,
-                                                     val dataCacheConnector: UserAnswersCacheConnector,
-                                                     authenticate: AuthAction,
-                                                     allowAccess: AllowAccessActionProvider,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: SameContactAddressFormProvider,
-                                                     val countryOptions: CountryOptions
-                                                   ) extends SameContactAddressController {
+class CompanySameContactAddressController @Inject()(@RegisterCompany val navigator: Navigator,
+                                                    val appConfig: FrontendAppConfig,
+                                                    override val messagesApi: MessagesApi,
+                                                    val dataCacheConnector: UserAnswersCacheConnector,
+                                                    authenticate: AuthAction,
+                                                    allowAccess: AllowAccessActionProvider,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    formProvider: SameContactAddressFormProvider,
+                                                    val countryOptions: CountryOptions,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: sameContactAddress
+                                                   )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
   val form: Form[Boolean] = formProvider()
 
