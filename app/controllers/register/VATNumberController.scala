@@ -41,6 +41,8 @@ trait VATNumberController extends FrontendBaseController with I18nSupport {
 
   protected def navigator: Navigator
 
+  protected def view: enterVAT
+
   def get(id: TypedIdentifier[String], form: Form[String], viewModel: CommonFormWithHintViewModel)
          (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
@@ -49,7 +51,7 @@ trait VATNumberController extends FrontendBaseController with I18nSupport {
       case Some(value) => form.fill(value)
     }
 
-    Future.successful(Ok(enterVAT(appConfig, preparedForm, viewModel)))
+    Future.successful(Ok(view(preparedForm, viewModel)))
   }
 
   def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewModel: CommonFormWithHintViewModel)
@@ -57,7 +59,7 @@ trait VATNumberController extends FrontendBaseController with I18nSupport {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(enterVAT(appConfig, formWithErrors, viewModel))),
+        Future.successful(BadRequest(view(formWithErrors, viewModel))),
       value =>
         cacheConnector.save(request.externalId, id, value).map(
           cacheMap =>

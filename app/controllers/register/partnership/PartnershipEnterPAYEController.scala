@@ -26,31 +26,32 @@ import identifiers.register.{BusinessNameId, EnterPAYEId}
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.enterPAYE
 
 import scala.concurrent.ExecutionContext
 
 class PartnershipEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
                                                val cacheConnector: UserAnswersCacheConnector,
                                                @Partnership val navigator: Navigator,
                                                authenticate: AuthAction,
                                                allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
-                                               formProvider: EnterPAYEFormProvider
+                                               formProvider: EnterPAYEFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: enterPAYE
                                           )(implicit val ec: ExecutionContext) extends EnterPAYEController {
 
-  protected def form(partnershipName: String): Form[String] = formProvider(partnershipName)
+  protected def form(partnershipName: String): Form[String] = formProvider(partnershipName)(implicitly)
 
   private def viewModel(mode: Mode, partnershipName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.partnership.routes.PartnershipEnterPAYEController.onSubmit(mode),
-      title = Message("enterPAYE.heading", Message("thePartnership").resolve),
+      title = Message("enterPAYE.heading", Message("thePartnership")),
       heading = Message("enterPAYE.heading", partnershipName),
       mode = mode,
       hint = Some(Message("enterPAYE.hint")),

@@ -20,20 +20,22 @@ import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
 import models.Mode
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.company.companyNotFound
 
 class PartnershipCompanyNotFoundController @Inject()(appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
                                                      authenticate: AuthAction,
                                                      allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction) extends FrontendBaseController with I18nSupport {
+                                                     requireData: DataRequiredAction,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     val view: companyNotFound
+                                                    ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      Ok(companyNotFound(appConfig))
+      Ok(view())
   }
 }

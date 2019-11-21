@@ -20,9 +20,8 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import forms.BusinessNameFormProvider
 import identifiers.register.{BusinessNameId, BusinessTypeId}
-import models.{Mode, NormalMode}
+import models.NormalMode
 import models.register.BusinessType
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -47,12 +46,13 @@ trait BusinessNameController extends FrontendBaseController with I18nSupport wit
   def requireData: DataRequiredAction
   def href: Call
   def form: Form[String]
+  protected def view: businessName
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
   implicit request =>
   val prepareForm = request.userAnswers.get(BusinessNameId).fold(form)(form.fill)
     BusinessTypeId.retrieve.right.map { businessType =>
-      Future.successful(Ok(businessName(appConfig, prepareForm, toString(businessType), href)))
+      Future.successful(Ok(view(prepareForm, toString(businessType), href)))
     }
 
 }
@@ -62,7 +62,7 @@ trait BusinessNameController extends FrontendBaseController with I18nSupport wit
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           BusinessTypeId.retrieve.right.map { businessType =>
-            Future.successful(BadRequest(businessName(appConfig, formWithErrors, toString(businessType), href)))
+            Future.successful(BadRequest(view(formWithErrors, toString(businessType), href)))
           },
         value =>
           cacheConnector.save(request.externalId, BusinessNameId, value).map(cacheMap =>

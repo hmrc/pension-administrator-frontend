@@ -26,7 +26,7 @@ import models.register.BusinessType
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, Call, Result}
+import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
@@ -48,12 +48,14 @@ trait IsRegisteredNameController extends FrontendBaseController with I18nSupport
 
   def form: Form[Boolean]
 
+  protected def view: isRegisteredName
+
   def get[I <: TypedIdentifier[Boolean]](viewmodel: CommonFormViewModel,
                                          id: I = IsRegisteredNameId
                                        )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id).fold(form)(form.fill)
-    Future.successful(Ok(isRegisteredName(appConfig, preparedForm, viewmodel)))
+    Future.successful(Ok(view(preparedForm, viewmodel)))
 
   }
 
@@ -63,7 +65,7 @@ trait IsRegisteredNameController extends FrontendBaseController with I18nSupport
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(isRegisteredName(appConfig, formWithErrors, viewmodel))),
+        Future.successful(BadRequest(view(formWithErrors, viewmodel))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
           Future.successful(Redirect(navigator.nextPage(id, viewmodel.mode, UserAnswers(cacheMap))))
@@ -71,5 +73,5 @@ trait IsRegisteredNameController extends FrontendBaseController with I18nSupport
     )
   }
 
-  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").toLowerCase()
+  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").resolve(implicitly).toLowerCase()
 }
