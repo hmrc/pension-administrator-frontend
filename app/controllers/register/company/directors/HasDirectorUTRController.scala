@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -46,7 +46,7 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
                                          formProvider: HasReferenceNumberFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          val view: hasReferenceNumber
-                                         )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
+                                         )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController with I18nSupport {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -61,7 +61,7 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def form(directorName: String): Form[Boolean] =
+  private def form(directorName: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider("hasUTR.error.required", directorName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =

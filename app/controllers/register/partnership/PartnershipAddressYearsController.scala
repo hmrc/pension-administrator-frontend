@@ -28,7 +28,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Mode}
 import play.api.data.Form
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
@@ -48,7 +48,7 @@ class PartnershipAddressYearsController @Inject()(val appConfig: FrontendAppConf
                                                   formProvider: AddressYearsFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   val view: addressYears
-                                                 )(implicit val executionContext: ExecutionContext) extends AddressYearsController with Retrievals {
+                                                 )(implicit val executionContext: ExecutionContext) extends AddressYearsController with Retrievals with I18nSupport {
 
 
   private def viewModel(mode: Mode, partnershipName: String)
