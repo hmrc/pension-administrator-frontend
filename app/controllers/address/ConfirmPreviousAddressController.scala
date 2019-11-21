@@ -58,13 +58,14 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
   protected def get(
                      id: TypedIdentifier[Boolean],
                      viewModel: SameContactAddressViewModel
-                   )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+                   )(implicit request: DataRequest[AnyContent],
+                     messages: Messages): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id) match {
       case None => form(viewModel.psaName)(implicitly)
       case Some(value) => form(viewModel.psaName)(implicitly).fill(value)
     }
-    Future.successful(Ok(view(preparedForm, viewModel, countryOptions)(request, implicitly)))
+    Future.successful(Ok(view(preparedForm, viewModel, countryOptions)))
   }
 
   protected def post(
@@ -72,10 +73,11 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
                       contactId: TypedIdentifier[Address],
                       viewModel: SameContactAddressViewModel,
                       mode: Mode
-                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+                    )(implicit request: DataRequest[AnyContent],
+                      messages: Messages): Future[Result] = {
 
     form(viewModel.psaName)(implicitly).bindFromRequest().fold(
-      formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions)(request, implicitly))),
+      formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),
       { case true => dataCacheConnector.save(request.externalId, id, true).flatMap { _ =>
         dataCacheConnector.save(request.externalId, contactId, viewModel.address.toAddress).map {
           cacheMap =>

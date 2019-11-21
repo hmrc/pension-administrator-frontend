@@ -16,6 +16,8 @@
 
 package utils
 
+import java.util.concurrent.Callable
+
 import akka.actor.ActorSystem
 import akka.pattern.Patterns.after
 import com.google.inject.ImplementedBy

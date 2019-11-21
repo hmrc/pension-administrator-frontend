@@ -66,7 +66,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
         CompanyPhoneId.row(Some(Link(routes.CompanyPhoneController.onPageLoad(CheckMode).url)))
       ).flatten)
 
-      Ok(check_your_answers(
+      Ok(view(
         Seq(companyDetails),
         controllers.register.company.routes.CheckYourAnswersController.onSubmit(),
         None,

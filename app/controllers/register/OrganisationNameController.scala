@@ -52,7 +52,7 @@ trait OrganisationNameController extends FrontendBaseController with Retrievals 
     val filledForm =
       request.userAnswers.get(id).map(form.fill).getOrElse(form)
 
-    Future.successful(Ok(view(appConfig, filledForm, viewmodel)))
+    Future.successful(Ok(view(filledForm, viewmodel)))
   }
 
   protected def post(id: TypedIdentifier[String], viewmodel: OrganisationNameViewModel)
@@ -62,7 +62,7 @@ trait OrganisationNameController extends FrontendBaseController with Retrievals 
       case Left(futureResult) => futureResult
       case Right(f) => f.fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(appConfig, formWithErrors, viewmodel))),
+          Future.successful(BadRequest(view(formWithErrors, viewmodel))),
         companyName =>
           cacheConnector.save(request.externalId, id, companyName).map {
             answers =>

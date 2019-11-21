@@ -24,6 +24,7 @@ import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{AddressYears, Mode}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
@@ -45,12 +46,13 @@ trait AddressYearsController extends FrontendBaseController with Retrievals with
   protected def view: addressYears
 
   protected def get(id: TypedIdentifier[AddressYears], form: Form[AddressYears], viewmodel: AddressYearsViewModel, mode: Mode)
-                   (implicit request: DataRequest[AnyContent]): Future[Result] = {
+                   (implicit request: DataRequest[AnyContent],
+                    messages: Messages): Future[Result] = {
 
     val filledForm =
       request.userAnswers.get(id).map(form.fill).getOrElse(form)
 
-    Future.successful(Ok(view(filledForm, viewmodel, mode)(request, implicitly)))
+    Future.successful(Ok(view(filledForm, viewmodel, mode)))
   }
 
   protected def post(
@@ -58,10 +60,11 @@ trait AddressYearsController extends FrontendBaseController with Retrievals with
                       mode: Mode,
                       form: Form[AddressYears],
                       viewmodel: AddressYearsViewModel
-                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+                    )(implicit request: DataRequest[AnyContent],
+                      messages: Messages): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(view(formWithErrors, viewmodel, mode)(request, implicitly))),
+        Future.successful(BadRequest(view(formWithErrors, viewmodel, mode))),
       addressYears =>
         cacheConnector.save(request.externalId, id, addressYears).flatMap {
           answers =>

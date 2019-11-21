@@ -21,7 +21,7 @@ import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.register.RegistrationInfoId
 import models.{Address, RegistrationInfo, TolerantIndividual}
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -25,7 +25,7 @@ import identifiers.register.company.directors.DirectorNameId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -35,7 +35,6 @@ import views.html.personName
 import scala.concurrent.Future
 
 class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        @CompanyDirector val navigator: Navigator,
                                        override val allowAccess: AllowAccessActionProvider,
@@ -44,7 +43,7 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        val view: personName
-                                      ) extends PersonNameController with Retrievals {
+                                      )(implicit messages: Messages) extends PersonNameController with Retrievals {
 
   private[directors] def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

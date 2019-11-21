@@ -24,6 +24,7 @@ import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Mode, PersonName}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
@@ -49,14 +50,15 @@ trait PersonNameController extends FrontendBaseController with Variations {
   def get[I <: TypedIdentifier[PersonName]](
                                              id: I, viewModel: CommonFormWithHintViewModel,
                                              mode: Mode
-                                              )(implicit request: DataRequest[AnyContent]): Result = {
+                                              )(implicit request: DataRequest[AnyContent],
+                                                messages: Messages): Result = {
 
     val preparedForm = request.userAnswers.get(id) match {
       case None => form
       case Some(value) => form.fill(value)
     }
 
-    Ok(view(preparedForm, viewModel, mode)(request, implicitly))
+    Ok(view(preparedForm, viewModel, mode))
 
   }
 
@@ -64,11 +66,12 @@ trait PersonNameController extends FrontendBaseController with Variations {
                                                  id: I,
                                                  viewModel: CommonFormWithHintViewModel,
                                                  mode: Mode
-                                               )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+                                               )(implicit request: DataRequest[AnyContent],
+                                                 messages: Messages): Future[Result] = {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(view(formWithErrors, viewModel, mode)(request, implicitly))),
+        Future.successful(BadRequest(view(formWithErrors, viewModel, mode))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
           setNewFlag(id, mode, UserAnswers(cacheMap)).map { updatedUserAnswers =>

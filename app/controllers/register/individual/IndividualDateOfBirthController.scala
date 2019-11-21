@@ -26,7 +26,6 @@ import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBir
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import org.joda.time.LocalDate
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -50,7 +49,8 @@ class IndividualDateOfBirthController @Inject()(
                                                  registrationService: RegistrationService,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  val view: individualDateOfBirth
-                                               )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                                 )(implicit val executionContext: ExecutionContext
+                                                ) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form = formProvider()
 
@@ -72,7 +72,7 @@ class IndividualDateOfBirthController @Inject()(
           (AreYouInUKId and IndividualDetailsId and IndividualAddressId).retrieve.right.map {
             case false ~ individual ~ address =>
               registrationService.registerWithNoIdIndividual(request.externalId, individual, address.toAddress,
-                new LocalDate(value.getYear, value.getMonthValue, value.getDayOfMonth)).flatMap { _ =>
+                value).flatMap { _ =>
                 saveAndRedirect(mode, value)
               }
             case true ~ _ ~ _ =>

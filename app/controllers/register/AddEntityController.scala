@@ -24,6 +24,7 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.libs.json.JsResultException
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -45,9 +46,10 @@ trait AddEntityController extends FrontendBaseController with Retrievals {
   protected def view: addEntity
 
   protected def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
-                   (implicit request: DataRequest[AnyContent]): Future[Result] = {
+                   (implicit request: DataRequest[AnyContent],
+                    messages: Messages): Future[Result] = {
 
-    Future.successful(Ok(view(form, viewmodel, mode)(request, implicitly)))
+    Future.successful(Ok(view(form, viewmodel, mode)))
   }
 
   protected def post(
@@ -55,7 +57,8 @@ trait AddEntityController extends FrontendBaseController with Retrievals {
                       form: Form[Boolean],
                       viewmodel: EntityViewModel,
                       mode: Mode
-                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+                    )(implicit request: DataRequest[AnyContent],
+                      messages: Messages): Future[Result] = {
 
     if (viewmodel.entities.isEmpty || viewmodel.entities.lengthCompare(viewmodel.maxLimit) >= 0) {
       Future.successful(Redirect(navigator.nextPage(id, mode, request.userAnswers)))
@@ -63,7 +66,7 @@ trait AddEntityController extends FrontendBaseController with Retrievals {
     else {
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, viewmodel, mode)(request, implicitly))),
+          Future.successful(BadRequest(view(formWithErrors, viewmodel, mode))),
         value => {
           request.userAnswers.set(id)(value).fold(
             errors => {

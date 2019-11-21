@@ -39,7 +39,7 @@ import controllers.actions._
 import forms.register.AnyMoreChangesFormProvider
 import identifiers.register.AnyMoreChangesId
 import javax.inject.Inject
-import models.{Mode, NormalMode, UpdateMode}
+import models.{Mode, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -68,14 +68,14 @@ class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(Ok(anyMoreChanges(form, psaName())))
+      Future.successful(Ok(view(form, psaName())))
   }
 
   def onSubmit(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(anyMoreChanges(formWithErrors, psaName()))),
+          Future.successful(BadRequest(view(formWithErrors, psaName()))),
         value =>
           dataCacheConnector.save(request.externalId, AnyMoreChangesId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AnyMoreChangesId, UpdateMode, UserAnswers(cacheMap))))

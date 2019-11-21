@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
-import forms.ConfirmDeleteAdviserFormProvider
+import forms.register.adviser.ConfirmDeleteAdviserFormProvider
 import identifiers.register.adviser._
 import javax.inject.Inject
 import models.Mode
