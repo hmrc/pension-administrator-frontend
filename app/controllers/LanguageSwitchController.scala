@@ -19,7 +19,7 @@ package controllers
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import play.api.Configuration
-import play.api.i18n.{I18nSupport, Lang, MessagesApi}
+import play.api.i18n.{I18nSupport, Lang}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
@@ -27,7 +27,6 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 class LanguageSwitchController @Inject()(
                                           configuration: Configuration,
                                           appConfig: FrontendAppConfig,
-                                          override implicit val messagesApi: MessagesApi,
                                           val controllerComponents: MessagesControllerComponents
                                         ) extends FrontendBaseController with I18nSupport {
 

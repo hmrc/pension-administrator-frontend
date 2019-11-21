@@ -27,36 +27,37 @@ import identifiers.register.partnership.PartnershipTradingOverAYearId
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.hasReferenceNumber
 
 import scala.concurrent.ExecutionContext
 
 class PartnershipTradingOverAYearController @Inject()(override val appConfig: FrontendAppConfig,
-                                                    override val messagesApi: MessagesApi,
                                                     override val dataCacheConnector: UserAnswersCacheConnector,
                                                     @Partnership override val navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
-                                                    formProvider: HasReferenceNumberFormProvider
+                                                    formProvider: HasReferenceNumberFormProvider,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: hasReferenceNumber
                                                    )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = PartnershipTradingOverAYearController.onSubmit(mode),
-      title = Message("trading.title", Message("thePartnership").resolve),
+      title = Message("trading.title", Message("thePartnership")),
       heading = Message("trading.title", companyName),
       mode = mode,
       hint = None,
       entityName = companyName
     )
 
-  private def form(companyName: String): Form[Boolean] = formProvider("trading.error.required", companyName)
+  private def form(companyName: String): Form[Boolean] = formProvider("trading.error.required", companyName)(implicitly)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

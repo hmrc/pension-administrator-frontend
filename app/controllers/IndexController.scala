@@ -20,20 +20,21 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.index
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(val appConfig: FrontendAppConfig,
-                                val messagesApi: MessagesApi,
                                 authenticate: AuthAction,
-                                dataCacheConnector: UserAnswersCacheConnector
+                                dataCacheConnector: UserAnswersCacheConnector,
+                                val controllerComponents: MessagesControllerComponents,
+                                val view: index
                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
-      Future.successful(Ok(index(appConfig)))
+      Future.successful(Ok(view()))
   }
 }

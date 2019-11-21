@@ -24,7 +24,7 @@ import identifiers.register.partnership.PartnershipReviewId
 import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.Partnership
@@ -38,14 +38,16 @@ class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
                                             authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction
+                                            requireData: DataRequiredAction,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: partnershipReview
                                            )(implicit val ec: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
         val partners = request.userAnswers.allPartnersAfterDelete(mode).map(_.name)
-        Future.successful(Ok(partnershipReview(appConfig, name, partners)))
+        Future.successful(Ok(view(name, partners)))
       }
   }
 
