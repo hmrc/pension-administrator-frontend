@@ -27,12 +27,14 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{EntityViewModel, Message, Person}
 import views.html.register.addEntity
+
+import scala.concurrent.ExecutionContext
 
 class AddPartnerController @Inject()(
                                       override val appConfig: FrontendAppConfig,
@@ -46,7 +48,7 @@ class AddPartnerController @Inject()(
                                       formProvider: AddEntityFormProvider,
                                       val controllerComponents: MessagesControllerComponents,
                                       val view: addEntity
-                                    ) extends AddEntityController with Retrievals {
+                                    )(implicit ec:ExecutionContext, messages: Messages) extends AddEntityController with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 

@@ -22,6 +22,7 @@ import controllers.actions._
 import identifiers.register.partnership.partners.PartnerNameId
 import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Enumerable
@@ -38,7 +39,7 @@ class AlreadyDeletedController @Inject()(
                                           requireData: DataRequiredAction,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: alreadyDeleted
-                                        ) extends FrontendBaseController with Retrievals with Enumerable.Implicits {
+                                        )(implicit messages: Messages) extends FrontendBaseController with Retrievals with Enumerable.Implicits {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -49,7 +50,7 @@ class AlreadyDeletedController @Inject()(
       )
 
       PartnerNameId(index).retrieve.right.map { partnerDetails =>
-        Future.successful(Ok(view(viewmodel(partnerDetails.fullName))(request, implicitly)))
+        Future.successful(Ok(view(viewmodel(partnerDetails.fullName))))
       }
 
   }

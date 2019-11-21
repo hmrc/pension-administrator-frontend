@@ -27,6 +27,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
@@ -45,10 +46,10 @@ class PartnerAddressYearsController @Inject()(
                                                formProvider: AddressYearsFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: addressYears
-                                             ) extends AddressYearsController with Retrievals {
+                                             )(implicit messages: Messages) extends AddressYearsController with Retrievals {
 
 
-  private def form(partnerName: String): Form[AddressYears] = formProvider(partnerName)(implicitly)
+  private def form(partnerName: String): Form[AddressYears] = formProvider(partnerName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

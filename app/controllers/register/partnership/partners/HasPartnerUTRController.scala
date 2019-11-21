@@ -27,6 +27,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
@@ -45,7 +46,7 @@ class HasPartnerUTRController @Inject()(override val appConfig: FrontendAppConfi
                                         formProvider: HasReferenceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         val view: hasReferenceNumber
-                                       )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                       )(implicit val ec: ExecutionContext, messages: Messages) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -61,7 +62,7 @@ class HasPartnerUTRController @Inject()(override val appConfig: FrontendAppConfi
     request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
   private def form(partnerName: String): Form[Boolean] =
-    formProvider("hasUTR.error.required", partnerName)(implicitly)
+    formProvider("hasUTR.error.required", partnerName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

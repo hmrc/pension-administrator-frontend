@@ -26,6 +26,7 @@ import identifiers.register.{BusinessNameId, EnterPAYEId}
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
@@ -44,9 +45,9 @@ class PartnershipEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
                                                formProvider: EnterPAYEFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: enterPAYE
-                                          )(implicit val ec: ExecutionContext) extends EnterPAYEController {
+                                          )(implicit val ec: ExecutionContext, messages: Messages) extends EnterPAYEController {
 
-  protected def form(partnershipName: String): Form[String] = formProvider(partnershipName)(implicitly)
+  protected def form(partnershipName: String): Form[String] = formProvider(partnershipName)
 
   private def viewModel(mode: Mode, partnershipName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(

@@ -26,6 +26,7 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
@@ -44,7 +45,7 @@ class HasPartnershipVATController @Inject()(override val appConfig: FrontendAppC
                                             formProvider: HasReferenceNumberFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             val view: hasReferenceNumber
-                                       )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                       )(implicit val ec: ExecutionContext, messages: Messages) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -60,7 +61,7 @@ class HasPartnershipVATController @Inject()(override val appConfig: FrontendAppC
     request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership"))
 
   private def form(partnershipName: String): Form[Boolean] =
-    formProvider("hasVAT.error.required", partnershipName)(implicitly)
+    formProvider("hasVAT.error.required", partnershipName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

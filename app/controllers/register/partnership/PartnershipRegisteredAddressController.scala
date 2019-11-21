@@ -38,6 +38,8 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
+import scala.concurrent.ExecutionContext
+
 class PartnershipRegisteredAddressController @Inject()(
                                                         override val appConfig: FrontendAppConfig,
                                                         override val dataCacheConnector: UserAnswersCacheConnector,
@@ -51,7 +53,8 @@ class PartnershipRegisteredAddressController @Inject()(
                                                         val countryOptions: CountryOptions,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         val view: nonukAddress
-                                                  ) extends NonUKAddressController with Retrievals {
+                                                        )(implicit val executionContext: ExecutionContext
+                                                        ) extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
 
@@ -59,7 +62,7 @@ class PartnershipRegisteredAddressController @Inject()(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
     view(preparedForm, viewModel)(request, messages)
 
-  private def addressViewModel(partnershipName: String) = ManualAddressViewModel(
+  private def addressViewModel(partnershipName: String)(implicit messages: Messages) = ManualAddressViewModel(
     routes.PartnershipRegisteredAddressController.onSubmit(),
     countryOptions.options,
     Message("partnershipRegisteredNonUKAddress.title"),

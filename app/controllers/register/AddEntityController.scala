@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait AddEntityController extends FrontendBaseController with Retrievals {
 
-  implicit val ec: ExecutionContext
+  implicit protected def ec: ExecutionContext
   protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
