@@ -17,7 +17,11 @@
 @import config.FrontendAppConfig
 @import viewmodels.Message
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@this(
+main_template: main_template
+)
+
+@()(implicit request: Request[_], messages: Messages)
 
 @continueTpss() = {<a id="continueTpssLink" href="@appConfig.tpssUrl">@messages("pensionSchemePractitioner.link")</a>}
 

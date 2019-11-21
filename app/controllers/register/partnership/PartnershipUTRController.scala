@@ -25,20 +25,22 @@ import identifiers.register.{BusinessTypeId, BusinessUTRId}
 import javax.inject.Inject
 import models.NormalMode
 import models.register.BusinessType
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.Message
+import views.html.register.utr
 
 class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
                                          override val cacheConnector: UserAnswersCacheConnector,
                                          @Partnership override val navigator: Navigator,
                                          authenticate: AuthAction,
                                          override val allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction
+                                         requireData: DataRequiredAction,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: utr
                                     ) extends UTRController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -56,7 +58,7 @@ class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConf
             }
   }
 
-  def href: Call = routes.PartnershipUTRController.onSubmit
-  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").toLowerCase()
+  def href: Call = routes.PartnershipUTRController.onSubmit()
+  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").resolve(implicitly).toLowerCase()
 
 }

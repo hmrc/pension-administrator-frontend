@@ -26,27 +26,31 @@ import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
+import views.html.address.sameContactAddress
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class PartnershipSameContactAddressController @Inject()(
                                                          @Partnership val navigator: Navigator,
                                                          val appConfig: FrontendAppConfig,
-                                                         val messagesApi: MessagesApi,
                                                          val dataCacheConnector: UserAnswersCacheConnector,
                                                          authenticate: AuthAction,
                                                          allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
                                                          formProvider: SameContactAddressFormProvider,
-                                                         val countryOptions: CountryOptions
-                                                       ) extends SameContactAddressController {
+                                                         val countryOptions: CountryOptions,
+                                                         val controllerComponents: MessagesControllerComponents,
+                                                         val view: sameContactAddress
+                                                         )(implicit val executionContext: ExecutionContext
+                                                         ) extends SameContactAddressController {
 
   val form: Form[Boolean] = formProvider()
 

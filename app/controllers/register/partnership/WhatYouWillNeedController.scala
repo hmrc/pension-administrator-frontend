@@ -21,8 +21,8 @@ import controllers.actions._
 import identifiers.register.partnership.WhatYouWillNeedId
 import javax.inject.Inject
 import models.{Mode, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.Partnership
@@ -31,17 +31,18 @@ import views.html.register.partnership.whatYouWillNeed
 import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           @Partnership navigator: Navigator,
                                           authenticate: AuthAction,
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction
+                                          requireData: DataRequiredAction,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: whatYouWillNeed
                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
     implicit request =>
-      Ok(whatYouWillNeed(appConfig))
+      Ok(view())
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
