@@ -28,8 +28,8 @@ import identifiers.register.partnership.PartnershipRegisteredAddressId
 import javax.inject.Inject
 import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.i18n.Messages
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
 import utils.Navigator
 import utils.annotations.Partnership
@@ -40,7 +40,6 @@ import views.html.address.nonukAddress
 
 class PartnershipRegisteredAddressController @Inject()(
                                                         override val appConfig: FrontendAppConfig,
-                                                        override val messagesApi: MessagesApi,
                                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                                         override val registrationConnector: RegistrationConnector,
                                                         @Partnership override val navigator: Navigator,
@@ -49,14 +48,16 @@ class PartnershipRegisteredAddressController @Inject()(
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,
                                                         formProvider: NonUKAddressFormProvider,
-                                                        val countryOptions: CountryOptions
+                                                        val countryOptions: CountryOptions,
+                                                        val controllerComponents: MessagesControllerComponents,
+                                                        val view: nonukAddress
                                                   ) extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
 
   protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
-    nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
+    view(preparedForm, viewModel)(request, messages)
 
   private def addressViewModel(partnershipName: String) = ManualAddressViewModel(
     routes.PartnershipRegisteredAddressController.onSubmit(),
