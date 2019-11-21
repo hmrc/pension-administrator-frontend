@@ -63,7 +63,7 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
   private def form(companyName: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider("hasNINO.error.required", companyName)
 
-  def onPageLoad(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Action[AnyContent] =
+  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
