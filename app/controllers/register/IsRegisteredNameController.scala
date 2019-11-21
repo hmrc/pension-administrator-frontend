@@ -26,7 +26,7 @@ import models.register.BusinessType
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, Call, Result}
+import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
@@ -73,5 +73,5 @@ trait IsRegisteredNameController extends FrontendBaseController with I18nSupport
     )
   }
 
-  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").resolve.toLowerCase
+  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").resolve(implicitly).toLowerCase()
 }

@@ -22,7 +22,6 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.JsNull
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}

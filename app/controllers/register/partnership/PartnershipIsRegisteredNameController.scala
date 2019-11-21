@@ -26,21 +26,23 @@ import forms.register.IsRegisteredNameFormProvider
 import identifiers.register.BusinessNameId
 import models.NormalMode
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.{CommonFormViewModel, Message}
+import views.html.register.isRegisteredName
 
 class PartnershipIsRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
-                                                      override val messagesApi: MessagesApi,
                                                       override val cacheConnector: UserAnswersCacheConnector,
                                                       @Partnership override val navigator: Navigator,
                                                       authenticate: AuthAction,
                                                       override val allowAccess: AllowAccessActionProvider,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
-                                                      formProvider: IsRegisteredNameFormProvider) extends IsRegisteredNameController with Retrievals {
+                                                      formProvider: IsRegisteredNameFormProvider,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      val view: isRegisteredName
+                                                     ) extends IsRegisteredNameController with Retrievals {
 
   val form: Form[Boolean] = formProvider("isRegisteredName.partnership.error")
 
@@ -60,7 +62,7 @@ class PartnershipIsRegisteredNameController @Inject()(override val appConfig: Fr
       name =>
         CommonFormViewModel(
           NormalMode,
-          routes.PartnershipIsRegisteredNameController.onSubmit,
+          routes.PartnershipIsRegisteredNameController.onSubmit(),
           Message("isRegisteredName.partnership.title", name),
           Message("isRegisteredName.partnership.heading", name)
         )

@@ -22,9 +22,9 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import javax.inject.Inject
-import models.{Address, Mode}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import models.Mode
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import views.html.register.outsideEuEea
@@ -32,12 +32,13 @@ import views.html.register.outsideEuEea
 import scala.concurrent.Future
 
 class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
-                                       countryOptions: CountryOptions
+                                       countryOptions: CountryOptions,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       val view: outsideEuEea
                                       ) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -45,7 +46,7 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
 
       (BusinessNameId and PartnershipRegisteredAddressId).retrieve.right.map {
         case name ~ address =>
-          Future.successful(Ok(outsideEuEea(appConfig, name, countryOptions.getCountryNameFromCode(address.toAddress), "partnerships")))
+          Future.successful(Ok(view(name, countryOptions.getCountryNameFromCode(address.toAddress), "partnerships")))
         }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }
