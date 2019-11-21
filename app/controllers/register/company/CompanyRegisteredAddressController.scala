@@ -28,7 +28,7 @@ import identifiers.register.company.CompanyAddressId
 import javax.inject.Inject
 import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
 import utils.Navigator
@@ -38,9 +38,10 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
+import scala.concurrent.ExecutionContext
+
 class CompanyRegisteredAddressController @Inject()(
                                                     override val appConfig: FrontendAppConfig,
-                                                    override val messagesApi: MessagesApi,
                                                     override val dataCacheConnector: UserAnswersCacheConnector,
                                                     override val registrationConnector: RegistrationConnector,
                                                     @RegisterCompany override val navigator: Navigator,
@@ -52,13 +53,14 @@ class CompanyRegisteredAddressController @Inject()(
                                                     val countryOptions: CountryOptions,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: nonukAddress
-                                                  ) extends NonUKAddressController with Retrievals {
+                                                  )(implicit val executionContext: ExecutionContext,
+                                                    messages: Messages) extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
 
   protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
-    nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
+    view(preparedForm, viewModel)(request, messages)
 
   private def addressViewModel(companyName: String) = ManualAddressViewModel(
     routes.CompanyRegisteredAddressController.onSubmit(),

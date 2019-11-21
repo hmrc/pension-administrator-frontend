@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -37,7 +37,6 @@ import scala.concurrent.ExecutionContext
 
 class DirectorNoNINOReasonController @Inject()(@CompanyDirector val navigator: Navigator,
                                                val appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
                                                val dataCacheConnector: UserAnswersCacheConnector,
                                                authenticate: AuthAction,
                                                val allowAccess: AllowAccessActionProvider,
@@ -46,7 +45,8 @@ class DirectorNoNINOReasonController @Inject()(@CompanyDirector val navigator: N
                                                formProvider: ReasonFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: reason
-                                              )(implicit val ec: ExecutionContext) extends ReasonController {
+                                              )(implicit val executionContext: ExecutionContext,
+                                                messages: Messages) extends ReasonController {
 
   private def form(directorName: String): Form[String] = formProvider(directorName)
 
@@ -69,7 +69,7 @@ class DirectorNoNINOReasonController @Inject()(@CompanyDirector val navigator: N
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorNoNINOReasonController.onSubmit(mode, index),
-      title = Message("whyNoNINO.heading", Message("theDirector").resolve),
+      title = Message("whyNoNINO.heading", Message("theDirector")),
       heading = Message("whyNoNINO.heading", directorName),
       mode = mode,
       entityName = directorName

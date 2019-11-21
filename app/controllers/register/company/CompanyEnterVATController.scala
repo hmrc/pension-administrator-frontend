@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -36,7 +36,6 @@ import views.html.enterVAT
 import scala.concurrent.ExecutionContext
 
 class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           val cacheConnector: UserAnswersCacheConnector,
                                           @RegisterCompany val navigator: Navigator,
                                           authenticate: AuthAction,
@@ -46,21 +45,22 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
                                           formProvider: EnterVATFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: enterVAT
-                                         )(implicit val executionContext: ExecutionContext) extends VATNumberController {
+                                         )(implicit val ec: ExecutionContext,
+                                           messages: Messages) extends VATNumberController {
 
   private def form(companyName: String): Form[String] = formProvider(companyName)
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyEnterVATController.onSubmit(mode),
-      title = Message("enterVAT.title", Message("theCompany").resolve),
+      title = Message("enterVAT.title", Message("theCompany")),
       heading = Message("enterVAT.heading", entityName),
       mode = mode,
       entityName = entityName
     )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

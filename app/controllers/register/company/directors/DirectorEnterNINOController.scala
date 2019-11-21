@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -35,7 +35,6 @@ import views.html.enterNINO
 
 class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navigator,
                                             val appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
                                             val cacheConnector: UserAnswersCacheConnector,
                                             authenticate: AuthAction,
                                             val allowAccess: AllowAccessActionProvider,
@@ -44,7 +43,7 @@ class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navi
                                             formProvider: NINOFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             val view: enterNINO
-                                           ) extends NINOController {
+                                           )(implicit messages: Messages) extends NINOController {
 
   private def form(directorName: String): Form[ReferenceValue] = formProvider(directorName)
 

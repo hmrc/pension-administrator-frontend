@@ -21,6 +21,7 @@ import controllers.actions._
 import identifiers.register.individual.WhatYouWillNeedId
 import javax.inject.Inject
 import models.{Mode, NormalMode}
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
@@ -37,11 +38,11 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           requireData: DataRequiredAction,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: whatYouWillNeed
-                                         )(implicit val ec: ExecutionContext) extends FrontendBaseController {
+                                         )(implicit val ec: ExecutionContext, messages: Messages) extends FrontendBaseController {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
     implicit request =>
-      Ok(view()(request, implicitly))
+      Ok(view())
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {

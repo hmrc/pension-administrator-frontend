@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -36,7 +36,6 @@ import views.html.enterUTR
 
 class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navigator,
                                            val appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
                                            val cacheConnector: UserAnswersCacheConnector,
                                            authenticate: AuthAction,
                                            val allowAccess: AllowAccessActionProvider,
@@ -45,7 +44,7 @@ class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navig
                                            formProvider: EnterUTRFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            val view: enterUTR
-                                          ) extends EnterUTRController {
+                                          )(implicit messages: Messages) extends EnterUTRController {
 
   private def form(directorName: String): Form[ReferenceValue] = formProvider(directorName)
 

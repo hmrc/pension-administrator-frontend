@@ -27,7 +27,7 @@ import identifiers.register.company.CompanyTradingOverAYearId
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -37,7 +37,6 @@ import views.html.hasReferenceNumber
 import scala.concurrent.ExecutionContext
 
 class CompanyTradingOverAYearController @Inject()(override val appConfig: FrontendAppConfig,
-                                                  override val messagesApi: MessagesApi,
                                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                                   @RegisterCompany override val navigator: Navigator,
                                                   authenticate: AuthAction,
@@ -47,12 +46,13 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
                                                   formProvider: HasReferenceNumberFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   val view: hasReferenceNumber
-                                                 )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                                 )(implicit val ec: ExecutionContext,
+                                                   messages: Messages) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = CompanyTradingOverAYearController.onSubmit(mode),
-      title = Message("trading.title", Message("theCompany").resolve),
+      title = Message("trading.title", Message("theCompany")),
       heading = Message("trading.title", companyName),
       mode = mode,
       hint = None,

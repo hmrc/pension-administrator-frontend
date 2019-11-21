@@ -24,7 +24,7 @@ import identifiers.register.individual.IndividualDetailsId
 import javax.inject.Inject
 import models.{Mode, TolerantIndividual}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
@@ -36,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualNameController @Inject()(
                                           val appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           val dataCacheConnector: UserAnswersCacheConnector,
                                           @Individual val navigator: Navigator,
                                           authenticate: AuthAction,
@@ -46,7 +45,8 @@ class IndividualNameController @Inject()(
                                           formProvider : IndividualNameFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: individualName
-                                        )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                          )(implicit val executionContext: ExecutionContext, messages: Messages
+                                          ) extends FrontendBaseController {
 
 
   val form : Form[TolerantIndividual] =  formProvider()

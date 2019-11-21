@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -37,7 +37,6 @@ import views.html.hasReferenceNumber
 import scala.concurrent.ExecutionContext
 
 class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                         @RegisterCompany override val navigator: Navigator,
                                         authenticate: AuthAction,
@@ -47,12 +46,13 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
                                         formProvider: HasReferenceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         val view: hasReferenceNumber
-                                       )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                       )(implicit val ec: ExecutionContext,
+                                         messages: Messages) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = HasCompanyVATController.onSubmit(mode),
-      title = Message("hasVAT.heading", Message("theCompany").resolve),
+      title = Message("hasVAT.heading", Message("theCompany")),
       heading = Message("hasVAT.heading", entityName),
       mode = mode,
       hint = None,
@@ -60,7 +60,7 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
     )
 
   private def companyName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   private def form(companyName: String): Form[Boolean] =
     formProvider("hasVAT.error.required", companyName)

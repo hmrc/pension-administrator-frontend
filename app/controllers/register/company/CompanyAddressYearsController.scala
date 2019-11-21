@@ -28,7 +28,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Mode}
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -39,7 +39,6 @@ import views.html.address.addressYears
 class CompanyAddressYearsController @Inject()(
                                                @RegisterCompany override val navigator: Navigator,
                                                override val appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
                                                override val cacheConnector: UserAnswersCacheConnector,
                                                override val allowAccess: AllowAccessActionProvider,
                                                authenticate: AuthAction,
@@ -47,8 +46,8 @@ class CompanyAddressYearsController @Inject()(
                                                requireData: DataRequiredAction,
                                                formProvider: AddressYearsFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
-                                               view: addressYears
-                                             ) extends AddressYearsController with Retrievals {
+                                               val view: addressYears
+                                             )(implicit messages: Messages) extends AddressYearsController with Retrievals {
 
   private def form(companyName: String): Form[AddressYears] = formProvider(companyName)
 

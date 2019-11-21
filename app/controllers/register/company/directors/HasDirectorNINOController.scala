@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -36,7 +36,6 @@ import views.html.hasReferenceNumber
 import scala.concurrent.ExecutionContext
 
 class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           override val dataCacheConnector: UserAnswersCacheConnector,
                                           @CompanyDirector override val navigator: Navigator,
                                           authenticate: AuthAction,
@@ -46,12 +45,13 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
                                           formProvider: HasReferenceNumberFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: hasReferenceNumber
-                                         )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
+                                         )(implicit val ec: ExecutionContext,
+                                           messages: Messages) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.HasDirectorNINOController.onSubmit(mode, index),
-      title = Message("hasNINO.heading", Message("theDirector").resolve),
+      title = Message("hasNINO.heading", Message("theDirector")),
       heading = Message("hasNINO.heading", entityName),
       mode = mode,
       hint = None,

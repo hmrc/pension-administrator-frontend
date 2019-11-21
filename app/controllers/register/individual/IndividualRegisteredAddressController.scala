@@ -27,13 +27,13 @@ import javax.inject.Inject
 import models.InternationalRegion.RestOfTheWorld
 import models._
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.{Navigator, UserAnswers}
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
+import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
@@ -42,7 +42,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualRegisteredAddressController @Inject()(
                                                        val appConfig: FrontendAppConfig,
-                                                       override val messagesApi: MessagesApi,
                                                        val dataCacheConnector: UserAnswersCacheConnector,
                                                        @Individual val navigator: Navigator,
                                                        authenticate: AuthAction,
@@ -53,7 +52,7 @@ class IndividualRegisteredAddressController @Inject()(
                                                        val countryOptions: CountryOptions,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        val view: nonukAddress
-                                                     )(implicit val ec: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
+                                                     )(implicit val ec: ExecutionContext, messages: Messages) extends FrontendBaseController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
 

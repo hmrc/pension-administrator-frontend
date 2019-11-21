@@ -26,7 +26,7 @@ import identifiers.register.company.CompanyRegistrationNumberId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -36,7 +36,6 @@ import views.html.register.company.enterNumber
 import scala.concurrent.ExecutionContext
 
 class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppConfig,
-                                                    override val messagesApi: MessagesApi,
                                                     val cacheConnector: UserAnswersCacheConnector,
                                                     @RegisterCompany val navigator: Navigator,
                                                     authenticate: AuthAction,
@@ -46,14 +45,15 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
                                                     formProvider: CompanyRegistrationNumberFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: enterNumber
-                                                   )(implicit val ec: ExecutionContext) extends EnterNumberController {
+                                                   )(implicit val ec: ExecutionContext,
+                                                     messages: Messages) extends EnterNumberController {
 
   private val form = formProvider()
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyRegistrationNumberController.onSubmit(mode),
-      title = Message("companyRegistrationNumber.heading", Message("theCompany").resolve),
+      title = Message("companyRegistrationNumber.heading", Message("theCompany")),
       heading = Message("companyRegistrationNumber.heading", entityName),
       hint = Some(Message("companyRegistrationNumber.hint")),
       mode = mode,
@@ -61,7 +61,7 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
     )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

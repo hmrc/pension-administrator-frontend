@@ -19,12 +19,13 @@ package controllers.register.individual
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
+import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
 import javax.inject.Inject
 import models.{AddressYears, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
@@ -35,7 +36,6 @@ import views.html.address.addressYears
 class IndividualAddressYearsController @Inject()(
                                                   @Individual override val navigator: Navigator,
                                                   override val appConfig: FrontendAppConfig,
-                                                  override val messagesApi: MessagesApi,
                                                   override val cacheConnector: UserAnswersCacheConnector,
                                                   authenticate: AuthAction,
                                                   override val allowAccess: AllowAccessActionProvider,
@@ -43,8 +43,8 @@ class IndividualAddressYearsController @Inject()(
                                                   requireData: DataRequiredAction,
                                                   formProvider: AddressYearsFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  view: addressYears
-                                                ) extends controllers.address.AddressYearsController {
+                                                  val view: addressYears
+                                                )(implicit val messages: Messages) extends AddressYearsController {
 
   private def viewmodel(mode: Mode): Retrieval[AddressYearsViewModel] =
     Retrieval(

@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -37,7 +37,6 @@ import views.html.hasReferenceNumber
 import scala.concurrent.ExecutionContext
 
 class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
                                          override val dataCacheConnector: UserAnswersCacheConnector,
                                          @CompanyDirector override val navigator: Navigator,
                                          authenticate: AuthAction,
@@ -47,12 +46,13 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
                                          formProvider: HasReferenceNumberFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          val view: hasReferenceNumber
-                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
+                                         )(implicit val ec: ExecutionContext, messages: Messages
+                                         ) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = HasDirectorUTRController.onSubmit(mode, index),
-      title = Message("hasUTR.heading", Message("theDirector").resolve),
+      title = Message("hasUTR.heading", Message("theDirector")),
       heading = Message("hasUTR.heading", entityName),
       mode = mode,
       hint = Some(Message("utr.p1")),

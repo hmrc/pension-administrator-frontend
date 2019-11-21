@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -36,7 +36,6 @@ import views.html.hasReferenceNumber
 import scala.concurrent.ExecutionContext
 
 class HasCompanyPAYEController @Inject()(override val appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
                                          override val dataCacheConnector: UserAnswersCacheConnector,
                                          @RegisterCompany override val navigator: Navigator,
                                          authenticate: AuthAction,
@@ -46,12 +45,13 @@ class HasCompanyPAYEController @Inject()(override val appConfig: FrontendAppConf
                                          formProvider: HasReferenceNumberFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          val view: hasReferenceNumber
-                                        )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                        )(implicit val ec: ExecutionContext,
+                                          messages: Messages) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.HasCompanyPAYEController.onSubmit(mode),
-      title = Message("hasPAYE.heading", Message("theCompany").resolve),
+      title = Message("hasPAYE.heading", Message("theCompany")),
       heading = Message("hasPAYE.heading", companyName),
       mode = mode,
       hint = Some(Message("hasPAYE.hint")),
@@ -61,7 +61,7 @@ class HasCompanyPAYEController @Inject()(override val appConfig: FrontendAppConf
   private def form(companyName: String): Form[Boolean] = formProvider("hasPAYE.error.required", companyName)
 
   private def companyName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

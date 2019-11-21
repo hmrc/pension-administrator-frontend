@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -47,7 +47,8 @@ class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Na
                                               formProvider: ReasonFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               val view: reason
-                                             )(implicit val executionContext: ExecutionContext) extends ReasonController {
+                                             )(implicit val executionContext: ExecutionContext,
+                                               messages: Messages) extends ReasonController {
 
   private def form(directorName: String): Form[String] = formProvider(directorName)
 
@@ -70,7 +71,7 @@ class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Na
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = DirectorNoUTRReasonController.onSubmit(mode, index),
-      title = Message("whyNoUTR.heading", Message("theDirector").resolve),
+      title = Message("whyNoUTR.heading", Message("theDirector")),
       heading = Message("whyNoUTR.heading", directorName),
       mode = mode,
       entityName = directorName
