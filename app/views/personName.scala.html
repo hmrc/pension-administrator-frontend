@@ -30,7 +30,7 @@ formHelper: FormWithCSRF
 @main_template(
     title = messages(viewModel.title)) {
 
-    @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
         @components.back_link()
 

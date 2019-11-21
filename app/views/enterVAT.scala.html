@@ -34,7 +34,7 @@
     title = viewModel.title
 ) {
 
-    @Helper(action = viewModel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
         @components.back_link()
 

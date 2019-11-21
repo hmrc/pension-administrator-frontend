@@ -32,9 +32,8 @@ import viewmodels._
 
 //scalastyle:off number.of.methods
 class ViewPsaDetailsHelper(userAnswers: UserAnswers,
-                           countryOptions: CountryOptions,
-                           override val messagesApi: MessagesApi
-                          )(implicit messages: Messages) extends I18nSupport {
+                           countryOptions: CountryOptions
+                          )(implicit messages: Messages) {
 
   private val individualDetailsSection = SuperSection(
     None,

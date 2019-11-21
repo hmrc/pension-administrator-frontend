@@ -25,7 +25,9 @@ import forms.EnterUTRFormProvider
 import identifiers.register.partnership.partners.{PartnerEnterUTRId, PartnerNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{Index, Mode, ReferenceValue}
+import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
@@ -44,9 +46,9 @@ class PartnerEnterUTRController @Inject()(@PartnershipPartner val navigator: Nav
                                           formProvider: EnterUTRFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: enterUTR
-                                         )(implicit val executionContext: ExecutionContext) extends EnterUTRController {
+                                         )(implicit val executionContext: ExecutionContext, messages: Messages) extends EnterUTRController {
 
-  private def form(partnerName: String) = formProvider(partnerName)(implicitly)
+  private def form(partnerName: String): Form[ReferenceValue] = formProvider(partnerName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

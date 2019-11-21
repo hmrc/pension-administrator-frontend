@@ -21,10 +21,12 @@
 @import models.requests.DataRequest
 @import play.api.mvc.AnyContent
 @import viewmodels.Person
+@import config.FrontendAppConfig
 
 @this(
     main_template: main_template,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    appConfig: FrontendAppConfig
 )
 
 @(form: Form[_], mode: Mode, directors: Seq[Person], psaNameOpt: Option[String])(implicit request: DataRequest[AnyContent], messages: Messages)

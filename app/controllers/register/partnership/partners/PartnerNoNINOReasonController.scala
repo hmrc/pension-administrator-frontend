@@ -25,6 +25,8 @@ import identifiers.register.partnership.partners.{PartnerNameId, PartnerNoNINORe
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
+import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
@@ -33,20 +35,19 @@ import views.html.reason
 
 import scala.concurrent.ExecutionContext
 
-class PartnerNoNINOReasonController @Inject()(
-                                               @PartnershipPartner val navigator: Navigator,
-                                               val appConfig: FrontendAppConfig,
-                                               val dataCacheConnector: UserAnswersCacheConnector,
-                                               authenticate: AuthAction,
-                                               val allowAccess: AllowAccessActionProvider,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               formProvider: ReasonFormProvider,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val view: reason
-                                         )(implicit val executionContext: ExecutionContext) extends ReasonController {
+class PartnerNoNINOReasonController @Inject()(@PartnershipPartner val navigator: Navigator,
+                                              val appConfig: FrontendAppConfig,
+                                              val dataCacheConnector: UserAnswersCacheConnector,
+                                              authenticate: AuthAction,
+                                              val allowAccess: AllowAccessActionProvider,
+                                              getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              formProvider: ReasonFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val view: reason
+                                             )(implicit val executionContext: ExecutionContext, messages: Messages) extends ReasonController {
 
-  private def form(partnerName: String) = formProvider(partnerName)(implicitly)
+  private def form(partnerName: String): Form[String] = formProvider(partnerName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

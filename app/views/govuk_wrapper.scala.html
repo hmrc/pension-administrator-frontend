@@ -94,7 +94,7 @@
 
 @phaseBanner = {@components.phase_banner(appConfig)}
 
-@serviceInfo = {
+@serviceInformation = {
     @serviceInfo(
       betaBanner = phaseBanner,
       includeGridWrapper = false,
@@ -124,9 +124,9 @@
       mainClass = mainClass,
       mainDataAttributes = mainDataAttributes,
       mainContentHeader = mainContentHeader,
-      serviceInfo = serviceInfo,
+      serviceInfo = serviceInformation,
       getHelpForm = getHelpForm,
       sidebar = sidebar)
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(footer_links()), true)(content)
+@govuk_template(Some(title), bodyClasses)(headTag, bodyEnd, insideHeader, afterHeader, footerTop, Some(footer_links()), true)(content)
