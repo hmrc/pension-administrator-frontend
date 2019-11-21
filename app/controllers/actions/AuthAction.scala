@@ -218,7 +218,7 @@ class AuthenticationWithNoIV @Inject()(override val authConnector: AuthConnector
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        identityVerificationConnector: IdentityVerificationConnector,
                                        parser: BodyParsers.Default
-                                      )(implicit ec: ExecutionContext) extends
+                                      )(implicit executionContext: ExecutionContext) extends
   FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector, parser)
 
   with AuthorisedFunctions {

@@ -172,7 +172,7 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
 
   object LocalFakeUserAnswersCacheConnector extends FakeUserAnswersCacheConnector {
     override def fetch(cacheId: String)(implicit
-                                        ec: ExecutionContext,
+                                        executionContext: ExecutionContext,
                                         hc: HeaderCarrier
     ): Future[Option[JsValue]] = {
 

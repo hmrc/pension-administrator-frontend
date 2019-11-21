@@ -44,7 +44,7 @@ class CheckYourAnswersController @Inject()(
                                             checkYourAnswersFactory: CheckYourAnswersFactory,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: check_your_answers
-                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   import CheckYourAnswersController._
 

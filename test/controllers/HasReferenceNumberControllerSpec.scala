@@ -135,7 +135,7 @@ object HasReferenceNumberControllerSpec {
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   formProvider: HasReferenceNumberFormProvider
-                                )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
     def onPageLoad(viewmodel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider(requiredError, entityName), viewmodel)(DataRequest(FakeRequest(), "cacheId",

@@ -387,7 +387,7 @@ object AuthActionSpec {
   def fakeUserAnswersCacheConnector(dataToBeReturned: JsValue = Json.obj("areYouInUK" -> true)):
   FakeUserAnswersCacheConnector = new FakeUserAnswersCacheConnector {
     override def fetch(cacheId: String)(implicit
-                                        ec: ExecutionContext,
+                                        executionContext: ExecutionContext,
                                         hc: HeaderCarrier
     ): Future[Option[JsValue]] = {
       Future.successful(Some(dataToBeReturned))
@@ -396,18 +396,18 @@ object AuthActionSpec {
 
   def fakeIVConnector(ninoOpt: Option[String] = Some(nino)): IdentityVerificationConnector = new IdentityVerificationConnector {
     override def startRegisterOrganisationAsIndividual(completionURL: String,
-                                                       failureURL: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
+                                                       failureURL: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[String] = {
       Future.successful(startIVLink)
     }
 
-    override def retrieveNinoFromIV(journeyId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
+    override def retrieveNinoFromIV(journeyId: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[String]] = {
       Future.successful(ninoOpt)
     }
   }
 
   private def fakeAuthConnector(stubbedRetrievalResult: Future[_]) = new AuthConnector {
 
-    def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] = {
+    def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[A] = {
       stubbedRetrievalResult.map(_.asInstanceOf[A])
     }
   }

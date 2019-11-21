@@ -31,7 +31,7 @@ class LoginController @Inject()(appConfig: FrontendAppConfig,
                                 dataCacheConnector: UserAnswersCacheConnector,
                                 @AuthWithNoIV authenticate: AuthAction,
                                 val controllerComponents: MessagesControllerComponents
-                               )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                               )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate {
     implicit request =>

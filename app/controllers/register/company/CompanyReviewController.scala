@@ -41,7 +41,7 @@ class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
                                         requireData: DataRequiredAction,
                                         val controllerComponents: MessagesControllerComponents,
                                         val view: companyReview
-                                       )(implicit val ec: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
+                                       )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

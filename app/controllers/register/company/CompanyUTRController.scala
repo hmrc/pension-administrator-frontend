@@ -32,6 +32,8 @@ import utils.annotations.RegisterCompany
 import viewmodels.Message
 import views.html.register.utr
 
+import scala.concurrent.ExecutionContext
+
 class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
                                      override val cacheConnector: UserAnswersCacheConnector,
                                      @RegisterCompany override val navigator: Navigator,
@@ -41,7 +43,7 @@ class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
                                      requireData: DataRequiredAction,
                                      val controllerComponents: MessagesControllerComponents,
                                      val view: utr
-                                    )(implicit messages: Messages) extends UTRController with I18nSupport with Retrievals {
+                                    )(implicit val executionContext: ExecutionContext, messages: Messages) extends UTRController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>

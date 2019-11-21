@@ -36,6 +36,8 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
+import scala.concurrent.ExecutionContext
+
 class PartnerPreviousAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                  @PartnershipPartner override val navigator: Navigator,
@@ -48,7 +50,7 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
                                                  val auditService: AuditService,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  val view: manualAddress
-                                                ) extends ManualAddressController with Retrievals {
+                                                )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals {
 
   override protected val form: Form[Address] = formProvider()
 

@@ -32,7 +32,7 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.personName
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
@@ -43,7 +43,7 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        val view: personName
-                                      )(implicit messages: Messages) extends PersonNameController with Retrievals {
+                                      )(implicit val executionContext: ExecutionContext, messages: Messages) extends PersonNameController with Retrievals {
 
   private[directors] def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(

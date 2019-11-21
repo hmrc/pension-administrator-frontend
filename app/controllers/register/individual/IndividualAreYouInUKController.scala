@@ -41,7 +41,7 @@ class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendA
                                                override val formProvider: AreYouInUKFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: areYouInUK
-                                              )(implicit ec: ExecutionContext) extends AreYouInUKController {
+                                              )(implicit val executionContext: ExecutionContext) extends AreYouInUKController {
 
   protected override val form = formProvider()
 

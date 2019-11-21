@@ -31,6 +31,8 @@ import utils.annotations.CompanyDirector
 import viewmodels.{Message, MoreThanTenViewModel}
 import views.html.moreThanTen
 
+import scala.concurrent.ExecutionContext
+
 class MoreThanTenDirectorsController @Inject()(val appConfig: FrontendAppConfig,
                                                override val messagesApi: MessagesApi,
                                                val cacheConnector: UserAnswersCacheConnector,
@@ -41,7 +43,7 @@ class MoreThanTenDirectorsController @Inject()(val appConfig: FrontendAppConfig,
                                                requireData: DataRequiredAction,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: moreThanTen
-                                              ) extends MoreThanTenController with Retrievals {
+                                              )(implicit val executionContext: ExecutionContext) extends MoreThanTenController with Retrievals {
 
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): MoreThanTenViewModel =
     MoreThanTenViewModel(

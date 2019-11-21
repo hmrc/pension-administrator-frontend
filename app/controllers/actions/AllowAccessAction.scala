@@ -61,7 +61,7 @@ class AllowAccessAction(
   }
 }
 
-class AllowAccessActionProviderImpl @Inject() (minimalPsaConnector: MinimalPsaConnector)(implicit ec: ExecutionContext)
+class AllowAccessActionProviderImpl @Inject() (minimalPsaConnector: MinimalPsaConnector)(implicit executionContext: ExecutionContext)
   extends AllowAccessActionProvider {
   def apply(mode: Mode): AllowAccessAction = {
     new AllowAccessAction(mode, minimalPsaConnector)

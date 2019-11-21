@@ -102,9 +102,9 @@ object VariationDeclarationControllerSpec extends ControllerSpecBase {
 
     var updateCalledWithData: Option[(String, UserAnswers)] = None
 
-    override def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = ???
+    override def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = ???
 
-    override def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+    override def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
       updateCalledWithData = Some((psaId, answers))
       Future.successful(())
     }

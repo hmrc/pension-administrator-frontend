@@ -24,7 +24,8 @@ import forms.register.NINOFormProvider
 import identifiers.register.partnership.partners.{PartnerEnterNINOId, PartnerNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{Index, Mode, ReferenceValue}
+import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
@@ -46,7 +47,7 @@ class PartnerEnterNINOController @Inject()(@PartnershipPartner val navigator: Na
                                            val view: enterNINO
                                           )(implicit val executionContext: ExecutionContext, messages: Messages) extends NINOController {
 
-  private def form(partnerName: String) = formProvider(partnerName)
+  private def form(partnerName: String): Form[ReferenceValue] = formProvider(partnerName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

@@ -42,7 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @ImplementedBy(classOf[PsaDetailServiceImpl])
 trait PsaDetailsService {
   def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
-                                         (implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel]
+                                         (implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel]
 }
 
 class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnector,
@@ -52,14 +52,14 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
                                     ) extends PsaDetailsService {
 
   override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
-                                                  (implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
+                                                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
 
     retrievePsaDataFromUserAnswers(psaId, mode)
 
   }
 
   def retrievePsaDataFromUserAnswers(psaId: String, mode: Mode
-                                    )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
+                                    )(implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
     for {
       userAnswers <- getUserAnswers(psaId, mode)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
@@ -69,7 +69,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
   }
 
   private[services] def getUserAnswers(psaId: String, mode: Mode
-                                      )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[UserAnswers] =
+                                      )(implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_]): Future[UserAnswers] =
     userAnswersCacheConnector.fetch(request.externalId).flatMap {
       case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {
         getUpdatedUserAnswers(_, mode)
@@ -103,7 +103,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
     DirectorsOrPartnersChangedId
   )
 
-  private def getUpdatedUserAnswers(response: JsValue, mode: Mode)(implicit ec: ExecutionContext): Future[UserAnswers] = {
+  private def getUpdatedUserAnswers(response: JsValue, mode: Mode)(implicit executionContext: ExecutionContext): Future[UserAnswers] = {
     val answers = UserAnswers(response)
     val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
     Future.successful(

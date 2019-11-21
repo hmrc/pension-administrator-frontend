@@ -16,12 +16,11 @@
 
 package repositories
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 import org.joda.time.{DateTime, DateTimeZone}
-import play.api.libs.json.{JsString, JsValue, Json}
+import play.api.libs.json.{Format, JsString, JsValue, Json, OFormat}
 import play.api.{Configuration, Logger}
-import play.modules.reactivemongo.{MongoDbConnection, ReactiveMongoComponent}
-import reactivemongo.api.DefaultDB
+import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import reactivemongo.play.json.ImplicitBSONHandlers._
@@ -37,8 +36,8 @@ case class DatedCacheMap(id: String,
                          lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC))
 
 object DatedCacheMap {
-  implicit val dateFormat = ReactiveMongoFormats.dateTimeFormats
-  implicit val formats = Json.format[DatedCacheMap]
+  implicit val dateFormat: Format[DateTime] = ReactiveMongoFormats.dateTimeFormats
+  implicit val formats: OFormat[DatedCacheMap] = Json.format[DatedCacheMap]
 
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
 }
@@ -78,13 +77,13 @@ class SessionRepository(config: Configuration, component: ReactiveMongoComponent
     val selector = BSONDocument("id" -> id)
     val modifier = BSONDocument("$set" -> document)
 
-    collection.update(selector, modifier, upsert = true)
+    collection.update(ordered = false).one(selector, modifier, upsert = true)
       .map(_.ok)
   }
 
   def get(id: String): Future[Option[JsValue]] = {
     import play.api.libs.json._
-    collection.find(Json.obj("id" -> id)).one[JsObject].map {
+    collection.find(Json.obj("id" -> id), Option.empty[JsObject]).one[JsObject].map {
       json =>
         json.flatMap {
           json =>
@@ -95,7 +94,7 @@ class SessionRepository(config: Configuration, component: ReactiveMongoComponent
 
   def remove(id: String): Future[Boolean] = {
     val selector = BSONDocument("id" -> id)
-    collection.remove(selector).map(_.ok)
+    collection.delete.one(selector).map(_.ok)
   }
 }
 

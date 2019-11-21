@@ -45,7 +45,7 @@ class HasCompanyPAYEController @Inject()(override val appConfig: FrontendAppConf
                                          formProvider: HasReferenceNumberFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          val view: hasReferenceNumber
-                                        )(implicit val ec: ExecutionContext,
+                                        )(implicit val executionContext: ExecutionContext,
                                           messages: Messages) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =

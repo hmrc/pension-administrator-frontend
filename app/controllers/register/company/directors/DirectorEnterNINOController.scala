@@ -33,6 +33,8 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterNINO
 
+import scala.concurrent.ExecutionContext
+
 class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navigator,
                                             val appConfig: FrontendAppConfig,
                                             val cacheConnector: UserAnswersCacheConnector,
@@ -43,7 +45,7 @@ class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navi
                                             formProvider: NINOFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             val view: enterNINO
-                                           )(implicit messages: Messages) extends NINOController {
+                                           )(implicit val executionContext: ExecutionContext, messages: Messages) extends NINOController {
 
   private def form(directorName: String): Form[ReferenceValue] = formProvider(directorName)
 

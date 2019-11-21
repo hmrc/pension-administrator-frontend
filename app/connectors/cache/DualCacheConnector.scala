@@ -38,7 +38,7 @@ class DualCacheConnector @Inject()(
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit
                                                 fmt: Format[A],
-                                                ec: ExecutionContext,
+                                                executionContext: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] =
     if (fs.get(Toggles.isDataShiftEnabled)) {
@@ -61,21 +61,21 @@ class DualCacheConnector @Inject()(
       oldSchemeCache.save(cacheId, id, value)
     }
 
-  override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+  override def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
     doLogicAndReturnResult[JsValue](cacheId, () => oldSchemeCache.remove(cacheId, id), () => newSchemeCache.remove(cacheId, id), Json.obj())
 
-  override def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
+  override def removeAll(cacheId: String)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Result] =
     doLogicAndReturnResult[Result](cacheId, () => oldSchemeCache.removeAll(cacheId), () => newSchemeCache.removeAll(cacheId), Ok)
 
-  override def fetch(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] =
+  override def fetch(cacheId: String)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] =
     doLogicAndReturnResult[Option[JsValue]](cacheId, () => oldSchemeCache.fetch(cacheId), () => newSchemeCache.fetch(cacheId), None)
 
-  override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+  override def upsert(cacheId: String, value: JsValue)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
     doLogicAndReturnResult[JsValue](cacheId, () => oldSchemeCache.upsert(cacheId, value), () => newSchemeCache.upsert(cacheId, value), Json.obj())
 
   private def doLogicAndReturnResult[T](cacheId: String, blockForOldCache: () => Future[T],
                                         blockForNewCache: () => Future[T], returnDefault: T)(implicit
-                                                                                             ec: ExecutionContext,
+                                                                                             executionContext: ExecutionContext,
                                                                                              hc: HeaderCarrier
                                        ): Future[T] =
     if (fs.get(Toggles.isDataShiftEnabled)) {
@@ -98,7 +98,7 @@ class DualCacheConnector @Inject()(
     }
 
   private def doesDataExistInOldCache(cacheId: String)(implicit
-                                                       ec: ExecutionContext,
+                                                       executionContext: ExecutionContext,
                                                        hc: HeaderCarrier
   ): Future[Boolean] =
     oldSchemeCache.fetch(cacheId).map {
@@ -109,7 +109,7 @@ class DualCacheConnector @Inject()(
     }
 
   private def doesDataExistInNewCache(cacheId: String)(implicit
-                                                       ec: ExecutionContext,
+                                                       executionContext: ExecutionContext,
                                                        hc: HeaderCarrier
   ): Future[Boolean] =
     newSchemeCache.fetch(cacheId).map {

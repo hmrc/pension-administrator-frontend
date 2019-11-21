@@ -36,27 +36,26 @@ import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject()(
-                                            appConfig: FrontendAppConfig,
-                                            authenticate: AuthAction,
-                                            allowAccess: AllowAccessActionProvider,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            @PartnershipPartner navigator: Navigator,
-                                            override val messagesApi: MessagesApi,
-                                            sectionComplete: SectionComplete,
-                                            implicit val countryOptions: CountryOptions,
-                                            override val cacheConnector: UserAnswersCacheConnector,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val view: check_your_answers
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with Retrievals with Variations with I18nSupport {
+class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
+                                           authenticate: AuthAction,
+                                           allowAccess: AllowAccessActionProvider,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           @PartnershipPartner navigator: Navigator,
+                                           override val messagesApi: MessagesApi,
+                                           sectionComplete: SectionComplete,
+                                           implicit val countryOptions: CountryOptions,
+                                           override val cacheConnector: UserAnswersCacheConnector,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: check_your_answers
+                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val answersSection = Seq(
         AnswerSection(
           None,
-            PartnerNameId(index).row(Some(Link(routes.PartnerNameController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerNameId(index).row(Some(Link(routes.PartnerNameController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerDOBId(index).row(Some(Link(routes.PartnerDOBController.onPageLoad(checkMode(mode), index).url))) ++
             HasPartnerNINOId(index).row(Some(Link(routes.HasPartnerNINOController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerEnterNINOId(index).row(Some(Link(routes.PartnerEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++

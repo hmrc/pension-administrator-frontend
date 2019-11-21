@@ -44,7 +44,7 @@ class NonUKBusinessTypeController @Inject()(appConfig: FrontendAppConfig,
                                             formProvider: NonUKBusinessTypeFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             val view: nonUKBusinessType
-                                           )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 

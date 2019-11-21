@@ -30,22 +30,25 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import viewmodels.{ConfirmDeleteViewModel, Message}
+import views.html.confirmDelete
 
-class ConfirmDeleteDirectorController @Inject()(
-                                                 val appConfig: FrontendAppConfig,
-                                                 override val messagesApi: MessagesApi,
-                                                 val allowAccess: AllowAccessActionProvider,
-                                                 authenticate: AuthAction,
-                                                 getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction,
-                                                 val cacheConnector: UserAnswersCacheConnector,
-                                                 formProvider: ConfirmDeleteFormProvider,
-                                                 val controllerComponents: MessagesControllerComponents
-                                               ) extends ConfirmDeleteController with Retrievals {
+import scala.concurrent.ExecutionContext
+
+class ConfirmDeleteDirectorController @Inject()(val appConfig: FrontendAppConfig,
+                                                override val messagesApi: MessagesApi,
+                                                val allowAccess: AllowAccessActionProvider,
+                                                authenticate: AuthAction,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                val cacheConnector: UserAnswersCacheConnector,
+                                                formProvider: ConfirmDeleteFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: confirmDelete
+                                               )(implicit val executionContext: ExecutionContext) extends ConfirmDeleteController with Retrievals {
 
   val form: Form[Boolean] = formProvider()
 
-  private def vm(index: Index, name: String, mode:Mode)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
+  private def vm(index: Index, name: String, mode: Mode)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
     routes.ConfirmDeleteDirectorController.onSubmit(mode, index),
     controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
     Message("confirmDeleteDirector.title"),
@@ -62,7 +65,7 @@ class ConfirmDeleteDirectorController @Inject()(
       }
   }
 
-  def onSubmit(mode:Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       DirectorNameId(index).retrieve.right.map { details =>
         post(vm(index, details.fullName, mode), DirectorNameId(index), AddCompanyDirectorsController.onPageLoad(mode), mode)

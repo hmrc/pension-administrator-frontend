@@ -38,7 +38,7 @@ trait DOBController extends FrontendBaseController with I18nSupport with Variati
 
   protected val allowAccess: AllowAccessActionProvider
 
-  protected implicit def ec : ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   def appConfig: FrontendAppConfig
 

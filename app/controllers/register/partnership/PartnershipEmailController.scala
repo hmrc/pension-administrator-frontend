@@ -26,24 +26,25 @@ import identifiers.register.partnership.PartnershipEmailId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
+import scala.concurrent.ExecutionContext
+
 class PartnershipEmailController @Inject()(@Partnership val navigator: Navigator,
-                                       val appConfig: FrontendAppConfig,
-                                       val cacheConnector: UserAnswersCacheConnector,
-                                       authenticate: AuthAction,
-                                       val allowAccess: AllowAccessActionProvider,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: EmailFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val view: email
-                                          ) extends EmailAddressController {
+                                           val appConfig: FrontendAppConfig,
+                                           val cacheConnector: UserAnswersCacheConnector,
+                                           authenticate: AuthAction,
+                                           val allowAccess: AllowAccessActionProvider,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: EmailFormProvider,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: email
+                                          )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
   private val form = formProvider()
 

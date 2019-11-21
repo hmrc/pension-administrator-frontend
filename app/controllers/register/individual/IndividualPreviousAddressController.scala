@@ -37,6 +37,8 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
+import scala.concurrent.ExecutionContext
+
 class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                     val cacheConnector: UserAnswersCacheConnector,
                                                     @Individual val navigator: Navigator,
@@ -49,7 +51,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                     val auditService: AuditService,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: manualAddress
-                                                   ) extends ManualAddressController with I18nSupport {
+                                                   )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualPreviousAddressController.onSubmit _
   private[controllers] val title: Message = "individual.previousAddress.heading"

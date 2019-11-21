@@ -25,17 +25,15 @@ import identifiers.register.company.directors.{DirectorDOBId, DirectorNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
-import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.dob
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
-                                      override val messagesApi: MessagesApi,
                                       val cacheConnector: UserAnswersCacheConnector,
                                       @CompanyDirector val navigator: Navigator,
                                       override val allowAccess: AllowAccessActionProvider,
@@ -44,7 +42,7 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
                                       requireData: DataRequiredAction,
                                       val controllerComponents: MessagesControllerComponents,
                                       val view: dob
-                                     ) extends DOBController with Retrievals {
+                                     )(implicit val executionContext: ExecutionContext) extends DOBController with Retrievals {
 
   private[directors] def viewModel(mode: Mode,
                                    index: Index,

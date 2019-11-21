@@ -39,10 +39,10 @@ class FeatureSwitchManagementServiceProductionImpl @Inject()(runModeConfiguratio
   protected def mode:Mode = environment.mode
 
   override def change(name: String, newValue: Boolean): Boolean =
-    runModeConfiguration.getBoolean(s"features.$name").getOrElse(false)
+    runModeConfiguration.getOptional[Boolean](s"features.$name").getOrElse(false)
 
   override def get(name: String): Boolean =
-    runModeConfiguration.getBoolean(s"features.$name").getOrElse(false)
+    runModeConfiguration.getOptional[Boolean](s"features.$name").getOrElse(false)
 
   override def reset(name: String): Unit = ()
 }
@@ -58,7 +58,7 @@ class FeatureSwitchManagementServiceTestImpl @Inject()(runModeConfiguration: Con
   protected def mode:Mode = environment.mode
 
   override def change(name: String, newValue: Boolean): Boolean = {
-    val featureSwitch = runModeConfiguration.getBoolean(s"features.$name")
+    val featureSwitch = runModeConfiguration.getOptional[Boolean](s"features.$name")
     if(featureSwitch.nonEmpty) {
       reset(name)
       featureSwitches += FeatureSwitch(name, newValue)
@@ -68,13 +68,13 @@ class FeatureSwitchManagementServiceTestImpl @Inject()(runModeConfiguration: Con
 
   override def get(name: String): Boolean =
     featureSwitches.find(_.name == name) match {
-      case None => runModeConfiguration.getBoolean(s"features.$name").getOrElse(false)
+      case None => runModeConfiguration.getOptional[Boolean](s"features.$name").getOrElse(false)
       case Some(featureSwitch) => featureSwitch.isEnabled
     }
 
   override def reset(name: String): Unit = {
-    featureSwitches -= FeatureSwitch(name, false)
-    featureSwitches -= FeatureSwitch(name, true)
+    featureSwitches -= FeatureSwitch(name = name, isEnabled = false)
+    featureSwitches -= FeatureSwitch(name = name, isEnabled = true)
   }
 }
 

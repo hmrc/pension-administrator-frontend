@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait BusinessNameController extends FrontendBaseController with I18nSupport with Retrievals {
 
-  protected implicit def ec : ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   def appConfig: FrontendAppConfig
   def cacheConnector: UserAnswersCacheConnector

@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContextExecutor
 
 trait ControllerSpecBase extends SpecBase {
 
-  implicit val ec: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+  implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
 
   val cacheMapId = "id"
 

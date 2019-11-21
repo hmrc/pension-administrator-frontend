@@ -38,7 +38,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           requireData: DataRequiredAction,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: whatYouWillNeed
-                                         )(implicit val ec: ExecutionContext, messages: Messages) extends FrontendBaseController {
+                                         )(implicit val executionContext: ExecutionContext, messages: Messages) extends FrontendBaseController {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
     implicit request =>

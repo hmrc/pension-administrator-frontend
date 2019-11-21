@@ -30,17 +30,18 @@ import utils.annotations.PartnershipPartner
 import viewmodels.{Message, MoreThanTenViewModel}
 import views.html.moreThanTen
 
-class MoreThanTenPartnersController @Inject()(
-                                               val appConfig: FrontendAppConfig,
-                                               override val cacheConnector: UserAnswersCacheConnector,
-                                               @PartnershipPartner val navigator: Navigator,
-                                               authenticate: AuthAction,
-                                               allowAccess: AllowAccessActionProvider,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val view: moreThanTen
-                                             ) extends MoreThanTenController with Retrievals {
+import scala.concurrent.ExecutionContext
+
+class MoreThanTenPartnersController @Inject()(val appConfig: FrontendAppConfig,
+                                              override val cacheConnector: UserAnswersCacheConnector,
+                                              @PartnershipPartner val navigator: Navigator,
+                                              authenticate: AuthAction,
+                                              allowAccess: AllowAccessActionProvider,
+                                              getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val view: moreThanTen
+                                             )(implicit val executionContext: ExecutionContext) extends MoreThanTenController with Retrievals {
 
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): MoreThanTenViewModel =
     MoreThanTenViewModel(

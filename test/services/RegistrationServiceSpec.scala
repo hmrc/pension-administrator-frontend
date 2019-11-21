@@ -73,7 +73,7 @@ object RegistrationServiceSpec {
 
     override def registerWithNoIdIndividual(
         firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate)(
-        implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
+        implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
   }
 
   private val extId: String = "ext-id"

@@ -40,7 +40,7 @@ class PartnershipNameController @Inject()(
                                        formProvider: BusinessNameFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        val view: businessName
-                                     )(implicit val ec: ExecutionContext) extends BusinessNameController {
+                                     )(implicit val executionContext: ExecutionContext) extends BusinessNameController {
 
   def href: Call = routes.PartnershipNameController.onSubmit()
 

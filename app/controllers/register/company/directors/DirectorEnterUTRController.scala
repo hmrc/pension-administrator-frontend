@@ -34,6 +34,8 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterUTR
 
+import scala.concurrent.ExecutionContext
+
 class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navigator,
                                            val appConfig: FrontendAppConfig,
                                            val cacheConnector: UserAnswersCacheConnector,
@@ -44,7 +46,7 @@ class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navig
                                            formProvider: EnterUTRFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            val view: enterUTR
-                                          )(implicit messages: Messages) extends EnterUTRController {
+                                          )(implicit val executionContext: ExecutionContext,  messages: Messages) extends EnterUTRController {
 
   private def form(directorName: String): Form[ReferenceValue] = formProvider(directorName)
 

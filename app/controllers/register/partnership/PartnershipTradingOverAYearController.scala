@@ -46,7 +46,7 @@ class PartnershipTradingOverAYearController @Inject()(override val appConfig: Fr
                                                     formProvider: HasReferenceNumberFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: hasReferenceNumber
-                                                   )(implicit val ec: ExecutionContext, messages: Messages
+                                                   )(implicit val executionContext: ExecutionContext, messages: Messages
                                                     ) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =

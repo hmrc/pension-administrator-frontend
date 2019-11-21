@@ -37,20 +37,21 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class PartnershipContactAddressController @Inject()(
-                                                     val appConfig: FrontendAppConfig,
-                                                     val cacheConnector: UserAnswersCacheConnector,
-                                                     @Partnership val navigator: Navigator,
-                                                     override val allowAccess: AllowAccessActionProvider,
-                                                     authenticate: AuthAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: AddressFormProvider,
-                                                     val countryOptions: CountryOptions,
-                                                     val auditService: AuditService,
-                                                     val controllerComponents: MessagesControllerComponents,
-                                                     val view: manualAddress
-                                                   ) extends ManualAddressController with I18nSupport {
+import scala.concurrent.ExecutionContext
+
+class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppConfig,
+                                                    val cacheConnector: UserAnswersCacheConnector,
+                                                    @Partnership val navigator: Navigator,
+                                                    override val allowAccess: AllowAccessActionProvider,
+                                                    authenticate: AuthAction,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    formProvider: AddressFormProvider,
+                                                    val countryOptions: CountryOptions,
+                                                    val auditService: AuditService,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: manualAddress
+                                                   )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 

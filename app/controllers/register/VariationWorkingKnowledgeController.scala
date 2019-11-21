@@ -22,31 +22,29 @@ import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.VariationWorkingKnowledgeFormProvider
 import identifiers.register.adviser.IsNewAdviserId
-import identifiers.register.{DeclarationChangedId, PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
+import identifiers.register.{PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
 import models.{CheckUpdateMode, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.register.variationWorkingKnowledge
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class VariationWorkingKnowledgeController @Inject()(
-                                                     appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
-                                                     override val cacheConnector: UserAnswersCacheConnector,
-                                                     @annotations.Variations navigator: Navigator,
-                                                     authenticate: AuthAction,
-                                                     allowAccess: AllowAccessActionProvider,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: VariationWorkingKnowledgeFormProvider,
-                                                     val controllerComponents: MessagesControllerComponents,
-                                                     val view: variationWorkingKnowledge
-                                                   ) extends FrontendBaseController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
+class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig,
+                                                    override val cacheConnector: UserAnswersCacheConnector,
+                                                    @annotations.Variations navigator: Navigator,
+                                                    authenticate: AuthAction,
+                                                    allowAccess: AllowAccessActionProvider,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    formProvider: VariationWorkingKnowledgeFormProvider,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: variationWorkingKnowledge
+                                                   )(implicit val executionContext: ExecutionContext, messages: Messages) extends FrontendBaseController with Enumerable.Implicits with Variations with Retrievals {
 
   private val form = formProvider()
 

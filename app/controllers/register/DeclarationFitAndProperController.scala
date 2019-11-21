@@ -42,7 +42,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                                                   dataCacheConnector: UserAnswersCacheConnector,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   val view: declarationFitAndProper
-                                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                                 )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

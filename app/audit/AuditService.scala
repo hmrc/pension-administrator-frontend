@@ -33,7 +33,7 @@ trait AuditService {
 
   def sendEvent[T <: AuditEvent](event: T)(implicit
                                            rh: RequestHeader,
-                                           ec: ExecutionContext): Unit
+                                           executionContext: ExecutionContext): Unit
 
 }
 
@@ -47,7 +47,7 @@ class AuditServiceImpl @Inject()(
 
   def sendEvent[T <: AuditEvent](event: T)(implicit
                                            rh: RequestHeader,
-                                           ec: ExecutionContext): Unit = {
+                                           executionContext: ExecutionContext): Unit = {
 
     val details = rh.toAuditDetails() ++ event.details
 

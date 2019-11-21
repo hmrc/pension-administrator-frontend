@@ -36,6 +36,8 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
+import scala.concurrent.ExecutionContext
+
 class CompanyPreviousAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                  @RegisterCompany override val navigator: Navigator,
@@ -47,7 +49,8 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
                                                  val countryOptions: CountryOptions,
                                                  val auditService: AuditService,
                                                  val controllerComponents: MessagesControllerComponents,
-                                                 val view: manualAddress) extends ManualAddressController {
+                                                 val view: manualAddress
+                                                )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
 

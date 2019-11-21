@@ -45,7 +45,7 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
                                            formProvider: EnterPAYEFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            val view: enterPAYE
-                                          )(implicit val ec: ExecutionContext,
+                                          )(implicit val executionContext: ExecutionContext,
                                             messages: Messages) extends EnterPAYEController {
 
   protected def form(companyName: String): Form[String] = formProvider(companyName)

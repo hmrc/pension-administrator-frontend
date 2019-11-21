@@ -26,15 +26,15 @@ import forms.register.IsRegisteredNameFormProvider
 import identifiers.register.BusinessNameId
 import models.NormalMode
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormViewModel, Message}
 import views.html.register.isRegisteredName
 
+import scala.concurrent.ExecutionContext
+
 class CompanyIsRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
-                                                  override val messagesApi: MessagesApi,
                                                   override val cacheConnector: UserAnswersCacheConnector,
                                                   @RegisterCompany override val navigator: Navigator,
                                                   authenticate: AuthAction,
@@ -44,7 +44,7 @@ class CompanyIsRegisteredNameController @Inject()(override val appConfig: Fronte
                                                   formProvider: IsRegisteredNameFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   val view: isRegisteredName
-                                                 ) extends IsRegisteredNameController with Retrievals {
+                                                 )(implicit val executionContext: ExecutionContext) extends IsRegisteredNameController with Retrievals {
 
   val form: Form[Boolean] = formProvider("isRegisteredName.company.error")
 

@@ -32,6 +32,8 @@ import utils.annotations.Partnership
 import viewmodels.{CommonFormViewModel, Message}
 import views.html.register.isRegisteredName
 
+import scala.concurrent.ExecutionContext
+
 class PartnershipIsRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
                                                       override val cacheConnector: UserAnswersCacheConnector,
                                                       @Partnership override val navigator: Navigator,
@@ -42,7 +44,7 @@ class PartnershipIsRegisteredNameController @Inject()(override val appConfig: Fr
                                                       formProvider: IsRegisteredNameFormProvider,
                                                       val controllerComponents: MessagesControllerComponents,
                                                       val view: isRegisteredName
-                                                     ) extends IsRegisteredNameController with Retrievals {
+                                                     )(implicit val executionContext: ExecutionContext) extends IsRegisteredNameController with Retrievals {
 
   val form: Form[Boolean] = formProvider("isRegisteredName.partnership.error")
 

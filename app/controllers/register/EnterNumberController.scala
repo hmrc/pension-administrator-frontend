@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait EnterNumberController extends FrontendBaseController with I18nSupport {
 
-  protected implicit def ec : ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 

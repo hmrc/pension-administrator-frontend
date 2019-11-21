@@ -36,7 +36,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           authenticate: AuthAction,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: whatYouWillNeed
-                                         )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                         )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
   def onPageLoad(mode: Mode): Action[AnyContent] = authenticate {
     implicit request =>
       Ok(view(BusinessTypeAreYouInUKController.onPageLoad(NormalMode)))

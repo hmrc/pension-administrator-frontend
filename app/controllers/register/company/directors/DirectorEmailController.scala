@@ -32,9 +32,10 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
+import scala.concurrent.ExecutionContext
+
 class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigator,
                                         val appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
                                         val cacheConnector: UserAnswersCacheConnector,
                                         authenticate: AuthAction,
                                         val allowAccess: AllowAccessActionProvider,
@@ -43,7 +44,7 @@ class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigato
                                         formProvider: EmailFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         val view: email
-                                       ) extends EmailAddressController {
+                                       )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
   private val form = formProvider()
 

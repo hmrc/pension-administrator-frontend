@@ -32,19 +32,18 @@ import utils.annotations.PartnershipPartner
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.personName
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class PartnerNameController @Inject()(
-                                           val appConfig: FrontendAppConfig,
-                                           val cacheConnector: UserAnswersCacheConnector,
-                                           @PartnershipPartner val navigator: Navigator,
-                                           override val allowAccess: AllowAccessActionProvider,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val view: personName
-                                            )(implicit messages: Messages) extends PersonNameController with Retrievals{
+class PartnerNameController @Inject()(val appConfig: FrontendAppConfig,
+                                      val cacheConnector: UserAnswersCacheConnector,
+                                      @PartnershipPartner val navigator: Navigator,
+                                      override val allowAccess: AllowAccessActionProvider,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val view: personName
+                                     )(implicit messages: Messages, val executionContext: ExecutionContext) extends PersonNameController with Retrievals {
 
   private[partners] def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
@@ -62,7 +61,7 @@ class PartnerNameController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map{ name =>
+      BusinessNameId.retrieve.right.map { name =>
         Future.successful(get(id(index), viewModel(mode, index, name), mode))
       }
   }

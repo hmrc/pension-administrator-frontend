@@ -27,6 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
+import views.html.register.businessName
 
 import scala.concurrent.ExecutionContext
 
@@ -39,8 +40,9 @@ class CompanyNameController @Inject()(override val appConfig: FrontendAppConfig,
                                       override val getData: DataRetrievalAction,
                                       override val requireData: DataRequiredAction,
                                       formProvider: BusinessNameFormProvider,
-                                      val controllerComponents: MessagesControllerComponents
-                                     )(implicit val ec: ExecutionContext) extends BusinessNameController {
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val view: businessName
+                                     )(implicit val executionContext: ExecutionContext) extends BusinessNameController {
 
   def href: Call = routes.CompanyNameController.onSubmit()
 

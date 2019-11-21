@@ -38,6 +38,8 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
+import scala.concurrent.ExecutionContext
+
 class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                      val cacheConnector: UserAnswersCacheConnector,
                                                      @Partnership val navigator: Navigator,
@@ -50,7 +52,7 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
                                                      val auditService: AuditService,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      val view: manualAddress
-                                                    ) extends ManualAddressController with I18nSupport {
+                                                    )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = PartnershipPreviousAddressController.onSubmit _
 

@@ -44,7 +44,7 @@ class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
                                              auditService: AuditService,
                                              val controllerComponents: MessagesControllerComponents,
                                              val view: registerAsBusiness
-                                            )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 

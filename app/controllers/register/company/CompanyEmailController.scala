@@ -26,16 +26,16 @@ import identifiers.register.company.CompanyEmailId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
+import scala.concurrent.ExecutionContext
+
 class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        val allowAccess: AllowAccessActionProvider,
@@ -44,7 +44,7 @@ class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator
                                        formProvider: EmailFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        val view: email
-                                      ) extends EmailAddressController {
+                                      )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
   private val form = formProvider()
 

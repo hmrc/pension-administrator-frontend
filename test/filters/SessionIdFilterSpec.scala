@@ -42,7 +42,7 @@ object SessionIdFilterSpec {
 
   class TestSessionIdFilter @Inject()(
                                        override val mat: Materializer,
-                                       ec: ExecutionContext
+                                       executionContext: ExecutionContext
                                      ) extends SessionIdFilter(mat, UUID.fromString(sessionId), ec)
 
 }

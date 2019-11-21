@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait EmailAddressController extends FrontendBaseController with Retrievals with I18nSupport with Variations {
 
-  protected implicit def ec: ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 

@@ -45,7 +45,7 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
                                           formProvider: EnterVATFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: enterVAT
-                                         )(implicit val ec: ExecutionContext,
+                                         )(implicit val executionContext: ExecutionContext,
                                            messages: Messages) extends VATNumberController {
 
   private def form(companyName: String): Form[String] = formProvider(companyName)

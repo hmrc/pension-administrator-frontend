@@ -38,7 +38,7 @@ class VariationNoLongerFitAndProperController @Inject()(appConfig: FrontendAppCo
                                                         dataCacheConnector: UserAnswersCacheConnector,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         val view: variationNoLongerFitAndProper
-                                                       )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                                       )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

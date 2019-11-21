@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait VATNumberController extends FrontendBaseController with I18nSupport {
 
-  implicit def ec: ExecutionContext
+  implicit def executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 

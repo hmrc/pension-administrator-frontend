@@ -38,7 +38,7 @@ trait IsRegisteredNameController extends FrontendBaseController with I18nSupport
 
   protected val allowAccess: AllowAccessActionProvider
 
-  protected implicit def ec : ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   def appConfig: FrontendAppConfig
 

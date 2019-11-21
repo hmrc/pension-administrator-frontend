@@ -35,28 +35,27 @@ import views.html.check_your_answers
 
 import scala.concurrent.ExecutionContext
 
-class CheckYourAnswersController @Inject()(
-                                            appConfig: FrontendAppConfig,
-                                            @Adviser navigator: Navigator,
-                                            authenticate: AuthAction,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            implicit val countryOptions: CountryOptions,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val view: check_your_answers
+class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
+                                           @Adviser navigator: Navigator,
+                                           authenticate: AuthAction,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           implicit val countryOptions: CountryOptions,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: check_your_answers
                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val adviserName = AdviserNameId.row(Some(Link(routes.AdviserNameController.onPageLoad(checkMode(mode)).url)))
       val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressController.onPageLoad(checkMode(mode)).url)))
       val details = AdviserEmailId.row(Some(Link(routes.AdviserEmailController.onPageLoad(checkMode(mode)).url))) ++
         AdviserPhoneId.row(Some(Link(routes.AdviserPhoneController.onPageLoad(checkMode(mode)).url)))
-      val sections = Seq(AnswerSection(None, adviserName ++ address ++ details ))
-      Ok(view(sections, routes.CheckYourAnswersController.onSubmit(mode), psaName() , mode))
+      val sections = Seq(AnswerSection(None, adviserName ++ address ++ details))
+      Ok(view(sections, routes.CheckYourAnswersController.onSubmit(mode), psaName(), mode))
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
   }

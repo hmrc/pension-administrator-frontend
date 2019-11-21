@@ -27,7 +27,6 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Adviser
@@ -36,20 +35,21 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class AdviserAddressController @Inject()(
-                                          override val appConfig: FrontendAppConfig,
-                                          override val cacheConnector: UserAnswersCacheConnector,
-                                          @Adviser override val navigator: Navigator,
-                                          override val allowAccess: AllowAccessActionProvider,
-                                          authenticate: AuthAction,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: AddressFormProvider,
-                                          val countryOptions: CountryOptions,
-                                          val auditService: AuditService,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val view: manualAddress
-                                        ) extends ManualAddressController {
+import scala.concurrent.ExecutionContext
+
+class AdviserAddressController @Inject()(override val appConfig: FrontendAppConfig,
+                                         override val cacheConnector: UserAnswersCacheConnector,
+                                         @Adviser override val navigator: Navigator,
+                                         override val allowAccess: AllowAccessActionProvider,
+                                         authenticate: AuthAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: AddressFormProvider,
+                                         val countryOptions: CountryOptions,
+                                         val auditService: AuditService,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: manualAddress
+                                        )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   protected val form: Form[Address] = formProvider()
 

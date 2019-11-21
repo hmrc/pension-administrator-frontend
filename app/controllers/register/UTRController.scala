@@ -37,7 +37,7 @@ trait UTRController extends FrontendBaseController with I18nSupport with Variati
 
   protected val allowAccess: AllowAccessActionProvider
 
-  protected implicit def ec : ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   def appConfig: FrontendAppConfig
 
@@ -49,18 +49,16 @@ trait UTRController extends FrontendBaseController with I18nSupport with Variati
 
   protected def view: utr
 
-  def get[I <: TypedIdentifier[String]](
-                                                id: I, entity: String, href: Call
-                                              )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  def get[I <: TypedIdentifier[String]](id: I, entity: String, href: Call)
+                                       (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id).fold(form)(form.fill)
     Future.successful(Ok(view(preparedForm, entity, href)))
 
   }
 
-  def post[I <: TypedIdentifier[String]](
-                                                 id: I, entity: String, href: Call, mode: Mode
-                                               )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  def post[I <: TypedIdentifier[String]](id: I, entity: String, href: Call, mode: Mode)
+                                        (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>

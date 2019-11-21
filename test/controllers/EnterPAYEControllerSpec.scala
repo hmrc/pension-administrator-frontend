@@ -132,7 +132,7 @@ object EnterPAYEControllerSpec extends ControllerSpecBase {
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   formProvider: EnterPAYEFormProvider
-                                )(implicit val ec: ExecutionContext) extends EnterPAYEController {
+                                )(implicit val executionContext: ExecutionContext) extends EnterPAYEController {
 
     def onPageLoad(viewModel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, form, viewModel)(DataRequest(FakeRequest(), "cacheId",

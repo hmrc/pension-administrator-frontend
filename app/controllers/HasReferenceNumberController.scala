@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait HasReferenceNumberController extends FrontendBaseController with Retrievals with I18nSupport {
 
-  protected implicit def ec : ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 

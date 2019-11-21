@@ -45,7 +45,7 @@ class HasPartnershipVATController @Inject()(override val appConfig: FrontendAppC
                                             formProvider: HasReferenceNumberFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             val view: hasReferenceNumber
-                                       )(implicit val ec: ExecutionContext, messages: Messages) extends HasReferenceNumberController {
+                                       )(implicit val executionContext: ExecutionContext, messages: Messages) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(

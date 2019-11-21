@@ -45,7 +45,7 @@ class PartnershipEnterVATController @Inject()(val appConfig: FrontendAppConfig,
                                               formProvider: EnterVATFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               val view: enterVAT
-                                          )(implicit val ec: ExecutionContext, messages: Messages) extends VATNumberController {
+                                             )(implicit val executionContext: ExecutionContext, messages: Messages) extends VATNumberController {
 
   private def form(partnershipName: String): Form[String] = formProvider(partnershipName)
 

@@ -50,7 +50,7 @@ class CheckYourAnswersController @Inject()(
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: check_your_answers
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController
+                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with Retrievals with Variations with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

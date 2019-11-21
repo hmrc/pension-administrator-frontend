@@ -27,16 +27,15 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.register.stillUseAdviser
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           override val cacheConnector: UserAnswersCacheConnector,
                                           @annotations.Variations navigator: Navigator,
                                           authenticate: AuthAction,
@@ -46,7 +45,7 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
                                           formProvider: StillUseAdviserFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: stillUseAdviser
-                                         ) extends FrontendBaseController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
+                                         )(implicit val executionContext: ExecutionContext, messages: Messages) extends FrontendBaseController with Enumerable.Implicits with Variations with Retrievals {
 
   private val form = formProvider()
 

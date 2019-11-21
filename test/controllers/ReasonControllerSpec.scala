@@ -130,7 +130,7 @@ object ReasonControllerSpec extends ControllerSpecBase {
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   formProvider: ReasonFormProvider
-                                )(implicit val ec: ExecutionContext) extends ReasonController {
+                                )(implicit val executionContext: ExecutionContext) extends ReasonController {
 
     def onPageLoad(viewModel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, viewModel, form)(DataRequest(FakeRequest(), "cacheId",

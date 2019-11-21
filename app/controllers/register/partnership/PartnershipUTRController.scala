@@ -32,6 +32,8 @@ import utils.annotations.Partnership
 import viewmodels.Message
 import views.html.register.utr
 
+import scala.concurrent.ExecutionContext
+
 class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConfig,
                                          override val cacheConnector: UserAnswersCacheConnector,
                                          @Partnership override val navigator: Navigator,
@@ -41,7 +43,7 @@ class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConf
                                          requireData: DataRequiredAction,
                                          val controllerComponents: MessagesControllerComponents,
                                          val view: utr
-                                    )(implicit messages: Messages) extends UTRController with I18nSupport with Retrievals {
+                                        )(implicit messages: Messages, val executionContext: ExecutionContext) extends UTRController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -53,12 +55,13 @@ class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConf
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
 
-            BusinessTypeId.retrieve.right.map { businessType =>
-              post(BusinessUTRId, toString(businessType), href, NormalMode)
-            }
+      BusinessTypeId.retrieve.right.map { businessType =>
+        post(BusinessUTRId, toString(businessType), href, NormalMode)
+      }
   }
 
   def href: Call = routes.PartnershipUTRController.onSubmit()
+
   def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").resolve.toLowerCase()
 
 }

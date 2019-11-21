@@ -198,7 +198,7 @@ class RegistrationConnectorSpec()
     val connector = injector.instanceOf[RegistrationConnector]
 
     val hc: HeaderCarrier = HeaderCarrier(extraHeaders = Seq((headerName, headerValue)))
-    val ec: ExecutionContext = implicitly[ExecutionContext]
+    val executionContext: ExecutionContext = implicitly[ExecutionContext]
 
     connector.registerWithIdOrganisation(utr, organisation, legalStatus)(hc, ec).map { _ =>
       succeed
@@ -383,7 +383,7 @@ class RegistrationConnectorSpec()
     val connector = injector.instanceOf[RegistrationConnector]
 
     val hc: HeaderCarrier = HeaderCarrier(extraHeaders = Seq((headerName, headerValue)))
-    val ec: ExecutionContext = implicitly[ExecutionContext]
+    val executionContext: ExecutionContext = implicitly[ExecutionContext]
 
     connector.registerWithIdIndividual(nino)(hc, ec).map { _ =>
       succeed

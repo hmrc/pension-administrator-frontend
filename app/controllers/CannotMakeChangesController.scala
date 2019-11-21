@@ -33,7 +33,7 @@ class CannotMakeChangesController @Inject()(val appConfig: FrontendAppConfig,
                                             requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,
                                             val view: cannotMakeChanges
-                                           )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
     Future.successful(Ok(view(psaName(), UpdateMode)))

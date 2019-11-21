@@ -260,7 +260,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
+    (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[OrganizationRegistration] = {
 
       val info = RegistrationInfo(
         RegistrationLegalStatus.LimitedCompany,

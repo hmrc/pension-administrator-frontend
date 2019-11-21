@@ -36,6 +36,8 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
+import scala.concurrent.ExecutionContext
+
 class DirectorAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                           override val cacheConnector: UserAnswersCacheConnector,
                                           @CompanyDirector override val navigator: Navigator,
@@ -47,7 +49,8 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
                                           countryOptions: CountryOptions,
                                           val auditService: AuditService,
                                           val controllerComponents: MessagesControllerComponents,
-                                          val view: manualAddress) extends ManualAddressController with Retrievals with Variations {
+                                          val view: manualAddress
+                                         )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals with Variations {
 
   override protected val form: Form[Address] = formProvider()
 

@@ -48,7 +48,7 @@ class AddPartnerController @Inject()(
                                       formProvider: AddEntityFormProvider,
                                       val controllerComponents: MessagesControllerComponents,
                                       val view: addEntity
-                                    )(implicit ec:ExecutionContext, messages: Messages) extends AddEntityController with Retrievals {
+                                    )(implicit val executionContext: ExecutionContext, messages: Messages) extends AddEntityController with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 

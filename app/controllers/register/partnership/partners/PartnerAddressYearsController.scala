@@ -35,18 +35,19 @@ import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
-class PartnerAddressYearsController @Inject()(
-                                               val appConfig: FrontendAppConfig,
-                                               val cacheConnector: UserAnswersCacheConnector,
-                                               @PartnershipPartner val navigator: Navigator,
-                                               authenticate: AuthAction,
-                                               override val allowAccess: AllowAccessActionProvider,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               formProvider: AddressYearsFormProvider,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val view: addressYears
-                                             )(implicit messages: Messages) extends AddressYearsController with Retrievals {
+import scala.concurrent.ExecutionContext
+
+class PartnerAddressYearsController @Inject()(val appConfig: FrontendAppConfig,
+                                              val cacheConnector: UserAnswersCacheConnector,
+                                              @PartnershipPartner val navigator: Navigator,
+                                              authenticate: AuthAction,
+                                              override val allowAccess: AllowAccessActionProvider,
+                                              getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              formProvider: AddressYearsFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val view: addressYears
+                                             )(implicit val executionContext: ExecutionContext, messages: Messages) extends AddressYearsController with Retrievals {
 
 
   private def form(partnerName: String): Form[AddressYears] = formProvider(partnerName)

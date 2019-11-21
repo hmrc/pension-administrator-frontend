@@ -38,7 +38,7 @@ trait Variations extends FrontendBaseController {
 
   protected def cacheConnector: UserAnswersCacheConnector
 
-  implicit val ec: ExecutionContext = play.api.libs.concurrent.Execution.defaultContext
+  implicit val executionContext: ExecutionContext
 
   private val changeIds: Map[TypedIdentifier[_], TypedIdentifier[Boolean]] = Map(
     IndividualContactAddressId -> IndividualAddressChangedId,

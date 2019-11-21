@@ -30,7 +30,7 @@ class UseOrganisationCredentialsController @Inject()(
                                                      override val messagesApi: MessagesApi,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      view: useOrganisationCredentials
-                                                   )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                   )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = Action {
     implicit request =>

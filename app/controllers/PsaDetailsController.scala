@@ -38,7 +38,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      psaDetailsService: PsaDetailsService,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: psa_details
-                                    )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                    )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>

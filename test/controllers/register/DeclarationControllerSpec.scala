@@ -184,11 +184,11 @@ object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
       override def registerPsa
       (answers: UserAnswers)
-      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+      (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {
         response
       }
 
-      override def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = ???
+      override def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = ???
     }
 
   private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
@@ -198,7 +198,7 @@ object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
   private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
     new TaxEnrolmentsConnector {
       override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(implicit w: Writes[KnownFacts],
-                                                                       hc: HeaderCarrier, ec: ExecutionContext, request: DataRequest[AnyContent]) =
+                                                                       hc: HeaderCarrier, executionContext: ExecutionContext, request: DataRequest[AnyContent]) =
         enrolResponse.status match {
           case NO_CONTENT => Future.successful(enrolResponse)
           case ex => Future.failed(new HttpException("Fail", ex))
