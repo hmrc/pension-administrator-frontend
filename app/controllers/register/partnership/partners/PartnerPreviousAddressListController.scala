@@ -22,9 +22,11 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
+import forms.address.AddressListFormProvider
 import identifiers.register.partnership.partners._
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{Index, Mode, TolerantAddress}
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
 import utils.Navigator
@@ -41,33 +43,42 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
                                                      authenticate: AuthAction,
                                                      override val allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction) extends AddressListController with Retrievals {
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: AddressListFormProvider) extends AddressListController with Retrievals {
+
+  def form(addresses: Seq[TolerantAddress], name: String): Form[Int] =
+    formProvider(addresses, Message("select.previous.address.error.required").withArgs(name))
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map{vm =>
-        get(vm, mode)
+      PartnerNameId(index).retrieve.right.flatMap { pn =>
+        viewModel(mode, index).right.map { vm =>
+          get(vm, mode, form(vm.addresses, pn.fullName))
+        }
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(vm => post(vm, PartnerPreviousAddressListId(index), PartnerPreviousAddressId(index), mode))
+      PartnerNameId(index).retrieve.right.flatMap { pn =>
+        viewModel(mode, index).right.map(vm =>
+          post(vm, PartnerPreviousAddressListId(index), PartnerPreviousAddressId(index), mode, form(vm.addresses, pn.fullName)))
+      }
   }
 
   private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
     PartnerPreviousAddressPostCodeLookupId(index).retrieve.right.map {
       addresses =>
-            AddressListViewModel(
-              postCall = routes.PartnerPreviousAddressListController.onSubmit(mode, index),
-              manualInputCall = routes.PartnerPreviousAddressController.onPageLoad(mode, index),
-              addresses = addresses,
-              Message("common.previousAddressList.title"),
-              Message("common.previousAddressList.heading"),
-              Message("common.selectAddress.text"),
-              Message("common.selectAddress.link"),
-              psaName = psaName()
-            )
+        AddressListViewModel(
+          postCall = routes.PartnerPreviousAddressListController.onSubmit(mode, index),
+          manualInputCall = routes.PartnerPreviousAddressController.onPageLoad(mode, index),
+          addresses = addresses,
+          Message("common.previousAddressList.title"),
+          Message("common.previousAddressList.heading"),
+          Message("common.selectAddress.text"),
+          Message("common.selectAddress.link"),
+          psaName = psaName()
+        )
     }.left.map(_ => Future.successful(Redirect(routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, index))))
   }
 

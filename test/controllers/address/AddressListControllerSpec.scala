@@ -27,6 +27,7 @@ import models._
 import models.requests.DataRequest
 import org.scalatest.{Matchers, WordSpec}
 import play.api.Application
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.mvc.{Call, Result}
@@ -52,7 +53,8 @@ class AddressListControllerSpec extends WordSpec with Matchers {
       )) { app =>
         val viewModel = addressListViewModel(Nil)
         val controller = app.injector.instanceOf[TestController]
-        val result = controller.onPageLoad(viewModel)
+        val form = app.injector.instanceOf[AddressListFormProvider]
+        val result = controller.onPageLoad(viewModel, form(Nil, "error.required"))
 
         status(result) shouldBe OK
         contentAsString(result) shouldBe viewAsString(app, viewModel, None)
@@ -65,7 +67,8 @@ class AddressListControllerSpec extends WordSpec with Matchers {
       running(_.overrides()) { app =>
         val viewModel = addressListViewModel()
         val controller = app.injector.instanceOf[TestController]
-        val result = controller.onPageLoad(viewModel)
+        val form = app.injector.instanceOf[AddressListFormProvider]
+        val result = controller.onPageLoad(viewModel, form(addresses, "error.required"))
 
         status(result) shouldBe OK
         contentAsString(result) shouldBe viewAsString(app, viewModel, None)
@@ -83,7 +86,8 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         bind[Navigator].toInstance(FakeNavigator)
       )) { app =>
         val controller = app.injector.instanceOf[TestController]
-        val result = controller.onSubmit(addressListViewModel(), 0)
+        val form = app.injector.instanceOf[AddressListFormProvider]
+        val result = controller.onSubmit(addressListViewModel(), 0, form(addresses, "error.required"))
 
         status(result) shouldBe SEE_OTHER
       }
@@ -96,7 +100,8 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         bind[Navigator].toInstance(FakeNavigator)
       )) { app =>
         val controller = app.injector.instanceOf[TestController]
-        val result = controller.onSubmit(addressListViewModel(), 0)
+        val form = app.injector.instanceOf[AddressListFormProvider]
+        val result = controller.onSubmit(addressListViewModel(), 0, form(addresses, "error.required"))
 
         redirectLocation(result) shouldBe Some(onwardRoute.url)
       }
@@ -110,7 +115,8 @@ class AddressListControllerSpec extends WordSpec with Matchers {
       )) { app =>
         val viewModel = addressListViewModel()
         val controller = app.injector.instanceOf[TestController]
-        val result = controller.onSubmit(viewModel, 0)
+        val form = app.injector.instanceOf[AddressListFormProvider]
+        val result = controller.onSubmit(viewModel, 0, form(addresses, "error.required"))
 
         status(result) shouldBe SEE_OTHER
         FakeUserAnswersCacheConnector.verify(fakeAddressListId, viewModel.addresses.head)
@@ -125,7 +131,8 @@ class AddressListControllerSpec extends WordSpec with Matchers {
       )) { app =>
         val viewModel = addressListViewModel()
         val controller = app.injector.instanceOf[TestController]
-        val result = controller.onSubmit(viewModel, 0)
+        val form = app.injector.instanceOf[AddressListFormProvider]
+        val result = controller.onSubmit(viewModel, 0, form(addresses, "error.required"))
 
         status(result) shouldBe SEE_OTHER
         FakeUserAnswersCacheConnector.verifyNot(fakeAddressId)
@@ -140,7 +147,8 @@ class AddressListControllerSpec extends WordSpec with Matchers {
       )) { app =>
         val viewModel = addressListViewModel()
         val controller = app.injector.instanceOf[TestController]
-        val result = controller.onSubmit(viewModel, -1)
+        val form = app.injector.instanceOf[AddressListFormProvider]
+        val result = controller.onSubmit(viewModel, -1, form(addresses, "error.required"))
 
         status(result) shouldBe BAD_REQUEST
         contentAsString(result) shouldBe viewAsString(app, viewModel, Some(-1))
@@ -165,16 +173,17 @@ object AddressListControllerSpec {
 
     override val allowAccess = FakeAllowAccessProvider()
 
-    def onPageLoad(viewModel: AddressListViewModel): Future[Result] = {
+    def onPageLoad(viewModel: AddressListViewModel, form: Form[Int]): Future[Result] = {
 
       get(
         viewModel,
-        NormalMode
+        NormalMode,
+        form
       )(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))
 
     }
 
-    def onSubmit(viewModel: AddressListViewModel, value: Int): Future[Result] = {
+    def onSubmit(viewModel: AddressListViewModel, value: Int, form: Form[Int]): Future[Result] = {
 
       val request = FakeRequest().withFormUrlEncodedBody("value" -> value.toString)
 
@@ -182,7 +191,8 @@ object AddressListControllerSpec {
         viewModel,
         fakeAddressListId,
         fakeAddressId,
-        NormalMode
+        NormalMode,
+        form
       )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))
 
     }
@@ -234,8 +244,8 @@ object AddressListControllerSpec {
     val messages = app.injector.instanceOf[MessagesApi].preferred(request)
 
     val form = value match {
-      case Some(i) => new AddressListFormProvider()(viewModel.addresses).bind(Map("value" -> i.toString))
-      case None => new AddressListFormProvider()(viewModel.addresses)
+      case Some(i) => new AddressListFormProvider()(viewModel.addresses, "error.required").bind(Map("value" -> i.toString))
+      case None => new AddressListFormProvider()(viewModel.addresses, "error.required")
     }
 
     addressList(appConfig, form, viewModel, NormalMode)(request, messages).toString()

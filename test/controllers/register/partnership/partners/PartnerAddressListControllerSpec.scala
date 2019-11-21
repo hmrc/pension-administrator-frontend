@@ -16,8 +16,6 @@
 
 package controllers.register.partnership.partners
 
-import java.time.LocalDate
-
 import connectors.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -46,7 +44,8 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      formProvider
     )
 
   def viewAsString(form: Form[_] = form): String =
@@ -150,7 +149,7 @@ object PartnerAddressListControllerSpec {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new AddressListFormProvider()
-  val form: Form[Int] = formProvider(Seq.empty)
+  val form: Form[Int] = formProvider(Seq.empty, "error.required")
   val firstIndex = Index(0)
   val partner = PersonName("firstName", "lastName")
 

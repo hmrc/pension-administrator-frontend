@@ -77,7 +77,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         status(result) mustBe OK
 
         val viewModel: AddressListViewModel = addressListViewModel(addresses)
-        val form = new AddressListFormProvider()(viewModel.addresses)
+        val form = new AddressListFormProvider()(viewModel.addresses, "error.required")
 
         contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
       }

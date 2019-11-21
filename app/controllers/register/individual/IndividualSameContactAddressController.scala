@@ -50,7 +50,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   private[controllers] val title: Message = "individual.same.contact.address.title"
   private[controllers] val heading: Message = "individual.same.contact.address.heading"
 
-  protected val form: Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(Message("you")))
+  protected val form: Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(Message("common.you")))
 
   private def viewmodel(mode: Mode) =
     Retrieval(

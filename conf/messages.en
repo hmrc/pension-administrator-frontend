@@ -428,7 +428,6 @@ theDirector = the director
 thePartner = the partner
 theIndividual = the individual
 theAdviser = the person or business
-you = you
 
 directorPreviousAddressPostCodeLookup.heading = What was {0}’s previous contact address?
 directorPreviousAddressPostCodeLookup.text = This is usually the registered business address but you can enter any address you have for this company.
@@ -1076,4 +1075,10 @@ previousAddress.company.title = The company’s previous contact address
 previousAddress.heading = {0}’s previous contact address
 previousAddress.lede = You can change any part of the address if you need to.
 
-adviserAddressList.heading = What is the address for {0}?
+individual.select.address.error.required = Select your address
+individual.select.previous.address.error.required = Select your previous address
+select.address.error.required = Select {0}’s contact address
+select.previous.address.error.required = Select {0}’s previous contact address
+
+adviserAddressList.heading = What is {0}’s address?
+adviserAddressList.error.required = Select {0}’s address

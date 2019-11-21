@@ -21,10 +21,12 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
+import forms.address.AddressListFormProvider
 import identifiers.register.adviser._
 import javax.inject.Inject
-import models.Mode
 import models.requests.DataRequest
+import models.{Mode, TolerantAddress}
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
 import utils.Navigator
@@ -41,21 +43,25 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
                                              override val allowAccess: AllowAccessActionProvider,
                                              authenticate: AuthAction,
                                              getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction) extends AddressListController with Retrievals {
+                                             requireData: DataRequiredAction,
+                                             formProvider: AddressListFormProvider) extends AddressListController with Retrievals {
+
+  def form(addresses: Seq[TolerantAddress], name: String): Form[Int] =
+    formProvider(addresses, Message("adviserAddressList.error.required").withArgs(name))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map{vm =>
-        get(vm, mode)
+      viewModel(mode).right.map { vm =>
+        get(vm, mode, form(vm.addresses, entityName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, AdviserAddressListId, AdviserAddressId, mode))
+      viewModel(mode).right.map(vm => post(vm, AdviserAddressListId, AdviserAddressId, mode, form(vm.addresses, entityName)))
   }
 
-  def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
     AdviserAddressPostCodeLookupId.retrieve.right.map {
       addresses =>
         AddressListViewModel(

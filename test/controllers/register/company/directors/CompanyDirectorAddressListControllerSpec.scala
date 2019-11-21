@@ -36,7 +36,7 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new AddressListFormProvider()
-  val form: Form[Int] = formProvider(Seq.empty)
+  val form: Form[Int] = formProvider(Seq.empty, "error.required")
 
   val director = PersonName("firstName", "lastName")
 
@@ -74,7 +74,8 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      formProvider
     )
 
   private lazy val viewModel =

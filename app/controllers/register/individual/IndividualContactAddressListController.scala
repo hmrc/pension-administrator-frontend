@@ -21,10 +21,12 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
+import forms.address.AddressListFormProvider
 import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualContactAddressPostCodeLookupId}
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, TolerantAddress}
 import models.requests.DataRequest
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import utils.Navigator
@@ -41,19 +43,22 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
                                                        authenticate: AuthAction,
                                                        override val allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction
+                                                       requireData: DataRequiredAction,
+                                                       formProvider: AddressListFormProvider
                                                       ) extends AddressListController with Retrievals with I18nSupport {
+
+  def form(addresses: Seq[TolerantAddress]): Form[Int] = formProvider(addresses, Message("individual.select.address.error.required"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).right.map{vm =>
-        get(vm, mode)
+        get(vm, mode, form(vm.addresses))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, IndividualContactAddressListId, IndividualContactAddressId, mode))
+      viewmodel(mode).right.map(vm => post(vm, IndividualContactAddressListId, IndividualContactAddressId, mode, form(vm.addresses)))
   }
 
 
