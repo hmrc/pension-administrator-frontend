@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.Messages
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Enumerable, Navigator, UserAnswers, annotations}
@@ -45,7 +45,8 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
                                           formProvider: StillUseAdviserFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: stillUseAdviser
-                                         )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Enumerable.Implicits with Variations with Retrievals {
+                                          )(implicit val executionContext: ExecutionContext
+                                          ) extends FrontendBaseController with Enumerable.Implicits  with I18nSupport with Variations with Retrievals {
 
   private def form()(implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider()

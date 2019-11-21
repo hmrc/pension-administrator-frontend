@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.Messages
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -45,7 +45,7 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
                                           formProvider: HasReferenceNumberFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: hasReferenceNumber
-                                         )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
+                                         )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController with I18nSupport {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -60,10 +60,10 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def form(companyName: String): Form[Boolean] =
+  private def form(companyName: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider("hasNINO.error.required", companyName)
 
-  def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
+  def onPageLoad(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)

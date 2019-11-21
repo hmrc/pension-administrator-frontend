@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{CheckUpdateMode, Mode}
 import play.api.data.Form
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Enumerable, Navigator, UserAnswers, annotations}
@@ -45,7 +45,7 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
                                                     formProvider: VariationWorkingKnowledgeFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: variationWorkingKnowledge
-                                                   )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Enumerable.Implicits with Variations with Retrievals {
+                                                   )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
 
   private def form()(implicit request: DataRequest[AnyContent]) = formProvider()
 
