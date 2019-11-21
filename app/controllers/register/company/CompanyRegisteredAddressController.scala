@@ -56,7 +56,7 @@ class CompanyRegisteredAddressController @Inject()(
                                                     val view: nonukAddress
                                                   )(implicit val executionContext: ExecutionContext) extends NonUKAddressController with Retrievals {
 
-  protected def form()(implicit request: DataRequest[AnyContent]): Form[Address] = formProvider()
+  protected val form: Form[Address] = formProvider()
 
   protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
