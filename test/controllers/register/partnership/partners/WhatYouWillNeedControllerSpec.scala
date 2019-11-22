@@ -20,6 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import models.NormalMode
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.register.partnership.partners.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
@@ -27,14 +28,17 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new WhatYouWillNeedController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction,
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
+  val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
+
   private def viewAsString(): String =
-    whatYouWillNeed(frontendAppConfig, routes.PartnerNameController.onPageLoad(NormalMode, index = 0))(fakeRequest, messages).toString
+    view(routes.PartnerNameController.onPageLoad(NormalMode, index = 0))(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 

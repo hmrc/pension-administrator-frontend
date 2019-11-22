@@ -27,7 +27,9 @@ import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -149,7 +151,7 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
 }
 
 object PartnerAddressControllerSpec extends ControllerSpecBase {
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form: Form[Address] = formProvider()
@@ -194,7 +196,6 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PartnerAddressController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
@@ -203,8 +204,12 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      auditService
+      auditService,
+      stubMessagesControllerComponents(),
+      view
     )
+
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
 
   private val viewModel = ManualAddressViewModel(
     routes.PartnerAddressController.onSubmit(NormalMode, firstIndex),
@@ -214,8 +219,7 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
   )
 
   private def viewAsString(form: Form[_] = form) =
-    manualAddress(
-      frontendAppConfig,
+    view(
       form,
       viewModel,
       NormalMode

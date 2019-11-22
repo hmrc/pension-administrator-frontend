@@ -29,7 +29,6 @@ import views.html.register.partnership.partners.whatYouWillNeed
 import scala.concurrent.Future
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,

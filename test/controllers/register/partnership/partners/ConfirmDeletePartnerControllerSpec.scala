@@ -28,7 +28,7 @@ import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{Call, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
@@ -47,7 +47,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFReq
       implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onPageLoad(firstIndex, NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe confirmDelete(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString()
+        contentAsString(result) mustBe confirmDelete(form, viewModel, NormalMode)(request, messages).toString()
       }
     )
   }
@@ -86,8 +86,8 @@ object ConfirmDeletePartnerControllerSpec {
 
   val firstIndex = Index(0)
 
-  val postUrl = controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
-  val redirectUrl = routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode)
+  val postUrl: Call = controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
+  val redirectUrl: Call = routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode)
   private val formProvider = new ConfirmDeleteFormProvider()
   private val form = formProvider()
 

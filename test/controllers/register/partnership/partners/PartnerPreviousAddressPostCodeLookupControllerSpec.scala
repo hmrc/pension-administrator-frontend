@@ -16,7 +16,8 @@
 
 package controllers.register.partnership.partners
 
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -28,7 +29,9 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json._
+import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -38,14 +41,13 @@ import scala.concurrent.Future
 
 class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
   private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
   private val index = Index(0)
-  private val partnerName = "test first name test middle name test last name"
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new PartnerPreviousAddressPostCodeLookupController(
@@ -53,13 +55,16 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
-      messagesApi,
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
 
   private val testAnswer = "AB12 1AB"
 
@@ -75,9 +80,7 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
     )
 
   private def viewAsString(form: Form[_] = form) =
-    postcodeLookup(
-      frontendAppConfig,
-      form,
+    view(form,
       viewModel,
       NormalMode
     )(fakeRequest, messages).toString
