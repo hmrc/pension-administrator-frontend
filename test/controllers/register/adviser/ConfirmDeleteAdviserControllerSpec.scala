@@ -19,13 +19,14 @@ package controllers.register.adviser
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, _}
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
-import forms.ConfirmDeleteAdviserFormProvider
+import forms.register.adviser.ConfirmDeleteAdviserFormProvider
 import identifiers.register.DeclarationChangedId
-import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
+import identifiers.register.adviser.ConfirmDeleteAdviserId
 import models.{NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
@@ -33,9 +34,9 @@ import views.html.confirmDelete
 class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehaviours {
 
   private val adviserName = "test adviser"
-
-  val formProvider = new ConfirmDeleteAdviserFormProvider(messagesApi)
-  val form = formProvider(adviserName)
+  val view: confirmDelete = app.injector.instanceOf[confirmDelete]
+  val formProvider = new ConfirmDeleteAdviserFormProvider()
+  val form: Form[Boolean] = formProvider(adviserName)
   private val validData = UserAnswers().adviserName(adviserName).dataRetrievalAction
 
   private def viewModel(name: String) = ConfirmDeleteViewModel(
@@ -48,10 +49,11 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
-    new ConfirmDeleteAdviserController(frontendAppConfig, messagesApi, FakeAuthAction, FakeAllowAccessProvider(),
-      dataRetrievalAction, new DataRequiredActionImpl, FakeUserAnswersCacheConnector, formProvider, new FakeNavigator(desiredRoute = onwardRoute))
+    new ConfirmDeleteAdviserController(frontendAppConfig, FakeAuthAction, FakeAllowAccessProvider(),
+      dataRetrievalAction, new DataRequiredActionImpl, FakeUserAnswersCacheConnector, formProvider, new FakeNavigator(desiredRoute = onwardRoute),
+      stubMessagesControllerComponents(), view)
 
-  def viewAsString(form: Form[_] = form): String = confirmDelete(frontendAppConfig, form, viewModel(adviserName), NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, viewModel(adviserName), NormalMode)(fakeRequest, messages).toString
 
   "ConfirmDeleteAdviserController" must {
 

@@ -22,6 +22,7 @@ import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNa
 import models.{Address, CheckMode, NormalMode}
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection, Link}
@@ -32,6 +33,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
   private def postCall = controllers.register.adviser.routes.CheckYourAnswersController.onSubmit(NormalMode)
+
+  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
   val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
@@ -55,11 +58,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     AdviserAddressId.toString -> address
   )
 
-  def adviserDetails = Seq(
+  def adviserDetails: Seq[AnswerRow] = Seq(
     AnswerRow(
       messages("adviserName.heading"),
       Seq(adviserName),
-      false,
+      answerIsMessageKey = false,
       Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(CheckMode).url)),
       Some(messages("adviserName.visuallyHidden.text"))
     ),
@@ -71,42 +74,42 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         address.postcode.value,
         address.country
       ),
-      false,
+      answerIsMessageKey = false,
       Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url)),
       Some(messages("addressFor.visuallyHidden.text", adviserName))
     ),
     AnswerRow(
       messages("email.title", adviserName),
       Seq(advEmail),
-      false,
+      answerIsMessageKey = false,
       Some(Link(controllers.register.adviser.routes.AdviserEmailController.onPageLoad(CheckMode).url)),
       Some(messages("email.visuallyHidden.text", adviserName))
     ),
     AnswerRow(
       messages("phone.title", adviserName),
       Seq(advPhone),
-      false,
+      answerIsMessageKey = false,
       Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(CheckMode).url)),
       Some(messages("phone.visuallyHidden.text", adviserName))
     )
   )
 
-  def sections = Seq(AnswerSection(None, adviserDetails))
+  def sections: Seq[AnswerSection] = Seq(AnswerSection(None, adviserDetails))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CheckYourAnswersController(
       frontendAppConfig,
-      messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
 
   def viewAsString(): String =
-    check_your_answers(
-      frontendAppConfig,
+    view(
       sections,
       postCall,
       None,

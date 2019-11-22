@@ -17,17 +17,16 @@
 package controllers.register.adviser
 
 import base.CSRFRequest
-import connectors.cache.UserAnswersCacheConnector
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import models.requests.DataRequest
 import models.{Mode, NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -50,7 +49,7 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
         implicit app => addToken(FakeRequest(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode))),
         (request, result) => {
           status(result) mustBe OK
-          contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode), NormalMode)(request, messages).toString()
+          contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messages).toString()
         }
       )
     }
@@ -74,6 +73,8 @@ object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   private val form = formProvider()
   private val name = "Test Adviser Name"
   private val validPostcode = "ZZ1 1ZZ"
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
 
   def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
     controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),

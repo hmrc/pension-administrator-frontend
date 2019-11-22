@@ -24,32 +24,36 @@ import identifiers.register.adviser.AdviserNameId
 import models.NormalMode
 import play.api.data.Form
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.adviser.adviserName
 
 class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
 
+  val view: adviserName = app.injector.instanceOf[adviserName]
   val formProvider = new AdviserNameFormProvider()
-  val form = formProvider()
-  val userAnswer = UserAnswers().adviserName("test")
-  val postRequest = FakeRequest().withFormUrlEncodedBody(("adviserName", "test"))
+  private val form = formProvider()
+  private val userAnswer = UserAnswers().adviserName("test")
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("adviserName", "test"))
 
   private def onPageLoadAction(dataRetrievalAction: DataRetrievalAction, fakeAuth: AuthAction) = {
 
     new AdviserNameController(
-      frontendAppConfig, messagesApi,fakeAuth, new FakeNavigator(onwardRoute), dataRetrievalAction,
-      requiredDataAction, formProvider, FakeUserAnswersCacheConnector).onPageLoad(NormalMode)
+      frontendAppConfig, fakeAuth, new FakeNavigator(onwardRoute), dataRetrievalAction,
+      requiredDataAction, formProvider, FakeUserAnswersCacheConnector,
+      stubMessagesControllerComponents(), view).onPageLoad(NormalMode)
   }
 
 
   private def onSubmitAction(dataRetrievalAction: DataRetrievalAction, fakeAuth: AuthAction) = {
 
     new AdviserNameController(
-      frontendAppConfig, messagesApi, fakeAuth, navigator, dataRetrievalAction,
-      requiredDataAction, formProvider, FakeUserAnswersCacheConnector).onSubmit(NormalMode)
+      frontendAppConfig, fakeAuth, navigator, dataRetrievalAction,
+      requiredDataAction, formProvider, FakeUserAnswersCacheConnector,
+      stubMessagesControllerComponents(), view).onSubmit(NormalMode)
   }
 
-  private def viewAsString(form: Form[_] = form) = adviserName(frontendAppConfig, form, NormalMode, None)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = view(form, NormalMode, None)(fakeRequest, messages).toString
 
 
   behave like controllerWithOnPageLoadMethod(onPageLoadAction, getEmptyData, userAnswer.dataRetrievalAction, form, form.fill("test"), viewAsString)
