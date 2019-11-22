@@ -19,8 +19,7 @@ package controllers.address
 import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.FakeAllowAccessProvider
 import forms.address.AddressYearsFormProvider
 import identifiers.TypedIdentifier
@@ -31,47 +30,46 @@ import models.requests.DataRequest
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import play.api.i18n.MessagesApi
+import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, Call, Request, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 object AddressYearsControllerSpec {
 
   object FakeIdentifier extends TypedIdentifier[AddressYears]
 
-  class TestController @Inject()(
-                                  override val appConfig: FrontendAppConfig,
-                                  override val messagesApi: MessagesApi,
-                                  override val cacheConnector: UserAnswersCacheConnector,
-                                  override val navigator: Navigator,
-                                  formProvider: AddressYearsFormProvider,
-                                  stubMessagesControllerComponents(),
-                                  val view: addressYears
-                                ) extends AddressYearsController {
+  class TestController @Inject()(override val appConfig: FrontendAppConfig,
+                                 override val cacheConnector: UserAnswersCacheConnector,
+                                 override val navigator: Navigator,
+                                 formProvider: AddressYearsFormProvider,
+                                 val controllerComponents: MessagesControllerComponents,
+                                 val view: addressYears
+                                )(implicit val executionContext: ExecutionContext) extends AddressYearsController with I18nSupport {
 
     override val allowAccess = FakeAllowAccessProvider()
 
+    def request(answers: UserAnswers): DataRequest[AnyContent] =
+      DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+
     def onPageLoad(viewmodel: AddressYearsViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, formProvider("error"), viewmodel, NormalMode)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+      implicit val req: DataRequest[AnyContent] = request(answers)
+      get(FakeIdentifier, formProvider("error"), viewmodel, NormalMode)
     }
 
     def onSubmit(viewmodel: AddressYearsViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent],
                  mode: Mode = NormalMode, id: TypedIdentifier[AddressYears] = FakeIdentifier): Future[Result] = {
-      post(id, mode, formProvider("error"), viewmodel)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+      implicit val req: DataRequest[AnyContent] = request(answers)
+      post(id, mode, formProvider("error"), viewmodel)
     }
   }
 
@@ -98,7 +96,6 @@ class AddressYearsControllerSpec extends SpecBase with MustMatchers with OptionV
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[AddressYearsFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -116,7 +113,6 @@ class AddressYearsControllerSpec extends SpecBase with MustMatchers with OptionV
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[AddressYearsFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -163,27 +159,27 @@ class AddressYearsControllerSpec extends SpecBase with MustMatchers with OptionV
       }
     }
 
-      "save the change flag in update mode" in {
+    "save the change flag in update mode" in {
 
-        import play.api.inject._
+      import play.api.inject._
 
-        val cacheConnector = FakeUserAnswersCacheConnector
+      val cacheConnector = FakeUserAnswersCacheConnector
 
-        running(_.overrides(
-          bind[UserAnswersCacheConnector].toInstance(cacheConnector),
-          bind[Navigator].toInstance(FakeNavigator)
-        )) {
-          app =>
-            val request = FakeRequest().withFormUrlEncodedBody(
-              "value" -> AddressYears.OverAYear.toString
-            )
-            val controller = app.injector.instanceOf[TestController]
-            val result = controller.onSubmit(viewmodel, UserAnswers(), request, UpdateMode, PartnerAddressYearsId(0))
+      running(_.overrides(
+        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
+          val request = FakeRequest().withFormUrlEncodedBody(
+            "value" -> AddressYears.OverAYear.toString
+          )
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel, UserAnswers(), request, UpdateMode, PartnerAddressYearsId(0))
 
-            status(result) mustEqual SEE_OTHER
-            FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
-        }
+          status(result) mustEqual SEE_OTHER
+          FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
       }
+    }
 
     "return a bad request when the submitted data is invalid" in {
 
@@ -191,7 +187,6 @@ class AddressYearsControllerSpec extends SpecBase with MustMatchers with OptionV
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[AddressYearsFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
