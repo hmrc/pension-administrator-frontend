@@ -31,6 +31,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -62,7 +63,6 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IndividualPreviousAddressController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
@@ -71,10 +71,14 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      fakeAuditService
+      fakeAuditService,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages).toString
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
+
+  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
 
   "IndividualPreviousAddress Controller" must {
 

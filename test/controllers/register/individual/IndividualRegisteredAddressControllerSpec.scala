@@ -35,6 +35,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
@@ -51,17 +52,17 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val formProvider = new NonUKAddressFormProvider(countryOptions)
-  val form = formProvider("error.country.invalid")
+  val form: Form[Address] = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
   val individualName = "TestFirstName TestLastName"
   val sapNumber = "test-sap-number"
   val registrationInfo = RegistrationInfo(
-    RegistrationLegalStatus.Individual,
-    sapNumber,
-    false,
-    RegistrationCustomerType.NonUK,
-    None,
-    None
+    legalStatus = RegistrationLegalStatus.Individual,
+    sapNumber = sapNumber,
+    noIdentifier = false,
+    customerType = RegistrationCustomerType.NonUK,
+    idType = None,
+    idNumber = None
   )
 
 
@@ -69,7 +70,6 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
                  userAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
     new IndividualRegisteredAddressController(
       frontendAppConfig,
-      messagesApi,
       userAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
@@ -77,8 +77,12 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
+
+  val view: nonukAddress = app.injector.instanceOf[nonukAddress]
 
   private def viewModel = ManualAddressViewModel(
     routes.IndividualRegisteredAddressController.onSubmit(NormalMode),
@@ -90,8 +94,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
   )
 
   private def viewAsString(form: Form[_] = form) =
-    nonukAddress(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages).toString()

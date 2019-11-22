@@ -24,6 +24,7 @@ import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
@@ -77,9 +78,9 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
         status(result) mustBe OK
 
         val viewModel: AddressListViewModel = addressListViewModel(addresses)
-        val form = new AddressListFormProvider()(viewModel.addresses)
+        val form: Form[Int] = new AddressListFormProvider()(viewModel.addresses)
 
-        contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
+        contentAsString(result) mustBe addressList(form, viewModel, NormalMode)(request, messages).toString
       }
 
     }

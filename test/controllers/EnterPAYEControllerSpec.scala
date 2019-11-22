@@ -27,12 +27,13 @@ import models._
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.inject._
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterPAYE
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,7 +53,7 @@ class EnterPAYEControllerSpec extends ControllerSpecBase {
             val result = controller.onPageLoad(viewModel, UserAnswers())
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual enterPAYE(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
+            contentAsString(result) mustEqual payeView(form, viewModel)(fakeRequest, messages).toString
         }
       }
 
@@ -66,7 +67,7 @@ class EnterPAYEControllerSpec extends ControllerSpecBase {
             val result = controller.onPageLoad(viewModel, answers)
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual enterPAYE(frontendAppConfig, form.fill(payeNumber), viewModel)(fakeRequest, messages).toString
+            contentAsString(result) mustEqual payeView(form.fill(payeNumber), viewModel)(fakeRequest, messages).toString
         }
       }
     }
@@ -100,7 +101,7 @@ class EnterPAYEControllerSpec extends ControllerSpecBase {
             val result = controller.onSubmit(viewModel, UserAnswers(), request)
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual enterPAYE(frontendAppConfig, form.bind(Map("value" -> "invalid")), viewModel)(request, messages).toString
+            contentAsString(result) mustEqual payeView(form.bind(Map("value" -> "invalid")), viewModel)(request, messages).toString
         }
       }
     }
@@ -108,6 +109,8 @@ class EnterPAYEControllerSpec extends ControllerSpecBase {
 }
 
 object EnterPAYEControllerSpec extends ControllerSpecBase {
+
+  val payeView: enterPAYE = app.injector.instanceOf[enterPAYE]
 
   object FakeIdentifier extends TypedIdentifier[String]
 
@@ -126,23 +129,29 @@ object EnterPAYEControllerSpec extends ControllerSpecBase {
 
   private val payeNumber = "123AB456"
 
-  class TestController @Inject()(
-                                  override val appConfig: FrontendAppConfig,
-                                  override val messagesApi: MessagesApi,
-                                  override val cacheConnector: UserAnswersCacheConnector,
-                                  override val navigator: Navigator,
-                                  formProvider: EnterPAYEFormProvider
+  class TestController @Inject()(override val appConfig: FrontendAppConfig,
+                                 override val messagesApi: MessagesApi,
+                                 override val cacheConnector: UserAnswersCacheConnector,
+                                 override val navigator: Navigator,
+                                 formProvider: EnterPAYEFormProvider
                                 )(implicit val executionContext: ExecutionContext) extends EnterPAYEController {
 
+    def dataRequest(answers: UserAnswers): DataRequest[AnyContent]  =
+      DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+
     def onPageLoad(viewModel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, form, viewModel)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+      implicit val request: DataRequest[AnyContent]  = dataRequest(answers)
+      get(FakeIdentifier, form, viewModel)
     }
 
     def onSubmit(viewModel: CommonFormWithHintViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, NormalMode, form, viewModel)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+      implicit val request: DataRequest[AnyContent]  = dataRequest(answers)
+      post(FakeIdentifier, NormalMode, form, viewModel)
     }
+
+    override protected def view: enterPAYE = payeView
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
 }

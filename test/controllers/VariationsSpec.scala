@@ -16,22 +16,20 @@
 
 package controllers
 
-import java.time.LocalDate
-
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.address.ManualAddressControllerSpec.externalId
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressId, IsDirectorCompleteId}
 import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.FakeRequest
-import utils.{FakeSectionComplete, SectionComplete, UserAnswers}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import utils.UserAnswers
 
-import scala.concurrent.Await
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContextExecutor}
 
 class VariationsSpec extends ControllerSpecBase {
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
@@ -51,19 +49,27 @@ class VariationsSpec extends ControllerSpecBase {
   val person = PersonName("John", "Doe")
   val validData = UserAnswers(Json.obj(testPersonId.toString -> person))
 
-  private val testVariationsNonIndexed = new Variations {
+  private val testVariationsNonIndexed: Variations = new Variations {
 
     override def findChangeIdNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = Some(testChangeId)
 
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
+
+    implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
-  private val testVariationsIndexed = new Variations {
+  private val testVariationsIndexed: Variations = new Variations {
 
     override def findChangeIdNonIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = None
     override def findChangeIdIndexed[A](id:TypedIdentifier[A]): Option[TypedIdentifier[Boolean]] = Some(testChangeId)
 
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
+
+    implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
   def dataRequest(userAnswers: UserAnswers = UserAnswers()): DataRequest[AnyContent] = DataRequest(FakeRequest(), externalId, psaUser, userAnswers)

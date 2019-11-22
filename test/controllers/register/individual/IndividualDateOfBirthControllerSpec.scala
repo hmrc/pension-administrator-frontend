@@ -18,23 +18,22 @@ package controllers.register.individual
 
 import java.time.LocalDate
 
-import config.FrontendAppConfig
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.individual.IndividualDateOfBirthFormProvider
-import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
 import identifiers.register.AreYouInUKId
-import models.{Address, NormalMode, RegistrationCustomerType, RegistrationInfo, RegistrationLegalStatus, TolerantIndividual}
+import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
+import models._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import services.RegistrationService
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{DateHelper, FakeNavigator}
 import views.html.register.individual.individualDateOfBirth
 
@@ -125,7 +124,7 @@ object IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mocki
   private val formProvider = new IndividualDateOfBirthFormProvider()
   private val form = formProvider()
 
-  val registrationService = mock[RegistrationService]
+  val registrationService: RegistrationService = mock[RegistrationService]
 
   def getRequiredDataForRegistration(isUk : Boolean = false): FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
@@ -138,7 +137,6 @@ object IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mocki
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IndividualDateOfBirthController(frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
@@ -146,10 +144,14 @@ object IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mocki
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      registrationService
+      registrationService,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(form: Form[_] = form): String = individualDateOfBirth(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  val view: individualDateOfBirth = app.injector.instanceOf[individualDateOfBirth]
+
+  def viewAsString(form: Form[_] = form): String = view(form, NormalMode)(fakeRequest, messages).toString
 
   private val testAnswer = LocalDate.now()
 

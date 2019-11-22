@@ -16,7 +16,8 @@
 
 package controllers.register.individual
 
-import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector}
+import connectors.RegistrationConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
@@ -29,18 +30,19 @@ import models.{RegistrationInfo, _}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.{Request, Result}
+import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import utils.countryOptions.CountryOptions
 import views.html.register.individual.individualDetailsCorrect
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val formProvider = new IndividualDetailsCorrectFormProvider()
   private val form = formProvider()
@@ -48,7 +50,9 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
   private val nino = "test-nino"
   private val sapNumber = "test-sap-number"
 
-  private val fakeAuthAction = new AuthAction {
+  private val fakeAuthAction: AuthAction = new AuthAction {
+    val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+    implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), isExistingPSA = false, None)))
   }
@@ -78,18 +82,15 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
   )
 
   private object FakeRegistrationConnector extends FakeRegistrationConnector {
-    override def registerWithIdIndividual
-    (nino: String)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
-
+    override def registerWithIdIndividual (nino: String)
+                                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
       Future.successful(IndividualRegistration(IndividualRegisterWithIdResponse(individual, address), registrationInfo))
     }
   }
 
   private object ExceptionThrowingRegistrationConnector extends FakeRegistrationConnector {
-    override def registerWithIdIndividual
-    (nino: String)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
+    override def registerWithIdIndividual (nino: String)
+                                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
       throw new Exception("registerWithIdIndividual should not be called in this test")
     }
   }
@@ -98,7 +99,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     new IndividualDetailsCorrectController(
       new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       fakeAuthAction,
       FakeAllowAccessProvider(),
@@ -106,12 +106,15 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       new DataRequiredActionImpl,
       formProvider,
       registrationConnector,
-      new CountryOptions(environment, frontendAppConfig)
+      new CountryOptions(environment, frontendAppConfig),
+      stubMessagesControllerComponents(),
+      view
     )
 
+  val view: individualDetailsCorrect = app.injector.instanceOf[individualDetailsCorrect]
+
   private def viewAsString(form: Form[_] = form) =
-    individualDetailsCorrect(
-      frontendAppConfig,
+    view(
       form,
       NormalMode,
       individual,

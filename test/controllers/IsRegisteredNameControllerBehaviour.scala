@@ -39,11 +39,10 @@ trait IsRegisteredNameControllerBehaviour {
 
   // scalastyle:off method.length
 
-  def isRegisteredNameController[I <: TypedIdentifier[Boolean]](
-                                                                 viewModel: CommonFormViewModel,
-                                                                 createController: (UserAnswersCacheConnector, Navigator) => IsRegisteredNameController,
-                                                                   id: I = IsRegisteredNameId
-                                                                  ): Unit = {
+  def isRegisteredNameController[I <: TypedIdentifier[Boolean]](viewModel: CommonFormViewModel,
+                                                                createController: (UserAnswersCacheConnector, Navigator) => IsRegisteredNameController,
+                                                                id: I = IsRegisteredNameId
+                                                               ): Unit = {
 
     "return OK and the correct view for a GET request" in {
       val fixture = testFixture(createController)
@@ -97,9 +96,7 @@ object IsRegisteredNameControllerBehaviour {
 
   case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: IsRegisteredNameController)
 
-  def testFixture(
-                   createController: (UserAnswersCacheConnector, Navigator) => IsRegisteredNameController
-                 ): TestFixture = {
+  def testFixture(createController: (UserAnswersCacheConnector, Navigator) => IsRegisteredNameController): TestFixture = {
 
     val connector = new FakeUserAnswersCacheConnector {}
     val navigator = new FakeNavigator(onwardRoute)
@@ -116,14 +113,14 @@ object IsRegisteredNameControllerBehaviour {
     val fakeRequest = FakeRequest("", "")
 
     val request =
-        fakeRequest.withFormUrlEncodedBody(
-          "value" -> booleanValue
-        )
+      fakeRequest.withFormUrlEncodedBody(
+        "value" -> booleanValue
+      )
 
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(UserType.Individual, None, false, None),
+      user = PSAUser(userType = UserType.Individual, nino = None, isExistingPSA = false, existingPSAId = None),
       userAnswers = answers
     )
 
@@ -135,6 +132,6 @@ object IsRegisteredNameControllerBehaviour {
     new IsRegisteredNameFormProvider()(requiredKey)
 
   def viewAsString(base: ControllerSpecBase, form: Form[_], viewModel: CommonFormViewModel): String =
-    isRegisteredName(base.frontendAppConfig, form, viewModel)(base.fakeRequest, base.messages).toString()
+    isRegisteredName(form, viewModel)(base.fakeRequest, base.messages).toString()
 
 }

@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{Message, PersonDetailsViewModel}
 import views.html.register.individual.individualName
@@ -105,17 +106,20 @@ object IndividualNameControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IndividualNameController(frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(form: Form[_] = form): String = individualName(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
+  val view: individualName = app.injector.instanceOf[individualName]
+
+  def viewAsString(form: Form[_] = form): String = view(form, viewModel)(fakeRequest, messages).toString
 
   private val testAnswer = TolerantIndividual(Some("John"), None, Some("Doe"))
 }

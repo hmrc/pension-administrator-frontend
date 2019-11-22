@@ -22,9 +22,13 @@ import controllers.actions.FakeAllowAccessProvider
 import identifiers.TypedIdentifier
 import models.{NormalMode, PersonName}
 import play.api.i18n.MessagesApi
-import play.api.mvc.Call
+import play.api.mvc.{Call, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.Navigator
 import viewmodels.CommonFormWithHintViewModel
+import views.html.personName
+
+import scala.concurrent.ExecutionContextExecutor
 
 class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControllerBehaviour {
 
@@ -36,7 +40,7 @@ class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControl
 
 }
 
-object PersonNameControllerSpec {
+object PersonNameControllerSpec extends ControllerSpecBase {
 
   val psaName = "test name"
 
@@ -51,6 +55,8 @@ object PersonNameControllerSpec {
       psaName
     )
 
+  val personNameView: personName = app.injector.instanceOf[personName]
+
   val testId: TypedIdentifier[PersonName] = new TypedIdentifier[PersonName] {}
 
   def createController(base: ControllerSpecBase)(connector: UserAnswersCacheConnector, nav: Navigator): PersonNameController = {
@@ -64,6 +70,12 @@ object PersonNameControllerSpec {
       override def messagesApi: MessagesApi = base.messagesApi
 
       override val allowAccess = FakeAllowAccessProvider()
+
+      implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+
+      override val controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+
+      val view: personName = personNameView
     }
   }
 

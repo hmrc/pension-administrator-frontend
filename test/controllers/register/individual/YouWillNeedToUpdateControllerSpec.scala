@@ -20,15 +20,25 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.register.individual.youWillNeedToUpdate
 
 class YouWillNeedToUpdateControllerSpec extends ControllerSpecBase {
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new YouWillNeedToUpdateController(frontendAppConfig, messagesApi, FakeAuthAction, FakeAllowAccessProvider(),
-      dataRetrievalAction, new DataRequiredActionImpl)
+  val view: youWillNeedToUpdate = app.injector.instanceOf[youWillNeedToUpdate]
 
-  def viewAsString(): String = youWillNeedToUpdate(frontendAppConfig)(fakeRequest, messages).toString
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new YouWillNeedToUpdateController(
+      frontendAppConfig,
+      FakeAuthAction,
+      FakeAllowAccessProvider(),
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
+    )
+
+  def viewAsString(): String = view()(fakeRequest, messages).toString
 
   "YouWillNeedToUpdate Controller" must {
 

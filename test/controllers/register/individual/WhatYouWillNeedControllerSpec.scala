@@ -19,26 +19,31 @@ package controllers.register.individual
 import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
+import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.individual.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new WhatYouWillNeedController(
       frontendAppConfig,
-      messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString() = whatYouWillNeed(frontendAppConfig)(fakeRequest, messages).toString
+  val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
+
+  private def viewAsString() = view()(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 

@@ -22,6 +22,7 @@ import identifiers.register.individual.IndividualAddressId
 import models.{Address, NormalMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import views.html.register.individual.outsideEuEea
 
@@ -32,14 +33,16 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
     new OutsideEuEeaController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
 
+  val view: outsideEuEea = app.injector.instanceOf[outsideEuEea]
 
   def validData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
@@ -59,7 +62,7 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
     "return 200 and correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
       status(result) mustBe OK
-      contentAsString(result) mustBe outsideEuEea(frontendAppConfig, country)(fakeRequest, messages).toString
+      contentAsString(result) mustBe view(country)(fakeRequest, messages).toString
     }
 
     "redirect to Session Expired on a GET request if no cached data is found" in {
