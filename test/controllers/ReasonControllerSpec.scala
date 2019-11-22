@@ -26,7 +26,7 @@ import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.i18n.MessagesApi
 import play.api.inject._
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
@@ -51,7 +51,7 @@ class ReasonControllerSpec extends ControllerSpecBase {
             val result = controller.onPageLoad(viewModel, UserAnswers())
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual reason(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
+            contentAsString(result) mustEqual reason(form, viewModel)(fakeRequest, messages).toString
         }
       }
 
@@ -65,7 +65,7 @@ class ReasonControllerSpec extends ControllerSpecBase {
             val result = controller.onPageLoad(viewModel, answers)
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual reason(frontendAppConfig, form.fill(testReason), viewModel)(fakeRequest, messages).toString
+            contentAsString(result) mustEqual reason(form.fill(testReason), viewModel)(fakeRequest, messages).toString
         }
       }
     }
@@ -99,7 +99,7 @@ class ReasonControllerSpec extends ControllerSpecBase {
             val result = controller.onSubmit(viewModel, UserAnswers(), request)
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual reason(frontendAppConfig, form.bind(Map("value" -> "{invalid}")), viewModel)(request, messages).toString
+            contentAsString(result) mustEqual reason(form.bind(Map("value" -> "{invalid}")), viewModel)(request, messages).toString
         }
       }
     }
@@ -124,12 +124,16 @@ object ReasonControllerSpec extends ControllerSpecBase {
       entityName = entityName
     )
 
+  val view: reason = app.injector.instanceOf[reason]
+
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: ReasonFormProvider
+                                  formProvider: ReasonFormProvider,
+                                  val controllerComponents: MessagesControllerComponents,
+                                  val view: reason
                                 )(implicit val executionContext: ExecutionContext) extends ReasonController {
 
     def onPageLoad(viewModel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {

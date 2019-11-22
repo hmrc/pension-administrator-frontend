@@ -18,16 +18,18 @@ package controllers
 
 import java.time.LocalDate
 
+import com.google.inject.Inject
 import identifiers.TypedIdentifier
 import models._
 import models.requests.DataRequest
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UserAnswers
 
 import scala.concurrent.Future
@@ -37,9 +39,11 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendBaseController with
   def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(data))
 
-  class TestController extends FrontendBaseController with Retrievals
+  class TestController @Inject()(
+                                  val controllerComponents: MessagesControllerComponents
+                                ) extends FrontendBaseController with Retrievals
 
-  val controller = new TestController()
+  val controller = new TestController(stubMessagesControllerComponents())
 
   val success: String => Future[Result] = { _: String =>
     Future.successful(Ok("Success"))
@@ -153,4 +157,6 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendBaseController with
       result.value mustBe firstName + " " + lastName
     }
   }
+
+  override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 }

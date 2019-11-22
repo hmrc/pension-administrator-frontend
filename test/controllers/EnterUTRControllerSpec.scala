@@ -27,14 +27,14 @@ import models.requests.DataRequest
 import models.{NormalMode, PSAUser, ReferenceValue, UserType}
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.{AnyContent, Call, Request, Result}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.enterUTR
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class EnterUTRControllerSpec extends SpecBase {
 
@@ -60,7 +60,7 @@ class EnterUTRControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewModel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual enterUTR(frontendAppConfig, formProvider(entityName), viewModel)(FakeRequest(), messages).toString
+          contentAsString(result) mustEqual enterUTRView(formProvider(entityName), viewModel)(FakeRequest(), messages).toString
       }
     }
 
@@ -74,8 +74,7 @@ class EnterUTRControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewModel, UserAnswers().set(FakeIdentifier)(testUTR).get)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual enterUTR(
-            frontendAppConfig,
+          contentAsString(result) mustEqual enterUTRView(
             formProvider(entityName).fill(testUTR),
             viewModel
           )(FakeRequest(), messages).toString
@@ -112,8 +111,7 @@ class EnterUTRControllerSpec extends SpecBase {
           val result = controller.onSubmit(viewModel, UserAnswers(), FakeRequest())
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual enterUTR(
-            frontendAppConfig,
+          contentAsString(result) mustEqual enterUTRView(
             formProvider(entityName).bind(Map.empty[String, String]),
             viewModel
           )(FakeRequest(), messages).toString
@@ -122,30 +120,39 @@ class EnterUTRControllerSpec extends SpecBase {
   }
 }
 
-object EnterUTRControllerSpec {
+object EnterUTRControllerSpec extends ControllerSpecBase {
   private val entityName = "entity name"
   private val utr = "1234567890"
   private val testUTR = ReferenceValue(utr)
 
   object FakeIdentifier extends TypedIdentifier[ReferenceValue]
 
+  val enterUTRView: enterUTR = app.injector.instanceOf[enterUTR]
+
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: EnterUTRFormProvider
-                                ) extends EnterUTRController {
+                                  formProvider: EnterUTRFormProvider,
+                                  val controllerComponents: MessagesControllerComponents,
+                                  view: enterUTR
+                                )(implicit val executionContext: ExecutionContext) extends EnterUTRController {
+
+    def dataRequest(answers: UserAnswers): DataRequest[AnyContent]  =
+      DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
 
     def onPageLoad(viewmodel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, formProvider(entityName), viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+      implicit val request: DataRequest[AnyContent]  = dataRequest(answers)
+      get(FakeIdentifier, formProvider(entityName), viewmodel)
     }
 
     def onSubmit(viewmodel: CommonFormWithHintViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, NormalMode, formProvider(entityName), viewmodel)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+      implicit val request: DataRequest[AnyContent]  = dataRequest(answers)
+      post(FakeIdentifier, NormalMode, formProvider(entityName), viewmodel)
     }
+
+    override protected def view: enterUTR = enterUTRView
   }
 
 }
