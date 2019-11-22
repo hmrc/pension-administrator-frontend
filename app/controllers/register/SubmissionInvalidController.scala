@@ -26,7 +26,6 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.submissionInvalid
 
 class SubmissionInvalidController @Inject()(appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,

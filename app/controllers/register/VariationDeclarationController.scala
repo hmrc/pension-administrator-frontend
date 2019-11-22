@@ -36,7 +36,6 @@ import views.html.register.variationDeclaration
 import scala.concurrent.{ExecutionContext, Future}
 
 class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
                                                authenticate: AuthAction,
                                                allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,

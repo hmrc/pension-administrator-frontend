@@ -31,7 +31,6 @@ import controllers.register.routes._
 import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           @RegisterCompany navigator: Navigator,
                                           authenticate: AuthAction,
                                           val controllerComponents: MessagesControllerComponents,

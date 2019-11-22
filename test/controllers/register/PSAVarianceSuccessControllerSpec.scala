@@ -28,6 +28,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UserAnswers
 import views.html.register.psaVarianceSuccess
 
@@ -61,9 +62,10 @@ class PSAVarianceSuccessControllerSpec extends ControllerSpecBase {
 
 object PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private val psaName: String = "Mark Wright"
   private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val psaUser = PSAUser(UserType.Individual, None, false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+
+  val view: psaVarianceSuccess = app.injector.instanceOf[psaVarianceSuccess]
 
   private val individual = UserAnswers(Json.obj())
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
@@ -73,15 +75,16 @@ object PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoS
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PSAVarianceSuccessController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction(UserType.Individual),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      fakeUserAnswersCacheConnector
+      fakeUserAnswersCacheConnector,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewAsString(userAnswers: UserAnswers) =
-    psaVarianceSuccess(frontendAppConfig, None)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
+    view(None)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 
 }

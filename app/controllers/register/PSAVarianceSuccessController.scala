@@ -46,7 +46,6 @@ import views.html.register.psaVarianceSuccess
 import scala.concurrent.ExecutionContext
 
 class PSAVarianceSuccessController @Inject()(appConfig: FrontendAppConfig,
-                                             override val messagesApi: MessagesApi,
                                              authenticate: AuthAction,
                                              allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,

@@ -21,22 +21,26 @@ import controllers.actions.{DataRetrievalAction, FakeAuthAction}
 import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
+
+  val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
 
   private def onwardRoute: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new WhatYouWillNeedController(
       frontendAppConfig,
-      messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction
+      FakeAuthAction,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString(): String = whatYouWillNeed(frontendAppConfig, onwardRoute)(fakeRequest, messages).toString
+  private def viewAsString(): String = view(onwardRoute)(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 

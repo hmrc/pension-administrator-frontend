@@ -30,7 +30,6 @@ import views.html.register.variationNoLongerFitAndProper
 import scala.concurrent.ExecutionContext
 
 class VariationNoLongerFitAndProperController @Inject()(appConfig: FrontendAppConfig,
-                                                        override val messagesApi: MessagesApi,
                                                         authenticate: AuthAction,
                                                         allowAccess: AllowAccessActionProvider,
                                                         getData: DataRetrievalAction,

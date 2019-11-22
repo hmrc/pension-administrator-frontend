@@ -16,7 +16,8 @@
 
 package controllers.register
 
-import connectors.{FakeUserAnswersCacheConnector, PensionsSchemeConnector}
+import connectors.PensionsSchemeConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
@@ -27,6 +28,7 @@ import models.{NormalMode, TolerantIndividual, UpdateMode, UserType}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.variationDeclaration
 
@@ -112,22 +114,25 @@ object VariationDeclarationControllerSpec extends ControllerSpecBase {
 
   private val fakePensionsSchemeConnector: FakePensionsSchemeConnector = new FakePensionsSchemeConnector()
 
+  val view: variationDeclaration = app.injector.instanceOf[variationDeclaration]
+
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction,
                          userType: UserType = UserType.Organisation) =
     new VariationDeclarationController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction(userType, psaId),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,
       FakeUserAnswersCacheConnector,
-      fakePensionsSchemeConnector
+      fakePensionsSchemeConnector,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewAsString(): String =
-    variationDeclaration(frontendAppConfig, None, true, href)(fakeRequest, messages).toString
+    view(None, true, href)(fakeRequest, messages).toString
 
 }
 

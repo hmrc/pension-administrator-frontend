@@ -36,7 +36,6 @@ import views.html.register.variationDeclarationFitAndProper
 import scala.concurrent.{ExecutionContext, Future}
 
 class VariationDeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,
-                                                           override val messagesApi: MessagesApi,
                                                            authenticate: AuthAction,
                                                            allowAccess: AllowAccessActionProvider,
                                                            getData: DataRetrievalAction,

@@ -25,7 +25,6 @@ import views.html.unauthorisedAssistant
 
 class UnauthorisedAssistantController @Inject()(
                                                  appConfig: FrontendAppConfig,
-                                                 override val messagesApi: MessagesApi,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: unauthorisedAssistant
                                                ) extends FrontendBaseController with I18nSupport {

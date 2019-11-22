@@ -26,16 +26,18 @@ import identifiers.register.{DeclarationChangedId, PAInDeclarationJourneyId, Var
 import models.{CheckUpdateMode, TolerantIndividual, UpdateMode, UserType}
 import play.api.data.Form
 import play.api.libs.json._
+import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.variationWorkingKnowledge
 
 class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new VariationWorkingKnowledgeFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
   private val individual = UserAnswers(Json.obj())
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
@@ -44,20 +46,23 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
   val existingData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(individual.set(VariationWorkingKnowledgeId)(true).asOpt.value.json))
 
+  val view: variationWorkingKnowledge = app.injector.instanceOf[variationWorkingKnowledge]
+
   def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction) =
     new VariationWorkingKnowledgeController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction(UserType.Individual),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(form: Form[_] = form) = variationWorkingKnowledge(frontendAppConfig, form, None, UpdateMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, None, UpdateMode)(fakeRequest, messages).toString
 
   "VariationWorkingKnowledge Controller" must {
 

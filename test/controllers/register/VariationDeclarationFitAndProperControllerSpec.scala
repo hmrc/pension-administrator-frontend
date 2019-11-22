@@ -17,8 +17,7 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors._
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.VariationDeclarationFitAndProperFormProvider
@@ -29,6 +28,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.variationDeclarationFitAndProper
 
@@ -89,6 +89,8 @@ object VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase
 
   private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
+  val view: variationDeclarationFitAndProper = app.injector.instanceOf[variationDeclarationFitAndProper]
+
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
                           userType: UserType = UserType.Organisation,
@@ -96,19 +98,19 @@ object VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase
                         ) =
     new VariationDeclarationFitAndProperController(
       appConfig,
-      messagesApi,
       FakeAuthAction(userType),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,
       new VariationDeclarationFitAndProperFormProvider(),
-      fakeUserAnswersCacheConnector
+      fakeUserAnswersCacheConnector,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewAsString(psaName: String, form: Form[_]) =
-    variationDeclarationFitAndProper(
-      frontendAppConfig,
+    view(
       form,
       Some(psaName)
     )(fakeRequest, messages).toString
