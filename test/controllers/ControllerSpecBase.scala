@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import controllers.actions._
 import identifiers.register.adviser.AdviserNameId
