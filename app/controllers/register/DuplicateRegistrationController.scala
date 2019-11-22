@@ -29,7 +29,6 @@ import views.html.register.duplicateRegistration
 import scala.concurrent.Future
 
 class DuplicateRegistrationController @Inject()(appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
                                                 authenticate: AuthAction,
                                                 allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,

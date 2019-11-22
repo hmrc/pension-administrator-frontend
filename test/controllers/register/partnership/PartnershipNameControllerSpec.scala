@@ -25,10 +25,13 @@ import identifiers.register.BusinessTypeId
 import models.register.BusinessType
 import models.requests.DataRequest
 import models.{PSAUser, UserType}
+import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
+import views.html.register.businessName
 
 class PartnershipNameControllerSpec extends ControllerSpecBase with BusinessNameControllerBehaviour {
 
@@ -41,23 +44,26 @@ class PartnershipNameControllerSpec extends ControllerSpecBase with BusinessName
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
+  val view: businessName = app.injector.instanceOf[businessName]
+
   def createController(userAnswers: UserAnswers): PartnershipNameController =
     new PartnershipNameController(
       frontendAppConfig,
-      messagesApi,
       new FakeUserAnswersCacheConnector{},
       new FakeNavigator(onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       new FakeDataRetrievalAction(Some(userAnswers.json)),
       new DataRequiredActionImpl(),
-      new BusinessNameFormProvider()
+      new BusinessNameFormProvider(),
+      stubMessagesControllerComponents(),
+      view
     ){
       override def href: Call = onwardRoute
     }
 
   val formProvider = new BusinessNameFormProvider()
-  val form = formProvider(
+  val form: Form[String] = formProvider(
     requiredKey = "partnershipName.error.required",
     invalidKey = "partnershipName.error.invalid",
     lengthKey = "partnershipName.error.length")

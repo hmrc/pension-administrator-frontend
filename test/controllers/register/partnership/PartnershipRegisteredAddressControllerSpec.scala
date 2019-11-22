@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -43,10 +44,11 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
   val fakeAuditService = new StubSuccessfulAuditService()
   private val partnershipName = "Test Partnership Name"
 
+  val view: nonukAddress = app.injector.instanceOf[nonukAddress]
+
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipRegisteredAddressController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       fakeRegistrationConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -55,7 +57,9 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewModel = ManualAddressViewModel(
@@ -68,8 +72,7 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
   )
 
   private def viewAsString(form: Form[_] = form) : String =
-    nonukAddress(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages).toString()

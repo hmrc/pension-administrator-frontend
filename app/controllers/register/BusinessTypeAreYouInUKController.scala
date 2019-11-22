@@ -33,7 +33,6 @@ import views.html.register.areYouInUK
 import scala.concurrent.ExecutionContext
 
 class BusinessTypeAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
-                                                 override val messagesApi: MessagesApi,
                                                  override val dataCacheConnector: UserAnswersCacheConnector,
                                                  @Register override val navigator: Navigator,
                                                  override val allowAccess: AllowAccessActionProvider,

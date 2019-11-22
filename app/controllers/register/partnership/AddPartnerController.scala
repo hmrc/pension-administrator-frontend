@@ -38,7 +38,6 @@ import scala.concurrent.ExecutionContext
 
 class AddPartnerController @Inject()(
                                       override val appConfig: FrontendAppConfig,
-                                      override val messagesApi: MessagesApi,
                                       override val cacheConnector: UserAnswersCacheConnector,
                                       @PartnershipPartner override val navigator: Navigator,
                                       authenticate: AuthAction,

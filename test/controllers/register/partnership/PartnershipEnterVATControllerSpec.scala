@@ -20,33 +20,33 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.EnterVATFormProvider
-import identifiers.register.{BusinessNameId, EnterVATId}
 import models.NormalMode
-import play.api.data.Form
-import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
-import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterVAT
 
 class PartnershipEnterVATControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
+  val view: enterVAT = app.injector.instanceOf[enterVAT]
+
   val formProvider = new EnterVATFormProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = dontGetAnyData) =
     new PartnershipEnterVATController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   val testAnswer = "123456789"

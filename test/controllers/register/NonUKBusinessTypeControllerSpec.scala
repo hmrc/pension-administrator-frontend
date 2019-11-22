@@ -19,13 +19,14 @@ package controllers.register
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.{BusinessTypeFormProvider, NonUKBusinessTypeFormProvider}
+import forms.register.NonUKBusinessTypeFormProvider
 import identifiers.register.NonUKBusinessTypeId
 import models.NormalMode
 import models.register.NonUKBusinessType
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.nonUKBusinessType
 
@@ -37,6 +38,8 @@ class NonUKBusinessTypeControllerSpec extends ControllerSpecBase {
   private val form = formProvider()
   private val nonUKBusinessTypeOptions = NonUKBusinessType.options
 
+  val view: nonUKBusinessType = app.injector.instanceOf[nonUKBusinessType]
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new NonUKBusinessTypeController(
       frontendAppConfig,
@@ -47,10 +50,12 @@ class NonUKBusinessTypeControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString(form: Form[_] = form) = nonUKBusinessType(frontendAppConfig, form)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = view(form)(fakeRequest, messages).toString
 
   "NonUKBusinessType Controller" must {
 

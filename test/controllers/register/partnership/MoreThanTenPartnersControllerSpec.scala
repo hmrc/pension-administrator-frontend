@@ -21,30 +21,22 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, FakeAllowAccessProvider, FakeAuthAction}
 import identifiers.register.partnership.MoreThanTenPartnersId
 import models.requests.DataRequest
-import models.{Mode, NormalMode, PSAUser, UserType}
+import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{Message, MoreThanTenViewModel}
+import views.html.moreThanTen
 
 class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
 
   import MoreThanTenPartnersControllerSpec._
 
-  private def viewModel(mode: Mode): MoreThanTenViewModel =
-    MoreThanTenViewModel(
-      title = "moreThanTenPartners.title",
-      heading = Message("moreThanTenPartners.heading"),
-      hint = "moreThanTenPartners.hint",
-      postCall = routes.MoreThanTenPartnersController.onSubmit(mode),
-      id = MoreThanTenPartnersId,
-      None
-    )
-
   "MoreThanTenPartnersController" must {
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(this).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller.onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -52,7 +44,7 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-      val result = controller(this).onSubmit(NormalMode)(postRequest)
+      val result = controller.onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -60,7 +52,7 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
 
     "check the view model is correct" in {
       implicit val request: DataRequest[AnyContent] =
-        DataRequest(fakeRequest, "", PSAUser(UserType.Individual, None, false, None, None), UserAnswers())
+        DataRequest(fakeRequest, "", PSAUser(UserType.Individual, None, isExistingPSA = false, None, None), UserAnswers())
 
       val expected: MoreThanTenViewModel = MoreThanTenViewModel(
         title = "moreThanTenPartners.title",
@@ -71,24 +63,27 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
         None
       )
 
-      val actual = controller(this).viewModel(NormalMode)
+      val actual = controller.viewModel(NormalMode)
 
       actual mustBe expected
     }
   }
 }
 
-object MoreThanTenPartnersControllerSpec {
+object MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
 
-  def controller(base: ControllerSpecBase): MoreThanTenPartnersController =
+  val view: moreThanTen = app.injector.instanceOf[moreThanTen]
+
+  def controller: MoreThanTenPartnersController =
     new MoreThanTenPartnersController(
-      base.frontendAppConfig,
-      base.messagesApi,
+      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       FakeNavigator,
       FakeAuthAction,
       FakeAllowAccessProvider(),
-      base.dontGetAnyData,
-      new DataRequiredActionImpl
+      dontGetAnyData,
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 }

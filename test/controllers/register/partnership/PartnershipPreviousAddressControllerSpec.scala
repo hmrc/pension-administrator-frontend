@@ -24,7 +24,7 @@ import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipPreviousAddressId
-import models.{Address, NormalMode, TolerantAddress}
+import models.{Address, NormalMode}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -32,6 +32,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -85,8 +86,6 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
         None,
         "existing-country"
       )
-
-      val selectedAddress = TolerantAddress(None, None, None, None, None, None)
 
       val data =
         UserAnswers()
@@ -161,6 +160,8 @@ object PartnershipPreviousAddressControllerSpec extends ControllerSpecBase {
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
+
   val messagePrefix = "previousAddress"
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")
@@ -178,7 +179,6 @@ object PartnershipPreviousAddressControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipPreviousAddressController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAllowAccessProvider(),
@@ -187,8 +187,10 @@ object PartnershipPreviousAddressControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      fakeAuditService
+      fakeAuditService,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
 }

@@ -25,6 +25,7 @@ import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
@@ -36,17 +37,20 @@ class BusinessTypeAreYouInUKControllerSpec extends ControllerSpecBase {
   private val formProvider = new AreYouInUKFormProvider()
   private val form = formProvider()
 
+  val view: areYouInUK = app.injector.instanceOf[areYouInUK]
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new BusinessTypeAreYouInUKController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewmodel(mode: Mode) =
@@ -58,7 +62,7 @@ class BusinessTypeAreYouInUKControllerSpec extends ControllerSpecBase {
       p2 = Some("areYouInUK.check.provideNonUkAddress")
     )
 
-  private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode) = areYouInUK(frontendAppConfig, form, viewmodel(mode))(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode) = view(form, viewmodel(mode))(fakeRequest, messages).toString
 
   "Are You In the  UK Controller" must {
 

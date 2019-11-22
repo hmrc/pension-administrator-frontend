@@ -26,6 +26,7 @@ import models.register.BusinessType
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.businessType
 
@@ -37,20 +38,23 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
   private val form = formProvider()
   private val businessTypeOptions = BusinessType.options
 
+  val view: businessType = app.injector.instanceOf[businessType]
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new BusinessTypeController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString(form: Form[_] = form) = businessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeRequest, messages).toString
 
   "BusinessType Controller" must {
 

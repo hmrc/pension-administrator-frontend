@@ -30,7 +30,6 @@ import views.html.register.incompleteChanges
 import scala.concurrent.{ExecutionContext, Future}
 
 class IncompleteChangesController @Inject()(appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,

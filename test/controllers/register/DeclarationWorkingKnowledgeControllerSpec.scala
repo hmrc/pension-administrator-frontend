@@ -25,30 +25,35 @@ import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 import play.api.libs.json._
+import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.declarationWorkingKnowledge
 
 class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new DeclarationWorkingKnowledgeFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
+
+  val view: declarationWorkingKnowledge = app.injector.instanceOf[declarationWorkingKnowledge]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DeclarationWorkingKnowledgeController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(form: Form[_] = form) = declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, NormalMode)(fakeRequest, messages).toString
 
   "DeclarationWorkingKnowledge Controller" must {
 

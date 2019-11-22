@@ -51,7 +51,6 @@ import views.html.register.anyMoreChanges
 import scala.concurrent.{ExecutionContext, Future}
 
 class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
                                          dataCacheConnector: UserAnswersCacheConnector,
                                          @Variations navigator: Navigator,
                                          authenticate: AuthAction,

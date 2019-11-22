@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.OrganisationNameViewModel
 import views.html.organisationName
@@ -33,6 +34,8 @@ import views.html.organisationName
 class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
+  val view: organisationName = app.injector.instanceOf[organisationName]
 
   val formProvider = new BusinessNameFormProvider()
   val form: Form[String] = formProvider(
@@ -48,20 +51,20 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new controllers.register.partnership.PartnershipRegisteredNameController(
+    new PartnershipRegisteredNameController(
       frontendAppConfig,
-      messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      FakeUserAnswersCacheConnector
-
+      FakeUserAnswersCacheConnector,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(form: Form[_] = form): String = organisationName(frontendAppConfig, form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, viewmodel)(fakeRequest, messages).toString
 
   "CompanyRegisteredName Controller" when {
 

@@ -17,7 +17,6 @@
 package controllers.register
 
 import controllers.ControllerSpecBase
-import forms.BusinessNameFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.{BusinessNameId, BusinessTypeId}
 import models.requests.DataRequest
@@ -91,7 +90,7 @@ object BusinessNameControllerBehaviour extends ControllerSpecBase {
 
   private def businessType(answers: UserAnswers) = answers.get(BusinessTypeId).map {
     businessType =>
-    messagesApi(s"businessType.${businessType.toString}").toLowerCase}
+    messages(s"businessType.${businessType.toString}").toLowerCase}
     .getOrElse("Missing business type in user answers")
 
   private val businessname = "test limited company"
@@ -118,8 +117,10 @@ object BusinessNameControllerBehaviour extends ControllerSpecBase {
 
   }
 
+  val view: businessName = app.injector.instanceOf[businessName]
+
   def viewAsString(form: Form[_],
                    answers: UserAnswers, href: Call = onwardRoute): String =
-    businessName(frontendAppConfig, form, businessType(answers), href)(fakeRequest, messages).toString()
+    view(form, businessType(answers), href)(fakeRequest, messages).toString()
 
 }

@@ -24,6 +24,7 @@ import models._
 import models.register.BusinessType
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
@@ -252,6 +253,8 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private val businessName = "Test Partnership"
 
+  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
+
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new CheckYourAnswersController(
       frontendAppConfig,
@@ -260,22 +263,11 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       new FakeNavigator(desiredRoute = onwardRoute),
-      messagesApi,
-      new FakeCountryOptions(environment, frontendAppConfig)
+      new FakeCountryOptions(environment, frontendAppConfig),
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private val partnershipContactDetails = AnswerSection(
-    Some("checkyouranswers.partnership.contact.details.heading"),
-    Seq.empty
-  )
-  private val partnershipDetails = AnswerSection(
-    Some("checkyouranswers.partnership.details"),
-    Seq.empty
-  )
-  private val contactDetails = AnswerSection(
-    Some("common.checkYourAnswers.contact.details.heading"),
-    Seq.empty
-  )
   private val address = Address(
     "address-line-1",
     "address-line-2",
@@ -306,8 +298,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
     status(result) mustBe OK
     contentAsString(result) mustBe
-      check_your_answers(
-        frontendAppConfig,
+      view(
         sections,
          call,
         None,

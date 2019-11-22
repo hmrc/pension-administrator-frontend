@@ -18,7 +18,7 @@ package controllers.register
 
 import config.FrontendAppConfig
 import connectors._
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
@@ -35,11 +35,12 @@ import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.{JsString, Json, Writes}
+import play.api.libs.json.{JsObject, JsString, Json, Writes}
 import play.api.mvc.AnyContent
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, Upstream4xxResponse}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declaration
 
@@ -168,10 +169,12 @@ object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
   val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val email = "test@test.com"
   val businessName = "MyCompany"
-  val registrationInfo = RegistrationInfo(Partnership, "", false, UK, Some(UTR), Some(""))
+  val registrationInfo = RegistrationInfo(Partnership, "", noIdentifier = false, UK, Some(UTR), Some(""))
   private val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
     BusinessNameId.toString -> businessName
   )
+
+  val view: declaration = app.injector.instanceOf[declaration]
 
   private val validPsaResponse = PsaSubscriptionResponse("A0123456")
   private val knownFacts = Some(KnownFacts(
@@ -188,7 +191,9 @@ object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
         response
       }
 
-      override def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = ???
+      override def updatePsa(psaId: String, answers: UserAnswers
+                            )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] =
+        Future.successful()
     }
 
   private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
@@ -197,8 +202,11 @@ object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
     new TaxEnrolmentsConnector {
-      override def enrol(enrolmentKey: String, knownFacts: KnownFacts)(implicit w: Writes[KnownFacts],
-                                                                       hc: HeaderCarrier, executionContext: ExecutionContext, request: DataRequest[AnyContent]) =
+      override def enrol(enrolmentKey: String, knownFacts: KnownFacts
+                        )(implicit w: Writes[KnownFacts],
+                          hc: HeaderCarrier,
+                          executionContext: ExecutionContext,
+                          request: DataRequest[AnyContent]): Future[HttpResponse] =
         enrolResponse.status match {
           case NO_CONTENT => Future.successful(enrolResponse)
           case ex => Future.failed(new HttpException("Fail", ex))
@@ -207,7 +215,7 @@ object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   }
 
-  val validData = Json.obj(DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString))
+  val validData: JsObject = Json.obj(DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString))
   val dataRetrieval = new FakeDataRetrievalAction(Some(validData))
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -224,7 +232,6 @@ object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
                         ): DeclarationController =
     new DeclarationController(
       appConfig,
-      messagesApi,
       FakeAuthAction(userType),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
@@ -234,12 +241,13 @@ object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
       pensionsSchemeConnector,
       knownFactsRetrieval,
       enrolments,
-      mockEmailConnector
+      mockEmailConnector,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString(form: Form[_] = form) =
-    declaration(
-      frontendAppConfig, true
+  private def viewAsString(form: Form[_] = form): String =
+    view(workingKnowledge = true
     )(fakeRequest, messages).toString
 
 }

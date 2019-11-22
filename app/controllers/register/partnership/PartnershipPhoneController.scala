@@ -37,7 +37,6 @@ import scala.concurrent.ExecutionContext
 
 class PartnershipPhoneController @Inject()(@Partnership val navigator: Navigator,
                                            val appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
                                            val cacheConnector: UserAnswersCacheConnector,
                                            authenticate: AuthAction,
                                            val allowAccess: AllowAccessActionProvider,
