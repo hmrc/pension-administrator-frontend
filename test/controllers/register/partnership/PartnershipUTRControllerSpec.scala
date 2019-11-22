@@ -16,14 +16,13 @@
 
 package controllers.register.partnership
 
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.register.UTRControllerBehaviour
 import identifiers.register.BusinessUTRId
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, UserType}
+import models.{PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{SEE_OTHER, redirectLocation, status, _}

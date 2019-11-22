@@ -45,7 +45,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeclarationController @Inject()(appConfig: FrontendAppConfig,
-                                      override val messagesApi: MessagesApi,
                                       authenticate: AuthAction,
                                       allowAccess: AllowAccessActionProvider,
                                       getData: DataRetrievalAction,

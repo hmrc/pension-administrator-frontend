@@ -34,7 +34,6 @@ import views.html.register.businessType
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessTypeController @Inject()(appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
                                        dataCacheConnector: UserAnswersCacheConnector,
                                        @Register navigator: Navigator,
                                        authenticate: AuthAction,

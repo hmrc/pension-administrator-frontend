@@ -20,6 +20,7 @@ import akka.stream.Materializer
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
+import controllers.ControllerSpecBase
 import forms.BusinessNameFormProvider
 import identifiers.TypedIdentifier
 import models._
@@ -32,14 +33,15 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, Call, Request, Result}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.OrganisationNameViewModel
 import views.html.organisationName
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class OrganisationNameControllerSpec extends WordSpec with MustMatchers with MockitoSugar {
 
@@ -66,7 +68,6 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
 
           implicit val materializer: Materializer = app.materializer
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = new BusinessNameFormProvider()
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -74,7 +75,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual organisationName(appConfig, formProvider(), viewmodel)(request, messages).toString
+          contentAsString(result) mustEqual view(formProvider(), viewmodel)(request, messages).toString
       }
     }
 
@@ -87,7 +88,6 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
 
           implicit val materializer: Materializer = app.materializer
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = new BusinessNameFormProvider()
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -96,8 +96,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
           val result = controller.onPageLoad(viewmodel, answers)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual organisationName(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider().fill(testCompanyName),
             viewmodel
           )(request, messages).toString
@@ -143,7 +142,6 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
 
           implicit val materializer: Materializer = app.materializer
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = new BusinessNameFormProvider()
           val request = FakeRequest().withFormUrlEncodedBody(("value", ""))
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -151,8 +149,7 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
           val result = controller.onSubmit(viewmodel, UserAnswers(), request)
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual organisationName(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider().bind(Map.empty[String, String]),
             viewmodel
           )(request, messages).toString
@@ -189,17 +186,20 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
   }
 }
 
-object OrganisationNameControllerSpec extends OptionValues {
+object OrganisationNameControllerSpec extends ControllerSpecBase with OptionValues {
 
   object FakeIdentifier extends TypedIdentifier[String]
+
+  val view: organisationName = app.injector.instanceOf[organisationName]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: BusinessNameFormProvider
-                                ) extends OrganisationNameController {
+                                  formProvider: BusinessNameFormProvider,
+                                  val view: organisationName
+                                )(implicit val executionContext: ExecutionContext) extends OrganisationNameController {
 
     override val form: Form[String] = formProvider()
 
@@ -212,6 +212,8 @@ object OrganisationNameControllerSpec extends OptionValues {
       post(FakeIdentifier, viewmodel)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
 }

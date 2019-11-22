@@ -21,20 +21,22 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
+import controllers.ControllerSpecBase
 import forms.EmailFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.{AnyContent, Call, Request, Result}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.email
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class EmailAddressControllerSpec extends SpecBase {
 
@@ -60,7 +62,7 @@ class EmailAddressControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual email(frontendAppConfig, formProvider(), viewmodel)(FakeRequest(), messages).toString
+          contentAsString(result) mustEqual view(formProvider(), viewmodel)(FakeRequest(), messages).toString
       }
     }
 
@@ -74,8 +76,7 @@ class EmailAddressControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewmodel, UserAnswers().set(FakeIdentifier)("test@test.com").get)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual email(
-            frontendAppConfig,
+          contentAsString(result) mustEqual view(
             formProvider().fill("test@test.com"),
             viewmodel
           )(FakeRequest(), messages).toString
@@ -112,8 +113,7 @@ class EmailAddressControllerSpec extends SpecBase {
           val result = controller.onSubmit(viewmodel, UserAnswers(), FakeRequest())
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual email(
-            frontendAppConfig,
+          contentAsString(result) mustEqual view(
             formProvider().bind(Map.empty[String, String]),
             viewmodel
           )(FakeRequest(), messages).toString
@@ -122,18 +122,21 @@ class EmailAddressControllerSpec extends SpecBase {
   }
 }
 
-object EmailAddressControllerSpec {
+object EmailAddressControllerSpec extends ControllerSpecBase {
 
   object FakeIdentifier extends TypedIdentifier[String]
   val companyName = "test company name"
+
+  val view: email = app.injector.instanceOf[email]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: EmailFormProvider
-                                ) extends EmailAddressController {
+                                  formProvider: EmailFormProvider,
+                                  val view: email
+                                )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
     def onPageLoad(viewmodel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
@@ -144,6 +147,8 @@ object EmailAddressControllerSpec {
       post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 }
 

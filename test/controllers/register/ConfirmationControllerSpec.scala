@@ -29,6 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UserAnswers
 import views.html.register.confirmation
 
@@ -75,7 +76,9 @@ object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val psaId: String = "A1234567"
   private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val onwardRoute = controllers.routes.LogoutController.onPageLoad()
-  private val psaUser = PSAUser(UserType.Individual, None, false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+
+  val view: confirmation = app.injector.instanceOf[confirmation]
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmationController(
@@ -85,11 +88,13 @@ object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      fakeUserAnswersCacheConnector
+      fakeUserAnswersCacheConnector,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewAsString() =
-    confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages).toString
+    view(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages).toString
 
 
 }

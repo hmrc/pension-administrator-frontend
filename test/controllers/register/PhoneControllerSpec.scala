@@ -21,20 +21,22 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
+import controllers.ControllerSpecBase
 import forms.PhoneFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.{AnyContent, Call, Request, Result}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.phone
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PhoneControllerSpec extends SpecBase {
 
@@ -60,7 +62,7 @@ class PhoneControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual phone(frontendAppConfig, formProvider(), viewmodel)(FakeRequest(), messages).toString
+          contentAsString(result) mustEqual view(formProvider(), viewmodel)(FakeRequest(), messages).toString
       }
     }
 
@@ -74,8 +76,7 @@ class PhoneControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewmodel, UserAnswers().set(FakeIdentifier)("1234").get)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual phone(
-            frontendAppConfig,
+          contentAsString(result) mustEqual view(
             formProvider().fill("1234"),
             viewmodel
           )(FakeRequest(), messages).toString
@@ -112,8 +113,7 @@ class PhoneControllerSpec extends SpecBase {
           val result = controller.onSubmit(viewmodel, UserAnswers(), FakeRequest())
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual phone(
-            frontendAppConfig,
+          contentAsString(result) mustEqual view(
             formProvider().bind(Map.empty[String, String]),
             viewmodel
           )(FakeRequest(), messages).toString
@@ -121,18 +121,21 @@ class PhoneControllerSpec extends SpecBase {
     }
   }
 }
-object PhoneControllerSpec {
+object PhoneControllerSpec extends ControllerSpecBase {
 
   object FakeIdentifier extends TypedIdentifier[String]
   val companyName = "test company name"
+
+  val view: phone = app.injector.instanceOf[phone]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: PhoneFormProvider
-                                ) extends PhoneController {
+                                  formProvider: PhoneFormProvider,
+                                  val view: phone
+                                )(implicit val executionContext: ExecutionContext) extends PhoneController {
 
     def onPageLoad(viewmodel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider(), viewmodel)(DataRequest(FakeRequest(), "cacheId",
@@ -143,6 +146,8 @@ object PhoneControllerSpec {
       post(FakeIdentifier, NormalMode, formProvider(), viewmodel)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 }
 

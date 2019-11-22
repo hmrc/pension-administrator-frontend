@@ -22,6 +22,7 @@ import controllers.actions._
 import forms.register.AnyMoreChangesFormProvider
 import play.api.data.Form
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.anyMoreChanges
 
@@ -29,22 +30,25 @@ import views.html.register.anyMoreChanges
 class AnyMoreChangesControllerSpec extends ControllerSpecBase {
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
   val formProvider = new AnyMoreChangesFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
+
+  val view: anyMoreChanges = app.injector.instanceOf[anyMoreChanges]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData): AnyMoreChangesController =
     new AnyMoreChangesController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString(form: Form[_] = form) = anyMoreChanges(frontendAppConfig, form, None)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = view(form, None)(fakeRequest, messages).toString
 
   "AnyMoreChangesController" must {
 
