@@ -19,7 +19,7 @@ package controllers.actions
 import connectors.RegistrationConnector
 import models._
 import models.RegistrationLegalStatus
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

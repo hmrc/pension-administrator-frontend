@@ -17,8 +17,8 @@
 package controllers.register.individual
 
 import base.CSRFRequest
-import connectors.cache.UserAnswersCacheConnector
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
@@ -47,7 +47,7 @@ class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSp
         implicit app => addToken(FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))),
         (request, result) => {
           status(result) mustBe OK
-          contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode), NormalMode)(request, messages).toString()
+          contentAsString(result) mustBe postcodeLookup(form, viewModel(NormalMode), NormalMode)(request, messages).toString()
         }
       )
     }
@@ -93,7 +93,7 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   private val onwardRoute = controllers.register.individual.routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
-  private def requestResult[T](request: (Application) => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
+  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
 
     running(_.overrides(
       bind[AuthAction].to(FakeAuthAction),

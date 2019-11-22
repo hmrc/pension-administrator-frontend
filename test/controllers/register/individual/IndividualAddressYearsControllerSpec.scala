@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
@@ -48,13 +49,22 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
-    new IndividualAddressYearsController(new FakeNavigator(desiredRoute = onwardRoute), frontendAppConfig, messagesApi,
+    new IndividualAddressYearsController(
+      new FakeNavigator(desiredRoute = onwardRoute),
+      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       FakeAuthAction,
       FakeAllowAccessProvider(),
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
+    )
 
-  def viewAsString(form: Form[_] = form): String = addressYears(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages).toString
+  val view: addressYears = app.injector.instanceOf[addressYears]
+
+  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
     .set(IndividualDetailsId)(individualDetails)

@@ -22,7 +22,9 @@ import controllers.register.individual.CheckYourAnswersController.postUrl
 import identifiers.register.individual._
 import models._
 import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
@@ -194,9 +196,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
-  private val defaultIndividual = Message("theIndividual").resolve
-
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private def fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
@@ -216,6 +216,8 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     "country"
   )
 
+  val cyaView: check_your_answers = app.injector.instanceOf[check_your_answers]
+
   private def controller(getData: DataRetrievalAction = getIndividual): CheckYourAnswersController = {
     new CheckYourAnswersController(
       appConfig = frontendAppConfig,
@@ -225,7 +227,9 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       requireData = new DataRequiredActionImpl(),
       navigator = fakeNavigator,
       messagesApi = messagesApi,
-      checkYourAnswersFactory = checkYourAnswersFactory
+      checkYourAnswersFactory = checkYourAnswersFactory,
+      controllerComponents = stubMessagesControllerComponents(),
+      view = cyaView
     )
   }
 
@@ -250,8 +254,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
     status(result) mustBe OK
     contentAsString(result) mustBe
-      check_your_answers(
-        frontendAppConfig,
+      cyaView(
         sections,
         postUrl,
         None,

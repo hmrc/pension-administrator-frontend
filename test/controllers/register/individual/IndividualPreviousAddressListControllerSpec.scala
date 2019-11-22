@@ -79,7 +79,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         val viewModel: AddressListViewModel = addressListViewModel(addresses)
         val form = new AddressListFormProvider()(viewModel.addresses)
 
-        contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
+        contentAsString(result) mustBe addressList(form, viewModel, NormalMode)(request, messages).toString
       }
 
     }
