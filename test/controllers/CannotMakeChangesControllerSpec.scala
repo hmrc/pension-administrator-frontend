@@ -23,6 +23,7 @@ import models.requests.DataRequest
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UserAnswers
 import views.html.cannotMakeChanges
 
@@ -62,14 +63,17 @@ object CannotMakeChangesControllerSpec extends ControllerSpecBase with MockitoSu
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CannotMakeChangesController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction(UserType.Individual),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
+  val view: cannotMakeChanges = app.injector.instanceOf[cannotMakeChanges]
+
   private def viewAsString(userAnswers: UserAnswers) =
-    cannotMakeChanges(frontendAppConfig, Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
+    view(Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 }
 
 
