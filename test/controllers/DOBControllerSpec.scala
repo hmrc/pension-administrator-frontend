@@ -19,7 +19,7 @@ package controllers
 import java.time.LocalDate
 
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.FakeAllowAccessProvider
 import forms.DOBFormProvider

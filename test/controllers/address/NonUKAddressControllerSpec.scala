@@ -18,7 +18,7 @@ package controllers.address
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import forms.address.NonUKAddressFormProvider
@@ -29,7 +29,7 @@ import org.scalatest.MustMatchers
 import org.scalatest.OptionValues
 import org.scalatest.WordSpec
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject._

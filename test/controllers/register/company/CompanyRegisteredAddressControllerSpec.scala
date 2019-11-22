@@ -29,7 +29,7 @@ import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{atLeastOnce, never, verify, when}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar._
+import org.scalatestplus.mockito.MockitoSugar._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._

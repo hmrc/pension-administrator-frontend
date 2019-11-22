@@ -16,7 +16,7 @@
 
 package controllers.register.adviser
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, _}
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.adviser.AdviserNameFormProvider

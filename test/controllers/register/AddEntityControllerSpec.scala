@@ -27,7 +27,7 @@ import models.{CheckMode, NormalMode, PSAUser, UserType}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.i18n.MessagesApi
 import play.api.inject.bind

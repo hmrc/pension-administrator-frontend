@@ -18,7 +18,7 @@ package controllers.register.partnership
 
 import java.time.LocalDate
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.AddCompanyDirectorsControllerSpec.{johnDoePerson, maxDirectors}

@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -26,7 +26,7 @@ import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, Regi
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._

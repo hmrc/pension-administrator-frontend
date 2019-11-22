@@ -19,7 +19,7 @@ package controllers
 import java.time.LocalDate
 
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import forms.ConfirmDeleteFormProvider
 import identifiers.TypedIdentifier
@@ -28,7 +28,7 @@ import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.requests.DataRequest
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent

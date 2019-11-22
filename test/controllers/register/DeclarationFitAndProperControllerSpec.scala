@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register._
 import models._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.FakeNavigator

@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.FakeRegistrationConnector
 import identifiers.register.RegistrationInfoId
 import models._

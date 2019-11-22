@@ -25,7 +25,7 @@ import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._

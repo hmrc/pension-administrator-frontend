@@ -26,7 +26,7 @@ import models._
 import models.requests.DataRequest
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.Form
 import play.api.i18n.MessagesApi

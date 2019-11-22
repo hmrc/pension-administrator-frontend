@@ -22,7 +22,7 @@ import models.requests.AuthenticatedRequest
 import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
 import services.PsaDetailsService

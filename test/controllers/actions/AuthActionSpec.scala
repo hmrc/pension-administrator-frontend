@@ -22,7 +22,7 @@ import controllers.routes
 import identifiers.JourneyId
 import models._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, Controller}
 import play.api.test.FakeRequest

@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.{BusinessTypeFormProvider, NonUKBusinessTypeFormProvider}

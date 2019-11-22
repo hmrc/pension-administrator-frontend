@@ -16,7 +16,7 @@
 
 package controllers.register.partnership.partners
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider

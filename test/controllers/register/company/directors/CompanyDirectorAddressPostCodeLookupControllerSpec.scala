@@ -26,7 +26,7 @@ import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLoo
 import models.{PersonName, _}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._

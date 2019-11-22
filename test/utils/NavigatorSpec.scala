@@ -16,7 +16,7 @@
 
 package utils
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.{Identifier, TypedIdentifier}
 import models._

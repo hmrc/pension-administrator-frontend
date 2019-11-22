@@ -16,7 +16,7 @@
 
 package controllers.register.partnership
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, FakeAllowAccessProvider, FakeAuthAction}
 import identifiers.register.partnership.MoreThanTenPartnersId

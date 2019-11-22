@@ -16,13 +16,13 @@
 
 package controllers.register
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
 import models._
 import models.requests.DataRequest
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.UserAnswers
