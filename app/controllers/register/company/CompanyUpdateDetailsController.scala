@@ -26,7 +26,6 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.company.companyUpdateDetails
 
 class CompanyUpdateDetailsController @Inject()(appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
                                                authenticate: AuthAction,
                                                allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,

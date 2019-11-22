@@ -27,6 +27,7 @@ import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.register.company.enterNumber
@@ -38,19 +39,22 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new CompanyRegistrationNumberFormProvider()
-  val form = formProvider()
+  val form: Form[String] = formProvider()
+
+  val view: enterNumber = app.injector.instanceOf[enterNumber]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyRegistrationNumberController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewModel: CommonFormWithHintViewModel =
@@ -63,8 +67,7 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
       entityName = companyName
     )
 
-  def viewAsString(form: Form[_] = form): String = enterNumber(
-    frontendAppConfig,
+  def viewAsString(form: Form[_] = form): String = view(
     form,
     viewModel
   )(fakeRequest, messages).toString

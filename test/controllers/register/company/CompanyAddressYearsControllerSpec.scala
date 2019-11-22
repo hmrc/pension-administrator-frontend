@@ -17,8 +17,7 @@
 package controllers.register.company
 
 import base.CSRFRequest
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes.CompanyAddressYearsController
@@ -28,9 +27,10 @@ import models.{AddressYears, NormalMode}
 import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
@@ -48,7 +48,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase with CSRFRequ
       implicit app => addToken(FakeRequest(CompanyAddressYearsController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe addressYears(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
+        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
       }
     )
   }
@@ -67,6 +67,8 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase with CSRFRequ
 object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSpec {
 
   val companyName = "Test Company Name"
+
+  val view: addressYears = app.injector.instanceOf[addressYears]
 
   val dataRetrieval: DataRetrievalAction = UserAnswers()
     .set(BusinessNameId)(companyName).flatMap(_.set(BusinessUTRId)("Test UTR")).asOpt.value
@@ -88,7 +90,8 @@ object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSp
       bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+      bind[MessagesControllerComponents].to(stubMessagesControllerComponents())
     )) {
       app =>
         val req = request(app)

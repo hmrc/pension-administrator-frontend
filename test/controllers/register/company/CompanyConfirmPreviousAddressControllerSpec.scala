@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.libs.json.JsResult
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -60,26 +61,28 @@ class CompanyConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
   val errorMessage = Message("")
 
+  val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
+
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new CompanyConfirmPreviousAddressController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
 
 
   val formProvider: ConfirmPreviousAddressFormProvider = new ConfirmPreviousAddressFormProvider()
-  val form = formProvider(Message("confirmPreviousAddress.error", psa))
+  val form: Form[Boolean] = formProvider(Message("confirmPreviousAddress.error", psa))
 
   def viewAsString(form: Form[_] = form): String =
-    sameContactAddress(
-      frontendAppConfig,
+    view(
       form,
       viewmodel,
       countryOptions

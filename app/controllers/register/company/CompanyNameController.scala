@@ -32,7 +32,6 @@ import views.html.register.businessName
 import scala.concurrent.ExecutionContext
 
 class CompanyNameController @Inject()(override val appConfig: FrontendAppConfig,
-                                      override val messagesApi: MessagesApi,
                                       override val cacheConnector: UserAnswersCacheConnector,
                                       @RegisterCompany override val navigator: Navigator,
                                       override val authenticate: AuthAction,

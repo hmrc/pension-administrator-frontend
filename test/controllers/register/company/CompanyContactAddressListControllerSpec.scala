@@ -17,21 +17,19 @@
 package controllers.register.company
 
 import base.CSRFRequest
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
-import controllers.register.individual.IndividualContactAddressPostCodeLookupControllerSpec.getEmptyData
 import forms.address.AddressListFormProvider
 import models.{NormalMode, TolerantAddress}
 import org.scalatest.OptionValues
 import play.api.Application
 import play.api.http.Writeable
-import play.api.i18n.Messages
 import play.api.inject.bind
-import play.api.mvc.{Call, Request, Result}
+import play.api.mvc.{Call, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, redirectLocation, route, running, status, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
@@ -67,7 +65,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
           val viewModel: AddressListViewModel = addressListViewModel(addresses)
           val form = new AddressListFormProvider()(viewModel.addresses)
 
-          contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
+          contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
         }
       )
     }
@@ -129,20 +127,10 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
   }
 }
 
-object CompanyContactAddressListControllerSpec extends OptionValues {
+object CompanyContactAddressListControllerSpec extends ControllerSpecBase with OptionValues {
   val onwardRoute: Call = routes.CompanyContactAddressController.onPageLoad(NormalMode)
 
-  private def addressListViewModel(addresses: Seq[TolerantAddress])(implicit  messages: Messages) = {
-    AddressListViewModel(
-      routes.CompanyContactAddressListController.onSubmit(NormalMode),
-      routes.CompanyContactAddressController.onPageLoad(NormalMode),
-      addresses,
-      Message("contactAddressList.heading", Message("theCompany").resolve),
-      Message("contactAddressList.heading", "test company"),
-      Message("common.selectAddress.text"),
-      Message("common.selectAddress.link")
-    )
-  }
+  val view: addressList = app.injector.instanceOf[addressList]
 
   private val addresses = Seq(
     TolerantAddress(
@@ -173,6 +161,7 @@ object CompanyContactAddressListControllerSpec extends OptionValues {
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(data),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+      bind[MessagesControllerComponents].to(stubMessagesControllerComponents()),
       bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
     )) {
       app =>

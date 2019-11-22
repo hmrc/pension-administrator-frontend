@@ -16,8 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.HasPAYEId
@@ -40,6 +39,8 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
   private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("hasPAYE.error.required", companyName)
 
+  val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
+
   private def viewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.HasCompanyPAYEController.onSubmit(NormalMode),
@@ -51,7 +52,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
-    hasReferenceNumber(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
+    view(form, viewModel)(fakeRequest, messages).toString
 
   "HasCompanyPAYEController Controller" when {
     "on a GET" must {

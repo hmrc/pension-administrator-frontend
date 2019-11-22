@@ -17,8 +17,8 @@
 package controllers.register.company
 
 import base.CSRFRequest
-import connectors.cache.UserAnswersCacheConnector
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -28,10 +28,11 @@ import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
@@ -49,7 +50,7 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
       implicit app => addToken(FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe postcodeLookup(frontendAppConfig, formProvider(), viewModel, NormalMode)(request, messages).toString()
+        contentAsString(result) mustBe view(formProvider(), viewModel, NormalMode)(request, messages).toString()
       }
     )
   }
@@ -69,6 +70,8 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
 object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   private val formProvider = new PostCodeLookupFormProvider()
   private val validPostcode = "ZZ1 1ZZ"
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
 
   private val companyName = "CompanyName"
 
@@ -108,7 +111,8 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+      bind[MessagesControllerComponents].to(stubMessagesControllerComponents())
     )) {
       app =>
         val req = request(app)

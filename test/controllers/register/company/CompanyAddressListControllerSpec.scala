@@ -22,10 +22,11 @@ import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
-import models.{BusinessDetails, NormalMode, TolerantAddress}
+import models.{NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -44,6 +45,8 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     address("test post code 2")
   )
 
+  val view: addressList = app.injector.instanceOf[addressList]
+
   private val addressObject = Json.obj(CompanyPreviousAddressPostCodeLookupId.toString -> addresses)
 
   def address(postCode: String): TolerantAddress = TolerantAddress(
@@ -60,13 +63,14 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyAddressListController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private lazy val viewModel = AddressListViewModel(
@@ -80,8 +84,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
   )
 
   private def viewAsString(form: Form[_] = form) =
-    addressList(
-      frontendAppConfig,
+    view(
       form,
       viewModel,
       NormalMode

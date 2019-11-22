@@ -38,7 +38,6 @@ import views.html.register.company.addCompanyDirectors
 import scala.concurrent.ExecutionContext
 
 class AddCompanyDirectorsController @Inject()(appConfig: FrontendAppConfig,
-                                              override val messagesApi: MessagesApi,
                                               dataCacheConnector: UserAnswersCacheConnector,
                                               @CompanyDirector navigator: Navigator,
                                               authenticate: AuthAction,

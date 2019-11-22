@@ -38,7 +38,6 @@ import scala.concurrent.ExecutionContext
 
 class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Navigator,
                                               val appConfig: FrontendAppConfig,
-                                              override val messagesApi: MessagesApi,
                                               val dataCacheConnector: UserAnswersCacheConnector,
                                               authenticate: AuthAction,
                                               val allowAccess: AllowAccessActionProvider,

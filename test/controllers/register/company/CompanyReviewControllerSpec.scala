@@ -24,6 +24,7 @@ import models.{NormalMode, PersonName}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.company.companyReview
 
@@ -32,7 +33,9 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val companyName = "test company name"
-  val directors = Seq("director a", "director b", "director c")
+  val directors: Seq[String] = Seq("director a", "director b", "director c")
+
+  val view: companyReview = app.injector.instanceOf[companyReview]
 
   def director(lastName: String, isDeleted: Boolean = false): JsObject = Json.obj(
     DirectorNameId.toString -> PersonName("director", lastName, isDeleted)
@@ -41,21 +44,22 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
   val validData: JsObject = Json.obj(
     BusinessNameId.toString ->
       companyName,
-    "directors" -> Json.arr(director("a"), director("b"), director("c"), director("d", true))
+    "directors" -> Json.arr(director("a"), director("b"), director("c"), director("d", isDeleted = true))
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyReviewController(
       frontendAppConfig,
-      messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString() = companyReview(frontendAppConfig, companyName, directors)(fakeRequest, messages).toString
+  private def viewAsString() = view(companyName, directors)(fakeRequest, messages).toString
 
   "CompanyReview Controller" must {
 

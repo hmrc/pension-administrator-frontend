@@ -22,14 +22,15 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import identifiers.register.company.CompanyPreviousAddressId
-import models.{Address, NormalMode, RegistrationCustomerType, RegistrationInfo, RegistrationLegalStatus, TolerantAddress}
+import identifiers.register.{BusinessNameId, RegistrationInfoId}
+import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -42,15 +43,16 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
+
   val formProvider = new AddressFormProvider(countryOptions)
-  val form = formProvider("error.country.invalid")
+  val form: Form[Address] = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
   val companyName = "Test Company Name"
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyPreviousAddressController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
@@ -59,7 +61,9 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      fakeAuditService
+      fakeAuditService,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private lazy val viewModel = ManualAddressViewModel(
@@ -72,8 +76,7 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
   )
 
   private def viewAsString(form: Form[_] = form) =
-    manualAddress(
-      frontendAppConfig,
+    view(
       form,
       viewModel,
       NormalMode
@@ -91,7 +94,7 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Json.obj(
         RegistrationInfoId.toString -> RegistrationInfo(
-          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None),
+          RegistrationLegalStatus.LimitedCompany, "", noIdentifier = false, RegistrationCustomerType.UK, None, None),
         BusinessNameId.toString -> companyName,
         CompanyPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))

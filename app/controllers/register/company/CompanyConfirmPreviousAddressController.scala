@@ -36,7 +36,6 @@ import views.html.address.sameContactAddress
 import scala.concurrent.ExecutionContext
 
 class CompanyConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                        override val messagesApi: MessagesApi,
                                                         val dataCacheConnector: UserAnswersCacheConnector,
                                                         @RegisterCompany val navigator: Navigator,
                                                         authenticate: AuthAction,

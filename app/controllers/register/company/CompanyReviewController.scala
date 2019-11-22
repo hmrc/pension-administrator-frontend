@@ -33,7 +33,6 @@ import views.html.register.company.companyReview
 import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
                                         @RegisterCompany navigator: Navigator,
                                         authenticate: AuthAction,
                                         allowAccess: AllowAccessActionProvider,

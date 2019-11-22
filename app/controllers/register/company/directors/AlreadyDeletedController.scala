@@ -22,7 +22,7 @@ import controllers.actions._
 import identifiers.register.company.directors.DirectorNameId
 import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Enumerable
@@ -33,7 +33,6 @@ import scala.concurrent.Future
 
 class AlreadyDeletedController @Inject()(
                                           appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
