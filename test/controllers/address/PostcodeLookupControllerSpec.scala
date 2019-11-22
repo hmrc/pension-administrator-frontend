@@ -17,6 +17,7 @@
 package controllers.address
 
 import akka.stream.Materializer
+import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
@@ -39,19 +40,22 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-object PostcodeLookupControllerSpec {
+object PostcodeLookupControllerSpec extends SpecBase {
 
   object FakeIdentifier extends TypedIdentifier[Seq[TolerantAddress]]
 
   val postCall: Call = Call("POST", "www.example.com")
   val manualCall: Call = Call("GET", "www.example.com")
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
@@ -59,8 +63,9 @@ object PostcodeLookupControllerSpec {
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val addressLookupConnector: AddressLookupConnector,
                                   override val navigator: Navigator,
-                                  formProvider: PostCodeLookupFormProvider
-                                ) extends PostcodeLookupController {
+                                  formProvider: PostCodeLookupFormProvider,
+                                  val view: postcodeLookup
+                                )(implicit val executionContext: ExecutionContext) extends PostcodeLookupController {
 
     override val allowAccess = FakeAllowAccessProvider()
 
@@ -76,6 +81,8 @@ object PostcodeLookupControllerSpec {
     private val noResultError: Message = "bar"
 
     override protected def form: Form[String] = formProvider()
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
 }
@@ -104,7 +111,6 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
 
           implicit val mat: Materializer = app.materializer
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[PostCodeLookupFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -112,7 +118,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual postcodeLookup(appConfig, formProvider(), viewmodel, NormalMode)(request, messages).toString
+          contentAsString(result) mustEqual view(formProvider(), viewmodel, NormalMode)(request, messages).toString
       }
     }
   }
@@ -170,7 +176,6 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
 
             implicit val mat: Materializer = app.materializer
 
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
             val formProvider = app.injector.instanceOf[PostCodeLookupFormProvider]
             val request = FakeRequest()
             val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -178,7 +183,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
             val result = controller.onSubmit(viewmodel, UserAnswers(), request.withFormUrlEncodedBody("value" -> "ZZ11ZZ"))
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual postcodeLookup(appConfig, formProvider().withError("value", "foo"), viewmodel, NormalMode)(request, messages).toString
+            contentAsString(result) mustEqual view(formProvider().withError("value", "foo"), viewmodel, NormalMode)(request, messages).toString
         }
       }
       "the postcode is invalid" in {
@@ -201,7 +206,6 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
 
             val request = FakeRequest().withFormUrlEncodedBody("value" -> invalidPostcode)
 
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
             val formProvider = app.injector.instanceOf[PostCodeLookupFormProvider]
             val messages = app.injector.instanceOf[MessagesApi].preferred(request)
             val controller = app.injector.instanceOf[TestController]
@@ -209,7 +213,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
             val form = formProvider().bind(Map("value" -> invalidPostcode))
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual postcodeLookup(appConfig, form, viewmodel, NormalMode)(request, messages).toString
+            contentAsString(result) mustEqual view(form, viewmodel, NormalMode)(request, messages).toString
         }
       }
     }
@@ -234,7 +238,6 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
 
               implicit val mat: Materializer = app.materializer
 
-              val appConfig = app.injector.instanceOf[FrontendAppConfig]
               val formProvider = app.injector.instanceOf[PostCodeLookupFormProvider]
               val request = FakeRequest()
               val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -242,7 +245,9 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
               val result = controller.onSubmit(viewmodel, UserAnswers(), request.withFormUrlEncodedBody("value" -> "ZZ11ZZ"))
 
               status(result) mustEqual OK
-              contentAsString(result) mustEqual postcodeLookup(appConfig, formProvider().withError("value", "bar"), viewmodel, NormalMode)(request, messages).toString
+              contentAsString(result) mustEqual view(
+                formProvider().withError("value", "bar"),
+                viewmodel, NormalMode)(request, messages).toString
           }
         }
       }

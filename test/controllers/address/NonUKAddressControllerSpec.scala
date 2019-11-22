@@ -37,12 +37,13 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class NonUKAddressControllerSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with OptionValues {
@@ -79,7 +80,6 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
 
             val request = FakeRequest()
 
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
             val formProvider = app.injector.instanceOf[NonUKAddressFormProvider]
             val messages = app.injector.instanceOf[MessagesApi].preferred(request)
             val controller = app.injector.instanceOf[TestController]
@@ -87,7 +87,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
             val result = controller.onPageLoad(viewModel, UserAnswers())
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual nonukAddress(appConfig, formProvider(), viewModel)(request, messages).toString
+            contentAsString(result) mustEqual view(formProvider(), viewModel)(request, messages).toString
 
         }
 
@@ -111,7 +111,6 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
 
             val request = FakeRequest()
 
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
             val formProvider = app.injector.instanceOf[NonUKAddressFormProvider]
             val messages = app.injector.instanceOf[MessagesApi].preferred(request)
             val controller = app.injector.instanceOf[TestController]
@@ -119,7 +118,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
             val result = controller.onPageLoad(viewModel, UserAnswers(Json.obj(fakeAddressId.toString -> testAddress.toTolerantAddress)))
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual nonukAddress(appConfig, formProvider().fill(testAddress), viewModel)(request, messages).toString
+            contentAsString(result) mustEqual view(formProvider().fill(testAddress), viewModel)(request, messages).toString
 
         }
       }
@@ -179,7 +178,6 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
 
             val request = FakeRequest()
 
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
             val formProvider = app.injector.instanceOf[NonUKAddressFormProvider]
             val messages = app.injector.instanceOf[MessagesApi].preferred(request)
             val controller = app.injector.instanceOf[TestController]
@@ -189,7 +187,7 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
             val result = controller.onSubmit(viewModel, UserAnswers(), request.withFormUrlEncodedBody())
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual nonukAddress(appConfig, form, viewModel)(request, messages).toString
+            contentAsString(result) mustEqual view(form, viewModel)(request, messages).toString
         }
 
       }
@@ -202,6 +200,8 @@ class NonUKAddressControllerSpec extends WordSpec with MustMatchers with Mockito
 
 object NonUKAddressControllerSpec extends NonUKAddressControllerDataMocks {
 
+  val view: nonukAddress = app.injector.instanceOf[nonukAddress]
+
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
@@ -209,8 +209,9 @@ object NonUKAddressControllerSpec extends NonUKAddressControllerDataMocks {
                                   override val registrationConnector: RegistrationConnector,
                                   override val navigator: Navigator,
                                   override val countryOptions: CountryOptions,
-                                  formProvider: NonUKAddressFormProvider
-                                ) extends NonUKAddressController {
+                                  formProvider: NonUKAddressFormProvider,
+                                  val view: nonukAddress
+                                )(implicit val executionContext: ExecutionContext) extends NonUKAddressController {
 
     def onPageLoad(viewModel: ManualAddressViewModel, answers: UserAnswers): Future[Result] =
       get(fakeAddressId, viewModel)(DataRequest(FakeRequest(), "cacheId", psaUser, answers))
@@ -219,6 +220,8 @@ object NonUKAddressControllerSpec extends NonUKAddressControllerDataMocks {
       post(companyName, fakeAddressId, viewModel, RegistrationLegalStatus.LimitedCompany)(DataRequest(request, externalId, psaUser, answers))
 
     override protected val form: Form[Address] = formProvider()
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
 }
