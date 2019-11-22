@@ -19,7 +19,7 @@ package controllers.register.individual
 import java.time.LocalDate
 
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.individual.IndividualDateOfBirthFormProvider
@@ -28,7 +28,7 @@ import identifiers.register.AreYouInUKId
 import models.{Address, NormalMode, RegistrationCustomerType, RegistrationInfo, RegistrationLegalStatus, TolerantIndividual}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json._

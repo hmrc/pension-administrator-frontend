@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import forms.PersonNameFormProvider
 import identifiers.TypedIdentifier

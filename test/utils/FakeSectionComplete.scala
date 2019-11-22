@@ -16,7 +16,7 @@
 
 package utils
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import play.api.mvc.AnyContent

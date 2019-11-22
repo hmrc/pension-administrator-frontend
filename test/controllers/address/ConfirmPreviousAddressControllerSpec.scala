@@ -28,20 +28,21 @@ import models._
 import models.requests.DataRequest
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, Call, Request, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class ConfirmPreviousAddressControllerSpec extends SpecBase {
@@ -56,7 +57,6 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -65,7 +65,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewmodel(), UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual sameContactAddress(appConfig, formProvider(), viewmodel(), countryOptions)(request, messages).toString
+          contentAsString(result) mustEqual view(formProvider(), viewmodel(), countryOptions)(request, messages).toString
       }
     }
 
@@ -75,7 +75,6 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -85,8 +84,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewmodel(), answers)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual sameContactAddress(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider().fill(true),
             viewmodel(),
             countryOptions
@@ -174,7 +172,6 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[ConfirmPreviousAddressFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -183,8 +180,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
           val result = controller.onSubmit(viewmodel(), UserAnswers(), request)
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual sameContactAddress(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider(errorMessage(messages)).bind(Map.empty[String, String]),
             viewmodel(),
             countryOptions
@@ -201,25 +197,30 @@ object ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
 
   object PreviousAddressId extends TypedIdentifier[Address]
 
+  val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
+
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  override val countryOptions: CountryOptions
-                                ) extends ConfirmPreviousAddressController {
+                                  override val countryOptions: CountryOptions,
+                                  val view: sameContactAddress
+                                )(implicit val executionContext: ExecutionContext) extends ConfirmPreviousAddressController {
 
     def onPageLoad(viewmodel: SameContactAddressViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, viewmodel)(DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+      implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+      get(FakeIdentifier, viewmodel)
     }
 
     def onSubmit(viewmodel: SameContactAddressViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, PreviousAddressId, viewmodel, NormalMode)(DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+      implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+      post(FakeIdentifier, PreviousAddressId, viewmodel, NormalMode)
     }
 
-
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
   private def testAddress = TolerantAddress(

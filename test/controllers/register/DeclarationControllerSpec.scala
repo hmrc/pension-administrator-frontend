@@ -33,7 +33,7 @@ import models.requests.DataRequest
 import models.{BusinessDetails, NormalMode, RegistrationInfo, UserType}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.{JsString, Json, Writes}
 import play.api.mvc.AnyContent

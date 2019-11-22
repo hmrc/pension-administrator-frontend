@@ -26,7 +26,7 @@ import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.Individual
 import models.requests.AuthenticatedRequest
 import models.{RegistrationInfo, _}
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}

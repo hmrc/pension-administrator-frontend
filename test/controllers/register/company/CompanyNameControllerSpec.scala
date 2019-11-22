@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, FakeAllowAccessProvider, FakeAuthAction, FakeDataRetrievalAction}
 import controllers.register.BusinessNameControllerBehaviour

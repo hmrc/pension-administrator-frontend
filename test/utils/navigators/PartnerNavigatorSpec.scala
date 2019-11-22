@@ -25,7 +25,7 @@ import models.Mode._
 import models._
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.prop.TableFor4
 import play.api.libs.json.Json
 import play.api.mvc.Call

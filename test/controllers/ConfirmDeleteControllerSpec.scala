@@ -29,29 +29,26 @@ import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.requests.DataRequest
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, ControllerComponents, MessagesControllerComponents}
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.ConfirmDeleteViewModel
 import views.html.confirmDelete
 
-import scala.concurrent.ExecutionContext
-
 class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  val testIdentifier: TypedIdentifier[PersonName] = new TypedIdentifier[PersonName] {
+  val testIdentifier = new TypedIdentifier[PersonName] {
     override def toString: String = "test"
   }
 
-  val testChange1FlagIdentifier: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {
+  val testChange1FlagIdentifier = new TypedIdentifier[Boolean] {
     override def toString: String = "test1"
   }
 
-  val testChange2FlagIdentifier: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {
+  val testChange2FlagIdentifier = new TypedIdentifier[Boolean] {
     override def toString: String = "test2"
   }
 
@@ -94,7 +91,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   val formProvider = new ConfirmDeleteFormProvider()
 
-  private def controller(): ConfirmDeleteController =
+  private def controller() =
     new ConfirmDeleteController {
       override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
 
@@ -113,18 +110,10 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
         Some(testChange2FlagIdentifier)
       }
 
-      override val form: Form[Boolean] = formProvider()
-
-      override val view: confirmDelete = confirmDeleteView
-
-      val executionContext: ExecutionContext = executionContext
-
-//      val controllerComponents: ControllerComponents = stubControllerComponents()
+      override val form = formProvider()
     }
 
-  val confirmDeleteView: confirmDelete = app.injector.instanceOf[confirmDelete]
-
-  private def viewAsString() = confirmDeleteView(formProvider(), viewModel, NormalMode)(fakeRequest, messages).toString
+  private def viewAsString() = confirmDelete(frontendAppConfig, formProvider(), viewModel, NormalMode)(fakeRequest, messages).toString
 
   private def controllerWithPost(descr:String, request: DataRequest[AnyContent], requestNoValue: DataRequest[AnyContent], id:TypedIdentifier[PersonName]): Unit = {
     s"redirect to already deleted view for a GET if the $descr was already deleted" in {

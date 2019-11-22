@@ -18,7 +18,7 @@ package controllers
 
 import java.time.LocalDate
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.address.ManualAddressControllerSpec.externalId
 import identifiers.TypedIdentifier

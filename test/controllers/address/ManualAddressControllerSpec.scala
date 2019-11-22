@@ -18,20 +18,19 @@ package controllers.address
 
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent, AuditService}
+import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.FakeAllowAccessProvider
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
 import forms.AddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.individual.{IndividualAddressChangedId, IndividualContactAddressId}
 import models._
 import models.requests.DataRequest
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject._
@@ -39,14 +38,15 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-object ManualAddressControllerSpec {
+object ManualAddressControllerSpec extends SpecBase {
 
   val fakeAddressId: TypedIdentifier[Address] = new TypedIdentifier[Address] {
     override def toString = "fakeAddressId"
@@ -65,14 +65,17 @@ object ManualAddressControllerSpec {
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
   private val testContext = "test-context"
 
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
+
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   formProvider: AddressFormProvider,
-                                  override val auditService: AuditService
-                                ) extends ManualAddressController {
+                                  override val auditService: AuditService,
+                                  val view: manualAddress
+                                )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
     override val allowAccess = FakeAllowAccessProvider()
 
@@ -85,6 +88,8 @@ object ManualAddressControllerSpec {
         DataRequest(request, externalId, psaUser, answers))
 
     override protected val form: Form[Address] = formProvider()
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
 }
@@ -125,7 +130,6 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
             val request = FakeRequest()
 
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
             val formProvider = app.injector.instanceOf[AddressFormProvider]
             val messages = app.injector.instanceOf[MessagesApi].preferred(request)
             val controller = app.injector.instanceOf[TestController]
@@ -133,7 +137,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
             val result = controller.onPageLoad(viewModel, UserAnswers())
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual manualAddress(appConfig, formProvider(), viewModel, NormalMode)(request, messages).toString
+            contentAsString(result) mustEqual view(formProvider(), viewModel, NormalMode)(request, messages).toString
 
         }
 
@@ -157,7 +161,6 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
             val request = FakeRequest()
 
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
             val formProvider = app.injector.instanceOf[AddressFormProvider]
             val messages = app.injector.instanceOf[MessagesApi].preferred(request)
             val controller = app.injector.instanceOf[TestController]
@@ -165,7 +168,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
             val result = controller.onPageLoad(viewModel, UserAnswers(Json.obj(fakeAddressId.toString -> testAddress)))
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual manualAddress(appConfig, formProvider().fill(testAddress), viewModel, NormalMode)(request, messages).toString
+            contentAsString(result) mustEqual view(formProvider().fill(testAddress), viewModel, NormalMode)(request, messages).toString
 
         }
       }
@@ -192,7 +195,6 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
             val request = FakeRequest()
 
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
             val formProvider = app.injector.instanceOf[AddressFormProvider]
             val messages = app.injector.instanceOf[MessagesApi].preferred(request)
             val controller = app.injector.instanceOf[TestController]
@@ -201,7 +203,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
             val result = controller.onPageLoad(viewModel, userAnswers)
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual manualAddress(appConfig, form, viewModel, NormalMode)(request, messages).toString
+            contentAsString(result) mustEqual view(form, viewModel, NormalMode)(request, messages).toString
 
         }
 
@@ -242,7 +244,6 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
             val request = FakeRequest()
 
-            val appConfig = app.injector.instanceOf[FrontendAppConfig]
             val formProvider = app.injector.instanceOf[AddressFormProvider]
             val messages = app.injector.instanceOf[MessagesApi].preferred(request)
             val controller = app.injector.instanceOf[TestController]
@@ -251,7 +252,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
             val result = controller.onPageLoad(viewModel, userAnswers)
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual manualAddress(appConfig, form, viewModel, NormalMode)(request, messages).toString
+            contentAsString(result) mustEqual view(form, viewModel, NormalMode)(request, messages).toString
 
         }
 
@@ -411,7 +412,6 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
 
           val request = FakeRequest()
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[AddressFormProvider]
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val controller = app.injector.instanceOf[TestController]
@@ -421,7 +421,7 @@ class ManualAddressControllerSpec extends WordSpec with MustMatchers with Mockit
           val result = controller.onSubmit(viewModel, UserAnswers(), request.withFormUrlEncodedBody())
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual manualAddress(appConfig, form, viewModel, NormalMode)(request, messages).toString
+          contentAsString(result) mustEqual view(form, viewModel, NormalMode)(request, messages).toString
       }
 
     }

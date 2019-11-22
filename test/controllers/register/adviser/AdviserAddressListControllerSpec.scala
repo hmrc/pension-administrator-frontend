@@ -17,7 +17,7 @@
 package controllers.register.adviser
 
 import base.CSRFRequest
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -28,9 +28,10 @@ import play.api.Application
 import play.api.http.Writeable
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.annotations.Adviser
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
@@ -53,7 +54,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase with CSRFReque
         implicit app => addToken(FakeRequest(routes.AdviserAddressListController.onPageLoad(NormalMode))), dataRetrievalAction,
         (request, result) => {
           status(result) mustBe OK
-          contentAsString(result) mustBe addressList(frontendAppConfig, form, addressListViewModel(addresses), NormalMode)(request, messages).toString()
+          contentAsString(result) mustBe view(form, addressListViewModel(addresses), NormalMode)(request, messages).toString()
         }
       )
     }
@@ -143,6 +144,8 @@ object AdviserAddressListControllerSpec extends ControllerSpecBase {
       .flatMap(_.set(AdviserAddressPostCodeLookupId)(addresses))
       .asOpt.map(_.json)
 
+  val view: addressList = app.injector.instanceOf[addressList]
+
   private val dataRetrievalAction = new FakeDataRetrievalAction(data)
 
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
@@ -163,6 +166,7 @@ object AdviserAddressListControllerSpec extends ControllerSpecBase {
       bind[AuthAction].to(FakeAuthAction),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
       bind[DataRetrievalAction].toInstance(data),
+      bind[MessagesControllerComponents].to(stubMessagesControllerComponents()),
       bind(classOf[Navigator]).qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
     )) { app =>
       val req = request(app)

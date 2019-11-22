@@ -25,7 +25,7 @@ import forms.register.VariationDeclarationFitAndProperFormProvider
 import identifiers.register._
 import models.UserType.UserType
 import models._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.HeaderCarrier

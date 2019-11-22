@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import forms.HasReferenceNumberFormProvider
 import identifiers.TypedIdentifier
