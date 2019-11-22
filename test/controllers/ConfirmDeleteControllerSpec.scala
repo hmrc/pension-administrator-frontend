@@ -19,7 +19,7 @@ package controllers
 import java.time.LocalDate
 
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import forms.ConfirmDeleteFormProvider
 import identifiers.TypedIdentifier
@@ -28,27 +28,30 @@ import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.requests.DataRequest
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, ControllerComponents, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.ConfirmDeleteViewModel
 import views.html.confirmDelete
 
+import scala.concurrent.ExecutionContext
+
 class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  val testIdentifier = new TypedIdentifier[PersonName] {
+  val testIdentifier: TypedIdentifier[PersonName] = new TypedIdentifier[PersonName] {
     override def toString: String = "test"
   }
 
-  val testChange1FlagIdentifier = new TypedIdentifier[Boolean] {
+  val testChange1FlagIdentifier: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {
     override def toString: String = "test1"
   }
 
-  val testChange2FlagIdentifier = new TypedIdentifier[Boolean] {
+  val testChange2FlagIdentifier: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {
     override def toString: String = "test2"
   }
 
@@ -91,7 +94,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   val formProvider = new ConfirmDeleteFormProvider()
 
-  private def controller() =
+  private def controller(): ConfirmDeleteController =
     new ConfirmDeleteController {
       override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
 
@@ -110,10 +113,18 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
         Some(testChange2FlagIdentifier)
       }
 
-      override val form = formProvider()
+      override val form: Form[Boolean] = formProvider()
+
+      override val view: confirmDelete = confirmDeleteView
+
+      val executionContext: ExecutionContext = executionContext
+
+//      val controllerComponents: ControllerComponents = stubControllerComponents()
     }
 
-  private def viewAsString() = confirmDelete(frontendAppConfig, formProvider(), viewModel, NormalMode)(fakeRequest, messages).toString
+  val confirmDeleteView: confirmDelete = app.injector.instanceOf[confirmDelete]
+
+  private def viewAsString() = confirmDeleteView(formProvider(), viewModel, NormalMode)(fakeRequest, messages).toString
 
   private def controllerWithPost(descr:String, request: DataRequest[AnyContent], requestNoValue: DataRequest[AnyContent], id:TypedIdentifier[PersonName]): Unit = {
     s"redirect to already deleted view for a GET if the $descr was already deleted" in {
