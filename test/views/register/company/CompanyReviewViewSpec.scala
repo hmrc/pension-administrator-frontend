@@ -47,14 +47,7 @@ class CompanyReviewViewSpec extends ViewBehaviours {
     )
   }
 
-  "have link to edit director details when there are less than 10 directors" in {
-    createView must haveLink(
-      routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url, "edit-director-details"
-    )
-    createView must haveDynamicText("companyReview.directors.editLink")
-  }
-
-  "have link to edit directors when there are 10 directors" in {
+  "have link to change directors" in {
     createView must haveLink(
       routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url, "edit-director-details"
     )
