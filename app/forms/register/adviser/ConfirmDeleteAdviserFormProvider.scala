@@ -17,7 +17,6 @@
 package forms.register.adviser
 
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.Messages
 import viewmodels.Message
