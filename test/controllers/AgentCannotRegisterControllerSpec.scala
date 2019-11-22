@@ -18,12 +18,13 @@ package controllers
 
 import play.api.test.Helpers._
 import views.html.agentCannotRegister
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 class AgentCannotRegisterControllerSpec extends ControllerSpecBase {
 
-  def controller() = new AgentCannotRegisterController(frontendAppConfig, messagesApi)
-
   def viewAsString() = agentCannotRegister(frontendAppConfig)(fakeRequest, messages).toString
+
+  def controller() = new AgentCannotRegisterController(frontendAppConfig, viewAsString(), stubMessagesControllerComponents())
 
   "AgentCannotRegister Controller" must {
 

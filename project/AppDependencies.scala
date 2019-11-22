@@ -26,7 +26,7 @@ object AppDependencies {
   lazy val scope: String = "test"
 
   val test: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc" %% "bootstrap-play-26" % "1.1.0" % Test classifier "tests",
+    "uk.gov.hmrc" %% "bootstrap-play-26" % "1.3.0" % Test classifier "tests",
     "uk.gov.hmrc" %% "hmrctest" % "3.9.0-play-26" % scope,
     "org.scalatest" %% "scalatest" % "3.0.8" % scope,
     "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % scope,

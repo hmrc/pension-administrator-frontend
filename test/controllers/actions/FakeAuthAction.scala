@@ -19,17 +19,21 @@ package controllers.actions
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{AnyContent, BodyParser, Request, Result}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
-import scala.concurrent.Future
 
-
-case class FakeAuthAction(userType: UserType, psaId:String = "test psa id") extends AuthAction{
+case class FakeAuthAction(userType: UserType, psaId:String = "test psa id") extends AuthAction {
+  val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+  implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
   block(AuthenticatedRequest(request, "id", PSAUser(userType, None, false, None, Some(psaId))))
 }
 
 object FakeAuthAction extends AuthAction {
+  val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+  implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
     block(AuthenticatedRequest(request, externalId, PSAUser(UserType.Organisation, None, false, Some("test Psa id"))))
 
