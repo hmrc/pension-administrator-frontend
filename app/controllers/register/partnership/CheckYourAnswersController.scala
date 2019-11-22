@@ -43,7 +43,6 @@ class CheckYourAnswersController @Inject()(
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             @Partnership navigator: Navigator,
-                                            override val messagesApi: MessagesApi,
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
                                             val view: check_your_answers

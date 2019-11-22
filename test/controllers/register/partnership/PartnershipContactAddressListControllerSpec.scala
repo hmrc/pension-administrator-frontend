@@ -41,7 +41,7 @@ import views.html.address.addressList
 
 import scala.concurrent.Future
 
-class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with MustMatchers with CSRFRequest {
+class PartnershipContactAddressListControllerSpec extends MustMatchers with CSRFRequest {
 
   import PartnershipContactAddressListControllerSpec._
 
@@ -52,7 +52,7 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
         implicit app => addToken(FakeRequest(routes.PartnershipContactAddressListController.onPageLoad(NormalMode))),
         (request, result) => {
           status(result) mustBe OK
-          contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString()
+          contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString()
         }
       )
     }
@@ -72,7 +72,9 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
 
 }
 
-object PartnershipContactAddressListControllerSpec extends PartnershipContactAddressListControllerSpec {
+object PartnershipContactAddressListControllerSpec extends ControllerSpecBase {
+
+  val view: addressList = app.injector.instanceOf[addressList]
 
   val testName = "Test Partnership Name"
 

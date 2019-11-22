@@ -44,7 +44,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmPartnershipDetailsController @Inject()(
                                                      appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
                                                      dataCacheConnector: UserAnswersCacheConnector,
                                                      @Partnership navigator: Navigator,
                                                      authenticate: AuthAction,

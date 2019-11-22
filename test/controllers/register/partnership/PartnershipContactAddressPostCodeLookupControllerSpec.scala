@@ -17,8 +17,8 @@
 package controllers.register.partnership
 
 import base.CSRFRequest
-import connectors.cache.UserAnswersCacheConnector
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -40,7 +40,7 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
+class PartnershipContactAddressPostCodeLookupControllerSpec extends CSRFRequest {
 
   import PartnershipContactAddressPostCodeLookupControllerSpec._
 
@@ -49,7 +49,7 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
       implicit app => addToken(FakeRequest(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe postcodeLookup(frontendAppConfig, formProvider(), viewModel, NormalMode)(request, messages).toString()
+        contentAsString(result) mustBe view(formProvider(), viewModel, NormalMode)(request, messages).toString()
       }
     )
   }
@@ -67,6 +67,9 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
 }
 
 object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
   private val formProvider = new PostCodeLookupFormProvider()
   private val validPostcode = "ZZ1 1ZZ"
   private val partnershipName = "PartnershipName"

@@ -33,7 +33,6 @@ import views.html.register.partnership.partnershipReview
 import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
                                             @Partnership navigator: Navigator,
                                             authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,

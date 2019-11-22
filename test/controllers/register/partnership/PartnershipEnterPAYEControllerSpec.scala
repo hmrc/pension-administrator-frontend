@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterPAYE
@@ -33,14 +34,17 @@ class PartnershipEnterPAYEControllerSpec extends ControllerWithCommonBehaviour {
 
   import PartnershipEnterPAYEControllerSpec._
 
+  val view: enterPAYE = app.injector.instanceOf[enterPAYE]
+
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val payeForm = formProvider(partnershipName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnershipEnterPAYEController(
-    frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+    stubMessagesControllerComponents(), view)
 
-  private def enterPAYEView(form: Form[_] = payeForm): String = enterPAYE(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages).toString
+  private def enterPAYEView(form: Form[_] = payeForm): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "PartnershipEnterPAYEController" must {
 

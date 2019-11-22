@@ -38,7 +38,7 @@ import views.html.address.addressYears
 
 import scala.concurrent.Future
 
-class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRFRequest {
+class PartnershipAddressYearsControllerSpec extends CSRFRequest {
 
   import PartnershipAddressYearsControllerSpec._
 
@@ -47,7 +47,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
       implicit app => addToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe addressYears(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
+        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
       }
     )
   }
@@ -64,7 +64,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRF
   }
 }
 
-object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsControllerSpec {
+object PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
 
   val partnershipName = "Test Partnership Name"
 
@@ -80,6 +80,8 @@ object PartnershipAddressYearsControllerSpec extends PartnershipAddressYearsCont
   )
 
   val form = new AddressYearsFormProvider()("error.required")
+
+  val view: addressYears = app.injector.instanceOf[addressYears]
 
   private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
                               (implicit writeable: Writeable[T]): Unit = {
