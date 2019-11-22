@@ -29,6 +29,7 @@ import models.Mode.{checkMode, _}
 import models._
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
@@ -239,6 +240,8 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
     AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
 
+  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
+
   def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new CheckYourAnswersController(
       frontendAppConfig,
@@ -247,17 +250,16 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeNavigator,
-      messagesApi,
       FakeSectionComplete,
       countryOptions,
-      FakeUserAnswersCacheConnector
+      FakeUserAnswersCacheConnector,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction, mode: Mode = NormalMode): Unit = {
     val result = controller(dataRetrievalAction).onPageLoad(index, mode)(fakeRequest)
-    val expectedResult = check_your_answers(
-      frontendAppConfig,
-      sections,
+    val expectedResult = view(sections,
       call(mode),
       None,
       mode

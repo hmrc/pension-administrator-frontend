@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
@@ -35,10 +36,14 @@ class PartnerEmailControllerSpec extends ControllerWithCommonBehaviour {
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerEmailController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+    stubMessagesControllerComponents(), view
+  )
 
-  private def emailView(form: Form[_] = emailForm): String = email(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  val view: email = app.injector.instanceOf[email]
+
+  private def emailView(form: Form[_] = emailForm): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "PartnerEmail Controller" must {
 

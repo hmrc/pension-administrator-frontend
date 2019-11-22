@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterUTR
@@ -37,10 +38,14 @@ class PartnerEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
   private val utrForm = formProvider(partnerName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerEnterUTRController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+    stubMessagesControllerComponents(), view
+  )
 
-  private def enterUTRView(form: Form[_] = utrForm): String = enterUTR(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  val view: enterUTR = app.injector.instanceOf[enterUTR]
+
+  private def enterUTRView(form: Form[_] = utrForm): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "PartnerEnterUTRController" must {
 
@@ -54,6 +59,7 @@ class PartnerEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
     )
   }
 }
+
 object PartnerEnterUTRControllerSpec {
   private val formProvider = new EnterUTRFormProvider()
   private val index = 0

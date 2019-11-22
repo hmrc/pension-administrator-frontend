@@ -17,12 +17,14 @@
 package controllers.register.partnership.partners
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.routes._
 import models.NormalMode
 import play.api.test.Helpers._
-import utils.{FakeNavigator, Navigator}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import utils.FakeNavigator
+import views.html.dob
 
 class PartnerDOBControllerSpec extends ControllerSpecBase {
 
@@ -31,43 +33,35 @@ class PartnerDOBControllerSpec extends ControllerSpecBase {
   "PartnerDOBController" must {
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = testController(this, dontGetAnyData).onPageLoad(NormalMode, 0)(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(NormalMode, 0)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "2019-10-23"))
-      val result = testController(this, dontGetAnyData).onSubmit(NormalMode, 0)(postRequest)
+      val result = controller(dontGetAnyData).onSubmit(NormalMode, 0)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
     }
 
   }
 
 }
-object PartnerDOBControllerSpec {
-  def testController(
-                      base: ControllerSpecBase,
-                      dataRetrievalAction: DataRetrievalAction
-                    ): PartnerDOBController =
-    createController(base, dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
-
-  def createController(
-                        base: ControllerSpecBase,
-                        dataRetrievalAction: DataRetrievalAction
-                      )(connector: UserAnswersCacheConnector, nav: Navigator): PartnerDOBController =
+object PartnerDOBControllerSpec extends ControllerSpecBase {
+  def controller(dataRetrievalAction: DataRetrievalAction): PartnerDOBController =
     new PartnerDOBController(
-      appConfig = base.frontendAppConfig,
-      messagesApi = base.messagesApi,
-      cacheConnector = connector,
-      navigator = nav,
+      appConfig = frontendAppConfig,
+      cacheConnector = FakeUserAnswersCacheConnector,
+      navigator = FakeNavigator,
       authenticate = FakeAuthAction,
       allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
-      requireData = new DataRequiredActionImpl()
+      requireData = new DataRequiredActionImpl(),
+      controllerComponents = stubMessagesControllerComponents(),
+      view = app.injector.instanceOf[dob]
     )
 
 }

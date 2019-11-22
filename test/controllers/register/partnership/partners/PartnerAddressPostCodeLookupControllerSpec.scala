@@ -16,9 +16,8 @@
 
 package controllers.register.partnership.partners
 
-import java.time.LocalDate
-
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -31,6 +30,7 @@ import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -47,15 +47,18 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
     FakeUserAnswersCacheConnector,
     fakeAddressLookupConnector,
     new FakeNavigator(desiredRoute = onwardRoute),
-    messagesApi,
     FakeAuthAction,
     FakeAllowAccessProvider(),
     dataRetrievalAction,
     new DataRequiredActionImpl,
-    formProvider
+    formProvider,
+    stubMessagesControllerComponents(),
+    view
   )
 
-  private def viewAsString(boundForm: Form[String] = form) = postcodeLookup(frontendAppConfig, boundForm, viewModel(firstIndex), NormalMode)(fakeRequest, messages).toString
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
+  private def viewAsString(boundForm: Form[String] = form) = view(boundForm, viewModel(firstIndex), NormalMode)(fakeRequest, messages).toString
 
   "PartnerAddressPostCodeLookupController" when {
 
@@ -79,7 +82,7 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
     }
 
     "on a POST" must {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value" -> testPostCode))
+      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> testPostCode)
 
       "redirect to the next page when valid data is submitted" in {
         when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testPostCode))(Matchers.any(), Matchers.any()))
@@ -102,7 +105,7 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
       }
 
       "return the Bad Request when invalid data is submitted" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("value" -> ""))
+        val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "")
         val boundForm = form.withError(FormError("value", "error.postcode.required"))
         val result = controller().onSubmit(NormalMode, firstIndex)(postRequest)
 

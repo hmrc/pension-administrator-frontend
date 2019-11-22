@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
@@ -36,10 +37,14 @@ class PartnerPhoneControllerSpec extends ControllerWithCommonBehaviour {
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerPhoneController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+    stubMessagesControllerComponents(), view
+  )
 
-  private def phoneView(form: Form[_] = phoneForm): String = phone(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  val view: phone = app.injector.instanceOf[phone]
+
+  private def phoneView(form: Form[_] = phoneForm): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "PartnerPhoneController" must {
 

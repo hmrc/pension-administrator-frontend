@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -68,14 +69,17 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PartnerPreviousAddressListController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
+
+  val view: addressList = app.injector.instanceOf[addressList]
 
   private lazy val viewModel =
     AddressListViewModel(
@@ -89,9 +93,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form): String =
-    addressList(
-      frontendAppConfig,
-      form,
+    view(form,
       viewModel,
       NormalMode
     )(fakeRequest, messages).toString
