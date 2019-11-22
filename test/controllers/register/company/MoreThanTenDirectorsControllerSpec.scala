@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{Message, MoreThanTenViewModel}
 import views.html.moreThanTen
@@ -35,7 +36,9 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new MoreThanTenFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
+
+  val view: moreThanTen = app.injector.instanceOf[moreThanTen]
 
   def viewModel =
     MoreThanTenViewModel(
@@ -55,10 +58,12 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(form: Form[_] = form): String = moreThanTen(frontendAppConfig, form, viewModel, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, viewModel, NormalMode)(fakeRequest, messages).toString
 
   "MoreThanTenDirectors Controller" must {
 

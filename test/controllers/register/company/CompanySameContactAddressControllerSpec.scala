@@ -49,6 +49,8 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
   val address: TolerantAddress = TolerantAddress(Some("Add1"), Some("Add2"), None, None, None, Some("GB"))
   val companyName: String = "CompanyName"
 
+  val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
+
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     CompanyAddressId.toString -> address,
     BusinessNameId.toString -> companyName
@@ -71,7 +73,7 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
       implicit app => addToken(FakeRequest(routes.CompanySameContactAddressController.onPageLoad(NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe sameContactAddress(frontendAppConfig, formProvider(), viewModel, countryOptions)(request, messages).toString()
+        contentAsString(result) mustBe view(formProvider(), viewModel, countryOptions)(request, messages).toString()
       }
     )
   }

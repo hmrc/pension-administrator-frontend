@@ -31,7 +31,6 @@ import views.html.register.company.whatYouWillNeed
 import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           @RegisterCompany navigator: Navigator,
                                           authenticate: AuthAction,
                                           allowAccess: AllowAccessActionProvider,

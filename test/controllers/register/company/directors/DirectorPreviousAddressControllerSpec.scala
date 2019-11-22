@@ -16,8 +16,6 @@
 
 package controllers.register.company.directors
 
-import java.time.LocalDate
-
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
 import connectors.cache.FakeUserAnswersCacheConnector
@@ -30,6 +28,7 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -65,10 +64,11 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
 
   private val auditService = new StubSuccessfulAuditService()
 
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorPreviousAddressController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAllowAccessProvider(),
@@ -77,7 +77,9 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
       new DataRequiredActionImpl,
       formProvider,
       new FakeCountryOptions(environment, frontendAppConfig),
-      auditService
+      auditService,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private val viewModel =
@@ -89,8 +91,7 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
     )
 
   private def viewAsString(form: Form[_] = form) =
-    manualAddress(
-      frontendAppConfig,
+    view(
       form,
       viewModel,
       NormalMode

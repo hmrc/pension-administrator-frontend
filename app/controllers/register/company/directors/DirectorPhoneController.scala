@@ -36,7 +36,6 @@ import scala.concurrent.ExecutionContext
 
 class DirectorPhoneController @Inject()(@CompanyDirector val navigator: Navigator,
                                         val appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
                                         val cacheConnector: UserAnswersCacheConnector,
                                         authenticate: AuthAction,
                                         val allowAccess: AllowAccessActionProvider,
@@ -66,7 +65,7 @@ class DirectorPhoneController @Inject()(@CompanyDirector val navigator: Navigato
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorPhoneController.onSubmit(mode, index),
-      title = Message("phone.title", Message("theDirector").resolve),
+      title = Message("phone.title", Message("theDirector")),
       heading = Message("phone.title", directorName),
       mode = mode,
       entityName = directorName

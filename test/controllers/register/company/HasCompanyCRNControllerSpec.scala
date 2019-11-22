@@ -27,6 +27,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -38,6 +39,8 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
   private val companyName = "Test Company Name"
   private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("companyRegistrationNumber.error.required", companyName)
+
+  val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
   private def viewModel =
     CommonFormWithHintViewModel(
@@ -51,18 +54,19 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new HasCompanyCRNController(frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =
-    hasReferenceNumber(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
+    view(form, viewModel)(fakeRequest, messages).toString
 
   "HasCompanyCRNController Controller" must {
 

@@ -32,7 +32,6 @@ import views.html.register.outsideEuEea
 import scala.concurrent.Future
 
 class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,

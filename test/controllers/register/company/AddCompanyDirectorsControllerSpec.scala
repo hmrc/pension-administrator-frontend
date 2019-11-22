@@ -29,6 +29,7 @@ import play.api.libs.json._
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
@@ -159,6 +160,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
 
   private val formProvider = new AddCompanyDirectorsFormProvider()
   private val form = formProvider()
+  val view: addCompanyDirectors = app.injector.instanceOf[addCompanyDirectors]
 
   protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
 
@@ -168,21 +170,22 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
                           ) =
     new AddCompanyDirectorsController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       navigator,
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
 
   private def viewAsString(form: Form[_] = form, directors: Seq[Person] = Nil) =
-    addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, None)(request, messages).toString
+    view(form, NormalMode, directors, None)(request, messages).toString
 
   // scalastyle:off magic.number
   private val johnDoe = PersonName("John", "Doe")

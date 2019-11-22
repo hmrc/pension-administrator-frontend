@@ -43,7 +43,6 @@ import views.html.register.company.confirmCompanyDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
                                                 dataCacheConnector: UserAnswersCacheConnector,
                                                 @RegisterCompany navigator: Navigator,
                                                 authenticate: AuthAction,

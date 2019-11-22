@@ -41,7 +41,6 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            @RegisterCompany navigator: Navigator,
-                                           override val messagesApi: MessagesApi,
                                            implicit val countryOptions: CountryOptions,
                                            val controllerComponents: MessagesControllerComponents,
                                            val view: check_your_answers

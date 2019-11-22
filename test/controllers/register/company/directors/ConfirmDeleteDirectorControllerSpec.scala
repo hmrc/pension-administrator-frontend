@@ -16,7 +16,7 @@
 
 package controllers.register.company.directors
 
-import base.CSRFRequest
+import base.{CSRFRequest, SpecBase}
 import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
@@ -45,7 +45,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRe
       implicit app => addToken(FakeRequest(routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, firstIndex))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe confirmDelete(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString()
+        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString()
       }
     )
   }
@@ -78,13 +78,13 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRe
   }
 }
 
-object ConfirmDeleteDirectorControllerSpec {
+object ConfirmDeleteDirectorControllerSpec extends SpecBase {
   val firstIndex = Index(0)
   val person = PersonName("First", "Last")
 
   private val formProvider = new ConfirmDeleteFormProvider()
   private val form = formProvider()
-
+  val view: confirmDelete = app.injector.instanceOf[confirmDelete]
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     "directors" -> Json.arr(
       Json.obj(DirectorNameId.toString -> person)

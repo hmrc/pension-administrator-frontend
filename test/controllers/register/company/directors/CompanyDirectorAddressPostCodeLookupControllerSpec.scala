@@ -16,9 +16,8 @@
 
 package controllers.register.company.directors
 
-import java.time.LocalDate
-
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -31,6 +30,7 @@ import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -45,7 +45,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
   private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
-
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
   val index = Index(0)
   val directorName = "Foo Bar"
 
@@ -66,12 +66,13 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
       FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
-      messagesApi,
       FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private lazy val viewModel = PostcodeLookupViewModel(
@@ -85,8 +86,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
   )
 
   private def viewAsString(form: Form[_] = form) =
-    postcodeLookup(
-      frontendAppConfig,
+    view(
       form,
       viewModel,
       NormalMode

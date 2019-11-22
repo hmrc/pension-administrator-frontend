@@ -42,6 +42,8 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
   private val formProvider = new EnterPAYEFormProvider()
   private val form = formProvider(companyName)
 
+  val view: enterPAYE = app.injector.instanceOf[enterPAYE]
+
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyEnterPAYEController.onSubmit(NormalMode),
@@ -54,8 +56,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
   private val payeNumber = "123AB456"
 
-  private def viewAsString(form: Form[_] = form): String = enterPAYE(
-    frontendAppConfig,
+  private def viewAsString(form: Form[_] = form): String = view(
     form,
     viewModel
   )(fakeRequest, messages).toString

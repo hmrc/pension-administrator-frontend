@@ -37,7 +37,6 @@ import scala.concurrent.ExecutionContext
 
 class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        val allowAccess: AllowAccessActionProvider,

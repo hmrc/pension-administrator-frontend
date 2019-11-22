@@ -35,7 +35,6 @@ import views.html.organisationName
 import scala.concurrent.ExecutionContext
 
 class CompanyRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
                                                 @RegisterCompany override val navigator: Navigator,
                                                 authenticate: AuthAction,
                                                 allowAccess: AllowAccessActionProvider,
