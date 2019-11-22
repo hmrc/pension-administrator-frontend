@@ -51,9 +51,9 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
     "render the view correctly on a GET request" in {
       requestResult(
         implicit app => addToken(FakeRequest(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))),
-        (request, result) => {
+        (_, result) => {
           status(result) mustBe OK
-          contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messages).toString()
+          contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode).toString()
         }
       )
     }

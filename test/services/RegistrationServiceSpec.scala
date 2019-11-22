@@ -16,11 +16,12 @@
 
 package services
 
+import java.time.LocalDate
+
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.FakeRegistrationConnector
 import identifiers.register.RegistrationInfoId
 import models._
-import org.joda.time.LocalDate
 import org.scalatest.{AsyncFlatSpec, Matchers, OptionValues}
 import uk.gov.hmrc.http.HeaderCarrier
 

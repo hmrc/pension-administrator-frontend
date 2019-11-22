@@ -16,7 +16,7 @@
 
 package controllers.register.partnership.partners
 
-import base.CSRFRequest
+import base.{CSRFRequest, SpecBase}
 import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
@@ -47,7 +47,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFReq
       implicit app => addToken(FakeRequest(routes.ConfirmDeletePartnerController.onPageLoad(firstIndex, NormalMode))),
       (request, result) => {
         status(result) mustBe OK
-        contentAsString(result) mustBe confirmDelete(form, viewModel, NormalMode)(request, messages).toString()
+        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString()
       }
     )
   }
@@ -82,7 +82,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFReq
 
 }
 
-object ConfirmDeletePartnerControllerSpec {
+object ConfirmDeletePartnerControllerSpec extends SpecBase {
 
   val firstIndex = Index(0)
 
@@ -92,6 +92,8 @@ object ConfirmDeletePartnerControllerSpec {
   private val form = formProvider()
 
   val person = PersonName("First", "Last")
+
+  val view: confirmDelete = app.injector.instanceOf[confirmDelete]
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     "partners" -> Json.arr(

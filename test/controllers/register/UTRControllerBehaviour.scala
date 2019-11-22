@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.register.utr
 
-trait UTRControllerBehaviour {
+trait UTRControllerBehaviour extends ControllerSpecBase {
 
   
   import UTRControllerBehaviour._

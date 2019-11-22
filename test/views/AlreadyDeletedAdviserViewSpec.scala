@@ -16,6 +16,7 @@
 
 package views
 
+import play.twirl.api.HtmlFormat
 import viewmodels.Message
 import views.behaviours.ViewBehaviours
 import views.html.alreadyDeletedAdviser
@@ -26,14 +27,16 @@ class AlreadyDeletedAdviserViewSpec extends ViewBehaviours {
 
   def onwardRoute: String = controllers.routes.PsaDetailsController.onPageLoad().url
 
-  def createView = () => alreadyDeletedAdviser(frontendAppConfig, onwardRoute)(fakeRequest, messages)
+  val view: alreadyDeletedAdviser = app.injector.instanceOf[alreadyDeletedAdviser]
+
+  def createView: () => HtmlFormat.Appendable = () => view(onwardRoute)(fakeRequest, messages)
 
   "Already Deleted view" must {
 
     "display the correct browser title" in {
       val doc = asDocument(createView())
       assertEqualsMessage(doc, "title",
-        messagesApi(s"$messageKeyPrefix.title") + " - " + messagesApi("pension.scheme.administrator.title"))
+        messages(s"$messageKeyPrefix.title") + " - " + messages("pension.scheme.administrator.title"))
     }
 
     "display the correct page title" in {

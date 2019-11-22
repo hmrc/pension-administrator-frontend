@@ -18,7 +18,8 @@ package toggles
 
 import config.FrontendAppConfig
 import org.scalatest.{Matchers, WordSpec}
-import play.api.{Configuration, Environment}
+import play.api.Configuration
+import play.api.inject.guice.GuiceApplicationBuilder
 
 class FeatureToggleBehaviours extends WordSpec with Matchers {
 
@@ -29,15 +30,15 @@ class FeatureToggleBehaviours extends WordSpec with Matchers {
     "behave like a feature toggle" should {
 
       s"return true when $name is configured as true" in {
-        getter(configuration(name, Some(true))) shouldBe true
+        configuration(name, Some(true)) shouldBe true
       }
 
       s"return false when $name is configured as false" in {
-        getter(configuration(name, Some(false))) shouldBe false
+        configuration(name, Some(false)) shouldBe false
       }
 
       s"return false when $name is not configured" in {
-        getter(configuration(name, None)) shouldBe false
+        configuration(name, None) shouldBe false
       }
 
     }
@@ -48,16 +49,12 @@ class FeatureToggleBehaviours extends WordSpec with Matchers {
 
 object FeatureToggleBehaviours {
 
-  def configuration(name: String, on: Option[Boolean]): FrontendAppConfig = {
+  private def configuration(name: String, on: Option[Boolean]): Boolean = {
 
-    new FrontendAppConfig(
-      on.fold {
-        Configuration()
-      } {
-        b => Configuration(s"features.$name" -> b.toString)
-      },
-      Environment.simple()
-    )
+    val injector = new GuiceApplicationBuilder()
+      .configure(on.fold ("features"->"")(b=> s"features.$name" -> b.toString)).build().injector
+
+    injector.instanceOf[Configuration].getOptional[Boolean](s"features.$name").getOrElse(false)
 
   }
 

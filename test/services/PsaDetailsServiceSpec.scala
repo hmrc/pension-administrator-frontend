@@ -17,8 +17,8 @@
 package services
 
 import base.SpecBase
-import connectors.cache.UserAnswersCacheConnector
-import connectors.{FakeUserAnswersCacheConnector, SubscriptionConnector}
+import connectors.SubscriptionConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual._
@@ -37,6 +37,7 @@ import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results.Ok
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.ViewPsaDetailsBuilder.{companyWithChangeLinks, individualWithChangeLinks, partnershipWithChangeLinks}
@@ -165,10 +166,10 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
 object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
 
-  val configuration = injector.instanceOf[Configuration]
-  val mockSubscriptionConnector = mock[SubscriptionConnector]
-  val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  val mockUserAnswersConnector = mock[UserAnswersCacheConnector]
+  private val configuration = injector.instanceOf[Configuration]
+  private val mockSubscriptionConnector = mock[SubscriptionConnector]
+  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private val mockUserAnswersConnector = mock[UserAnswersCacheConnector]
 
   object LocalFakeUserAnswersCacheConnector extends FakeUserAnswersCacheConnector {
     override def fetch(cacheId: String)(implicit
@@ -181,15 +182,15 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
   }
 
   def service(cacheConnector: UserAnswersCacheConnector = LocalFakeUserAnswersCacheConnector): PsaDetailServiceImpl = new PsaDetailServiceImpl(
-    messagesApi,
     mockSubscriptionConnector,
     countryOptions,
-    cacheConnector
+    cacheConnector,
+    stubMessagesControllerComponents()
   )
 
-  val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")
-  val companyUserAnswers = readJsonFromFile("/data/psaCompanyUserAnswers.json")
-  val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
+  private val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")
+  private val companyUserAnswers = readJsonFromFile("/data/psaCompanyUserAnswers.json")
+  private val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
 
   val individualSuperSections: Seq[SuperSection] = Seq(
     SuperSection(

@@ -162,7 +162,7 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
 object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  private def psaDetailsHelper(userAnswers: UserAnswers) = new ViewPsaDetailsHelper(userAnswers, countryOptions, messagesApi)
+  private def psaDetailsHelper(userAnswers: UserAnswers) = new ViewPsaDetailsHelper(userAnswers, countryOptions)
 
   private val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")
 

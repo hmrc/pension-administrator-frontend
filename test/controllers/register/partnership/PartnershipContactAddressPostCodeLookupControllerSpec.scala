@@ -40,7 +40,7 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnershipContactAddressPostCodeLookupControllerSpec extends CSRFRequest {
+class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
 
   import PartnershipContactAddressPostCodeLookupControllerSpec._
 

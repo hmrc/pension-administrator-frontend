@@ -17,10 +17,8 @@
 package repositories
 
 import play.api.Configuration
+import play.modules.reactivemongo.ReactiveMongoComponent
 
-class FakeSessionRepository(
-                             mongoRepository: ReactiveMongoRepository,
+class FakeSessionRepository(component: ReactiveMongoComponent,
                              config: Configuration = Configuration.from(Map())
-                           ) extends SessionRepository(config: Configuration) {
-  override def apply(): ReactiveMongoRepository = mongoRepository
-}
+                           ) extends SessionRepository(config: Configuration, component)

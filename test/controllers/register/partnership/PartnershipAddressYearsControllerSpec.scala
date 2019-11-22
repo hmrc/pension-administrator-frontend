@@ -38,7 +38,7 @@ import views.html.address.addressYears
 
 import scala.concurrent.Future
 
-class PartnershipAddressYearsControllerSpec extends CSRFRequest {
+class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRFRequest {
 
   import PartnershipAddressYearsControllerSpec._
 

@@ -16,6 +16,7 @@
 
 package views
 
+import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.agentCannotRegister
 
@@ -23,7 +24,9 @@ class AgentCannotRegisterViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "agentCannotRegister"
 
-  def createView = () => agentCannotRegister(frontendAppConfig)(fakeRequest, messages)
+  val view: agentCannotRegister = app.injector.instanceOf[agentCannotRegister]
+
+  def createView: () => HtmlFormat.Appendable = () => view()(fakeRequest, messages)
 
   "InterceptPSA view" must {
     behave like normalPage(createView, messageKeyPrefix, "p1", "p2")

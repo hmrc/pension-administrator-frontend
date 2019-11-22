@@ -16,7 +16,7 @@
 
 package controllers.register.partnership
 
-import base.CSRFRequest
+import base.{CSRFRequest, SpecBase}
 import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
@@ -41,7 +41,7 @@ import views.html.address.addressList
 
 import scala.concurrent.Future
 
-class PartnershipContactAddressListControllerSpec extends MustMatchers with CSRFRequest {
+class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with CSRFRequest with MustMatchers {
 
   import PartnershipContactAddressListControllerSpec._
 
@@ -72,7 +72,7 @@ class PartnershipContactAddressListControllerSpec extends MustMatchers with CSRF
 
 }
 
-object PartnershipContactAddressListControllerSpec extends ControllerSpecBase {
+object PartnershipContactAddressListControllerSpec extends SpecBase {
 
   val view: addressList = app.injector.instanceOf[addressList]
 
