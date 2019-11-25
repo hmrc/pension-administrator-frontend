@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import base.CSRFRequest
 import connectors.AddressLookupConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase

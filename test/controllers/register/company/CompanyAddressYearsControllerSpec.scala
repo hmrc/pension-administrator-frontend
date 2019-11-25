@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import base.CSRFRequest
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
