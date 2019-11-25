@@ -97,7 +97,7 @@ object RegistrationServiceSpec {
     "GB"
   )
 
-  private val dob: LocalDate = new LocalDate()
+  private val dob: LocalDate = LocalDate.now()
 
   val sapNumber = "test-sap-number"
 

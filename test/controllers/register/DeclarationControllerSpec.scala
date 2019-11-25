@@ -193,7 +193,7 @@ object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
       override def updatePsa(psaId: String, answers: UserAnswers
                             )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] =
-        Future.successful()
+        Future.successful(Unit)
     }
 
   private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {

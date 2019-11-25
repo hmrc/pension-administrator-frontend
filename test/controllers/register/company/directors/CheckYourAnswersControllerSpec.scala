@@ -251,7 +251,8 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeSectionComplete,
       FakeUserAnswersCacheConnector,
       countryOptions,
-      stubMessagesControllerComponents(), view
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction, mode: Mode = NormalMode): Unit = {

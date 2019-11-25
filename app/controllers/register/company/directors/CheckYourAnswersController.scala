@@ -44,7 +44,6 @@ class CheckYourAnswersController @Inject()(
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             @CompanyDirector navigator: Navigator,
-                                            override val messagesApi: MessagesApi,
                                             sectionComplete: SectionComplete,
                                             override val cacheConnector: UserAnswersCacheConnector,
                                             implicit val countryOptions: CountryOptions,

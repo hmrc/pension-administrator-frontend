@@ -47,7 +47,7 @@ class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSp
         implicit app => addToken(FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))),
         (request, result) => {
           status(result) mustBe OK
-          contentAsString(result) mustBe postcodeLookup(form, viewModel(NormalMode), NormalMode)(request, messages).toString()
+          contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messages).toString()
         }
       )
     }
@@ -74,6 +74,9 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   private val form = formProvider()
 
   private val validPostcode = "ZZ1 1ZZ"
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
 
   private val address = TolerantAddress(
     Some("test-address-line-1"),

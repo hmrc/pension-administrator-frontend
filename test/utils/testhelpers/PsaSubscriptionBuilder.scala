@@ -47,10 +47,10 @@ object PsaSubscriptionBuilder {
   val partnership = OrganisationOrPartner(name = "Test partnership name", crn = None, vatRegistration = Some("12345678"),
     paye = Some("9876543210"))
 
-  val director1 = DirectorOrPartner("Director", Some("Mr"), "abcdef", Some("dfgdsfff"), "dfgfdgfdg", new LocalDate("1950-03-29"),
+  val director1 = DirectorOrPartner("Director", Some("Mr"), "abcdef", Some("dfgdsfff"), "dfgfdgfdg", LocalDate.parse("1950-03-29"),
     Some("AA999999A"), Some("1234567892"), isSameAddressForLast12Months = true, Some(director1PrevAddress),
     Some(CorrespondenceDetails(director1Address, Some(director1Contact))))
-  val director2 = DirectorOrPartner("Director", Some("Mr"), "sdfdff", Some("sdfdsfsdf"), "dfdsfsf", new LocalDate("1950-07-29"),
+  val director2 = DirectorOrPartner("Director", Some("Mr"), "sdfdff", Some("sdfdsfsdf"), "dfdsfsf", LocalDate.parse("1950-07-29"),
     Some("AA999999A"), Some("7897700000"), isSameAddressForLast12Months = true, Some(director2PrevAddress),
     Some(CorrespondenceDetails(director2Address, Some(director2Contact))))
 
