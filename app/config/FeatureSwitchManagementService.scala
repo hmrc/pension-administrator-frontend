@@ -17,9 +17,7 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import play.api.Mode
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import play.api.{Configuration, Environment, Mode}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -32,8 +30,7 @@ trait FeatureSwitchManagementService {
 }
 
 class FeatureSwitchManagementServiceProductionImpl @Inject()(runModeConfiguration: Configuration,
-                                                             environment: Environment,
-                                                             servicesConfig: ServicesConfig) extends
+                                                             environment: Environment) extends
   FeatureSwitchManagementService {
 
   protected def mode:Mode = environment.mode
@@ -49,8 +46,7 @@ class FeatureSwitchManagementServiceProductionImpl @Inject()(runModeConfiguratio
 
 @Singleton
 class FeatureSwitchManagementServiceTestImpl @Inject()(runModeConfiguration: Configuration,
-                                                             environment: Environment,
-                                                       servicesConfig: ServicesConfig) extends
+                                                             environment: Environment) extends
   FeatureSwitchManagementService {
 
   private lazy val featureSwitches: ArrayBuffer[FeatureSwitch] = new ArrayBuffer[FeatureSwitch]()

@@ -27,7 +27,9 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private def createView: () => Html = () => whatYouWillNeed(onwardRoute)(fakeRequest, messages)
+  val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
+
+  private def createView: () => Html = () => view(onwardRoute)(fakeRequest, messages)
 
   "WhatYouWillNeed view" must {
     behave like normalPage(createView, messageKeyPrefix, "body.text", "body.item1", "body.item2", "body.item3", "body.hint")

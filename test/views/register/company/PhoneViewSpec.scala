@@ -45,16 +45,17 @@ class PhoneViewSpec extends QuestionViewBehaviours[String] {
       entityName = name
     )
 
+  val view: phone = app.injector.instanceOf[phone]
+
+
   def createView: () => HtmlFormat.Appendable = () =>
-    phone(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    phone(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages)

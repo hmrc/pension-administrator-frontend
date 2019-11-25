@@ -27,26 +27,26 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
 
   val firstIndex = Index(0)
 
-  def createView: () => Html = () => confirmDeleteDirector(firstIndex, "directorName", NormalMode)(fakeRequest, messages)
+  val view: confirmDeleteDirector = app.injector.instanceOf[confirmDeleteDirector]
 
-  val view: () => Html = createView
+  def createView: () => Html = () => view(firstIndex, "directorName", NormalMode)(fakeRequest, messages)
 
   "ConfirmDeleteDirector view" must {
 
     "have the correct banner title" in {
-      val doc = asDocument(view())
+      val doc = asDocument(createView())
       val nav = doc.getElementById("proposition-menu")
       val span = nav.children.first
       span.text mustBe messagesApi("site.service_name")
     }
 
     "display the correct browser title" in {
-      val doc = asDocument(view())
+      val doc = asDocument(createView())
       assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title") + " - " + messagesApi("pension.scheme.administrator.title"))
     }
 
     "display the correct page title" in {
-      val doc = asDocument(view())
+      val doc = asDocument(createView())
       assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", "directorName")
     }
 

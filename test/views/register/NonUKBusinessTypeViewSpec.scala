@@ -31,9 +31,9 @@ class NonUKBusinessTypeViewSpec extends ViewBehaviours {
 
   val view: nonUKBusinessType = app.injector.instanceOf[nonUKBusinessType]
 
-  private def createView: () => Html = () => nonUKBusinessType(form)(fakeRequest, messages)
+  private def createView: () => Html = () => view(form)(fakeRequest, messages)
 
-  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => nonUKBusinessType(form)(fakeRequest, messages)
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => view(form)(fakeRequest, messages)
 
   "NonUKBusinessType view" must {
 

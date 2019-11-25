@@ -16,8 +16,8 @@
 
 package controllers
 
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import base.SpecBase
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.PersonNameFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -32,7 +32,7 @@ import views.html.personName
 
 import scala.concurrent.Future
 
-trait PersonNameControllerBehaviour {
+trait PersonNameControllerBehaviour extends SpecBase {
   import PersonNameControllerBehaviour._
   // scalastyle:off method.length
 

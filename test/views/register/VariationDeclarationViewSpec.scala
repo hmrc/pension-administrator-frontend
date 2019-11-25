@@ -27,8 +27,10 @@ class VariationDeclarationViewSpec extends ViewBehaviours {
   private def returnLink: String = controllers.routes.PsaDetailsController.onPageLoad().url
   private val href: Call = controllers.register.routes.VariationDeclarationController.onClickAgree()
 
-  private def createView(isWorkingKnowledge: Boolean = true) = () => variationDeclaration(
-    frontendAppConfig, Some("Mark Wright"), isWorkingKnowledge, href)(fakeRequest, messages)
+  val view: variationDeclaration = app.injector.instanceOf[variationDeclaration]
+
+  private def createView(isWorkingKnowledge: Boolean = true) = () => view(
+    Some("Mark Wright"), isWorkingKnowledge, href)(fakeRequest, messages)
 
   "Declaration variation view" must {
     appRunning()

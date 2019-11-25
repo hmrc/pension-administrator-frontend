@@ -28,7 +28,9 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "whatYouWillNeed.directorsOrPartners"
 
-  private def createView: () => Html = () => whatYouWillNeed(call)(fakeRequest, messages)
+  val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
+
+  private def createView: () => Html = () => view(call)(fakeRequest, messages)
 
   "WhatYouWillNeed view" must {
     behave like normalPageWithTitle(createView, messageKeyPrefix,

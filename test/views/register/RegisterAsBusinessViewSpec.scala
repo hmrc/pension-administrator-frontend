@@ -16,7 +16,6 @@
 
 package views.register
 
-import base.SpecBase
 import forms.register.RegisterAsBusinessFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat

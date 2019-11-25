@@ -16,7 +16,6 @@
 
 package views
 
-import base.SpecBase
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.pensionSchemePractitioner
@@ -27,18 +26,18 @@ class PensionSchemePractitionerViewSpec extends ViewBehaviours {
 
   "pensionSchemePractitioner" must {
 
-    behave like normalPage(createView(this), messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
 
     "display the lede text" in {
-      createView(this) must haveDynamicText("pensionSchemePractitioner.lede")
+      createView() must haveDynamicText("pensionSchemePractitioner.lede")
     }
 
     "display the explanation text" in {
-      createView(this) must haveDynamicText("pensionSchemePractitioner.explanation")
+      createView() must haveDynamicText("pensionSchemePractitioner.explanation")
     }
 
     "display the continue link" in {
-      createView(this) must haveLink(frontendAppConfig.tpssUrl, "continueTpssLink")
+      createView() must haveLink(frontendAppConfig.tpssUrl, "continueTpssLink")
     }
 
   }

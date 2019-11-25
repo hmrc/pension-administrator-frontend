@@ -26,7 +26,7 @@ class SubmissionInvalidViewSpec extends ViewBehaviours {
 
   val view: submissionInvalid = app.injector.instanceOf[submissionInvalid]
 
-  def createView: () => Html = () => submissionInvalid(frontendAppConfig)(fakeRequest, messages)
+  def createView: () => Html = () => view()(fakeRequest, messages)
 
   "SubmissionInvalid view" must {
     behave like normalPage(createView, messageKeyPrefix, "body1", "body2")

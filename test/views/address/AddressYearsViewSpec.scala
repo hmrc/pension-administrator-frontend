@@ -47,7 +47,7 @@ class AddressYearsViewSpec extends ViewBehaviours {
   def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => view(form, viewmodel, mode)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    addressYears(form, viewmodel, NormalMode)(fakeRequest, messages)
+    view(form, viewmodel, NormalMode)(fakeRequest, messages)
 
   "AddressYears view" must {
     behave like normalPageWithTitle(createView(), messageKeyPrefix, title, heading)

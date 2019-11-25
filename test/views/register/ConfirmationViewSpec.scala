@@ -26,12 +26,11 @@ import views.html.register.confirmation
 class ConfirmationViewSpec extends ViewBehaviours {
 
   val psaId: String = "A1234567"
+  val view: confirmation = app.injector.instanceOf[confirmation]
 
   "Confirmation view where user is existing PSA" must {
     val messageKeyPrefix = "confirmation.existingPSA"
     val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = true, None)
-
-    val view: confirmation = app.injector.instanceOf[confirmation]
 
     def createView(): () => Html = () => view(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
 
@@ -78,7 +77,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
     val messageKeyPrefix = "confirmation.newPSA"
     val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
 
-    def createView(): () => Html = () => confirmation(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+    def createView(): () => Html = () => view(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
 
     behave like normalPage(createView(), messageKeyPrefix)
 
