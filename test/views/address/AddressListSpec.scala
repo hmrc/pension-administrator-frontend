@@ -20,7 +20,6 @@ import forms.address.AddressListFormProvider
 import models.{Mode, NormalMode, TolerantAddress, UpdateMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.behaviours.ViewBehaviours
 import views.html.address.addressList
@@ -46,22 +45,20 @@ class AddressListSpec extends ViewBehaviours {
     Some("United Kingdom")
   )
 
-  private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable =
-    () =>
-      addressList(
-        frontendAppConfig,
-        form,
-        viewModel, mode
-      )(fakeRequest, messages)
+  val view: addressList = app.injector.instanceOf[addressList]
 
-  private def createViewUsingForm: Form[_] => HtmlFormat.Appendable =
-    (form: Form[_]) =>
-      addressList(
-        frontendAppConfig,
-        form,
-        viewModel,
-        NormalMode
-      )(fakeRequest, messages)
+  private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
+    view(
+      form,
+      viewModel, mode
+    )(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
+    view(
+      form,
+      viewModel,
+      NormalMode
+    )(fakeRequest, messages)
 
   "AddressListView view" must {
     behave like normalPage(createView(), messageKeyPrefix)

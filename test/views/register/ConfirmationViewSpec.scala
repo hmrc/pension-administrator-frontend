@@ -18,6 +18,7 @@ package views.register
 
 import models.requests.DataRequest
 import models.{PSAUser, UserType}
+import play.twirl.api.Html
 import utils.UserAnswers
 import views.behaviours.ViewBehaviours
 import views.html.register.confirmation
@@ -30,7 +31,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
     val messageKeyPrefix = "confirmation.existingPSA"
     val psaUser = PSAUser(UserType.Individual, None, true, None)
 
-    def createView() = () => confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+    def createView(): () => Html = () => confirmation(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
 
     behave like normalPage(createView(), messageKeyPrefix)
 
@@ -75,7 +76,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
     val messageKeyPrefix = "confirmation.newPSA"
     val psaUser = PSAUser(UserType.Individual, None, false, None)
 
-    def createView() = () => confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+    def createView(): () => Html = () => confirmation(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
 
     behave like normalPage(createView(), messageKeyPrefix)
 

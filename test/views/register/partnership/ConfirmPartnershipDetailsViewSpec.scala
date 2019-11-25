@@ -44,12 +44,13 @@ class ConfirmPartnershipDetailsViewSpec extends ViewBehaviours with AddressBehav
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
+  val view: confirmPartnershipDetails = app.injector.instanceOf[confirmPartnershipDetails]
+
   def createView(address: TolerantAddress = testAddress): () => HtmlFormat.Appendable =
-    () => confirmPartnershipDetails(frontendAppConfig, form, "Partnership", address, countryOptions)(fakeRequest, messages)
+    () => view(form, "Partnership", address, countryOptions)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    confirmPartnershipDetails(
-      frontendAppConfig,
+    view(
       form,
       "",
       testAddress,

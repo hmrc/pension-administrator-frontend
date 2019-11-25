@@ -19,7 +19,7 @@ package views.register
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import models.NormalMode
 import play.api.data.Form
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{Html, HtmlFormat}
 import views.behaviours.YesNoViewBehaviours
 import views.html.register.declarationWorkingKnowledge
 
@@ -29,10 +29,10 @@ class DeclarationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
   val form = new DeclarationWorkingKnowledgeFormProvider()()
 
-  private def createView: () => HtmlFormat.Appendable = () => declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView: () => HtmlFormat.Appendable = () => declarationWorkingKnowledge(form, NormalMode)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) =>
-    declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) =>
+    declarationWorkingKnowledge(form, NormalMode)(fakeRequest, messages)
 
   "DeclarationWorkingKnowledge view" must {
 

@@ -20,6 +20,7 @@ import forms.PersonNameFormProvider
 import models.{Mode, NormalMode, PersonName, UpdateMode}
 import play.api.data.Form
 import play.api.mvc.Call
+import play.twirl.api.HtmlFormat
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.QuestionViewBehaviours
 import views.html.personName
@@ -41,11 +42,13 @@ class PersonNameViewSpec extends QuestionViewBehaviours[PersonName] {
       "test psa"
     )
 
-  private def createView(mode: Mode = NormalMode) = () =>
-    personName(frontendAppConfig, form, viewModel, mode)(fakeRequest, messages)
+  val view: personName = app.injector.instanceOf[personName]
 
-  private def createViewUsingForm = (form: Form[_]) =>
-    personName(frontendAppConfig, form, viewModel, NormalMode)(fakeRequest, messages)
+  private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
+    view(form, viewModel, mode)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
+    view(form, viewModel, NormalMode)(fakeRequest, messages)
 
   "PersonName view" must {
 

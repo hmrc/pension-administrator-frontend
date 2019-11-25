@@ -22,7 +22,6 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.DateHelper
 import views.behaviours.YesNoViewBehaviours
-import models.UpdateMode
 import views.html.register.anyMoreChanges
 
 class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
@@ -31,10 +30,10 @@ class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
   val form = new AnyMoreChangesFormProvider()()
 
   def createView: () => HtmlFormat.Appendable = () =>
-    anyMoreChanges(frontendAppConfig, form, Some("psa name"))(fakeRequest, messages)
+    anyMoreChanges(form, Some("psa name"))(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    anyMoreChanges(frontendAppConfig, form, Some("psa name"))(fakeRequest, messages)
+    anyMoreChanges(form, Some("psa name"))(fakeRequest, messages)
 
   "Any More Changes view" must {
 

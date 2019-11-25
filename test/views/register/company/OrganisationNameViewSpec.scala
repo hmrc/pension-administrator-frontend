@@ -19,6 +19,7 @@ package views.register.company
 import forms.BusinessNameFormProvider
 import play.api.data.Form
 import play.api.mvc.Call
+import play.twirl.api.Html
 import viewmodels.{Message, OrganisationNameViewModel}
 import views.behaviours.QuestionViewBehaviours
 import views.html.organisationName
@@ -36,9 +37,9 @@ class OrganisationNameViewSpec extends QuestionViewBehaviours[String] {
 
   val form = new BusinessNameFormProvider()()
 
-  private def createView = () => organisationName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createView: () => Html = () => organisationName(form, viewModel)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[_]) => organisationName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => organisationName(form, viewModel)(fakeRequest, messages)
 
   "Company Name view" must {
 

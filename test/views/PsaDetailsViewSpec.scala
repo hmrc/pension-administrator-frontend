@@ -36,16 +36,16 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
 
   val fakeCall = Call("method", "url")
 
-  def createView(isUserAnswerUpdated: Boolean=false): () => HtmlFormat.Appendable = () =>
-    psa_details(
-      frontendAppConfig,
+  val view: psa_details = app.injector.instanceOf[psa_details]
+
+  def createView(isUserAnswerUpdated: Boolean = false): () => HtmlFormat.Appendable = () =>
+    view(
       PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated),
       controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     )(fakeRequest, messages)
 
   def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
-    psa_details(
-      frontendAppConfig,
+    view(
       PsaViewDetailsViewModel(sections, secondaryHeader, isUserAnswerUpdated = false),
       controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     )(fakeRequest, messages)

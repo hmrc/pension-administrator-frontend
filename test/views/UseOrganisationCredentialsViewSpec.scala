@@ -16,7 +16,6 @@
 
 package views
 
-import base.SpecBase
 import org.jsoup.Jsoup
 import play.twirl.api.HtmlFormat
 import viewmodels.Message
@@ -29,32 +28,34 @@ class UseOrganisationCredentialsViewSpec extends ViewBehaviours {
 
   "UseOrganisationCredentials" must {
 
-    behave like normalPage(createView(this), messageKeyPrefix)
+    behave like normalPage(createView(), messageKeyPrefix)
 
     "display the p1 text" in {
-      createView(this) must haveDynamicText("useOrganisationCredentials.p1")
+      createView() must haveDynamicText("useOrganisationCredentials.p1")
     }
 
     "display the gg link from p2" in {
-      val doc = Jsoup.parse(createView(this).apply().toString())
+      val doc = Jsoup.parse(createView().apply().toString())
       doc must haveLinkWithUrlAndContent("p2-login-link", frontendAppConfig.loginUrl,
         Message("useOrganisationCredentials.p2.link").resolve)
     }
 
     "display the gg link from p3" in {
-      val doc = Jsoup.parse(createView(this).apply().toString())
+      val doc = Jsoup.parse(createView().apply().toString())
       doc must haveLinkWithUrlAndContent("p3-login-link", frontendAppConfig.loginUrl,
         Message("useOrganisationCredentials.p3.link").resolve)
     }
   }
 }
 
-object UseOrganisationCredentialsViewSpec {
+object UseOrganisationCredentialsViewSpec extends ViewSpecBase {
 
   val messageKeyPrefix: String = "useOrganisationCredentials"
 
-  def createView(base: SpecBase): () => HtmlFormat.Appendable =
-    () => useOrganisationCredentials(base.frontendAppConfig)(base.fakeRequest, base.messages)
+  val view: useOrganisationCredentials = app.injector.instanceOf[useOrganisationCredentials]
+
+  def createView(): () => HtmlFormat.Appendable = () =>
+    view()(fakeRequest, messages)
 
 }
 

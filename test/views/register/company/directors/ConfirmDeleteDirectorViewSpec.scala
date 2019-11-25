@@ -17,6 +17,7 @@
 package views.register.company.directors
 
 import models.{Index, NormalMode}
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.register.company.directors.confirmDeleteDirector
 
@@ -26,9 +27,9 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
 
   val firstIndex = Index(0)
 
-  def createView = () => confirmDeleteDirector(frontendAppConfig, firstIndex, "directorName", NormalMode)(fakeRequest, messages)
+  def createView: () => Html = () => confirmDeleteDirector(firstIndex, "directorName", NormalMode)(fakeRequest, messages)
 
-  val view = createView
+  val view: () => Html = createView
 
   "ConfirmDeleteDirector view" must {
 

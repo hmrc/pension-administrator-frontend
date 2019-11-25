@@ -26,11 +26,10 @@ import uk.gov.hmrc.http.{SessionKeys, HeaderNames => HMRCHeaderNames}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SessionIdFilter(
-                       override val mat: Materializer,
-                       uuid: => UUID,
-                       implicit val executionContext: ExecutionContext,
-                       sessionCookieBaker: SessionCookieBaker
+class SessionIdFilter(override val mat: Materializer,
+                      uuid: => UUID,
+                      implicit val executionContext: ExecutionContext,
+                      sessionCookieBaker: SessionCookieBaker
                      ) extends Filter {
 
   @Inject
@@ -38,7 +37,7 @@ class SessionIdFilter(
     this(mat, UUID.randomUUID(), executionContext, sessionCookieBaker)
   }
 
-  override def apply(f: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
+  override def apply(f: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] = {
 
     lazy val sessionId: String = s"session-$uuid"
 

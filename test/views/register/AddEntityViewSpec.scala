@@ -16,14 +16,14 @@
 
 package views.register
 
-import controllers.register.partnership.routes
 import forms.register.AddEntityFormProvider
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
+import play.twirl.api.Html
 import utils.UserAnswers
 import viewmodels.{EntityViewModel, Message, Person}
 import views.behaviours.{PeopleListBehaviours, YesNoViewBehaviours}
@@ -49,11 +49,11 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     psaName = Some("test psa")
   )
 
-  private def createView(entities: Seq[Person] = Nil, mode: Mode = NormalMode)
-  = () => addEntity(frontendAppConfig, form, viewmodel(entities), mode)(request, messages)
+  private def createView(entities: Seq[Person] = Nil, mode: Mode = NormalMode): () => Html
+  = () => addEntity(form, viewmodel(entities), mode)(request, messages)
 
-  private def createViewUsingForm(entities: Seq[Person] = Nil, mode: Mode = NormalMode)
-  = (form: Form[_]) => addEntity(frontendAppConfig, form, viewmodel(entities), mode)(request, messages)
+  private def createViewUsingForm(entities: Seq[Person] = Nil, mode: Mode = NormalMode): Form[_] => Html
+  = (form: Form[_]) => addEntity(form, viewmodel(entities), mode)(request, messages)
 
   val form = new AddEntityFormProvider()()
 

@@ -21,6 +21,7 @@ import java.time.LocalDate
 import forms.register.individual.IndividualDateOfBirthFormProvider
 import models.NormalMode
 import play.api.data.Form
+import play.twirl.api.Html
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.individual.individualDateOfBirth
 
@@ -30,9 +31,9 @@ class IndividualDateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val form = new IndividualDateOfBirthFormProvider()()
 
-  private def createView = () => individualDateOfBirth(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView: () => Html = () => individualDateOfBirth(form, NormalMode)(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[LocalDate]) => individualDateOfBirth(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createViewUsingForm: Form[LocalDate] => Html = (form: Form[LocalDate]) => individualDateOfBirth(form, NormalMode)(fakeRequest, messages)
 
   "IndividualDateOfBirth view" must {
     "behave like a normal page" when {

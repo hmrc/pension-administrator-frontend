@@ -42,9 +42,9 @@ class MoreThanTenViewSpec extends YesNoViewBehaviours {
       psaName = Some("test psa")
     )
 
-  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => moreThanTen(frontendAppConfig, form, viewModel, mode)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => moreThanTen(form, viewModel, mode)(fakeRequest, messages)
 
-  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => moreThanTen(frontendAppConfig, form, viewModel, NormalMode)(fakeRequest, messages)
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => moreThanTen(form, viewModel, NormalMode)(fakeRequest, messages)
 
   "MoreThanTenDirectors view" must {
 

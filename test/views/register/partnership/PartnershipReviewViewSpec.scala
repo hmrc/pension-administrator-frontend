@@ -18,6 +18,7 @@ package views.register.partnership
 
 import controllers.register.partnership.routes
 import models.NormalMode
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.register.partnership.partnershipReview
 
@@ -25,13 +26,13 @@ class PartnershipReviewViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "partnershipReview"
   val partnershipName = "test partnership name"
-  val partners = Seq("partner a", "partner b", "partner c")
-  val tenPartners = Seq("partner a", "partner b", "partner c", "partner d", "partner e",
+  val partners: Seq[String] = Seq("partner a", "partner b", "partner c")
+  val tenPartners: Seq[String] = Seq("partner a", "partner b", "partner c", "partner d", "partner e",
     "partner f", "partner g", "partner h", "partner i", "partner j")
 
-  def createView = () => partnershipReview(frontendAppConfig, partnershipName, partners)(fakeRequest, messages)
+  def createView: () => Html = () => partnershipReview(partnershipName, partners)(fakeRequest, messages)
 
-  def createSecView = () => partnershipReview(frontendAppConfig, partnershipName, tenPartners)(fakeRequest, messages)
+  def createSecView: () => Html = () => partnershipReview(partnershipName, tenPartners)(fakeRequest, messages)
 
   "PartnershipReview view" must {
     behave like normalPage(createView, messageKeyPrefix)
@@ -43,7 +44,7 @@ class PartnershipReviewViewSpec extends ViewBehaviours {
 
   "have link to edit partnership details" in {
     createView must haveLink(
-      routes.CheckYourAnswersController.onPageLoad.url, "edit-partnership-details"
+      routes.CheckYourAnswersController.onPageLoad().url, "edit-partnership-details"
     )
   }
 

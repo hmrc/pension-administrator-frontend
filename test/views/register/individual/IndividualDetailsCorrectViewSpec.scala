@@ -20,6 +20,7 @@ import controllers.register.individual.routes
 import forms.register.individual.IndividualDetailsCorrectFormProvider
 import models.{NormalMode, TolerantAddress, TolerantIndividual}
 import play.api.data.Form
+import play.twirl.api.Html
 import utils.countryOptions.CountryOptions
 import views.behaviours.YesNoViewBehaviours
 import views.html.register.individual.individualDetailsCorrect
@@ -47,9 +48,11 @@ class IndividualDetailsCorrectViewSpec extends YesNoViewBehaviours {
 
   private val countryName = "United Kingdom"
 
-  private def createView = () => individualDetailsCorrect(frontendAppConfig, form, NormalMode, individual, address, new CountryOptions(environment, frontendAppConfig))(fakeRequest, messages)
+  val view: individualDetailsCorrect = app.injector.instanceOf[individualDetailsCorrect]
 
-  private def createViewUsingForm = (form: Form[_]) => individualDetailsCorrect(frontendAppConfig, form, NormalMode, individual, address, new CountryOptions(environment, frontendAppConfig))(fakeRequest, messages)
+  private def createView: () => Html = () => view(form, NormalMode, individual, address, new CountryOptions(environment, frontendAppConfig))(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => view(form, NormalMode, individual, address, new CountryOptions(environment, frontendAppConfig))(fakeRequest, messages)
 
   "IndividualDetailsCorrect view" must {
 

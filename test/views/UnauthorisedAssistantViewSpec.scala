@@ -16,6 +16,7 @@
 
 package views
 
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.unauthorisedAssistant
 
@@ -23,7 +24,9 @@ class UnauthorisedAssistantViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "unauthorised.assistant"
 
-  def createView = () => unauthorisedAssistant(frontendAppConfig)(fakeRequest, messages)
+  val view: unauthorisedAssistant = app.injector.instanceOf[unauthorisedAssistant]
+
+  def createView: () => Html = () => view()(fakeRequest, messages)
 
   "UnauthorisedAssistant view" must {
     behave like normalPage(createView, messageKeyPrefix, "lede", "info")

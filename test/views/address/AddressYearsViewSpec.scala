@@ -42,10 +42,12 @@ class AddressYearsViewSpec extends ViewBehaviours {
     psaName = Some("test psa")
   )
 
-  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => addressYears(frontendAppConfig, form, viewmodel, mode)(fakeRequest, messages)
+  val view: addressYears = app.injector.instanceOf[addressYears]
+
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => view(form, viewmodel, mode)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    addressYears(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages)
+    addressYears(form, viewmodel, NormalMode)(fakeRequest, messages)
 
   "AddressYears view" must {
     behave like normalPageWithTitle(createView(), messageKeyPrefix, title, heading)
@@ -57,7 +59,7 @@ class AddressYearsViewSpec extends ViewBehaviours {
       "contain radio buttons for the value" in {
         val doc = asDocument(createViewUsingForm(form))
         for (option <- viewmodel.inputs) {
-          assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, false)
+          assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, isChecked = false)
         }
       }
     }
@@ -66,10 +68,10 @@ class AddressYearsViewSpec extends ViewBehaviours {
       s"rendered with a value of '${option.value}'" must {
         s"have the '${option.value}' radio button selected" in {
           val doc = asDocument(createViewUsingForm(form.bind(Map("value" -> s"${option.value}"))))
-          assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, true)
+          assertContainsRadioButton(doc, s"value-${option.value}", "value", option.value, isChecked = true)
 
           for (unselectedOption <- AddressYears.options.filterNot(o => o == option)) {
-            assertContainsRadioButton(doc, s"value-${unselectedOption.value}", "value", unselectedOption.value, false)
+            assertContainsRadioButton(doc, s"value-${unselectedOption.value}", "value", unselectedOption.value, isChecked = false)
           }
         }
       }

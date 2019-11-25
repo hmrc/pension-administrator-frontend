@@ -18,6 +18,7 @@ package views.register
 
 import forms.UTRFormProvider
 import play.api.data.Form
+import play.twirl.api.Html
 import viewmodels.Message
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.utr
@@ -30,9 +31,9 @@ class UTRViewSpec extends QuestionViewBehaviours[String] {
   private val businessType = "limited company"
   private val onwardUrl = controllers.routes.IndexController.onPageLoad()
 
-  private def createView = () => utr(frontendAppConfig, form, businessType, onwardUrl)(fakeRequest, messages)
+  private def createView: () => Html = () => utr(form, businessType, onwardUrl)(fakeRequest, messages)
 
-  private def createViewUsingForm(form: Form[_]) = utr(frontendAppConfig, form, businessType, onwardUrl)(fakeRequest, messages)
+  private def createViewUsingForm(form: Form[_]): Html = utr(form, businessType, onwardUrl)(fakeRequest, messages)
 
   "UTR view" must {
     

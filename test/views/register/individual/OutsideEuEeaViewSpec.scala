@@ -16,6 +16,7 @@
 
 package views.register.individual
 
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.register.individual.outsideEuEea
 
@@ -24,7 +25,7 @@ class OutsideEuEeaViewSpec extends ViewBehaviours {
   val messageKeyPrefix = "outsideEuEea.individual"
   val country = "Canada"
 
-  def createView = () => outsideEuEea(frontendAppConfig, country)(fakeRequest, messages)
+  def createView: () => Html = () => outsideEuEea(country)(fakeRequest, messages)
 
   "OutsideEuEea view" must {
     behave like normalPageWithPageTitleCheck(createView, messageKeyPrefix, "body")

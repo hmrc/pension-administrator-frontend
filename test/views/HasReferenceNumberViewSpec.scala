@@ -55,10 +55,10 @@ class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
 
 
   private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
-    hasReferenceNumber(frontendAppConfig, form, viewModel(mode))(fakeRequest, messages)
+    hasReferenceNumber(form, viewModel(mode))(fakeRequest, messages)
 
   private def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    hasReferenceNumber(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages)
+    hasReferenceNumber(form, viewModel(NormalMode))(fakeRequest, messages)
 
   "HasReferenceNumber view" must {
 

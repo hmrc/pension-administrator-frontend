@@ -20,6 +20,7 @@ import controllers.register.company.routes._
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
+import play.twirl.api.Html
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.StringViewBehaviours
 import views.html.register.company.enterNumber
@@ -42,9 +43,9 @@ class EnterNumberViewSpec extends StringViewBehaviours {
 
   )
 
-  private def createView = () => enterNumber(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages)
+  private def createView: () => Html = () => enterNumber(form, viewModel(NormalMode))(fakeRequest, messages)
 
-  private def createViewUsingForm = (form: Form[String]) => enterNumber(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages)
+  private def createViewUsingForm: Form[String] => Html = (form: Form[String]) => enterNumber(form, viewModel(NormalMode))(fakeRequest, messages)
 
   "CompanyRegistrationNumber view" must {
     normalPageWithNoPageTitleCheck(createView, messageKeyPrefix)

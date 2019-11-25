@@ -18,6 +18,7 @@ package views.register
 
 import forms.register.VariationDeclarationFitAndProperFormProvider
 import play.api.data.Form
+import play.twirl.api.Html
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.variationDeclarationFitAndProper
 
@@ -30,9 +31,9 @@ class VariationDeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Bo
 
   val messageKeyPrefix = "declarationFitAndProper.variations"
 
-  private def createView = () => variationDeclarationFitAndProper(frontendAppConfig, form, Some(psaName))(fakeRequest, messages)
+  private def createView: () => Html = () => variationDeclarationFitAndProper(form, Some(psaName))(fakeRequest, messages)
 
-  private def createViewUsingForm(form: Form[_]) = variationDeclarationFitAndProper(frontendAppConfig, form, Some(psaName))(fakeRequest, messages)
+  private def createViewUsingForm(form: Form[_]): Html = variationDeclarationFitAndProper(form, Some(psaName))(fakeRequest, messages)
 
   "DeclarationFitAndProper (variations) view" must {
     appRunning()

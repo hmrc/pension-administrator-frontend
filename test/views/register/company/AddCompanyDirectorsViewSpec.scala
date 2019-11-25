@@ -24,6 +24,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import utils.UserAnswers
 import viewmodels.Person
 import views.behaviours.{PeopleListBehaviours, YesNoViewBehaviours}
@@ -37,11 +38,13 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
 
   private val messageKeyPrefix = "addCompanyDirectors"
 
-  private def createView(directors: Seq[Person] = Nil, mode: Mode = NormalMode)
-  = () => addCompanyDirectors(frontendAppConfig, form, mode, directors, Some("test psa"))(request, messages)
+  val view: addCompanyDirectors = app.injector.instanceOf[addCompanyDirectors]
 
-  private def createViewUsingForm(directors: Seq[Person] = Nil)
-  = (form: Form[_]) => addCompanyDirectors(frontendAppConfig, form, NormalMode, directors, None)(request, messages)
+  private def createView(directors: Seq[Person] = Nil, mode: Mode = NormalMode): () => HtmlFormat.Appendable
+  = () => view(form, mode, directors, Some("test psa"))(request, messages)
+
+  private def createViewUsingForm(directors: Seq[Person] = Nil): Form[_] => HtmlFormat.Appendable
+  = (form: Form[_]) => view(form, NormalMode, directors, None)(request, messages)
 
   val form = new AddCompanyDirectorsFormProvider()()
 
