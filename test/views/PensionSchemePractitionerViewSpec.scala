@@ -45,11 +45,13 @@ class PensionSchemePractitionerViewSpec extends ViewBehaviours {
 
 }
 
-object PensionSchemePractitionerViewSpec {
+object PensionSchemePractitionerViewSpec extends ViewSpecBase {
 
   val messageKeyPrefix: String = "pensionSchemePractitioner"
 
-  def createView(base: SpecBase): () => HtmlFormat.Appendable =
-    () => pensionSchemePractitioner(base.frontendAppConfig)(base.fakeRequest, base.messages)
+  val view: pensionSchemePractitioner = app.injector.instanceOf[pensionSchemePractitioner]
+
+  def createView(): () => HtmlFormat.Appendable =
+    () => view()(fakeRequest, messages)
 
 }

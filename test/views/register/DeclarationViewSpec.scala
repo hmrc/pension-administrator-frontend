@@ -29,8 +29,10 @@ class DeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
 
   private val messageKeyPrefix = "declaration"
 
+  val view: declaration = app.injector.instanceOf[declaration]
+
   private def createView(workingKnowledge: Boolean = true): () => Html = () =>
-    declaration(workingKnowledge)(fakeRequest, messages)
+    view(workingKnowledge)(fakeRequest, messages)
 
   "Declaration view" must {
     behave like normalPage(createView(), messageKeyPrefix)

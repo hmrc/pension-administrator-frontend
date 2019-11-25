@@ -16,6 +16,7 @@
 
 package views.register
 
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.register.submissionInvalid
 
@@ -23,7 +24,9 @@ class SubmissionInvalidViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "submissionInvalid"
 
-  def createView = () => submissionInvalid(frontendAppConfig)(fakeRequest, messages)
+  val view: submissionInvalid = app.injector.instanceOf[submissionInvalid]
+
+  def createView: () => Html = () => submissionInvalid(frontendAppConfig)(fakeRequest, messages)
 
   "SubmissionInvalid view" must {
     behave like normalPage(createView, messageKeyPrefix, "body1", "body2")

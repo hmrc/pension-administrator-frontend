@@ -41,17 +41,17 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
     psaName = Some("test-psa")
   )
 
-  private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable =
-    () => postcodeLookup(
-      frontendAppConfig,
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
+  private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
+    view(
       form,
       viewModel,
       mode
     )(fakeRequest, messages)
 
-  private def createViewUsingForm: Form[_] => HtmlFormat.Appendable =
-    (form: Form[_]) => postcodeLookup(
-      frontendAppConfig,
+  private def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
+    view(
       form,
       viewModel,
       NormalMode

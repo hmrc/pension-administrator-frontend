@@ -59,9 +59,11 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
-  def createView: () => HtmlFormat.Appendable = () => view(form, viewmodel(), countryOptions)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () =>
+    view(form, viewmodel(), countryOptions)(fakeRequest, messages)
 
-  def createViewUpdateMode: () => HtmlFormat.Appendable = () => view(form, viewmodel(UpdateMode), countryOptions)(fakeRequest, messages)
+  def createViewUpdateMode: () => HtmlFormat.Appendable = () =>
+    view(form, viewmodel(UpdateMode), countryOptions)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
     view(form, viewmodel(), countryOptions)(fakeRequest, messages)

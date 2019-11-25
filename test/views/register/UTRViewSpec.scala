@@ -31,9 +31,11 @@ class UTRViewSpec extends QuestionViewBehaviours[String] {
   private val businessType = "limited company"
   private val onwardUrl = controllers.routes.IndexController.onPageLoad()
 
-  private def createView: () => Html = () => utr(form, businessType, onwardUrl)(fakeRequest, messages)
+  val view: utr = app.injector.instanceOf[utr]
 
-  private def createViewUsingForm(form: Form[_]): Html = utr(form, businessType, onwardUrl)(fakeRequest, messages)
+  private def createView: () => Html = () => view(form, businessType, onwardUrl)(fakeRequest, messages)
+
+  private def createViewUsingForm(form: Form[_]): Html = view(form, businessType, onwardUrl)(fakeRequest, messages)
 
   "UTR view" must {
     

@@ -19,7 +19,7 @@ package base
 import config.FrontendAppConfig
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContent
@@ -28,8 +28,7 @@ import play.api.{Application, Environment}
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
 
-  override lazy val app: Application =
-    new GuiceApplicationBuilder().build()
+  override lazy val app: Application = new GuiceApplicationBuilder().build()
 
   def injector: Injector = app.injector
 
@@ -42,6 +41,8 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  implicit def lang: Lang = injector.instanceOf[Lang]
 
   def appRunning(): Unit = app
 

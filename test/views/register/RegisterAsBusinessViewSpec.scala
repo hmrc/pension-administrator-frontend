@@ -20,6 +20,7 @@ import base.SpecBase
 import forms.register.RegisterAsBusinessFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import views.ViewSpecBase
 import views.behaviours.YesNoViewBehaviours
 import views.html.register.registerAsBusiness
 
@@ -31,38 +32,37 @@ class RegisterAsBusinessViewSpec extends YesNoViewBehaviours {
 
   "Register as Business view" must {
 
-    behave like normalPage(createView(this, form), messageKeyPrefix)
+    behave like normalPage(createView(form), messageKeyPrefix)
 
     behave like yesNoPage(
-      createViewUsingForm(this),
+      createViewUsingForm(),
       messageKeyPrefix,
       controllers.register.routes.RegisterAsBusinessController.onSubmit().url,
       s"$messageKeyPrefix.heading"
     )
 
     "display the correct label for no" in {
-      createView(this, form) must haveLabel("value-no", messages("registerAsBusiness.no.label"))
+      createView(form) must haveLabel("value-no", messages("registerAsBusiness.no.label"))
     }
 
-    behave like pageWithSubmitButton(createView(this, form))
+    behave like pageWithSubmitButton(createView(form))
 
   }
 
 }
 
-object RegisterAsBusinessViewSpec {
+object RegisterAsBusinessViewSpec extends ViewSpecBase {
 
   val messageKeyPrefix: String = "registerAsBusiness"
 
-  def createView(base: SpecBase, form: Form[Boolean]): () => HtmlFormat.Appendable =
-    () =>
-      registerAsBusiness(
-        base.frontendAppConfig,
+  val view: registerAsBusiness = app.injector.instanceOf[registerAsBusiness]
+
+  def createView(form: Form[Boolean]): () => HtmlFormat.Appendable = () =>
+      view(
         form
-      )(base.fakeRequest, base.messages)
+      )(fakeRequest, messages)
 
-  def createViewUsingForm(base: SpecBase): Form[Boolean] => HtmlFormat.Appendable =
+  def createViewUsingForm(): Form[Boolean] => HtmlFormat.Appendable =
     form =>
-      createView(base, form).apply()
-
+      createView(form).apply()
 }
