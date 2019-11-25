@@ -16,7 +16,7 @@
 
 package controllers.register.partnership
 
-import base.{CSRFRequest, SpecBase}
+import base.SpecBase
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -37,7 +37,7 @@ import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with CSRFRequest with MustMatchers {
+class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with MustMatchers {
 
   import PartnershipContactAddressListControllerSpec._
 

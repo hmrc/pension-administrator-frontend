@@ -16,7 +16,6 @@
 
 package controllers.register.adviser
 
-import base.CSRFRequest
 import connectors.AddressLookupConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
@@ -38,7 +37,7 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
+class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   import AdviserAddressPostCodeLookupControllerSpec._
 

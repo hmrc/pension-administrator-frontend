@@ -39,7 +39,7 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
+class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())

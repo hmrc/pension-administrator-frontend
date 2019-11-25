@@ -16,7 +16,6 @@
 
 package controllers.register.adviser
 
-import base.CSRFRequest
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -36,7 +35,7 @@ import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-class AdviserAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
+class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
   import AdviserAddressListControllerSpec._
 

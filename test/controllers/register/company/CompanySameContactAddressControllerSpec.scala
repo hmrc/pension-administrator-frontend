@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import base.CSRFRequest
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
@@ -38,7 +37,7 @@ import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
-class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CSRFRequest {
+class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
 
   val controller: CompanySameContactAddressController = app.injector.instanceOf[CompanySameContactAddressController]
   val formProvider: SameContactAddressFormProvider = app.injector.instanceOf[SameContactAddressFormProvider]

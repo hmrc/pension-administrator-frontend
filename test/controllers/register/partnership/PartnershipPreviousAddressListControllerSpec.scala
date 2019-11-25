@@ -16,9 +16,7 @@
 
 package controllers.register.partnership
 
-import base.CSRFRequest
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
@@ -34,7 +32,7 @@ import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
+class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
 
   private val addresses = Seq(
     TolerantAddress(
@@ -75,7 +73,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction)
       )) { implicit app =>
-        val request = addToken(FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode)))
+        val request = FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode))
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -96,7 +94,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getPartnership)
       )) { implicit app =>
-        val request = addToken(FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode)))
+        val request = FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode))
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -113,7 +111,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
-        val request = addToken(FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode)))
+        val request = FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode))
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -132,10 +130,10 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
       )) { implicit app =>
         val request =
-          addToken(
+
             FakeRequest(routes.PartnershipPreviousAddressListController.onSubmit(NormalMode))
               .withFormUrlEncodedBody(("value", "0"))
-          )
+
 
         val result = route(app, request).value
 
@@ -153,11 +151,9 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
-        val request =
-          addToken(
-            FakeRequest(routes.PartnershipPreviousAddressListController.onSubmit(NormalMode))
+        val request = FakeRequest(routes.PartnershipPreviousAddressListController.onSubmit(NormalMode))
               .withFormUrlEncodedBody(("value", "0"))
-          )
+
 
         val result = route(app, request).value
 
@@ -176,10 +172,8 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase wi
         bind[DataRetrievalAction].toInstance(getPartnership)
       )) { implicit app =>
         val request =
-          addToken(
             FakeRequest(routes.PartnershipPreviousAddressListController.onSubmit(NormalMode))
               .withFormUrlEncodedBody(("value", "0"))
-          )
 
         val result = route(app, request).value
 
