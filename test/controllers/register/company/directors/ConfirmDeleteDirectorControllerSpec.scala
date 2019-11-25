@@ -16,7 +16,7 @@
 
 package controllers.register.company.directors
 
-import base.{CSRFRequest, SpecBase}
+import base.SpecBase
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -32,7 +32,7 @@ import play.api.test.Helpers._
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
 
-class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase with CSRFRequest {
+class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
 
   import ConfirmDeleteDirectorControllerSpec._
 

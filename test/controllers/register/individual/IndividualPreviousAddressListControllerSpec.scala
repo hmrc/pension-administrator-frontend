@@ -16,9 +16,7 @@
 
 package controllers.register.individual
 
-import base.CSRFRequest
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.AddressListFormProvider
@@ -32,9 +30,8 @@ import utils.annotations.Individual
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
-import views.html.address.addressList
 
-class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
+class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase {
 
   private val addresses = Seq(
     TolerantAddress(

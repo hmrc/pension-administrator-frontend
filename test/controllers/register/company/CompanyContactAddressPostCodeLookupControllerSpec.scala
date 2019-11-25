@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import base.CSRFRequest
 import connectors.AddressLookupConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
@@ -41,7 +40,7 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
+class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   import CompanyContactAddressPostCodeLookupControllerSpec._
 

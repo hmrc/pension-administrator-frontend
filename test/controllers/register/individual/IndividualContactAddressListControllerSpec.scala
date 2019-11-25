@@ -16,11 +16,10 @@
 
 package controllers.register.individual
 
-import base.CSRFRequest
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
+import controllers.register.individual.routes._
 import forms.address.AddressListFormProvider
 import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
@@ -37,11 +36,12 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
-import controllers.register.individual.routes._
 
-class IndividualContactAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
+class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
 
   val onwardRoute: Call = IndividualContactAddressController.onPageLoad(NormalMode)
+
+  val view: addressList = app.injector.instanceOf[addressList]
 
   def application(dataRetrievalAction: DataRetrievalAction): Application = new GuiceApplicationBuilder()
     .overrides(
@@ -92,7 +92,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
 
       val form: Form[Int] = new AddressListFormProvider()(viewModel.addresses)
 
-      contentAsString(result) mustBe addressList(form, viewModel, NormalMode)(request, messages).toString
+      contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
 
       app.stop()
     }
