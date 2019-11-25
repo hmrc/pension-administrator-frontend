@@ -16,18 +16,15 @@
 
 package controllers.register.partnership
 
-import base.CSRFRequest
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.partnership.routes.PartnershipAddressYearsController
 import forms.address.AddressYearsFormProvider
 import models.{AddressYears, NormalMode}
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{Request, Result}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
@@ -36,31 +33,23 @@ import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
-import scala.concurrent.Future
-
-class PartnershipAddressYearsControllerSpec extends ControllerSpecBase with CSRFRequest {
+class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
 
   import PartnershipAddressYearsControllerSpec._
 
   "render the view correctly on a GET request" in {
-    requestResult(
-      implicit app => addToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode))),
-      (request, result) => {
+    val request = FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode))
+    val result = route(application, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
-      }
-    )
   }
 
   "redirect to the next page on a POST request" in {
-    requestResult(
-      implicit App => addToken(FakeRequest(PartnershipAddressYearsController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> AddressYears.OverAYear.toString)),
-      (_, result) => {
+    val request = FakeRequest(PartnershipAddressYearsController.onSubmit(NormalMode))
+        .withFormUrlEncodedBody("value" -> AddressYears.OverAYear.toString)
+    val result = route(application, request).value
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
-      }
-    )
   }
 }
 
@@ -83,20 +72,13 @@ object PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
 
   val view: addressYears = app.injector.instanceOf[addressYears]
 
-  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
-                              (implicit writeable: Writeable[T]): Unit = {
-    running(_.overrides(
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-  }
+    ).build()
 
 }

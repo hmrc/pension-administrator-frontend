@@ -17,8 +17,7 @@
 package controllers.register.partnership
 
 import base.{CSRFRequest, SpecBase}
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
@@ -27,10 +26,9 @@ import identifiers.register.partnership.PartnershipContactAddressPostCodeLookupI
 import models.{NormalMode, TolerantAddress}
 import org.scalatest.MustMatchers
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
@@ -39,8 +37,6 @@ import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.Future
-
 class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with CSRFRequest with MustMatchers {
 
   import PartnershipContactAddressListControllerSpec._
@@ -48,24 +44,19 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
   "PartnershipAddressListController" must {
 
     "render the view correctly on a GET request" in {
-      requestResult(
-        implicit app => addToken(FakeRequest(routes.PartnershipContactAddressListController.onPageLoad(NormalMode))),
-        (request, result) => {
+      val request = FakeRequest(routes.PartnershipContactAddressListController.onPageLoad(NormalMode))
+      val result = route(application, request).value
           status(result) mustBe OK
           contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString()
-        }
-      )
+
     }
 
     "redirect to the next page on a POST request" in {
-      requestResult(
-        implicit App => addToken(FakeRequest(routes.PartnershipContactAddressListController.onSubmit(NormalMode))
-          .withFormUrlEncodedBody("value" -> "0")),
-        (_, result) => {
+      val request = FakeRequest(routes.PartnershipContactAddressListController.onSubmit(NormalMode))
+          .withFormUrlEncodedBody("value" -> "0")
+      val result = route(application, request).value
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
-        }
-      )
     }
 
   }
@@ -112,21 +103,13 @@ object PartnershipContactAddressListControllerSpec extends SpecBase {
     PartnershipContactAddressPostCodeLookupId.toString -> addresses
   )))
 
-  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
-                              (implicit writeable: Writeable[T]): Unit = {
-
-    running(_.overrides(
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(retrieval),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-  }
+    ).build()
 
 }

@@ -16,11 +16,9 @@
 
 package controllers.register.partnership.partners
 
-import base.CSRFRequest
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRetrievalAction, _}
-import controllers.register.partnership.partners.ConfirmDeletePartnerControllerSpec.application
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.partnership.partners.PartnerNameId
 import models.{Index, NormalMode, PersonName}
@@ -36,7 +34,7 @@ import utils.{FakeNavigator, Navigator}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
 
-class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase with CSRFRequest {
+class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
 
   import ConfirmDeletePartnerControllerSpec._
 
