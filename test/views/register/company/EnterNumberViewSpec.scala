@@ -43,9 +43,11 @@ class EnterNumberViewSpec extends StringViewBehaviours {
 
   )
 
-  private def createView: () => Html = () => enterNumber(form, viewModel(NormalMode))(fakeRequest, messages)
+  val view: enterNumber = app.injector.instanceOf[enterNumber]
 
-  private def createViewUsingForm: Form[String] => Html = (form: Form[String]) => enterNumber(form, viewModel(NormalMode))(fakeRequest, messages)
+  private def createView: () => Html = () => view(form, viewModel(NormalMode))(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[String] => Html = (form: Form[String]) => view(form, viewModel(NormalMode))(fakeRequest, messages)
 
   "CompanyRegistrationNumber view" must {
     normalPageWithNoPageTitleCheck(createView, messageKeyPrefix)

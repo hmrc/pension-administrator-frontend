@@ -42,9 +42,11 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
+  val view: confirmCompanyDetails = app.injector.instanceOf[confirmCompanyDetails]
+
+
   private def createView(address: TolerantAddress = testAddress) =
-    () => confirmCompanyDetails(
-      frontendAppConfig,
+    () => view(
       form,
       address,
       "MyCo",
@@ -52,8 +54,7 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
     )(fakeRequest, messages)
 
   private def createViewUsingForm =
-    (form: Form[_]) => confirmCompanyDetails(
-      frontendAppConfig,
+    (form: Form[_]) => view(
       form,
       testAddress,
       "MyCo",

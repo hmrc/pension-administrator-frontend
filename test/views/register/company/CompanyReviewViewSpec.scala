@@ -30,9 +30,12 @@ class CompanyReviewViewSpec extends ViewBehaviours {
   val tenDirectors: Seq[String] = Seq("director a", "director b", "director c", "director d", "director e",
     "director f", "director g", "director h", "director i", "director j")
 
-  def createView: () => Html = () => companyReview(companyName, directors)(fakeRequest, messages)
+  val view: companyReview = app.injector.instanceOf[companyReview]
 
-  def createSecView: () => Html = () => companyReview(companyName, tenDirectors)(fakeRequest, messages)
+
+  def createView: () => Html = () => view(companyName, directors)(fakeRequest, messages)
+
+  def createSecView: () => Html = () => view(companyName, tenDirectors)(fakeRequest, messages)
 
   "CompanyReview view" must {
     behave like normalPage(createView, messageKeyPrefix)
