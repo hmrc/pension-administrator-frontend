@@ -25,7 +25,10 @@ class OutsideEuEeaViewSpec extends ViewBehaviours {
   val messageKeyPrefix = "outsideEuEea.individual"
   val country = "Canada"
 
-  def createView: () => Html = () => outsideEuEea(country)(fakeRequest, messages)
+  val view: outsideEuEea = app.injector.instanceOf[outsideEuEea]
+
+  def createView: () => Html = () =>
+    view(country)(fakeRequest, messages)
 
   "OutsideEuEea view" must {
     behave like normalPageWithPageTitleCheck(createView, messageKeyPrefix, "body")

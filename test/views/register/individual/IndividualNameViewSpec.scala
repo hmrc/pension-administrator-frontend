@@ -38,9 +38,13 @@ class IndividualNameViewSpec extends QuestionViewBehaviours[TolerantIndividual] 
       postCall = Call("POST", "http://www.test.com")
     )
 
-  private def createView: () => Html = () => individualName(form, viewModel)(fakeRequest, messages)
+  val view: individualName = app.injector.instanceOf[individualName]
 
-  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => individualName(form, viewModel)(fakeRequest, messages)
+  private def createView: () => Html = () =>
+    view(form, viewModel)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) =>
+    view(form, viewModel)(fakeRequest, messages)
 
   "IndividualName view" must {
 

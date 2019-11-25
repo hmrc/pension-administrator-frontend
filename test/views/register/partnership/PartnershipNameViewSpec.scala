@@ -38,9 +38,13 @@ class PartnershipNameViewSpec extends QuestionViewBehaviours[String] {
 
   val form = new BusinessNameFormProvider()()
 
-  private def createView: () => Html = () => organisationName(form, viewModel)(fakeRequest, messages)
+  val view: organisationName = app.injector.instanceOf[organisationName]
 
-  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => organisationName(form, viewModel)(fakeRequest, messages)
+  private def createView: () => Html = () =>
+    view(form, viewModel)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) =>
+    view(form, viewModel)(fakeRequest, messages)
 
   "Partnership Name view" must {
 

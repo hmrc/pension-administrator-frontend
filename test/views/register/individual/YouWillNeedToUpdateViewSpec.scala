@@ -16,6 +16,7 @@
 
 package views.register.individual
 
+import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.register.individual.youWillNeedToUpdate
 
@@ -25,7 +26,10 @@ class YouWillNeedToUpdateViewSpec extends ViewBehaviours {
   val tellHMRCChangesUrl = "https://www.gov.uk/tell-hmrc-change-of-details"
   val messageKeyPrefix = "youWillNeedToUpdate"
 
-  def createView = () => youWillNeedToUpdate(frontendAppConfig)(fakeRequest, messages)
+  val view: youWillNeedToUpdate = app.injector.instanceOf[youWillNeedToUpdate]
+
+  def createView: () => HtmlFormat.Appendable = () =>
+    view()(fakeRequest, messages)
 
   "YouWillNeedToUpdate view" must {
     behave like normalPage(createView, messageKeyPrefix)

@@ -29,7 +29,10 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "whatYouWillNeed.directorsOrPartners"
 
-  private def createView: () => HtmlFormat.Appendable = () => whatYouWillNeed(call)(fakeRequest, messages)
+  val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
+
+  def createView: () => HtmlFormat.Appendable = () =>
+    view(call)(fakeRequest, messages)
 
   "WhatYouWillNeed view" must {
     behave like normalPageWithTitle(createView, messageKeyPrefix,
