@@ -17,8 +17,7 @@
 package controllers.register.individual
 
 import base.CSRFRequest
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.AddressListFormProvider
@@ -71,7 +70,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction)
       )) { implicit app =>
-        val request = addToken(FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)))
+        val request = FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode))
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -91,7 +90,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>
-        val request = addToken(FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)))
+        val request = FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode))
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -107,7 +106,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
-        val request = addToken(FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)))
+        val request = FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode))
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -124,11 +123,8 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[DataRetrievalAction].toInstance(dataRetrievalAction),
         bind(classOf[Navigator]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
       )) { implicit app =>
-        val request =
-          addToken(
-            FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
-          )
+        val request = FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
+          .withFormUrlEncodedBody(("value", "0"))
 
         val result = route(app, request).value
 
@@ -146,10 +142,8 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
         val request =
-          addToken(
-            FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
-          )
+          FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
+            .withFormUrlEncodedBody(("value", "0"))
 
         val result = route(app, request).value
 
@@ -167,10 +161,8 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>
         val request =
-          addToken(
-            FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
-          )
+          FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
+            .withFormUrlEncodedBody(("value", "0"))
 
         val result = route(app, request).value
 
