@@ -31,9 +31,13 @@ class IndividualDateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val form = new IndividualDateOfBirthFormProvider()()
 
-  private def createView: () => Html = () => individualDateOfBirth(form, NormalMode)(fakeRequest, messages)
+  val view: individualDateOfBirth = app.injector.instanceOf[individualDateOfBirth]
 
-  private def createViewUsingForm: Form[LocalDate] => Html = (form: Form[LocalDate]) => individualDateOfBirth(form, NormalMode)(fakeRequest, messages)
+  private def createView: () => Html = () =>
+    view(form, NormalMode)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[LocalDate] => Html = (form: Form[LocalDate]) =>
+    view(form, NormalMode)(fakeRequest, messages)
 
   "IndividualDateOfBirth view" must {
     "behave like a normal page" when {
