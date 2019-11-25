@@ -16,6 +16,7 @@
 
 package controllers
 
+import base.SpecBase
 import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.register.IsRegisteredNameController
@@ -90,9 +91,11 @@ trait IsRegisteredNameControllerBehaviour {
 
 }
 
-object IsRegisteredNameControllerBehaviour {
+object IsRegisteredNameControllerBehaviour extends SpecBase {
 
   lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
+  val view: isRegisteredName = app.injector.instanceOf[isRegisteredName]
 
   case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: IsRegisteredNameController)
 
@@ -132,6 +135,6 @@ object IsRegisteredNameControllerBehaviour {
     new IsRegisteredNameFormProvider()(requiredKey)
 
   def viewAsString(base: ControllerSpecBase, form: Form[_], viewModel: CommonFormViewModel): String =
-    isRegisteredName(form, viewModel)(base.fakeRequest, base.messages).toString()
+    view(form, viewModel)(base.fakeRequest, base.messages).toString()
 
 }

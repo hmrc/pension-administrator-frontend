@@ -16,11 +16,12 @@
 
 package controllers
 
+import base.SpecBase
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.pensionSchemePractitioner
 
-class PensionSchemePractitionerControllerSpec {
+class PensionSchemePractitionerControllerSpec extends SpecBase {
 
   import PensionSchemePractitionerControllerSpec._
 
@@ -32,7 +33,7 @@ class PensionSchemePractitionerControllerSpec {
       val result = controller.onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      contentAsString(result) mustBe viewAsString
 
     }
 
