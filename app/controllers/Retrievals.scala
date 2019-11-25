@@ -25,15 +25,13 @@ import models.PersonName
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
 import play.api.libs.json.Reads
+import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 import scala.concurrent.Future
 import scala.language.implicitConversions
 
 trait Retrievals {
-
-  this: FrontendBaseController =>
 
   private[controllers] def retrieveDirectorName(index: Int)
                                                (f: String => Future[Result])

@@ -28,13 +28,14 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.mvc.Results._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UserAnswers
 
 import scala.concurrent.Future
 
-class RetrievalsSpec extends ControllerSpecBase with FrontendBaseController with Retrievals with EitherValues with ScalaFutures {
+class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValues with ScalaFutures {
 
   def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(data))
@@ -158,5 +159,5 @@ class RetrievalsSpec extends ControllerSpecBase with FrontendBaseController with
     }
   }
 
-  override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+//  override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 }
