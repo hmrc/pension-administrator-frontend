@@ -25,9 +25,10 @@ class IncompleteChangesViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "incompleteChanges"
 
-  private def createView: () => HtmlFormat.Appendable = () =>
-    incompleteChanges(Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
+  val view: incompleteChanges = app.injector.instanceOf[incompleteChanges]
 
+  private def createView: () => HtmlFormat.Appendable = () =>
+    view(Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
 
   "incompleteChanges view" must {
 

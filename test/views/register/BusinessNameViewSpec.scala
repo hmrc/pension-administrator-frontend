@@ -17,7 +17,6 @@
 package views.register
 
 import forms.BusinessNameFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.Html
 import viewmodels.Message
@@ -32,9 +31,11 @@ class BusinessNameViewSpec extends QuestionViewBehaviours[String] {
 
   val form = new BusinessNameFormProvider()()
 
-  private def createView: () => Html = () => businessName(form, businessType, href)(fakeRequest, messages)
+  val view: businessName = app.injector.instanceOf[businessName]
 
-  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => businessName(form, businessType, href)(fakeRequest, messages)
+  private def createView: () => Html = () => view(form, businessType, href)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => view(form, businessType, href)(fakeRequest, messages)
 
   "Company Name view" must {
 

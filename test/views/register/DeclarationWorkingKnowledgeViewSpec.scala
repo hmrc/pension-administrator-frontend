@@ -29,10 +29,12 @@ class DeclarationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
   val form = new DeclarationWorkingKnowledgeFormProvider()()
 
-  private def createView: () => HtmlFormat.Appendable = () => declarationWorkingKnowledge(form, NormalMode)(fakeRequest, messages)
+  val view: declarationWorkingKnowledge = app.injector.instanceOf[declarationWorkingKnowledge]
+
+  private def createView: () => HtmlFormat.Appendable = () => view(form, NormalMode)(fakeRequest, messages)
 
   private def createViewUsingForm: Form[_] => Html = (form: Form[_]) =>
-    declarationWorkingKnowledge(form, NormalMode)(fakeRequest, messages)
+    view(form, NormalMode)(fakeRequest, messages)
 
   "DeclarationWorkingKnowledge view" must {
 

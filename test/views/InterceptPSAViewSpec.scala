@@ -17,6 +17,7 @@
 package views
 
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.interceptPSA
 
@@ -24,7 +25,9 @@ class InterceptPSAViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "interceptPSA"
 
-  def createView = () => interceptPSA(frontendAppConfig)(fakeRequest, messages)
+  val view: interceptPSA = app.injector.instanceOf[interceptPSA]
+
+  def createView: () => HtmlFormat.Appendable = () => view()(fakeRequest, messages)
 
   override lazy val app = new GuiceApplicationBuilder().configure(
     "features.useManagePensionsFrontend" -> true

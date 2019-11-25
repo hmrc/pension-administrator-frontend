@@ -16,6 +16,7 @@
 
 package views.register
 
+import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.register.duplicateRegistration
 
@@ -23,7 +24,9 @@ class DuplicateRegistrationViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "duplicateRegistration"
 
-  private def viewHtml = duplicateRegistration(frontendAppConfig)(fakeRequest, messages)
+  val view: duplicateRegistration = app.injector.instanceOf[duplicateRegistration]
+
+  private def viewHtml: HtmlFormat.Appendable = view()(fakeRequest, messages)
 
   "DuplicateRegistration view" must {
     behave like normalPage(() => viewHtml, messageKeyPrefix, "p1", "p2")

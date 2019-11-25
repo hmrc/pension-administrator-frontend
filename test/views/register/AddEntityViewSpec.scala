@@ -49,11 +49,13 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     psaName = Some("test psa")
   )
 
-  private def createView(entities: Seq[Person] = Nil, mode: Mode = NormalMode): () => Html
-  = () => addEntity(form, viewmodel(entities), mode)(request, messages)
+  val view: addEntity = app.injector.instanceOf[addEntity]
 
-  private def createViewUsingForm(entities: Seq[Person] = Nil, mode: Mode = NormalMode): Form[_] => Html
-  = (form: Form[_]) => addEntity(form, viewmodel(entities), mode)(request, messages)
+  private def createView(entities: Seq[Person] = Nil, mode: Mode = NormalMode): () => Html = () =>
+    view(form, viewmodel(entities), mode)(request, messages)
+
+  private def createViewUsingForm(entities: Seq[Person] = Nil, mode: Mode = NormalMode): Form[_] => Html = (form: Form[_]) =>
+    view(form, viewmodel(entities), mode)(request, messages)
 
   val form = new AddEntityFormProvider()()
 

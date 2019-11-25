@@ -16,16 +16,18 @@
 
 package views.register
 
+import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.register.declarationFitAndProper
 
 class DeclarationFitAndProperViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "declarationFitAndProper"
-  private val cancelCall = controllers.routes.IndexController.onPageLoad()
   private val hrefCall = controllers.register.routes.DeclarationFitAndProperController.onClickAgree()
 
-  private def createView = () => declarationFitAndProper(frontendAppConfig)(fakeRequest, messages)
+  val view: declarationFitAndProper = app.injector.instanceOf[declarationFitAndProper]
+
+  private def createView: () => HtmlFormat.Appendable = () => view()(fakeRequest, messages)
 
   "DeclarationFitAndProper view" must {
     behave like normalPage(createView, messageKeyPrefix)

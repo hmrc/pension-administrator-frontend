@@ -31,12 +31,15 @@ class StillUseAdviserViewSpec extends ViewBehaviours {
 
   private val form = new StillUseAdviserFormProvider()()
 
-  private def createView: () => HtmlFormat.Appendable = () => stillUseAdviser(
-      frontendAppConfig,
-    form,
-    UpdateMode,
-    Some(psaName),
-    personWithWorkingKnowledgeName)(fakeRequest, messages)
+  val view: stillUseAdviser = app.injector.instanceOf[stillUseAdviser]
+
+  private def createView: () => HtmlFormat.Appendable = () =>
+    view(
+      form,
+      UpdateMode,
+      Some(psaName),
+      personWithWorkingKnowledgeName
+    )(fakeRequest, messages)
 
   "DeclarationWorkingKnowledge view (variations)" must {
 

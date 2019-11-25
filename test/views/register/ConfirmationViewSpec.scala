@@ -29,9 +29,11 @@ class ConfirmationViewSpec extends ViewBehaviours {
 
   "Confirmation view where user is existing PSA" must {
     val messageKeyPrefix = "confirmation.existingPSA"
-    val psaUser = PSAUser(UserType.Individual, None, true, None)
+    val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = true, None)
 
-    def createView(): () => Html = () => confirmation(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+    val view: confirmation = app.injector.instanceOf[confirmation]
+
+    def createView(): () => Html = () => view(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
 
     behave like normalPage(createView(), messageKeyPrefix)
 
@@ -74,7 +76,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
   "Confirmation view where user is new PSA" must {
 
     val messageKeyPrefix = "confirmation.newPSA"
-    val psaUser = PSAUser(UserType.Individual, None, false, None)
+    val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
 
     def createView(): () => Html = () => confirmation(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
 

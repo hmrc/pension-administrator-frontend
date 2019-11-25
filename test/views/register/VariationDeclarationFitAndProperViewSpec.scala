@@ -31,6 +31,8 @@ class VariationDeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Bo
 
   val messageKeyPrefix = "declarationFitAndProper.variations"
 
+  val view: variationDeclarationFitAndProper = app.injector.instanceOf[variationDeclarationFitAndProper]
+
   private def createView: () => Html = () => variationDeclarationFitAndProper(form, Some(psaName))(fakeRequest, messages)
 
   private def createViewUsingForm(form: Form[_]): Html = variationDeclarationFitAndProper(form, Some(psaName))(fakeRequest, messages)

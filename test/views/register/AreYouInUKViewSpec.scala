@@ -16,10 +16,10 @@
 
 package views.register
 
-import controllers.register.routes
 import forms.register.AreYouInUKFormProvider
 import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
+import play.twirl.api.HtmlFormat
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.behaviours.{ViewBehaviours, YesNoViewBehaviours}
 import views.html.register.areYouInUK
@@ -41,16 +41,16 @@ class AreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviours {
       p2 = Some("areYouInUK.check.provideNonUkAddress")
     )
 
-  private def createView(mode: Mode = NormalMode) =
-    () => areYouInUK(
-      frontendAppConfig,
+  val view: areYouInUK = app.injector.instanceOf[areYouInUK]
+
+  private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
+    view(
       form,
       viewmodel(mode)
     )(fakeRequest, messages)
 
-  private def createViewUsingForm =
-    (form: Form[_]) => areYouInUK(
-      frontendAppConfig,
+  private def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
+    view(
       form,
       viewmodel(NormalMode)
     )(fakeRequest, messages)
