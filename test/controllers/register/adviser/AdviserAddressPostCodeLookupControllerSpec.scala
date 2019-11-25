@@ -55,6 +55,8 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
       status(result) mustBe OK
 
       contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messages).toString()
+
+      app.stop()
     }
 
     "redirect to the next page on a POST request" in {
@@ -68,6 +70,8 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
       status(result) mustBe SEE_OTHER
 
       redirectLocation(result) mustBe Some(onwardRoute.url)
+
+      app.stop()
     }
   }
 }

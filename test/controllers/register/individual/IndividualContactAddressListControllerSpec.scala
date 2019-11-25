@@ -24,9 +24,12 @@ import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
+import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Individual
@@ -34,8 +37,19 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
+import controllers.register.individual.routes._
 
 class IndividualContactAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
+
+  val onwardRoute: Call = IndividualContactAddressController.onPageLoad(NormalMode)
+
+  def application(dataRetrievalAction: DataRetrievalAction): Application = new GuiceApplicationBuilder()
+    .overrides(
+      bind[AuthAction].to(FakeAuthAction),
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+      bind[DataRetrievalAction].toInstance(dataRetrievalAction),
+      bind(classOf[Navigator]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
+    ).build()
 
   private val addresses = Seq(
     TolerantAddress(
@@ -66,121 +80,95 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase with
   "individual Contact Address List Controller" must {
 
     "return Ok and the correct view on a GET request" in {
+      val app = application(dataRetrievalAction)
 
-      running(_.overrides(
-        bind[AuthAction].to(FakeAuthAction),
-        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[DataRetrievalAction].toInstance(dataRetrievalAction)
-      )) { implicit app =>
-        val request = addToken(FakeRequest(routes.IndividualContactAddressListController.onPageLoad(NormalMode)))
-        val result = route(app, request).value
+      val request = FakeRequest(GET, routes.IndividualContactAddressListController.onPageLoad(NormalMode).url)
 
-        status(result) mustBe OK
+      val result = route(app, request).value
 
-        val viewModel: AddressListViewModel = addressListViewModel(addresses)
-        val form: Form[Int] = new AddressListFormProvider()(viewModel.addresses)
+      status(result) mustBe OK
 
-        contentAsString(result) mustBe addressList(form, viewModel, NormalMode)(request, messages).toString
-      }
+      val viewModel: AddressListViewModel = addressListViewModel(addresses)
 
+      val form: Form[Int] = new AddressListFormProvider()(viewModel.addresses)
+
+      contentAsString(result) mustBe addressList(form, viewModel, NormalMode)(request, messages).toString
+
+      app.stop()
     }
 
     "redirect to Individual Address Post Code Lookup if no address data on a GET request" in {
+      val app = application(getEmptyData)
 
-      running(_.overrides(
-        bind[AuthAction].to(FakeAuthAction),
-        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[DataRetrievalAction].toInstance(getEmptyData)
-      )) { implicit app =>
-        val request = addToken(FakeRequest(routes.IndividualContactAddressListController.onPageLoad(NormalMode)))
-        val result = route(app, request).value
+      val request = FakeRequest(GET, routes.IndividualContactAddressListController.onPageLoad(NormalMode).url)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
-      }
+      val result = route(app, request).value
 
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result) mustBe Some(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+
+      app.stop()
     }
 
     "redirect to Session Expired controller when no session data exists on a GET request" in {
+      val app = application(dontGetAnyData)
 
-      running(_.overrides(
-        bind[AuthAction].to(FakeAuthAction),
-        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[DataRetrievalAction].toInstance(dontGetAnyData)
-      )) { implicit app =>
-        val request = addToken(FakeRequest(routes.IndividualContactAddressListController.onPageLoad(NormalMode)))
-        val result = route(app, request).value
+      val request = FakeRequest(GET, routes.IndividualContactAddressListController.onPageLoad(NormalMode).url)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
+      val result = route(app, request).value
 
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+
+      app.stop()
     }
 
     "redirect to the next page on POST of valid data" in {
-      val onwardRoute = controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(NormalMode)
-      running(_.overrides(
-        bind[AuthAction].to(FakeAuthAction),
-        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[DataRetrievalAction].toInstance(dataRetrievalAction),
-        bind(classOf[Navigator]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
-      )) { implicit app =>
-        val request =
-          addToken(
-            FakeRequest(routes.IndividualContactAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
-          )
+      val app = application(dataRetrievalAction)
 
-        val result = route(app, request).value
+      val request = FakeRequest(POST, routes.IndividualContactAddressListController.onSubmit(NormalMode).url)
+        .withFormUrlEncodedBody(("value", "0"))
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
+      val result = route(app, request).value
 
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+
+      app.stop()
     }
 
     "redirect to Session Expired controller when no session data exists on a POST request" in {
+      val app = application(dontGetAnyData)
 
-      running(_.overrides(
-        bind[AuthAction].to(FakeAuthAction),
-        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[DataRetrievalAction].toInstance(dontGetAnyData)
-      )) { implicit app =>
-        val request =
-          addToken(
-            FakeRequest(routes.IndividualContactAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
-          )
+      val request = FakeRequest(POST, routes.IndividualContactAddressListController.onSubmit(NormalMode).url)
+        .withFormUrlEncodedBody(("value", "0"))
 
-        val result = route(app, request).value
+      val result = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
+      status(result) mustBe SEE_OTHER
 
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+
+      app.stop()
     }
 
     "redirect to Company Address Post Code Lookup if no address data on a POST request" in {
+      val app = application(dontGetAnyData)
 
-      running(_.overrides(
-        bind[AuthAction].to(FakeAuthAction),
-        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[DataRetrievalAction].toInstance(getEmptyData)
-      )) { implicit app =>
-        val request =
-          addToken(
-            FakeRequest(routes.IndividualContactAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
-          )
+      val request = FakeRequest(POST, routes.IndividualContactAddressListController.onSubmit(NormalMode).url)
+        .withFormUrlEncodedBody(("value", "0"))
 
-        val result = route(app, request).value
+      val result = route(app, request).value
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
-      }
+      status(result) mustBe SEE_OTHER
 
+      redirectLocation(result) mustBe Some(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+
+      app.stop()
     }
-
   }
 
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
