@@ -24,13 +24,13 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import models.{Mode, NormalMode, TolerantAddress}
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{Request, Result}
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.annotations.Adviser
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -45,24 +45,29 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
   "AdviserAddressPostCodeLookup Controller" must {
 
     "render the view correctly on a GET request" in {
-      requestResult(
-        implicit app => addToken(FakeRequest(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode))),
-        (request, result) => {
-          status(result) mustBe OK
-          contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messages).toString()
-        }
-      )
+
+      val app = application
+
+      val request = FakeRequest(GET, routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+
+      val result = route(app, request).value
+
+      status(result) mustBe OK
+
+      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messages).toString()
     }
 
     "redirect to the next page on a POST request" in {
-      requestResult(
-        implicit App => addToken(FakeRequest(routes.AdviserAddressPostCodeLookupController.onSubmit(NormalMode))
-          .withFormUrlEncodedBody("value" -> validPostcode)),
-        (_, result) => {
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(onwardRoute.url)
-        }
-      )
+      val app = application
+
+      val request = FakeRequest(POST, routes.AdviserAddressPostCodeLookupController.onSubmit(NormalMode).url)
+        .withFormUrlEncodedBody("value" -> validPostcode)
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result) mustBe Some(onwardRoute.url)
     }
   }
 }
@@ -103,21 +108,14 @@ object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   }
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
-  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
-
-    running(_.overrides(
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getAdviser),
+      bind[MessagesControllerComponents].to(stubMessagesControllerComponents()),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind(classOf[Navigator]).qualifiedWith(classOf[Adviser]).toInstance(fakeNavigator),
+      bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-  }
+    ).build()
 }
