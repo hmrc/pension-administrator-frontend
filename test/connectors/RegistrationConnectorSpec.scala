@@ -18,14 +18,16 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models._
+import java.time.LocalDate
+
 import models.registrationnoid.RegistrationNoIdIndividualRequest
-import org.joda.time.LocalDate
 import org.scalatest._
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import scala.concurrent.ExecutionContext.Implicits.global
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext
@@ -200,7 +202,7 @@ class RegistrationConnectorSpec()
     val hc: HeaderCarrier = HeaderCarrier(extraHeaders = Seq((headerName, headerValue)))
     val executionContext: ExecutionContext = implicitly[ExecutionContext]
 
-    connector.registerWithIdOrganisation(utr, organisation, legalStatus)(hc, ec).map { _ =>
+    connector.registerWithIdOrganisation(utr, organisation, legalStatus)(hc, executionContext).map { _ =>
       succeed
     }
 
@@ -385,7 +387,7 @@ class RegistrationConnectorSpec()
     val hc: HeaderCarrier = HeaderCarrier(extraHeaders = Seq((headerName, headerValue)))
     val executionContext: ExecutionContext = implicitly[ExecutionContext]
 
-    connector.registerWithIdIndividual(nino)(hc, ec).map { _ =>
+    connector.registerWithIdIndividual(nino)(hc, executionContext).map { _ =>
       succeed
     }
 

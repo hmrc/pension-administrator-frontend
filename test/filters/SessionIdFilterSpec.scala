@@ -80,7 +80,7 @@ class SessionIdFilterSpec extends WordSpec with MustMatchers with OneAppPerSuite
 
     new GuiceApplicationBuilder()
       .overrides(
-        bind[HttpFilters].to[Filter],
+        bind[HttpFilters].to[Filters],
         bind[SessionIdFilter].to[TestSessionIdFilter]
       )
       .router(router)

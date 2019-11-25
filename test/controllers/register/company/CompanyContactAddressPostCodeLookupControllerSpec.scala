@@ -25,10 +25,10 @@ import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc.{MessagesControllerComponents, Request, Result}
+import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -46,24 +46,20 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
   import CompanyContactAddressPostCodeLookupControllerSpec._
 
   "render the view correctly on a GET request" in {
-    requestResult(
-      implicit app => addToken(FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode))),
-      (request, result) => {
+    val request = FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode))
+    val result = route(application, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view(formProvider(), viewModel, NormalMode)(request, messages).toString()
-      }
-    )
+
   }
 
   "redirect to the next page on a POST request" in {
-    requestResult(
-      implicit App => addToken(FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> validPostcode)),
-      (_, result) => {
+    val request = FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode))
+        .withFormUrlEncodedBody("value" -> validPostcode)
+    val result = route(application, request).value
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
-    )
+
   }
 }
 
@@ -105,20 +101,14 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
     BusinessNameId.toString -> companyName
   )))
 
-  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
-    running(_.overrides(
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
       bind[MessagesControllerComponents].to(stubMessagesControllerComponents())
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-  }
+    ).build()
 }
 

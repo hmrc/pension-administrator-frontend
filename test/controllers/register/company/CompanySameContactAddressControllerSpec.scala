@@ -17,8 +17,7 @@
 package controllers.register.company
 
 import base.CSRFRequest
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.SameContactAddressFormProvider
@@ -26,10 +25,10 @@ import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressId
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc.{Call, Request, Result}
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
@@ -38,8 +37,6 @@ import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
-
-import scala.concurrent.Future
 
 class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CSRFRequest {
 
@@ -69,39 +66,28 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase with CS
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
   "render the view correctly on a GET request" in {
-    requestResult(
-      implicit app => addToken(FakeRequest(routes.CompanySameContactAddressController.onPageLoad(NormalMode))),
-      (request, result) => {
+    val request = FakeRequest(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+    val result = route(application, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view(formProvider(), viewModel, countryOptions)(request, messages).toString()
-      }
-    )
+
   }
 
   "redirect to the next page on a POST request" in {
-    requestResult(
-      implicit App => addToken(FakeRequest(routes.CompanySameContactAddressController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> "true")),
-      (_, result) => {
+    val request = FakeRequest(routes.CompanySameContactAddressController.onSubmit(NormalMode))
+        .withFormUrlEncodedBody("value" -> "true")
+    val result = route(application, request).value
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(postCall.url)
-      }
-    )
+
   }
 
-  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
-                              (implicit writeable: Writeable[T]): Unit = {
-    running(_.overrides(
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(postCall)),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-  }
+    ).build()
 
 }

@@ -51,7 +51,7 @@ class ReasonControllerSpec extends ControllerSpecBase {
             val result = controller.onPageLoad(viewModel, UserAnswers())
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual reason(form, viewModel)(fakeRequest, messages).toString
+            contentAsString(result) mustEqual view(form, viewModel)(fakeRequest, messages).toString
         }
       }
 
@@ -65,7 +65,7 @@ class ReasonControllerSpec extends ControllerSpecBase {
             val result = controller.onPageLoad(viewModel, answers)
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual reason(form.fill(testReason), viewModel)(fakeRequest, messages).toString
+            contentAsString(result) mustEqual view(form.fill(testReason), viewModel)(fakeRequest, messages).toString
         }
       }
     }
@@ -99,7 +99,7 @@ class ReasonControllerSpec extends ControllerSpecBase {
             val result = controller.onSubmit(viewModel, UserAnswers(), request)
 
             status(result) mustEqual BAD_REQUEST
-            contentAsString(result) mustEqual reason(form.bind(Map("value" -> "{invalid}")), viewModel)(request, messages).toString
+            contentAsString(result) mustEqual view(form.bind(Map("value" -> "{invalid}")), viewModel)(request, messages).toString
         }
       }
     }
