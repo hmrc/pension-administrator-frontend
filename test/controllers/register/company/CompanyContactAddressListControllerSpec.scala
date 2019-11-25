@@ -24,11 +24,11 @@ import forms.address.AddressListFormProvider
 import models.{NormalMode, TolerantAddress}
 import org.scalatest.OptionValues
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{Call, MessagesControllerComponents, Request, Result}
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.{Call, MessagesControllerComponents}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, redirectLocation, route, running, status, _}
+import play.api.test.Helpers.{contentAsString, redirectLocation, route, status, _}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
@@ -36,9 +36,7 @@ import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.Future
-
-class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
+class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
 
   import CompanyContactAddressListControllerSpec._
 
@@ -57,72 +55,59 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase with CS
   "company Contact Address List Controller" must {
 
     "return Ok and the correct view on a GET request" in {
-      requestResult(dataRetrievalAction,
-        implicit App => addToken(FakeRequest(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
-          .withFormUrlEncodedBody("value" -> "0")),
-        (request, result) => {
+      val request = FakeRequest(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
+          .withFormUrlEncodedBody("value" -> "0")
+      val result = route(application(dataRetrievalAction), request).value
           status(result) mustBe OK
           val viewModel: AddressListViewModel = addressListViewModel(addresses)
           val form = new AddressListFormProvider()(viewModel.addresses)
 
           contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
-        }
-      )
+
     }
 
     "redirect to Company Address Post Code Lookup if no address data on a GET request" in {
-      requestResult(getEmptyData,
-        implicit App => addToken(FakeRequest(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
-          .withFormUrlEncodedBody("value" -> "0")),
-        (_, result) => {
+      val request = FakeRequest(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
+          .withFormUrlEncodedBody("value" -> "0")
+      val result = route(application(getEmptyData), request).value
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
-        }
-      )
+
     }
 
     "redirect to Session Expired controller when no session data exists on a GET request" in {
-      requestResult(dontGetAnyData,
-        implicit App => addToken(FakeRequest(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
-          .withFormUrlEncodedBody("value" -> "0")),
-        (_, result) => {
+      val request = FakeRequest(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
+          .withFormUrlEncodedBody("value" -> "0")
+      val result = route(application(dontGetAnyData), request).value
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-        }
-      )
+
     }
 
     "redirect to the next page on POST of valid data" in {
-      requestResult(dataRetrievalAction,
-        implicit App => addToken(FakeRequest(routes.CompanyContactAddressListController.onSubmit(NormalMode))
-          .withFormUrlEncodedBody("value" -> "0")),
-        (_, result) => {
+      val request = FakeRequest(routes.CompanyContactAddressListController.onSubmit(NormalMode))
+          .withFormUrlEncodedBody("value" -> "0")
+      val result = route(application(dataRetrievalAction), request).value
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-        }
-      )
     }
 
     "redirect to Session Expired controller when no session data exists on a POST request" in {
-      requestResult(dontGetAnyData,
-        implicit App => addToken(FakeRequest(routes.CompanyContactAddressListController.onSubmit(NormalMode))
-          .withFormUrlEncodedBody("value" -> "0")),
-        (_, result) => {
+      val request = FakeRequest(routes.CompanyContactAddressListController.onSubmit(NormalMode))
+          .withFormUrlEncodedBody("value" -> "0")
+      val result = route(application(dontGetAnyData), request).value
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-        }
-      )
+
     }
 
     "redirect to Company Address Post Code Lookup if no address data on a POST request" in {
-      requestResult(getEmptyData,
-        implicit App => addToken(FakeRequest(routes.CompanyContactAddressListController.onSubmit(NormalMode))
-          .withFormUrlEncodedBody("value" -> "0")),
-        (_, result) => {
+      val request = FakeRequest(routes.CompanyContactAddressListController.onSubmit(NormalMode))
+          .withFormUrlEncodedBody("value" -> "0")
+      val result = route(application(getEmptyData), request).value
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
-        }
-      )
+
     }
   }
 }
@@ -154,20 +139,12 @@ object CompanyContactAddressListControllerSpec extends ControllerSpecBase with O
   private val dataRetrievalAction =
     UserAnswers().businessName().companyContactAddressList(addresses).dataRetrievalAction
 
-  private def requestResult[T](data: DataRetrievalAction = getEmptyData,
-                               request: Application => Request[T],
-                               test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
-    running(_.overrides(
+    def application(data: DataRetrievalAction = getEmptyData): Application = new GuiceApplicationBuilder()
+      .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(data),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
       bind[MessagesControllerComponents].to(stubMessagesControllerComponents()),
       bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-  }
+    ).build()
 }

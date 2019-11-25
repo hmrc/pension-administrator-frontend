@@ -32,7 +32,7 @@ class UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
       val result = controller.onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      contentAsString(result) mustBe viewAsString
 
     }
   }
