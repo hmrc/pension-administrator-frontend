@@ -46,7 +46,6 @@ object UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
   def testController: UseOrganisationCredentialsController =
     new UseOrganisationCredentialsController(
       frontendAppConfig,
-      messagesApi,
       stubMessagesControllerComponents(),
       view
     )
