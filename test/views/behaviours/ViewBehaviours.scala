@@ -17,7 +17,6 @@
 package views.behaviours
 
 import org.jsoup.Jsoup
-import play.api.i18n.MessagesApi
 import play.twirl.api.HtmlFormat
 import views.ViewSpecBase
 
@@ -34,7 +33,7 @@ trait ViewBehaviours extends ViewSpecBase {
       "rendered" must {
         "display the correct browser title" in {
           val doc = asDocument(view())
-          assertEqualsMessage(doc, "title", title + " - " + messagesApi("pension.scheme.administrator.title"))
+          assertEqualsMessage(doc, "title", title + " - " + messages("pension.scheme.administrator.title"))
         }
 
         "display the correct page header" in {
@@ -57,12 +56,12 @@ trait ViewBehaviours extends ViewSpecBase {
           val doc = asDocument(view())
           val nav = doc.getElementById("proposition-menu")
           val span = nav.children.first
-          span.text mustBe messagesApi("site.service_name")
+          span.text mustBe messages("site.service_name")
         }
 
         "display the correct browser title" in {
           val doc = asDocument(view())
-          assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title")  + " - " + messagesApi("pension.scheme.administrator.title"))
+          assertEqualsMessage(doc, "title", messages(s"$messageKeyPrefix.title")  + " - " + messages("pension.scheme.administrator.title"))
         }
 
         "display the correct guidance" in {
@@ -75,7 +74,7 @@ trait ViewBehaviours extends ViewSpecBase {
 
   def normalPageWithNoPageTitleCheck(view: () => HtmlFormat.Appendable,
                                       messageKeyPrefix: String,
-                                      expectedGuidanceKeys: String*) = {
+                                      expectedGuidanceKeys: String*): Unit = {
 
     "behave like a normal page" when {
       "rendered" must {
@@ -83,7 +82,7 @@ trait ViewBehaviours extends ViewSpecBase {
           val doc = asDocument(view())
           val nav = doc.getElementById("proposition-menu")
           val span = nav.children.first
-          span.text mustBe messagesApi("site.service_name")
+          span.text mustBe messages("site.service_name")
         }
 
         "display the correct guidance" in {
@@ -114,7 +113,7 @@ trait ViewBehaviours extends ViewSpecBase {
 
   def normalPage(view: () => HtmlFormat.Appendable,
                  messageKeyPrefix: String,
-                 expectedGuidanceKeys: String*) = {
+                 expectedGuidanceKeys: String*): Unit = {
 
     normalPageWithPageTitleCheck(view, messageKeyPrefix, expectedGuidanceKeys: _*)
 
@@ -128,7 +127,7 @@ trait ViewBehaviours extends ViewSpecBase {
     }
   }
 
-  def pageWithBackLink(view: () => HtmlFormat.Appendable) = {
+  def pageWithBackLink(view: () => HtmlFormat.Appendable): Unit = {
 
     "behave like a page with a back link" must {
       "have a back link" in {
@@ -139,7 +138,7 @@ trait ViewBehaviours extends ViewSpecBase {
   }
 
   def pageWithSecondaryHeader(view: () => HtmlFormat.Appendable,
-                              heading: String) = {
+                              heading: String): Unit = {
 
     "behave like a page with a secondary header" in {
       Jsoup.parse(view().toString()).getElementsByClass("heading-secondary").text() must include(heading)
@@ -175,26 +174,4 @@ trait ViewBehaviours extends ViewSpecBase {
       assertLink(doc, "return-link", url)
     }
   }
-
-  private def commonNormalPage(view: () => HtmlFormat.Appendable,
-                               messageKeyPrefix: String,
-                               expectedGuidanceKeys: String*): Unit = {
-    "have the correct banner title" in {
-      val doc = asDocument(view())
-      val nav = doc.getElementById("proposition-menu")
-      val span = nav.children.first
-      span.text mustBe messagesApi("site.service_name")
-    }
-
-    "display the correct browser title" in {
-      val doc = asDocument(view())
-      assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
-    }
-
-    "display the correct guidance" in {
-      val doc = asDocument(view())
-      for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
-    }
-  }
-
 }

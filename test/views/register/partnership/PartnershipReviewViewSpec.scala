@@ -70,5 +70,5 @@ class PartnershipReviewViewSpec extends ViewBehaviours {
     for (partner <- partners)
       createView must haveDynamicText(partner)
   }
-
+  app.stop()
 }

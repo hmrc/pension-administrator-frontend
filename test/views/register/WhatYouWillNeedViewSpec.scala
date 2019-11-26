@@ -49,5 +49,5 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
         .hasClass("panel panel-border-wide") mustBe true
     }
   }
-
+  app.stop()
 }

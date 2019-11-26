@@ -195,5 +195,5 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
       Message("common.selectAddress.link")
     )
   }
-
+  app.stop()
 }

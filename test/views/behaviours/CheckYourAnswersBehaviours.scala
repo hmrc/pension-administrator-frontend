@@ -118,5 +118,5 @@ trait CheckYourAnswersBehaviours extends ViewSpecBase {
       }
     }
   }
-
+  app.stop()
 }

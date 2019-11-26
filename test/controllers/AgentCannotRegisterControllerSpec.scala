@@ -39,4 +39,5 @@ class AgentCannotRegisterControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
   }
+  app.stop()
 }

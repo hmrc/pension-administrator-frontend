@@ -62,5 +62,5 @@ class CompanyReviewViewSpec extends ViewBehaviours {
     for (director <- directors)
       createView must haveDynamicText(director)
   }
-
+  app.stop()
 }

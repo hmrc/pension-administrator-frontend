@@ -58,5 +58,5 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
 
     behave like checkYourAnswersPage(createViewWithData)
   }
-
+  app.stop()
 }

@@ -55,4 +55,5 @@ class StillUseAdviserViewSpec extends ViewBehaviours {
     }
 
   }
+  app.stop()
 }

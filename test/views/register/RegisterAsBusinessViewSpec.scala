@@ -47,7 +47,7 @@ class RegisterAsBusinessViewSpec extends YesNoViewBehaviours {
     behave like pageWithSubmitButton(createView(form))
 
   }
-
+  app.stop()
 }
 
 object RegisterAsBusinessViewSpec extends ViewSpecBase {

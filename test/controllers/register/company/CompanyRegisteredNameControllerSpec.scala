@@ -120,4 +120,5 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
       }
     }
   }
+  app.stop()
 }

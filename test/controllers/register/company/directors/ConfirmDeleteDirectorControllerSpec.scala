@@ -51,12 +51,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
         redirectLocation(result) mustBe Some(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url)
   }
 
-  def application: Application = new GuiceApplicationBuilder()
-    .overrides(
-      bind[AuthAction].to(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(dataRetrieval),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    ).build()
+  application.stop()
 }
 
 object ConfirmDeleteDirectorControllerSpec extends SpecBase {
@@ -79,4 +74,11 @@ object ConfirmDeleteDirectorControllerSpec extends SpecBase {
     Some(person.fullName),
     None
   )
+
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
+      bind[AuthAction].to(FakeAuthAction),
+      bind[DataRetrievalAction].toInstance(dataRetrieval),
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+    ).build()
 }

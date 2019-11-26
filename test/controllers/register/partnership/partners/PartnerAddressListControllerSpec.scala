@@ -141,8 +141,8 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
         }
       }
     }
-
   }
+  app.stop()
 }
 
 object PartnerAddressListControllerSpec {
@@ -187,6 +187,4 @@ object PartnerAddressListControllerSpec {
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )
-
-
 }

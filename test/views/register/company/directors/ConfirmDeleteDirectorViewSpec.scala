@@ -37,12 +37,12 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
       val doc = asDocument(createView())
       val nav = doc.getElementById("proposition-menu")
       val span = nav.children.first
-      span.text mustBe messagesApi("site.service_name")
+      span.text mustBe messages("site.service_name")
     }
 
     "display the correct browser title" in {
       val doc = asDocument(createView())
-      assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title") + " - " + messagesApi("pension.scheme.administrator.title"))
+      assertEqualsMessage(doc, "title", messages(s"$messageKeyPrefix.title") + " - " + messages("pension.scheme.administrator.title"))
     }
 
     "display the correct page title" in {
@@ -59,4 +59,5 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
       createView must haveLink(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url, "cancel")
     }
   }
+  app.stop()
 }

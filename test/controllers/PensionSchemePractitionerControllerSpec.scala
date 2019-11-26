@@ -38,7 +38,7 @@ class PensionSchemePractitionerControllerSpec extends SpecBase {
     }
 
   }
-
+  app.stop()
 }
 
 object PensionSchemePractitionerControllerSpec extends ControllerSpecBase {

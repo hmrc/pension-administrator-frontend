@@ -17,33 +17,49 @@
 package base
 
 import config.FrontendAppConfig
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
-import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.inject.Injector
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.{Injector, bind}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
+import play.api.libs.json.Json
+import play.api.mvc.{AnyContent, MessagesControllerComponents}
+import play.api.test.{FakeRequest, Injecting}
 import play.api.{Application, Environment}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
+trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with BeforeAndAfterAll {
 
   override lazy val app: Application = new GuiceApplicationBuilder().build()
 
+  protected def applicationBuilder(data: DataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[AuthAction].to(FakeAuthAction),
+        bind[DataRetrievalAction].toInstance(data),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+        bind[MessagesControllerComponents].to(stubMessagesControllerComponents())
+      )
+
   def injector: Injector = app.injector
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  def frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
 
-  def environment: Environment = injector.instanceOf[Environment]
+  def environment: Environment = inject[Environment]
 
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+  def messagesApi: MessagesApi = inject[MessagesApi]
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
-  implicit def lang: Lang = injector.instanceOf[Lang]
-
   def appRunning(): Unit = app
 
+  override def afterAll(): Unit = {
+    super.afterAll()
+    app.stop()
+  }
 }

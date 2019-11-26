@@ -247,6 +247,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
     }
   }
+  app.stop()
 }
 
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {

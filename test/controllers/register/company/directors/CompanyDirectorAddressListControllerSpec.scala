@@ -183,6 +183,6 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
         }
       }
     }
-
   }
+  app.stop()
 }

@@ -59,10 +59,8 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
     }
 
   }
-
+  app.stop()
 }
-
-
 
 object DirectorNameControllerSpec extends ControllerSpecBase {
 

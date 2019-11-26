@@ -54,5 +54,5 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
       )
     }
   }
-
+  app.stop()
 }

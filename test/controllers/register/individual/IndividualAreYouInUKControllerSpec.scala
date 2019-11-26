@@ -104,4 +104,5 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString(boundForm)
     }
   }
+  app.stop()
 }

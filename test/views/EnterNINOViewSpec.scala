@@ -73,4 +73,5 @@ class EnterNINOViewSpec extends QuestionViewBehaviours[ReferenceValue] {
       fields = "value"
     )
   }
+  app.stop()
 }

@@ -61,6 +61,6 @@ class AlreadyDeletedViewSpec extends ViewBehaviours {
         "return-to-list"
       )
     }
-
   }
+  app.stop()
 }

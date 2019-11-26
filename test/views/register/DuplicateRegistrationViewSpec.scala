@@ -33,4 +33,5 @@ class DuplicateRegistrationViewSpec extends ViewBehaviours {
 
     behave like pageWithExitToGovUKLink(() => viewHtml, frontendAppConfig.govUkUrl, "go-to-gov-uk")
   }
+  app.stop()
 }

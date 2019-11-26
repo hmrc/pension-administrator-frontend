@@ -555,7 +555,7 @@ object RegistrationConnectorSpec extends OptionValues {
   private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)
   private val firstName = "John"
   private val lastName = "Doe"
-  private val individualDateOfBirth = LocalDate.parse("20150808")
+  private val individualDateOfBirth = LocalDate.now()
   private val legalStatus = RegistrationLegalStatus.LimitedCompany
   private val registerWithoutIdIndividualRequest = Json.toJson(
     RegistrationNoIdIndividualRequest(firstName, lastName, individualDateOfBirth, expectedAddress(uk = false).toAddress))

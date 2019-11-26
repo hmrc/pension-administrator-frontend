@@ -62,6 +62,6 @@ class IsRegisteredNameViewSpec extends ViewBehaviours with YesNoViewBehaviours {
 
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix, viewmodel(NormalMode).postCall.url, s"$messageKeyPrefix.heading")
 
-    }
-
+  }
+  app.stop()
 }

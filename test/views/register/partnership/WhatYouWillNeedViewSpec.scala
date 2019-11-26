@@ -34,4 +34,5 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
     behave like pageWithSubmitButton(createView)
   }
+  app.stop()
 }

@@ -68,5 +68,5 @@ class DeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
 
     behave like pageWithSubmitButton(createView())
   }
-
+  app.stop()
 }

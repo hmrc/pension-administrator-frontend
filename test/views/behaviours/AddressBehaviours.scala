@@ -69,5 +69,5 @@ trait AddressBehaviours {
     }
 
   }
-
+  app.stop()
 }

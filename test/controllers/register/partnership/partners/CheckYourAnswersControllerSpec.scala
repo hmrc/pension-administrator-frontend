@@ -221,6 +221,7 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
       }
     }
   }
+  app.stop()
 }
 
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {

@@ -60,5 +60,5 @@ class OrganisationNameViewSpec extends QuestionViewBehaviours[String] {
 
 
   }
-
+  app.stop()
 }

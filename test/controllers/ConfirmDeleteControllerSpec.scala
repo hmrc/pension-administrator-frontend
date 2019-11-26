@@ -179,5 +179,5 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
 
   }
-
+  app.stop()
 }

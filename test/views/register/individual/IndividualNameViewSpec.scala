@@ -58,5 +58,5 @@ class IndividualNameViewSpec extends QuestionViewBehaviours[TolerantIndividual] 
       "lastName"
     )
   }
-
+  app.stop()
 }
