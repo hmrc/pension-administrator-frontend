@@ -24,10 +24,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class FakeAllowAccessAction(mode: Mode) extends AllowAccessAction(mode, FakeMinimalPsaConnector()) {
-  override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = Future.successful(None)
+  override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] =
+    Future.successful(None)
 }
 
-case class FakeAllowAccessProvider(mode:Mode=NormalMode) extends AllowAccessActionProvider{
-  override def apply(mode: Mode): AllowAccessAction = new FakeAllowAccessAction(mode)
+case class FakeAllowAccessProvider(mode: Mode = NormalMode) extends AllowAccessActionProvider {
+  override def apply(mode: Mode): AllowAccessAction =
+    new FakeAllowAccessAction(mode)
 }
 

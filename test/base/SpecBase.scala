@@ -38,11 +38,13 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with Bef
   protected def applicationBuilder(data: DataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
-        bind[AuthAction].to(FakeAuthAction),
+        bind[FrontendAppConfig].toInstance(frontendAppConfig),
         bind[DataRetrievalAction].toInstance(data),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[MessagesControllerComponents].to(stubMessagesControllerComponents())
       )
+
+  def messagesControllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 
   def injector: Injector = app.injector
 
@@ -54,7 +56,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with Bef
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+  implicit def messages: Messages = messagesControllerComponents.messagesApi.preferred(fakeRequest)
 
   def appRunning(): Unit = app
 

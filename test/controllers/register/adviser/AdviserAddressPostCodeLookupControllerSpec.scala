@@ -17,29 +17,39 @@
 package controllers.register.adviser
 
 import connectors.AddressLookupConnector
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import models.{Mode, NormalMode, TolerantAddress}
+import org.mockito.Matchers.any
+import org.mockito.Mockito._
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
+class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  import AdviserAddressPostCodeLookupControllerSpec._
+  private val mockAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
+
+  private val formProvider = new PostCodeLookupFormProvider()
+  private val form = formProvider()
+  private val address = TolerantAddress(
+    Some("test-address-line-1"),
+    Some("test-address-line-2"),
+    None,
+    None,
+    Some("ZZ1 1ZZ"),
+    Some("GB")
+  )
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
 
   "AdviserAddressPostCodeLookup Controller" must {
 
@@ -47,22 +57,26 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
       val app = application
 
+      val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
       val request = FakeRequest(GET, routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url)
 
       val result = route(app, request).value
 
       status(result) mustBe OK
 
-      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messages).toString()
+      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(fakeRequest, messages).toString()
 
       app.stop()
     }
 
     "redirect to the next page on a POST request" in {
+      when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())) thenReturn Future.successful(Seq(address))
+
       val app = application
 
       val request = FakeRequest(POST, routes.AdviserAddressPostCodeLookupController.onSubmit(NormalMode).url)
-        .withFormUrlEncodedBody("value" -> validPostcode)
+        .withFormUrlEncodedBody("value" -> "ZZ1 1ZZ")
 
       val result = route(app, request).value
 
@@ -73,52 +87,22 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
       app.stop()
     }
   }
-}
-
-object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
-
-  private val formProvider = new PostCodeLookupFormProvider()
-  private val form = formProvider()
-  private val name = "Test Adviser Name"
-  private val validPostcode = "ZZ1 1ZZ"
-
-  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
 
   def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
     controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
     controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
     Message("adviserAddressPostCodeLookup.heading", Message("theAdviser")),
-    Message("adviserAddressPostCodeLookup.heading", name),
+    Message("adviserAddressPostCodeLookup.heading", "Test Adviser Name"),
     Message("adviserAddressPostCodeLookup.enterPostcode"),
     Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),
     Message("adviserAddressPostCodeLookup.formLabel"),
     psaName = None
   )
 
-  private val address = TolerantAddress(
-    Some("test-address-line-1"),
-    Some("test-address-line-2"),
-    None,
-    None,
-    Some(validPostcode),
-    Some("GB")
-  )
-
-  private val fakeAddressLookupConnector = new AddressLookupConnector {
-    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
-      Future.successful(Seq(address))
-    }
-  }
-
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-
-  def application: Application = new GuiceApplicationBuilder()
-    .overrides(
-      bind[AuthAction].to(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(getAdviser),
-      bind[MessagesControllerComponents].to(stubMessagesControllerComponents()),
-      bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+  def application: Application =
+    applicationBuilder(getAdviser).overrides(
+      bind[AuthAction].toInstance(FakeAuthAction),
+      bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
+      bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
     ).build()
 }
