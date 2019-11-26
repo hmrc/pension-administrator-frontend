@@ -27,7 +27,6 @@ import scala.concurrent.ExecutionContext
 
 class UseOrganisationCredentialsController @Inject()(
                                                      appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      view: useOrganisationCredentials
                                                    )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
