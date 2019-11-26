@@ -56,6 +56,7 @@ class DirectorPhoneControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
+  app.stop()
 }
 
 object DirectorPhoneControllerSpec {

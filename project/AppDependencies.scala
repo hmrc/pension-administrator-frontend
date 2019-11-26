@@ -23,7 +23,7 @@ object AppDependencies {
     "com.typesafe.play" %% "play-json-joda" % "2.6.10"
   )
 
-  lazy val scope: String = "test"
+  val scope: String = "test"
 
   val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc" %% "bootstrap-play-26" % "1.3.0" % Test classifier "tests",
@@ -36,7 +36,7 @@ object AppDependencies {
     "org.mockito" % "mockito-all" % "1.10.19" % scope,
     "org.scalacheck" %% "scalacheck" % "1.14.0" % scope,
     "wolfendale" %% "scalacheck-gen-regexp" % "0.1.1" % scope,
-    "com.github.tomakehurst" % "wiremock" % "2.18.0" % scope
+    "com.github.tomakehurst" % "wiremock-jre8" % "2.21.0" % scope
   )
 
   def apply(): Seq[ModuleID] = compile ++ test

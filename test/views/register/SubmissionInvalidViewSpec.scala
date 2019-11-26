@@ -33,5 +33,5 @@ class SubmissionInvalidViewSpec extends ViewBehaviours {
 
     behave like pageWithExitToGovUKLink(createView, frontendAppConfig.govUkUrl, "go-to-gov-uk")
   }
-
+  app.stop()
 }

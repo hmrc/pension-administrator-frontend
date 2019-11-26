@@ -45,8 +45,8 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach {
   protected def bindings: Seq[GuiceableModule] = Seq.empty[GuiceableModule]
 
   override def beforeAll(): Unit = {
-    server.start()
     super.beforeAll()
+    server.start()
   }
 
   override def beforeEach(): Unit = {

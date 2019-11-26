@@ -42,4 +42,5 @@ class VariationNoLongerFitAndProperViewSpec extends ViewBehaviours {
       createView must haveDynamicText("noLongerFitAndProper.p1", "Mark Wright")
     }
   }
+  app.stop()
 }

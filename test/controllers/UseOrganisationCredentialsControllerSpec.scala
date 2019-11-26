@@ -36,6 +36,7 @@ class UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
 
     }
   }
+  app.stop()
 }
 
 object UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {

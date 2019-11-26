@@ -57,6 +57,7 @@ class HasDirectorNINOControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
+  app.stop()
 }
 
 object HasDirectorNINOControllerSpec {

@@ -182,6 +182,6 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
         }
       }
     }
-
   }
+  app.stop()
 }

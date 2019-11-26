@@ -53,4 +53,5 @@ class CompanyNotFoundViewSpec extends ViewBehaviours {
     }
 
   }
+  app.stop()
 }

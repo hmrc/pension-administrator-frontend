@@ -59,4 +59,5 @@ class ReasonViewSpec extends QuestionViewBehaviours[String] {
         fields = "value")
     }
   }
+  app.stop()
 }

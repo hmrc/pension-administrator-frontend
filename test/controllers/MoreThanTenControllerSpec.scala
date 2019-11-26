@@ -130,6 +130,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       fixture.dataCacheConnector.verifyNot(MoreThanTenDirectorsOrPartnersChangedId)
     }
   }
+  app.stop()
 }
 
 object MoreThanTenControllerSpec extends ControllerSpecBase {

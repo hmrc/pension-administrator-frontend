@@ -41,4 +41,5 @@ class YouWillNeedToUpdateViewSpec extends ViewBehaviours {
       )
     }
   }
+  app.stop()
 }

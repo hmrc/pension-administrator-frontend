@@ -41,4 +41,5 @@ class PSAVarianceSuccessViewSpec extends ViewBehaviours {
 
     behave like pageWithReturnLink(createView, returnLink)
   }
+  app.stop()
 }

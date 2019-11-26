@@ -41,7 +41,7 @@ class BusinessNameViewSpec extends QuestionViewBehaviours[String] {
 
     "display the correct browser title" in {
       val doc = asDocument(createView())
-      assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title", businessType)  + " - " + messagesApi("pension.scheme.administrator.title"))
+      assertEqualsMessage(doc, "title", messages(s"$messageKeyPrefix.title", businessType)  + " - " + messages("pension.scheme.administrator.title"))
     }
 
     "display the correct page header" in {
@@ -58,5 +58,5 @@ class BusinessNameViewSpec extends QuestionViewBehaviours[String] {
       "value")
 
   }
-
+  app.stop()
 }

@@ -65,4 +65,5 @@ class ManualAddressViewSpec extends QuestionViewBehaviours[Address] {
       "addressLine1", "addressLine2", "addressLine3", "addressLine4"
     )
   }
+  app.stop()
 }

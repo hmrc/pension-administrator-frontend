@@ -87,5 +87,5 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
       assertRenderedByIdWithText(doc, "address-value-5", testCountry)
     }
   }
-
+  app.stop()
 }

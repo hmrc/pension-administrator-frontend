@@ -56,6 +56,7 @@ class DirectorNoNINOReasonControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
+  app.stop()
 }
 
 object DirectorNoNINOReasonControllerSpec {

@@ -38,15 +38,13 @@ class VariationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
     view(form, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
 
   "variationWorkingKnowledge view" must {
-
-    appRunning()
-
     behave like normalPage(createView(), messageKeyPrefix, "p1", "p2", "p3")
 
     behave like yesNoPage(createViewUsingForm,
       messageKeyPrefix,
       controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(UpdateMode).url,
-      s"$messageKeyPrefix.heading")
+      s"$messageKeyPrefix.heading"
+    )
   }
 
   "variationWorkingKnowledge view" when {
@@ -56,4 +54,5 @@ class VariationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
       }
     }
   }
+  app.stop()
 }

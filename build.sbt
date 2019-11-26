@@ -48,8 +48,7 @@ lazy val appName: String = "pension-administrator-frontend"
     .configs(IntegrationTest)
     .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
     .settings(
-      fork in Test := true,
-      javaOptions in Test += "-Dconfig.file=conf/test.application.conf"
+      fork in Test := true
     )
     .settings(resolvers ++= Seq(
       Resolver.bintrayRepo("hmrc", "releases"),

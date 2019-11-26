@@ -37,4 +37,5 @@ class InterceptPSAControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
   }
+  app.stop()
 }

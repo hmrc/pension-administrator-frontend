@@ -46,4 +46,5 @@ class OutsideEuEeaViewSpec extends ViewBehaviours {
       createView must haveLink(frontendAppConfig.govUkUrl, "return-gov-uk")
     }
   }
+  app.stop()
 }

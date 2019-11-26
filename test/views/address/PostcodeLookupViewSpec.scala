@@ -66,5 +66,5 @@ class PostcodeLookupViewSpec extends StringViewBehaviours {
     behave like pageWithSubmitButton(createView())
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
-
+  app.stop()
 }

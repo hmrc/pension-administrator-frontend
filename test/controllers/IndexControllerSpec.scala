@@ -39,4 +39,5 @@ class IndexControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe indexView()(fakeRequest, messages).toString
     }
   }
+  app.stop()
 }

@@ -69,5 +69,5 @@ class DOBViewSpec extends QuestionViewBehaviours[LocalDate] {
     )
 
   }
-
+  app.stop()
 }

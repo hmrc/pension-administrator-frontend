@@ -66,4 +66,5 @@ class VariationDeclarationViewSpec extends ViewBehaviours {
 
     behave like pageWithContinueButton(createView(), href.url, id = "submit")
   }
+  app.stop()
 }

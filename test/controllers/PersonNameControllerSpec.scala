@@ -37,7 +37,7 @@ class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControl
   "PersonNameController" must {
     behave like personNameController(viewModel, testId, createController(this))
   }
-
+  app.stop()
 }
 
 object PersonNameControllerSpec extends ControllerSpecBase {

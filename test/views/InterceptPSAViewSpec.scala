@@ -38,4 +38,5 @@ class InterceptPSAViewSpec extends ViewBehaviours {
 
     behave like pageWithContinueButton(createView, frontendAppConfig.schemesOverviewUrl, "go-to-scheme-reg")
   }
+  app.stop()
 }

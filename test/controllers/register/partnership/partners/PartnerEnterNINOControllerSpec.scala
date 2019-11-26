@@ -57,7 +57,9 @@ class PartnerEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
+  app.stop()
 }
+
 object PartnerEnterNINOControllerSpec {
   private val formProvider = new NINOFormProvider()
   private val index = 0

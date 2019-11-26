@@ -51,7 +51,7 @@ class AuditServiceSpec extends AsyncFlatSpec with Matchers with Inside {
     }
 
   }
-
+  app.stop()
 }
 
 object AuditServiceSpec {

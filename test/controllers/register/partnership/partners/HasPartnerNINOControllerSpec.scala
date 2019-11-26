@@ -58,7 +58,9 @@ class HasPartnerNINOControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
+  app.stop()
 }
+
 object HasPartnerNINOControllerSpec {
   private val partnerName = "test first name test last name"
   private val formProvider = new HasReferenceNumberFormProvider()

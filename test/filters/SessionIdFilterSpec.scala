@@ -25,7 +25,7 @@ import play.api.Application
 import play.api.http.DefaultHttpFilters
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc.{Action, Results, SessionCookieBaker}
+import play.api.mvc.{DefaultActionBuilder, Results, SessionCookieBaker}
 import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -39,15 +39,14 @@ object SessionIdFilterSpec {
 
   class Filters @Inject()(sessionId: SessionIdFilter) extends DefaultHttpFilters(sessionId)
 
-  class TestSessionIdFilter @Inject()(
-                                       override val mat: Materializer,
-                                       executionContext: ExecutionContext,
-                                       sessionCookieBaker: SessionCookieBaker
+  class TestSessionIdFilter @Inject()(override val mat: Materializer,
+                                      executionContext: ExecutionContext,
+                                      sessionCookieBaker: SessionCookieBaker
                                      ) extends SessionIdFilter(mat, UUID.fromString(sessionId), executionContext, sessionCookieBaker)
 
 }
 
-class SessionIdFilterSpec extends WordSpec with MustMatchers {
+class SessionIdFilterSpec @Inject()(actionBuilder: DefaultActionBuilder) extends WordSpec with MustMatchers {
 
   import SessionIdFilterSpec._
 
@@ -56,7 +55,7 @@ class SessionIdFilterSpec extends WordSpec with MustMatchers {
     import play.api.routing.sird._
 
     Router.from {
-      case GET(p"/test") => Action {
+      case GET(p"/test") => actionBuilder {
         request =>
           val fromHeader = request.headers.get(HeaderNames.xSessionId).getOrElse("")
           val fromSession = request.session.get(SessionKeys.sessionId).getOrElse("")
@@ -67,7 +66,7 @@ class SessionIdFilterSpec extends WordSpec with MustMatchers {
             )
           )
       }
-      case GET(p"/test2") => Action {
+      case GET(p"/test2") => actionBuilder {
         implicit request =>
           Results.Ok.addingToSession("foo" -> "bar")
       }

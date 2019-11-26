@@ -42,7 +42,7 @@ class IndividualDateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
   "IndividualDateOfBirth view" must {
     "behave like a normal page" when {
       "rendered" must {
-        behave like normalPageWithTitle(createView, messageKeyPrefix, messagesApi("individualDateOfBirth.heading"), messagesApi("individualDateOfBirth.heading"))
+        behave like normalPageWithTitle(createView, messageKeyPrefix, messages("individualDateOfBirth.heading"), messages("individualDateOfBirth.heading"))
       }
     }
 
@@ -53,4 +53,5 @@ class IndividualDateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
       Some(messages("common.dateOfBirth.hint"))
     )
   }
+  app.stop()
 }

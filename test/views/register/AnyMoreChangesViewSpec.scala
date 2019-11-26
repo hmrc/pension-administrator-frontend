@@ -58,4 +58,5 @@ class AnyMoreChangesViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithSubmitButton(createView)
   }
+  app.stop()
 }

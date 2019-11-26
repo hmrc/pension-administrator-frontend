@@ -166,7 +166,6 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
 object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
 
-  private val configuration = injector.instanceOf[Configuration]
   private val mockSubscriptionConnector = mock[SubscriptionConnector]
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val mockUserAnswersConnector = mock[UserAnswersCacheConnector]

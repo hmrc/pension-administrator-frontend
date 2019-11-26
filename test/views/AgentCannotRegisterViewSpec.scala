@@ -30,6 +30,6 @@ class AgentCannotRegisterViewSpec extends ViewBehaviours {
 
   "InterceptPSA view" must {
     behave like normalPage(createView, messageKeyPrefix, "p1", "p2")
-    }
-
+  }
+  app.stop()
 }

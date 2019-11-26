@@ -234,8 +234,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       redirectLocation(result) mustBe Some(onwardRoute.url)
 
       FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
-
     }
-
   }
+  app.stop()
 }

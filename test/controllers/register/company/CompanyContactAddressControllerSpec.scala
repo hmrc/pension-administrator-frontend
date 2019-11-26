@@ -196,6 +196,6 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
         }
       }
     }
-
   }
+  app.stop()
 }
