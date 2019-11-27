@@ -23,7 +23,6 @@ import play.api.mvc.{AnyContent, BodyParser, Request, Result}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
-
 case class FakeAuthAction(userType: UserType, psaId:String = "test psa id") extends AuthAction {
   val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
   implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global

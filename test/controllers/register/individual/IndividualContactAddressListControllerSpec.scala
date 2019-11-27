@@ -36,6 +36,7 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
 
@@ -82,7 +83,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
     "return Ok and the correct view on a GET request" in {
       val app = application(dataRetrievalAction)
 
-      val request = FakeRequest(GET, routes.IndividualContactAddressListController.onPageLoad(NormalMode).url)
+      val request = addCSRFToken(FakeRequest(GET, routes.IndividualContactAddressListController.onPageLoad(NormalMode).url))
 
       val result = route(app, request).value
 
@@ -92,7 +93,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
 
       val form: Form[Int] = new AddressListFormProvider()(viewModel.addresses)
 
-      contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
+      contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(request)).toString
 
       app.stop()
     }

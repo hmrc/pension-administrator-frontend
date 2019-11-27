@@ -31,6 +31,7 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase {
 
@@ -71,7 +72,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase {
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction)
       )) { implicit app =>
-        val request = FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode))
+        val request = addCSRFToken(FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)))
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -79,7 +80,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase {
         val viewModel: AddressListViewModel = addressListViewModel(addresses)
         val form = new AddressListFormProvider()(viewModel.addresses)
 
-        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
+        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(request)).toString
       }
 
     }

@@ -46,7 +46,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
 
     status(result) mustBe OK
 
-    contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString()
+    contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(request)).toString()
 
     application.stop()
   }
