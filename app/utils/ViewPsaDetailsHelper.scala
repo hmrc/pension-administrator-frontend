@@ -439,7 +439,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def ifAnyPartnerIncomplete = userAnswers.allPartnersAfterDelete(NormalMode).exists(!_.isComplete)
 
   private def workingKnowledge: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) map { wk =>
-    AnswerRow("variationWorkingKnowledge.heading", Seq(messages(if (wk) "site.yes" else "site.no")), answerIsMessageKey = false,
+    AnswerRow("variationWorkingKnowledge.heading", Seq(if (wk) "site.yes" else "site.no"), answerIsMessageKey = true,
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url)))
   }
 

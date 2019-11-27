@@ -16,12 +16,14 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.UserType.UserType
-import models.{UpdateMode, UserType}
+import models.requests.AuthenticatedRequest
+import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContent, BodyParser, Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -30,7 +32,7 @@ import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
 import views.html.psa_details
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDetailsControllerSpec extends ControllerSpecBase {
 
@@ -70,13 +72,21 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
     new PsaDetailsController(
       frontendAppConfig,
       FakeNavigator,
-      new FakeAuthAction(userType, psaId.get),
+      new FakeAuthAction(userType, psaId),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       fakePsaDataService,
       stubMessagesControllerComponents(),
       view
     )
+
+  class FakeAuthAction(userType: UserType, psaId : Option[String]) extends AuthAction {
+    val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+    implicit val executionContext: ExecutionContext = inject[ExecutionContext]
+    override def invokeBlock[A](request: Request[A],
+                                block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+      block(AuthenticatedRequest(request, externalId, PSAUser(userType, None, isExistingPSA = false, None, psaId)))
+  }
 
   private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "", isUserAnswerUpdated: Boolean = false) = {
     val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated)

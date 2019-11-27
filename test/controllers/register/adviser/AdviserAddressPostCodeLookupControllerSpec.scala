@@ -32,6 +32,7 @@ import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
 import scala.concurrent.Future
 
@@ -59,7 +60,7 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
 
       val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
 
-      val request = FakeRequest(GET, routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+      val request = addCSRFToken(FakeRequest(GET, routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url))
 
       val result = route(app, request).value
 

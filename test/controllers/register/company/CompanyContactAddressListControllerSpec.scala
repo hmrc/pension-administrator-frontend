@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import controllers.ControllerSpecBase
-import controllers.actions.DataRetrievalAction
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.AddressListFormProvider
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
@@ -37,6 +37,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
   def application(data: DataRetrievalAction): Application =
     applicationBuilder(data)
       .overrides(
+        bind[AuthAction].to(FakeAuthAction),
         bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
       ).build()
 

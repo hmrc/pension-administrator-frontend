@@ -28,7 +28,7 @@ import utils.countryOptions.CountryOptions
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels._
 
-class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
+class ViewPsaDetailsHelperSpec extends SpecBase with MustMatchers {
 
   import ViewPsaDetailsHelperSpec._
 

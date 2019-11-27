@@ -102,7 +102,7 @@ object RegisterAsBusinessControllerSpec extends ControllerSpecBase {
     form =>
       view(
         form
-      )(fakeRequest, messages).toString()
+      )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
 
   private def controller(
     dataRetrievalAction: DataRetrievalAction = getEmptyData,

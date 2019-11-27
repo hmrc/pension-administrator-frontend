@@ -108,6 +108,6 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       view
     )
 
-  private def viewAsString = view()(fakeRequest, messages).toString
+  private def viewAsString = view()(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
 }
