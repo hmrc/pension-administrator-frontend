@@ -16,12 +16,18 @@
 
 package controllers.actions
 
+import akka.actor.ActorSystem
+import akka.stream.{ActorMaterializer, Materializer}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
-import play.api.mvc.{AnyContent, BodyParser, Request, Result}
+import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
+import play.api.i18n.{Langs, MessagesApi}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, BodyParser, DefaultActionBuilder, DefaultMessagesActionBuilderImpl, DefaultMessagesControllerComponents, MessagesControllerComponents, PlayBodyParsers, Request, Result}
+import play.api.test.Helpers.{stubBodyParser, stubLangs, stubMessagesApi, stubPlayBodyParsers}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import scala.concurrent.{ExecutionContextExecutor, Future}
+
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 case class FakeAuthAction(userType: UserType, psaId:String = "test psa id") extends AuthAction {
   val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
@@ -31,6 +37,28 @@ case class FakeAuthAction(userType: UserType, psaId:String = "test psa id") exte
 }
 
 object FakeAuthAction extends AuthAction {
+
+  implicit val sys = ActorSystem("MyTest")
+  implicit final val materializer : Materializer = ActorMaterializer()
+
+  def stubMessagesControllerComponents(
+                                        bodyParser: BodyParser[AnyContent] = stubBodyParser(AnyContentAsEmpty),
+                                        playBodyParsers: PlayBodyParsers   = stubPlayBodyParsers(materializer),
+                                        messagesApi: MessagesApi           = stubMessagesApi(),
+                                        langs: Langs                       = stubLangs(),
+                                        fileMimeTypes: FileMimeTypes       = new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
+                                        executionContext: ExecutionContext = ExecutionContext.global): MessagesControllerComponents =
+    DefaultMessagesControllerComponents(
+      new DefaultMessagesActionBuilderImpl(bodyParser, messagesApi)(executionContext),
+      DefaultActionBuilder(bodyParser)(executionContext),
+      playBodyParsers,
+      messagesApi,
+      langs,
+      fileMimeTypes,
+      executionContext
+    )
+
+
   val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
   implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =

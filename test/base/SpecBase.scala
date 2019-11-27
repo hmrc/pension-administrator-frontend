@@ -16,42 +16,48 @@
 
 package base
 
-import akka.stream.Materializer
+import akka.actor.ActorSystem
+import akka.stream.{ActorMaterializer, Materializer}
 import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import org.scalatest.BeforeAndAfterAll
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
+import play.api.i18n.{Langs, Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents, _}
+import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Injecting}
 import play.api.{Application, Environment}
+
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with BeforeAndAfterAll {
+import scala.concurrent.ExecutionContext
 
-  override lazy val app: Application = new GuiceApplicationBuilder().build()
+trait SpecBase extends PlaySpec with GuiceOneServerPerSuite with Injecting with BeforeAndAfterAll with MockitoSugar {
+
+  implicit val sys = ActorSystem("MyTest")
+  implicit final val materializer : Materializer = ActorMaterializer()
+
+  override lazy val app: Application = new GuiceApplicationBuilder()
+    .build()
 
   protected def applicationBuilder(data: DataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
-        bind[FrontendAppConfig].toInstance(frontendAppConfig),
         bind[DataRetrievalAction].toInstance(data),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[MessagesControllerComponents].to(messagesControllerComponents)
+        bind[AuthAction].to(FakeAuthAction)
       )
-
-  def messagesControllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 
   def injector: Injector = app.injector
 
   def frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
-
-  implicit val mat: Materializer = inject[Materializer]
 
   def environment: Environment = inject[Environment]
 
@@ -59,7 +65,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with Bef
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
-  implicit def messages: Messages = messagesControllerComponents.messagesApi.preferred(fakeRequest)
+  implicit def messages: Messages = stubMessagesControllerComponents().messagesApi.preferred(fakeRequest)
   //implicit def messagesForView: Messages = messagesApi.preferred(fakeRequest)
 
   def appRunning(): Unit = app

@@ -62,7 +62,7 @@ class NINOControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewModel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formProvider(entityName), viewModel)(FakeRequest(), messages).toString
+          contentAsString(result) mustEqual view(formProvider(entityName), viewModel)(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
 
@@ -79,7 +79,7 @@ class NINOControllerSpec extends SpecBase {
           contentAsString(result) mustEqual view(
             formProvider(entityName).fill(testNINO),
             viewModel
-          )(FakeRequest(), messages).toString
+          )(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
   }
@@ -116,7 +116,7 @@ class NINOControllerSpec extends SpecBase {
           contentAsString(result) mustEqual view(
             formProvider(entityName).bind(Map.empty[String, String]),
             viewModel
-          )(FakeRequest(), messages).toString
+          )(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
   }

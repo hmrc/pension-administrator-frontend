@@ -15,6 +15,7 @@
  */
 
 package controllers.register.partnership
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
 import akka.stream.Materializer
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
@@ -74,7 +75,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction)
       )) { implicit app =>
-        val request = FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode))
+        val request = addCSRFToken(FakeRequest(routes.PartnershipPreviousAddressListController.onPageLoad(NormalMode)))
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -82,7 +83,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
         val viewModel: AddressListViewModel = addressListViewModel(addresses)
         val form = new AddressListFormProvider()(viewModel.addresses)
 
-        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
+        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString
       }
 
     }
@@ -191,7 +192,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
       routes.PartnershipPreviousAddressListController.onSubmit(NormalMode),
       routes.PartnershipPreviousAddressController.onPageLoad(NormalMode),
       addresses,
-      Message("previousAddressList.heading", Message("thePartnership").resolve),
+      Message("previousAddressList.heading", Message("thePartnership")),
       Message("previousAddressList.heading", "Test Partnership Name"),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")

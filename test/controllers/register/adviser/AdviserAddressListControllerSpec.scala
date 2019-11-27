@@ -34,6 +34,7 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
@@ -48,7 +49,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
       val app = application(dataRetrievalAction)
 
-      val request = FakeRequest(GET, routes.AdviserAddressListController.onPageLoad(NormalMode).url)
+      val request = addCSRFToken(FakeRequest(GET, routes.AdviserAddressListController.onPageLoad(NormalMode).url))
 
       val result = route(app, request).value
 

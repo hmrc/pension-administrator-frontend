@@ -192,6 +192,6 @@ object MoreThanTenControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(base: SpecBase, form: Form[_] = form): String =
-    moreThanTenView(form, viewModel(), NormalMode)(base.fakeRequest, base.messages).toString
+    moreThanTenView(form, viewModel(), NormalMode)(base.fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
 }

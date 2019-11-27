@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext
 
 trait ControllerSpecBase extends SpecBase {
 
-  implicit val executionContext: ExecutionContext = inject[ExecutionContext]
+  implicit lazy val executionContext: ExecutionContext = inject[ExecutionContext]
 
   val cacheMapId = "id"
 

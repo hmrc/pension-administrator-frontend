@@ -35,7 +35,6 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
@@ -59,7 +58,6 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
         app =>
           val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]
           val request = FakeRequest()
-          val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val countryOptions = app.injector.instanceOf[CountryOptions]
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onPageLoad(viewmodel(), UserAnswers())
@@ -77,7 +75,6 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
         app =>
           val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]
           val request = FakeRequest()
-          val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val countryOptions = app.injector.instanceOf[CountryOptions]
           val controller = app.injector.instanceOf[TestController]
           val answers = UserAnswers().set(FakeIdentifier)(true).asOpt.value
@@ -93,10 +90,9 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
     }
   }
 
-  private def controllerPostWithValue(v: String): Unit = {
-    s"return a redirect when the submitted data is valid and the data is changed with value $v" in {
+  "post" should {
 
-      import play.api.inject._
+    s"return a redirect when the submitted data is valid and the data is changed with value true" in {
 
       val cacheConnector = mock[UserAnswersCacheConnector]
 
@@ -114,8 +110,9 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
-            "value" -> v
+            "value" -> "true"
           )
+
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel(), UserAnswers().set(FakeIdentifier)(false).asOpt.value, request)
 
@@ -123,13 +120,36 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
           redirectLocation(result).value mustEqual "www.example.com"
       }
     }
-  }
 
-  "post" should {
+    s"return a redirect when the submitted data is valid and the data is changed with value false" in {
 
-    behave like controllerPostWithValue("true")
+      val cacheConnector = mock[UserAnswersCacheConnector]
 
-    behave like controllerPostWithValue("false")
+      running(_.overrides(
+        bind[UserAnswersCacheConnector].toInstance(cacheConnector),
+        bind[Navigator].toInstance(FakeNavigator)
+      )) {
+        app =>
+          when(cacheConnector.save[Boolean, FakeIdentifier.type](
+            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
+
+          when(cacheConnector.save[Address, PreviousAddressId.type](
+            any(), eqTo(PreviousAddressId), any())(any(), any(), any())
+          ) thenReturn Future.successful(Json.obj())
+
+          val request = FakeRequest().withFormUrlEncodedBody(
+            "value" -> "false"
+          )
+
+          val controller = app.injector.instanceOf[TestController]
+          val result = controller.onSubmit(viewmodel(), UserAnswers().set(FakeIdentifier)(false).asOpt.value, request)
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustEqual "www.example.com"
+      }
+    }
+
 
     "return a redirect and save the data when the there is no existing data" in {
 
@@ -174,7 +194,6 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
         app =>
           val formProvider = app.injector.instanceOf[ConfirmPreviousAddressFormProvider]
           val request = FakeRequest()
-          val messages = app.injector.instanceOf[MessagesApi].preferred(request)
           val countryOptions = app.injector.instanceOf[CountryOptions]
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel(), UserAnswers(), request)
@@ -206,6 +225,7 @@ object ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   override val countryOptions: CountryOptions,
+                                  val controllerComponents: MessagesControllerComponents,
                                   val view: sameContactAddress
                                 )(implicit val executionContext: ExecutionContext) extends ConfirmPreviousAddressController {
 
@@ -216,12 +236,10 @@ object ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
     }
 
     def onSubmit(viewmodel: SameContactAddressViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
+      implicit val request: DataRequest[AnyContent] = DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
       post(FakeIdentifier, PreviousAddressId, viewmodel, NormalMode)
     }
-
-    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
   private def testAddress = TolerantAddress(

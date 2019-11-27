@@ -52,7 +52,8 @@ class HasReferenceNumberControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewModel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual hasRefView(formProvider(requiredError, entityName), viewModel)(FakeRequest(), messages).toString
+          contentAsString(result) mustEqual
+            hasRefView(formProvider(requiredError, entityName), viewModel)(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
 
@@ -69,7 +70,7 @@ class HasReferenceNumberControllerSpec extends SpecBase {
           contentAsString(result) mustEqual hasRefView(
             formProvider(requiredError, entityName).fill(value = true),
             viewModel
-          )(FakeRequest(), messages).toString
+          )(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
   }
@@ -106,7 +107,7 @@ class HasReferenceNumberControllerSpec extends SpecBase {
           contentAsString(result) mustEqual hasRefView(
             formProvider(requiredError, entityName).bind(Map.empty[String, String]),
             viewModel
-          )(FakeRequest(), messages).toString
+          )(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
   }

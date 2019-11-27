@@ -24,7 +24,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, redirectLocation, route, status, _}
+import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
@@ -36,10 +36,11 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
 //implicit val materializer: Materializer = app.materializer
   def application(data: DataRetrievalAction): Application =
     applicationBuilder(data)
-      .overrides(
-        bind[AuthAction].to(FakeAuthAction),
-        bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
-      ).build()
+//      .overrides(
+//        bind[AuthAction].to(FakeAuthAction),
+//        bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
+//      )
+      .build()
 
   lazy val view: addressList = inject[addressList]
 
@@ -88,7 +89,6 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
       val form = new AddressListFormProvider()(viewModel.addresses)
 
       contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
-
     }
 
     "redirect to Company Address Post Code Lookup if no address data on a GET request" in {

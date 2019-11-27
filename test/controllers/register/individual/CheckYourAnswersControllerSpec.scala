@@ -259,6 +259,6 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
         postUrl,
         None,
         NormalMode
-      )(fakeRequest, messages).toString()
+      )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
   }
 }
