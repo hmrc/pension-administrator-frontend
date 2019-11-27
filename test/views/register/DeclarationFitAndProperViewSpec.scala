@@ -62,5 +62,5 @@ class DeclarationFitAndProperViewSpec extends ViewBehaviours {
 
     behave like pageWithContinueButton(createView, hrefCall.url, id = "submit")
   }
-  app.stop()
+
 }

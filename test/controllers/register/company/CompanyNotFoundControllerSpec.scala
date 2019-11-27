@@ -43,5 +43,5 @@ class CompanyNotFoundControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
   }
-  app.stop()
+
 }

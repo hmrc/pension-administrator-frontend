@@ -117,5 +117,5 @@ class ConfirmationViewSpec extends ViewBehaviours {
     }
 
   }
-  app.stop()
+
 }

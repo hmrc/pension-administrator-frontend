@@ -59,5 +59,5 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
       createView must haveLink(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url, "cancel")
     }
   }
-  app.stop()
+
 }

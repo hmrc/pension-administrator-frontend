@@ -56,7 +56,7 @@ class IndividualEmailControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 
 object IndividualEmailControllerSpec {

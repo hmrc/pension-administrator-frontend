@@ -61,5 +61,5 @@ class MoreThanTenViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
-  app.stop()
+
 }

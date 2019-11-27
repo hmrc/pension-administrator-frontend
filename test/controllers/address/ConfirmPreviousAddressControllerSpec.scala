@@ -188,7 +188,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
       }
     }
   }
-  app.stop()
+
 }
 
 

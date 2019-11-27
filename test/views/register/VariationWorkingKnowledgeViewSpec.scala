@@ -54,5 +54,5 @@ class VariationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
       }
     }
   }
-  app.stop()
+
 }

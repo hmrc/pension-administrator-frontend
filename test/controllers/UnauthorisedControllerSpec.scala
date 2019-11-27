@@ -35,5 +35,5 @@ class UnauthorisedControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe view()(fakeRequest, messages).toString
     }
   }
-  app.stop()
+
 }

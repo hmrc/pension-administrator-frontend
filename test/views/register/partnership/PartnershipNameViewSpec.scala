@@ -60,5 +60,5 @@ class PartnershipNameViewSpec extends QuestionViewBehaviours[String] {
 
     behave like pageWithLabel(createViewUsingForm, "value", messages("partnershipName.heading"))
   }
-  app.stop()
+
 }

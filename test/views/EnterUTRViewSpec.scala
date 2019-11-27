@@ -76,5 +76,5 @@ class EnterUTRViewSpec extends QuestionViewBehaviours[ReferenceValue] {
 
     behave like pageWithSubmitButton(createView)
   }
-  app.stop()
+
 }

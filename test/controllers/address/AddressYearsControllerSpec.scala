@@ -202,6 +202,6 @@ class AddressYearsControllerSpec extends SpecBase with MustMatchers with OptionV
       }
     }
   }
-  app.stop()
+
 }
 

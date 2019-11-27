@@ -66,5 +66,5 @@ class NonUKBusinessTypeViewSpec extends ViewBehaviours {
       }
     }
   }
-  app.stop()
+
 }

@@ -58,7 +58,7 @@ class PartnerEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 
 object PartnerEnterUTRControllerSpec {

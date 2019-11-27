@@ -77,6 +77,6 @@ class AddressYearsViewSpec extends ViewBehaviours {
       }
     }
   }
-  app.stop()
+
 }
 

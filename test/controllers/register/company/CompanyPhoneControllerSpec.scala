@@ -56,7 +56,7 @@ class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 
 object CompanyPhoneControllerSpec {

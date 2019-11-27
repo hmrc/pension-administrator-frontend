@@ -38,5 +38,5 @@ class IncompleteChangesViewSpec extends ViewBehaviours {
 
     behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
   }
-  app.stop()
+
 }

@@ -220,5 +220,5 @@ class AddEntityControllerSpec extends SpecBase with MustMatchers with OptionValu
       }
     }
   }
-  app.stop()
+
 }

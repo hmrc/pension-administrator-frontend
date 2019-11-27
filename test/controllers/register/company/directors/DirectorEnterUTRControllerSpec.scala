@@ -56,7 +56,7 @@ class DirectorEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 
 object DirectorEnterUTRControllerSpec {

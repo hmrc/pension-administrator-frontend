@@ -75,5 +75,5 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix,
       controllers.register.company.routes.ConfirmCompanyDetailsController.onSubmit().url, s"$messageKeyPrefix.title")
   }
-  app.stop()
+
 }

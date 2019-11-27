@@ -57,7 +57,7 @@ class PartnerNoNINOReasonControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 
 object PartnerNoNINOReasonControllerSpec {

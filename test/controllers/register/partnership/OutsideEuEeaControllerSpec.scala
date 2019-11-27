@@ -77,5 +77,5 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
-  app.stop()
+
 }

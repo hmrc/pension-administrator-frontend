@@ -74,5 +74,5 @@ class PhoneViewSpec extends QuestionViewBehaviours[String] {
       "value"
     )
   }
-  app.stop()
+
 }

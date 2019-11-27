@@ -73,5 +73,5 @@ class EnterVATViewSpec extends QuestionViewBehaviours[String] {
       "value"
     )
   }
-  app.stop()
+
 }

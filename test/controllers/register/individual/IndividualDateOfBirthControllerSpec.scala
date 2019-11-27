@@ -115,7 +115,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
-  app.stop()
+
 }
 
 object IndividualDateOfBirthControllerSpec extends ControllerSpecBase with MockitoSugar {

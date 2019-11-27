@@ -53,5 +53,5 @@ class IndividualDateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
       Some(messages("common.dateOfBirth.hint"))
     )
   }
-  app.stop()
+
 }

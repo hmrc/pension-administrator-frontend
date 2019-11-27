@@ -57,7 +57,7 @@ class PartnerPhoneControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 
 object PartnerPhoneControllerSpec {

@@ -79,7 +79,7 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
       }
     }
   }
-  app.stop()
+
 }
 
 object VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {

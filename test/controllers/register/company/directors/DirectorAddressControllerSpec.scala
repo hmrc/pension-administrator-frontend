@@ -236,5 +236,5 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       FakeUserAnswersCacheConnector.verify(DirectorsOrPartnersChangedId, true)
     }
   }
-  app.stop()
+
 }

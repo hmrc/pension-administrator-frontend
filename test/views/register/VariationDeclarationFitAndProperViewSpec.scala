@@ -89,5 +89,5 @@ class VariationDeclarationFitAndProperViewSpec extends QuestionViewBehaviours[Bo
 
     behave like pageWithSubmitButton(createView)
   }
-  app.stop()
+
 }

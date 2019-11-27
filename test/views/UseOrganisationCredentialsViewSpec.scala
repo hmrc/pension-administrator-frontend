@@ -46,7 +46,7 @@ class UseOrganisationCredentialsViewSpec extends ViewBehaviours {
         Message("useOrganisationCredentials.p3.link").resolve)
     }
   }
-  app.stop()
+
 }
 
 object UseOrganisationCredentialsViewSpec extends ViewSpecBase {

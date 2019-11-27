@@ -56,7 +56,7 @@ class PartnerEmailControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 
 object PartnerEmailControllerSpec {

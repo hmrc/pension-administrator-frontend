@@ -43,5 +43,5 @@ class PartnershipCompanyNotFoundControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
   }
-  app.stop()
+
 }

@@ -88,7 +88,7 @@ trait IsRegisteredNameControllerBehaviour {
     }
 
   }
-  app.stop()
+
 }
 
 object IsRegisteredNameControllerBehaviour extends SpecBase {

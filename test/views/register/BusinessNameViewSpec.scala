@@ -58,5 +58,5 @@ class BusinessNameViewSpec extends QuestionViewBehaviours[String] {
       "value")
 
   }
-  app.stop()
+
 }

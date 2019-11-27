@@ -149,7 +149,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
     }
 
   }
-  app.stop()
+
 }
 
 object AddressListControllerSpec extends SpecBase {

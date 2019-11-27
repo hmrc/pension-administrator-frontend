@@ -214,5 +214,5 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
-  app.stop()
+
 }
