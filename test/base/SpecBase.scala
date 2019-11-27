@@ -16,6 +16,7 @@
 
 package base
 
+import akka.stream.Materializer
 import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
@@ -59,6 +60,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with Bef
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
   implicit def messages: Messages = messagesControllerComponents.messagesApi.preferred(fakeRequest)
+  //implicit def messagesForView: Messages = messagesApi.preferred(fakeRequest)
 
   def appRunning(): Unit = app
 

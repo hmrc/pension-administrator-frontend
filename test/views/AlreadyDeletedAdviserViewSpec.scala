@@ -16,6 +16,7 @@
 
 package views
 
+import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import viewmodels.Message
 import views.behaviours.ViewBehaviours
@@ -29,7 +30,7 @@ class AlreadyDeletedAdviserViewSpec extends ViewBehaviours {
 
   val view: alreadyDeletedAdviser = app.injector.instanceOf[alreadyDeletedAdviser]
 
-  def createView: () => HtmlFormat.Appendable = () => view(onwardRoute)(fakeRequest, messagesApi.preferred(fakeRequest))
+  def createView: () => HtmlFormat.Appendable = () => view(onwardRoute)(fakeRequest, messages)
 
   "Already Deleted view" must {
 
