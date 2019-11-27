@@ -321,12 +321,12 @@ personDetails.middleName = Middle name
 personDetails.lastName = Last name
 personName.error.firstName.required = Enter the first name
 personName.error.firstName.length = The first name cannot be more than 35 characters
-personName.error.firstName.invalid = The first name must start with an alphabetic character
+personName.error.firstName.invalid = The first name must only include letters, spaces, ampersands, dashes, grave accents, apostrophes, carets and full stops
 personDetails.error.middleName.length = The middle name cannot be more than 35 characters
 personDetails.error.middleName.invalid = The middle name must start with an alphabetic character
 personName.error.lastName.required = Enter the last name
 personName.error.lastName.length = The last name cannot be more than 35 characters
-personName.error.lastName.invalid = The last name must start with an alphabetic character
+personName.error.lastName.invalid = The last name must only include letters, spaces, ampersands, dashes, grave accents, apostrophes, carets and full stops
 
 directorNino.title = Does the director have a National Insurance number?
 directorNino.heading = Does the director have a National Insurance number?
@@ -576,10 +576,11 @@ declaration.invalid = You need to agree to all the declarations before you can c
 
 adviserName.title = Who has working knowledge of pensions and pensions tax legislation?
 adviserName.heading = Who has working knowledge of pensions and pensions tax legislation?
+adviserName.label = Name
 adviserName.p1 = This can be either the name of your pension adviser, or the company they work for.
 adviserName.error.required = Enter who has working knowledge of pensions and pensions tax legislation
 adviserName.error.length = Name must be 107 characters or fewer
-adviserName.error.invalid = Enter a name using only letters
+adviserName.error.invalid = Name must only include letters, spaces, ampersands, question marks, asterisks, round brackets, underscores, dashes, apostrophes and single quotation marks
 adviserName.checkYourAnswersLabel = Name
 adviserName.visuallyHidden.text = the name of the person or business that has working knowledge of pensions and pensions tax legislation
 
@@ -916,10 +917,10 @@ registerAsBusiness.yes.label = Company or partnership
 individualName.title = What is your name?
 individualName.error.firstName.required = Enter the first name
 individualName.error.firstName.length = The first name cannot be more than 35 characters
-individualName.error.firstName.invalid = The first name must start with an alphabetic character
+individualName.error.firstName.invalid = The first name must only include letters, spaces, ampersands, dashes, grave accents, apostrophes, carets and full stops
 individualName.error.lastName.required = Enter the last name
 individualName.error.lastName.length = The last name cannot be more than 35 characters
-individualName.error.lastName.invalid = The last name must start with an alphabetic character
+individualName.error.lastName.invalid = The last name must only include letters, spaces, ampersands, dashes, grave accents, apostrophes, carets and full stops
 
 individualRegisteredNonUKAddress.title = What is your address?
 individualRegisteredNonUKAddress.heading = What is your address?
@@ -1036,7 +1037,7 @@ businessName.title = What is the name of the {0} you want to register?
 businessName.heading = What is the name of the {0} you want to register?
 businessName.p1 = This is the name registered with Companies House.
 businessName.error.required = Enter a company name
-businessName.error.invalid = Company name must only include letters, numbers and the characters ’, &, \ and /
+businessName.error.invalid = Company name must only include letters, numbers, dashes, spaces, apostrophes, ampersands and slashes
 businessName.error.length = Company name must be 105 characters or fewer
 
 partnershipName.error.required = Enter a partnership name
