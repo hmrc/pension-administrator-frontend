@@ -51,7 +51,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with Bef
 
   def frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
 
-  //implicit val materializer: Materializer = inject[Materializer]
+  implicit val mat: Materializer = inject[Materializer]
 
   def environment: Environment = inject[Environment]
 

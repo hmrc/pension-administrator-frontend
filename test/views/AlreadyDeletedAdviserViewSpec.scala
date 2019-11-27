@@ -29,7 +29,7 @@ class AlreadyDeletedAdviserViewSpec extends ViewBehaviours {
 
   val view: alreadyDeletedAdviser = app.injector.instanceOf[alreadyDeletedAdviser]
 
-  def createView: () => HtmlFormat.Appendable = () => view(onwardRoute)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () => view(onwardRoute)(fakeRequest, messagesApi.preferred(fakeRequest))
 
   "Already Deleted view" must {
 

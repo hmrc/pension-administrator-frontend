@@ -113,7 +113,7 @@ class AddEntityControllerSpec extends SpecBase with MustMatchers with OptionValu
       )) {
         app =>
 
-          implicit val materializer: Materializer = app.materializer
+       //   implicit val materializer: Materializer = app.materializer
 
           val formProvider = app.injector.instanceOf[AddEntityFormProvider]
           val controller = app.injector.instanceOf[TestController]
@@ -131,7 +131,7 @@ class AddEntityControllerSpec extends SpecBase with MustMatchers with OptionValu
       )) {
         app =>
 
-          implicit val materializer: Materializer = app.materializer
+    //      implicit val materializer: Materializer = app.materializer
 
           val formProvider = app.injector.instanceOf[AddEntityFormProvider]
           val controller = app.injector.instanceOf[TestController]
@@ -153,7 +153,7 @@ class AddEntityControllerSpec extends SpecBase with MustMatchers with OptionValu
       )) {
         app =>
 
-          implicit val materializer: Materializer = app.materializer
+    //      implicit val materializer: Materializer = app.materializer
 
           val formProvider = app.injector.instanceOf[AddEntityFormProvider]
           val controller = app.injector.instanceOf[TestController]
@@ -183,7 +183,7 @@ class AddEntityControllerSpec extends SpecBase with MustMatchers with OptionValu
       )) {
         app =>
 
-          implicit val materializer: Materializer = app.materializer
+     //     implicit val materializer: Materializer = app.materializer
           when(
             cacheConnector.save[Boolean, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
@@ -204,7 +204,7 @@ class AddEntityControllerSpec extends SpecBase with MustMatchers with OptionValu
       )) {
         app =>
 
-          implicit val materializer: Materializer = app.materializer
+    //      implicit val materializer: Materializer = app.materializer
 
           val formProvider = app.injector.instanceOf[AddEntityFormProvider]
           val controller = app.injector.instanceOf[TestController]

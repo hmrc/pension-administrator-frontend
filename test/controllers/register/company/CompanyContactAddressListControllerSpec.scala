@@ -22,7 +22,7 @@ import forms.address.AddressListFormProvider
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
-import play.api.mvc.Call
+import play.api.mvc.{AnyContentAsFormUrlEncoded, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, redirectLocation, route, status, _}
 import utils.annotations.RegisterCompany
@@ -33,7 +33,7 @@ import views.html.address.addressList
 
 class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
   val onwardRoute: Call = routes.CompanyContactAddressController.onPageLoad(NormalMode)
-
+//implicit val materializer: Materializer = app.materializer
   def application(data: DataRetrievalAction): Application =
     applicationBuilder(data)
       .overrides(
@@ -82,7 +82,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
     "return Ok and the correct view on a GET request" in {
       val request = FakeRequest(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
         .withFormUrlEncodedBody("value" -> "0")
-      val result = route(application(dataRetrievalAction), request).value
+      val result = route[AnyContentAsFormUrlEncoded](application(dataRetrievalAction), request).value
       status(result) mustBe OK
       val viewModel: AddressListViewModel = addressListViewModel(addresses)
       val form = new AddressListFormProvider()(viewModel.addresses)

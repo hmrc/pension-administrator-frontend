@@ -109,7 +109,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
       )) {
         app =>
 
-          implicit val mat: Materializer = app.materializer
+      //    implicit val mat: Materializer = app.materializer
 
           val formProvider = app.injector.instanceOf[PostCodeLookupFormProvider]
           val request = FakeRequest()
@@ -147,7 +147,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
       )) {
         app =>
 
-          implicit val mat: Materializer = app.materializer
+     //     implicit val mat: Materializer = app.materializer
 
           val request = FakeRequest()
           val controller = app.injector.instanceOf[TestController]
@@ -174,7 +174,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
         )) {
           app =>
 
-            implicit val mat: Materializer = app.materializer
+   //         implicit val mat: Materializer = app.materializer
 
             val formProvider = app.injector.instanceOf[PostCodeLookupFormProvider]
             val request = FakeRequest()
@@ -202,7 +202,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
         )) {
           app =>
 
-            implicit val mat: Materializer = app.materializer
+    //        implicit val mat: Materializer = app.materializer
 
             val request = FakeRequest().withFormUrlEncodedBody("value" -> invalidPostcode)
 
@@ -236,7 +236,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
           )) {
             app =>
 
-              implicit val mat: Materializer = app.materializer
+     //         implicit val mat: Materializer = app.materializer
 
               val formProvider = app.injector.instanceOf[PostCodeLookupFormProvider]
               val request = FakeRequest()

@@ -78,7 +78,7 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
 
       val request = FakeRequest(POST, routes.AdviserAddressPostCodeLookupController.onSubmit(NormalMode).url)
         .withFormUrlEncodedBody("value" -> "ZZ1 1ZZ")
-
+println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>. "+request.body)
       val result = route(app, request).value
 
       status(result) mustBe SEE_OTHER
