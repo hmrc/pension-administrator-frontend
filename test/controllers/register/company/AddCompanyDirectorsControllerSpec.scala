@@ -151,7 +151,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
-  app.stop()
+
 }
 
 object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSpec {

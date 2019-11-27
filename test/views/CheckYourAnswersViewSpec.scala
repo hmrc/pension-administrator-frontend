@@ -39,7 +39,7 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
       fakeCall,
       Some("test psa"),
       mode
-    )(fakeRequest, messages)
+    )(fakeRequest, messagesApi.preferred(fakeRequest))
 
   def createViewWithData: Seq[Section] => HtmlFormat.Appendable = sections =>
     view(
@@ -47,7 +47,7 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
       fakeCall,
       None,
       NormalMode
-    )(fakeRequest, messages)
+    )(fakeRequest, messagesApi.preferred(fakeRequest))
 
   "check_your_answers view" must {
     behave like normalPage(createView(), messageKeyPrefix)
@@ -58,5 +58,5 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
 
     behave like checkYourAnswersPage(createViewWithData)
   }
-  app.stop()
+
 }

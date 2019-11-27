@@ -142,7 +142,7 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
       }
     }
   }
-  app.stop()
+
 }
 
 object PartnerAddressListControllerSpec {

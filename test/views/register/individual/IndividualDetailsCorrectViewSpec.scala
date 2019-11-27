@@ -78,5 +78,5 @@ class IndividualDetailsCorrectViewSpec extends YesNoViewBehaviours {
     }
 
   }
-  app.stop()
+
 }

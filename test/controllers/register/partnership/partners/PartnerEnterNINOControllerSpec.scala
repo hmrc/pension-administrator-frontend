@@ -57,7 +57,7 @@ class PartnerEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 
 object PartnerEnterNINOControllerSpec {

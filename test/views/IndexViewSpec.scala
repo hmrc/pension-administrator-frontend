@@ -30,5 +30,5 @@ class IndexViewSpec extends ViewBehaviours {
 
     behave like normalPage(view, "index", "guidance")
   }
-  app.stop()
+
 }

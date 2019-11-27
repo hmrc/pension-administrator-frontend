@@ -67,5 +67,5 @@ class BusinessTypeViewSpec extends ViewBehaviours {
       }
     }
   }
-  app.stop()
+
 }

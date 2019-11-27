@@ -61,5 +61,5 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
   }
-  app.stop()
+
 }

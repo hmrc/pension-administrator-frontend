@@ -103,7 +103,7 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
 
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
-  app.stop()
+
 }
 
 object AddCompanyDirectorsViewSpec {

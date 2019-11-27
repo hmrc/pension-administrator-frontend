@@ -43,5 +43,5 @@ class DeclarationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix,
       controllers.register.routes.DeclarationWorkingKnowledgeController.onSubmit(NormalMode).url,s"$messageKeyPrefix.heading")
   }
-  app.stop()
+
 }

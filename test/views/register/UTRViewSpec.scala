@@ -68,5 +68,5 @@ class UTRViewSpec extends QuestionViewBehaviours[String] {
 
     behave like pageWithSubmitButton(createView)
   }
-  app.stop()
+
 }

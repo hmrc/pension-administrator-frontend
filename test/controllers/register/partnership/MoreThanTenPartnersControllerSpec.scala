@@ -68,7 +68,7 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
       actual mustBe expected
     }
   }
-  app.stop()
+
 }
 
 object MoreThanTenPartnersControllerSpec extends ControllerSpecBase {

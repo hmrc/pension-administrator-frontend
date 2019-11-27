@@ -235,5 +235,5 @@ class KnownFactsRetrievalSpec extends SpecBase {
     }
 
   }
-  app.stop()
+
 }

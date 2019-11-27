@@ -52,7 +52,7 @@ class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 
 

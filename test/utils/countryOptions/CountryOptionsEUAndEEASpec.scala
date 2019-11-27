@@ -56,7 +56,7 @@ class CountryOptionsEUAndEEASpec extends SpecBase with MockitoSugar {
       }
     }
   }
-  app.stop()
+
 }
 
 

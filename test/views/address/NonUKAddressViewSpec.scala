@@ -66,5 +66,5 @@ class NonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
     behave like pageWithSubmitButton(createView)
 
   }
-  app.stop()
+
 }

@@ -94,7 +94,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
 
       contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
 
-      app.stop()
+
     }
 
     "redirect to Individual Address Post Code Lookup if no address data on a GET request" in {
@@ -108,7 +108,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
 
       redirectLocation(result) mustBe Some(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
 
-      app.stop()
+
     }
 
     "redirect to Session Expired controller when no session data exists on a GET request" in {
@@ -122,7 +122,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
 
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
 
-      app.stop()
+
     }
 
     "redirect to the next page on POST of valid data" in {
@@ -137,7 +137,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
 
       redirectLocation(result) mustBe Some(onwardRoute.url)
 
-      app.stop()
+
     }
 
     "redirect to Session Expired controller when no session data exists on a POST request" in {
@@ -152,7 +152,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
 
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
 
-      app.stop()
+
     }
 
     "redirect to Company Address Post Code Lookup if no address data on a POST request" in {
@@ -167,7 +167,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
 
       redirectLocation(result) mustBe Some(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
 
-      app.stop()
+
     }
   }
 

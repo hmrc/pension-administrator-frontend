@@ -60,7 +60,7 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
         redirectLocation(result) mustBe Some(onwardRoute.url)
 
   }
-  app.stop()
+
 }
 
 object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {

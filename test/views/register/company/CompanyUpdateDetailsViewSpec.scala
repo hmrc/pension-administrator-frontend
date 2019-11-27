@@ -45,5 +45,5 @@ class CompanyUpdateDetailsViewSpec extends ViewBehaviours {
     }
 
   }
-  app.stop()
+
 }

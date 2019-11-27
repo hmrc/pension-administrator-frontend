@@ -56,7 +56,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
       contentAsString(result) mustBe view(form, addressListViewModel(addresses), NormalMode)(request, messages).toString()
 
-      app.stop()
+
     }
 
     "redirect to Adviser Address Post Code Lookup if no address data on a GET request" in {
@@ -70,7 +70,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
       redirectLocation(result) mustBe Some(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url)
 
-      app.stop()
+
     }
 
     "redirect to Session Expired controller when no session data exists on a GET request" in {
@@ -84,7 +84,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
 
-      app.stop()
+
     }
 
     "redirect to the next page on POST of valid data" in {
@@ -98,7 +98,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
       redirectLocation(result) mustBe Some(routes.AdviserAddressController.onPageLoad(NormalMode).url)
 
-      app.stop()
+
     }
 
     "redirect to Session Expired controller when no session data exists on a POST request" in {
@@ -112,7 +112,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
 
-      app.stop()
+
     }
 
     "redirect to Adviser Address Post Code Lookup if no address data on a POST request" in {
@@ -126,7 +126,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
       redirectLocation(result) mustBe Some(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url)
 
-      app.stop()
+
     }
   }
 }

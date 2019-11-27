@@ -46,5 +46,5 @@ class AdviserNameViewSpec extends QuestionViewBehaviours[String] {
       "adviserName"
     )
   }
-  app.stop()
+
 }

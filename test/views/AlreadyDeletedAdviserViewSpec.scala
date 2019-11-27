@@ -52,5 +52,5 @@ class AlreadyDeletedAdviserViewSpec extends ViewBehaviours {
     }
 
   }
-  app.stop()
+
 }

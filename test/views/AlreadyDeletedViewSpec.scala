@@ -62,5 +62,5 @@ class AlreadyDeletedViewSpec extends ViewBehaviours {
       )
     }
   }
-  app.stop()
+
 }

@@ -36,5 +36,5 @@ class SessionExpiredControllerSpec extends ControllerSpecBase {
     }
   }
 
-  app.stop()
+
 }

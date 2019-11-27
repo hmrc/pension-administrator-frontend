@@ -58,7 +58,7 @@ class HasPartnerUTRControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 object HasPartnerUTRControllerSpec {
   private val partnerName = "test first name test last name"

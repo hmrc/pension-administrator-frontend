@@ -76,5 +76,5 @@ class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
     behave like pageWithReturnLink(createView(UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
   }
-  app.stop()
+
 }

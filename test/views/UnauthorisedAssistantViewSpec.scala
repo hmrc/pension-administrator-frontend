@@ -31,5 +31,5 @@ class UnauthorisedAssistantViewSpec extends ViewBehaviours {
   "UnauthorisedAssistant view" must {
     behave like normalPage(createView, messageKeyPrefix, "lede", "info")
   }
-  app.stop()
+
 }

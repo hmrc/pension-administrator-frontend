@@ -58,7 +58,7 @@ class HasPartnershipPAYEControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-  app.stop()
+
 }
 
 object HasPartnershipPAYEControllerSpec {

@@ -110,7 +110,7 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
       )
     }
   }
-  app.stop()
+
 }
 
 object PsaDetailsViewSpec {

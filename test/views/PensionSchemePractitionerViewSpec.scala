@@ -41,7 +41,7 @@ class PensionSchemePractitionerViewSpec extends ViewBehaviours {
     }
 
   }
-  app.stop()
+
 }
 
 object PensionSchemePractitionerViewSpec extends ViewSpecBase {

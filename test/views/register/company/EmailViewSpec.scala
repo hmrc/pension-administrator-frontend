@@ -73,5 +73,5 @@ class EmailViewSpec extends QuestionViewBehaviours[String] {
       "value"
     )
   }
-  app.stop()
+
 }

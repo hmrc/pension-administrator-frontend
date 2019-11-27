@@ -65,5 +65,5 @@ class PersonNameViewSpec extends QuestionViewBehaviours[PersonName] {
     )
 
   }
-  app.stop()
+
 }

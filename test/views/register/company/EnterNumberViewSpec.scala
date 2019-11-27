@@ -69,5 +69,5 @@ class EnterNumberViewSpec extends StringViewBehaviours {
       labelArgs = Some(companyName)
     )
   }
-  app.stop()
+
 }

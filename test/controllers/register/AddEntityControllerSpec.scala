@@ -220,5 +220,5 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
       }
     }
   }
-  app.stop()
+
 }

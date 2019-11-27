@@ -43,5 +43,5 @@ class CannotMakeChangesViewSpec extends ViewBehaviours {
       assertContainsText(doc, messages(s"$messageKeyPrefix.p1", administratorName))
     }
   }
-  app.stop()
+
 }

@@ -95,5 +95,5 @@ class AddressListSpec extends ViewBehaviours {
     }
 
   }
-  app.stop()
+
 }

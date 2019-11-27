@@ -79,5 +79,5 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
       createView(CheckMode) must haveDynamicText("areYouInUKIndividual.check.provideNonUkAddress")
     }
   }
-  app.stop()
+
 }

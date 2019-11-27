@@ -129,7 +129,7 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     }
 
   }
-  app.stop()
+
 }
 
 object AddEntityViewSpec {

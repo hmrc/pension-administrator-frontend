@@ -57,7 +57,7 @@ class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBeha
     }
 
   }
-  app.stop()
+
 }
 
 object CompanyUTRControllerSpec extends ControllerSpecBase {

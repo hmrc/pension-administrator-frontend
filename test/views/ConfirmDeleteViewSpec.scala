@@ -52,5 +52,5 @@ class ConfirmDeleteViewSpec extends ViewBehaviours {
     behave like normalPage(createView(), messageKeyPrefix)
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
-  app.stop()
+
 }
