@@ -24,7 +24,7 @@ class SameContactAddressFormProviderSpec extends BooleanFieldBehaviours {
   val requiredKey = "individual.same.contact.address.error"
   val invalidKey = "error.boolean"
 
-  val form = new SameContactAddressFormProvider()()
+  val form = new SameContactAddressFormProvider()(requiredKey)
 
   ".value" must {
 

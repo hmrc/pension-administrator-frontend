@@ -47,7 +47,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase with CSRFReque
 
     "return Ok and the correct view on a GET request" in {
       val viewModel: AddressListViewModel = addressListViewModel(addresses)
-      val form = new AddressListFormProvider()(viewModel.addresses)
+      val form = new AddressListFormProvider()(viewModel.addresses, "error.required")
 
       requestResult(
         implicit app => addToken(FakeRequest(routes.AdviserAddressListController.onPageLoad(NormalMode))), dataRetrievalAction,

@@ -22,7 +22,7 @@ import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
-import models.{BusinessDetails, NormalMode, TolerantAddress}
+import models.{NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -55,7 +55,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     Some("United Kingdom")
   )
 
-  val form: Form[Int] = formProvider(Seq(0))
+  val form: Form[Int] = formProvider(Seq(0), "error.required")
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyAddressListController(
@@ -66,7 +66,8 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      formProvider
     )
 
   private lazy val viewModel = AddressListViewModel(

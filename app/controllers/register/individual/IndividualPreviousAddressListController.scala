@@ -21,10 +21,12 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
+import forms.address.AddressListFormProvider
 import identifiers.register.individual._
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, TolerantAddress}
 import models.requests.DataRequest
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
 import utils.Navigator
@@ -43,18 +45,20 @@ class IndividualPreviousAddressListController @Inject()(
                                                          authenticate: AuthAction,
                                                          override val allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
-                                                         requireData: DataRequiredAction) extends AddressListController with Retrievals {
+                                                         requireData: DataRequiredAction,
+                                                         formProvider: AddressListFormProvider) extends AddressListController with Retrievals {
+  def form(addresses: Seq[TolerantAddress]): Form[Int] = formProvider(addresses, Message("individual.select.previous.address.error.required"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map{vm =>
-        get(vm, mode)
+      viewmodel(mode).right.map { vm =>
+        get(vm, mode, form(vm.addresses))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, IndividualPreviousAddressListId, IndividualPreviousAddressId, mode))
+      viewmodel(mode).right.map(vm => post(vm, IndividualPreviousAddressListId, IndividualPreviousAddressId, mode, form(vm.addresses)))
   }
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {

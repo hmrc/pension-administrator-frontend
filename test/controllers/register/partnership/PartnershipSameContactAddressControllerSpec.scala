@@ -35,6 +35,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val formProvider = new SameContactAddressFormProvider()
+  private val form = formProvider("error.required")
 
   private val testAddress = TolerantAddress(
     Some("address line 1"),
@@ -77,7 +78,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
       countryOptions
     )
 
-  def viewAsString(form: Form[_] = formProvider()): String = sameContactAddress(
+  def viewAsString(form: Form[_] = form): String = sameContactAddress(
     frontendAppConfig,
     form,
     viewmodel,
@@ -102,7 +103,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
 
       val result = controller(validData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(formProvider().fill(false))
+      contentAsString(result) mustBe viewAsString(form.fill(false))
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -116,7 +117,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
 
     "return a Bad Request and errors when invalid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = formProvider().bind(Map("value" -> "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = controller(requiredData).onSubmit(NormalMode)(postRequest)
 

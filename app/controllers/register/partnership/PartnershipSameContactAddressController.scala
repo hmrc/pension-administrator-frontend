@@ -48,8 +48,7 @@ class PartnershipSameContactAddressController @Inject()(
                                                          val countryOptions: CountryOptions
                                                        ) extends SameContactAddressController {
 
-  val form: Form[Boolean] = formProvider()
-
+  def form(name: String): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
 
   private def viewmodel(mode: Mode, address: TolerantAddress, name: String) =
     SameContactAddressViewModel(
@@ -66,7 +65,7 @@ class PartnershipSameContactAddressController @Inject()(
     implicit request =>
       (PartnershipRegisteredAddressId and BusinessNameId).retrieve.right.map {
         case address ~ name =>
-          get(PartnershipSameContactAddressId, viewmodel(mode, address, name))
+          get(PartnershipSameContactAddressId, viewmodel(mode, address, name), form(name))
       }
   }
 
@@ -79,7 +78,8 @@ class PartnershipSameContactAddressController @Inject()(
             PartnershipContactAddressListId,
             PartnershipContactAddressId,
             viewmodel(mode, address, name),
-            mode
+            mode,
+            form(name)
           )
       }
   }

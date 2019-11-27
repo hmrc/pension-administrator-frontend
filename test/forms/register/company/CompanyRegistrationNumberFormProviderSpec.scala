@@ -25,13 +25,12 @@ class CompanyRegistrationNumberFormProviderSpec extends CrnBehaviours {
   ".value" must {
 
     val fieldName = "value"
-    val keyCrnRequired = "companyRegistrationNumber.error.required"
     val keyCrnInvalid = "companyRegistrationNumber.error.invalid"
 
     behave like formWithCrnField(
       form,
       fieldName,
-      keyCrnRequired,
+      keyCrnInvalid,
       keyCrnInvalid
     )
   }

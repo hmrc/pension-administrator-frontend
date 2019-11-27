@@ -95,7 +95,7 @@ object PartnershipContactAddressListControllerSpec extends PartnershipContactAdd
     )
   )
 
-  val form = new AddressListFormProvider()(addresses)
+  val form = new AddressListFormProvider()(addresses, "error.required")
 
   val viewModel = AddressListViewModel(
     routes.PartnershipContactAddressListController.onSubmit(NormalMode),

@@ -22,9 +22,9 @@ import play.api.data.Form
 
 class AddressListFormProvider @Inject()() extends Mappings with Constraints {
 
-  def apply(addresses: Seq[_]): Form[Int] =
+  def apply(addresses: Seq[_], requiredError: String): Form[Int] =
     Form(
-      "value" -> int("common.previousAddressList.error.required")
+      "value" -> int(requiredError)
         .verifying(minimumValue(0, "error.invalid"))
         .verifying(maximumValue(addresses.length - 1, "error.invalid"))
     )

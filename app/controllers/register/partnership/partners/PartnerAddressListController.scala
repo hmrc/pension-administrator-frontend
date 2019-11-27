@@ -22,9 +22,11 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
+import forms.address.AddressListFormProvider
 import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddressListId, PartnerAddressPostCodeLookupId, PartnerNameId}
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{Index, Mode, TolerantAddress}
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
 import utils.Navigator
@@ -41,13 +43,17 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
                                              authenticate: AuthAction,
                                              override val allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction) extends AddressListController with Retrievals {
+                                             requireData: DataRequiredAction,
+                                             formProvider: AddressListFormProvider) extends AddressListController with Retrievals {
+
+  def form(addresses: Seq[TolerantAddress], name: String): Form[Int] =
+    formProvider(addresses, Message("select.address.error.required").withArgs(name))
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.right.flatMap { pn =>
         viewModel(mode, index, pn.fullName).right.map { vm =>
-          get(vm, mode)
+          get(vm, mode, form(vm.addresses, pn.fullName))
         }
       }
   }
@@ -55,7 +61,8 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.right.flatMap { pn =>
-        viewModel(mode, index, pn.fullName).right.map(vm => post(vm, PartnerAddressListId(index), PartnerAddressId(index), mode))
+        viewModel(mode, index, pn.fullName).right.map(vm => post(vm, PartnerAddressListId(index), PartnerAddressId(index), mode,
+          form(vm.addresses, pn.fullName)))
       }
   }
 

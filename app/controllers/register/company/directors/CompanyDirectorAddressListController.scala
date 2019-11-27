@@ -22,9 +22,11 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
+import forms.address.AddressListFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId, DirectorNameId}
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{Index, Mode, TolerantAddress}
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
 import utils.Navigator
@@ -41,34 +43,40 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
                                                      override val allowAccess: AllowAccessActionProvider,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction) extends AddressListController with Retrievals {
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: AddressListFormProvider) extends AddressListController with Retrievals {
+
+  def form(addresses: Seq[TolerantAddress], name: String): Form[Int] =
+    formProvider(addresses, Message("select.address.error.required").withArgs(name))
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map{vm =>
-        get(vm, mode)
+      viewModel(mode, index).right.map { vm =>
+        get(vm, mode, form(vm.addresses, entityName(index)))
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(vm => post(vm, CompanyDirectorAddressListId(index), DirectorAddressId(index), mode))
+      viewModel(mode, index).right.map(vm => post(vm, CompanyDirectorAddressListId(index), DirectorAddressId(index), mode,
+        form(vm.addresses, entityName(index))))
   }
 
   private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    (DirectorNameId(index) and CompanyDirectorAddressPostCodeLookupId(index)).retrieve.right.map {
-      case name ~ addresses =>
-            AddressListViewModel(
-              postCall = routes.CompanyDirectorAddressListController.onSubmit(mode, index),
-              manualInputCall = routes.DirectorAddressController.onPageLoad(mode, index),
-              addresses = addresses,
-              Message("contactAddressList.heading", Message("theDirector").resolve),
-              Message("contactAddressList.heading", name.fullName),
-              Message("common.selectAddress.text"),
-              Message("common.selectAddress.link"),
-              psaName = psaName()
-            )
+    CompanyDirectorAddressPostCodeLookupId(index).retrieve.right.map { addresses =>
+      AddressListViewModel(
+        postCall = routes.CompanyDirectorAddressListController.onSubmit(mode, index),
+        manualInputCall = routes.DirectorAddressController.onPageLoad(mode, index),
+        addresses = addresses,
+        Message("contactAddressList.heading", Message("theDirector").resolve),
+        Message("contactAddressList.heading", entityName(index)),
+        Message("common.selectAddress.text"),
+        Message("common.selectAddress.link"),
+        psaName = psaName()
+      )
     }.left.map(_ => Future.successful(Redirect(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode, index))))
   }
 
+  private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 }

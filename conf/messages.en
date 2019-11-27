@@ -47,12 +47,12 @@ error.country.invalid.eueea = Pension Scheme Administrators must be resident in 
 error.addressYears.required = Select yes if {0} has used this contact address for at least 1 year
 error.individual.addressYears.required = Select yes if you have used this contact address for at least 1 year
 
-error.postcode.required = Enter the postcode
+error.postcode.required = Enter a postcode
 error.postcode.length = The postcode cannot be more than 8 characters
 error.postcode.nonUK.length = The postcode cannot be more than 10 characters
 error.postcode.failed = There is a problem with the address finder. Try again or enter the address manually
-error.postcode.invalid = Enter a valid postcode
-error.postcode.noResults = There are no addresses for that postcode
+error.postcode.invalid = Enter a real postcode
+error.postcode.noResults = No addresses have been found for the postcode {0}
 
 index.title = Pension Scheme Registrations
 index.heading = Pension Scheme Registrations
@@ -159,8 +159,8 @@ common.error.paye.invalid = Enter a valid PAYE number
 common.error.paye.required = Enter the PAYE employer reference number
 common.utr.text = Unique Taxpayer Reference number
 common.utr.hint = A Unique Taxpayer Reference number is 10 numbers. You will find it on any letters you have from HMRC.
-common.error.utr.required = Enter a Unique Taxpayer Reference (UTR)
-common.error.utr.invalid = Unique Taxpayer Reference (UTR) must be 10 numbers
+common.error.utr.required = Enter a UTR
+common.error.utr.invalid = Enter a UTR in the correct format
 common.error.utr.reason.length = The reason cannot be more than 160 characters
 common.error.utr.length = The utr cannot be more than 10 characters
 common.error.utr.exactLength = Unique Taxpayer Reference (UTR) must be 10 numbers
@@ -234,9 +234,9 @@ businessDetails.error.companyName.length = The name cannot be more than 105 char
 
 companyRegistrationNumber.heading = What is {0}’s company number?
 companyRegistrationNumber.visuallyHidden.text = {0}’s company number
-companyRegistrationNumber.error.required = Enter the Company Registration number
+companyRegistrationNumber.error.required = Select yes if the company has a company number
 companyRegistrationNumber.hint = For example, 01234567 or AB123456
-companyRegistrationNumber.error.invalid = Enter a company registration number using only 8 characters
+companyRegistrationNumber.error.invalid = Enter a company number in the correct format
 
 companyUniqueTaxReference.checkYourAnswersLabel = UTR
 common.vatRegistrationNumber.checkYourAnswersLabel = VAT registration number
@@ -273,7 +273,7 @@ companyAddressList.checkYourAnswersLabel = companyAddressList
 addCompanyDirectors.title = Company directors
 addCompanyDirectors.heading = Company directors
 addCompanyDirectors.checkYourAnswersLabel = Company directors
-addCompanyDirectors.error.required = You must make a selection
+addCompanyDirectors.error.required = Select yes if you want to add another director
 addCompanyDirectors.addYesNo = Do you want to add another director?
 addCompanyDirectors.addADirector = Add a director
 addCompanyDirectors.addADirector.hint = You must add all your directors. You can add up to 10 using the digital service.
@@ -321,12 +321,12 @@ personDetails.middleName = Middle name
 personDetails.lastName = Last name
 personName.error.firstName.required = Enter the first name
 personName.error.firstName.length = The first name cannot be more than 35 characters
-personName.error.firstName.invalid = The first name must start with an alphabetic character
+personName.error.firstName.invalid = The first name must only include letters, spaces, ampersands, dashes, grave accents, apostrophes, carets and full stops
 personDetails.error.middleName.length = The middle name cannot be more than 35 characters
 personDetails.error.middleName.invalid = The middle name must start with an alphabetic character
 personName.error.lastName.required = Enter the last name
 personName.error.lastName.length = The last name cannot be more than 35 characters
-personName.error.lastName.invalid = The last name must start with an alphabetic character
+personName.error.lastName.invalid = The last name must only include letters, spaces, ampersands, dashes, grave accents, apostrophes, carets and full stops
 
 directorNino.title = Does the director have a National Insurance number?
 directorNino.heading = Does the director have a National Insurance number?
@@ -399,7 +399,7 @@ hasUTR.error.required = Select yes if {0} has a Unique Taxpayer Reference (UTR)
 hasUTR.visuallyHidden.text = whether {0} has a Unique Taxpayer Reference (UTR)
 
 enterUTR.heading = What is {0}’s UTR?
-enterUTR.error.invalid = {0}’s Unique Taxpayer Reference (UTR) must be 10 numbers
+enterUTR.error.invalid = Enter {0}’s UTR in the correct format
 enterUTR.visuallyHidden.text = {0}’s Unique Taxpayer Reference (UTR)
 
 whyNoUTR.heading = Why does {0} not have a UTR?
@@ -462,7 +462,7 @@ directorCheckYourAnswers.contactDetails.heading = Contact details for director
 confirmCompanyAddress.title = Is this the registered address for the company?
 confirmRegisteredAddress.heading = Is this the registered address for {0}?
 confirmRegisteredAddress.title = Is this the registered address for the business?
-confirmRegisteredAddress.error.required = Select yes if these details are correct
+confirmRegisteredAddress.error.required = Select yes if this is the registered address
 
 whatYouWillNeed.title = What you will need
 whatYouWillNeed.heading = What you will need
@@ -484,7 +484,7 @@ whatYouWillNeed.main.body.hint = The information you enter will be saved as you 
 individualDetailsCorrect.title = Is this your name and address?
 individualDetailsCorrect.heading = Is this your name and address?
 individualDetailsCorrect.checkYourAnswersLabel = Are your details correct?
-individualDetailsCorrect.error.required = You must make a selection
+individualDetailsCorrect.error.required = Select yes if this is your name and address
 individualDetailsCorrect.name = Name
 individualDetailsCorrect.address = Address
 
@@ -530,7 +530,7 @@ nonUKBusinessType.businessPartnership = Partnership
 
 companyAddress.title = Company address
 companyAddress.heading = Company address
-companyAddress.error.required = You must make a selection
+companyAddress.error.required = Select yes if this is the registered address
 companyAddress.checkYourAnswersLabel = Address
 
 companyUpdateDetails.title = You need to update the company՚s details before registering
@@ -555,7 +555,7 @@ declarationWorkingKnowledge.heading = Do you have working knowledge of pensions 
 declarationWorkingKnowledge.workingKnowledge = I declare that I have a working knowledge of pension scheme administrator duties and liabilities.
 declarationWorkingKnowledge.adviser = I declare that I don’t have a working knowledge of pension scheme administrator duties and liabilities. I have appointed an adviser who does have that knowledge.
 declarationWorkingKnowledge.checkYourAnswersLabel = Do you have a working knowledge of pension scheme administrator duties?
-declarationWorkingKnowledge.error.required = You need to tell us if you have a working knowledge of pensions
+declarationWorkingKnowledge.error.required = Select yes if you have working knowledge of pensions and pensions tax legislation
 declarationWorkingKnowledge.p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with this pension scheme. This could be either you as scheme administrator or a pension practitioner or provider who is helping you.
 declarationWorkingKnowledge.p2 = For example, if you are an employer, or a director of an employer, who has registered a pension scheme, you might not have working knowledge of pensions and pensions tax legislation.
 declarationWorkingKnowledge.p3 = If you do not have that knowledge, you must be helped by a pension practitioner or provider who has the knowledge. You will need to tell HMRC who that is.
@@ -576,10 +576,11 @@ declaration.invalid = You need to agree to all the declarations before you can c
 
 adviserName.title = Who has working knowledge of pensions and pensions tax legislation?
 adviserName.heading = Who has working knowledge of pensions and pensions tax legislation?
-adviserName.p1 = This can be either the name of your pension advisor, or the company they work for.
-adviserName.error.required = Enter the name of your pension adviser
-adviserName.error.length = Enter a name using less than 108 characters
-adviserName.error.invalid = Enter a name using only letters
+adviserName.label = Name
+adviserName.p1 = This can be either the name of your pension adviser, or the company they work for.
+adviserName.error.required = Enter who has working knowledge of pensions and pensions tax legislation
+adviserName.error.length = Name must be 107 characters or fewer
+adviserName.error.invalid = Name must only include letters, spaces, ampersands, question marks, asterisks, round brackets, underscores, dashes, apostrophes and single quotation marks
 adviserName.checkYourAnswersLabel = Name
 adviserName.visuallyHidden.text = the name of the person or business that has working knowledge of pensions and pensions tax legislation
 
@@ -638,7 +639,7 @@ exitToGovUK = Exit to Gov.UK
 
 individual.same.contact.address.title = Can HMRC use this address to contact you?
 individual.same.contact.address.heading = Can HMRC use this address to contact you?
-individual.same.contact.address.error = Select yes if these details are correct
+same.contact.address.error = Select yes if HMRC can use this address to contact {0}
 
 company.same.contact.address.title = Can HMRC use this address to contact the company?
 company.same.contact.address.heading = Can HMRC use this address to contact {0}?
@@ -754,7 +755,7 @@ partnerUniqueTaxReference.error.reason.required = You need to tell us why the pa
 partnerUniqueTaxReference.checkYourAnswersLabel = Does the partner have a Self Assessment Unique Taxpayer Reference number?
 partnerUniqueTaxReference.checkYourAnswersLabel.reason = Why the partner does not have a UTR
 
-addEntity.error.required = You must make a selection
+addEntity.error.required = Select yes if you want to add another partner
 addEntity.addYesNo = Do you want to add another {0}?
 addEntity.addAnEntity = Add a {0}
 addEntity.addAnEntity.hint = You must add all your {0}. You can add up to 10 using the digital service.
@@ -779,7 +780,6 @@ confirmDelete.partner.body = confirmDeletePartner
 
 partnerPreviousAddress.checkYourAnswersLabel = Previous Address
 
-addEntity.error.required = You must make a selection
 addEntity.addYesNo = Do you want to add another {0}?
 addEntity.addAnEntity = Add a {0}
 addEntity.addAnEntity.hint = You must add all your {0}. You can add up to 10 using the digital service.
@@ -813,7 +813,6 @@ partnerPreviousAddressPostCodeLookup.input.text = Postcode
 partnerPreviousAddressPostCodeLookup.checkYourAnswersLabel = Partner’s previous address post code
 partnerPreviousAddressPostCodeLookup.submit.button = Find address
 
-addEntity.error.required = You must make a selection
 addEntity.addYesNo = Do you want to add another {0}?
 addEntity.addAnEntity = Add a {0}
 addEntity.addAnEntity.hint = You must add all your {0}. You can add up to 10 using the digital service.
@@ -886,8 +885,9 @@ adviser-delete-link-additionalText = If you delete {0}, you will need to give th
 director.supersection.header = Director details
 partner.supersection.header = Partner details
 
-areYouInUK.title = Is the company registered in the UK?
-areYouInUK.heading = Is the company registered in the UK?
+areYouInUK.title = Is the company or partnership registered in the UK?
+areYouInUK.heading = Is the company or partnership registered in the UK?
+business.areYouInUK.error.required = Select yes if the company or partnership is registered in the UK
 areYouInUK.check.selectedUkAddress = You selected that you are not based in the UK but have given a UK address.
 areYouInUK.check.provideNonUkAddress = If you are not based in the UK, you need to give an address that is not in the UK.
 
@@ -896,6 +896,7 @@ companyNameNonUk.heading = What is the company’s name?
 
 areYouInUKIndividual.title = Are you a UK resident?
 areYouInUKIndividual.heading = Are you a UK resident?
+areYouInUKIndividual.error.required = Select yes if you are a UK resident
 areYouInUKIndividual.check.selectedUkAddress = You selected that you are not based in the UK but have given a UK address.
 areYouInUKIndividual.check.provideNonUkAddress = If you are not based in the UK, you need to give an address that is not in the UK.
 
@@ -910,16 +911,16 @@ outsideEuEea.body = Only {0} registered inside the European Union and European E
 
 registerAsBusiness.title = What do you want to register as the scheme administrator?
 registerAsBusiness.heading = What do you want to register as the scheme administrator?
-registerAsBusiness.error.required = You must make a selection
+registerAsBusiness.error.required = Select what you want to register as the scheme administrator
 registerAsBusiness.no.label = Yourself as an individual
 registerAsBusiness.yes.label = Company or partnership
 individualName.title = What is your name?
 individualName.error.firstName.required = Enter the first name
 individualName.error.firstName.length = The first name cannot be more than 35 characters
-individualName.error.firstName.invalid = The first name must start with an alphabetic character
+individualName.error.firstName.invalid = The first name must only include letters, spaces, ampersands, dashes, grave accents, apostrophes, carets and full stops
 individualName.error.lastName.required = Enter the last name
 individualName.error.lastName.length = The last name cannot be more than 35 characters
-individualName.error.lastName.invalid = The last name must start with an alphabetic character
+individualName.error.lastName.invalid = The last name must only include letters, spaces, ampersands, dashes, grave accents, apostrophes, carets and full stops
 
 individualRegisteredNonUKAddress.title = What is your address?
 individualRegisteredNonUKAddress.heading = What is your address?
@@ -1036,7 +1037,7 @@ businessName.title = What is the name of the {0} you want to register?
 businessName.heading = What is the name of the {0} you want to register?
 businessName.p1 = This is the name registered with Companies House.
 businessName.error.required = Enter a company name
-businessName.error.invalid = Company name must only include letters, numbers and the characters ’, &, \ and /
+businessName.error.invalid = Company name must only include letters, numbers, dashes, spaces, apostrophes, ampersands and slashes
 businessName.error.length = Company name must be 105 characters or fewer
 
 partnershipName.error.required = Enter a partnership name
@@ -1075,4 +1076,10 @@ previousAddress.company.title = The company’s previous contact address
 previousAddress.heading = {0}’s previous contact address
 previousAddress.lede = You can change any part of the address if you need to.
 
-adviserAddressList.heading = What is the address for {0}?
+individual.select.address.error.required = Select your address
+individual.select.previous.address.error.required = Select your previous address
+select.address.error.required = Select {0}’s contact address
+select.previous.address.error.required = Select {0}’s previous contact address
+
+adviserAddressList.heading = What is {0}’s address?
+adviserAddressList.error.required = Select {0}’s address

@@ -24,14 +24,14 @@ class AddressListFormProviderSpec extends FormBehaviours {
     "value" -> "0"
   )
 
-  val form = new AddressListFormProvider()(Seq(0, 1))
+  val form = new AddressListFormProvider()(Seq(0, 1), "error.required")
 
   "AddressList form" must {
 
     behave like questionForm[Int](0)
 
     "fail to bind when value is omitted" in {
-      val expectedError = error("value", "common.previousAddressList.error.required")
+      val expectedError = error("value", "error.required")
       checkForError(form, emptyForm, expectedError)
     }
 

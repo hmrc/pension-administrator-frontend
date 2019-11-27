@@ -175,7 +175,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
     }
 
     "return an OK with a form error when post code lookup returns zero results" in {
-      val boundForm = form.withError(FormError("value", "error.postcode.noResults"))
+      val boundForm = form.withError(FormError("value", Message("error.postcode.noResults", testAnswer)))
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
       when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
