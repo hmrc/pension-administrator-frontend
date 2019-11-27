@@ -122,7 +122,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val confirmDeleteView = app.injector.instanceOf[confirmDelete]
 
-  private def viewAsString() = confirmDeleteView(formProvider(), viewModel, NormalMode)(fakeRequest, messages).toString
+  private def viewAsString() = confirmDeleteView(formProvider(), viewModel, NormalMode)(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   private def controllerWithPost(descr: String, request: DataRequest[AnyContent], requestNoValue: DataRequest[AnyContent], id: TypedIdentifier[PersonName]): Unit = {
     s"redirect to already deleted view for a GET if the $descr was already deleted" in {

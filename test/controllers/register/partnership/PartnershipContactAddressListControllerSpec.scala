@@ -29,6 +29,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
@@ -36,6 +37,7 @@ import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with MustMatchers {
 
@@ -44,16 +46,16 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
   "PartnershipAddressListController" must {
 
     "render the view correctly on a GET request" in {
-      val request = FakeRequest(routes.PartnershipContactAddressListController.onPageLoad(NormalMode))
+      val request = addCSRFToken(FakeRequest(GET, routes.PartnershipContactAddressListController.onPageLoad(NormalMode).url))
       val result = route(application, request).value
           status(result) mustBe OK
-          contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString()
+          contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(request)).toString()
 
     }
 
     "redirect to the next page on a POST request" in {
-      val request = FakeRequest(routes.PartnershipContactAddressListController.onSubmit(NormalMode))
-          .withFormUrlEncodedBody("value" -> "0")
+      val request = addCSRFToken(FakeRequest(POST, routes.PartnershipContactAddressListController.onSubmit(NormalMode).url)
+          .withFormUrlEncodedBody("value" -> "0"))
       val result = route(application, request).value
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
@@ -65,7 +67,7 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
 
 object PartnershipContactAddressListControllerSpec extends SpecBase {
 
-  val view: addressList = app.injector.instanceOf[addressList]
+  val view: addressList = inject[addressList]
 
   val testName = "Test Partnership Name"
 
@@ -94,7 +96,7 @@ object PartnershipContactAddressListControllerSpec extends SpecBase {
     routes.PartnershipContactAddressListController.onSubmit(NormalMode),
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
     addresses,
-    Message("contactAddressList.heading", Message("thePartnership").resolve),
+    Message("contactAddressList.heading", Message("thePartnership")),
     Message("contactAddressList.heading", testName)
   )
 

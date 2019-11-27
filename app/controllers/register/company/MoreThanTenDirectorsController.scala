@@ -48,7 +48,7 @@ class MoreThanTenDirectorsController @Inject()(val appConfig: FrontendAppConfig,
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): MoreThanTenViewModel =
     MoreThanTenViewModel(
       title = "moreThanTenDirectors.title",
-      heading = Message("moreThanTenDirectors.heading"),
+      heading = "moreThanTenDirectors.heading",
       hint = "moreThanTenDirectors.hint",
       postCall = routes.MoreThanTenDirectorsController.onSubmit(mode),
       id = MoreThanTenDirectorsId,

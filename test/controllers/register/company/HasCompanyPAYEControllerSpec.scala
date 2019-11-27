@@ -44,7 +44,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
   private def viewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.HasCompanyPAYEController.onSubmit(NormalMode),
-      title = Message("hasPAYE.heading", Message("theCompany").resolve),
+      title = Message("hasPAYE.heading", Message("theCompany")),
       heading = Message("hasPAYE.heading", companyName),
       mode = NormalMode,
       hint = Some(Message("hasPAYE.hint")),
@@ -52,7 +52,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
-    view(form, viewModel)(fakeRequest, messages).toString
+    view(form, viewModel)(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   "HasCompanyPAYEController Controller" when {
     "on a GET" must {

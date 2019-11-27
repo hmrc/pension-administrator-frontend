@@ -38,12 +38,12 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
   val formProvider = new MoreThanTenFormProvider()
   val form: Form[Boolean] = formProvider()
 
-  val view: moreThanTen = app.injector.instanceOf[moreThanTen]
+  val view: moreThanTen = inject[moreThanTen]
 
   def viewModel =
     MoreThanTenViewModel(
       title = "moreThanTenDirectors.title",
-      heading = Message("moreThanTenDirectors.heading"),
+      heading = "moreThanTenDirectors.heading",
       hint = "moreThanTenDirectors.hint",
       postCall = controllers.register.company.routes.MoreThanTenDirectorsController.onSubmit(NormalMode),
       id = MoreThanTenDirectorsId,
@@ -63,7 +63,8 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[_] = form): String = view(form, viewModel, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String =
+    view(form, viewModel, NormalMode)(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   "MoreThanTenDirectors Controller" must {
 

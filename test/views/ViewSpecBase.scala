@@ -149,6 +149,7 @@ trait ViewSpecBase extends SpecBase {
     view =>
       val link = Jsoup.parse(view().toString()).select(s"a[id=$linkId]")
       val href = link.attr("href")
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + Jsoup.parse(view().toString()))
       MatchResult(
         href == url,
         s"link $linkId href $href is not equal to the url $url",

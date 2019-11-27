@@ -96,7 +96,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
     view(form,
       viewModel,
       NormalMode
-    )(fakeRequest, messages).toString
+    )(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   "PartnerPreviousAddressList Controller" must {
 

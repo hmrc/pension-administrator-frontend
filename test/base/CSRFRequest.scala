@@ -27,6 +27,8 @@ package base
 //    val csrfFilter = app.injector.instanceOf[CSRFFilter]
 //    val token = csrfFilter.tokenProvider.generateToken
 //
+//    fakeRequest.with
+//
 //    fakeRequest.copyFakeRequest(tags = fakeRequest.tags ++ Map(
 //      Token.NameRequestTag -> csrfConfig.tokenName,
 //      Token.RequestTag -> token

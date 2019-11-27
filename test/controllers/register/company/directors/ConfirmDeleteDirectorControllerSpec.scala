@@ -31,16 +31,17 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
 
   import ConfirmDeleteDirectorControllerSpec._
 
   "render the view correctly on a GET request" in {
-    val request = FakeRequest(routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, firstIndex))
+    val request = addCSRFToken(FakeRequest(routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, firstIndex)))
     val result = route(application, request).value
         status(result) mustBe OK
-        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString()
+        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
   }
 
   "redirect to the next page on a POST request" in {

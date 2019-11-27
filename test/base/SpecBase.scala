@@ -16,6 +16,7 @@
 
 package base
 
+import akka.stream.Materializer
 import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
@@ -41,7 +42,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with Bef
         bind[FrontendAppConfig].toInstance(frontendAppConfig),
         bind[DataRetrievalAction].toInstance(data),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[MessagesControllerComponents].to(stubMessagesControllerComponents())
+        bind[MessagesControllerComponents].to(messagesControllerComponents)
       )
 
   def messagesControllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
@@ -49,6 +50,8 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with Bef
   def injector: Injector = app.injector
 
   def frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
+
+  //implicit val materializer: Materializer = inject[Materializer]
 
   def environment: Environment = inject[Environment]
 

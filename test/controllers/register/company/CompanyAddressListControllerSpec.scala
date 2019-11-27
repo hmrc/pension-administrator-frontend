@@ -45,7 +45,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     address("test post code 2")
   )
 
-  val view: addressList = app.injector.instanceOf[addressList]
+  val view: addressList = inject[addressList]
 
   private val addressObject = Json.obj(CompanyPreviousAddressPostCodeLookupId.toString -> addresses)
 
@@ -77,7 +77,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     postCall = routes.CompanyAddressListController.onSubmit(NormalMode),
     manualInputCall = routes.CompanyPreviousAddressController.onPageLoad(NormalMode),
     addresses = addresses,
-    Message("previousAddressList.heading", Message("theCompany").resolve),
+    Message("previousAddressList.heading", Message("theCompany")),
     Message("previousAddressList.heading", companyName),
     Message("common.selectAddress.text"),
     Message("common.selectAddress.link")
@@ -88,7 +88,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
       form,
       viewModel,
       NormalMode
-    )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
+    )(fakeRequest, messages).toString()
 
   "CompanyAddressList Controller" must {
 

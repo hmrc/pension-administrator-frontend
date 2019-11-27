@@ -48,7 +48,7 @@ object PensionSchemePractitionerViewSpec extends ViewSpecBase {
 
   val messageKeyPrefix: String = "pensionSchemePractitioner"
 
-  val view: pensionSchemePractitioner = app.injector.instanceOf[pensionSchemePractitioner]
+  val view: pensionSchemePractitioner = inject[pensionSchemePractitioner]
 
   def createView(): () => HtmlFormat.Appendable =
     () => view()(fakeRequest, messages)

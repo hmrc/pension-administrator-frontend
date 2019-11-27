@@ -46,7 +46,7 @@ class MoreThanTenPartnersController @Inject()(val appConfig: FrontendAppConfig,
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): MoreThanTenViewModel =
     MoreThanTenViewModel(
       title = "moreThanTenPartners.title",
-      heading = Message("moreThanTenPartners.heading"),
+      heading = "moreThanTenPartners.heading",
       hint = "moreThanTenPartners.hint",
       postCall = routes.MoreThanTenPartnersController.onSubmit(mode),
       id = MoreThanTenPartnersId,

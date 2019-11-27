@@ -16,6 +16,7 @@
 
 package controllers.register.partnership
 
+import akka.stream.Materializer
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -154,6 +155,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
         val request = FakeRequest(routes.PartnershipPreviousAddressListController.onSubmit(NormalMode))
               .withFormUrlEncodedBody(("value", "0"))
 
+        implicit val mat: Materializer = app.materializer
 
         val result = route(app, request).value
 

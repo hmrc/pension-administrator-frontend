@@ -62,7 +62,7 @@ class EmailAddressControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formProvider(), viewmodel)(FakeRequest(), messages).toString
+          contentAsString(result) mustEqual view(formProvider(), viewmodel)(FakeRequest(), messagesApi.preferred(FakeRequest())).toString
       }
     }
 
@@ -79,7 +79,7 @@ class EmailAddressControllerSpec extends SpecBase {
           contentAsString(result) mustEqual view(
             formProvider().fill("test@test.com"),
             viewmodel
-          )(FakeRequest(), messages).toString
+          )(FakeRequest(), messagesApi.preferred(FakeRequest())).toString
       }
     }
   }
@@ -116,7 +116,7 @@ class EmailAddressControllerSpec extends SpecBase {
           contentAsString(result) mustEqual view(
             formProvider().bind(Map.empty[String, String]),
             viewmodel
-          )(FakeRequest(), messages).toString
+          )(FakeRequest(), messagesApi.preferred(FakeRequest())).toString
       }
     }
   }
@@ -127,7 +127,7 @@ object EmailAddressControllerSpec extends ControllerSpecBase {
   object FakeIdentifier extends TypedIdentifier[String]
   val companyName = "test company name"
 
-  val view: email = app.injector.instanceOf[email]
+  val view: email = inject[email]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,

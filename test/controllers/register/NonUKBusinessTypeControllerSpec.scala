@@ -55,7 +55,7 @@ class NonUKBusinessTypeControllerSpec extends ControllerSpecBase {
       view
     )
 
-  private def viewAsString(form: Form[_] = form) = view(form)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form) = view(form)(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   "NonUKBusinessType Controller" must {
 

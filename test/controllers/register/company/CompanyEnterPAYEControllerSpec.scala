@@ -47,7 +47,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyEnterPAYEController.onSubmit(NormalMode),
-      title = Message("enterPAYE.heading", Message("theCompany").resolve),
+      title = Message("enterPAYE.heading", Message("theCompany")),
       heading = Message("enterPAYE.heading", companyName),
       hint = Some(Message("enterPAYE.hint")),
       mode = NormalMode,
@@ -59,7 +59,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
   private def viewAsString(form: Form[_] = form): String = view(
     form,
     viewModel
-  )(fakeRequest, messages).toString
+  )(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   "CompanyRegistrationNumber Controller" when {
 
