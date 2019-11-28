@@ -25,6 +25,7 @@ import models.{AddressYears, NormalMode}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
@@ -32,16 +33,17 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
 
   import PartnershipAddressYearsControllerSpec._
 
   "render the view correctly on a GET request" in {
-    val request = FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode))
+    val request = addCSRFToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode)))
     val result = route(application, request).value
         status(result) mustBe OK
-        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
+        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString
   }
 
   "redirect to the next page on a POST request" in {
@@ -63,7 +65,7 @@ object PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
 
   val viewModel = AddressYearsViewModel(
     PartnershipAddressYearsController.onSubmit(NormalMode),
-    Message("addressYears.heading", Message("thePartnership").resolve),
+    Message("addressYears.heading", Message("thePartnership")),
     Message("addressYears.heading").withArgs(partnershipName),
     Message("addressYears.heading").withArgs(partnershipName)
   )

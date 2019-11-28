@@ -25,6 +25,7 @@ import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,10 +42,10 @@ class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSp
   "IndividualPreviousAddressPostCodeLookupController" must {
 
     "render the view correctly on a GET request" in {
-      val request = FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
+      val request = addCSRFToken(FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)))
       val result = route(application, request).value
       status(result) mustBe OK
-      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messages).toString()
+      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
     }
 
     "redirect to the next page on a POST request" in {

@@ -28,6 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Call
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
@@ -65,10 +66,10 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
   "render the view correctly on a GET request" in {
-    val request = FakeRequest(routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+    val request = addCSRFToken(FakeRequest(routes.CompanySameContactAddressController.onPageLoad(NormalMode)))
     val result = route(application, request).value
         status(result) mustBe OK
-        contentAsString(result) mustBe view(formProvider(), viewModel, countryOptions)(request, messages).toString()
+        contentAsString(result) mustBe view(formProvider(), viewModel, countryOptions)(request, messagesApi.preferred(fakeRequest)).toString()
 
   }
 

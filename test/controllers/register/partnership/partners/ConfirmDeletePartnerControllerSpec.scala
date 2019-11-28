@@ -27,6 +27,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.Call
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
@@ -40,7 +41,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
 
   "render the view correctly on a GET request" in {
 
-    val request = FakeRequest(GET, routes.ConfirmDeletePartnerController.onPageLoad(firstIndex, NormalMode).url)
+    val request = addCSRFToken(FakeRequest(GET, routes.ConfirmDeletePartnerController.onPageLoad(firstIndex, NormalMode).url))
 
     val result = route(application, request).value
 

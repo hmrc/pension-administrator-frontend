@@ -94,7 +94,7 @@ object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
     )
 
   private def viewAsString() =
-    view(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages).toString
+    view(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messagesApi.preferred(fakeRequest)).toString
 
 
 }

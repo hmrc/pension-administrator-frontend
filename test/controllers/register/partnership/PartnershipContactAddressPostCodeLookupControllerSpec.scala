@@ -37,16 +37,17 @@ import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   import PartnershipContactAddressPostCodeLookupControllerSpec._
 
   "render the view correctly on a GET request" in {
-    val request = FakeRequest(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(NormalMode))
+    val request = addCSRFToken(FakeRequest(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(NormalMode)))
     val result = route(application, request).value
     status(result) mustBe OK
-    contentAsString(result) mustBe view(formProvider(), viewModel, NormalMode)(request, messages).toString()
+    contentAsString(result) mustBe view(formProvider(), viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
 
   }
 

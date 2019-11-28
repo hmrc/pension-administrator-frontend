@@ -28,6 +28,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc.MessagesControllerComponents
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -45,7 +46,7 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
   import CompanyContactAddressPostCodeLookupControllerSpec._
 
   "render the view correctly on a GET request" in {
-    val request = FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode))
+    val request = addCSRFToken(FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode)))
     val result = route(application, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view(formProvider(), viewModel, NormalMode)(request, messages).toString()

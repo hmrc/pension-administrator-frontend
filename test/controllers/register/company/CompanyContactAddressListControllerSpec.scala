@@ -23,6 +23,7 @@ import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsFormUrlEncoded, Call}
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
@@ -32,15 +33,10 @@ import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
 class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
-  val onwardRoute: Call = routes.CompanyContactAddressController.onPageLoad(NormalMode)
-//implicit val materializer: Materializer = app.materializer
+  def onwardRoute: Call = routes.CompanyContactAddressController.onPageLoad(NormalMode)
+
   def application(data: DataRetrievalAction): Application =
-    applicationBuilder(data)
-//      .overrides(
-//        bind[AuthAction].to(FakeAuthAction),
-//        bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
-//      )
-      .build()
+    applicationBuilder(data).build()
 
   lazy val view: addressList = inject[addressList]
 
@@ -71,7 +67,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
       routes.CompanyContactAddressListController.onSubmit(NormalMode),
       routes.CompanyContactAddressController.onPageLoad(NormalMode),
       addresses,
-      Message("contactAddressList.heading").withArgs(Message("theCompany").resolve),
+      Message("contactAddressList.heading").withArgs(Message("theCompany")),
       Message("contactAddressList.heading").withArgs("test company"),
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
@@ -81,14 +77,14 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
   "company Contact Address List Controller" must {
 
     "return Ok and the correct view on a GET request" in {
-      val request = FakeRequest(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
-        .withFormUrlEncodedBody("value" -> "0")
+      val request = addCSRFToken(FakeRequest(routes.CompanyContactAddressListController.onPageLoad(NormalMode))
+        .withFormUrlEncodedBody("value" -> "0"))
       val result = route[AnyContentAsFormUrlEncoded](application(dataRetrievalAction), request).value
       status(result) mustBe OK
       val viewModel: AddressListViewModel = addressListViewModel(addresses)
       val form = new AddressListFormProvider()(viewModel.addresses)
 
-      contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
+      contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString
     }
 
     "redirect to Company Address Post Code Lookup if no address data on a GET request" in {

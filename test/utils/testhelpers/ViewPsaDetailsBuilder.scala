@@ -25,7 +25,7 @@ import viewmodels.{AnswerRow, AnswerSection, SuperSection, _}
 object ViewPsaDetailsBuilder extends SpecBase {
 
   val pensionAdviserSeqAnswers = Seq(
-    AnswerRow("variationWorkingKnowledge.heading", Seq("No"), false,
+    AnswerRow("variationWorkingKnowledge.heading", Seq("site.no"), true,
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url))),
     AnswerRow("adviserName.heading", Seq("Pension Adviser"), false,
       None),
@@ -37,7 +37,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(UpdateMode).url))))
 
   val pensionAdviserSeqAnswersIncomplete = Seq(
-    AnswerRow("variationWorkingKnowledge.heading", Seq("No"), false,
+    AnswerRow("variationWorkingKnowledge.heading", Seq("site.no"), true,
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url))),
     AnswerRow("adviserName.heading", Seq("site.not_entered"),answerIsMessageKey = true,
       Some(Link(controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode).url, "site.add"))),

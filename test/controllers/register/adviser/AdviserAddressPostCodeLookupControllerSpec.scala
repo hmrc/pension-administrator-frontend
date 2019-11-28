@@ -18,7 +18,6 @@ package controllers.register.adviser
 
 import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import models.{Mode, NormalMode, TolerantAddress}
 import org.mockito.Matchers.any
@@ -26,13 +25,14 @@ import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import utils.annotations.Adviser
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
-import play.api.test.CSRFTokenHelper.addCSRFToken
 
 import scala.concurrent.Future
 
@@ -56,8 +56,6 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
 
     "render the view correctly on a GET request" in {
 
-      val app = application
-
       val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
 
       val request = addCSRFToken(FakeRequest(GET, routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url))
@@ -66,15 +64,13 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
 
       status(result) mustBe OK
 
-      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(fakeRequest, messages).toString()
+      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messagesApi.preferred(request)).toString()
 
 
     }
 
     "redirect to the next page on a POST request" in {
       when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())) thenReturn Future.successful(Seq(address))
-
-      val app = application
 
       val request = FakeRequest(POST, routes.AdviserAddressPostCodeLookupController.onSubmit(NormalMode).url)
         .withFormUrlEncodedBody("value" -> "ZZ1 1ZZ")
@@ -100,10 +96,9 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
     psaName = None
   )
 
-  def application: Application =
+  override lazy val app: Application =
     applicationBuilder(getAdviser).overrides(
-      bind[AuthAction].toInstance(FakeAuthAction),
       bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
-      bind[Navigator].toInstance(new FakeNavigator(onwardRoute))
+      bind[Navigator].qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(onwardRoute))
     ).build()
 }

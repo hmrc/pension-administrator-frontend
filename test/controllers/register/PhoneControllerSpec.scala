@@ -62,7 +62,7 @@ class PhoneControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewmodel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formProvider(), viewmodel)(FakeRequest(), messages).toString
+          contentAsString(result) mustEqual view(formProvider(), viewmodel)(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
 
@@ -79,7 +79,7 @@ class PhoneControllerSpec extends SpecBase {
           contentAsString(result) mustEqual view(
             formProvider().fill("1234"),
             viewmodel
-          )(FakeRequest(), messages).toString
+          )(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
   }
@@ -116,7 +116,7 @@ class PhoneControllerSpec extends SpecBase {
           contentAsString(result) mustEqual view(
             formProvider().bind(Map.empty[String, String]),
             viewmodel
-          )(FakeRequest(), messages).toString
+          )(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
   }

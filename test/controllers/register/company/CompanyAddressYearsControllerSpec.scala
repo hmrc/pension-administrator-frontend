@@ -27,6 +27,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.MessagesControllerComponents
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -41,7 +42,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
   import CompanyAddressYearsControllerSpec._
 
   "render the view correctly on a GET request" in {
-    val request = FakeRequest(CompanyAddressYearsController.onPageLoad(NormalMode))
+    val request = addCSRFToken(FakeRequest(CompanyAddressYearsController.onPageLoad(NormalMode)))
     val result = route(application, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString

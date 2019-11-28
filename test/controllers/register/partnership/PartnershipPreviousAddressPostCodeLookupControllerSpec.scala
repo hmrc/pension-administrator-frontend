@@ -37,6 +37,7 @@ import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
@@ -48,10 +49,10 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   "PartnershipPreviousAddressPostCodeLookupController" must {
 
     "render the view correctly on a GET request" in {
-      val request = FakeRequest(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))
+      val request = addCSRFToken(FakeRequest(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)))
       val result = route(application, request).value
           status(result) mustBe OK
-          contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode).toString()
+          contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
 
     }
 
@@ -110,7 +111,7 @@ object PartnershipPreviousAddressPostCodeLookupControllerSpec extends Controller
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
     routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
-    Message("previousAddressPostCode.heading", Message("thePartnership").resolve),
+    Message("previousAddressPostCode.heading", Message("thePartnership")),
     Message("previousAddressPostCode.heading", "Test Partnership Name"),
     Message("common.previousAddress.enterPostcode"),
     Some(Message("common.previousAddress.enterPostcode.link")),

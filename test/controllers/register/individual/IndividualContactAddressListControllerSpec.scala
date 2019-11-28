@@ -157,7 +157,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Company Address Post Code Lookup if no address data on a POST request" in {
-      val app = application(dontGetAnyData)
+      val app = application(getEmptyData)
 
       val request = FakeRequest(POST, routes.IndividualContactAddressListController.onSubmit(NormalMode).url)
         .withFormUrlEncodedBody(("value", "0"))

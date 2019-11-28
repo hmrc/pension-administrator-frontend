@@ -103,7 +103,7 @@ object DOBControllerSpec extends ControllerSpecBase {
   def viewAsString(base: ControllerSpecBase, form: Form[_] = form): String = dobView(
     form,
     viewModel
-  )(base.fakeRequest, base.messages).toString
+  )(base.fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   val form = new DOBFormProvider()()
   val date: LocalDate = LocalDate.now
