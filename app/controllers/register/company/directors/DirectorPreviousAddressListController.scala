@@ -22,9 +22,11 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
+import forms.address.AddressListFormProvider
 import identifiers.register.company.directors._
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{Index, Mode, TolerantAddress}
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -41,36 +43,43 @@ class DirectorPreviousAddressListController @Inject()(override val appConfig: Fr
                                                       authenticate: AuthAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
+                                                      formProvider: AddressListFormProvider,
                                                       val controllerComponents: MessagesControllerComponents,
                                                       val view: addressList
-                                                     )(implicit val executionContext: ExecutionContext)  extends AddressListController with Retrievals {
+                                                     )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
+
+  def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
+    formProvider(addresses, Message("select.previous.address.error.required").withArgs(name))
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map{ vm =>
-        get(vm, mode)
+      viewModel(mode, index).right.map { vm =>
+        get(vm, mode, form(vm.addresses, entityName(index)))
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(vm => post(vm, DirectorPreviousAddressListId(index), DirectorPreviousAddressId(index), mode))
+      viewModel(mode, index).right.map(vm => post(vm, DirectorPreviousAddressListId(index), DirectorPreviousAddressId(index),
+        mode, form(vm.addresses, entityName(index))))
   }
 
   private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    (DirectorNameId(index) and DirectorPreviousAddressPostCodeLookupId(index)).retrieve.right.map {
-      case directorName ~ addresses =>
-            AddressListViewModel(
-              postCall = routes.DirectorPreviousAddressListController.onSubmit(mode, index),
-              manualInputCall = routes.DirectorPreviousAddressController.onPageLoad(mode, index),
-              addresses = addresses,
-              Message("previousAddressList.heading", Message("theDirector").resolve),
-              Message("previousAddressList.heading", directorName.fullName),
-              Message("common.selectAddress.text"),
-              Message("common.selectAddress.link"),
-              psaName()
-            )
+    DirectorPreviousAddressPostCodeLookupId(index).retrieve.right.map { addresses =>
+      AddressListViewModel(
+        postCall = routes.DirectorPreviousAddressListController.onSubmit(mode, index),
+        manualInputCall = routes.DirectorPreviousAddressController.onPageLoad(mode, index),
+        addresses = addresses,
+        Message("previousAddressList.heading", Message("theDirector").resolve),
+        Message("previousAddressList.heading", entityName(index)),
+        Message("common.selectAddress.text"),
+        Message("common.selectAddress.link"),
+        psaName()
+      )
     }.left.map(_ => Future.successful(Redirect(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode, index))))
   }
+
+  private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
 }

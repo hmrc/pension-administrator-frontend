@@ -37,7 +37,7 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new AddressListFormProvider()
-  val form: Form[Int] = formProvider(Seq.empty)
+  val form: Form[Int] = formProvider(Seq.empty, "error.required")
 
   val director = PersonName("firstName", "lastName")
   val view: addressList = app.injector.instanceOf[addressList]
@@ -76,6 +76,7 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
+      formProvider,
       stubMessagesControllerComponents(),
       view
     )

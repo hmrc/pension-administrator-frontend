@@ -23,8 +23,8 @@ import play.api.data.Form
 
 class AreYouInUKFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(requiredError: String = "common.radio.error.required"): Form[Boolean] =
     Form(
-      "value" -> boolean("common.radio.error.required")
+      "value" -> boolean(requiredKey = requiredError)
     )
 }

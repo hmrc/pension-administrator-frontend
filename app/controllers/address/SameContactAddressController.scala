@@ -42,15 +42,14 @@ trait SameContactAddressController extends FrontendBaseController with Retrieval
 
   protected def navigator: Navigator
 
-  protected val form: Form[Boolean]
-
   protected def countryOptions: CountryOptions
 
   protected def view: sameContactAddress
 
   protected def get(
                      id: TypedIdentifier[Boolean],
-                     viewModel: SameContactAddressViewModel
+                     viewModel: SameContactAddressViewModel,
+                     form: Form[Boolean]
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id) match {
@@ -65,7 +64,8 @@ trait SameContactAddressController extends FrontendBaseController with Retrieval
                       addressId: TypedIdentifier[TolerantAddress],
                       contactId: TypedIdentifier[Address],
                       viewModel: SameContactAddressViewModel,
-                      mode: Mode
+                      mode: Mode,
+                      form: Form[Boolean]
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(

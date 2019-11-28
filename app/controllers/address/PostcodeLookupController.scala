@@ -52,7 +52,7 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
   protected def view: postcodeLookup
 
   private val invalidPostcode: Message = "error.postcode.failed"
-  private val noResults: Message = "error.postcode.noResults"
+  private val dynamicNoResults: Message = "error.postcode.noResults"
 
   protected def get(viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
@@ -63,8 +63,7 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
                       id: TypedIdentifier[Seq[TolerantAddress]],
                       viewmodel: PostcodeLookupViewModel,
                       mode: Mode,
-                      invalidPostcode: Message = invalidPostcode,
-                      noResults: Message = noResults
+                      invalidPostcode: Message = invalidPostcode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
@@ -72,7 +71,7 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
         Future.successful {
           BadRequest(view(formWithErrors, viewmodel, mode))
         },
-      lookupPostcode(id, viewmodel, invalidPostcode, noResults, mode)
+      lookupPostcode(id, viewmodel, invalidPostcode, mode)
     )
   }
 
@@ -80,13 +79,12 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
                               id: TypedIdentifier[Seq[TolerantAddress]],
                               viewmodel: PostcodeLookupViewModel,
                               invalidPostcode: Message,
-                              noResults: Message,
                               mode: Mode
                             )(postcode: String)(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     addressLookupConnector.addressLookupByPostCode(postcode).flatMap {
 
-      case Nil => Future.successful(Ok(view(formWithError(noResults), viewmodel, mode)))
+      case Nil => Future.successful(Ok(view(formWithError(Message("error.postcode.noResults", postcode)), viewmodel, mode)))
 
       case addresses =>
         cacheConnector.save(

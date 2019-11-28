@@ -28,7 +28,7 @@ class AddressListSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "common.selectAddress"
 
-  private val form = new AddressListFormProvider()(Nil)
+  private val form = new AddressListFormProvider()(Nil, "error.required")
 
   private val addresses = Seq(address("postcode 1"), address("postcode 2"))
   private val addressIndexes = Seq.range(0, 2)

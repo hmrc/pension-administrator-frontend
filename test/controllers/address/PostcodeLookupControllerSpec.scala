@@ -33,7 +33,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -73,12 +73,10 @@ object PostcodeLookupControllerSpec extends SpecBase {
       get(viewmodel, NormalMode)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
 
     def onSubmit(viewmodel: PostcodeLookupViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
-      post(FakeIdentifier, viewmodel, NormalMode, invalidError, noResultError)(DataRequest(request,
+      post(FakeIdentifier, viewmodel, NormalMode, invalidError)(DataRequest(request,
         "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
 
     private val invalidError: Message = "foo"
-
-    private val noResultError: Message = "bar"
 
     override protected def form: Form[String] = formProvider()
 
@@ -108,8 +106,6 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-
-      //    implicit val mat: Materializer = app.materializer
 
           val formProvider = app.injector.instanceOf[PostCodeLookupFormProvider]
           val request = FakeRequest()
@@ -147,8 +143,6 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
       )) {
         app =>
 
-     //     implicit val mat: Materializer = app.materializer
-
           val request = FakeRequest()
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onSubmit(viewmodel, UserAnswers(), request.withFormUrlEncodedBody("value" -> "ZZ11ZZ"))
@@ -173,8 +167,6 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
           bind[AddressLookupConnector].toInstance(addressConnector)
         )) {
           app =>
-
-   //         implicit val mat: Materializer = app.materializer
 
             val formProvider = app.injector.instanceOf[PostCodeLookupFormProvider]
             val request = FakeRequest()
@@ -201,8 +193,6 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
           bind[AddressLookupConnector].toInstance(addressConnector)
         )) {
           app =>
-
-    //        implicit val mat: Materializer = app.materializer
 
             val request = FakeRequest().withFormUrlEncodedBody("value" -> invalidPostcode)
 
@@ -236,17 +226,16 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
           )) {
             app =>
 
-     //         implicit val mat: Materializer = app.materializer
-
               val formProvider = app.injector.instanceOf[PostCodeLookupFormProvider]
               val request = FakeRequest()
-              val messages = app.injector.instanceOf[MessagesApi].preferred(request)
+              val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+              implicit val messages: Messages = messagesApi.preferred(request)
               val controller = app.injector.instanceOf[TestController]
               val result = controller.onSubmit(viewmodel, UserAnswers(), request.withFormUrlEncodedBody("value" -> "ZZ11ZZ"))
 
               status(result) mustEqual OK
               contentAsString(result) mustEqual view(
-                formProvider().withError("value", "bar"),
+                formProvider().withError("value", Message("error.postcode.noResults", "ZZ1 1ZZ")),
                 viewmodel, NormalMode)(request, messages).toString
           }
         }

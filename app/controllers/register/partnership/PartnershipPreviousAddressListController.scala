@@ -21,11 +21,13 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
+import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId}
 import javax.inject.Inject
-import models.Mode
 import models.requests.DataRequest
+import models.{Mode, TolerantAddress}
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.Partnership
@@ -44,34 +46,41 @@ class PartnershipPreviousAddressListController @Inject()(
                                                           authenticate: AuthAction,
                                                           getData: DataRetrievalAction,
                                                           requireData: DataRequiredAction,
+                                                          formProvider: AddressListFormProvider,
                                                           val controllerComponents: MessagesControllerComponents,
                                                           val view: addressList
-                                                        )(implicit val executionContext: ExecutionContext)  extends AddressListController with Retrievals {
+                                                        )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
+
+  def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
+    formProvider(addresses, Message("select.previous.address.error.required").withArgs(name))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map{vm =>
-        get(vm, mode)
+      viewmodel(mode).right.map { vm =>
+        get(vm, mode, form(vm.addresses, entityName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, PartnershipPreviousAddressListId, PartnershipPreviousAddressId, mode))
+      viewmodel(mode).right.map(vm => post(vm, PartnershipPreviousAddressListId, PartnershipPreviousAddressId, mode,
+        form(vm.addresses, entityName)))
   }
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    (BusinessNameId and PartnershipPreviousAddressPostCodeLookupId).retrieve.right.map {
-      case name ~ addresses =>
-        AddressListViewModel(
-          postCall = routes.PartnershipPreviousAddressListController.onSubmit(mode),
-          manualInputCall = routes.PartnershipPreviousAddressController.onPageLoad(mode),
-          addresses = addresses,
-          Message("previousAddressList.heading", Message("thePartnership")),
-          Message("previousAddressList.heading", name),
-          Message("common.selectAddress.text"),
-          Message("common.selectAddress.link")
-        )
+    PartnershipPreviousAddressPostCodeLookupId.retrieve.right.map { addresses =>
+      AddressListViewModel(
+        postCall = routes.PartnershipPreviousAddressListController.onSubmit(mode),
+        manualInputCall = routes.PartnershipPreviousAddressController.onPageLoad(mode),
+        addresses = addresses,
+        Message("previousAddressList.heading", Message("thePartnership")),
+        Message("previousAddressList.heading", entityName),
+        Message("common.selectAddress.text"),
+        Message("common.selectAddress.link")
+      )
     }.left.map(_ => Future.successful(Redirect(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode))))
   }
+
+  private def entityName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership"))
 }

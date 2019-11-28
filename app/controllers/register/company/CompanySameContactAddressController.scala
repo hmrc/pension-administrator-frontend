@@ -26,6 +26,7 @@ import identifiers.register.BusinessNameId
 import identifiers.register.company._
 import javax.inject.{Inject, Singleton}
 import models.Mode
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -53,7 +54,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
                                                     val view: sameContactAddress
                                                    )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
-  val form: Form[Boolean] = formProvider()
+  def form(name: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
 
   private[controllers] val postCall = CompanySameContactAddressController.onSubmit _
   private[controllers] val title: Message = "company.same.contact.address.title"
@@ -79,14 +80,14 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
-        get(CompanySameContactAddressId, vm)
+        get(CompanySameContactAddressId, vm, form(vm.psaName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode).retrieve.right.map { vm =>
-        post(CompanySameContactAddressId, CompanyAddressListId, CompanyContactAddressId, vm, mode)
+        post(CompanySameContactAddressId, CompanyAddressListId, CompanyContactAddressId, vm, mode, form(vm.psaName))
       }
   }
 

@@ -24,6 +24,7 @@ import controllers.address.SameContactAddressController
 import forms.address.SameContactAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
+import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -52,10 +53,9 @@ class PartnershipSameContactAddressController @Inject()(
                                                          )(implicit val executionContext: ExecutionContext
                                                          ) extends SameContactAddressController {
 
-  val form: Form[Boolean] = formProvider()
+  def form(name: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
 
-
-  private def viewmodel(mode: Mode, address: TolerantAddress, name: String) =
+  private def viewmodel(mode: Mode, address: TolerantAddress, name: String)(implicit request: DataRequest[AnyContent]) =
     SameContactAddressViewModel(
       postCall = routes.PartnershipSameContactAddressController.onSubmit(mode),
       title = Message("partnership.sameContactAddress.title"),
@@ -70,7 +70,7 @@ class PartnershipSameContactAddressController @Inject()(
     implicit request =>
       (PartnershipRegisteredAddressId and BusinessNameId).retrieve.right.map {
         case address ~ name =>
-          get(PartnershipSameContactAddressId, viewmodel(mode, address, name))
+          get(PartnershipSameContactAddressId, viewmodel(mode, address, name), form(name))
       }
   }
 
@@ -83,7 +83,8 @@ class PartnershipSameContactAddressController @Inject()(
             PartnershipContactAddressListId,
             PartnershipContactAddressId,
             viewmodel(mode, address, name),
-            mode
+            mode,
+            form(name)
           )
       }
   }

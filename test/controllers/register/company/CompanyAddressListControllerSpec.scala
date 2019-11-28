@@ -58,7 +58,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     Some("United Kingdom")
   )
 
-  val form: Form[Int] = formProvider(Seq(0))
+  val form: Form[Int] = formProvider(Seq(0), "error.required")
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyAddressListController(
@@ -69,6 +69,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
+      formProvider,
       stubMessagesControllerComponents(),
       view
     )

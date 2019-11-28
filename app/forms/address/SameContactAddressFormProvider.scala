@@ -23,8 +23,8 @@ import play.api.data.Form
 
 class SameContactAddressFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(requiredError: String): Form[Boolean] =
     Form(
-      "value" -> boolean("individual.same.contact.address.error")
+      "value" -> boolean(requiredError)
     )
 }

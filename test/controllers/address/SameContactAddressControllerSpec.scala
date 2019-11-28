@@ -67,17 +67,16 @@ object SameContactAddressControllerSpec extends SpecBase {
                                 )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
     def onPageLoad(viewmodel: SameContactAddressViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, viewmodel)(DataRequest(FakeRequest(), "cacheId",
+      get(FakeIdentifier, viewmodel, form)(DataRequest(FakeRequest(), "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
     def onSubmit(viewmodel: SameContactAddressViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, RegAddressIdentifier, ContactAddressIdentifier, viewmodel, NormalMode)(DataRequest(fakeRequest, "cacheId",
+      post(FakeIdentifier, RegAddressIdentifier, ContactAddressIdentifier, viewmodel, NormalMode, form)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
 
-    override protected val form: Form[Boolean] = formProvider()
-
+    val form: Form[Boolean] = formProvider("error.required")
     override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
@@ -121,7 +120,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
           val result = controller.onPageLoad(viewmodel(), UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formProvider(), viewmodel(), countryOptions)(request, messages).toString
+          contentAsString(result) mustEqual view(formProvider("error.required"), viewmodel(), countryOptions)(request, messages).toString
       }
     }
 
@@ -141,7 +140,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(
-            formProvider().fill(true),
+            formProvider("error.required").fill(true),
             viewmodel(),
             countryOptions
           )(request, messages).toString
@@ -298,7 +297,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
 
           status(result) mustEqual BAD_REQUEST
           contentAsString(result) mustEqual view(
-            formProvider().bind(Map.empty[String, String]),
+            formProvider("error.required").bind(Map.empty[String, String]),
             viewmodel(),
             countryOptions
           )(request, messages).toString

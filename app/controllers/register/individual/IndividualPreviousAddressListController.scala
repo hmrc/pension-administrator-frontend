@@ -21,10 +21,12 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
+import forms.address.AddressListFormProvider
 import identifiers.register.individual._
 import javax.inject.Inject
-import models.Mode
 import models.requests.DataRequest
+import models.{Mode, TolerantAddress}
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.Individual
@@ -43,20 +45,23 @@ class IndividualPreviousAddressListController @Inject()(
                                                          override val allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
+                                                         formProvider: AddressListFormProvider,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          val view: addressList
-                                                       )(implicit val executionContext: ExecutionContext)  extends AddressListController with Retrievals {
+                                                       )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
+
+  def form(addresses: Seq[TolerantAddress])(implicit request: DataRequest[AnyContent]): Form[Int] = formProvider(addresses, Message("individual.select.previous.address.error.required"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map{vm =>
-        get(vm, mode)
+      viewmodel(mode).right.map { vm =>
+        get(vm, mode, form(vm.addresses))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, IndividualPreviousAddressListId, IndividualPreviousAddressId, mode))
+      viewmodel(mode).right.map(vm => post(vm, IndividualPreviousAddressListId, IndividualPreviousAddressId, mode, form(vm.addresses)))
   }
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {

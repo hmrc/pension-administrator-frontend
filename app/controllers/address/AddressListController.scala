@@ -23,6 +23,7 @@ import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Address, Mode, TolerantAddress}
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -42,23 +43,20 @@ trait AddressListController extends FrontendBaseController with I18nSupport {
 
   protected def navigator: Navigator
 
-  protected def formProvider: AddressListFormProvider = new AddressListFormProvider()
-
   protected val allowAccess: AllowAccessActionProvider
 
   protected def view: addressList
 
-  protected def get(viewModel: AddressListViewModel, mode: Mode)
+  protected def get(viewModel: AddressListViewModel, mode: Mode, form: Form[Int])
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
-
-    val form = formProvider(viewModel.addresses)
     Future.successful(Ok(view(form, viewModel, mode)))
   }
 
-  protected def post(viewModel: AddressListViewModel, navigatorId: TypedIdentifier[TolerantAddress], dataId: TypedIdentifier[Address], mode: Mode)
+  protected def post(viewModel: AddressListViewModel, navigatorId: TypedIdentifier[TolerantAddress],
+                     dataId: TypedIdentifier[Address], mode: Mode, form: Form[Int])
                     (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    formProvider(viewModel.addresses).bindFromRequest().fold(
+    form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, viewModel, mode))),
       addressIndex => {

@@ -45,6 +45,7 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
+      formProvider,
       stubMessagesControllerComponents(),
       view
     )
@@ -149,7 +150,7 @@ object PartnerAddressListControllerSpec {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new AddressListFormProvider()
-  val form: Form[Int] = formProvider(Seq.empty)
+  val form: Form[Int] = formProvider(Seq.empty, "error.required")
   val firstIndex = Index(0)
   val partner = PersonName("firstName", "lastName")
 

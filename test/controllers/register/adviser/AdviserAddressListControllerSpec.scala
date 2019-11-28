@@ -44,8 +44,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
     "return Ok and the correct view on a GET request" in {
       val viewModel: AddressListViewModel = addressListViewModel(addresses)
-
-      val form = new AddressListFormProvider()(viewModel.addresses)
+      val form = new AddressListFormProvider()(viewModel.addresses, "error.required")
 
       val app = application(dataRetrievalAction)
 

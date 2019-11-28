@@ -81,7 +81,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
         status(result) mustBe OK
 
         val viewModel: AddressListViewModel = addressListViewModel(addresses)
-        val form = new AddressListFormProvider()(viewModel.addresses)
+        val form = new AddressListFormProvider()(viewModel.addresses, "error.required")
 
         contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString
       }

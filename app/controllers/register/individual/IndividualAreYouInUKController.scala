@@ -43,7 +43,7 @@ class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendA
                                                val view: areYouInUK
                                               )(implicit val executionContext: ExecutionContext) extends AreYouInUKController {
 
-  protected override val form = formProvider()
+  protected override val form = formProvider("areYouInUKIndividual.error.required")
 
   protected def viewmodel(mode: Mode) =
     AreYouInUKViewModel(mode,

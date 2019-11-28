@@ -25,7 +25,9 @@ import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
 import javax.inject.Inject
-import models.Mode
+import models.{Mode, TolerantAddress}
+import models.requests.DataRequest
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
@@ -46,16 +48,21 @@ class PartnershipContactAddressListController @Inject()(
                                                          formProvider: AddressListFormProvider,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          val view: addressList
-                                                       )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
+                                                       )(implicit val executionContext: ExecutionContext
+                                                       ) extends AddressListController with Retrievals {
+
+
+  def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
+    formProvider(addresses, Message("select.address.error.required").withArgs(name))
 
   def viewModel(mode: Mode) = Retrieval { implicit request =>
-    (BusinessNameId and PartnershipContactAddressPostCodeLookupId).retrieve.right map { case name ~ addresses =>
+    PartnershipContactAddressPostCodeLookupId.retrieve.right map { addresses =>
       AddressListViewModel(
         routes.PartnershipContactAddressListController.onSubmit(mode),
         routes.PartnershipContactAddressController.onPageLoad(mode),
         addresses,
         Message("contactAddressList.heading", Message("thePartnership").resolve),
-        Message("contactAddressList.heading", name),
+        Message("contactAddressList.heading", entityName),
         psaName = psaName()
       )
     }
@@ -63,16 +70,19 @@ class PartnershipContactAddressListController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map{vm =>
-        get(vm, mode)
+      viewModel(mode).retrieve.right.map { vm =>
+        get(vm, mode, form(vm.addresses, entityName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode).retrieve.right.map { vm =>
-        post(vm, PartnershipContactAddressListId, PartnershipContactAddressId, mode)
+        post(vm, PartnershipContactAddressListId, PartnershipContactAddressId, mode, form(vm.addresses, entityName))
       }
   }
+
+  private def entityName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership"))
 
 }

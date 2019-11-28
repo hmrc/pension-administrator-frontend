@@ -63,7 +63,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewmodel(), UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual view(formProvider(), viewmodel(), countryOptions)(request, messages).toString
+          contentAsString(result) mustEqual view(formProvider("error.required"), viewmodel(), countryOptions)(request, messages).toString
       }
     }
 
@@ -82,7 +82,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase {
 
           status(result) mustEqual OK
           contentAsString(result) mustEqual view(
-            formProvider().fill(true),
+            formProvider("error.required").fill(true),
             viewmodel(),
             countryOptions
           )(request, messages).toString

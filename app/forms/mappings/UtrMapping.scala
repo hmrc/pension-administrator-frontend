@@ -21,7 +21,7 @@ import play.api.data.Mapping
 trait UtrMapping extends Mappings with Transforms {
 
   def utrMapping(requiredKey: String = "common.error.utr.required",
-                 lengthKey: String = "common.error.utr.exactLength"
+                 lengthKey: String = "common.error.utr.invalid"
                 ): Mapping[String] = {
     text(requiredKey)
     .transform(strip, noTransform)

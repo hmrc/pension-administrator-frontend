@@ -69,7 +69,7 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
     val request = addCSRFToken(FakeRequest(routes.CompanySameContactAddressController.onPageLoad(NormalMode)))
     val result = route(application, request).value
         status(result) mustBe OK
-        contentAsString(result) mustBe view(formProvider(), viewModel, countryOptions)(request, messagesApi.preferred(fakeRequest)).toString()
+        contentAsString(result) mustBe view(formProvider("error.required"), viewModel, countryOptions)(request, messagesApi.preferred(fakeRequest)).toString()
 
   }
 

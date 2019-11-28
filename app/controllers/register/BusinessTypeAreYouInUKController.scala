@@ -44,7 +44,7 @@ class BusinessTypeAreYouInUKController @Inject()(override val appConfig: Fronten
                                                  val view: areYouInUK
                                                 )(implicit val executionContext: ExecutionContext) extends AreYouInUKController {
 
-  protected override val form: Form[Boolean] = formProvider()
+  protected override val form = formProvider("business.areYouInUK.error.required")
 
   protected def viewmodel(mode: Mode) =
     AreYouInUKViewModel(mode,
