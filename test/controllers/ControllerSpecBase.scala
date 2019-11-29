@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
@@ -25,7 +26,7 @@ import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
 import play.api.inject.bind
-import play.api.inject.guice.GuiceableModule
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import utils.UserAnswers
 
@@ -38,6 +39,14 @@ trait ControllerSpecBase extends SpecBase {
   val cacheMapId = "id"
 
   val firstIndex = Index(0)
+
+  protected def applicationBuilder(data: DataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[DataRetrievalAction].toInstance(data),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+        bind[AuthAction].to(FakeAuthAction)
+      )
 
   def getEmptyData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))
 
