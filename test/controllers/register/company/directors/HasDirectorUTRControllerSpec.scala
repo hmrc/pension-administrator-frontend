@@ -16,7 +16,7 @@
 
 package controllers.register.company.directors
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.HasReferenceNumberFormProvider
@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -35,12 +36,15 @@ class HasDirectorUTRControllerSpec extends ControllerWithCommonBehaviour {
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val hasReferenceNumberForm = formProvider("error.required", directorName)
 
+  val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
+
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasDirectorUTRController(
-    frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+    stubMessagesControllerComponents(), view)
 
   private def hasReferenceNumberView(form: Form[_] = hasReferenceNumberForm): String =
-    hasReferenceNumber(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+    view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "HasDirectorUTRController" must {
 

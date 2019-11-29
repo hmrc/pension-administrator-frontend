@@ -16,7 +16,7 @@
 
 package controllers.register.individual
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
@@ -36,10 +37,12 @@ class IndividualPhoneControllerSpec extends ControllerWithCommonBehaviour {
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new IndividualPhoneController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider, stubMessagesControllerComponents(), view)
 
-  private def phoneView(form: Form[_] = phoneForm): String = phone(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages).toString
+  val view: phone = app.injector.instanceOf[phone]
+
+  private def phoneView(form: Form[_] = phoneForm): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "IndividualPhoneController" must {
 
@@ -57,7 +60,6 @@ class IndividualPhoneControllerSpec extends ControllerWithCommonBehaviour {
 object IndividualPhoneControllerSpec {
   private val formProvider = new PhoneFormProvider()
   private val phoneForm = formProvider()
-  private val individualName = "TestFirstName TestLastName"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "12345"))
 
   private def viewModel(mode: Mode)(implicit messages: Messages) =

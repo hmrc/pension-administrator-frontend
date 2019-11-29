@@ -27,27 +27,30 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
+import views.html.address.manualAddress
 
-class IndividualContactAddressController @Inject()(
-                                                    val appConfig: FrontendAppConfig,
-                                                    override val messagesApi: MessagesApi,
-                                                    val cacheConnector: UserAnswersCacheConnector,
-                                                    @Individual val navigator: Navigator,
-                                                    authenticate: AuthAction,
-                                                    override val allowAccess: AllowAccessActionProvider,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    formProvider: AddressFormProvider,
-                                                    val countryOptions: CountryOptions,
-                                                    val auditService: AuditService
-                                                  ) extends ManualAddressController with I18nSupport {
+import scala.concurrent.ExecutionContext
+
+class IndividualContactAddressController @Inject()(val appConfig: FrontendAppConfig,
+                                                   val cacheConnector: UserAnswersCacheConnector,
+                                                   @Individual val navigator: Navigator,
+                                                   authenticate: AuthAction,
+                                                   override val allowAccess: AllowAccessActionProvider,
+                                                   getData: DataRetrievalAction,
+                                                   requireData: DataRequiredAction,
+                                                   formProvider: AddressFormProvider,
+                                                   val countryOptions: CountryOptions,
+                                                   val auditService: AuditService,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   val view: manualAddress
+                                                  )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = routes.IndividualContactAddressController.onSubmit _
   private[controllers] val title: Message = "common.contactAddress.title"

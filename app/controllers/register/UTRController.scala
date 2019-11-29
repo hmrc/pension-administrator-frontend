@@ -27,17 +27,17 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Call, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import views.html.register.utr
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait UTRController extends FrontendController with I18nSupport with Variations {
+trait UTRController extends FrontendBaseController with I18nSupport with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 
-  protected implicit def ec : ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   def appConfig: FrontendAppConfig
 
@@ -47,22 +47,22 @@ trait UTRController extends FrontendController with I18nSupport with Variations 
 
   private val form = new UTRFormProvider()()
 
-  def get[I <: TypedIdentifier[String]](
-                                                id: I, entity: String, href: Call
-                                              )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  protected def view: utr
+
+  def get[I <: TypedIdentifier[String]](id: I, entity: String, href: Call)
+                                       (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id).fold(form)(form.fill)
-    Future.successful(Ok(utr(appConfig, preparedForm, entity, href)))
+    Future.successful(Ok(view(preparedForm, entity, href)))
 
   }
 
-  def post[I <: TypedIdentifier[String]](
-                                                 id: I, entity: String, href: Call, mode: Mode
-                                               )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  def post[I <: TypedIdentifier[String]](id: I, entity: String, href: Call, mode: Mode)
+                                        (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(utr(appConfig, formWithErrors, entity, href))),
+        Future.successful(BadRequest(view(formWithErrors, entity, href))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
             Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap))))

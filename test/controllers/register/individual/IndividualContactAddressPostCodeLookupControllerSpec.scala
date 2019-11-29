@@ -16,17 +16,15 @@
 
 package controllers.register.individual
 
-import base.CSRFRequest
-import connectors.cache.UserAnswersCacheConnector
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
 import models.{Mode, NormalMode, TolerantAddress}
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject._
-import play.api.mvc.{Request, Result}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import play.api.test._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,30 +35,26 @@ import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
-class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
+class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   import IndividualContactAddressPostCodeLookupControllerSpec._
 
   "render the view correctly on a GET request" in {
-    requestResult(
-      implicit app => addToken(FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode))),
-      (request, result) => {
-        status(result) mustBe OK
-        contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode), NormalMode)(request, messages).toString()
-      }
-    )
+    val request = addCSRFToken(FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode)))
+    val result = route(application, request).value
+      status(result) mustBe OK
+      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
+
   }
 
   "redirect to the next page on a POST request" in {
-    requestResult(
-      implicit App => addToken(FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> validPostcode)),
-      (_, result) => {
+    val request = FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onSubmit(NormalMode))
+        .withFormUrlEncodedBody("value" -> validPostcode)
+    val result = route(application, request).value
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
-    )
   }
 }
 
@@ -68,6 +62,9 @@ object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSp
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
   private val validPostcode = "ZZ1 1ZZ"
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
 
   def viewModel(mode: Mode): PostcodeLookupViewModel =
     PostcodeLookupViewModel(
@@ -93,23 +90,17 @@ object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSp
   )
 
   private val fakeAddressLookupConnector = new AddressLookupConnector {
-    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TolerantAddress]] = {
+    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
       Future.successful(Seq(address))
     }
   }
 
-  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
-    running(_.overrides(
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-  }
+    ).build()
 }

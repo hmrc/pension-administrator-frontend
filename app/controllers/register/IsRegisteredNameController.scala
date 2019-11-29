@@ -25,20 +25,20 @@ import identifiers.register.IsRegisteredNameId
 import models.register.BusinessType
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, Call, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{AnyContent, Result}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
 import views.html.register.isRegisteredName
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait IsRegisteredNameController extends FrontendController with I18nSupport with Variations {
+trait IsRegisteredNameController extends FrontendBaseController with I18nSupport with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 
-  protected implicit def ec : ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   def appConfig: FrontendAppConfig
 
@@ -48,12 +48,14 @@ trait IsRegisteredNameController extends FrontendController with I18nSupport wit
 
   def form: Form[Boolean]
 
+  protected def view: isRegisteredName
+
   def get[I <: TypedIdentifier[Boolean]](viewmodel: CommonFormViewModel,
                                          id: I = IsRegisteredNameId
                                        )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id).fold(form)(form.fill)
-    Future.successful(Ok(isRegisteredName(appConfig, preparedForm, viewmodel)))
+    Future.successful(Ok(view(preparedForm, viewmodel)))
 
   }
 
@@ -63,7 +65,7 @@ trait IsRegisteredNameController extends FrontendController with I18nSupport wit
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(isRegisteredName(appConfig, formWithErrors, viewmodel))),
+        Future.successful(BadRequest(view(formWithErrors, viewmodel))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
           Future.successful(Redirect(navigator.nextPage(id, viewmodel.mode, UserAnswers(cacheMap))))
@@ -71,5 +73,5 @@ trait IsRegisteredNameController extends FrontendController with I18nSupport wit
     )
   }
 
-  def toString(businessType: BusinessType): String = Message(s"businessType.${businessType.toString}").toLowerCase()
+  def toString(businessType: BusinessType)(implicit messages: Messages): String = Message(s"businessType.${businessType.toString}").toLowerCase()
 }

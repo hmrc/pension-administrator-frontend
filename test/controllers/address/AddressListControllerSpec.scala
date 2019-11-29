@@ -16,29 +16,29 @@
 
 package controllers.address
 
+import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.FakeAllowAccessProvider
 import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
 import models._
 import models.requests.DataRequest
 import org.scalatest.{Matchers, WordSpec}
-import play.api.Application
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.{Call, Result}
+import play.api.mvc.{Call, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddressListControllerSpec extends WordSpec with Matchers {
 
@@ -57,7 +57,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val result = controller.onPageLoad(viewModel, form(Nil, "error.required"))
 
         status(result) shouldBe OK
-        contentAsString(result) shouldBe viewAsString(app, viewModel, None)
+        contentAsString(result) shouldBe viewAsString(viewModel, None)
       }
 
     }
@@ -71,7 +71,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val result = controller.onPageLoad(viewModel, form(addresses, "error.required"))
 
         status(result) shouldBe OK
-        contentAsString(result) shouldBe viewAsString(app, viewModel, None)
+        contentAsString(result) shouldBe viewAsString(viewModel, None)
       }
 
     }
@@ -151,7 +151,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val result = controller.onSubmit(viewModel, -1, form(addresses, "error.required"))
 
         status(result) shouldBe BAD_REQUEST
-        contentAsString(result) shouldBe viewAsString(app, viewModel, Some(-1))
+        contentAsString(result) shouldBe viewAsString(viewModel, Some(-1))
       }
 
     }
@@ -160,12 +160,15 @@ class AddressListControllerSpec extends WordSpec with Matchers {
 
 }
 
-object AddressListControllerSpec {
+object AddressListControllerSpec extends SpecBase {
+
+  val view: addressList = app.injector.instanceOf[addressList]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
-                                  override val messagesApi: MessagesApi
-                                ) extends AddressListController {
+                                  override val messagesApi: MessagesApi,
+                                  val view: addressList
+                                )(implicit val executionContext: ExecutionContext) extends AddressListController {
 
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
 
@@ -196,6 +199,8 @@ object AddressListControllerSpec {
       )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))
 
     }
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 
   }
 
@@ -237,9 +242,8 @@ object AddressListControllerSpec {
       Message("select an address link text")
     )
 
-  def viewAsString(app: Application, viewModel: AddressListViewModel, value: Option[Int]): String = {
+  def viewAsString(viewModel: AddressListViewModel, value: Option[Int]): String = {
 
-    val appConfig = app.injector.instanceOf[FrontendAppConfig]
     val request = FakeRequest()
     val messages = app.injector.instanceOf[MessagesApi].preferred(request)
 
@@ -248,7 +252,7 @@ object AddressListControllerSpec {
       case None => new AddressListFormProvider()(viewModel.addresses, "error.required")
     }
 
-    addressList(appConfig, form, viewModel, NormalMode)(request, messages).toString()
+    view(form, viewModel, NormalMode)(request, messages).toString()
 
   }
 

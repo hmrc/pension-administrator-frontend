@@ -27,16 +27,16 @@ import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait PostcodeLookupController extends FrontendController with Retrievals with I18nSupport {
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait PostcodeLookupController extends FrontendBaseController with Retrievals with I18nSupport {
+  implicit val executionContext: ExecutionContext
   protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
@@ -49,12 +49,14 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
 
   protected val allowAccess: AllowAccessActionProvider
 
+  protected def view: postcodeLookup
+
   private val invalidPostcode: Message = "error.postcode.failed"
   private val dynamicNoResults: Message = "error.postcode.noResults"
 
   protected def get(viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    Future.successful(Ok(postcodeLookup(appConfig, form, viewmodel, mode)))
+    Future.successful(Ok(view(form, viewmodel, mode)))
   }
 
   protected def post(
@@ -67,7 +69,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful {
-          BadRequest(postcodeLookup(appConfig, formWithErrors, viewmodel, mode))
+          BadRequest(view(formWithErrors, viewmodel, mode))
         },
       lookupPostcode(id, viewmodel, invalidPostcode, mode)
     )
@@ -82,8 +84,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
 
     addressLookupConnector.addressLookupByPostCode(postcode).flatMap {
 
-      case Nil => Future.successful(Ok(postcodeLookup(appConfig, formWithError(
-        Message("error.postcode.noResults", postcode)), viewmodel, mode)))
+      case Nil => Future.successful(Ok(view(formWithError(Message("error.postcode.noResults", postcode)), viewmodel, mode)))
 
       case addresses =>
         cacheConnector.save(
@@ -97,7 +98,7 @@ trait PostcodeLookupController extends FrontendController with Retrievals with I
     } recoverWith {
 
       case _ =>
-        Future.successful(BadRequest(postcodeLookup(appConfig, formWithError(invalidPostcode), viewmodel, mode)))
+        Future.successful(BadRequest(view(formWithError(invalidPostcode), viewmodel, mode)))
 
     }
   }

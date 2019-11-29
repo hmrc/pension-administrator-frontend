@@ -17,7 +17,7 @@
 package views.address
 
 import forms.address.NonUKAddressFormProvider
-import models.{Address, NormalMode}
+import models.Address
 import play.api.data.Form
 import play.api.mvc.Call
 import utils.{FakeCountryOptions, InputOption}
@@ -42,12 +42,14 @@ class NonUKAddressViewSpec extends QuestionViewBehaviours[Address] {
 
   override val form = new NonUKAddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))()
 
+  val view: nonukAddress = app.injector.instanceOf[nonukAddress]
+
   def createView: () => _root_.play.twirl.api.HtmlFormat.Appendable = () =>
-    nonukAddress(frontendAppConfig, new NonUKAddressFormProvider(
+    view(new NonUKAddressFormProvider(
       new FakeCountryOptions(environment, frontendAppConfig)).apply(), viewModel)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => _root_.play.twirl.api.HtmlFormat.Appendable = (form: Form[_]) =>
-    nonukAddress(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+    view(form, viewModel)(fakeRequest, messages)
 
   "ManualAddress view" must {
 

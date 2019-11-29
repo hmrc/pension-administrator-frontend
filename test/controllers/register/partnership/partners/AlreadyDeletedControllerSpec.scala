@@ -21,6 +21,7 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAll
 import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import viewmodels.{AlreadyDeletedViewModel, Message}
 import views.html.alreadyDeleted
 
@@ -30,20 +31,22 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
 
   private val partnerName = "test first name test last name"
 
-  def viewmodel = AlreadyDeletedViewModel(Message("alreadyDeleted.partner.title"), partnerName, onwardRoute)
+  def viewmodel: AlreadyDeletedViewModel = AlreadyDeletedViewModel(Message("alreadyDeleted.partner.title"), partnerName, onwardRoute)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new AlreadyDeletedController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(): String = alreadyDeleted(
-    frontendAppConfig,
+  val view: alreadyDeleted = app.injector.instanceOf[alreadyDeleted]
+
+  def viewAsString(): String = view(
     viewmodel
   )(fakeRequest, messages).toString
 

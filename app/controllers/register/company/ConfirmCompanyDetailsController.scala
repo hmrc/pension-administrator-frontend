@@ -32,9 +32,9 @@ import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsResultException, Writes}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.NotFoundException
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
@@ -43,7 +43,6 @@ import views.html.register.company.confirmCompanyDetails
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
                                                 dataCacheConnector: UserAnswersCacheConnector,
                                                 @RegisterCompany navigator: Navigator,
                                                 authenticate: AuthAction,
@@ -52,8 +51,10 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 requireData: DataRequiredAction,
                                                 registrationConnector: RegistrationConnector,
                                                 formProvider: CompanyAddressFormProvider,
-                                                countryOptions: CountryOptions
-                                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                                countryOptions: CountryOptions,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: confirmCompanyDetails
+                                               )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -65,17 +66,9 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
             upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
               dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
 
-                Future.successful(
-                  Ok(
-                    confirmCompanyDetails(
-                      appConfig,
-                      form,
-                      registration.response.address,
-                      registration.response.organisation.organisationName,
-                      countryOptions
-                    )
-                  )
-                )
+                Future.successful(Ok(view(
+                  form, registration.response.address, registration.response.organisation.organisationName, countryOptions
+                )))
               }
             }
           }
@@ -85,40 +78,27 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            (BusinessNameId and ConfirmCompanyAddressId).retrieve.right.map {
-              case name ~ address =>
-                Future.successful(
-                  BadRequest(
-                    confirmCompanyDetails(
-                      appConfig,
-                      formWithErrors,
-                      address,
-                      name,
-                      countryOptions
-                    )
-                  )
-                )
-            },
-          {
-            case true =>
-              Future.successful(Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, request.userAnswers)))
-            case false =>
-
-
-              val updatedAnswers = request.userAnswers.removeAllOf(List(ConfirmCompanyAddressId, RegistrationInfoId)).asOpt.getOrElse(request.userAnswers)
-              dataCacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
-                Future.successful(Redirect(routes.CompanyUpdateDetailsController.onPageLoad()))
-              }
-          }
-        )
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          (BusinessNameId and ConfirmCompanyAddressId).retrieve.right.map {
+            case name ~ address =>
+              Future.successful(BadRequest(view(formWithErrors, address, name, countryOptions)))
+          },
+        {
+          case true =>
+            Future.successful(Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, request.userAnswers)))
+          case false =>
+            val updatedAnswers = request.userAnswers.removeAllOf(List(ConfirmCompanyAddressId, RegistrationInfoId)).asOpt.getOrElse(request.userAnswers)
+            dataCacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
+              Future.successful(Redirect(routes.CompanyUpdateDetailsController.onPageLoad()))
+            }
+        }
+      )
   }
 
   private def getCompanyDetails(mode: Mode)
                                (fn: OrganizationRegistration => Future[Result])
-                               (implicit request: DataRequest[AnyContent]) = {
+                               (implicit request: DataRequest[AnyContent]): Either[Future[Result], Future[Result]] = {
     (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.right.map {
       case businessName ~ utr ~ businessType =>
         val organisation = Organisation(businessName.replaceAll("""[^a-zA-Z0-9 '&\/]+""", ""), businessType)
@@ -135,7 +115,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
 
   private def upsert[I <: TypedIdentifier.PathDependent](userAnswers: UserAnswers, id: I)(value: id.Data)
                                                         (fn: UserAnswers => Future[Result])
-                                                        (implicit writes: Writes[id.Data]) = {
+                                                        (implicit writes: Writes[id.Data]): Future[Result] = {
 
     userAnswers
       .set(id)(value)

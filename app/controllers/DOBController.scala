@@ -27,24 +27,26 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.dob
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait DOBController extends FrontendController with I18nSupport with Variations {
+trait DOBController extends FrontendBaseController with I18nSupport with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 
-  protected implicit def ec : ExecutionContext
+  implicit val executionContext: ExecutionContext
 
   def appConfig: FrontendAppConfig
 
   def cacheConnector: UserAnswersCacheConnector
 
   def navigator: Navigator
+
+  val view: dob
 
   private val form = new DOBFormProvider()()
 
@@ -57,7 +59,7 @@ trait DOBController extends FrontendController with I18nSupport with Variations 
       case Some(value) => form.fill(value)
     }
 
-    Ok(dob(appConfig, preparedForm, viewModel))
+    Ok(view(preparedForm, viewModel))
 
   }
 
@@ -68,7 +70,7 @@ trait DOBController extends FrontendController with I18nSupport with Variations 
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(dob(appConfig, formWithErrors, viewModel))),
+        Future.successful(BadRequest(view(formWithErrors, viewModel))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
           Future.successful(Redirect(navigator.nextPage(id, viewModel.mode, UserAnswers(cacheMap))))

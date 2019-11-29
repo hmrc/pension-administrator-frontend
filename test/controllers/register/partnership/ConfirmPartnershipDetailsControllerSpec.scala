@@ -16,12 +16,11 @@
 
 package controllers.register.partnership
 
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
-import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.partnership.PartnershipRegisteredAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import models.register.BusinessType.BusinessPartnership
 import models.{BusinessDetails, _}
@@ -29,6 +28,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
@@ -247,6 +247,8 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     Some(validBusinessPartnershipUtr)
   )
 
+  val view: confirmPartnershipDetails = app.injector.instanceOf[confirmPartnershipDetails]
+
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
@@ -270,7 +272,6 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   ) =
     new ConfirmPartnershipDetailsController(
       frontendAppConfig,
-      messagesApi,
       dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
@@ -279,10 +280,12 @@ object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       fakeRegistrationConnector,
       formProvider,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewAsString(partnershipName: String = partnershipName, address: TolerantAddress = testBusinessPartnershipAddress): String =
-    confirmPartnershipDetails(frontendAppConfig, form, partnershipName, address, countryOptions)(fakeRequest, messages).toString
+    view(form, partnershipName, address, countryOptions)(fakeRequest, messages).toString
 
 }

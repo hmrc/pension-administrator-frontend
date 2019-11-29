@@ -33,7 +33,7 @@ abstract class Navigator {
 
   protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call]
 
-  def nextPage(id: Identifier, mode: Mode, userAnswers: UserAnswers)(implicit ex: IdentifiedRequest, ec: ExecutionContext, hc: HeaderCarrier): Call = {
+  def nextPage(id: Identifier, mode: Mode, userAnswers: UserAnswers)(implicit ex: IdentifiedRequest, executionContext: ExecutionContext, hc: HeaderCarrier): Call = {
     val navigateTo = {
       mode match {
         case NormalMode => routeMap(userAnswers).lift

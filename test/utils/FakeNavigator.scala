@@ -31,7 +31,7 @@ class FakeNavigator(val desiredRoute: Call, mode: Mode = NormalMode) extends Nav
   def lastUserAnswers: Option[UserAnswers] = userAnswers
 
   override def nextPage(id: Identifier, mode: Mode, answers: UserAnswers)
-                       (implicit ex: IdentifiedRequest, ec: ExecutionContext, hc: HeaderCarrier): Call = {
+                       (implicit ex: IdentifiedRequest, executionContext: ExecutionContext, hc: HeaderCarrier): Call = {
     userAnswers = Some(answers)
     desiredRoute
   }

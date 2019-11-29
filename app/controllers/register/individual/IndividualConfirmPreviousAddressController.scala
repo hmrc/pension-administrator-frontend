@@ -27,23 +27,26 @@ import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
+import views.html.address.sameContactAddress
+import scala.concurrent.ExecutionContext
 
 class IndividualConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                           val messagesApi: MessagesApi,
                                                            val dataCacheConnector: UserAnswersCacheConnector,
                                                            @Individual val navigator: Navigator,
                                                            authenticate: AuthAction,
                                                            allowAccess: AllowAccessActionProvider,
                                                            getData: DataRetrievalAction,
                                                            requireData: DataRequiredAction,
-                                                           val countryOptions: CountryOptions
-                                                      ) extends ConfirmPreviousAddressController with I18nSupport {
+                                                           val countryOptions: CountryOptions,
+                                                           val controllerComponents: MessagesControllerComponents,
+                                                           val view: sameContactAddress
+                                                      )(implicit val executionContext: ExecutionContext) extends ConfirmPreviousAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualConfirmPreviousAddressController.onSubmit _
   private[controllers] val title: Message = "confirmPreviousAddress.title"

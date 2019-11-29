@@ -19,6 +19,7 @@ package views.register
 import forms.register.NonUKBusinessTypeFormProvider
 import models.register.NonUKBusinessType
 import play.api.data.Form
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.register.nonUKBusinessType
 
@@ -28,9 +29,11 @@ class NonUKBusinessTypeViewSpec extends ViewBehaviours {
   private val form = new NonUKBusinessTypeFormProvider()()
   private val nonUKBusinessTypeOptions = NonUKBusinessType.options
 
-  private def createView = () => nonUKBusinessType(frontendAppConfig, form)(fakeRequest, messages)
+  val view: nonUKBusinessType = app.injector.instanceOf[nonUKBusinessType]
 
-  private def createViewUsingForm = (form: Form[_]) => nonUKBusinessType(frontendAppConfig, form)(fakeRequest, messages)
+  private def createView: () => Html = () => view(form)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => view(form)(fakeRequest, messages)
 
   "NonUKBusinessType view" must {
 

@@ -22,22 +22,26 @@ import controllers.actions._
 import controllers.register.AreYouInUKController
 import forms.register.AreYouInUKFormProvider
 import javax.inject.Inject
-import models.{Mode, NormalMode}
-import play.api.i18n.MessagesApi
+import models.Mode
+import play.api.mvc.MessagesControllerComponents
 import utils.Navigator
 import utils.annotations.{AuthWithNoIV, Individual}
 import viewmodels.{AreYouInUKViewModel, Message}
+import views.html.register.areYouInUK
+
+import scala.concurrent.ExecutionContext
 
 class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
-                                               val messagesApi: MessagesApi,
                                                override val dataCacheConnector: UserAnswersCacheConnector,
                                                @Individual override val navigator: Navigator,
                                                override val allowAccess: AllowAccessActionProvider,
                                                @AuthWithNoIV override val authenticate: AuthAction,
                                                override val getData: DataRetrievalAction,
                                                override val requireData: DataRequiredAction,
-                                               override val formProvider: AreYouInUKFormProvider
-                                              ) extends AreYouInUKController {
+                                               override val formProvider: AreYouInUKFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: areYouInUK
+                                              )(implicit val executionContext: ExecutionContext) extends AreYouInUKController {
 
   protected override val form = formProvider("areYouInUKIndividual.error.required")
 

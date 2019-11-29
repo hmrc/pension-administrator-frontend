@@ -16,7 +16,7 @@
 
 package utils
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 object FakeSectionComplete extends SectionComplete with FakeUserAnswersCacheConnector {
 
   override def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
-                          (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {
+                          (implicit request: DataRequest[AnyContent], executionContext: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {
     save("cacheId", id, true) map UserAnswers
   }
 }

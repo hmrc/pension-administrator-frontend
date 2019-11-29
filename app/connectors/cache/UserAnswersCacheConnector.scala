@@ -28,22 +28,22 @@ trait UserAnswersCacheConnector {
   def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                       (implicit
                                        fmt: Format[A],
-                                       ec: ExecutionContext,
+                                       executionContext: ExecutionContext,
                                        hc: HeaderCarrier
                                       ): Future[JsValue]
 
   def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
                                      (implicit
-                                      ec: ExecutionContext,
+                                      executionContext: ExecutionContext,
                                       hc: HeaderCarrier
                                      ): Future[JsValue]
 
   def fetch(cacheId: String)(implicit
-                             ec: ExecutionContext,
+                             executionContext: ExecutionContext,
                              hc: HeaderCarrier
   ): Future[Option[JsValue]]
 
-  def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue]
+  def upsert(cacheId: String, value: JsValue)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue]
 
-  def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result]
+  def removeAll(cacheId: String)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Result]
 }

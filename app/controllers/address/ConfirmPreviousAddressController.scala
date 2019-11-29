@@ -22,23 +22,25 @@ import controllers.Retrievals
 import forms.address.ConfirmPreviousAddressFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Address, Mode, TolerantAddress}
+import models.{Address, Mode}
 import play.api.data.Form
-import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.Messages
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait ConfirmPreviousAddressController extends FrontendController with Retrievals with I18nSupport {
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait ConfirmPreviousAddressController extends FrontendBaseController with Retrievals {
+  implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
+
+  protected def controllerComponents: MessagesControllerComponents
 
   protected def dataCacheConnector: UserAnswersCacheConnector
 
@@ -48,29 +50,26 @@ trait ConfirmPreviousAddressController extends FrontendController with Retrieval
 
   protected def countryOptions: CountryOptions
 
-  protected def form(name: String) = formProvider(Message("confirmPreviousAddress.error", name))
+  protected  def view: sameContactAddress
 
-  protected def get(
-                     id: TypedIdentifier[Boolean],
-                     viewModel: SameContactAddressViewModel
-                   )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  protected def form(name: String)(implicit mesages: Messages): Form[Boolean] =
+    formProvider(Message("confirmPreviousAddress.error", name))
+
+  protected def get(id: TypedIdentifier[Boolean], viewModel: SameContactAddressViewModel)
+                   (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id) match {
-      case None => form(viewModel.psaName)
-      case Some(value) => form(viewModel.psaName).fill(value)
+      case None => form(viewModel.psaName)(implicitly)
+      case Some(value) => form(viewModel.psaName)(implicitly).fill(value)
     }
-    Future.successful(Ok(sameContactAddress(appConfig, preparedForm, viewModel, countryOptions)))
+    Future.successful(Ok(view(preparedForm, viewModel, countryOptions)))
   }
 
-  protected def post(
-                      id: TypedIdentifier[Boolean],
-                      contactId: TypedIdentifier[Address],
-                      viewModel: SameContactAddressViewModel,
-                      mode: Mode
-                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  protected def post(id: TypedIdentifier[Boolean], contactId: TypedIdentifier[Address], viewModel: SameContactAddressViewModel, mode: Mode)
+                    (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
-    form(viewModel.psaName).bindFromRequest().fold(
-      formWithError => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel, countryOptions))),
+    form(viewModel.psaName)(implicitly).bindFromRequest().fold(
+      formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),
       { case true => dataCacheConnector.save(request.externalId, id, true).flatMap { _ =>
         dataCacheConnector.save(request.externalId, contactId, viewModel.address.toAddress).map {
           cacheMap =>

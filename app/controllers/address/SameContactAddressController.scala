@@ -25,16 +25,16 @@ import models.{Address, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait SameContactAddressController extends FrontendController with Retrievals with I18nSupport {
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait SameContactAddressController extends FrontendBaseController with Retrievals with I18nSupport {
+  implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
@@ -43,6 +43,8 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
   protected def navigator: Navigator
 
   protected def countryOptions: CountryOptions
+
+  protected def view: sameContactAddress
 
   protected def get(
                      id: TypedIdentifier[Boolean],
@@ -54,7 +56,7 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
       case None => form
       case Some(value) => form.fill(value)
     }
-    Future.successful(Ok(sameContactAddress(appConfig, preparedForm, viewModel, countryOptions)))
+    Future.successful(Ok(view(preparedForm, viewModel, countryOptions)))
   }
 
   protected def post(
@@ -67,7 +69,7 @@ trait SameContactAddressController extends FrontendController with Retrievals wi
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
-      formWithError => Future.successful(BadRequest(sameContactAddress(appConfig, formWithError, viewModel, countryOptions))),
+      formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),
       value => {
         if (value) {
           dataCacheConnector.save(request.externalId, id, value).flatMap { _ =>

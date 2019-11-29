@@ -42,9 +42,11 @@ class MoreThanTenViewSpec extends YesNoViewBehaviours {
       psaName = Some("test psa")
     )
 
-  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => moreThanTen(frontendAppConfig, form, viewModel, mode)(fakeRequest, messages)
+  val view: moreThanTen = app.injector.instanceOf[moreThanTen]
 
-  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => moreThanTen(frontendAppConfig, form, viewModel, NormalMode)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => view(form, viewModel, mode)(fakeRequest, messages)
+
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => view(form, viewModel, NormalMode)(fakeRequest, messages)
 
   "MoreThanTenDirectors view" must {
 
@@ -59,4 +61,5 @@ class MoreThanTenViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
+
 }

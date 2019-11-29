@@ -30,14 +30,14 @@ import scala.concurrent._
 trait SectionComplete {
 
   def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
-                 (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers]
+                 (implicit request: DataRequest[AnyContent], executionContext: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers]
 
 }
 
 class SectionCompleteImpl @Inject()(dataCacheConnector: UserAnswersCacheConnector) extends SectionComplete {
 
   override def setComplete(id: TypedIdentifier[Boolean], userAnswers: UserAnswers)
-                          (implicit request: DataRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {
+                          (implicit request: DataRequest[AnyContent], executionContext: ExecutionContext, hc: HeaderCarrier): Future[UserAnswers] = {
 
     userAnswers.set(id)(true).fold(
       invalid => Future.failed(JsResultException(invalid)),

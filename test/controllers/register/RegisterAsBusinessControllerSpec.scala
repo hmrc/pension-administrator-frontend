@@ -17,9 +17,7 @@
 package controllers.register
 
 import audit.testdoubles.StubSuccessfulAuditService
-import base.SpecBase
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
@@ -29,12 +27,10 @@ import models.NormalMode
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.status
+import play.api.test.Helpers.{status, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
-import play.api.test.Helpers._
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours {
 
@@ -43,24 +39,24 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
   "RegisterAsBusinessController" must {
 
     behave like controllerWithOnPageLoadMethod(
-      onPageLoadAction(this),
+      onPageLoadAction,
       getEmptyData,
       validData.dataRetrievalAction,
       form,
       form.fill(true),
-      viewAsString(this)(form)
+      viewAsString(form)
     )
 
     behave like controllerWithOnSubmitMethod(
-      onSubmitAction(this, navigator),
+      onSubmitAction( navigator),
       validData.dataRetrievalAction,
       form.bind(Map.empty[String, String]),
-      viewAsString(this)(form),
+      viewAsString(form),
       postRequest
     )
 
     behave like controllerThatSavesUserAnswers(
-      saveAction(this),
+      saveAction,
       postRequest,
       RegisterAsBusinessId,
       true
@@ -70,7 +66,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
 
       auditService.reset()
 
-      val result = controller(this)(validData.dataRetrievalAction, FakeAuthAction, FakeNavigator, FakeUserAnswersCacheConnector).
+      val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeNavigator, FakeUserAnswersCacheConnector).
         onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
@@ -81,9 +77,11 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
 
 }
 
-object RegisterAsBusinessControllerSpec {
+object RegisterAsBusinessControllerSpec extends ControllerSpecBase {
 
   val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
+
+  val view: registerAsBusiness = app.injector.instanceOf[registerAsBusiness]
 
   private val auditService = new StubSuccessfulAuditService()
 
@@ -91,37 +89,38 @@ object RegisterAsBusinessControllerSpec {
 
   val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", true.toString))
 
-  def onPageLoadAction(base: ControllerSpecBase)(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
-    controller(base)(dataRetrievalAction, authAction).onPageLoad(NormalMode)
+  def onPageLoadAction(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
+    controller(dataRetrievalAction, authAction).onPageLoad(NormalMode)
 
-  def onSubmitAction(base: ControllerSpecBase, navigator: Navigator)(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
-    controller(base)(dataRetrievalAction, authAction, navigator).onSubmit(NormalMode)
+  def onSubmitAction(navigator: Navigator)(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
+    controller(dataRetrievalAction, authAction, navigator).onSubmit(NormalMode)
 
-  def saveAction(base: ControllerSpecBase)(cache: UserAnswersCacheConnector): Action[AnyContent] =
-    controller(base)(cache = cache).onSubmit(NormalMode)
+  def saveAction(cache: UserAnswersCacheConnector): Action[AnyContent] =
+    controller(cache = cache).onSubmit(NormalMode)
 
-  def viewAsString(base: SpecBase)(form: Form[_]): Form[_] => String =
+  def viewAsString(form: Form[_]): Form[_] => String =
     form =>
-      registerAsBusiness(
-        base.frontendAppConfig,
+      view(
         form
-      )(base.fakeRequest, base.messages).toString()
+      )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
 
-  private def controller(base: ControllerSpecBase)(
-    dataRetrievalAction: DataRetrievalAction = base.getEmptyData,
+  private def controller(
+    dataRetrievalAction: DataRetrievalAction = getEmptyData,
     authAction: AuthAction = FakeAuthAction,
     navigator: Navigator = FakeNavigator,
     cache: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   ): RegisterAsBusinessController =
     new RegisterAsBusinessController(
-      base.frontendAppConfig,
-      base.messagesApi,
+      frontendAppConfig,
+      messagesApi,
       authAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       cache,
       navigator,
-      auditService
+      auditService,
+      stubMessagesControllerComponents(),
+      view
     )
 
 }

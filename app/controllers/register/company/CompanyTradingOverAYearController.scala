@@ -26,37 +26,40 @@ import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyTradingOverAYearId
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.hasReferenceNumber
 
 import scala.concurrent.ExecutionContext
 
 class CompanyTradingOverAYearController @Inject()(override val appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                override val dataCacheConnector: UserAnswersCacheConnector,
-                                                @RegisterCompany override val navigator: Navigator,
-                                                authenticate: AuthAction,
-                                                allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: HasReferenceNumberFormProvider
-                                               )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                                  override val dataCacheConnector: UserAnswersCacheConnector,
+                                                  @RegisterCompany override val navigator: Navigator,
+                                                  authenticate: AuthAction,
+                                                  allowAccess: AllowAccessActionProvider,
+                                                  getData: DataRetrievalAction,
+                                                  requireData: DataRequiredAction,
+                                                  formProvider: HasReferenceNumberFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  val view: hasReferenceNumber
+                                                 )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = CompanyTradingOverAYearController.onSubmit(mode),
-      title = Message("trading.title", Message("theCompany").resolve),
+      title = Message("trading.title", Message("theCompany")),
       heading = Message("trading.title", companyName),
       mode = mode,
       hint = None,
       entityName = companyName
     )
 
-  private def form(companyName: String): Form[Boolean] = formProvider("trading.error.required", companyName)
+  private def form(companyName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider("trading.error.required", companyName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

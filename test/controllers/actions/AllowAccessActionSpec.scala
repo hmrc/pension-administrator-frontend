@@ -38,7 +38,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
     "allow access to pages for user with no enrolment and Normal mode" in {
       val action = new TestAllowAccessAction(NormalMode)
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None)))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None)))
 
       whenReady(futureResult) { result =>
 
@@ -48,7 +48,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
     "allow access to pages for user with no enrolment and Check mode" in {
       val action = new TestAllowAccessAction(CheckMode)
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None)))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None)))
 
       whenReady(futureResult) { result =>
 
@@ -59,7 +59,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
     "allow access to pages for user with enrolment and Normal mode and trying to get pagesAfterEnrolment" in {
       val action = new TestAllowAccessAction(NormalMode)
       val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, Some("id"))))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, Some("id"))))
 
       whenReady(futureResult) { result =>
 
@@ -69,7 +69,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
     "redirect to SessionExpiredPage for user with no enrolment and UpdateMode" in {
       val action = new TestAllowAccessAction(UpdateMode)
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None)))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None)))
 
       whenReady(futureResult) { result =>
 
@@ -80,7 +80,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
     "allow access to pages for user with enrolment and UpdateMode" in {
       val action = new TestAllowAccessAction(UpdateMode)
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"))))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
 
@@ -90,7 +90,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
     "redirect to intercept pages for suspended user with enrolment and UpdateMode" in {
       val action = new TestAllowAccessAction(UpdateMode, isSuspended = true)
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"))))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
 
@@ -101,7 +101,7 @@ class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
 
     "redirect to intercept page for user with enrolment and Normal/Check mode" in {
       val action = new TestAllowAccessAction(NormalMode)
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, false, None, Some("id"))))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
 

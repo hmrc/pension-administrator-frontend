@@ -16,31 +16,43 @@
 
 @import config.FrontendAppConfig
 
-@(title: String,
-  appConfig: FrontendAppConfig,
-  sidebarLinks: Option[Html] = None,
-  contentHeader: Option[Html] = None,
-  bodyClasses: Option[String] = None,
-  mainClass: Option[String] = None,
-  scriptElem: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages)
+@this(
+    appConfig: FrontendAppConfig,
+    govuk_wrapper: govuk_wrapper,
+    article: Article,
+    sidebar: Sidebar
+)
+
+@(
+    title: String,
+    sidebarLinks: Option[Html] = None,
+    contentHeader: Option[Html] = None,
+    bodyClasses: Option[String] = None,
+    mainClass: Option[String] = None,
+    scriptElem: Option[Html] = None
+)(
+    mainContent: Html
+)(implicit
+    request : Request[_],
+    messages: Messages
+)
 
 @import uk.gov.hmrc.play.views.html.layouts
 
 @serviceInfoContent = {}
 
-@sidebar = {
+@sidebarF = {
     @if(sidebarLinks.isDefined) {
-        @layouts.sidebar(sidebarLinks.get, Some("sidebar"))
+        @sidebar(sidebarLinks.get, Some("sidebar"))
     }
 }
 
-@govuk_wrapper(appConfig = appConfig,
-               title = title + " - " + Messages("pension.scheme.administrator.title"),
+@govuk_wrapper(title = s"$title - ${Messages("pension.scheme.administrator.title")}",
                mainClass = mainClass,
                bodyClasses = bodyClasses,
-               sidebar = sidebar,
+               sidebar = sidebarF,
                contentHeader = contentHeader,
-               mainContent = layouts.article(mainContent),
+               mainContent = article(mainContent),
                serviceInfoContent = serviceInfoContent,
                scriptElem = scriptElem
 )

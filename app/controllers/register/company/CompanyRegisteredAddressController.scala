@@ -26,10 +26,11 @@ import forms.address.NonUKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressId
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.i18n.Messages
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -38,9 +39,10 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
+import scala.concurrent.ExecutionContext
+
 class CompanyRegisteredAddressController @Inject()(
                                                     override val appConfig: FrontendAppConfig,
-                                                    override val messagesApi: MessagesApi,
                                                     override val dataCacheConnector: UserAnswersCacheConnector,
                                                     override val registrationConnector: RegistrationConnector,
                                                     @RegisterCompany override val navigator: Navigator,
@@ -49,16 +51,18 @@ class CompanyRegisteredAddressController @Inject()(
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: NonUKAddressFormProvider,
-                                                    val countryOptions: CountryOptions
-                                                  ) extends NonUKAddressController with Retrievals {
+                                                    val countryOptions: CountryOptions,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: nonukAddress
+                                                  )(implicit val executionContext: ExecutionContext) extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
 
   protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
     implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
-    nonukAddress(appConfig, preparedForm, viewModel)(request, messages)
+    view(preparedForm, viewModel)(request, messages)
 
-  private def addressViewModel(companyName: String) = ManualAddressViewModel(
+  private def addressViewModel(companyName: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.CompanyRegisteredAddressController.onSubmit(),
     countryOptions.options,
     Message("companyRegisteredNonUKAddress.title"),

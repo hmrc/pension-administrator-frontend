@@ -14,50 +14,50 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig, workingKnowledge: Boolean)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template
+)
+
+@(workingKnowledge: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declaration.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("declaration.title")
+) {
 
     @components.back_link()
 
     @components.heading(messages("declaration.heading"))
 
-        @components.paragraph_text(messages("declaration.declaration"))
+    @components.paragraph_text(messages("declaration.declaration"))
 
-        <ul class="list list-bullet">
-            <li>
-                @messages("declaration.statement1")
-            </li>
-            <li>
-                @messages("declaration.statement2")
-            </li>
-            <li>
-                @messages("declaration.statement3")
-            </li>
-            <li>
-                @messages("declaration.statement4")
-            </li>
-            <li>
-                @if(workingKnowledge) {
-                @messages("declaration.statement5a")
-                } else {
-                @messages("declaration.statement5b")
-                }
-            </li>
-        </ul>
+    <ul class="list list-bullet">
+        <li>
+            @messages("declaration.statement1")
+        </li>
+        <li>
+            @messages("declaration.statement2")
+        </li>
+        <li>
+            @messages("declaration.statement3")
+        </li>
+        <li>
+            @messages("declaration.statement4")
+        </li>
+        <li>
+            @if(workingKnowledge) {
+            @messages("declaration.statement5a")
+            } else {
+            @messages("declaration.statement5b")
+            }
+        </li>
+    </ul>
 
-        <div class="form-group">
-            <div class="section">
-                @components.button_link("site.agreeAndContinue", controllers.register.routes.DeclarationController.onSubmit().url, "submit")
-            </div>
+    <div class="form-group">
+        <div class="section">
+            @components.button_link("site.agreeAndContinue", controllers.register.routes.DeclarationController.onSubmit().url, "submit")
         </div>
-
-
+    </div>
 }

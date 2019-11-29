@@ -20,12 +20,15 @@
 @import models.Mode
 @import viewmodels.Message
 
-@(appConfig: FrontendAppConfig, continueCall: String)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template
+)
+
+@(continueCall: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = Message("adviser.alreadyDeleted.heading"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = Message("adviser.alreadyDeleted.heading")
+) {
 
         @components.back_link()
 

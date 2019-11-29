@@ -16,18 +16,19 @@
 
 package controllers.register.company
 
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.register.UTRControllerBehaviour
 import identifiers.register.BusinessUTRId
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, UserType}
+import models.{PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{SEE_OTHER, redirectLocation, status, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
+import views.html.register.utr
 
 class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBehaviour {
 
@@ -59,7 +60,9 @@ class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBeha
 
 }
 
-object CompanyUTRControllerSpec {
+object CompanyUTRControllerSpec extends ControllerSpecBase {
+
+  val view: utr = app.injector.instanceOf[utr]
 
   def testController(
                       base: ControllerSpecBase,
@@ -73,13 +76,13 @@ object CompanyUTRControllerSpec {
                       )(connector: UserAnswersCacheConnector, nav: Navigator): CompanyUTRController =
     new CompanyUTRController(
       appConfig = base.frontendAppConfig,
-      messagesApi = base.messagesApi,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
       allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
-      requireData = new DataRequiredActionImpl()
+      requireData = new DataRequiredActionImpl(),
+      stubMessagesControllerComponents(), view
     )
 
 }

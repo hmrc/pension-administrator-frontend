@@ -18,9 +18,10 @@ package controllers
 
 import base.SpecBase
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.pensionSchemePractitioner
 
-class PensionSchemePractitionerControllerSpec extends ControllerSpecBase {
+class PensionSchemePractitionerControllerSpec extends SpecBase {
 
   import PensionSchemePractitionerControllerSpec._
 
@@ -28,11 +29,11 @@ class PensionSchemePractitionerControllerSpec extends ControllerSpecBase {
 
     "return OK and the correct view" in {
 
-      val controller = testController(this)
+      val controller = testController
       val result = controller.onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(this)
+      contentAsString(result) mustBe viewAsString
 
     }
 
@@ -40,15 +41,14 @@ class PensionSchemePractitionerControllerSpec extends ControllerSpecBase {
 
 }
 
-object PensionSchemePractitionerControllerSpec {
+object PensionSchemePractitionerControllerSpec extends ControllerSpecBase {
 
-  def testController(base: SpecBase): PensionSchemePractitionerController =
-    new PensionSchemePractitionerController(
-      base.frontendAppConfig,
-      base.messagesApi
-    )
+  val view: pensionSchemePractitioner = app.injector.instanceOf[pensionSchemePractitioner]
 
-  def viewAsString(base: SpecBase): String =
-    pensionSchemePractitioner(base.frontendAppConfig)(base.fakeRequest, base.messages).toString()
+  def testController: PensionSchemePractitionerController =
+    new PensionSchemePractitionerController(frontendAppConfig, stubMessagesControllerComponents(), view)
+
+  def viewAsString: String =
+    view()(fakeRequest, messages).toString()
 
 }

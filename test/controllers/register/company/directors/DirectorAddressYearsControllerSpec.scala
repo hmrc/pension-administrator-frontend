@@ -16,9 +16,7 @@
 
 package controllers.register.company.directors
 
-import java.time.LocalDate
-
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
@@ -28,6 +26,7 @@ import models._
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
@@ -41,6 +40,7 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
   private val form = formProvider(Message("error.addressYears.required"))
   private val index = Index(0)
   private val directorName = "test first name test last name"
+  val view: addressYears = app.injector.instanceOf[addressYears]
 
   private val validData = Json.obj(
     "directors" -> Json.arr(
@@ -61,13 +61,14 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
     new DirectorAddressYearsController(
       new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private lazy val viewModel =
@@ -79,8 +80,7 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form) =
-    addressYears(
-      frontendAppConfig,
+    view(
       form,
       viewModel,
       NormalMode

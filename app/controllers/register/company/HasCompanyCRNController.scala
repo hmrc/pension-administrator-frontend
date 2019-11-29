@@ -28,29 +28,30 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.hasReferenceNumber
 
 import scala.concurrent.ExecutionContext
 
 class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                         @RegisterCompany override val navigator: Navigator,
                                         authenticate: AuthAction,
                                         allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: HasReferenceNumberFormProvider
-                                       )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                        formProvider: HasReferenceNumberFormProvider,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        val view: hasReferenceNumber
+                                       )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = HasCompanyCRNController.onSubmit(mode),
-      title = Message("hasCompanyNumber.heading", Message("theCompany").resolve),
+      title = Message("hasCompanyNumber.heading", Message("theCompany")),
       heading = Message("hasCompanyNumber.heading", entityName),
       mode = mode,
       hint = Some(Message("hasCompanyNumber.hint")),
@@ -58,9 +59,10 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
     )
 
   private def companyName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
-  private def form(companyName: String): Form[Boolean] =
+  private def form(companyName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider("companyRegistrationNumber.error.required", companyName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =

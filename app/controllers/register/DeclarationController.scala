@@ -33,10 +33,10 @@ import models.requests.DataRequest
 import models.{ExistingPSA, Mode, NormalMode}
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, Upstream4xxResponse}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declaration
@@ -45,7 +45,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeclarationController @Inject()(appConfig: FrontendAppConfig,
-                                      override val messagesApi: MessagesApi,
                                       authenticate: AuthAction,
                                       allowAccess: AllowAccessActionProvider,
                                       getData: DataRetrievalAction,
@@ -55,15 +54,17 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       pensionsSchemeConnector: PensionsSchemeConnector,
                                       knownFactsRetrieval: KnownFactsRetrieval,
                                       enrolments: TaxEnrolmentsConnector,
-                                      emailConnector: EmailConnector
-                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                      emailConnector: EmailConnector,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val view: declaration
+                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       DeclarationWorkingKnowledgeId.retrieve.right.map {
         workingKnowledge =>
           workingKnowledge.hasWorkingKnowledge
-          Future.successful(Ok(declaration(appConfig, workingKnowledge.hasWorkingKnowledge)))
+          Future.successful(Ok(view(workingKnowledge.hasWorkingKnowledge)))
       }
 
   }

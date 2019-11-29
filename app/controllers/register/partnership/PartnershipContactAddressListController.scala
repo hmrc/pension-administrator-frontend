@@ -28,25 +28,31 @@ import javax.inject.Inject
 import models.{Mode, TolerantAddress}
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
+import views.html.address.addressList
+
+import scala.concurrent.ExecutionContext
 
 class PartnershipContactAddressListController @Inject()(
                                                          val cacheConnector: UserAnswersCacheConnector,
                                                          @Partnership val navigator: Navigator,
                                                          val appConfig: FrontendAppConfig,
-                                                         val messagesApi: MessagesApi,
                                                          override val allowAccess: AllowAccessActionProvider,
                                                          authenticate: AuthAction,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
-                                                         formProvider: AddressListFormProvider
+                                                         formProvider: AddressListFormProvider,
+                                                         val controllerComponents: MessagesControllerComponents,
+                                                         val view: addressList
+                                                       )(implicit val executionContext: ExecutionContext
                                                        ) extends AddressListController with Retrievals {
-  def form(addresses: Seq[TolerantAddress], name: String): Form[Int] =
+
+
+  def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
     formProvider(addresses, Message("select.address.error.required").withArgs(name))
 
   def viewModel(mode: Mode) = Retrieval { implicit request =>

@@ -16,107 +16,89 @@
 
 package controllers.register.adviser
 
-import base.CSRFRequest
-import connectors.cache.UserAnswersCacheConnector
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
-import models.requests.DataRequest
 import models.{Mode, NormalMode, TolerantAddress}
+import org.mockito.Matchers.any
+import org.mockito.Mockito._
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.Adviser
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
+class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  import AdviserAddressPostCodeLookupControllerSpec._
+  private val mockAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
+
+  private val formProvider = new PostCodeLookupFormProvider()
+  private val form = formProvider()
+  private val address = TolerantAddress(
+    Some("test-address-line-1"),
+    Some("test-address-line-2"),
+    None,
+    None,
+    Some("ZZ1 1ZZ"),
+    Some("GB")
+  )
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
 
   "AdviserAddressPostCodeLookup Controller" must {
 
     "render the view correctly on a GET request" in {
-      requestResult(
-        implicit app => addToken(FakeRequest(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode))),
-        (request, result) => {
-          status(result) mustBe OK
-          contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode), NormalMode)(request, messages).toString()
-        }
-      )
+
+      val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
+      val request = addCSRFToken(FakeRequest(GET, routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url))
+
+      val result = route(app, request).value
+
+      status(result) mustBe OK
+
+      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messagesApi.preferred(request)).toString()
+
+
     }
 
     "redirect to the next page on a POST request" in {
-      requestResult(
-        implicit App => addToken(FakeRequest(routes.AdviserAddressPostCodeLookupController.onSubmit(NormalMode))
-          .withFormUrlEncodedBody("value" -> validPostcode)),
-        (_, result) => {
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(onwardRoute.url)
-        }
-      )
+      when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())) thenReturn Future.successful(Seq(address))
+
+      val request = FakeRequest(POST, routes.AdviserAddressPostCodeLookupController.onSubmit(NormalMode).url)
+        .withFormUrlEncodedBody("value" -> "ZZ1 1ZZ")
+
+      val result = route(app, request).value
+
+      status(result) mustBe SEE_OTHER
+
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+
+
     }
   }
-}
-
-object AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
-
-  private val formProvider = new PostCodeLookupFormProvider()
-  private val form = formProvider()
-  private val name = "Test Adviser Name"
-  private val validPostcode = "ZZ1 1ZZ"
 
   def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
     controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
     controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
     Message("adviserAddressPostCodeLookup.heading", Message("theAdviser")),
-    Message("adviserAddressPostCodeLookup.heading", name),
+    Message("adviserAddressPostCodeLookup.heading", "Test Adviser Name"),
     Message("adviserAddressPostCodeLookup.enterPostcode"),
     Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),
     Message("adviserAddressPostCodeLookup.formLabel"),
     psaName = None
   )
 
-  private val address = TolerantAddress(
-    Some("test-address-line-1"),
-    Some("test-address-line-2"),
-    None,
-    None,
-    Some(validPostcode),
-    Some("GB")
-  )
-
-  private val fakeAddressLookupConnector = new AddressLookupConnector {
-    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TolerantAddress]] = {
-      Future.successful(Seq(address))
-    }
-  }
-
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-
-  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
-
-    running(_.overrides(
-      bind[AuthAction].to(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(getAdviser),
-      bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind(classOf[Navigator]).qualifiedWith(classOf[Adviser]).toInstance(fakeNavigator),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-  }
+  override lazy val app: Application =
+    applicationBuilder(getAdviser).overrides(
+      bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
+      bind[Navigator].qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(onwardRoute))
+    ).build()
 }

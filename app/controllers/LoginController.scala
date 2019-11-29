@@ -20,19 +20,18 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
-import models.NormalMode
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
 
 import scala.concurrent.ExecutionContext
 
 class LoginController @Inject()(appConfig: FrontendAppConfig,
-                                override val messagesApi: MessagesApi,
                                 dataCacheConnector: UserAnswersCacheConnector,
-                                @AuthWithNoIV authenticate: AuthAction
-                               )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                @AuthWithNoIV authenticate: AuthAction,
+                                val controllerComponents: MessagesControllerComponents
+                               )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate {
     implicit request =>

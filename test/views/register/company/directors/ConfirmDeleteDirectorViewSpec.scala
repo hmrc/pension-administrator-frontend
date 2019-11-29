@@ -17,6 +17,7 @@
 package views.register.company.directors
 
 import models.{Index, NormalMode}
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.register.company.directors.confirmDeleteDirector
 
@@ -26,26 +27,26 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
 
   val firstIndex = Index(0)
 
-  def createView = () => confirmDeleteDirector(frontendAppConfig, firstIndex, "directorName", NormalMode)(fakeRequest, messages)
+  val view: confirmDeleteDirector = app.injector.instanceOf[confirmDeleteDirector]
 
-  val view = createView
+  def createView: () => Html = () => view(firstIndex, "directorName", NormalMode)(fakeRequest, messages)
 
   "ConfirmDeleteDirector view" must {
 
     "have the correct banner title" in {
-      val doc = asDocument(view())
+      val doc = asDocument(createView())
       val nav = doc.getElementById("proposition-menu")
       val span = nav.children.first
-      span.text mustBe messagesApi("site.service_name")
+      span.text mustBe messages("site.service_name")
     }
 
     "display the correct browser title" in {
-      val doc = asDocument(view())
-      assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title") + " - " + messagesApi("pension.scheme.administrator.title"))
+      val doc = asDocument(createView())
+      assertEqualsMessage(doc, "title", messages(s"$messageKeyPrefix.title") + " - " + messages("pension.scheme.administrator.title"))
     }
 
     "display the correct page title" in {
-      val doc = asDocument(view())
+      val doc = asDocument(createView())
       assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", "directorName")
     }
 
@@ -58,4 +59,5 @@ class ConfirmDeleteDirectorViewSpec extends ViewBehaviours {
       createView must haveLink(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url, "cancel")
     }
   }
+
 }

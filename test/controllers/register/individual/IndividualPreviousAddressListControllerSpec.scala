@@ -16,9 +16,7 @@
 
 package controllers.register.individual
 
-import base.CSRFRequest
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
 import forms.address.AddressListFormProvider
@@ -33,8 +31,11 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
-class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase with CSRFRequest {
+class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase {
+
+  val view: addressList = app.injector.instanceOf[addressList]
 
   private val addresses = Seq(
     TolerantAddress(
@@ -71,7 +72,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dataRetrievalAction)
       )) { implicit app =>
-        val request = addToken(FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)))
+        val request = addCSRFToken(FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)))
         val result = route(app, request).value
 
         status(result) mustBe OK
@@ -79,7 +80,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         val viewModel: AddressListViewModel = addressListViewModel(addresses)
         val form = new AddressListFormProvider()(viewModel.addresses, "error.required")
 
-        contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
+        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(request)).toString
       }
 
     }
@@ -91,7 +92,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>
-        val request = addToken(FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)))
+        val request = FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode))
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -107,7 +108,7 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
-        val request = addToken(FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)))
+        val request = FakeRequest(routes.IndividualPreviousAddressListController.onPageLoad(NormalMode))
         val result = route(app, request).value
 
         status(result) mustBe SEE_OTHER
@@ -125,10 +126,8 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind(classOf[Navigator]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
       )) { implicit app =>
         val request =
-          addToken(
             FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
               .withFormUrlEncodedBody(("value", "0"))
-          )
 
         val result = route(app, request).value
 
@@ -146,10 +145,8 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
         val request =
-          addToken(
-            FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
+         FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
               .withFormUrlEncodedBody(("value", "0"))
-          )
 
         val result = route(app, request).value
 
@@ -166,11 +163,8 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase wit
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>
-        val request =
-          addToken(
-            FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
+        val request = FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
               .withFormUrlEncodedBody(("value", "0"))
-          )
 
         val result = route(app, request).value
 

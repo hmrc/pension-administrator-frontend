@@ -17,7 +17,7 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.register.company.directors.routes
 import identifiers.Identifier
 import identifiers.register.company.directors._
@@ -26,7 +26,7 @@ import models.Mode.checkMode
 import models._
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.prop.TableFor4
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call

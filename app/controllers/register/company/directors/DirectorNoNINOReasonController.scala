@@ -25,27 +25,30 @@ import identifiers.register.company.directors.{DirectorNameId, DirectorNoNINORea
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.reason
 
 import scala.concurrent.ExecutionContext
 
-class DirectorNoNINOReasonController @Inject()(
-                                                @CompanyDirector val navigator: Navigator,
-                                                val appConfig: FrontendAppConfig,
-                                                val messagesApi: MessagesApi,
-                                                val dataCacheConnector: UserAnswersCacheConnector,
-                                                authenticate: AuthAction,
-                                                val allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: ReasonFormProvider
-                                         )(implicit val ec: ExecutionContext) extends ReasonController {
+class DirectorNoNINOReasonController @Inject()(@CompanyDirector val navigator: Navigator,
+                                               val appConfig: FrontendAppConfig,
+                                               val dataCacheConnector: UserAnswersCacheConnector,
+                                               authenticate: AuthAction,
+                                               val allowAccess: AllowAccessActionProvider,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: ReasonFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: reason
+                                              )(implicit val executionContext: ExecutionContext) extends ReasonController {
 
-  private def form(directorName: String) = formProvider(directorName)
+  private def form(directorName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[String] = formProvider(directorName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -66,7 +69,7 @@ class DirectorNoNINOReasonController @Inject()(
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorNoNINOReasonController.onSubmit(mode, index),
-      title = Message("whyNoNINO.heading", Message("theDirector").resolve),
+      title = Message("whyNoNINO.heading", Message("theDirector")),
       heading = Message("whyNoNINO.heading", directorName),
       mode = mode,
       entityName = directorName

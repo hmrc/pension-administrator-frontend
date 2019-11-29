@@ -16,6 +16,7 @@
 
 package controllers.address
 
+import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
@@ -28,23 +29,24 @@ import models.requests.DataRequest
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, Call, Request, Result}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-object SameContactAddressControllerSpec {
+object SameContactAddressControllerSpec extends SpecBase {
 
   object FakeIdentifier extends TypedIdentifier[Boolean]
 
@@ -52,14 +54,17 @@ object SameContactAddressControllerSpec {
 
   object ContactAddressIdentifier extends TypedIdentifier[Address]
 
+  val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
+
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
                                   formProvider: SameContactAddressFormProvider,
-                                  override val countryOptions: CountryOptions
-                                ) extends SameContactAddressController {
+                                  override val countryOptions: CountryOptions,
+                                  val view: sameContactAddress
+                                )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
     def onPageLoad(viewmodel: SameContactAddressViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, viewmodel, form)(DataRequest(FakeRequest(), "cacheId",
@@ -72,6 +77,7 @@ object SameContactAddressControllerSpec {
     }
 
     val form: Form[Boolean] = formProvider("error.required")
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 
 }
@@ -106,7 +112,6 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -115,7 +120,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
           val result = controller.onPageLoad(viewmodel(), UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual sameContactAddress(appConfig, formProvider("error.required"), viewmodel(), countryOptions)(request, messages).toString
+          contentAsString(result) mustEqual view(formProvider("error.required"), viewmodel(), countryOptions)(request, messages).toString
       }
     }
 
@@ -125,7 +130,6 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -135,8 +139,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
           val result = controller.onPageLoad(viewmodel(), answers)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual sameContactAddress(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider("error.required").fill(true),
             viewmodel(),
             countryOptions
@@ -285,7 +288,6 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[SameContactAddressFormProvider]
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -294,8 +296,7 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
           val result = controller.onSubmit(viewmodel(), UserAnswers(), request)
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual sameContactAddress(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider("error.required").bind(Map.empty[String, String]),
             viewmodel(),
             countryOptions

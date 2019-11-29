@@ -20,15 +20,19 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.register.company.companyNotFound
 
 class CompanyNotFoundControllerSpec extends ControllerSpecBase {
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyNotFoundController(frontendAppConfig, messagesApi, FakeAuthAction,
-      FakeAllowAccessProvider(), dataRetrievalAction, new DataRequiredActionImpl)
+  val view: companyNotFound = app.injector.instanceOf[companyNotFound]
 
-  def viewAsString() = companyNotFound(frontendAppConfig)(fakeRequest, messages).toString
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new CompanyNotFoundController(frontendAppConfig, FakeAuthAction,
+      FakeAllowAccessProvider(), dataRetrievalAction, new DataRequiredActionImpl,
+      stubMessagesControllerComponents(), view)
+
+  def viewAsString(): String = view()(fakeRequest, messages).toString
 
   "CompanyNotFound Controller" must {
 
@@ -39,4 +43,5 @@ class CompanyNotFoundControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
   }
+
 }

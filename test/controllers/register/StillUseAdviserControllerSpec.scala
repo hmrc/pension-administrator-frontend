@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.StillUseAdviserFormProvider
@@ -27,6 +27,7 @@ import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.stillUseAdviser
 
@@ -97,22 +98,25 @@ object StillUseAdviserControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
+  val view: stillUseAdviser = app.injector.instanceOf[stillUseAdviser]
+
   private val formProvider = new StillUseAdviserFormProvider()
   private val form = formProvider()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalActionWithAdviserAndBusinessDetails) =
     new StillUseAdviserController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString(form: Form[_] = form) = stillUseAdviser(frontendAppConfig,
+  private def viewAsString(form: Form[_] = form) = view(
     form, UpdateMode, None, personWithWorkingKnowledgeName)(fakeRequest, messages).toString
 }

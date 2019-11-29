@@ -18,8 +18,7 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.MoreThanTenFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.MoreThanTenDirectorsOrPartnersChangedId
@@ -30,15 +29,16 @@ import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 
 class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
 
@@ -130,9 +130,10 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       fixture.dataCacheConnector.verifyNot(MoreThanTenDirectorsOrPartnersChangedId)
     }
   }
+
 }
 
-object MoreThanTenControllerSpec {
+object MoreThanTenControllerSpec extends ControllerSpecBase {
 
   val testId: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {}
   lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
@@ -148,7 +149,7 @@ object MoreThanTenControllerSpec {
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(UserType.Organisation, None, false, None),
+      user = PSAUser(userType = UserType.Organisation, nino = None, isExistingPSA = false, existingPSAId = None),
       userAnswers = answers
     )
   }
@@ -165,10 +166,18 @@ object MoreThanTenControllerSpec {
       override protected def navigator: Navigator = new FakeNavigator(onwardRoute)
 
       override def messagesApi: MessagesApi = base.messagesApi
+
+      override protected def view: moreThanTen = moreThanTenView
+
+      implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+
+      override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
     }
 
     TestFixture(controller, connector)
   }
+
+  val moreThanTenView: moreThanTen = app.injector.instanceOf[moreThanTen]
 
   private val form: Form[Boolean] = new MoreThanTenFormProvider()()
 
@@ -183,6 +192,6 @@ object MoreThanTenControllerSpec {
     )
 
   def viewAsString(base: SpecBase, form: Form[_] = form): String =
-    moreThanTen(base.frontendAppConfig, form, viewModel(), NormalMode)(base.fakeRequest, base.messages).toString
+    moreThanTenView(form, viewModel(), NormalMode)(base.fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
 }

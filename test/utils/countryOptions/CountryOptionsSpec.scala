@@ -20,7 +20,7 @@ import base.SpecBase
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
 import models.InternationalRegion._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import utils.InputOption
@@ -76,4 +76,5 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
       }
     }
   }
+
 }

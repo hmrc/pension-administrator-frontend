@@ -21,30 +21,31 @@ import config.FrontendAppConfig
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import identifiers.register.DeclarationChangedId
 import models._
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.PsaDetailsService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import views.html.psa_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
-                                     override val messagesApi: MessagesApi,
                                      @utils.annotations.Variations navigator: Navigator,
                                      authenticate: AuthAction,
                                      allowAccess: AllowAccessActionProvider,
                                      getData: DataRetrievalAction,
-                                     psaDetailsService: PsaDetailsService
-                                    )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+                                     psaDetailsService: PsaDetailsService,
+                                     val controllerComponents: MessagesControllerComponents,
+                                     view: psa_details
+                                    )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       request.user.alreadyEnrolledPsaId.map { psaId =>
         psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId, mode).map { psaDetails =>
           val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
-          Ok(psa_details(appConfig, psaDetails, nextPage))
+          Ok(view(psaDetails, nextPage))
         }
       }.getOrElse(
         Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))

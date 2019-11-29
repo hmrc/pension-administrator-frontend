@@ -27,21 +27,25 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.phone
+
+import scala.concurrent.ExecutionContext
 
 class PartnershipPhoneController @Inject()(@Partnership val navigator: Navigator,
-                                       val appConfig: FrontendAppConfig,
-                                       val messagesApi: MessagesApi,
-                                       val cacheConnector: UserAnswersCacheConnector,
-                                       authenticate: AuthAction,
-                                       val allowAccess: AllowAccessActionProvider,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: PhoneFormProvider
-                                      ) extends PhoneController {
+                                           val appConfig: FrontendAppConfig,
+                                           val cacheConnector: UserAnswersCacheConnector,
+                                           authenticate: AuthAction,
+                                           val allowAccess: AllowAccessActionProvider,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: PhoneFormProvider,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: phone
+                                          )(implicit val executionContext: ExecutionContext) extends PhoneController {
 
   private val form = formProvider()
 

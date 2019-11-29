@@ -27,29 +27,31 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.hasReferenceNumber
 
 import scala.concurrent.ExecutionContext
 
 class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
                                          override val dataCacheConnector: UserAnswersCacheConnector,
                                          @CompanyDirector override val navigator: Navigator,
                                          authenticate: AuthAction,
                                          allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         formProvider: HasReferenceNumberFormProvider
-                                       )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                         formProvider: HasReferenceNumberFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: hasReferenceNumber
+                                         )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController with I18nSupport {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = HasDirectorUTRController.onSubmit(mode, index),
-      title = Message("hasUTR.heading", Message("theDirector").resolve),
+      title = Message("hasUTR.heading", Message("theDirector")),
       heading = Message("hasUTR.heading", entityName),
       mode = mode,
       hint = Some(Message("utr.p1")),
@@ -59,7 +61,7 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def form(directorName: String): Form[Boolean] =
+  private def form(directorName: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider("hasUTR.error.required", directorName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =

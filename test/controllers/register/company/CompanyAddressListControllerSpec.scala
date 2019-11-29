@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
@@ -26,6 +26,7 @@ import models.{NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -44,6 +45,8 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     address("test post code 2")
   )
 
+  val view: addressList = inject[addressList]
+
   private val addressObject = Json.obj(CompanyPreviousAddressPostCodeLookupId.toString -> addresses)
 
   def address(postCode: String): TolerantAddress = TolerantAddress(
@@ -60,33 +63,33 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyAddressListController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private lazy val viewModel = AddressListViewModel(
     postCall = routes.CompanyAddressListController.onSubmit(NormalMode),
     manualInputCall = routes.CompanyPreviousAddressController.onPageLoad(NormalMode),
     addresses = addresses,
-    Message("previousAddressList.heading", Message("theCompany").resolve),
+    Message("previousAddressList.heading", Message("theCompany")),
     Message("previousAddressList.heading", companyName),
     Message("common.selectAddress.text"),
     Message("common.selectAddress.link")
   )
 
   private def viewAsString(form: Form[_] = form) =
-    addressList(
-      frontendAppConfig,
+    view(
       form,
       viewModel,
       NormalMode
-    )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
+    )(fakeRequest, messages).toString()
 
   "CompanyAddressList Controller" must {
 

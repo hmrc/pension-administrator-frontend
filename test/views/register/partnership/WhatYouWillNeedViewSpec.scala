@@ -16,6 +16,7 @@
 
 package views.register.partnership
 
+import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.register.partnership.whatYouWillNeed
 
@@ -23,11 +24,15 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "whatYouWillNeed.partnership"
 
-  def createView = () => whatYouWillNeed(frontendAppConfig)(fakeRequest, messages)
+  val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
+
+  def createView: () => HtmlFormat.Appendable = () =>
+    view()(fakeRequest, messages)
 
   "WhatYouWillNeed view" must {
     behave like normalPage(createView, messageKeyPrefix, "body.text1", "body.text2", "body.item1", "body.item2", "body.item3")
 
     behave like pageWithSubmitButton(createView)
   }
+
 }

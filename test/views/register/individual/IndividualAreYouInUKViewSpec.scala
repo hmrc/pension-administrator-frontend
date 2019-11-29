@@ -43,16 +43,16 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
 
   val form: Form[Boolean] = formProvider()
 
-  private def createView(mode: Mode = NormalMode): () => Html =
-    () => areYouInUK(
-      frontendAppConfig,
+  val view: areYouInUK = app.injector.instanceOf[areYouInUK]
+
+  private def createView(mode: Mode = NormalMode): () => Html = () =>
+    view(
       form,
       viewmodel(mode)
     )(fakeRequest, messages)
 
-  private def createViewUsingForm: Form[_] => Html =
-    (form: Form[_]) => areYouInUK(
-      frontendAppConfig,
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) =>
+    view(
       form,
       viewmodel(NormalMode)
     )(fakeRequest, messages)

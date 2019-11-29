@@ -24,6 +24,7 @@ import models.{NormalMode, PersonName}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.partnership.partnershipReview
 
@@ -33,6 +34,8 @@ class PartnershipReviewControllerSpec extends ControllerSpecBase {
 
   val partnershipName = "test partnership name"
   val partners: Seq[String] = Seq("partner a", "partner b", "partner c")
+
+  val view: partnershipReview = app.injector.instanceOf[partnershipReview]
 
   def partner(lastName: String, isDeleted: Boolean = false): JsObject = Json.obj(
     PartnerNameId.toString -> PersonName("partner", lastName, isDeleted)
@@ -47,15 +50,16 @@ class PartnershipReviewControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PartnershipReviewController(
       frontendAppConfig,
-      messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString() = partnershipReview(frontendAppConfig, partnershipName, partners)(fakeRequest, messages).toString
+  private def viewAsString() = view(partnershipName, partners)(fakeRequest, messages).toString
 
   "PartnershipReview Controller" must {
 

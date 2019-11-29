@@ -17,12 +17,15 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    appConfig: FrontendAppConfig
+)
+
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("submissionInvalid.title"),
-    appConfig = appConfig,
-    bodyClasses = None
+    title = messages("submissionInvalid.title")
 ) {
     @components.back_link()
 
@@ -32,10 +35,5 @@
 
     <p>@Html(messages("submissionInvalid.body2"))</p>
 
-    @components.link(
-    "exitToGovUK",
-     appConfig.govUkUrl,
-    "go-to-gov-uk"
-    )
-
+    @components.link("exitToGovUK", appConfig.govUkUrl, "go-to-gov-uk")
 }

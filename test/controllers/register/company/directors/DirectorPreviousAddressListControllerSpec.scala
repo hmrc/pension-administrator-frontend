@@ -16,7 +16,7 @@
 
 package controllers.register.company.directors
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -39,7 +40,7 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
   private val form: Form[Int] = formProvider(Seq.empty, "error.required")
 
   private val director = PersonName("firstName", "lastName")
-
+  val view: addressList = app.injector.instanceOf[addressList]
   private val addresses = Seq(
     address("test post code 1"),
     address("test post code 2")
@@ -68,14 +69,15 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DirectorPreviousAddressListController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private lazy val viewModel =
@@ -90,8 +92,7 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form): String =
-    addressList(
-      frontendAppConfig,
+    view(
       form,
       viewModel,
       NormalMode
@@ -182,6 +183,6 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
         }
       }
     }
-
   }
+
 }

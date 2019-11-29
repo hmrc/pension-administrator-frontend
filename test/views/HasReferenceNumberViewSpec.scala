@@ -18,10 +18,9 @@ package views
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.{Index, Mode, NormalMode, UpdateMode}
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.YesNoViewBehaviours
@@ -53,12 +52,13 @@ class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
 
   val form = new HasXFormProvider()("required", "name")
 
+  val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
   private def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
-    hasReferenceNumber(frontendAppConfig, form, viewModel(mode))(fakeRequest, messages)
+    view(form, viewModel(mode))(fakeRequest, messages)
 
   private def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    hasReferenceNumber(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages)
+    view(form, viewModel(NormalMode))(fakeRequest, messages)
 
   "HasReferenceNumber view" must {
 
@@ -76,4 +76,5 @@ class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
     behave like pageWithReturnLink(createView(UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
   }
+
 }

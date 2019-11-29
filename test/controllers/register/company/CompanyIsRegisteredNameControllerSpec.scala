@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{ControllerSpecBase, IsRegisteredNameControllerBehaviour}
@@ -26,8 +26,10 @@ import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
+import views.html.register.isRegisteredName
 
 class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRegisteredNameControllerBehaviour {
 
@@ -59,7 +61,7 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
 
 }
 
-object CompanyIsRegisteredNameControllerSpec {
+object CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase {
 
   def viewModel = CommonFormViewModel(
     NormalMode,
@@ -69,6 +71,8 @@ object CompanyIsRegisteredNameControllerSpec {
   )
 
   val name = "test company name"
+
+  val view: isRegisteredName = app.injector.instanceOf[isRegisteredName]
 
   def testController(
                       base: ControllerSpecBase,
@@ -82,14 +86,15 @@ object CompanyIsRegisteredNameControllerSpec {
                       )(connector: UserAnswersCacheConnector, nav: Navigator): CompanyIsRegisteredNameController =
     new CompanyIsRegisteredNameController(
       appConfig = base.frontendAppConfig,
-      messagesApi = base.messagesApi,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
       allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
-      formProvider = new IsRegisteredNameFormProvider()
+      formProvider = new IsRegisteredNameFormProvider(),
+      stubMessagesControllerComponents(),
+      view
     )
 
 }

@@ -17,29 +17,18 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors._
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register._
-import identifiers.register.company.CompanyEmailId
-import identifiers.register.individual.IndividualEmailId
-import identifiers.register.partnership.PartnershipEmailId
 import javax.inject.Inject
-import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
-import models.requests.DataRequest
-import models.{ExistingPSA, Mode, NormalMode, UserType}
-import play.api.Logger
+import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, Upstream4xxResponse}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Register
-import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
+import utils.{Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
-import controllers.register.routes.DeclarationFitAndProperController
-import controllers.register.routes.{DuplicateRegistrationController, SubmissionInvalidController}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -50,13 +39,14 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   @Register navigator: Navigator,
-                                                  dataCacheConnector: UserAnswersCacheConnector
-                                                 )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                                  dataCacheConnector: UserAnswersCacheConnector,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  val view: declarationFitAndProper
+                                                 )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(Ok(
-        declarationFitAndProper(appConfig)))
+      Future.successful(Ok(view()))
   }
 
   def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

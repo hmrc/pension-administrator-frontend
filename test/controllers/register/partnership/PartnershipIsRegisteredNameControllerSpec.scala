@@ -16,8 +16,7 @@
 
 package controllers.register.partnership
 
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.{ControllerSpecBase, IsRegisteredNameControllerBehaviour}
 import forms.register.IsRegisteredNameFormProvider
@@ -26,8 +25,10 @@ import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
+import views.html.register.isRegisteredName
 
 class PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRegisteredNameControllerBehaviour {
 
@@ -38,10 +39,10 @@ class PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase with 
 
   "PartnershipIsRegisteredNameController" must {
 
-    behave like isRegisteredNameController(viewModel, createController(this, getEmptyData))
+    behave like isRegisteredNameController(viewModel, createController(getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = testController(this, dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = testController(dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -49,7 +50,7 @@ class PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase with 
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
-      val result = testController(this, dontGetAnyData).onSubmit()(postRequest)
+      val result = testController(dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -60,7 +61,7 @@ class PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase with 
 }
 
 
-object PartnershipIsRegisteredNameControllerSpec {
+object PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase {
 
   def viewModel = CommonFormViewModel(
     NormalMode,
@@ -71,26 +72,27 @@ object PartnershipIsRegisteredNameControllerSpec {
 
   val name = "test partnership name"
 
+  val view: isRegisteredName = app.injector.instanceOf[isRegisteredName]
+
   def testController(
-                      base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction
                     ): PartnershipIsRegisteredNameController =
-    createController(base, dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
+    createController(dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
 
   def createController(
-                        base: ControllerSpecBase,
                         dataRetrievalAction: DataRetrievalAction
                       )(connector: UserAnswersCacheConnector, nav: Navigator): PartnershipIsRegisteredNameController =
     new PartnershipIsRegisteredNameController(
-      appConfig = base.frontendAppConfig,
-      messagesApi = base.messagesApi,
+      appConfig = frontendAppConfig,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
       allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
-      formProvider = new IsRegisteredNameFormProvider()
+      formProvider = new IsRegisteredNameFormProvider(),
+      stubMessagesControllerComponents(),
+      view
     )
 
 }

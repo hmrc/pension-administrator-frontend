@@ -26,16 +26,16 @@ import models.{Address, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait AddressListController extends FrontendController with I18nSupport {
+trait AddressListController extends FrontendBaseController with I18nSupport {
 
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+  implicit val executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
@@ -45,9 +45,11 @@ trait AddressListController extends FrontendController with I18nSupport {
 
   protected val allowAccess: AllowAccessActionProvider
 
+  protected def view: addressList
+
   protected def get(viewModel: AddressListViewModel, mode: Mode, form: Form[Int])
                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    Future.successful(Ok(addressList(appConfig, form, viewModel, mode)))
+    Future.successful(Ok(view(form, viewModel, mode)))
   }
 
   protected def post(viewModel: AddressListViewModel, navigatorId: TypedIdentifier[TolerantAddress],
@@ -56,7 +58,7 @@ trait AddressListController extends FrontendController with I18nSupport {
 
     form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(addressList(appConfig, formWithErrors, viewModel, mode))),
+        Future.successful(BadRequest(view(formWithErrors, viewModel, mode))),
       addressIndex => {
         val address = viewModel.addresses(addressIndex).copy(country = Some("GB"))
         cacheConnector.save(request.externalId, navigatorId, address).map {

@@ -17,6 +17,7 @@
 package views
 
 import play.api.mvc.Call
+import play.twirl.api.HtmlFormat
 import viewmodels.{AlreadyDeletedViewModel, Message}
 import views.behaviours.ViewBehaviours
 import views.html.alreadyDeleted
@@ -27,19 +28,21 @@ class AlreadyDeletedViewSpec extends ViewBehaviours {
 
   def viewmodel = AlreadyDeletedViewModel(Message("alreadyDeleted.director.title"), deletedEntity, Call("GET", "/"))
 
-  val expectedGuidanceKeys = Seq(
+  val expectedGuidanceKeys: Seq[Message] = Seq(
     Message("alreadyDeleted.lede", deletedEntity),
     Message("alreadyDeleted.text")
   )
 
-  def createView = () => alreadyDeleted(frontendAppConfig, viewmodel)(fakeRequest, messages)
+  val view: alreadyDeleted = app.injector.instanceOf[alreadyDeleted]
+
+  def createView: () => HtmlFormat.Appendable = () => view(viewmodel)(fakeRequest, messages)
 
   "Already Deleted view" must {
 
     "display the correct browser title" in {
       val doc = asDocument(createView())
       assertEqualsMessage(doc, "title",
-        messagesApi(s"$messageKeyPrefix.director.title", deletedEntity) + " - " + messagesApi("pension.scheme.administrator.title"))
+        messages(s"$messageKeyPrefix.director.title", deletedEntity) + " - " + messages("pension.scheme.administrator.title"))
     }
 
     "display the correct page title" in {
@@ -58,6 +61,6 @@ class AlreadyDeletedViewSpec extends ViewBehaviours {
         "return-to-list"
       )
     }
-
   }
+
 }

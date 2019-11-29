@@ -37,7 +37,7 @@ import scala.util.{Failure, Try}
 trait TaxEnrolmentsConnector {
 
   def enrol(enrolmentKey: String, knownFacts: KnownFacts)
-           (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse]
+           (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse]
 
 }
 
@@ -49,14 +49,14 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
   def url: String = config.taxEnrolmentsUrl("HMRC-PODS-ORG")
 
   override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
-                    (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse] = {
+                    (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse] = {
     retryOnFailure(() => enrolmentRequest(enrolmentKey, knownFacts), config)
   } andThen {
     logExceptions(knownFacts)
   }
 
   private def enrolmentRequest(enrolmentKey: String, knownFacts: KnownFacts)
-                              (implicit w: Writes[KnownFacts], hc: HeaderCarrier, ec: ExecutionContext,
+                              (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext,
                                request: DataRequest[AnyContent]):Future[HttpResponse] = {
 
     http.PUT(url, knownFacts) flatMap {

@@ -25,7 +25,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PensionAdministratorFeatureSwitchConnectorImpl @Inject()(http: HttpClient, appConfig: FrontendAppConfig) extends FeatureSwitchConnector {
 
-  override def toggleOn(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  override def toggleOn(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean] = {
 
     val url = appConfig.pensionAdministratorUrl + s"/pension-administrator/test-only/toggle-on/$name"
 
@@ -37,7 +37,7 @@ class PensionAdministratorFeatureSwitchConnectorImpl @Inject()(http: HttpClient,
     }
   }
 
-  override def toggleOff(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  override def toggleOff(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean] = {
 
     val url = appConfig.pensionAdministratorUrl + s"/pension-administrator/test-only/toggle-off/$name"
 
@@ -48,7 +48,7 @@ class PensionAdministratorFeatureSwitchConnectorImpl @Inject()(http: HttpClient,
         Future.successful(false)
     }
   }
-  override def reset(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  override def reset(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean] = {
     val url = appConfig.pensionAdministratorUrl + s"/pension-administrator/test-only/reset/$name"
 
     http.GET(url).map { _ =>
@@ -59,7 +59,7 @@ class PensionAdministratorFeatureSwitchConnectorImpl @Inject()(http: HttpClient,
     }
   }
 
-  override def get(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Boolean]] = {
+  override def get(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[Boolean]] = {
     val url = appConfig.pensionAdministratorUrl + s"/pension-administrator/test-only/get/$name"
 
     http.GET(url).map { value =>

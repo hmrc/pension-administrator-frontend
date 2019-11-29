@@ -19,6 +19,8 @@ package views
 import controllers.register.partnership.partners.routes
 import forms.ConfirmDeleteFormProvider
 import models.{Index, Mode, NormalMode, UpdateMode}
+import play.api.data.Form
+import play.twirl.api.HtmlFormat
 import viewmodels.ConfirmDeleteViewModel
 import views.behaviours.ViewBehaviours
 import views.html.confirmDelete
@@ -28,6 +30,8 @@ class ConfirmDeleteViewSpec extends ViewBehaviours {
   val messageKeyPrefix = "confirmDelete"
 
   val firstIndex = Index(0)
+
+  val view: confirmDelete = app.injector.instanceOf[confirmDelete]
 
   val viewModel = ConfirmDeleteViewModel(
     routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode),
@@ -40,12 +44,13 @@ class ConfirmDeleteViewSpec extends ViewBehaviours {
   )
 
   val formProvider = new ConfirmDeleteFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
-  def createView(mode: Mode = NormalMode) = () => confirmDelete(frontendAppConfig, form, viewModel, mode)(fakeRequest, messages)
+  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => view(form, viewModel, mode)(fakeRequest, messages)
 
   "ConfirmDeletePartner view" must {
     behave like normalPage(createView(), messageKeyPrefix)
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
+
 }

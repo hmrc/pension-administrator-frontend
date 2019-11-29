@@ -25,9 +25,10 @@ class CannotMakeChangesViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "cannotMakeChanges"
   private val administratorName = "Mark Wright"
+  val view: cannotMakeChanges = app.injector.instanceOf[cannotMakeChanges]
 
   private def createView: () => HtmlFormat.Appendable = () =>
-    cannotMakeChanges(frontendAppConfig, Some(administratorName), UpdateMode)(fakeRequest, messages)
+    view(Some(administratorName), UpdateMode)(fakeRequest, messages)
 
   "cannotMakeChanges view" must {
 
@@ -42,4 +43,5 @@ class CannotMakeChangesViewSpec extends ViewBehaviours {
       assertContainsText(doc, messages(s"$messageKeyPrefix.p1", administratorName))
     }
   }
+
 }

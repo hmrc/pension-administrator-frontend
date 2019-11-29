@@ -16,7 +16,8 @@
 
 package controllers.register.partnership
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
+import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
@@ -25,6 +26,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
@@ -35,10 +37,11 @@ class PartnershipEmailControllerSpec extends ControllerWithCommonBehaviour {
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnershipEmailController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+    stubMessagesControllerComponents(), view)
 
-  private def emailView(form: Form[_] = emailForm): String = email(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages).toString
+  private def emailView(form: Form[_] = emailForm): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "PartnershipEmail Controller" must {
 
@@ -53,11 +56,13 @@ class PartnershipEmailControllerSpec extends ControllerWithCommonBehaviour {
   }
 }
 
-object PartnershipEmailControllerSpec {
+object PartnershipEmailControllerSpec extends ControllerSpecBase {
   private val formProvider = new EmailFormProvider()
   private val emailForm = formProvider()
   private val partnershipName = "Test Partnership Name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
+
+  val view: email = app.injector.instanceOf[email]
 
   private def viewModel(mode: Mode)(implicit messages: Messages) =
     CommonFormWithHintViewModel(

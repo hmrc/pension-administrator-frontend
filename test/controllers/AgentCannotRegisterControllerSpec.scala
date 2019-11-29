@@ -16,14 +16,19 @@
 
 package controllers
 
+import controllers.actions.FakeDataRetrievalAction
 import play.api.test.Helpers._
 import views.html.agentCannotRegister
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 class AgentCannotRegisterControllerSpec extends ControllerSpecBase {
 
-  def controller() = new AgentCannotRegisterController(frontendAppConfig, messagesApi)
+  val view: agentCannotRegister = app.injector.instanceOf[agentCannotRegister]
 
-  def viewAsString() = agentCannotRegister(frontendAppConfig)(fakeRequest, messages).toString
+  def controller(dataRetrievalAction: FakeDataRetrievalAction = getEmptyData) =
+    new AgentCannotRegisterController(frontendAppConfig, stubMessagesControllerComponents(), view)
+
+  private def viewAsString() = view()(fakeRequest, messages).toString
 
   "AgentCannotRegister Controller" must {
 
@@ -34,4 +39,5 @@ class AgentCannotRegisterControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
   }
+
 }

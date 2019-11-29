@@ -25,38 +25,41 @@ import identifiers.register.{BusinessNameId, EnterVATId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.data.Form
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.enterVAT
 
 import scala.concurrent.ExecutionContext
 
 class PartnershipEnterVATController @Inject()(val appConfig: FrontendAppConfig,
-                                              override val messagesApi: MessagesApi,
                                               val cacheConnector: UserAnswersCacheConnector,
                                               @Partnership val navigator: Navigator,
                                               authenticate: AuthAction,
                                               allowAccess: AllowAccessActionProvider,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
-                                              formProvider: EnterVATFormProvider
-                                          )(implicit val ec: ExecutionContext) extends VATNumberController {
+                                              formProvider: EnterVATFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val view: enterVAT
+                                             )(implicit val executionContext: ExecutionContext) extends VATNumberController {
 
-  private def form(partnershipName: String) = formProvider(partnershipName)
+  private def form(partnershipName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[String] = formProvider(partnershipName)
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.PartnershipEnterVATController.onSubmit(mode),
-      title = Message("enterVAT.title", Message("thePartnership").resolve),
+      title = Message("enterVAT.title", Message("thePartnership")),
       heading = Message("enterVAT.heading", entityName),
       mode = mode,
       entityName = entityName
     )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

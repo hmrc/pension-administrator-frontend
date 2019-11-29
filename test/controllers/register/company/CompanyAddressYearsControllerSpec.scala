@@ -16,9 +16,7 @@
 
 package controllers.register.company
 
-import base.CSRFRequest
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes.CompanyAddressYearsController
@@ -26,47 +24,43 @@ import forms.address.AddressYearsFormProvider
 import identifiers.register.{BusinessNameId, BusinessUTRId}
 import models.{AddressYears, NormalMode}
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{Request, Result}
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.MessagesControllerComponents
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
-import scala.concurrent.Future
-
-class CompanyAddressYearsControllerSpec extends ControllerSpecBase with CSRFRequest {
+class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
   import CompanyAddressYearsControllerSpec._
 
   "render the view correctly on a GET request" in {
-    requestResult(
-      implicit app => addToken(FakeRequest(CompanyAddressYearsController.onPageLoad(NormalMode))),
-      (request, result) => {
+    val request = addCSRFToken(FakeRequest(CompanyAddressYearsController.onPageLoad(NormalMode)))
+    val result = route(application, request).value
         status(result) mustBe OK
-        contentAsString(result) mustBe addressYears(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString
-      }
-    )
+        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
   }
 
   "redirect to the next page on a POST request" in {
-    requestResult(
-      implicit App => addToken(FakeRequest(CompanyAddressYearsController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> AddressYears.OverAYear.toString)),
-      (_, result) => {
+    val request = FakeRequest(CompanyAddressYearsController.onSubmit(NormalMode))
+        .withFormUrlEncodedBody("value" -> AddressYears.OverAYear.toString)
+    val result = route(application, request).value
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
-      }
-    )
   }
 }
 object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSpec {
 
   val companyName = "Test Company Name"
+
+  val view: addressYears = app.injector.instanceOf[addressYears]
 
   val dataRetrieval: DataRetrievalAction = UserAnswers()
     .set(BusinessNameId)(companyName).flatMap(_.set(BusinessUTRId)("Test UTR")).asOpt.value
@@ -81,21 +75,15 @@ object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSp
 
   val form = new AddressYearsFormProvider()(companyName)
 
-  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
-                              (implicit writeable: Writeable[T]): Unit = {
-    running(_.overrides(
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-  }
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+      bind[MessagesControllerComponents].to(stubMessagesControllerComponents())
+    ).build()
 
 }
 

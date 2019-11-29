@@ -18,6 +18,7 @@ package views.register
 
 import forms.UTRFormProvider
 import play.api.data.Form
+import play.twirl.api.Html
 import viewmodels.Message
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.utr
@@ -30,15 +31,17 @@ class UTRViewSpec extends QuestionViewBehaviours[String] {
   private val businessType = "limited company"
   private val onwardUrl = controllers.routes.IndexController.onPageLoad()
 
-  private def createView = () => utr(frontendAppConfig, form, businessType, onwardUrl)(fakeRequest, messages)
+  val view: utr = app.injector.instanceOf[utr]
 
-  private def createViewUsingForm(form: Form[_]) = utr(frontendAppConfig, form, businessType, onwardUrl)(fakeRequest, messages)
+  private def createView: () => Html = () => view(form, businessType, onwardUrl)(fakeRequest, messages)
+
+  private def createViewUsingForm(form: Form[_]): Html = view(form, businessType, onwardUrl)(fakeRequest, messages)
 
   "UTR view" must {
     
     "display the correct browser title" in {
       val doc = asDocument(createView())
-      assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title", businessType)  + " - " + messagesApi("pension.scheme.administrator.title"))
+      assertEqualsMessage(doc, "title", messages(s"$messageKeyPrefix.title", businessType)  + " - " + messages("pension.scheme.administrator.title"))
     }
 
     "display the correct page header" in {

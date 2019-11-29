@@ -25,15 +25,15 @@ import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.AreYouInUKViewModel
 import views.html.register.areYouInUK
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait AreYouInUKController extends FrontendController with I18nSupport {
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait AreYouInUKController extends FrontendBaseController with I18nSupport {
+  implicit val executionContext: ExecutionContext
   protected val appConfig: FrontendAppConfig
   protected val dataCacheConnector: UserAnswersCacheConnector
   protected val navigator: Navigator
@@ -42,8 +42,9 @@ trait AreYouInUKController extends FrontendController with I18nSupport {
   protected val getData: DataRetrievalAction
   protected val requireData: DataRequiredAction
   protected val formProvider: AreYouInUKFormProvider
+  protected def view: areYouInUK
 
-  protected val form = formProvider()
+  protected val form: Form[Boolean] = formProvider()
 
   protected def viewmodel(mode: Mode): AreYouInUKViewModel
 
@@ -54,14 +55,14 @@ trait AreYouInUKController extends FrontendController with I18nSupport {
         case Some(userAnswers) =>
           userAnswers.get(AreYouInUKId).fold(form)(v => form.fill(v))
       }
-      Ok(areYouInUK(appConfig, preparedForm, viewmodel(mode)))
+      Ok(view(preparedForm, viewmodel(mode)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(areYouInUK(appConfig, formWithErrors, viewmodel(mode)))),
+          Future.successful(BadRequest(view(formWithErrors, viewmodel(mode)))),
         value => {
           dataCacheConnector.save(request.externalId, AreYouInUKId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap))))

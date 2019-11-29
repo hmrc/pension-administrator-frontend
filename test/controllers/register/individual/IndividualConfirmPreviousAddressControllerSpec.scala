@@ -16,16 +16,17 @@
 
 package controllers.register.individual
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.address.{ConfirmPreviousAddressFormProvider, SameContactAddressFormProvider}
+import forms.address.ConfirmPreviousAddressFormProvider
 import identifiers.register.individual.{ExistingCurrentAddressId, IndividualConfirmPreviousAddressId, IndividualDetailsId}
 import models._
 import play.api.data.Form
 import play.api.libs.json.JsResult
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -39,7 +40,7 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
   val psa: String = "John Doe"
 
   val formProvider = new ConfirmPreviousAddressFormProvider()
-  val form = formProvider(Message("confirmPreviousAddress.error", psa))
+  val form: Form[Boolean] = formProvider(Message("confirmPreviousAddress.error", psa))
 
   val testAddress = TolerantAddress(
     Some("address line 1"),
@@ -64,19 +65,20 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new IndividualConfirmPreviousAddressController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
+val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
 
   def viewAsString(form: Form[_] = form): String =
-    sameContactAddress(
-      frontendAppConfig,
+    view(
       form,
       viewmodel,
       countryOptions

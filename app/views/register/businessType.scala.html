@@ -14,25 +14,26 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.routes._
 @import models.Mode
 @import models.register.BusinessType
 
-@(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("businessType.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("businessType.title")
+) {
+    @components.back_link()
 
-    @helpers.form(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
+    @components.error_summary(form.errors)
 
-        @components.back_link()
-
-        @components.error_summary(form.errors)
-
+    @formHelper(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
         @components.input_radio(
             field = form("value"),
             legend = messages("businessType.heading"),

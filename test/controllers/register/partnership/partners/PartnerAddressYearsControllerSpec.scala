@@ -16,7 +16,7 @@
 
 package controllers.register.partnership.partners
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
@@ -26,6 +26,7 @@ import models._
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
@@ -61,27 +62,28 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
-      messagesApi,
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
+
+  val view: addressYears = app.injector.instanceOf[addressYears]
 
   private lazy val viewModel =
     AddressYearsViewModel(
       postCall = routes.PartnerAddressYearsController.onSubmit(NormalMode, index),
-      title = Message("addressYears.heading", Message("thePartner").resolve),
+      title = Message("addressYears.heading", Message("thePartner")),
       heading = Message("addressYears.heading", partnerName),
       legend = Message("addressYears.heading", partnerName),
       psaName = None
     )
 
   private def viewAsString(form: Form[_] = form) =
-    addressYears(
-      frontendAppConfig,
-      form,
+    view(form,
       viewModel,
       NormalMode
     )(fakeRequest, messages).toString
@@ -136,4 +138,5 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
+
 }

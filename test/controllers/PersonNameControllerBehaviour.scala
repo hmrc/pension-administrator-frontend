@@ -16,8 +16,8 @@
 
 package controllers
 
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import base.SpecBase
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.PersonNameFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -32,25 +32,22 @@ import views.html.personName
 
 import scala.concurrent.Future
 
-trait PersonNameControllerBehaviour {
-  this: ControllerSpecBase =>
-
+trait PersonNameControllerBehaviour extends SpecBase {
   import PersonNameControllerBehaviour._
   // scalastyle:off method.length
 
-  def personNameController[I <: TypedIdentifier[PersonName]](
-                                                                    viewModel: CommonFormWithHintViewModel,
-                                                                    id: I,
-                                                                    createController: (UserAnswersCacheConnector, Navigator) => PersonNameController
-                                                                  ): Unit = {
+  def personNameController[I <: TypedIdentifier[PersonName]](viewModel: CommonFormWithHintViewModel,
+                                                             id: I,
+                                                             createController: (UserAnswersCacheConnector, Navigator) => PersonNameController
+                                                            ): Unit = {
 
     "return OK and the correct view for a GET request" in {
       val fixture = testFixture(createController)
 
-      val result = Future(fixture.controller.get(id, viewModel, NormalMode)(testRequest()))
+      val result = Future(fixture.controller.get(id, viewModel, NormalMode)(testRequest(), messages))
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(this, testForm(), viewModel)
+      contentAsString(result) mustBe viewAsString(testForm(), viewModel)
     }
 
     "populate the view correctly for a GET request with existing data" in {
@@ -58,17 +55,17 @@ trait PersonNameControllerBehaviour {
       val data = UserAnswers().set(id)(testPersonName).asOpt.value
       val request = testRequest(data)
 
-      val result = Future(fixture.controller.get(id, viewModel, NormalMode)(request))
+      val result = Future(fixture.controller.get(id, viewModel, NormalMode)(request, messages))
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(this, testForm().fill(testPersonName), viewModel)
+      contentAsString(result) mustBe viewAsString(testForm().fill(testPersonName), viewModel)
     }
 
     "redirect to the next page when valid data is submitted" in {
       val fixture = testFixture(createController)
       val request = testRequest(personDetails = Some(testPersonName))
 
-      val result = fixture.controller.post(id, viewModel, NormalMode)(request)
+      val result = fixture.controller.post(id, viewModel, NormalMode)(request, messages)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -78,7 +75,7 @@ trait PersonNameControllerBehaviour {
       val fixture = testFixture(createController)
       val request = testRequest(personDetails = Some(testPersonName))
 
-      fixture.controller.post(id, viewModel, NormalMode)(request)
+      fixture.controller.post(id, viewModel, NormalMode)(request, messages)
 
       fixture.dataCacheConnector.verify(id, testPersonName)
     }
@@ -88,10 +85,10 @@ trait PersonNameControllerBehaviour {
       val request = testRequest(personDetails = Some(invalidPersonName))
       val formWithErrors = testForm().bindFromRequest()(request)
 
-      val result = fixture.controller.post(id, viewModel, NormalMode)(request)
+      val result = fixture.controller.post(id, viewModel, NormalMode)(request, messages)
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(this, formWithErrors, viewModel)
+      contentAsString(result) mustBe viewAsString(formWithErrors, viewModel)
     }
 
   }
@@ -102,7 +99,7 @@ trait PersonNameControllerBehaviour {
 
 // scalastyle:off magic.number
 
-object PersonNameControllerBehaviour {
+object PersonNameControllerBehaviour extends ControllerSpecBase {
 
   lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
@@ -120,9 +117,7 @@ object PersonNameControllerBehaviour {
 
   case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: PersonNameController)
 
-  def testFixture(
-                   createController: (UserAnswersCacheConnector, Navigator) => PersonNameController
-                 ): TestFixture = {
+  def testFixture(createController: (UserAnswersCacheConnector, Navigator) => PersonNameController): TestFixture = {
 
     val connector = new FakeUserAnswersCacheConnector {}
     val navigator = new FakeNavigator(onwardRoute)
@@ -149,16 +144,18 @@ object PersonNameControllerBehaviour {
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(UserType.Individual, None, false, None),
+      user = PSAUser(userType = UserType.Individual, nino = None, isExistingPSA = false, existingPSAId = None),
       userAnswers = answers
     )
 
   }
 
+  val personNameView: personName = app.injector.instanceOf[personName]
+
   def testForm(): Form[PersonName] =
     new PersonNameFormProvider()()
 
-  def viewAsString(base: ControllerSpecBase, form: Form[_], viewModel: CommonFormWithHintViewModel): String =
-    personName(base.frontendAppConfig, form, viewModel, NormalMode)(base.fakeRequest, base.messages).toString()
+  def viewAsString(form: Form[_], viewModel: CommonFormWithHintViewModel): String =
+    personNameView(form, viewModel, NormalMode)(fakeRequest, messages).toString()
 
 }

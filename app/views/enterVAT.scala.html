@@ -14,14 +14,16 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.company.routes._
 @import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
 @(
-        appConfig: FrontendAppConfig,
         form: Form[_],
         viewModel: CommonFormWithHintViewModel
 )(
@@ -29,11 +31,10 @@
 )
 
 @main_template(
-    title = viewModel.title,
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = viewModel.title
+) {
 
-    @helpers.form(action = viewModel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
         @components.back_link()
 

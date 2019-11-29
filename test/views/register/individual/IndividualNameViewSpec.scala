@@ -20,6 +20,7 @@ import forms.register.individual.IndividualNameFormProvider
 import models.{NormalMode, TolerantIndividual}
 import play.api.data.Form
 import play.api.mvc.Call
+import play.twirl.api.Html
 import viewmodels.{Message, PersonDetailsViewModel}
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.individual.individualName
@@ -37,9 +38,13 @@ class IndividualNameViewSpec extends QuestionViewBehaviours[TolerantIndividual] 
       postCall = Call("POST", "http://www.test.com")
     )
 
-  private def createView = () => individualName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  val view: individualName = app.injector.instanceOf[individualName]
 
-  private def createViewUsingForm = (form: Form[_]) => individualName(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+  private def createView: () => Html = () =>
+    view(form, viewModel)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) =>
+    view(form, viewModel)(fakeRequest, messages)
 
   "IndividualName view" must {
 

@@ -18,12 +18,15 @@ package controllers
 
 import play.api.test.Helpers._
 import views.html.interceptPSA
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 class InterceptPSAControllerSpec extends ControllerSpecBase {
 
-  def controller() = new InterceptPSAController(frontendAppConfig, messagesApi)
+  val interceptPSAview: interceptPSA = app.injector.instanceOf[interceptPSA]
 
-  def viewAsString() = interceptPSA(frontendAppConfig)(fakeRequest, messages).toString
+  def controller() = new InterceptPSAController(frontendAppConfig, stubMessagesControllerComponents(), interceptPSAview)
+
+  def viewAsString(): String = interceptPSAview()(fakeRequest, messages).toString
 
   "InterceptPSA Controller" must {
 
@@ -34,4 +37,5 @@ class InterceptPSAControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString()
     }
   }
+
 }

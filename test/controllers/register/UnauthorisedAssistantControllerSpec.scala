@@ -19,17 +19,21 @@ package controllers.register
 import controllers.actions._
 import controllers.{ControllerSpecBase, UnauthorisedAssistantController}
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.unauthorisedAssistant
 
 class UnauthorisedAssistantControllerSpec extends ControllerSpecBase {
 
+  val view: unauthorisedAssistant = app.injector.instanceOf[unauthorisedAssistant]
+
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new UnauthorisedAssistantController(
       frontendAppConfig,
-      messagesApi
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString() = unauthorisedAssistant(frontendAppConfig)(fakeRequest, messages).toString
+  def viewAsString() = view()(fakeRequest, messages).toString
 
   "UnauthorisedAssistant Controller" must {
 

@@ -20,30 +20,36 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.EnterUTRController
 import controllers.actions._
+import controllers.register.partnership.partners.routes.PartnerEnterUTRController
 import forms.EnterUTRFormProvider
 import identifiers.register.partnership.partners.{PartnerEnterUTRId, PartnerNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, Mode}
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import models.{Index, Mode, ReferenceValue}
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import controllers.register.partnership.partners.routes.PartnerEnterUTRController
+import views.html.enterUTR
+
+import scala.concurrent.ExecutionContext
 
 class PartnerEnterUTRController @Inject()(@PartnershipPartner val navigator: Navigator,
                                           val appConfig: FrontendAppConfig,
-                                          val messagesApi: MessagesApi,
                                           val cacheConnector: UserAnswersCacheConnector,
                                           authenticate: AuthAction,
                                           val allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          formProvider: EnterUTRFormProvider
-                                          ) extends EnterUTRController {
+                                          formProvider: EnterUTRFormProvider,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: enterUTR
+                                         )(implicit val executionContext: ExecutionContext) extends EnterUTRController with I18nSupport {
 
-  private def form(partnerName: String) = formProvider(partnerName)
+  private def form(partnerName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] = formProvider(partnerName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

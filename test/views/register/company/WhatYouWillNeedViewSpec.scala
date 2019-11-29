@@ -16,6 +16,7 @@
 
 package views.register.company
 
+import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.register.company.whatYouWillNeed
 
@@ -23,7 +24,10 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "whatYouWillNeed"
 
-  def createView = () => whatYouWillNeed(frontendAppConfig)(fakeRequest, messages)
+  val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
+
+
+  def createView: () => HtmlFormat.Appendable = () => view()(fakeRequest, messages)
 
   "WhatYouWillNeed view" must {
     behave like normalPage(createView, messageKeyPrefix, "body.text", "company.body.item1", "company.body.item2", "company.body.item3")

@@ -28,29 +28,33 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
+import views.html.address.addressYears
 
-class CompanyAddressYearsController @Inject()(
-                                               @RegisterCompany override val navigator: Navigator,
-                                               override val appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
-                                               override val cacheConnector: UserAnswersCacheConnector,
-                                               override val allowAccess: AllowAccessActionProvider,
-                                               authenticate: AuthAction,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               formProvider: AddressYearsFormProvider
-                                             ) extends AddressYearsController with Retrievals {
+import scala.concurrent.ExecutionContext
 
-  private def form(companyName: String): Form[AddressYears] = formProvider(companyName)
+class CompanyAddressYearsController @Inject()(@RegisterCompany override val navigator: Navigator,
+                                              override val appConfig: FrontendAppConfig,
+                                              override val cacheConnector: UserAnswersCacheConnector,
+                                              override val allowAccess: AllowAccessActionProvider,
+                                              authenticate: AuthAction,
+                                              getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              formProvider: AddressYearsFormProvider,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val view: addressYears
+                                             )(implicit val executionContext: ExecutionContext) extends AddressYearsController with I18nSupport with Retrievals {
+
+  private def form(companyName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[AddressYears] = formProvider(companyName)
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

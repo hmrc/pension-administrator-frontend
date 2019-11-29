@@ -23,23 +23,24 @@ import controllers.actions._
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.incompleteChanges
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IncompleteChangesController @Inject()(appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
                                             authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            dataCacheConnector: UserAnswersCacheConnector
-                                      )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                            dataCacheConnector: UserAnswersCacheConnector,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: incompleteChanges
+                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(Ok(incompleteChanges(appConfig, psaName(), mode)))
+      Future.successful(Ok(view(psaName(), mode)))
   }
 }

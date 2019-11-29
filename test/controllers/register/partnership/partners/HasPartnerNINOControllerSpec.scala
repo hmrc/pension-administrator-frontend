@@ -16,7 +16,7 @@
 
 package controllers.register.partnership.partners
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.HasReferenceNumberFormProvider
@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -36,11 +37,15 @@ class HasPartnerNINOControllerSpec extends ControllerWithCommonBehaviour {
   private val hasReferenceNumberForm = formProvider("error.required", partnerName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasPartnerNINOController(
-    frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+    stubMessagesControllerComponents(), view
+  )
+
+  val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
   private def hasReferenceNumberView(form: Form[_] = hasReferenceNumberForm): String =
-    hasReferenceNumber(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+    view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "HasPartnerNINOController" must {
 
@@ -53,7 +58,9 @@ class HasPartnerNINOControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
+
 }
+
 object HasPartnerNINOControllerSpec {
   private val partnerName = "test first name test last name"
   private val formProvider = new HasReferenceNumberFormProvider()

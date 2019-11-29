@@ -42,9 +42,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                   ivConnector: IdentityVerificationConnector
+                                   ivConnector: IdentityVerificationConnector,
+                                   val parser: BodyParsers.Default
                                   )
-                                  (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
+                                  (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -210,14 +211,15 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
       .getOrElse(throw new RuntimeException("PSA ID missing"))
 }
 
-trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
+trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 class AuthenticationWithNoIV @Inject()(override val authConnector: AuthConnector,
                                        config: FrontendAppConfig,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       identityVerificationConnector: IdentityVerificationConnector
-                                      )(implicit ec: ExecutionContext) extends
-  FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector)
+                                       identityVerificationConnector: IdentityVerificationConnector,
+                                       parser: BodyParsers.Default
+                                      )(implicit executionContext: ExecutionContext) extends
+  FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector, parser)
 
   with AuthorisedFunctions {
 

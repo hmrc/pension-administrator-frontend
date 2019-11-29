@@ -25,13 +25,11 @@ import forms.register.individual.IndividualDetailsCorrectFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
 import javax.inject.Inject
-import models.{Mode, UserType}
-import play.api.Logger
+import models.Mode
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
@@ -42,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class IndividualDetailsCorrectController @Inject()(
                                                     @Individual navigator: Navigator,
                                                     appConfig: FrontendAppConfig,
-                                                    override val messagesApi: MessagesApi,
                                                     dataCacheConnector: UserAnswersCacheConnector,
                                                     authenticate: AuthAction,
                                                     allowAccess: AllowAccessActionProvider,
@@ -50,8 +47,11 @@ class IndividualDetailsCorrectController @Inject()(
                                                     requireData: DataRequiredAction,
                                                     formProvider: IndividualDetailsCorrectFormProvider,
                                                     registrationConnector: RegistrationConnector,
-                                                    countryOptions: CountryOptions
-                                                  )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                                    countryOptions: CountryOptions,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: individualDetailsCorrect
+                                                  )(implicit val executionContext: ExecutionContext
+                                                    ) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -65,7 +65,7 @@ class IndividualDetailsCorrectController @Inject()(
 
       (request.userAnswers.get(IndividualDetailsId), request.userAnswers.get(IndividualAddressId), request.userAnswers.get(RegistrationInfoId)) match {
         case (Some(individual), Some(address), Some(_)) =>
-          Future.successful(Ok(individualDetailsCorrect(appConfig, preparedForm, mode, individual, address, countryOptions)))
+          Future.successful(Ok(view(preparedForm, mode, individual, address, countryOptions)))
         case _ =>
           request.user.nino match {
             case Some(nino) =>
@@ -75,7 +75,7 @@ class IndividualDetailsCorrectController @Inject()(
                 _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, registration.response.address)
                 _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registration.info)
               } yield {
-                Ok(individualDetailsCorrect(appConfig, preparedForm, mode, registration.response.individual, registration.response.address, countryOptions))
+                Ok(view(preparedForm, mode, registration.response.individual, registration.response.address, countryOptions))
               }
             case _ =>
               Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
@@ -90,7 +90,7 @@ class IndividualDetailsCorrectController @Inject()(
         (formWithErrors: Form[_]) => {
           (IndividualDetailsId and IndividualAddressId).retrieve.right.map {
             case individual ~ address =>
-              Future.successful(BadRequest(individualDetailsCorrect(appConfig, formWithErrors, mode, individual, address, countryOptions)))
+              Future.successful(BadRequest(view(formWithErrors, mode, individual, address, countryOptions)))
           }
         },
         value =>

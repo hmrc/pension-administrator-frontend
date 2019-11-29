@@ -28,7 +28,7 @@ import utils.countryOptions.CountryOptions
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels._
 
-class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
+class ViewPsaDetailsHelperSpec extends SpecBase with MustMatchers {
 
   import ViewPsaDetailsHelperSpec._
 
@@ -162,7 +162,7 @@ class ViewPsaDetailsHelperSpec extends WordSpec with MustMatchers {
 object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  private def psaDetailsHelper(userAnswers: UserAnswers) = new ViewPsaDetailsHelper(userAnswers, countryOptions, messagesApi)
+  private def psaDetailsHelper(userAnswers: UserAnswers) = new ViewPsaDetailsHelper(userAnswers, countryOptions)
 
   private val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")
 

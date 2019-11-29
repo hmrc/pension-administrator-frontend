@@ -18,23 +18,22 @@ package controllers.address
 
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
 import controllers.actions.AllowAccessActionProvider
 import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{AddressYears, Mode}
 import play.api.data.Form
-import play.api.i18n.I18nSupport
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
 import scala.concurrent.Future
 
-trait AddressYearsController extends FrontendController with Retrievals with I18nSupport with Variations {
+trait AddressYearsController extends FrontendBaseController with Retrievals with Variations {
 
   protected def appConfig: FrontendAppConfig
 
@@ -44,24 +43,22 @@ trait AddressYearsController extends FrontendController with Retrievals with I18
 
   protected val allowAccess: AllowAccessActionProvider
 
+  protected def view: addressYears
+
   protected def get(id: TypedIdentifier[AddressYears], form: Form[AddressYears], viewmodel: AddressYearsViewModel, mode: Mode)
-                   (implicit request: DataRequest[AnyContent]): Future[Result] = {
+                   (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
     val filledForm =
       request.userAnswers.get(id).map(form.fill).getOrElse(form)
 
-    Future.successful(Ok(addressYears(appConfig, filledForm, viewmodel, mode)))
+    Future.successful(Ok(view(filledForm, viewmodel, mode)))
   }
 
-  protected def post(
-                      id: TypedIdentifier[AddressYears],
-                      mode: Mode,
-                      form: Form[AddressYears],
-                      viewmodel: AddressYearsViewModel
-                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  protected def post(id: TypedIdentifier[AddressYears], mode: Mode, form: Form[AddressYears], viewmodel: AddressYearsViewModel)
+                    (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
-        Future.successful(BadRequest(addressYears(appConfig, formWithErrors, viewmodel, mode))),
+        Future.successful(BadRequest(view(formWithErrors, viewmodel, mode))),
       addressYears =>
         cacheConnector.save(request.externalId, id, addressYears).flatMap {
           answers =>

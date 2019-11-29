@@ -31,23 +31,23 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
 
   val fakeCall = Call("method", "url")
 
+  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
+
   def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
-    check_your_answers(
-      frontendAppConfig,
+    view(
       emptyAnswerSections,
       fakeCall,
       Some("test psa"),
       mode
-    )(fakeRequest, messages)
+    )(fakeRequest, messagesApi.preferred(fakeRequest))
 
-  def createViewWithData: (Seq[Section]) => HtmlFormat.Appendable = (sections) =>
-    check_your_answers(
-      frontendAppConfig,
+  def createViewWithData: Seq[Section] => HtmlFormat.Appendable = sections =>
+    view(
       sections,
       fakeCall,
       None,
       NormalMode
-    )(fakeRequest, messages)
+    )(fakeRequest, messagesApi.preferred(fakeRequest))
 
   "check_your_answers view" must {
     behave like normalPage(createView(), messageKeyPrefix)

@@ -55,14 +55,18 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
     mode = mode
   )
 
+  val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
+
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
-  def createView: () => HtmlFormat.Appendable = () => sameContactAddress(frontendAppConfig, form, viewmodel(), countryOptions)(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () =>
+    view(form, viewmodel(), countryOptions)(fakeRequest, messages)
 
-  def createViewUpdateMode: () => HtmlFormat.Appendable = () => sameContactAddress(frontendAppConfig, form, viewmodel(UpdateMode), countryOptions)(fakeRequest, messages)
+  def createViewUpdateMode: () => HtmlFormat.Appendable = () =>
+    view(form, viewmodel(UpdateMode), countryOptions)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    sameContactAddress(frontendAppConfig, form, viewmodel(), countryOptions)(fakeRequest, messages)
+    view(form, viewmodel(), countryOptions)(fakeRequest, messages)
 
   "Same Contact Address View" must {
     behave like normalPage(createView, messageKeyPrefix)

@@ -27,11 +27,13 @@ class AdviserNameViewSpec extends QuestionViewBehaviours[String] {
 
   val messageKeyPrefix = "adviserName"
 
-  override val form = new AdviserNameFormProvider().apply()
+  override val form: Form[String] = new AdviserNameFormProvider().apply()
 
-  def createView: () => HtmlFormat.Appendable = () => adviserName(frontendAppConfig, form, NormalMode, Some("Mark Wright"))(fakeRequest, messages)
+  val view: adviserName = app.injector.instanceOf[adviserName]
 
-  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => adviserName(frontendAppConfig, form, CheckMode, Some("Mark Wright"))(fakeRequest, messages)
+  def createView: () => HtmlFormat.Appendable = () => view(form, NormalMode, Some("Mark Wright"))(fakeRequest, messages)
+
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) => view(form, CheckMode, Some("Mark Wright"))(fakeRequest, messages)
 
   "Adviser Details view" must {
 
@@ -44,4 +46,5 @@ class AdviserNameViewSpec extends QuestionViewBehaviours[String] {
       "adviserName"
     )
   }
+
 }

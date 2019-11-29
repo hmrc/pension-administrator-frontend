@@ -24,8 +24,8 @@ import identifiers.register._
 import javax.inject.Inject
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.Partnership
 import utils.checkyouranswers.Ops._
@@ -43,9 +43,10 @@ class CheckYourAnswersController @Inject()(
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             @Partnership navigator: Navigator,
-                                            override val messagesApi: MessagesApi,
-                                            implicit val countryOptions: CountryOptions
-                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
+                                            implicit val countryOptions: CountryOptions,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: check_your_answers
+                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
@@ -65,8 +66,7 @@ class CheckYourAnswersController @Inject()(
         ).flatten
       )
 
-      Ok(check_your_answers(
-        appConfig,
+      Ok(view(
         Seq(partnershipDetails),
         controllers.register.partnership.routes.CheckYourAnswersController.onSubmit(),
         None,

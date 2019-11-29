@@ -17,12 +17,16 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("whatYouWillNeed.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("whatYouWillNeed.title")
+) {
 
     @components.back_link()
 
@@ -37,7 +41,7 @@
 
     <div id="hintText" class="panel panel-border-wide"><p>@messages("whatYouWillNeed.main.body.hint")</p></div>
 
-    @helpers.form(action = controllers.register.individual.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.register.individual.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
         <div class="section">
             @components.submit_button("site.continue")
         </div>

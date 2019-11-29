@@ -27,26 +27,28 @@ import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddre
 import models.requests.DataRequest
 import models.{Index, Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
+import views.html.address.addressList
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PartnerAddressListController @Inject()(override val appConfig: FrontendAppConfig,
-                                             override val messagesApi: MessagesApi,
                                              override val cacheConnector: UserAnswersCacheConnector,
                                              @PartnershipPartner override val navigator: Navigator,
                                              authenticate: AuthAction,
                                              override val allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
-                                             formProvider: AddressListFormProvider) extends AddressListController with Retrievals {
+                                             formProvider: AddressListFormProvider,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             val view: addressList
+                                            )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
-  def form(addresses: Seq[TolerantAddress], name: String): Form[Int] =
+  def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
     formProvider(addresses, Message("select.address.error.required").withArgs(name))
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

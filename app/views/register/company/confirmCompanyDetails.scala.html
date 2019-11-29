@@ -14,20 +14,23 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import controllers.register.company.routes._
 @import models.{Mode, TolerantAddress}
 @import uk.gov.hmrc.play.views.html._
 @import utils.countryOptions.CountryOptions
 
-@(appConfig: FrontendAppConfig, form: Form[_], address: TolerantAddress, name: String, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_], address: TolerantAddress, name: String, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("confirmCompanyAddress.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("confirmCompanyAddress.title")
+) {
 
-    @helpers.form(action = ConfirmCompanyDetailsController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = ConfirmCompanyDetailsController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 

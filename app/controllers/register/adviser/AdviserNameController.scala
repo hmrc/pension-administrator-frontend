@@ -26,8 +26,8 @@ import identifiers.register.adviser.AdviserNameId
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Adviser
 import utils.{Navigator, UserAnswers}
 import views.html.register.adviser.adviserName
@@ -36,16 +36,17 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdviserNameController @Inject()(
                                        appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
                                        authenticate: AuthAction,
                                        @Adviser navigator: Navigator,
                                        getData: DataRetrievalAction,
                                        requiredData: DataRequiredAction,
                                        formProvider: AdviserNameFormProvider,
-                                       dataCacheConnector: UserAnswersCacheConnector
-                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                       dataCacheConnector: UserAnswersCacheConnector,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       val view: adviserName
+                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requiredData).async {
     implicit request =>
@@ -54,7 +55,7 @@ class AdviserNameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Future.successful(Ok(adviserName(appConfig, preparedForm, mode, psaName())))
+      Future.successful(Ok(view(preparedForm, mode, psaName())))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requiredData).async {
@@ -62,7 +63,7 @@ class AdviserNameController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(adviserName(appConfig, formWithErrors, mode, psaName()))),
+          Future.successful(BadRequest(view(formWithErrors, mode, psaName()))),
         value => {
           dataCacheConnector.save(request.externalId, AdviserNameId, value).map(
             cacheMap =>

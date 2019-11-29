@@ -16,14 +16,17 @@
 
 package views.register.company
 
+import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyNotFound
 
 class CompanyNotFoundViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "companyNotFound"
+  val view: companyNotFound = app.injector.instanceOf[companyNotFound]
 
-  def createView = () => companyNotFound(frontendAppConfig)(fakeRequest, messages)
+
+  def createView: () => HtmlFormat.Appendable = () => view()(fakeRequest, messages)
 
   "CompanyNotFound view" must {
     behave like normalPage(createView, messageKeyPrefix)
@@ -50,4 +53,5 @@ class CompanyNotFoundViewSpec extends ViewBehaviours {
     }
 
   }
+
 }

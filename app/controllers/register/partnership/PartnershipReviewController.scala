@@ -24,8 +24,8 @@ import identifiers.register.partnership.PartnershipReviewId
 import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.Partnership
 import views.html.register.partnership.partnershipReview
@@ -33,19 +33,20 @@ import views.html.register.partnership.partnershipReview
 import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
                                             @Partnership navigator: Navigator,
                                             authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction
-                                           )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport {
+                                            requireData: DataRequiredAction,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: partnershipReview
+                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
         val partners = request.userAnswers.allPartnersAfterDelete(mode).map(_.name)
-        Future.successful(Ok(partnershipReview(appConfig, name, partners)))
+        Future.successful(Ok(view(name, partners)))
       }
   }
 

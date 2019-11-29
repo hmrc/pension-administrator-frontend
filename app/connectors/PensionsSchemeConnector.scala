@@ -32,15 +32,15 @@ import scala.util.{Failure, Try}
 @ImplementedBy(classOf[PensionsSchemeConnectorImpl])
 trait PensionsSchemeConnector {
 
-  def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse]
+  def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse]
 
-  def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
+  def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit]
 }
 
 @Singleton
 class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends PensionsSchemeConnector {
 
-  def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
+  def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {
     val url = config.registerPsaUrl
 
     http.POST(url, answers.json).map { response =>
@@ -64,7 +64,7 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
       ex
   }
 
-  def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
     val url = config.updatePsaUrl(psaId)
 
     http.POST(url, answers.json).map { response =>

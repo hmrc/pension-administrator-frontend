@@ -32,9 +32,9 @@ import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsResultException, Writes}
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.NotFoundException
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Partnership
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
@@ -44,7 +44,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmPartnershipDetailsController @Inject()(
                                                      appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
                                                      dataCacheConnector: UserAnswersCacheConnector,
                                                      @Partnership navigator: Navigator,
                                                      authenticate: AuthAction,
@@ -53,8 +52,10 @@ class ConfirmPartnershipDetailsController @Inject()(
                                                      requireData: DataRequiredAction,
                                                      registrationConnector: RegistrationConnector,
                                                      formProvider: ConfirmPartnershipDetailsFormProvider,
-                                                     countryOptions: CountryOptions
-                                                   )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Retrievals {
+                                                     countryOptions: CountryOptions,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     val view: confirmPartnershipDetails
+                                                   )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -66,8 +67,7 @@ class ConfirmPartnershipDetailsController @Inject()(
             upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
               dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
 
-                Ok(confirmPartnershipDetails(
-                  appConfig,
+                Ok(view(
                   form,
                   registration.response.organisation.organisationName,
                   registration.response.address,
@@ -118,8 +118,7 @@ class ConfirmPartnershipDetailsController @Inject()(
           (formWithErrors: Form[_]) =>
             (BusinessNameId and PartnershipRegisteredAddressId).retrieve.right.map {
               case name ~ address =>
-              Future.successful(BadRequest(confirmPartnershipDetails(
-                appConfig,
+              Future.successful(BadRequest(view(
                 formWithErrors,
                 name,
                 address,

@@ -20,15 +20,14 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register.individual.{CheckYourAnswersId, IndividualDetailsId, IndividualEmailId, IndividualPhoneId}
-import models.{CheckMode, Mode}
+import identifiers.register.individual.{CheckYourAnswersId, IndividualDetailsId}
+import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
-import utils.checkyouranswers.Ops._
 import utils.{CheckYourAnswersFactory, Enumerable, Navigator}
-import viewmodels.{AnswerSection, Link, Message}
+import viewmodels.{AnswerSection, Message}
 import views.html.check_your_answers
 
 import scala.concurrent.ExecutionContext
@@ -42,8 +41,10 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             @Individual navigator: Navigator,
                                             override val messagesApi: MessagesApi,
-                                            checkYourAnswersFactory: CheckYourAnswersFactory
-                                          )(implicit val ec: ExecutionContext) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                            checkYourAnswersFactory: CheckYourAnswersFactory,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            view: check_your_answers
+                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
   import CheckYourAnswersController._
 
@@ -70,7 +71,7 @@ class CheckYourAnswersController @Inject()(
         ).flatten
       )
       val sections = Seq(section)
-      Ok(check_your_answers(appConfig, sections, postUrl, None, mode))
+      Ok(view(sections, postUrl, None, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {

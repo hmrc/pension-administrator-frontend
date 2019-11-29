@@ -77,7 +77,7 @@ object FakeAuditConnector extends AuditConnector {
 
   override def auditingConfig: AuditingConfig = AuditingConfig(None, false, "test audit source")
 
-  override def sendEvent(event: DataEvent)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
+  override def sendEvent(event: DataEvent)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[AuditResult] = {
     sentEvent = event
     super.sendEvent(event)
   }

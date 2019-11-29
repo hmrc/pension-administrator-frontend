@@ -16,32 +16,34 @@
 
 package controllers.register.company
 
-import audit.testdoubles.StubSuccessfulAuditService
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.NormalMode
+import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.company.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private val auditService = new StubSuccessfulAuditService()
+  val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new WhatYouWillNeedController(
       frontendAppConfig,
-      messagesApi,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString() = whatYouWillNeed(frontendAppConfig)(fakeRequest, messages).toString
+  private def viewAsString() = view()(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 
@@ -58,7 +60,6 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
-
   }
 
 }

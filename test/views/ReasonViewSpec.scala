@@ -41,11 +41,13 @@ class ReasonViewSpec extends QuestionViewBehaviours[String] {
     entityName = entityName
   )
 
+  val view: reason = app.injector.instanceOf[reason]
+
   def createView(): () => HtmlFormat.Appendable = () =>
-    reason(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+    view(form, viewModel)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    reason(frontendAppConfig, form, viewModel)(fakeRequest, messages)
+    view(form, viewModel)(fakeRequest, messages)
 
   "Reason view" when {
     "rendered" must {
@@ -57,4 +59,5 @@ class ReasonViewSpec extends QuestionViewBehaviours[String] {
         fields = "value")
     }
   }
+
 }

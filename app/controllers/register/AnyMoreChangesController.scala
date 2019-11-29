@@ -39,11 +39,11 @@ import controllers.actions._
 import forms.register.AnyMoreChangesFormProvider
 import identifiers.register.AnyMoreChangesId
 import javax.inject.Inject
-import models.{Mode, NormalMode, UpdateMode}
+import models.{Mode, UpdateMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Variations
 import utils.{Navigator, UserAnswers}
 import views.html.register.anyMoreChanges
@@ -51,28 +51,30 @@ import views.html.register.anyMoreChanges
 import scala.concurrent.{ExecutionContext, Future}
 
 class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
                                          dataCacheConnector: UserAnswersCacheConnector,
                                          @Variations navigator: Navigator,
                                          authenticate: AuthAction,
                                          allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         formProvider: AnyMoreChangesFormProvider)(implicit val ec: ExecutionContext)
-  extends FrontendController with Retrievals with I18nSupport {
+                                         formProvider: AnyMoreChangesFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: anyMoreChanges
+                                        )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with Retrievals with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(Ok(anyMoreChanges(appConfig, form, psaName())))
+      Future.successful(Ok(view(form, psaName())))
   }
 
   def onSubmit(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(anyMoreChanges(appConfig, formWithErrors, psaName()))),
+          Future.successful(BadRequest(view(formWithErrors, psaName()))),
         value =>
           dataCacheConnector.save(request.externalId, AnyMoreChangesId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AnyMoreChangesId, UpdateMode, UserAnswers(cacheMap))))

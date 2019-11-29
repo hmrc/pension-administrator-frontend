@@ -22,11 +22,12 @@ import controllers.actions._
 import forms.register.individual.IndividualNameFormProvider
 import identifiers.register.individual.IndividualDetailsId
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{Mode, TolerantIndividual}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
 import utils.{Navigator, UserAnswers}
 import viewmodels.{Message, PersonDetailsViewModel}
@@ -34,25 +35,25 @@ import views.html.register.individual.individualName
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualNameController @Inject()(
-                                          val appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
-                                          val dataCacheConnector: UserAnswersCacheConnector,
-                                          @Individual val navigator: Navigator,
-                                          authenticate: AuthAction,
-                                          allowAccess: AllowAccessActionProvider,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider : IndividualNameFormProvider
-                                        )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+class IndividualNameController @Inject()(val appConfig: FrontendAppConfig,
+                                         val dataCacheConnector: UserAnswersCacheConnector,
+                                         @Individual val navigator: Navigator,
+                                         authenticate: AuthAction,
+                                         allowAccess: AllowAccessActionProvider,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: IndividualNameFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: individualName
+                                        )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
 
-  val form : Form[TolerantIndividual] =  formProvider()
+  val form: Form[TolerantIndividual] = formProvider()
 
-  private[individual] def viewModel(mode: Mode) =
+  private[individual] def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     PersonDetailsViewModel(
       title = "individualName.title",
-      heading = Message("individualName.title"),
+      heading = Message("individualName.title").resolve,
       postCall = routes.IndividualNameController.onSubmit(mode)
     )
 
@@ -64,7 +65,7 @@ class IndividualNameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(individualName(appConfig, preparedForm, viewModel(mode)))
+      Ok(view(preparedForm, viewModel(mode)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
@@ -72,7 +73,7 @@ class IndividualNameController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(individualName(appConfig, formWithErrors, viewModel(mode)))),
+          Future.successful(BadRequest(view(formWithErrors, viewModel(mode)))),
         value =>
           dataCacheConnector.save(request.externalId, IndividualDetailsId, value).map(cacheMap =>
             Redirect(navigator.nextPage(IndividualDetailsId, mode, UserAnswers(cacheMap))))

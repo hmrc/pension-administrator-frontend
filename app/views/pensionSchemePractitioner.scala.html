@@ -17,14 +17,17 @@
 @import config.FrontendAppConfig
 @import viewmodels.Message
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    appConfig: FrontendAppConfig
+)
+
+@()(implicit request: Request[_], messages: Messages)
 
 @continueTpss() = {<a id="continueTpssLink" href="@appConfig.tpssUrl">@messages("pensionSchemePractitioner.link")</a>}
 
 @main_template(
-  title = messages("pensionSchemePractitioner.title"),
-  appConfig = appConfig,
-  bodyClasses = None
+  title = messages("pensionSchemePractitioner.title")
 ) {
 
   @components.back_link()

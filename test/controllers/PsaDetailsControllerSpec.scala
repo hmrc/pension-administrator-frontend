@@ -16,22 +16,23 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProvider}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
-import play.api.mvc.{Request, Result}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContent, BodyParser, Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
 import services.PsaDetailsService
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
 import views.html.psa_details
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDetailsControllerSpec extends ControllerSpecBase {
 
@@ -39,8 +40,8 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   "Psa details Controller" must {
     "return 200 and  correct view for a GET for PSA company" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false)))
+      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false)))
 
       val result = controller(userType = UserType.Organisation, psaId = Some("test Psa id")).onPageLoad(UpdateMode)(fakeRequest)
 
@@ -49,8 +50,8 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to session expired if psa id not present" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any()))
-        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false)))
+      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false)))
 
       val result = controller(userType = UserType.Organisation, psaId = None).onPageLoad(UpdateMode)(fakeRequest)
 
@@ -63,29 +64,33 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val externalId = "test-external-id"
 
-  class FakeAuthAction(userType: UserType, psaId : Option[String]) extends AuthAction {
-    override def invokeBlock[A](request: Request[A], block: (AuthenticatedRequest[A]) => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, externalId, PSAUser(userType, None, false, None, psaId)))
-  }
+  val fakePsaDataService: PsaDetailsService = mock[PsaDetailsService]
 
-  val fakePsaDataService = mock[PsaDetailsService]
+  val view: psa_details = app.injector.instanceOf[psa_details]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType, psaId : Option[String]) =
     new PsaDetailsController(
       frontendAppConfig,
-      messagesApi,
       FakeNavigator,
       new FakeAuthAction(userType, psaId),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      fakePsaDataService
+      fakePsaDataService,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "",
-                           isUserAnswerUpdated: Boolean = false) = {
+  class FakeAuthAction(userType: UserType, psaId : Option[String]) extends AuthAction {
+    val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+    implicit val executionContext: ExecutionContext = inject[ExecutionContext]
+    override def invokeBlock[A](request: Request[A],
+                                block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+      block(AuthenticatedRequest(request, externalId, PSAUser(userType, None, isExistingPSA = false, None, psaId)))
+  }
 
+  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "", isUserAnswerUpdated: Boolean = false) = {
     val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated)
-    psa_details(frontendAppConfig, model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))(fakeRequest, messages).toString
+    view(model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))(fakeRequest, messages).toString
   }
 
   val organisationSuperSections: Seq[SuperSection] = Seq(
@@ -95,45 +100,45 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
         AnswerSection(
           None,
           Seq(
-            AnswerRow("vat.label", Seq("12345678"), false, None),
-            AnswerRow("paye.label", Seq("9876543210"), false, None),
-            AnswerRow("crn.label", Seq("1234567890"), false, None),
-            AnswerRow("utr.label", Seq("121414151"), false, None),
-            AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false, None),
-            AnswerRow("Has Test company name been at their address for more than 12 months?", Seq("No"), false, None),
-            AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false, None),
-            AnswerRow("company.email.label", Seq("aaa@aa.com"), false, None),
-            AnswerRow("company.phone.label", Seq("0044-09876542312"), false, None))))),
+            AnswerRow("vat.label", Seq("12345678"), answerIsMessageKey = false, None),
+            AnswerRow("paye.label", Seq("9876543210"), answerIsMessageKey = false, None),
+            AnswerRow("crn.label", Seq("1234567890"), answerIsMessageKey = false, None),
+            AnswerRow("utr.label", Seq("121414151"), answerIsMessageKey = false, None),
+            AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), answerIsMessageKey = false, None),
+            AnswerRow("Has Test company name been at their address for more than 12 months?", Seq("No"), answerIsMessageKey = false, None),
+            AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), answerIsMessageKey = false, None),
+            AnswerRow("company.email.label", Seq("aaa@aa.com"), answerIsMessageKey = false, None),
+            AnswerRow("company.phone.label", Seq("0044-09876542312"), answerIsMessageKey = false, None))))),
     SuperSection(
       Some("director.supersection.header"),
       Seq(
         AnswerSection(
           Some("abcdef dfgdsfff dfgfdgfdg"),
           Seq(
-            AnswerRow("cya.label.dob", Seq("1950-03-29"), false, None),
-            AnswerRow("common.nino", Seq("AA999999A"), false, None),
-            AnswerRow("utr.label", Seq("1234567892"), false, None),
-            AnswerRow("cya.label.address", Seq("addressline1,", "addressline2,", "addressline3,", "addressline4,", "B5 9EX,", "Country of GB"), false, None),
-            AnswerRow("common.previousAddress.checkyouranswers", Seq("line1,", "line2,", "line3,", "line4,", "567253,", "Country of AD"), false, None),
-            AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false, None),
-            AnswerRow("phone.label", Seq("0044-09876542312"), false, None))),
+            AnswerRow("cya.label.dob", Seq("1950-03-29"), answerIsMessageKey = false, None),
+            AnswerRow("common.nino", Seq("AA999999A"), answerIsMessageKey = false, None),
+            AnswerRow("utr.label", Seq("1234567892"), answerIsMessageKey = false, None),
+            AnswerRow("cya.label.address", Seq("addressline1,", "addressline2,", "addressline3,", "addressline4,", "B5 9EX,", "Country of GB"), answerIsMessageKey = false, None),
+            AnswerRow("common.previousAddress.checkyouranswers", Seq("line1,", "line2,", "line3,", "line4,", "567253,", "Country of AD"), answerIsMessageKey = false, None),
+            AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), answerIsMessageKey = false, None),
+            AnswerRow("phone.label", Seq("0044-09876542312"), answerIsMessageKey = false, None))),
         AnswerSection(
           Some("sdfdff sdfdsfsdf dfdsfsf"),
           Seq(
-            AnswerRow("cya.label.dob", Seq("1950-07-29"), false, None),
-            AnswerRow("common.nino", Seq("AA999999A"), false, None),
-            AnswerRow("utr.label", Seq("7897700000"), false, None),
-            AnswerRow("cya.label.address", Seq("fgfdgdfgfd,", "dfgfdgdfg,", "fdrtetegfdgdg,", "dfgfdgdfg,", "56546,", "Country of AD"), false, None),
-            AnswerRow("common.previousAddress.checkyouranswers", Seq("werrertqe,", "ereretfdg,", "asafafg,", "fgdgdasdf,", "23424,", "Country of AD"), false, None),
-            AnswerRow("email.label", Seq("aaa@gmail.com"), false, None),
-            AnswerRow("phone.label", Seq("0044-09876542334"), false, None))))),
+            AnswerRow("cya.label.dob", Seq("1950-07-29"), answerIsMessageKey = false, None),
+            AnswerRow("common.nino", Seq("AA999999A"), answerIsMessageKey = false, None),
+            AnswerRow("utr.label", Seq("7897700000"), answerIsMessageKey = false, None),
+            AnswerRow("cya.label.address", Seq("fgfdgdfgfd,", "dfgfdgdfg,", "fdrtetegfdgdg,", "dfgfdgdfg,", "56546,", "Country of AD"), answerIsMessageKey = false, None),
+            AnswerRow("common.previousAddress.checkyouranswers", Seq("werrertqe,", "ereretfdg,", "asafafg,", "fgdgdasdf,", "23424,", "Country of AD"), answerIsMessageKey = false, None),
+            AnswerRow("email.label", Seq("aaa@gmail.com"), answerIsMessageKey = false, None),
+            AnswerRow("phone.label", Seq("0044-09876542334"), answerIsMessageKey = false, None))))),
     SuperSection(
       Some("pensionAdvisor.section.header"),
       Seq(
         AnswerSection(
           None,
           Seq(
-            AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), false, None),
-            AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false, None),
-            AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), false, None))))))
+            AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), answerIsMessageKey = false, None),
+            AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), answerIsMessageKey = false, None),
+            AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), answerIsMessageKey = false, None))))))
 }

@@ -17,7 +17,8 @@
 package views.register.company
 
 import controllers.register.company.routes
-import models.{CheckMode, NormalMode}
+import models.NormalMode
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyReview
 
@@ -25,13 +26,16 @@ class CompanyReviewViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "companyReview"
   val companyName = "test company name"
-  val directors = Seq("director a", "director b", "director c")
-  val tenDirectors = Seq("director a", "director b", "director c", "director d", "director e",
+  val directors: Seq[String] = Seq("director a", "director b", "director c")
+  val tenDirectors: Seq[String] = Seq("director a", "director b", "director c", "director d", "director e",
     "director f", "director g", "director h", "director i", "director j")
 
-  def createView = () => companyReview(frontendAppConfig, companyName, directors)(fakeRequest, messages)
+  val view: companyReview = app.injector.instanceOf[companyReview]
 
-  def createSecView = () => companyReview(frontendAppConfig, companyName, tenDirectors)(fakeRequest, messages)
+
+  def createView: () => Html = () => view(companyName, directors)(fakeRequest, messages)
+
+  def createSecView: () => Html = () => view(companyName, tenDirectors)(fakeRequest, messages)
 
   "CompanyReview view" must {
     behave like normalPage(createView, messageKeyPrefix)
@@ -43,7 +47,7 @@ class CompanyReviewViewSpec extends ViewBehaviours {
 
   "have link to edit company details" in {
     createView must haveLink(
-      routes.CheckYourAnswersController.onPageLoad.url, "edit-company-details"
+      routes.CheckYourAnswersController.onPageLoad().url, "edit-company-details"
     )
   }
 

@@ -20,36 +20,37 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
+import controllers.register.partnership.partners.routes.HasPartnerUTRController
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.partnership.partners.{HasPartnerUTRId, PartnerNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{CommonFormWithHintViewModel, Message}
-import controllers.register.partnership.partners.routes.HasPartnerUTRController
+import views.html.hasReferenceNumber
 
 import scala.concurrent.ExecutionContext
 
 class HasPartnerUTRController @Inject()(override val appConfig: FrontendAppConfig,
-                                        override val messagesApi: MessagesApi,
                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                         @PartnershipPartner override val navigator: Navigator,
                                         authenticate: AuthAction,
                                         allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: HasReferenceNumberFormProvider
-                                       )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                        formProvider: HasReferenceNumberFormProvider,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        val view: hasReferenceNumber
+                                       )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = HasPartnerUTRController.onSubmit(mode, index),
-      title = Message("hasUTR.heading", Message("thePartner").resolve),
+      title = Message("hasUTR.heading", Message("thePartner")),
       heading = Message("hasUTR.heading", entityName),
       mode = mode,
       hint = Some(Message("utr.p1")),
@@ -59,7 +60,8 @@ class HasPartnerUTRController @Inject()(override val appConfig: FrontendAppConfi
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
-  private def form(partnerName: String): Form[Boolean] =
+  private def form(partnerName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider("hasUTR.error.required", partnerName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =

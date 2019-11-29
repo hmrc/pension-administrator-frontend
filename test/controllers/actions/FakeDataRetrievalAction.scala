@@ -20,13 +20,15 @@ import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import play.api.libs.json.JsValue
 import utils.UserAnswers
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
 class FakeDataRetrievalAction(json: Option[JsValue]) extends DataRetrievalAction {
+  implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] = json match {
     case None =>
       Future.successful(OptionalDataRequest(request.request, request.externalId, request.user, None))
     case Some(cacheMap) =>
-      Future.successful(OptionalDataRequest(request.request, request.externalId, request.user, Some(new UserAnswers(cacheMap))))
+      Future.successful(OptionalDataRequest(request.request, request.externalId, request.user, Some(UserAnswers(cacheMap))))
   }
 }

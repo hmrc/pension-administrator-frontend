@@ -22,23 +22,23 @@ import controllers.actions._
 import identifiers.register.partnership.partners.PartnerNameId
 import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Enumerable
 import viewmodels.{AlreadyDeletedViewModel, Message}
 import views.html.alreadyDeleted
 
 import scala.concurrent.Future
 
-class AlreadyDeletedController @Inject()(
-                                          appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
-                                          authenticate: AuthAction,
-                                          allowAccess: AllowAccessActionProvider,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction
-                                        ) extends FrontendController with Retrievals with I18nSupport with Enumerable.Implicits {
+class AlreadyDeletedController @Inject()(appConfig: FrontendAppConfig,
+                                         authenticate: AuthAction,
+                                         allowAccess: AllowAccessActionProvider,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: alreadyDeleted
+                                        ) extends FrontendBaseController with Retrievals with Enumerable.Implicits with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -49,7 +49,7 @@ class AlreadyDeletedController @Inject()(
       )
 
       PartnerNameId(index).retrieve.right.map { partnerDetails =>
-        Future.successful(Ok(alreadyDeleted(appConfig, viewmodel(partnerDetails.fullName))))
+        Future.successful(Ok(view(viewmodel(partnerDetails.fullName))))
       }
 
   }

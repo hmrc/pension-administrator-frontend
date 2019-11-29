@@ -21,6 +21,7 @@ import java.time.LocalDate
 import forms.register.individual.IndividualDateOfBirthFormProvider
 import models.NormalMode
 import play.api.data.Form
+import play.twirl.api.Html
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.individual.individualDateOfBirth
 
@@ -30,14 +31,18 @@ class IndividualDateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val form = new IndividualDateOfBirthFormProvider()()
 
-  private def createView = () => individualDateOfBirth(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  val view: individualDateOfBirth = app.injector.instanceOf[individualDateOfBirth]
 
-  private def createViewUsingForm = (form: Form[LocalDate]) => individualDateOfBirth(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView: () => Html = () =>
+    view(form, NormalMode)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[LocalDate] => Html = (form: Form[LocalDate]) =>
+    view(form, NormalMode)(fakeRequest, messages)
 
   "IndividualDateOfBirth view" must {
     "behave like a normal page" when {
       "rendered" must {
-        behave like normalPageWithTitle(createView, messageKeyPrefix, messagesApi("individualDateOfBirth.heading"), messagesApi("individualDateOfBirth.heading"))
+        behave like normalPageWithTitle(createView, messageKeyPrefix, messages("individualDateOfBirth.heading"), messages("individualDateOfBirth.heading"))
       }
     }
 
@@ -48,4 +53,5 @@ class IndividualDateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
       Some(messages("common.dateOfBirth.hint"))
     )
   }
+
 }

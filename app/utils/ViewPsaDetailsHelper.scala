@@ -32,11 +32,8 @@ import viewmodels._
 
 //scalastyle:off number.of.methods
 class ViewPsaDetailsHelper(userAnswers: UserAnswers,
-                           countryOptions: CountryOptions,
-                           override val messagesApi: MessagesApi
-                          )(implicit messages: Messages) extends I18nSupport {
-
-  import ViewPsaDetailsHelper._
+                           countryOptions: CountryOptions
+                          )(implicit messages: Messages) {
 
   private val individualDetailsSection = SuperSection(
     None,
@@ -442,7 +439,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def ifAnyPartnerIncomplete = userAnswers.allPartnersAfterDelete(NormalMode).exists(!_.isComplete)
 
   private def workingKnowledge: Option[AnswerRow] = userAnswers.get(VariationWorkingKnowledgeId) map { wk =>
-    AnswerRow("variationWorkingKnowledge.heading", Seq(messages(if (wk) "site.yes" else "site.no")), answerIsMessageKey = false,
+    AnswerRow("variationWorkingKnowledge.heading", Seq(if (wk) "site.yes" else "site.no"), answerIsMessageKey = true,
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url)))
   }
 
@@ -496,9 +493,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
   val companySections: Seq[SuperSection] = Seq(companyDetailsSection, directorsSuperSection) ++ pensionAdviserSection.toSeq
   val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection, partnersSuperSection) ++ pensionAdviserSection.toSeq
-}
-
-object ViewPsaDetailsHelper {
 
   def addressYearsAnswer(userAnswers: UserAnswers, id: TypedIdentifier[AddressYears]): String = {
     userAnswers.get(id) match {

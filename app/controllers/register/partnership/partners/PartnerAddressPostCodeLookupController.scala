@@ -28,26 +28,28 @@ import identifiers.register.partnership.partners.{PartnerAddressPostCodeLookupId
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
+import views.html.address.postcodeLookup
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 class PartnerAddressPostCodeLookupController @Inject()(
                                                         override val appConfig: FrontendAppConfig,
                                                         override val cacheConnector: UserAnswersCacheConnector,
                                                         override val addressLookupConnector: AddressLookupConnector,
                                                         @PartnershipPartner override val navigator: Navigator,
-                                                        override val messagesApi: MessagesApi,
                                                         authenticate: AuthAction,
                                                         override val allowAccess: AllowAccessActionProvider,
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,
-                                                        formProvider: PostCodeLookupFormProvider
+                                                        formProvider: PostCodeLookupFormProvider,
+                                                        val controllerComponents: MessagesControllerComponents,
+                                                        val view: postcodeLookup
+                                                      )(implicit val executionContext: ExecutionContext
                                                       ) extends PostcodeLookupController with Retrievals {
 
   override protected def form: Form[String] = formProvider()

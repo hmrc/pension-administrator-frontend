@@ -16,7 +16,7 @@
 
 package controllers.register.partnership.partners
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -38,20 +39,20 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PartnerAddressListController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
+  val view: addressList = app.injector.instanceOf[addressList]
   def viewAsString(form: Form[_] = form): String =
-    addressList(
-      frontendAppConfig,
-      form,
+    view(form,
       viewModel,
       NormalMode
     )(fakeRequest, messages).toString
@@ -141,8 +142,8 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
         }
       }
     }
-
   }
+
 }
 
 object PartnerAddressListControllerSpec {
@@ -153,7 +154,7 @@ object PartnerAddressListControllerSpec {
   val firstIndex = Index(0)
   val partner = PersonName("firstName", "lastName")
 
-  val addresses = Seq(
+  val addresses: Seq[TolerantAddress] = Seq(
     address("test post code 1"),
     address("test post code 2")
   )
@@ -187,6 +188,4 @@ object PartnerAddressListControllerSpec {
       Message("common.selectAddress.text"),
       Message("common.selectAddress.link")
     )
-
-
 }

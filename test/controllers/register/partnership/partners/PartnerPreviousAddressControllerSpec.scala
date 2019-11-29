@@ -18,7 +18,7 @@ package controllers.register.partnership.partners
 
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
@@ -28,6 +28,7 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -66,7 +67,6 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new PartnerPreviousAddressController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
@@ -75,8 +75,12 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
       new DataRequiredActionImpl,
       formProvider,
       new FakeCountryOptions(environment, frontendAppConfig),
-      auditService
+      auditService,
+      stubMessagesControllerComponents(),
+      view
     )
+
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
 
   private val viewModel =
     ManualAddressViewModel(
@@ -88,8 +92,7 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     )
 
   private def viewAsString(form: Form[_] = form) =
-    manualAddress(
-      frontendAppConfig,
+    view(
       form,
       viewModel,
       NormalMode

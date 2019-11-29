@@ -18,17 +18,18 @@ package controllers.register.partnership
 
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -41,6 +42,8 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
 
   val messagePrefix = "partnership.contactAddress"
   val partnershipName = "Test Partnership Name"
@@ -61,7 +64,6 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipContactAddressController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAllowAccessProvider(),
@@ -70,10 +72,12 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      fakeAuditService
+      fakeAuditService,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, viewmodel, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
 
   "PartnershipContactAddress Controller" must {
 

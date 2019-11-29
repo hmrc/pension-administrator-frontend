@@ -18,7 +18,7 @@ package controllers.register.adviser
 
 import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
@@ -26,11 +26,12 @@ import identifiers.register.adviser.{AdviserAddressId, AdviserNameId}
 import models.{Address, NormalMode, TolerantAddress}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -159,6 +160,8 @@ object AdviserAddressControllerSpec extends ControllerSpecBase {
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
+
   val formProvider = new AddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider()
   val name = "Test Adviser Name"
@@ -173,10 +176,10 @@ object AdviserAddressControllerSpec extends ControllerSpecBase {
   val fakeAuditService = new StubSuccessfulAuditService()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getAdviser) =
-    new AdviserAddressController(frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector,
+    new AdviserAddressController(frontendAppConfig, FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute), FakeAllowAccessProvider(),
       FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-      countryOptions, fakeAuditService)
+      countryOptions, fakeAuditService, stubMessagesControllerComponents(), view)
 
-  def viewAsString(form: Form[_] = form): String = manualAddress(frontendAppConfig, form, addressViewModel, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, addressViewModel, NormalMode)(fakeRequest, messages).toString
 }

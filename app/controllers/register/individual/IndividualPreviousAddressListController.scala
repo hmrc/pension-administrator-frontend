@@ -24,30 +24,33 @@ import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.individual._
 import javax.inject.Inject
-import models.{Mode, TolerantAddress}
 import models.requests.DataRequest
+import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
+import views.html.address.addressList
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class IndividualPreviousAddressListController @Inject()(
                                                          @Individual override val navigator: Navigator,
                                                          override val appConfig: FrontendAppConfig,
-                                                         override val messagesApi: MessagesApi,
                                                          override val cacheConnector: UserAnswersCacheConnector,
                                                          authenticate: AuthAction,
                                                          override val allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
-                                                         formProvider: AddressListFormProvider) extends AddressListController with Retrievals {
-  def form(addresses: Seq[TolerantAddress]): Form[Int] = formProvider(addresses, Message("individual.select.previous.address.error.required"))
+                                                         formProvider: AddressListFormProvider,
+                                                         val controllerComponents: MessagesControllerComponents,
+                                                         val view: addressList
+                                                       )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
+
+  def form(addresses: Seq[TolerantAddress])(implicit request: DataRequest[AnyContent]): Form[Int] = formProvider(addresses, Message("individual.select.previous.address.error.required"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

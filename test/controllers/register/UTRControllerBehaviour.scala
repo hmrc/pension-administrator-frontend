@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import forms.UTRFormProvider
@@ -30,8 +30,7 @@ import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.register.utr
 
-trait UTRControllerBehaviour {
-  this: ControllerSpecBase =>
+trait UTRControllerBehaviour extends ControllerSpecBase {
 
   
   import UTRControllerBehaviour._
@@ -46,7 +45,7 @@ trait UTRControllerBehaviour {
       val result = fixture.controller.get(id, entity, onwardRoute)(testRequest())
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(this, testForm(), entity, onwardRoute)
+      contentAsString(result) mustBe viewAsString(testForm(), entity, onwardRoute)
     }
 
     "populate the view correctly for a GET request with existing data" in {
@@ -57,7 +56,7 @@ trait UTRControllerBehaviour {
       val result = fixture.controller.get(id, entity, onwardRoute)(request)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(this, testForm().fill(testUTR), entity, onwardRoute)
+      contentAsString(result) mustBe viewAsString(testForm().fill(testUTR), entity, onwardRoute)
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -79,17 +78,14 @@ trait UTRControllerBehaviour {
       val result = fixture.controller.post(id, entity, onwardRoute, NormalMode)(request)
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(this, formWithErrors, entity, onwardRoute)
+      contentAsString(result) mustBe viewAsString(formWithErrors, entity, onwardRoute)
     }
 
   }
 
 }
 
-
-
-
-object UTRControllerBehaviour {
+object UTRControllerBehaviour extends ControllerSpecBase {
 
   lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   val entity: String = "limited company"
@@ -97,6 +93,8 @@ object UTRControllerBehaviour {
   val testUTR = "1234567890"
 
   val invalidUTR = "abcd123456"
+
+  val view: utr = app.injector.instanceOf[utr]
 
   case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: UTRController)
 
@@ -128,7 +126,7 @@ object UTRControllerBehaviour {
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(UserType.Individual, None, false, None),
+      user = PSAUser(UserType.Individual, None, isExistingPSA = false, None),
       userAnswers = answers
     )
 
@@ -137,7 +135,7 @@ object UTRControllerBehaviour {
   def testForm(): Form[String] =
     new UTRFormProvider()()
 
-  def viewAsString(base: ControllerSpecBase, form: Form[_], entity: String, href: Call): String =
-    utr(base.frontendAppConfig, form, entity, href)(base.fakeRequest, base.messages).toString()
+  def viewAsString(form: Form[_], entity: String, href: Call): String =
+    view(form, entity, href)(fakeRequest, messages).toString()
 
 }

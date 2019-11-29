@@ -16,7 +16,7 @@
 
 package services
 
-import com.google.inject.ImplementedBy
+import com.google.inject.{ImplementedBy, Inject}
 import connectors.SubscriptionConnector
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.register._
@@ -26,41 +26,40 @@ import identifiers.register.individual._
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
 import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
-import javax.inject.Inject
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import models.requests.OptionalDataRequest
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.Messages
 import play.api.libs.json._
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.{UserAnswers, ViewPsaDetailsHelper}
-import viewmodels.PsaViewDetailsViewModel
+import viewmodels.{PsaViewDetailsViewModel, SuperSection}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[PsaDetailServiceImpl])
 trait PsaDetailsService {
-  def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)(implicit hc: HeaderCarrier,
-                                                                     ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel]
+  def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
+                                         (implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel]
 }
 
-class PsaDetailServiceImpl @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      subscriptionConnector: SubscriptionConnector,
-                                      countryOptions: CountryOptions,
-                                      userAnswersCacheConnector: UserAnswersCacheConnector
-                                    ) extends PsaDetailsService with I18nSupport {
+class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnector,
+                                     countryOptions: CountryOptions,
+                                     userAnswersCacheConnector: UserAnswersCacheConnector,
+                                     controllerComponents: MessagesControllerComponents
+                                    ) extends PsaDetailsService {
 
-  override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)(
-    implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
+  override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
+                                                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
 
     retrievePsaDataFromUserAnswers(psaId, mode)
 
   }
 
   def retrievePsaDataFromUserAnswers(psaId: String, mode: Mode
-                                    )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[PsaViewDetailsViewModel] = {
+                                    )(implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
     for {
       userAnswers <- getUserAnswers(psaId, mode)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
@@ -70,7 +69,7 @@ class PsaDetailServiceImpl @Inject()(
   }
 
   private[services] def getUserAnswers(psaId: String, mode: Mode
-                                      )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: OptionalDataRequest[_]): Future[UserAnswers] =
+                                      )(implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_]): Future[UserAnswers] =
     userAnswersCacheConnector.fetch(request.externalId).flatMap {
       case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {
         getUpdatedUserAnswers(_, mode)
@@ -104,22 +103,22 @@ class PsaDetailServiceImpl @Inject()(
     DirectorsOrPartnersChangedId
   )
 
-  private def getUpdatedUserAnswers(response: JsValue, mode: Mode)(implicit ec: ExecutionContext): Future[UserAnswers] = {
+  private def getUpdatedUserAnswers(response: JsValue, mode: Mode)(implicit executionContext: ExecutionContext): Future[UserAnswers] = {
     val answers = UserAnswers(response)
     val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
     Future.successful(
       setCompleteAndAddressIdsToUserAnswers(answers, legalStatus, mode).flatMap(_.set(UpdateModeId)(true))
-        .flatMap( _.setAllFlagsToValue(changeFlagIds, value = false))
+        .flatMap(_.setAllFlagsToValue(changeFlagIds, value = false))
         .asOpt.getOrElse(answers)
     )
   }
 
-  private def getPsaDetailsViewModel(userAnswers: UserAnswers): PsaViewDetailsViewModel = {
+  private def getPsaDetailsViewModel(userAnswers: UserAnswers)(implicit messages: Messages): PsaViewDetailsViewModel = {
     val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
-    val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions, messagesApi)
+    val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)
 
-    val (superSections, name) = legalStatus match {
+    val (superSections, name): (Seq[SuperSection], String) = legalStatus match {
       case Some(Individual) =>
         (viewPsaDetailsHelper.individualSections,
           userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""))

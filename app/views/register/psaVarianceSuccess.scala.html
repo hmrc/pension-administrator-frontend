@@ -14,19 +14,21 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.Message
 @import models.requests._
 
-@(appConfig: FrontendAppConfig, psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template
+)
+
+@(psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
 
 @main_template(
-   title= messages("psaVarianceSuccess.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+   title = messages("psaVarianceSuccess.title")
+) {
 
     <div class="govuk-box-highlight">
         @components.heading(messages("psaVarianceSuccess.heading"))

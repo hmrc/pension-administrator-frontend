@@ -18,20 +18,20 @@ package config
 
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
-import play.api.Mode.Mode
+import play.api.Mode
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject()(override val runModeConfiguration: Configuration, environment: Environment) extends ServicesConfig {
+class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environment: Environment, servicesConfig: ServicesConfig) {
 
-  override protected def mode: Mode = environment.mode
+  protected def mode: Mode = environment.mode
 
-  private def loadConfig(key: String) = runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+  private def loadConfig(key: String) = runModeConfiguration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private lazy val contactHost = runModeConfiguration.getString("contact-frontend.host").getOrElse("")
+  private lazy val contactHost = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = "pensionadministratorfrontend"
 
   lazy val googleTagManagerIdAvailable: Boolean = runModeConfiguration.underlying.getBoolean(s"google-tag-manager.id-available")
@@ -45,10 +45,10 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
 
   lazy val govUkUrl: String = loadConfig("urls.gov-uk")
   lazy val governmentGatewayUrl: String = loadConfig("urls.government-gateway")
-  lazy val pensionsSchemeUrl: String = baseUrl("pensions-scheme")
-  lazy val pensionAdministratorUrl: String = baseUrl ("pension-administrator")
-  lazy val managePensionsUrl: String = baseUrl ("manage-pensions-frontend")
-  lazy val authUrl: String = baseUrl("auth")
+  lazy val pensionsSchemeUrl: String = s"${servicesConfig.baseUrl("pensions-scheme")}"
+  lazy val pensionAdministratorUrl: String = s"${servicesConfig.baseUrl ("pension-administrator")}"
+  lazy val managePensionsUrl: String = s"${servicesConfig.baseUrl ("manage-pensions-frontend")}"
+  lazy val authUrl: String = s"${servicesConfig.baseUrl("auth")}"
   lazy val loginUrl: String = loadConfig("urls.login")
   lazy val serviceSignOut: String = loadConfig("urls.logout")
   lazy val loginContinueUrl: String = loadConfig("urls.loginContinue")
@@ -64,13 +64,13 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
   lazy val maxDirectors: Int = loadConfig("register.company.maxDirectors").toInt
   lazy val maxPartners: Int = loadConfig("register.partnership.maxPartners").toInt
   lazy val emailTemplateId: String = loadConfig("email.templateId")
-  lazy val emailSendForce: Boolean = runModeConfiguration.getBoolean("email.force").getOrElse(false)
+  lazy val emailSendForce: Boolean = runModeConfiguration.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val tpssUrl: String = loadConfig("urls.tpss")
-  lazy val subscriptionDetailsUrl: String = s"${baseUrl("pension-administrator")}${runModeConfiguration
-    .underlying.getString("urls.pension-administrator.subscriptionDetails")}"
+  lazy val subscriptionDetailsUrl: String = s"${s"${servicesConfig.baseUrl("pension-administrator")}${runModeConfiguration
+    .underlying.getString("urls.pension-administrator.subscriptionDetails")}"}"
 
-  lazy val updateSubscriptionDetailsUrl: String = s"${baseUrl("pension-administrator")}${runModeConfiguration
-    .underlying.getString("urls.pension-administrator.updateSubscriptionDetails")}"
+  lazy val updateSubscriptionDetailsUrl: String = s"${s"${servicesConfig.baseUrl("pension-administrator")}${runModeConfiguration
+    .underlying.getString("urls.pension-administrator.updateSubscriptionDetails")}"}"
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
@@ -78,57 +78,57 @@ class FrontendAppConfig @Inject()(override val runModeConfiguration: Configurati
 
   def routeToSwitchLanguage: String => Call = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
-  lazy val addressLookUp: String = baseUrl("address-lookup")
+  lazy val addressLookUp: String = s"${servicesConfig.baseUrl("address-lookup")}"
 
-  lazy val identityVerification: String = baseUrl("identity-verification")
+  lazy val identityVerification: String = s"${servicesConfig.baseUrl("identity-verification")}"
 
-  lazy val identityVerificationFrontend: String = baseUrl("identity-verification-frontend")
+  lazy val identityVerificationFrontend: String = s"${servicesConfig.baseUrl("identity-verification-frontend")}"
 
-  lazy val registerWithIdOrganisationUrl: String = baseUrl ("pension-administrator") +
-        runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithIdOrganisation")
+  lazy val registerWithIdOrganisationUrl: String = s"${servicesConfig.baseUrl ("pension-administrator") +
+        runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithIdOrganisation")}"
 
-  lazy val registerWithNoIdOrganisationUrl: String = baseUrl ("pension-administrator") +
-        runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithNoIdOrganisation")
+  lazy val registerWithNoIdOrganisationUrl: String = s"${servicesConfig.baseUrl ("pension-administrator") +
+        runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithNoIdOrganisation")}"
 
-  lazy val registerWithNoIdIndividualUrl: String = baseUrl ("pension-administrator") +
-    runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithNoIdIndividual")
+  lazy val registerWithNoIdIndividualUrl: String = s"${servicesConfig.baseUrl ("pension-administrator") +
+    runModeConfiguration.underlying.getString ("urls.pension-administrator.registerWithNoIdIndividual")}"
 
-  lazy val registerWithIdIndividualUrl: String = baseUrl("pension-administrator") +
-        runModeConfiguration.underlying.getString("urls.pension-administrator.registerWithIdIndividual")
+  lazy val registerWithIdIndividualUrl: String = s"${servicesConfig.baseUrl("pension-administrator") +
+        runModeConfiguration.underlying.getString("urls.pension-administrator.registerWithIdIndividual")}"
 
-  lazy val registerPsaUrl: String = baseUrl("pension-administrator") +
-        runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")
+  lazy val registerPsaUrl: String = s"${servicesConfig.baseUrl("pension-administrator") +
+        runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")}"
 
-  def updatePsaUrl(psaId:String): String = baseUrl("pension-administrator") +
-    runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsa").format(psaId)
+  def updatePsaUrl(psaId:String): String = s"${servicesConfig.baseUrl("pension-administrator") +
+    runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsa").format(psaId)}"
 
-  def canDeRegisterPsaUrl(psaId: String): String = baseUrl("pension-administrator") +
-    runModeConfiguration.underlying.getString("urls.pension-administrator.canDeRegister").format(psaId)
+  def canDeRegisterPsaUrl(psaId: String): String = s"${servicesConfig.baseUrl("pension-administrator") +
+    runModeConfiguration.underlying.getString("urls.pension-administrator.canDeRegister").format(psaId)}"
 
-  def psaSubmissionEmailCallback(encryptedPsaId: String) = baseUrl("pension-administrator") +
-    runModeConfiguration.underlying.getString("urls.pension-administrator.emailCallback").format(encryptedPsaId)
+  def psaSubmissionEmailCallback(encryptedPsaId: String) = s"${servicesConfig.baseUrl("pension-administrator") +
+    runModeConfiguration.underlying.getString("urls.pension-administrator.emailCallback").format(encryptedPsaId)}"
 
-  def taxEnrolmentsUrl(serviceName: String): String = baseUrl("tax-enrolments") +
+  def taxEnrolmentsUrl(serviceName: String): String = s"${servicesConfig.baseUrl("tax-enrolments") +
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +
-    s"service/$serviceName/enrolment"
+    s"service/$serviceName/enrolment"}"
 
-  def taxDeEnrolmentUrl: String = baseUrl("tax-enrolments") +
-    runModeConfiguration.underlying.getString("urls.tax-de-enrolment")
+  def taxDeEnrolmentUrl: String = s"${servicesConfig.baseUrl("tax-enrolments") +
+    runModeConfiguration.underlying.getString("urls.tax-de-enrolment")}"
 
-  def emailUrl = s"${baseUrl("email")}/${runModeConfiguration.underlying.getString("urls.email")}"
+  def emailUrl = s"${s"${servicesConfig.baseUrl("email")}/${runModeConfiguration.underlying.getString("urls.email")}"}"
   def ivRegisterOrganisationAsIndividualUrl =
-    s"${baseUrl("identity-verification-proxy")}/${runModeConfiguration.underlying.getString("urls.ivRegisterOrganisationAsIndividual")}"
+    s"${s"${servicesConfig.baseUrl("identity-verification-proxy")}/${runModeConfiguration.underlying.getString("urls.ivRegisterOrganisationAsIndividual")}"}"
 
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 
-  lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getBoolean("features.welsh-translation").getOrElse(true)
+  lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getOptional[Boolean]("features.welsh-translation").getOrElse(true)
 
-  lazy val retryAttempts: Int = runModeConfiguration.getInt("retry.max.attempts").getOrElse(1)
-  lazy val retryWaitMs: Int = runModeConfiguration.getInt("retry.initial.wait.ms").getOrElse(1)
-  lazy val retryWaitFactor: Double = runModeConfiguration.getDouble("retry.wait.factor").getOrElse(1)
+  lazy val retryAttempts: Int = runModeConfiguration.getOptional[Int]("retry.max.attempts").getOrElse(1)
+  lazy val retryWaitMs: Int = runModeConfiguration.getOptional[Int]("retry.initial.wait.ms").getOrElse(1)
+  lazy val retryWaitFactor: Double = runModeConfiguration.getOptional[Double]("retry.wait.factor").getOrElse(1)
   lazy val daysDataSaved: Int = loadConfig("daysDataSaved").toInt
 
-  lazy val minimalPsaDetailsUrl: String = s"${baseUrl("pension-administrator")}${
-    runModeConfiguration.underlying.getString("urls.pension-administrator.minimalPsaDetails")}"
+  lazy val minimalPsaDetailsUrl: String = s"${s"${servicesConfig.baseUrl("pension-administrator")}${
+    runModeConfiguration.underlying.getString("urls.pension-administrator.minimalPsaDetails")}"}"
 
 }

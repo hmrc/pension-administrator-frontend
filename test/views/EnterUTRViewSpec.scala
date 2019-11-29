@@ -45,16 +45,16 @@ class EnterUTRViewSpec extends QuestionViewBehaviours[ReferenceValue] {
       entityName = name
     )
 
+  val view: enterUTR = app.injector.instanceOf[enterUTR]
+
   def createView: () => HtmlFormat.Appendable = () =>
-    enterUTR(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    enterUTR(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages)
@@ -76,4 +76,5 @@ class EnterUTRViewSpec extends QuestionViewBehaviours[ReferenceValue] {
 
     behave like pageWithSubmitButton(createView)
   }
+
 }

@@ -16,7 +16,7 @@
 
 package controllers.register.partnership
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import forms.address.SameContactAddressFormProvider
@@ -24,6 +24,7 @@ import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -52,6 +53,8 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
     .partnershipRegisteredAddress(testAddress)
     .dataRetrievalAction
 
+  val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
+
   def viewmodel = SameContactAddressViewModel(
     postCall = controllers.register.partnership.routes.PartnershipSameContactAddressController.onSubmit(NormalMode),
     title = Message("partnership.sameContactAddress.title"),
@@ -68,18 +71,18 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
     new PartnershipSameContactAddressController(
       new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(form: Form[_] = form): String = sameContactAddress(
-    frontendAppConfig,
+  def viewAsString(form: Form[_] = form): String = view(
     form,
     viewmodel,
     countryOptions

@@ -17,8 +17,8 @@
 package views.register
 
 import forms.BusinessNameFormProvider
-import models.NormalMode
 import play.api.data.Form
+import play.twirl.api.Html
 import viewmodels.Message
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.businessName
@@ -31,15 +31,17 @@ class BusinessNameViewSpec extends QuestionViewBehaviours[String] {
 
   val form = new BusinessNameFormProvider()()
 
-  private def createView = () => businessName(frontendAppConfig, form, businessType, href)(fakeRequest, messages)
+  val view: businessName = app.injector.instanceOf[businessName]
 
-  private def createViewUsingForm = (form: Form[_]) => businessName(frontendAppConfig, form, businessType, href)(fakeRequest, messages)
+  private def createView: () => Html = () => view(form, businessType, href)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => view(form, businessType, href)(fakeRequest, messages)
 
   "Company Name view" must {
 
     "display the correct browser title" in {
       val doc = asDocument(createView())
-      assertEqualsMessage(doc, "title", messagesApi(s"$messageKeyPrefix.title", businessType)  + " - " + messagesApi("pension.scheme.administrator.title"))
+      assertEqualsMessage(doc, "title", messages(s"$messageKeyPrefix.title", businessType)  + " - " + messages("pension.scheme.administrator.title"))
     }
 
     "display the correct page header" in {

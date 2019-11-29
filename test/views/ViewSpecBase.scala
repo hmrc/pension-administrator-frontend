@@ -21,12 +21,15 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import org.scalatest.matchers.{MatchResult, Matcher}
+import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import viewmodels.Message
 
 trait ViewSpecBase extends SpecBase {
 
   type View = () => HtmlFormat.Appendable
+
+  override implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
   def asDocument(html: Html): Document = Jsoup.parse(html.toString())
 

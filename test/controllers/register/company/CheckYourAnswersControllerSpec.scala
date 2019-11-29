@@ -18,14 +18,13 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId}
 import identifiers.register.company.{CompanyPhoneId, _}
-import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
-import models.RegistrationLegalStatus.LimitedCompany
+import identifiers.register._
 import models._
 import models.register.BusinessType
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
@@ -94,7 +93,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "render the view correctly for company registration number" in {
         val rows = Seq(
           answerRow(
-            messages("companyRegistrationNumber.heading", defaultCompany), Seq("test reg no"), false,
+            messages("companyRegistrationNumber.heading", defaultCompany), Seq("test reg no"), answerIsMessageKey = false,
             Some(Link(controllers.register.company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)),
             visuallyHiddenLabel = Some(Message("companyRegistrationNumber.visuallyHidden.text", defaultCompany))
           )
@@ -111,7 +110,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       "render the view correctly for has company number" in {
         val rows = Seq(
           answerRow(
-            messages("hasCompanyNumber.heading", defaultCompany), Seq("site.yes"), true,
+            messages("hasCompanyNumber.heading", defaultCompany), Seq("site.yes"), answerIsMessageKey = true,
             Some(Link(controllers.register.company.routes.HasCompanyCRNController.onPageLoad(CheckMode).url)),
             visuallyHiddenLabel = Some(Message("hasCompanyNumber.visuallyHidden.text", defaultCompany))
           )
@@ -248,13 +247,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
     }
   }
+
 }
 
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
-  private val companyName = "Test Company Name"
   private val defaultCompany = Message("theBusiness").resolve
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+
+  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
   val contactDetailsHeading = "common.checkYourAnswers.contact.details.heading"
 
@@ -268,14 +269,10 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       new FakeNavigator(desiredRoute = onwardRoute),
-      messagesApi,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
-
-  private def companyDetails(row: Seq[AnswerRow] = Seq.empty) = AnswerSection(
-    None,
-    row
-  )
 
   private val address = Address(
     "address-line-1",
@@ -308,8 +305,7 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-    val expectedResult = check_your_answers(
-      frontendAppConfig,
+    val expectedResult = view(
       sections,
       call,
       None,

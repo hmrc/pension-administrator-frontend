@@ -18,6 +18,7 @@ package views.register
 
 import models.requests.DataRequest
 import models.{PSAUser, UserType}
+import play.twirl.api.Html
 import utils.UserAnswers
 import views.behaviours.ViewBehaviours
 import views.html.register.confirmation
@@ -25,12 +26,14 @@ import views.html.register.confirmation
 class ConfirmationViewSpec extends ViewBehaviours {
 
   val psaId: String = "A1234567"
+  val view: confirmation = inject[confirmation]
 
   "Confirmation view where user is existing PSA" must {
     val messageKeyPrefix = "confirmation.existingPSA"
-    val psaUser = PSAUser(UserType.Individual, None, true, None)
+    val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = true, None)
+    val request = DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers())
 
-    def createView() = () => confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+    def createView(): () => Html = () => view(psaId)(request, messages)
 
     behave like normalPage(createView(), messageKeyPrefix)
 
@@ -73,9 +76,9 @@ class ConfirmationViewSpec extends ViewBehaviours {
   "Confirmation view where user is new PSA" must {
 
     val messageKeyPrefix = "confirmation.newPSA"
-    val psaUser = PSAUser(UserType.Individual, None, false, None)
+    val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
 
-    def createView() = () => confirmation(frontendAppConfig, psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+    def createView(): () => Html = () => view(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
 
     behave like normalPage(createView(), messageKeyPrefix)
 

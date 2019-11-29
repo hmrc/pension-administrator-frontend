@@ -16,17 +16,16 @@
 
 package controllers.register.individual
 
-import base.CSRFRequest
-import connectors.cache.UserAnswersCacheConnector
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject.bind
-import play.api.mvc.{Request, Result}
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,7 +34,7 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase with CSRFRequest {
+class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   import IndividualPreviousAddressPostCodeLookupController._
   import IndividualPreviousAddressPostCodeLookupControllerSpec._
@@ -43,29 +42,22 @@ class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSp
   "IndividualPreviousAddressPostCodeLookupController" must {
 
     "render the view correctly on a GET request" in {
-      requestResult(
-        implicit app => addToken(FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode))),
-        (request, result) => {
-          status(result) mustBe OK
-          contentAsString(result) mustBe postcodeLookup(frontendAppConfig, form, viewModel(NormalMode), NormalMode)(request, messages).toString()
-        }
-      )
+      val request = addCSRFToken(FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)))
+      val result = route(application, request).value
+      status(result) mustBe OK
+      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
     }
 
     "redirect to the next page on a POST request" in {
-      requestResult(
-        implicit App => addToken(FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onSubmit(NormalMode))
-          .withFormUrlEncodedBody("value" -> validPostcode)),
-        (_, result) => {
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(onwardRoute.url)
-        }
-      )
+      val request = FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onSubmit(NormalMode))
+        .withFormUrlEncodedBody("value" -> validPostcode)
+      val result = route(application, request).value
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
 
     }
 
   }
-
 }
 
 object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
@@ -74,6 +66,9 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   private val form = formProvider()
 
   private val validPostcode = "ZZ1 1ZZ"
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
 
   private val address = TolerantAddress(
     Some("test-address-line-1"),
@@ -85,7 +80,7 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   )
 
   private val fakeAddressLookupConnector = new AddressLookupConnector {
-    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[TolerantAddress]] = {
+    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
       Future.successful(Seq(address))
     }
   }
@@ -93,21 +88,13 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   private val onwardRoute = controllers.register.individual.routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
-  private def requestResult[T](request: (Application) => Request[T], test: (Request[_], Future[Result]) => Unit)(implicit writeable: Writeable[T]): Unit = {
-
-    running(_.overrides(
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind[Navigator].toInstance(fakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-
-  }
+    ).build()
 
 }

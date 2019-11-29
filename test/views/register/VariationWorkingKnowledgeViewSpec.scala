@@ -29,22 +29,22 @@ class VariationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
   val form = new VariationWorkingKnowledgeFormProvider()()
 
+  val view: variationWorkingKnowledge = app.injector.instanceOf[variationWorkingKnowledge]
+
   def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
-    variationWorkingKnowledge(frontendAppConfig, form, Some("Mark Wright"), mode)(fakeRequest, messages)
+    view(form, Some("Mark Wright"), mode)(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    variationWorkingKnowledge(frontendAppConfig, form, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
+    view(form, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
 
   "variationWorkingKnowledge view" must {
-
-    appRunning()
-
     behave like normalPage(createView(), messageKeyPrefix, "p1", "p2", "p3")
 
     behave like yesNoPage(createViewUsingForm,
       messageKeyPrefix,
       controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(UpdateMode).url,
-      s"$messageKeyPrefix.heading")
+      s"$messageKeyPrefix.heading"
+    )
   }
 
   "variationWorkingKnowledge view" when {
@@ -54,4 +54,5 @@ class VariationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
       }
     }
   }
+
 }

@@ -20,21 +20,25 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.register.submissionInvalid
 
 class SubmissionInvalidControllerSpec extends ControllerSpecBase {
 
+  val view: submissionInvalid = app.injector.instanceOf[submissionInvalid]
+
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new SubmissionInvalidController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString() = submissionInvalid(frontendAppConfig)(fakeRequest, messages).toString
+  def viewAsString(): String = view()(fakeRequest, messages).toString
 
   "SubmissionInvalidController" must {
 

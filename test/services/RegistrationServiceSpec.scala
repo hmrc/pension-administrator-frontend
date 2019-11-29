@@ -16,11 +16,12 @@
 
 package services
 
-import connectors.FakeUserAnswersCacheConnector
+import java.time.LocalDate
+
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.FakeRegistrationConnector
 import identifiers.register.RegistrationInfoId
 import models._
-import org.joda.time.LocalDate
 import org.scalatest.{AsyncFlatSpec, Matchers, OptionValues}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -73,7 +74,7 @@ object RegistrationServiceSpec {
 
     override def registerWithNoIdIndividual(
         firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate)(
-        implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
+        implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
   }
 
   private val extId: String = "ext-id"
@@ -96,7 +97,7 @@ object RegistrationServiceSpec {
     "GB"
   )
 
-  private val dob: LocalDate = new LocalDate()
+  private val dob: LocalDate = LocalDate.now()
 
   val sapNumber = "test-sap-number"
 

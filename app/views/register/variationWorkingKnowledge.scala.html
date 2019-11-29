@@ -14,30 +14,32 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.play.views.html._
 @import models.Mode
 @import models.{CheckUpdateMode, UpdateMode}
 
-@(appConfig: FrontendAppConfig, form: Form[_], psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_], psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("variationWorkingKnowledge.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("variationWorkingKnowledge.title")
+) {
 
-    @helpers.form(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
+    @components.back_link()
 
-        @components.back_link()
+    @components.error_summary(form.errors)
 
-        @components.error_summary(form.errors)
+    @components.heading(messages("variationWorkingKnowledge.heading"))
 
-        @components.heading(messages("variationWorkingKnowledge.heading"))
+    <p>@messages("variationWorkingKnowledge.p1")</p>
+    <p>@messages("variationWorkingKnowledge.p2")</p>
+    <p>@messages("variationWorkingKnowledge.p3")</p>
 
-        <p>@messages("variationWorkingKnowledge.p1")</p>
-        <p>@messages("variationWorkingKnowledge.p2")</p>
-        <p>@messages("variationWorkingKnowledge.p3")</p>
-
+    @formHelper(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
         @components.input_yes_no(
             field = form("value"),
             label = messages("variationWorkingKnowledge.heading"),
@@ -47,17 +49,17 @@
         <div class="subsection">
             @components.submit_button("site.save_and_continue")
         </div>
+    }
 
-        @psaNameOpt.map{ psaName =>
-            @if(mode == UpdateMode | mode == CheckUpdateMode) {
-                <div class="grid-row">
-                    <div class="column-two-thirds">
-                        <p class="govuk-margin-top-5">
-                            <a id="return-link" href="@controllers.routes.PsaDetailsController.onPageLoad().url">@messages("site.return.psa_details", psaName)</a>
-                        </p>
-                    </div>
+    @psaNameOpt.map{ psaName =>
+        @if(mode == UpdateMode | mode == CheckUpdateMode) {
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <p class="govuk-margin-top-5">
+                        <a id="return-link" href="@controllers.routes.PsaDetailsController.onPageLoad().url">@messages("site.return.psa_details", psaName)</a>
+                    </p>
                 </div>
-            }
+            </div>
         }
     }
 }

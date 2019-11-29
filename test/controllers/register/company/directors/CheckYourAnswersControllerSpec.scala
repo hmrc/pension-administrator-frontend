@@ -18,7 +18,7 @@ package controllers.register.company.directors
 
 import java.time.LocalDate
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
@@ -29,6 +29,7 @@ import models.Mode.{checkMode, _}
 import models._
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
@@ -220,6 +221,7 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
       }
     }
   }
+
 }
 
 object CheckYourAnswersControllerSpec extends ControllerSpecBase {
@@ -231,6 +233,8 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
   private val defaultDirectorName = Message("theDirector").resolve
   private def call(mode: Mode): Call = CheckYourAnswersController.onSubmit(mode, index)
   private val address = Address("line1", "line2", None, None, Some("zz11zz"), "country")
+
+  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
   private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
                         changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message] = None): AnswerRow = {
@@ -245,16 +249,16 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeNavigator,
-      messagesApi,
       FakeSectionComplete,
       FakeUserAnswersCacheConnector,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction, mode: Mode = NormalMode): Unit = {
     val result = controller(dataRetrievalAction).onPageLoad(mode, index)(fakeRequest)
-    val expectedResult = check_your_answers(
-      frontendAppConfig,
+    val expectedResult = view(
       sections,
       call(mode),
       None,

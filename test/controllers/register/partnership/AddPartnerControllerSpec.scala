@@ -16,23 +16,21 @@
 
 package controllers.register.partnership
 
-import java.time.LocalDate
-
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.company.AddCompanyDirectorsControllerSpec.{johnDoePerson, maxDirectors}
 import forms.register.AddEntityFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.partnership.AddPartnersId
 import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{EntityViewModel, Message, Person}
 import views.html.register.addEntity
@@ -164,6 +162,8 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private val formProvider = new AddEntityFormProvider()
   private val form = formProvider()
 
+  val view: addEntity = app.injector.instanceOf[addEntity]
+
   protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
 
   protected def controller(
@@ -172,14 +172,15 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
                           ) =
     new AddPartnerController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       navigator,
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewmodel(partners: Seq[Person]) = EntityViewModel(
@@ -195,7 +196,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
 
   private def viewAsString(form: Form[_] = form, partners: Seq[Person] = Nil) =
-    addEntity(frontendAppConfig, form, viewmodel(partners), NormalMode)(request, messages).toString
+    view(form, viewmodel(partners), NormalMode)(request, messages).toString
 
   // scalastyle:off magic.number
   private val johnDoe = PersonName("John", "Doe")

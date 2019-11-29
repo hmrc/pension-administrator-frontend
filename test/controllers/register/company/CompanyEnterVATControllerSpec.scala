@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.EnterVATFormProvider
@@ -26,6 +26,7 @@ import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterVAT
@@ -36,20 +37,23 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
+  val view: enterVAT = app.injector.instanceOf[enterVAT]
+
   val formProvider = new EnterVATFormProvider()
   val form: Form[String] = formProvider(companyName)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyEnterVATController(
       frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewModel: CommonFormWithHintViewModel =
@@ -61,8 +65,7 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
       entityName = companyName
     )
 
-  def viewAsString(form: Form[_] = form): String = enterVAT(
-    frontendAppConfig,
+  def viewAsString(form: Form[_] = form): String = view(
     form,
     viewModel
   )(fakeRequest, messages).toString

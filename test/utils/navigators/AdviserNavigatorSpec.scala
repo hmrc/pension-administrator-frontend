@@ -17,7 +17,7 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import identifiers.Identifier
 import identifiers.register.adviser._
 import identifiers.register.{AreYouInUKId, PAInDeclarationJourneyId}

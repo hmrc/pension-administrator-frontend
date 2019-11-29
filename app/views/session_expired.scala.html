@@ -14,14 +14,15 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@this(
+  main_template: main_template
+)
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("session_expired.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("session_expired.title")
+    ) {
 
     <h1 class="heading-xlarge">@messages("session_expired.heading")</h1>
 

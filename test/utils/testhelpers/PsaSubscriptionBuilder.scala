@@ -23,8 +23,8 @@ import viewmodels.AnswerRow
 
 object PsaSubscriptionBuilder {
 
-  val customerId = CustomerIdentification("Individual", Some("NINO"), Some("AA999999A"), true)
-  val orgCustomerId = CustomerIdentification("Company", Some("UTR"), Some("121414151"), true)
+  val customerId = CustomerIdentification("Individual", Some("NINO"), Some("AA999999A"), isOverseasCustomer = true)
+  val orgCustomerId = CustomerIdentification("Company", Some("UTR"), Some("121414151"), isOverseasCustomer = true)
   val individual = IndividualDetailType(Some("Mr"), "Stephen", None, "Wood", LocalDate.parse("1947-03-29"))
 
   val address = CorrespondenceAddress("Telford1", "Telford2",Some("Telford3"), Some("Telford4"), "GB", Some("TF3 4ER"))
@@ -47,26 +47,29 @@ object PsaSubscriptionBuilder {
   val partnership = OrganisationOrPartner(name = "Test partnership name", crn = None, vatRegistration = Some("12345678"),
     paye = Some("9876543210"))
 
-  val director1 = DirectorOrPartner("Director", Some("Mr"), "abcdef", Some("dfgdsfff"), "dfgfdgfdg", new org.joda.time.LocalDate("1950-03-29"),
-    Some("AA999999A"), Some("1234567892"), true, Some(director1PrevAddress), Some(CorrespondenceDetails(director1Address, Some(director1Contact))))
-  val director2 = DirectorOrPartner("Director", Some("Mr"), "sdfdff", Some("sdfdsfsdf"), "dfdsfsf", new org.joda.time.LocalDate("1950-07-29"),
-    Some("AA999999A"), Some("7897700000"), true, Some(director2PrevAddress), Some(CorrespondenceDetails(director2Address, Some(director2Contact))))
+  val director1 = DirectorOrPartner("Director", Some("Mr"), "abcdef", Some("dfgdsfff"), "dfgfdgfdg", LocalDate.parse("1950-03-29"),
+    Some("AA999999A"), Some("1234567892"), isSameAddressForLast12Months = true, Some(director1PrevAddress),
+    Some(CorrespondenceDetails(director1Address, Some(director1Contact))))
+  val director2 = DirectorOrPartner("Director", Some("Mr"), "sdfdff", Some("sdfdsfsdf"), "dfdsfsf", LocalDate.parse("1950-07-29"),
+    Some("AA999999A"), Some("7897700000"), isSameAddressForLast12Months = true, Some(director2PrevAddress),
+    Some(CorrespondenceDetails(director2Address, Some(director2Contact))))
 
-  val psaSubscriptionIndividual = PsaSubscription(false, customerId, None, Some(individual), address, contactDetails,
-  true, Some(previousAddress), None, Some(pensionsAdvisor))
+  val psaSubscriptionIndividual = PsaSubscription(isSuspended = false, customerId, None, Some(individual), address, contactDetails,
+  isSameAddressForLast12Months = true, Some(previousAddress), None, Some(pensionsAdvisor))
 
-  val psaSubscriptionCompany = PsaSubscription(false, orgCustomerId, Some(company), None, address, contactDetails,
-    true, Some(previousAddress), Some(Seq(director1, director2)), Some(pensionsAdvisor))
+  val psaSubscriptionCompany = PsaSubscription(isSuspended = false, orgCustomerId, Some(company), None, address, contactDetails,
+    isSameAddressForLast12Months = true, Some(previousAddress), Some(Seq(director1, director2)), Some(pensionsAdvisor))
 
 
-  val psaSubscriptionPartnership = PsaSubscription(false, orgCustomerId, Some(partnership), None, address, contactDetails,
-    true, Some(previousAddress), Some(Seq(director1.copy(isDirectorOrPartner="Partner"), director2.copy(isDirectorOrPartner="Partner"))), Some(pensionsAdvisor))
+  val psaSubscriptionPartnership = PsaSubscription(isSuspended = false, orgCustomerId, Some(partnership), None, address, contactDetails,
+    isSameAddressForLast12Months = true, Some(previousAddress),
+    Some(Seq(director1.copy(isDirectorOrPartner="Partner"), director2.copy(isDirectorOrPartner="Partner"))),
+    Some(pensionsAdvisor))
 
-  val psaSubscriptionMinimum = PsaSubscription(false, customerId, None, None, address, contactDetails, false,
+  val psaSubscriptionMinimum = PsaSubscription(isSuspended = false, customerId, None, None, address, contactDetails, isSameAddressForLast12Months = false,
     None, None, None)
 
-  val ninoAnswerRow = AnswerRow("common.nino", Seq("AA999999A"), false, None)
-//  val addressAR = AnswerRow("cya.label.address", addressAnswer(psaDetails.address), false, None)
+  val ninoAnswerRow = AnswerRow("common.nino", Seq("AA999999A"), answerIsMessageKey = false, None)
 
 
 }

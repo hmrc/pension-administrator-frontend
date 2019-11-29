@@ -17,8 +17,8 @@
 package controllers.register.company
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.cache.UserAnswersCacheConnector
-import connectors.{FakeUserAnswersCacheConnector, RegistrationConnector}
+import connectors.RegistrationConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.address.NonUKAddressControllerDataMocks
 import forms.address.NonUKAddressFormProvider
@@ -29,10 +29,11 @@ import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{atLeastOnce, never, verify, when}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar._
+import org.scalatestplus.mockito.MockitoSugar._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -43,14 +44,15 @@ import scala.concurrent.Future
 class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 
   val formProvider = new NonUKAddressFormProvider(countryOptions)
-  val form = formProvider("error.country.invalid")
+  val form: Form[Address] = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
+
+  val view: nonukAddress = app.injector.instanceOf[nonukAddress]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany, registrationConnector: RegistrationConnector = fakeRegistrationConnector,
                  userAnswersCacheConnector : UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
     new CompanyRegisteredAddressController(
       frontendAppConfig,
-      messagesApi,
       userAnswersCacheConnector,
       registrationConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -59,7 +61,9 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewModel = ManualAddressViewModel(
@@ -72,8 +76,7 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
   )
 
   private def viewAsString(form: Form[_] = form) =
-    nonukAddress(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages).toString()

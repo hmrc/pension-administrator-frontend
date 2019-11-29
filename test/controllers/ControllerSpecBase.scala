@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import controllers.actions._
 import identifiers.register.adviser.AdviserNameId
@@ -31,11 +29,11 @@ import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.Json
 import utils.UserAnswers
 
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.ExecutionContext
 
 trait ControllerSpecBase extends SpecBase {
 
-  implicit val ec: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+  implicit lazy val executionContext: ExecutionContext = inject[ExecutionContext]
 
   val cacheMapId = "id"
 

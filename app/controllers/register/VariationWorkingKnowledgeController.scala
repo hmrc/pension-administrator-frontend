@@ -22,45 +22,47 @@ import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.VariationWorkingKnowledgeFormProvider
 import identifiers.register.adviser.IsNewAdviserId
-import identifiers.register.{DeclarationChangedId, PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
+import identifiers.register.{PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{CheckUpdateMode, Mode}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.i18n.{I18nSupport, Messages}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.register.variationWorkingKnowledge
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class VariationWorkingKnowledgeController @Inject()(
-                                                     appConfig: FrontendAppConfig,
-                                                     override val messagesApi: MessagesApi,
-                                                     override val cacheConnector: UserAnswersCacheConnector,
-                                                     @annotations.Variations navigator: Navigator,
-                                                     authenticate: AuthAction,
-                                                     allowAccess: AllowAccessActionProvider,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: VariationWorkingKnowledgeFormProvider
-                                                   ) extends FrontendController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
+class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig,
+                                                    override val cacheConnector: UserAnswersCacheConnector,
+                                                    @annotations.Variations navigator: Navigator,
+                                                    authenticate: AuthAction,
+                                                    allowAccess: AllowAccessActionProvider,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    formProvider: VariationWorkingKnowledgeFormProvider,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: variationWorkingKnowledge
+                                                   )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits with Variations with Retrievals {
 
-  private val form = formProvider()
+  private def form()(implicit request: DataRequest[AnyContent]) = formProvider()
 
-  def onPageLoad(mode: Mode) = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(VariationWorkingKnowledgeId) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(variationWorkingKnowledge(appConfig, preparedForm, psaName(), mode))
+      Ok(view(preparedForm, psaName(), mode))
   }
 
-  def onSubmit(mode: Mode) = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(variationWorkingKnowledge(appConfig, formWithErrors, psaName(), mode))),
+          Future.successful(BadRequest(view(formWithErrors, psaName(), mode))),
         value => {
           val resultOfSaveDeclarationFlag = mode match {
             case CheckUpdateMode =>

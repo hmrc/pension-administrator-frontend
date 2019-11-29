@@ -20,24 +20,27 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.UpdateMode
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.alreadyDeletedAdviser
 
 class AdviserAlreadyDeletedControllerSpec extends ControllerSpecBase {
 
   val onwardRoute: String = controllers.routes.PsaDetailsController.onPageLoad().url
 
+  val view: alreadyDeletedAdviser = app.injector.instanceOf[alreadyDeletedAdviser]
+
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new AdviserAlreadyDeletedController(
       frontendAppConfig,
-      messagesApi,
       FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(): String = alreadyDeletedAdviser(
-    frontendAppConfig,
+  def viewAsString(): String = view(
     onwardRoute
   )(fakeRequest, messages).toString
 

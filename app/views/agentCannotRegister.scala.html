@@ -16,20 +16,22 @@
 
 @import config.FrontendAppConfig
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    appConfig: FrontendAppConfig
+)
+
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("agentCannotRegister.title"),
-    appConfig = appConfig,
-    bodyClasses = None){
+    title = messages("agentCannotRegister.title")
+){
+    @components.back_link()
 
-        @components.back_link()
+    @components.heading(messages("agentCannotRegister.heading"))
 
-        @components.heading(messages("agentCannotRegister.heading"))
+    <p>@messages("agentCannotRegister.p1")</p>
+    <p>@messages("agentCannotRegister.p2")</p>
 
-        <p>@messages("agentCannotRegister.p1")</p>
-        <p>@messages("agentCannotRegister.p2")</p>
-
-        <a href="@appConfig.govUkUrl">@messages("site.exit")</a>
-
-    }
+    <a href="@appConfig.govUkUrl">@messages("site.exit")</a>
+}

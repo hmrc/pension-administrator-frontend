@@ -21,7 +21,8 @@ import models.Mode.checkMode
 import models.requests.IdentifiedRequest
 import models.{CheckMode, Mode, NormalMode}
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
-import org.scalatest.prop.{PropertyChecks, TableFor4}
+import org.scalatest.prop.TableFor4
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -29,7 +30,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait NavigatorBehaviour extends PropertyChecks with OptionValues {
+trait NavigatorBehaviour extends ScalaCheckPropertyChecks with OptionValues {
   this: WordSpec with MustMatchers =>
 
   protected val emptyAnswers: UserAnswers = UserAnswers(Json.obj())

@@ -25,9 +25,10 @@ class IncompleteChangesViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "incompleteChanges"
 
-  private def createView: () => HtmlFormat.Appendable = () =>
-    incompleteChanges(frontendAppConfig, Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
+  val view: incompleteChanges = app.injector.instanceOf[incompleteChanges]
 
+  private def createView: () => HtmlFormat.Appendable = () =>
+    view(Some("Mark Wright"), UpdateMode)(fakeRequest, messages)
 
   "incompleteChanges view" must {
 
@@ -36,6 +37,6 @@ class IncompleteChangesViewSpec extends ViewBehaviours {
     behave like normalPage(createView, messageKeyPrefix, expectedGuidanceKeys = "p1")
 
     behave like pageWithReturnLink(createView, controllers.routes.PsaDetailsController.onPageLoad().url)
-
   }
+
 }

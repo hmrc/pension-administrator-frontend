@@ -28,24 +28,28 @@ import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipContactAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
+import views.html.address.postcodeLookup
+
+import scala.concurrent.ExecutionContext
 
 class PartnershipContactAddressPostCodeLookupController @Inject()(
                                                                    override val appConfig: FrontendAppConfig,
                                                                    override val cacheConnector: UserAnswersCacheConnector,
                                                                    override val addressLookupConnector: AddressLookupConnector,
                                                                    @Partnership override val navigator: Navigator,
-                                                                   override val messagesApi: MessagesApi,
                                                                    override val allowAccess: AllowAccessActionProvider,
                                                                    authenticate: AuthAction,
                                                                    getData: DataRetrievalAction,
                                                                    requireData: DataRequiredAction,
-                                                                   formProvider: PostCodeLookupFormProvider
+                                                                   formProvider: PostCodeLookupFormProvider,
+                                                                   val controllerComponents: MessagesControllerComponents,
+                                                                   val view: postcodeLookup
+                                                                 )(implicit val executionContext: ExecutionContext
                                                                  ) extends PostcodeLookupController with Retrievals {
 
 

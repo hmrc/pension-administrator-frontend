@@ -20,6 +20,7 @@ import forms.register.BusinessTypeFormProvider
 import models.NormalMode
 import models.register.BusinessType
 import play.api.data.Form
+import play.twirl.api.Html
 import views.behaviours.ViewBehaviours
 import views.html.register.businessType
 
@@ -29,9 +30,11 @@ class BusinessTypeViewSpec extends ViewBehaviours {
   private val form = new BusinessTypeFormProvider()()
   private val businessTypeOptions = BusinessType.options
 
-  private def createView = () => businessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  val view: businessType = app.injector.instanceOf[businessType]
 
-  private def createViewUsingForm = (form: Form[_]) => businessType(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView: () => Html = () => view(form, NormalMode)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) => view(form, NormalMode)(fakeRequest, messages)
 
   "BusinessType view" must {
 

@@ -16,22 +16,25 @@
 
 @import config.FrontendAppConfig
 
-@(appConfig: FrontendAppConfig, organisationName: String, country: String, organisationType: String)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    appConfig: FrontendAppConfig
+)
+
+@(organisationName: String, country: String, organisationType: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("outsideEuEea.title"),
-    appConfig = appConfig,
-    bodyClasses = None
-    ) {
+    title = messages("outsideEuEea.title")
+) {
 
-        @components.back_link()
+    @components.back_link()
 
-        @components.heading(messages("outsideEuEea.heading", organisationName))
+    @components.heading(messages("outsideEuEea.heading", organisationName))
 
-        <p>@messages("outsideEuEea.currentCountry.text", organisationName, country)</p>
+    <p>@messages("outsideEuEea.currentCountry.text", organisationName, country)</p>
 
-        <p>@messages("outsideEuEea.body", organisationType)</p>
+    <p>@messages("outsideEuEea.body", organisationType)</p>
 
-        <a id="return-gov-uk" href="@appConfig.govUkUrl">@messages("site.return.govuk")</a>
+    <a id="return-gov-uk" href="@appConfig.govUkUrl">@messages("site.return.govuk")</a>
 
-    }
+}

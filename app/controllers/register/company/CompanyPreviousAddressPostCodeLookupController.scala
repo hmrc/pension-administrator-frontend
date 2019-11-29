@@ -27,25 +27,28 @@ import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
+import views.html.address.postcodeLookup
+
+import scala.concurrent.ExecutionContext
 
 class CompanyPreviousAddressPostCodeLookupController @Inject()(
                                                                 override val appConfig: FrontendAppConfig,
                                                                 override val cacheConnector: UserAnswersCacheConnector,
                                                                 override val addressLookupConnector: AddressLookupConnector,
                                                                 @RegisterCompany override val navigator: Navigator,
-                                                                override val messagesApi: MessagesApi,
                                                                 authenticate: AuthAction,
                                                                 override val allowAccess: AllowAccessActionProvider,
                                                                 getData: DataRetrievalAction,
                                                                 requireData: DataRequiredAction,
-                                                                formProvider: PostCodeLookupFormProvider
-                                                              ) extends PostcodeLookupController {
+                                                                formProvider: PostCodeLookupFormProvider,
+                                                                val controllerComponents: MessagesControllerComponents,
+                                                                val view: postcodeLookup
+                                                              )(implicit val executionContext: ExecutionContext) extends PostcodeLookupController {
 
   override protected def form: Form[String] = formProvider()
 

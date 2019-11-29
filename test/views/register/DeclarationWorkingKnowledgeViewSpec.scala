@@ -19,7 +19,7 @@ package views.register
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import models.NormalMode
 import play.api.data.Form
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{Html, HtmlFormat}
 import views.behaviours.YesNoViewBehaviours
 import views.html.register.declarationWorkingKnowledge
 
@@ -29,10 +29,12 @@ class DeclarationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
 
   val form = new DeclarationWorkingKnowledgeFormProvider()()
 
-  private def createView: () => HtmlFormat.Appendable = () => declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  val view: declarationWorkingKnowledge = app.injector.instanceOf[declarationWorkingKnowledge]
 
-  private def createViewUsingForm = (form: Form[_]) =>
-    declarationWorkingKnowledge(frontendAppConfig, form, NormalMode)(fakeRequest, messages)
+  private def createView: () => HtmlFormat.Appendable = () => view(form, NormalMode)(fakeRequest, messages)
+
+  private def createViewUsingForm: Form[_] => Html = (form: Form[_]) =>
+    view(form, NormalMode)(fakeRequest, messages)
 
   "DeclarationWorkingKnowledge view" must {
 
@@ -41,4 +43,5 @@ class DeclarationWorkingKnowledgeViewSpec extends YesNoViewBehaviours {
     behave like yesNoPage(createViewUsingForm, messageKeyPrefix,
       controllers.register.routes.DeclarationWorkingKnowledgeController.onSubmit(NormalMode).url,s"$messageKeyPrefix.heading")
   }
+
 }

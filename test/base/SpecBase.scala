@@ -16,32 +16,62 @@
 
 package base
 
+import akka.actor.ActorSystem
+import akka.stream.{ActorMaterializer, Materializer}
 import config.FrontendAppConfig
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import org.scalatest.BeforeAndAfterAll
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
-import play.api.Environment
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.Injector
+import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
+import play.api.i18n.{Langs, Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.FakeRequest
+import play.api.inject.{Injector, bind}
+import play.api.libs.json.Json
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, MessagesControllerComponents, _}
+import play.api.test.Helpers._
+import play.api.test.{FakeRequest, Injecting}
+import play.api.{Application, Environment}
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
-  override lazy val app = new GuiceApplicationBuilder()
+import scala.concurrent.ExecutionContext
+
+trait SpecBase extends PlaySpec with GuiceOneServerPerSuite with Injecting with BeforeAndAfterAll with MockitoSugar {
+
+  implicit val sys = ActorSystem("MyTest")
+  implicit final val materializer : Materializer = ActorMaterializer()
+
+  override lazy val app: Application = new GuiceApplicationBuilder()
     .build()
+
+  protected def applicationBuilder(data: DataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))): GuiceApplicationBuilder =
+    new GuiceApplicationBuilder()
+      .overrides(
+        bind[DataRetrievalAction].toInstance(data),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+        bind[AuthAction].to(FakeAuthAction)
+      )
 
   def injector: Injector = app.injector
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  def frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
 
-  def environment: Environment = injector.instanceOf[Environment]
+  def environment: Environment = inject[Environment]
 
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+  def messagesApi: MessagesApi = inject[MessagesApi]
 
-  def fakeRequest = FakeRequest("", "")
+  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+  implicit def messages: Messages = stubMessagesControllerComponents().messagesApi.preferred(fakeRequest)
+  //implicit def messagesForView: Messages = messagesApi.preferred(fakeRequest)
 
   def appRunning(): Unit = app
 
+  override def afterAll(): Unit = {
+    super.afterAll()
+    app.stop()
+  }
 }

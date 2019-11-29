@@ -17,7 +17,12 @@
 @import config.FrontendAppConfig
 @import viewmodels.Message
 
-@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+@this(
+    main_template: main_template,
+    appConfig: FrontendAppConfig
+)
+
+@()(implicit request: Request[_], messages: Messages)
 
 @openLink1 = {<a id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}
 @openLink2 = {<a id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}
@@ -25,9 +30,8 @@
 @closeLink = {</a>}
 
 @main_template(
-    title = messages("companyNotFound.title"),
-    appConfig = appConfig,
-    bodyClasses = None) {
+    title = messages("companyNotFound.title")
+) {
 
     @components.back_link()
 

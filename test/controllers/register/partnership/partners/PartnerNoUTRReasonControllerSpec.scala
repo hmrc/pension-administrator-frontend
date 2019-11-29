@@ -16,7 +16,7 @@
 
 package controllers.register.partnership.partners
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.ReasonFormProvider
@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
@@ -37,10 +38,14 @@ class PartnerNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
   private val reasonForm = formProvider(partnerName)
   
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerNoUTRReasonController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+    stubMessagesControllerComponents(), view
+  )
 
-  private def reasonView(form: Form[_] = reasonForm): String = reason(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  val view: reason = app.injector.instanceOf[reason]
+
+  private def reasonView(form: Form[_] = reasonForm): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "PartnerNoUTRReasonController" must {
 

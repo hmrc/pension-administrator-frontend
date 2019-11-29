@@ -19,8 +19,7 @@ package controllers
 import java.time.LocalDate
 
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.FakeAllowAccessProvider
 import forms.DOBFormProvider
 import identifiers.TypedIdentifier
@@ -28,14 +27,15 @@ import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, redirectLocation, status, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.dob
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
 class DOBControllerSpec extends ControllerSpecBase {
 
@@ -96,13 +96,14 @@ class DOBControllerSpec extends ControllerSpecBase {
 
 }
 
-object DOBControllerSpec {
+object DOBControllerSpec extends ControllerSpecBase {
 
-  def viewAsString(base: ControllerSpecBase, form: Form[_] = form): String = dob(
-    base.frontendAppConfig,
+  val dobView: dob = app.injector.instanceOf[dob]
+
+  def viewAsString(base: ControllerSpecBase, form: Form[_] = form): String = dobView(
     form,
     viewModel
-  )(base.fakeRequest, base.messages).toString
+  )(base.fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   val form = new DOBFormProvider()()
   val date: LocalDate = LocalDate.now
@@ -110,8 +111,8 @@ object DOBControllerSpec {
   lazy val viewModel =
     CommonFormWithHintViewModel(
       postCall,
-        title = Message("directorDob.title"),
-        heading = Message("dob.heading"),
+      title = Message("directorDob.title"),
+      heading = Message("dob.heading"),
       None,
       None,
       NormalMode,
@@ -155,6 +156,12 @@ object DOBControllerSpec {
       override def messagesApi: MessagesApi = base.messagesApi
 
       override val allowAccess = FakeAllowAccessProvider()
+
+      override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+
+      implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+
+      val view: dob = dobView
     }
   }
 

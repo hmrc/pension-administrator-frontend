@@ -24,18 +24,18 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 trait FeatureSwitchConnector {
-  def toggleOn(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
+  def toggleOn(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean]
 
-  def toggleOff(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
+  def toggleOff(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean]
 
-  def reset(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
+  def reset(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean]
 
-  def get(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Boolean]]
+  def get(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[Boolean]]
 }
 
 class PensionsSchemeFeatureSwitchConnectorImpl @Inject()(http: HttpClient, appConfig: FrontendAppConfig) extends FeatureSwitchConnector {
 
-  override def toggleOn(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  override def toggleOn(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean] = {
 
     val url = appConfig.pensionsSchemeUrl + s"/pensions-scheme/test-only/toggle-on/$name"
 
@@ -47,7 +47,7 @@ class PensionsSchemeFeatureSwitchConnectorImpl @Inject()(http: HttpClient, appCo
     }
   }
 
-  override def toggleOff(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  override def toggleOff(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean] = {
 
     val url = appConfig.pensionsSchemeUrl + s"/pensions-scheme/test-only/toggle-off/$name"
 
@@ -59,7 +59,7 @@ class PensionsSchemeFeatureSwitchConnectorImpl @Inject()(http: HttpClient, appCo
     }
   }
 
-  override def reset(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  override def reset(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean] = {
     val url = appConfig.pensionsSchemeUrl + s"/pensions-scheme/test-only/reset/$name"
 
     http.GET(url).map { _ =>
@@ -70,7 +70,7 @@ class PensionsSchemeFeatureSwitchConnectorImpl @Inject()(http: HttpClient, appCo
     }
   }
 
-  override def get(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Boolean]] = {
+  override def get(name: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[Boolean]] = {
     val url = appConfig.pensionsSchemeUrl + s"/pensions-scheme/test-only/get/$name"
 
     http.GET(url).map { value =>

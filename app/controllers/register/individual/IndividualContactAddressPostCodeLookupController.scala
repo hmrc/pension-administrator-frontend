@@ -20,7 +20,6 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
-import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
@@ -28,12 +27,14 @@ import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
+import views.html.address.postcodeLookup
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class IndividualContactAddressPostCodeLookupController @Inject()(
@@ -41,12 +42,14 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
                                                                   override val appConfig: FrontendAppConfig,
                                                                   override val cacheConnector: UserAnswersCacheConnector,
                                                                   override val addressLookupConnector: AddressLookupConnector,
-                                                                  override val messagesApi: MessagesApi,
                                                                   authenticate: AuthAction,
                                                                   override val allowAccess: AllowAccessActionProvider,
                                                                   getData: DataRetrievalAction,
                                                                   requireData: DataRequiredAction,
-                                                                  formProvider: PostCodeLookupFormProvider
+                                                                  formProvider: PostCodeLookupFormProvider,
+                                                                  val controllerComponents: MessagesControllerComponents,
+                                                                  val view: postcodeLookup
+                                                                )(implicit val executionContext: ExecutionContext
                                                                 ) extends PostcodeLookupController {
 
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(

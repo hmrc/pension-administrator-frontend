@@ -16,7 +16,7 @@
 
 package controllers.register.company.directors
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.register.NINOFormProvider
@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterNINO
@@ -35,12 +36,13 @@ class DirectorEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val ninoForm = formProvider(directorName)
-
+  val view: enterNINO = app.injector.instanceOf[enterNINO]
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEnterNINOController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+    stubMessagesControllerComponents(), view)
 
-  private def enterNINOView(form: Form[_] = ninoForm): String = enterNINO(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def enterNINOView(form: Form[_] = ninoForm): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "DirectorEnterNINOController" must {
 

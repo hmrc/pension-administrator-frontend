@@ -23,7 +23,9 @@ class CompanyUpdateDetailsViewSpec extends ViewBehaviours {
 
   val messageKeyPrefix = "companyUpdateDetails"
 
-  def createView = () => companyUpdateDetails(frontendAppConfig)(fakeRequest, messages)
+  val view: companyUpdateDetails = app.injector.instanceOf[companyUpdateDetails]
+
+  def createView = () => view()(fakeRequest, messages)
 
   "CompanyUpdateDetails view" must {
     behave like normalPage(createView, messageKeyPrefix)
@@ -43,4 +45,5 @@ class CompanyUpdateDetailsViewSpec extends ViewBehaviours {
     }
 
   }
+
 }

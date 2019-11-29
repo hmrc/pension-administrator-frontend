@@ -26,43 +26,44 @@ import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.{AuthWithNoIV, Register}
 import utils.{Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegisterAsBusinessController @Inject()(
-                                              appConfig: FrontendAppConfig,
-                                              override val messagesApi: MessagesApi,
-                                              @AuthWithNoIV authenticate: AuthAction,
-                                              allowAccess: AllowAccessActionProvider,
-                                              getData: DataRetrievalAction,
-                                              cache: UserAnswersCacheConnector,
-                                              @Register navigator: Navigator,
-                                              auditService: AuditService
-)(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
+class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
+                                             override val messagesApi: MessagesApi,
+                                             @AuthWithNoIV authenticate: AuthAction,
+                                             allowAccess: AllowAccessActionProvider,
+                                             getData: DataRetrievalAction,
+                                             cache: UserAnswersCacheConnector,
+                                             @Register navigator: Navigator,
+                                             auditService: AuditService,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             val view: registerAsBusiness
+                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData ) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
     implicit request =>
 
       val preparedForm = request.userAnswers match {
         case None => form
         case Some(ua) => ua.get(RegisterAsBusinessId).fold(form)(form.fill)
       }
-      Ok(registerAsBusiness(appConfig, preparedForm))
+      Ok(view(preparedForm))
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = (authenticate andThen getData).async {
-    implicit request=>
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
+    implicit request =>
 
       form.bindFromRequest().fold(
         errors =>
-          Future.successful(BadRequest(registerAsBusiness(appConfig, errors))),
+          Future.successful(BadRequest(view(errors))),
         isBusiness => {
           cache.save(request.externalId, RegisterAsBusinessId, isBusiness).map {
             newCache =>

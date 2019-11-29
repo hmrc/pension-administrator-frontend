@@ -17,6 +17,7 @@
 package views.register.company.directors
 
 import models.NormalMode
+import play.twirl.api.Html
 import viewmodels.Message
 import views.behaviours.ViewBehaviours
 import views.html.register.company.directors.whatYouWillNeed
@@ -27,7 +28,9 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix = "whatYouWillNeed.directorsOrPartners"
 
-  private def createView = () => whatYouWillNeed(frontendAppConfig, call)(fakeRequest, messages)
+  val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
+
+  private def createView: () => Html = () => view(call)(fakeRequest, messages)
 
   "WhatYouWillNeed view" must {
     behave like normalPageWithTitle(createView, messageKeyPrefix,

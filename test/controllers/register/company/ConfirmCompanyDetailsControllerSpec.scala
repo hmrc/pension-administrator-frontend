@@ -16,7 +16,9 @@
 
 package controllers.register.company
 
-import connectors.FakeUserAnswersCacheConnector
+import java.time.LocalDate
+
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -26,11 +28,12 @@ import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, Regi
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
@@ -200,6 +203,8 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
+  val view: confirmCompanyDetails = app.injector.instanceOf[confirmCompanyDetails]
+
   private val validLimitedCompanyUtr = "1234567890"
   private val validBusinessPartnershipUtr = "0987654321"
   private val invalidUtr = "INVALID"
@@ -208,7 +213,7 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
   val regInfo: RegistrationInfo = RegistrationInfo(
     RegistrationLegalStatus.LimitedCompany,
     sapNumber,
-    false,
+    noIdentifier = false,
     RegistrationCustomerType.UK,
     Some(RegistrationIdType.UTR),
     Some(validLimitedCompanyUtr)
@@ -260,12 +265,12 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
+    (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[OrganizationRegistration] = {
 
       val info = RegistrationInfo(
         RegistrationLegalStatus.LimitedCompany,
         sapNumber,
-        false,
+        noIdentifier = false,
         RegistrationCustomerType.UK,
         Some(RegistrationIdType.UTR),
         Some(utr)
@@ -281,14 +286,19 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
         Future.failed(new NotFoundException(s"Unknown UTR: $utr"))
       }
     }
+
+    override def registerWithNoIdIndividual(firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate
+                                           )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] =
+      Future.failed(new NotFoundException(s"Unknown UTR"))
   }
+
+
   private def controller(
     dataRetrievalAction: DataRetrievalAction = getEmptyData,
     dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   ) =
     new ConfirmCompanyDetailsController(
       frontendAppConfig,
-      messagesApi,
       dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
@@ -297,10 +307,12 @@ object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Mocki
       new DataRequiredActionImpl,
       fakeRegistrationConnector,
       formProvider,
-      countryOptions
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewAsString(companyName: String = companyName, address: TolerantAddress = testLimitedCompanyAddress): String =
-    confirmCompanyDetails(frontendAppConfig, form, address, companyName, countryOptions)(fakeRequest, messages).toString
+    view(form, address, companyName, countryOptions)(fakeRequest, messages).toString
 
 }

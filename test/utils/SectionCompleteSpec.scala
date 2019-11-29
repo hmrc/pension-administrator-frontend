@@ -22,9 +22,9 @@ import models.requests.DataRequest
 import models.{PSAUser, UserType}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
@@ -33,7 +33,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues with MockitoSugar with GeneratorDrivenPropertyChecks {
+class SectionCompleteSpec extends WordSpec with MustMatchers with OptionValues with MockitoSugar with ScalaCheckDrivenPropertyChecks {
 
   private val dummyId = new TypedIdentifier[Boolean] {
     override def toString = "DummyId"

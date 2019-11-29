@@ -16,7 +16,7 @@
 
 package controllers.register.partnership
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.register.partnership.routes._
@@ -26,6 +26,7 @@ import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -37,6 +38,8 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerSpecBase {
   private val name = "Test Partnership Name"
   private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("trading.error.required", name)
+
+  val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
@@ -50,18 +53,19 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipTradingOverAYearController(frontendAppConfig,
-      messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
-    hasReferenceNumber(frontendAppConfig, form, viewModel)(fakeRequest, messages).toString
+    view(form, viewModel)(fakeRequest, messages).toString
 
   "PartnershipTradingOverAYearController" must {
     "return OK and the correct view for a GET" in {

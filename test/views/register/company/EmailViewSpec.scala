@@ -45,16 +45,16 @@ class EmailViewSpec extends QuestionViewBehaviours[String] {
       entityName = name
     )
 
+  val view: email = app.injector.instanceOf[email]
+
   def createView: () => HtmlFormat.Appendable = () =>
-    email(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    email(
-      frontendAppConfig,
+   view(
       form,
       viewModel
     )(fakeRequest, messages)
@@ -73,4 +73,5 @@ class EmailViewSpec extends QuestionViewBehaviours[String] {
       "value"
     )
   }
+
 }

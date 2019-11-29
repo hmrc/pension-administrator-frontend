@@ -24,22 +24,24 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.enterVAT
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait VATNumberController extends FrontendController with I18nSupport {
+trait VATNumberController extends FrontendBaseController with I18nSupport {
 
-  implicit def ec: ExecutionContext
+  implicit def executionContext: ExecutionContext
 
   protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
+
+  protected def view: enterVAT
 
   def get(id: TypedIdentifier[String], form: Form[String], viewModel: CommonFormWithHintViewModel)
          (implicit request: DataRequest[AnyContent]): Future[Result] = {
@@ -49,7 +51,7 @@ trait VATNumberController extends FrontendController with I18nSupport {
       case Some(value) => form.fill(value)
     }
 
-    Future.successful(Ok(enterVAT(appConfig, preparedForm, viewModel)))
+    Future.successful(Ok(view(preparedForm, viewModel)))
   }
 
   def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewModel: CommonFormWithHintViewModel)
@@ -57,7 +59,7 @@ trait VATNumberController extends FrontendController with I18nSupport {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(enterVAT(appConfig, formWithErrors, viewModel))),
+        Future.successful(BadRequest(view(formWithErrors, viewModel))),
       value =>
         cacheConnector.save(request.externalId, id, value).map(
           cacheMap =>

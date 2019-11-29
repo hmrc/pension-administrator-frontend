@@ -18,6 +18,7 @@ package views.register
 
 import forms.register.DeclarationFormProvider
 import play.api.data.Form
+import play.twirl.api.Html
 import views.behaviours.QuestionViewBehaviours
 import views.html.register.declaration
 
@@ -27,10 +28,11 @@ class DeclarationViewSpec extends QuestionViewBehaviours[Boolean] {
   override val errorKey = "agree"
 
   private val messageKeyPrefix = "declaration"
-  private val cancelCall = controllers.routes.IndexController.onPageLoad()
 
-  private def createView(workingKnowledge: Boolean = true) = () =>
-    declaration(frontendAppConfig, workingKnowledge)(fakeRequest, messages)
+  val view: declaration = app.injector.instanceOf[declaration]
+
+  private def createView(workingKnowledge: Boolean = true): () => Html = () =>
+    view(workingKnowledge)(fakeRequest, messages)
 
   "Declaration view" must {
     behave like normalPage(createView(), messageKeyPrefix)

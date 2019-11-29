@@ -28,16 +28,17 @@ import identifiers.register.company.directors.{CompanyDirectorAddressListId, Com
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
+import views.html.address.manualAddress
+
+import scala.concurrent.ExecutionContext
 
 class DirectorAddressController @Inject()(override val appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           override val cacheConnector: UserAnswersCacheConnector,
                                           @CompanyDirector override val navigator: Navigator,
                                           override val allowAccess: AllowAccessActionProvider,
@@ -46,7 +47,10 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
                                           requireData: DataRequiredAction,
                                           formProvider: AddressFormProvider,
                                           countryOptions: CountryOptions,
-                                          val auditService: AuditService) extends ManualAddressController with Retrievals with Variations {
+                                          val auditService: AuditService,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: manualAddress
+                                         )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals with Variations {
 
   override protected val form: Form[Address] = formProvider()
 

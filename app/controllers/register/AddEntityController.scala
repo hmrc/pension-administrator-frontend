@@ -20,40 +20,39 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
-import models.{Mode, NormalMode}
+import models.Mode
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
-import play.api.i18n.I18nSupport
+import play.api.i18n.Messages
 import play.api.libs.json.JsResultException
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import viewmodels.EntityViewModel
 import views.html.register.addEntity
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait AddEntityController extends FrontendController with Retrievals with I18nSupport {
-  implicit val ec = play.api.libs.concurrent.Execution.defaultContext
+trait AddEntityController extends FrontendBaseController with Retrievals {
+
+  implicit protected def executionContext: ExecutionContext
   protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 
   protected def navigator: Navigator
 
-  protected def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
-                   (implicit request: DataRequest[AnyContent]): Future[Result] = {
+  protected def view: addEntity
 
-    Future.successful(Ok(addEntity(appConfig, form, viewmodel, mode)))
+  protected def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
+                   (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
+
+    Future.successful(Ok(view(form, viewmodel, mode)))
   }
 
-  protected def post(
-                      id: TypedIdentifier[Boolean],
-                      form: Form[Boolean],
-                      viewmodel: EntityViewModel,
-                      mode: Mode
-                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  protected def post(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
+                    (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
     if (viewmodel.entities.isEmpty || viewmodel.entities.lengthCompare(viewmodel.maxLimit) >= 0) {
       Future.successful(Redirect(navigator.nextPage(id, mode, request.userAnswers)))
@@ -61,7 +60,7 @@ trait AddEntityController extends FrontendController with Retrievals with I18nSu
     else {
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(addEntity(appConfig, formWithErrors, viewmodel, mode))),
+          Future.successful(BadRequest(view(formWithErrors, viewmodel, mode))),
         value => {
           request.userAnswers.set(id)(value).fold(
             errors => {

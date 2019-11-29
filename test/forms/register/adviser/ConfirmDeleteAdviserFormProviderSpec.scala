@@ -16,7 +16,6 @@
 
 package forms.register.adviser
 
-import forms.ConfirmDeleteAdviserFormProvider
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 import viewmodels.Message
@@ -24,10 +23,10 @@ import viewmodels.Message
 class ConfirmDeleteAdviserFormProviderSpec extends BooleanFieldBehaviours {
 
   val adviserName = "test adviser"
-  val requiredKey = Message("confirmDelete.adviser.required", adviserName).resolve
+  val requiredKey: String = Message("confirmDelete.adviser.required", adviserName).resolve
   val invalidKey = "error.boolean"
 
-  val form = new ConfirmDeleteAdviserFormProvider(messagesApi)(adviserName)
+  val form = new ConfirmDeleteAdviserFormProvider()(adviserName)
 
   ".value" must {
 

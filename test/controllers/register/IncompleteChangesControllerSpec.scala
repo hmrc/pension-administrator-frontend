@@ -16,15 +16,16 @@
 
 package controllers.register
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.ControllerSpecBase
 import identifiers.register.individual.IndividualDetailsId
 import models._
 import models.requests.DataRequest
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UserAnswers
 import views.html.register.incompleteChanges
 
@@ -54,27 +55,30 @@ class IncompleteChangesControllerSpec extends ControllerSpecBase {
 object IncompleteChangesControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val psaName: String = "Mark Wright"
-  private val psaUser = PSAUser(UserType.Individual, None, false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
 
   private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
-    RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+    RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None))
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
+  val view: incompleteChanges = app.injector.instanceOf[incompleteChanges]
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IncompleteChangesController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction(UserType.Individual),
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      FakeUserAnswersCacheConnector
+      FakeUserAnswersCacheConnector,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewAsString(userAnswers: UserAnswers) =
-    incompleteChanges(frontendAppConfig, Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
+    view(Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 
 
 }

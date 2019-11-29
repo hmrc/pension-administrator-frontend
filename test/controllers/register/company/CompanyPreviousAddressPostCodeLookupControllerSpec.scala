@@ -16,7 +16,8 @@
 
 package controllers.register.company
 
-import connectors.{AddressLookupConnector, FakeUserAnswersCacheConnector}
+import connectors.AddressLookupConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
@@ -25,11 +26,12 @@ import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.{Mode, NormalMode, TolerantAddress}
 import org.mockito.Matchers
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -45,23 +47,25 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
   private val form = formProvider()
   private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyPreviousAddressPostCodeLookupController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
-      messagesApi,
       FakeAuthAction,
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      formProvider
+      formProvider,
+      stubMessagesControllerComponents(),
+      view
     )
 
   private def viewAsString(form: Form[_] = form) =
-    postcodeLookup(
-      frontendAppConfig,
+    view(
       form,
       viewModel(NormalMode, companyName),
       NormalMode

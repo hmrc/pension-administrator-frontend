@@ -16,8 +16,7 @@
 
 package controllers.register.company.directors
 
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.{ControllerSpecBase, PersonNameControllerBehaviour}
 import models.requests.DataRequest
@@ -25,7 +24,9 @@ import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
+import views.html.personName
 
 class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameControllerBehaviour {
 
@@ -36,14 +37,14 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
 
   "DirectorNameController" must {
 
-    val controller = testController(this, getEmptyData)
+    val controller = testController(getEmptyData)
     val viewModel = controller.viewModel(NormalMode, 0, psaName)
     val id = controller.id(0)
 
-    behave like personNameController(viewModel, id, createController(this, getEmptyData))
+    behave like personNameController(viewModel, id, createController(getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = testController(this, dontGetAnyData).onPageLoad(NormalMode, 0)(fakeRequest)
+      val result = testController(dontGetAnyData).onPageLoad(NormalMode, 0)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -51,7 +52,7 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", "John"), ("lastName", "Doe"))
-      val result = testController(this, dontGetAnyData).onSubmit(NormalMode, 0)(postRequest)
+      val result = testController(dontGetAnyData).onSubmit(NormalMode, 0)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -61,30 +62,30 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
 
 }
 
+object DirectorNameControllerSpec extends ControllerSpecBase {
 
-
-object DirectorNameControllerSpec {
 
   val psaName = "test name"
   def testController(
-                      base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction
                     ): DirectorNameController =
-    createController(base, dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
+    createController(dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
 
   def createController(
-                        base: ControllerSpecBase,
                         dataRetrievalAction: DataRetrievalAction
-                      )(connector: UserAnswersCacheConnector, nav: Navigator): DirectorNameController =
+                      )(connector: UserAnswersCacheConnector, nav: Navigator): DirectorNameController = {
+    val view: personName = app.injector.instanceOf[personName]
     new DirectorNameController(
-      appConfig = base.frontendAppConfig,
-      messagesApi = base.messagesApi,
+      appConfig = frontendAppConfig,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
       allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
-      requireData = new DataRequiredActionImpl()
+      requireData = new DataRequiredActionImpl(),
+      controllerComponents = stubMessagesControllerComponents(),
+      view = view
     )
+  }
 
 }

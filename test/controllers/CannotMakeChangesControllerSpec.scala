@@ -20,15 +20,15 @@ import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
 import models._
 import models.requests.DataRequest
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UserAnswers
 import views.html.cannotMakeChanges
 
 class CannotMakeChangesControllerSpec extends ControllerSpecBase {
   import CannotMakeChangesControllerSpec._
-
   "CannotMakeChangesController" must {
 
     "return OK and the correct view for a GET" in {
@@ -47,7 +47,6 @@ class CannotMakeChangesControllerSpec extends ControllerSpecBase {
   }
 }
 
-
 object CannotMakeChangesControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val psaName: String = "Mark Wright"
@@ -62,14 +61,17 @@ object CannotMakeChangesControllerSpec extends ControllerSpecBase with MockitoSu
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CannotMakeChangesController(
       frontendAppConfig,
-      messagesApi,
       FakeAuthAction(UserType.Individual),
       dataRetrievalAction,
-      new DataRequiredActionImpl
+      new DataRequiredActionImpl,
+      stubMessagesControllerComponents(),
+      view
     )
 
+  lazy val view: cannotMakeChanges = inject[cannotMakeChanges]
+
   private def viewAsString(userAnswers: UserAnswers) =
-    cannotMakeChanges(frontendAppConfig, Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
+    view(Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
 }
 
 

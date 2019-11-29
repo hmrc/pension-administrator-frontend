@@ -45,16 +45,16 @@ class EnterVATViewSpec extends QuestionViewBehaviours[String] {
       entityName = name
     )
 
+  val view: enterVAT = app.injector.instanceOf[enterVAT]
+
   def createView: () => HtmlFormat.Appendable = () =>
-    enterVAT(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    enterVAT(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages)
@@ -73,4 +73,5 @@ class EnterVATViewSpec extends QuestionViewBehaviours[String] {
       "value"
     )
   }
+
 }

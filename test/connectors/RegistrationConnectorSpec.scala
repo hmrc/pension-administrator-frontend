@@ -18,14 +18,16 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models._
+import java.time.LocalDate
+
 import models.registrationnoid.RegistrationNoIdIndividualRequest
-import org.joda.time.LocalDate
 import org.scalatest._
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import scala.concurrent.ExecutionContext.Implicits.global
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext
@@ -198,9 +200,9 @@ class RegistrationConnectorSpec()
     val connector = injector.instanceOf[RegistrationConnector]
 
     val hc: HeaderCarrier = HeaderCarrier(extraHeaders = Seq((headerName, headerValue)))
-    val ec: ExecutionContext = implicitly[ExecutionContext]
+    val executionContext: ExecutionContext = implicitly[ExecutionContext]
 
-    connector.registerWithIdOrganisation(utr, organisation, legalStatus)(hc, ec).map { _ =>
+    connector.registerWithIdOrganisation(utr, organisation, legalStatus)(hc, executionContext).map { _ =>
       succeed
     }
 
@@ -383,9 +385,9 @@ class RegistrationConnectorSpec()
     val connector = injector.instanceOf[RegistrationConnector]
 
     val hc: HeaderCarrier = HeaderCarrier(extraHeaders = Seq((headerName, headerValue)))
-    val ec: ExecutionContext = implicitly[ExecutionContext]
+    val executionContext: ExecutionContext = implicitly[ExecutionContext]
 
-    connector.registerWithIdIndividual(nino)(hc, ec).map { _ =>
+    connector.registerWithIdIndividual(nino)(hc, executionContext).map { _ =>
       succeed
     }
 
@@ -553,7 +555,7 @@ object RegistrationConnectorSpec extends OptionValues {
   private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)
   private val firstName = "John"
   private val lastName = "Doe"
-  private val individualDateOfBirth = LocalDate.parse("20150808")
+  private val individualDateOfBirth = LocalDate.now()
   private val legalStatus = RegistrationLegalStatus.LimitedCompany
   private val registerWithoutIdIndividualRequest = Json.toJson(
     RegistrationNoIdIndividualRequest(firstName, lastName, individualDateOfBirth, expectedAddress(uk = false).toAddress))

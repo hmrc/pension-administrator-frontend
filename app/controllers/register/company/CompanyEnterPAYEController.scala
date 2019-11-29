@@ -26,31 +26,33 @@ import identifiers.register.{BusinessNameId, EnterPAYEId}
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.enterPAYE
 
 import scala.concurrent.ExecutionContext
 
 class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
-                                           override val messagesApi: MessagesApi,
                                            val cacheConnector: UserAnswersCacheConnector,
                                            @RegisterCompany val navigator: Navigator,
                                            authenticate: AuthAction,
                                            allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           formProvider: EnterPAYEFormProvider
-                                          )(implicit val ec: ExecutionContext) extends EnterPAYEController {
+                                           formProvider: EnterPAYEFormProvider,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: enterPAYE
+                                          )(implicit val executionContext: ExecutionContext) extends EnterPAYEController {
 
-  protected def form(companyName: String): Form[String] = formProvider(companyName)
+  protected def form(companyName: String)
+                    (implicit request: DataRequest[AnyContent]): Form[String] = formProvider(companyName)
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.CompanyEnterPAYEController.onSubmit(mode),
-      title = Message("enterPAYE.heading", Message("theCompany").resolve),
+      title = Message("enterPAYE.heading", Message("theCompany")),
       heading = Message("enterPAYE.heading", companyName),
       mode = mode,
       hint = Some(Message("enterPAYE.hint")),
@@ -58,7 +60,7 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
     )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

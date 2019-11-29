@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 case class FakeMinimalPsaConnector(isSuspended: Boolean = false) extends MinimalPsaConnector {
-  override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+  override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean] = {
     Future.successful(isSuspended)
   }
 }

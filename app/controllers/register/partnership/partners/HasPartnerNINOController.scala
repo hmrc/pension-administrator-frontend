@@ -26,29 +26,30 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.hasReferenceNumber
 
 import scala.concurrent.ExecutionContext
 
 class HasPartnerNINOController @Inject()(override val appConfig: FrontendAppConfig,
-                                         override val messagesApi: MessagesApi,
                                          override val dataCacheConnector: UserAnswersCacheConnector,
                                          @PartnershipPartner override val navigator: Navigator,
                                          authenticate: AuthAction,
                                          allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         formProvider: HasReferenceNumberFormProvider
-                                       )(implicit val ec: ExecutionContext) extends HasReferenceNumberController {
+                                         formProvider: HasReferenceNumberFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: hasReferenceNumber
+                                       )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.HasPartnerNINOController.onSubmit(mode, index),
-      title = Message("hasNINO.heading", Message("thePartner").resolve),
+      title = Message("hasNINO.heading", Message("thePartner")),
       heading = Message("hasNINO.heading", entityName),
       mode = mode,
       hint = None,
@@ -58,7 +59,8 @@ class HasPartnerNINOController @Inject()(override val appConfig: FrontendAppConf
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
-  private def form(companyName: String): Form[Boolean] =
+  private def form(companyName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider("hasNINO.error.required", companyName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =

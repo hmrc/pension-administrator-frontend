@@ -20,24 +20,25 @@ import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import javax.inject.Inject
-import models.{Index, Mode, NormalMode}
+import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.company.directors.whatYouWillNeed
 
 import scala.concurrent.Future
 
 class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                          override val messagesApi: MessagesApi,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction
-                                         ) extends FrontendController with I18nSupport with Retrievals {
+                                          requireData: DataRequiredAction,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          view: whatYouWillNeed
+                                         ) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val href = routes.DirectorNameController.onPageLoad(NormalMode, request.userAnswers.directorsCount)
-      Future.successful(Ok(whatYouWillNeed(appConfig, href)))
+      Future.successful(Ok(view(href)))
   }
 }

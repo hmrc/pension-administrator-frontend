@@ -25,17 +25,19 @@ import forms.address.SameContactAddressFormProvider
 import identifiers.register.individual._
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
+import views.html.address.sameContactAddress
+
+import scala.concurrent.ExecutionContext
 
 class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                       val messagesApi: MessagesApi,
                                                        val dataCacheConnector: UserAnswersCacheConnector,
                                                        @Individual val navigator: Navigator,
                                                        authenticate: AuthAction,
@@ -43,16 +45,19 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: SameContactAddressFormProvider,
-                                                       val countryOptions: CountryOptions
-                                                      ) extends SameContactAddressController with I18nSupport {
+                                                       val countryOptions: CountryOptions,
+                                                       val controllerComponents: MessagesControllerComponents,
+                                                       val view: sameContactAddress
+                                                      )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
   private[controllers] val postCall = IndividualSameContactAddressController.onSubmit _
   private[controllers] val title: Message = "individual.same.contact.address.title"
   private[controllers] val heading: Message = "individual.same.contact.address.heading"
 
-  protected val form: Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(Message("common.you")))
+  protected def form()(implicit request: DataRequest[AnyContent]): Form[Boolean] =
+    formProvider(Message("same.contact.address.error").withArgs(Message("common.you")))
 
-  private def viewmodel(mode: Mode) =
+  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     Retrieval(
       implicit request =>
         (IndividualDetailsId and IndividualAddressId).retrieve.right.map {

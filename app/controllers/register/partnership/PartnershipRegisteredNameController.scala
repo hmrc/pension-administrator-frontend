@@ -25,20 +25,25 @@ import forms.BusinessNameFormProvider
 import identifiers.register.BusinessNameId
 import models.Mode
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import viewmodels.{Message, OrganisationNameViewModel}
+import views.html.organisationName
+
+import scala.concurrent.ExecutionContext
 
 class PartnershipRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
-                                                    override val messagesApi: MessagesApi,
                                                     @Partnership override val navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: BusinessNameFormProvider,
-                                                    val cacheConnector: UserAnswersCacheConnector) extends OrganisationNameController {
+                                                    val cacheConnector: UserAnswersCacheConnector,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: organisationName
+                                                   )(implicit val executionContext: ExecutionContext) extends OrganisationNameController {
 
   override val form = formProvider(
     requiredKey = "partnershipName.error.required",

@@ -16,18 +16,19 @@
 
 package controllers.register.partnership
 
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.register.UTRControllerBehaviour
 import identifiers.register.BusinessUTRId
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, UserType}
+import models.{PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{SEE_OTHER, redirectLocation, status, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
+import views.html.register.utr
 
 class PartnershipUTRControllerSpec extends ControllerSpecBase with UTRControllerBehaviour {
 
@@ -38,10 +39,10 @@ class PartnershipUTRControllerSpec extends ControllerSpecBase with UTRController
 
   "PartnershipUTRController" must {
 
-    behave like utrController(BusinessUTRId, createController(this, getEmptyData))
+    behave like utrController(BusinessUTRId, createController(getEmptyData))
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = testController(this, dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = testController(dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -49,7 +50,7 @@ class PartnershipUTRControllerSpec extends ControllerSpecBase with UTRController
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("firstName", "John"), ("lastName", "Doe"))
-      val result = testController(this, dontGetAnyData).onSubmit()(postRequest)
+      val result = testController(dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -59,27 +60,28 @@ class PartnershipUTRControllerSpec extends ControllerSpecBase with UTRController
 
 }
 
-object PartnershipUTRControllerSpec {
+object PartnershipUTRControllerSpec extends ControllerSpecBase {
+
+  val view: utr = app.injector.instanceOf[utr]
 
   def testController(
-                      base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction
                     ): PartnershipUTRController =
-    createController(base, dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
+    createController(dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)
 
   def createController(
-                        base: ControllerSpecBase,
                         dataRetrievalAction: DataRetrievalAction
                       )(connector: UserAnswersCacheConnector, nav: Navigator): PartnershipUTRController =
     new PartnershipUTRController(
-      appConfig = base.frontendAppConfig,
-      messagesApi = base.messagesApi,
+      appConfig = frontendAppConfig,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
       allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
-      requireData = new DataRequiredActionImpl()
+      requireData = new DataRequiredActionImpl(),
+      stubMessagesControllerComponents(),
+      view
     )
 
 }

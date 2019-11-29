@@ -19,7 +19,7 @@ package controllers.actions
 import connectors.RegistrationConnector
 import models._
 import models.RegistrationLegalStatus
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,17 +28,17 @@ abstract class FakeRegistrationConnector extends RegistrationConnector {
 
   override def registerWithIdOrganisation
   (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = ???
+  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[OrganizationRegistration] = ???
 
   override def registerWithNoIdOrganisation
   (name: String, address: Address, legalStatus: RegistrationLegalStatus)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] =  ???
+  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[RegistrationInfo] =  ???
 
   override def registerWithIdIndividual
   (nino: String)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = ???
+  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[IndividualRegistration] = ???
 
   override def registerWithNoIdIndividual
   (firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = ???
+  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[RegistrationInfo] = ???
 }

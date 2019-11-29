@@ -24,25 +24,31 @@ import forms.register.NINOFormProvider
 import identifiers.register.company.directors.{DirectorEnterNINOId, DirectorNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, Mode}
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import models.{Index, Mode, ReferenceValue}
+import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
+import views.html.enterNINO
+
+import scala.concurrent.ExecutionContext
 
 class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navigator,
                                             val appConfig: FrontendAppConfig,
-                                            val messagesApi: MessagesApi,
                                             val cacheConnector: UserAnswersCacheConnector,
                                             authenticate: AuthAction,
                                             val allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            formProvider: NINOFormProvider
-                                           ) extends NINOController {
+                                            formProvider: NINOFormProvider,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: enterNINO
+                                           )(implicit val executionContext: ExecutionContext) extends NINOController {
 
-  private def form(directorName: String) = formProvider(directorName)
+  private def form(directorName: String)
+                  (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] = formProvider(directorName)
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

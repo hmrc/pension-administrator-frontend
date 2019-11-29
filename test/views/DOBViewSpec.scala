@@ -43,11 +43,13 @@ class DOBViewSpec extends QuestionViewBehaviours[LocalDate] {
       "test psa"
     )
 
+  val view: dob = app.injector.instanceOf[dob]
+
   private def createView(mode: Mode = NormalMode) = () =>
-    dob(frontendAppConfig, form, viewModel(mode))(fakeRequest, messages)
+    view(form, viewModel(mode))(fakeRequest, messages)
 
   private def createViewUsingForm = (form: Form[_]) =>
-    dob(frontendAppConfig, form, viewModel())(fakeRequest, messages)
+    view(form, viewModel())(fakeRequest, messages)
 
   "PersonDetails view" must {
 

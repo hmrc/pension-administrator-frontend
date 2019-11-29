@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package connectors
+package connectors.cache
 
-import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import org.scalatest.Matchers
 import play.api.libs.json._
@@ -36,7 +35,7 @@ trait FakeUserAnswersCacheConnector extends UserAnswersCacheConnector with Match
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit
                                                 fmt: Format[A],
-                                                ec: ExecutionContext,
+                                                executionContext: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
     data += (id.toString -> Json.toJson(value))
@@ -45,7 +44,7 @@ trait FakeUserAnswersCacheConnector extends UserAnswersCacheConnector with Match
 
   def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
                                      (implicit
-                                      ec: ExecutionContext,
+                                      executionContext: ExecutionContext,
                                       hc: HeaderCarrier
                                      ): Future[JsValue] = {
     removed += id.toString
@@ -53,14 +52,14 @@ trait FakeUserAnswersCacheConnector extends UserAnswersCacheConnector with Match
   }
 
   override def fetch(cacheId: String)(implicit
-                                      ec: ExecutionContext,
+                                      executionContext: ExecutionContext,
                                       hc: HeaderCarrier
   ): Future[Option[JsValue]] = {
 
     Future.successful(Some(Json.obj()))
   }
 
-  override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
+  override def upsert(cacheId: String, value: JsValue)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     json = Some(value)
     Future.successful(value)
   }
@@ -79,7 +78,7 @@ trait FakeUserAnswersCacheConnector extends UserAnswersCacheConnector with Match
 
   def lastUpsert: Option[JsValue] = json
 
-  override def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
+  override def removeAll(cacheId: String)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Result] =
     Future.successful(Ok)
 
   def reset(): Unit = {

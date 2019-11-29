@@ -40,7 +40,7 @@ class ICacheConnector @Inject()(
   override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
                                                (implicit
                                                 fmt: Format[A],
-                                                ec: ExecutionContext,
+                                                executionContext: ExecutionContext,
                                                 hc: HeaderCarrier
                                                ): Future[JsValue] = {
     modify(cacheId, _.set(id)(value))
@@ -48,19 +48,19 @@ class ICacheConnector @Inject()(
 
   def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
                                      (implicit
-                                      ec: ExecutionContext,
+                                      executionContext: ExecutionContext,
                                       hc: HeaderCarrier
                                      ): Future[JsValue] = {
     modify(cacheId, _.remove(id))
   }
 
-  override def upsert(cacheId: String, value: JsValue)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
+  override def upsert(cacheId: String, value: JsValue)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     modify(cacheId, _ => JsSuccess(UserAnswers(value)))
   }
 
   private[connectors] def modify(cacheId: String, modification: UserAnswers => JsResult[UserAnswers])
                                 (implicit
-                                 ec: ExecutionContext,
+                                 executionContext: ExecutionContext,
                                  hc: HeaderCarrier
                                 ): Future[JsValue] = {
     fetch(cacheId).flatMap {
@@ -68,7 +68,7 @@ class ICacheConnector @Inject()(
         modification(UserAnswers(json.getOrElse(Json.obj()))) match {
           case JsSuccess(UserAnswers(updatedJson), _) =>
             http.url(url(cacheId))
-              .withHeaders(hc.withExtraHeaders(("content-type", "application/json")).headers: _*)
+              .withHttpHeaders(hc.withExtraHeaders(("content-type", "application/json")).headers: _*)
               .post(PlainText(Json.stringify(updatedJson)).value).flatMap {
               response =>
                 response.status match {
@@ -85,12 +85,12 @@ class ICacheConnector @Inject()(
   }
 
   override def fetch(id: String)(implicit
-                                 ec: ExecutionContext,
+                                 executionContext: ExecutionContext,
                                  hc: HeaderCarrier
   ): Future[Option[JsValue]] = {
 
     http.url(url(id))
-      .withHeaders(hc.headers: _*)
+      .withHttpHeaders(hc.headers: _*)
       .get()
       .flatMap {
         response =>
@@ -105,9 +105,9 @@ class ICacheConnector @Inject()(
       }
   }
 
-  override def removeAll(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
+  override def removeAll(id: String)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     http.url(url(id))
-      .withHeaders(hc.headers: _*)
+      .withHttpHeaders(hc.headers: _*)
       .delete().map(_ => Ok)
   }
 }

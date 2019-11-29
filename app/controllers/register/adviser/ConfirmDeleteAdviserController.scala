@@ -20,33 +20,33 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
-import forms.ConfirmDeleteAdviserFormProvider
+import forms.register.adviser.ConfirmDeleteAdviserFormProvider
 import identifiers.register.adviser._
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers, annotations}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmDeleteAdviserController @Inject()(
-                                                val appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                authenticate: AuthAction,
-                                                allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                val cacheConnector: UserAnswersCacheConnector,
-                                                formProvider: ConfirmDeleteAdviserFormProvider,
-                                                @annotations.Variations navigator: Navigator
-                                              ) extends FrontendController with I18nSupport with Retrievals with Variations {
+class ConfirmDeleteAdviserController @Inject()(val appConfig: FrontendAppConfig,
+                                               authenticate: AuthAction,
+                                               allowAccess: AllowAccessActionProvider,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               val cacheConnector: UserAnswersCacheConnector,
+                                               formProvider: ConfirmDeleteAdviserFormProvider,
+                                               @annotations.Variations navigator: Navigator,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: confirmDelete
+                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals with Variations {
 
   private def viewModel(name: String)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
     routes.ConfirmDeleteAdviserController.onSubmit(),
@@ -60,7 +60,7 @@ class ConfirmDeleteAdviserController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(AdviserNameId) match {
-        case Some(name) => Future.successful(Ok(confirmDelete(appConfig, formProvider(name), viewModel(name), mode)))
+        case Some(name) => Future.successful(Ok(view(formProvider(name), viewModel(name), mode)))
         case _ => Future.successful(Redirect(controllers.register.adviser.routes.AdviserAlreadyDeletedController.onPageLoad()))
       }
   }
@@ -71,7 +71,7 @@ class ConfirmDeleteAdviserController @Inject()(
         val form = formProvider(name)
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(confirmDelete(appConfig, formWithErrors, viewModel(name), mode))),
+            Future.successful(BadRequest(view(formWithErrors, viewModel(name), mode))),
           value => {
             cacheConnector.save(request.externalId, ConfirmDeleteAdviserId, value).flatMap { cacheMap =>
               deleteAdviserAndSetChangeFlag(value, UserAnswers(cacheMap), mode).map { updatedCacheMap =>

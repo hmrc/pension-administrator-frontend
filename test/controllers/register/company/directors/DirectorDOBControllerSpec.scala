@@ -16,13 +16,14 @@
 
 package controllers.register.company.directors
 
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.NormalMode
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator}
+import views.html.dob
 
 class DirectorDOBControllerSpec extends ControllerSpecBase {
 
@@ -44,11 +45,12 @@ class DirectorDOBControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
-
   }
 
 }
-object DirectorDOBControllerSpec {
+object DirectorDOBControllerSpec extends ControllerSpecBase {
+
+  val view: dob = app.injector.instanceOf[dob]
   def testController(
                       base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction
@@ -61,13 +63,14 @@ object DirectorDOBControllerSpec {
                       )(connector: UserAnswersCacheConnector, nav: Navigator): DirectorDOBController =
     new DirectorDOBController(
       appConfig = base.frontendAppConfig,
-      messagesApi = base.messagesApi,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
       allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
-      requireData = new DataRequiredActionImpl()
+      requireData = new DataRequiredActionImpl(),
+      controllerComponents = stubMessagesControllerComponents(),
+      view = view
     )
 
 }

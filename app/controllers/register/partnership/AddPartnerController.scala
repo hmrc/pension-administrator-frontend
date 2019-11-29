@@ -24,26 +24,30 @@ import controllers.register.AddEntityController
 import forms.register.AddEntityFormProvider
 import identifiers.register.partnership.AddPartnersId
 import javax.inject.Inject
+import models.Mode
 import models.requests.DataRequest
-import models.{Mode, NormalMode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{EntityViewModel, Message, Person}
+import views.html.register.addEntity
+
+import scala.concurrent.ExecutionContext
 
 class AddPartnerController @Inject()(
                                       override val appConfig: FrontendAppConfig,
-                                      override val messagesApi: MessagesApi,
                                       override val cacheConnector: UserAnswersCacheConnector,
                                       @PartnershipPartner override val navigator: Navigator,
                                       authenticate: AuthAction,
                                       allowAccess: AllowAccessActionProvider,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
-                                      formProvider: AddEntityFormProvider
-                                    ) extends AddEntityController with Retrievals {
+                                      formProvider: AddEntityFormProvider,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val view: addEntity
+                                    )(implicit val executionContext: ExecutionContext) extends AddEntityController with Retrievals with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -53,7 +57,7 @@ class AddPartnerController @Inject()(
     heading = Message("addPartners.heading"),
     entities = partners,
     maxLimit = appConfig.maxPartners,
-    entityType = Message("addPartners.entityType"),
+    entityType = Message("addPartners.entityType").resolve,
     psaName = psaName()
   )
 

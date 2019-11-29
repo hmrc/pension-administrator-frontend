@@ -16,6 +16,8 @@
 
 package controllers.address
 
+import java.time.LocalDate
+
 import connectors.RegistrationConnector
 import controllers.ControllerSpecBase
 import controllers.actions.FakeRegistrationConnector
@@ -56,6 +58,11 @@ trait NonUKAddressControllerDataMocks extends ControllerSpecBase {
   def fakeRegistrationConnector :RegistrationConnector = new FakeRegistrationConnector {
 
     override def registerWithNoIdOrganisation(name: String, address: Address, legalStatus: RegistrationLegalStatus)(
-      implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = Future.successful(registrationInfo)
+      implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[RegistrationInfo] =
+      Future.successful(registrationInfo)
+
+    override def registerWithNoIdIndividual(firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate
+                                           )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] =
+      Future.successful(registrationInfo)
   }
 }

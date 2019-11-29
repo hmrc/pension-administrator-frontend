@@ -16,7 +16,7 @@
 
 package controllers.register.individual
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
@@ -28,17 +28,22 @@ import play.api.test.FakeRequest
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 class IndividualEmailControllerSpec extends ControllerWithCommonBehaviour {
   import IndividualEmailControllerSpec._
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private def controller(dataRetrievalAction: DataRetrievalAction) = new IndividualEmailController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+  val view: email = app.injector.instanceOf[email]
 
-  private def emailView(form: Form[_] = emailForm): String = email(frontendAppConfig, form, viewModel(NormalMode))(fakeRequest, messages).toString
+  private def controller(dataRetrievalAction: DataRetrievalAction) = new IndividualEmailController(
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider, stubMessagesControllerComponents(), view)
+
+
+
+  private def emailView(form: Form[_] = emailForm): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "IndividualEmail Controller" must {
 
@@ -51,12 +56,12 @@ class IndividualEmailControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
+
 }
 
 object IndividualEmailControllerSpec {
   private val formProvider = new EmailFormProvider()
   private val emailForm = formProvider()
-  private val individualName = "TestFirstName TestLastName"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
   private def viewModel(mode: Mode)(implicit messages: Messages) =

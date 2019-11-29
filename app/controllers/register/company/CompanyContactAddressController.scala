@@ -28,16 +28,17 @@ import identifiers.register.company._
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
+import views.html.address.manualAddress
+
+import scala.concurrent.ExecutionContext
 
 class CompanyContactAddressController @Inject()(override val appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
                                                 override val cacheConnector: UserAnswersCacheConnector,
                                                 @RegisterCompany override val navigator: Navigator,
                                                 authenticate: AuthAction,
@@ -46,7 +47,10 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
                                                 requireData: DataRequiredAction,
                                                 formProvider: AddressFormProvider,
                                                 val countryOptions: CountryOptions,
-                                                val auditService: AuditService) extends ManualAddressController {
+                                                val auditService: AuditService,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: manualAddress
+                                               )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
 

@@ -17,59 +17,71 @@
 package controllers.register
 
 import akka.stream.Materializer
+import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
+import controllers.ControllerSpecBase
 import forms.register.AddEntityFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{CheckMode, NormalMode, PSAUser, UserType}
+import models.{NormalMode, PSAUser, UserType}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, Call, Request, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
-import viewmodels.{EntityViewModel, Message, Person}
+import viewmodels.{EntityViewModel, Person}
 import views.html.register.addEntity
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
-object AddEntityControllerSpec {
+object AddEntityControllerSpec extends ControllerSpecBase {
 
   object FakeIdentifier extends TypedIdentifier[Boolean]
+
+  val view: addEntity = inject[addEntity]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: AddEntityFormProvider
-                                ) extends AddEntityController {
+                                  formProvider: AddEntityFormProvider,
+                                  val view: addEntity
+                                )(implicit val executionContext: ExecutionContext) extends AddEntityController {
+
+    implicit val messages = controllerComponents.messagesApi.preferred(fakeRequest)
 
     def onPageLoad(viewmodel: EntityViewModel, answers: UserAnswers): Future[Result] = {
-      get(FakeIdentifier, formProvider(), viewmodel, NormalMode)(request(answers))
+      implicit val request: DataRequest[AnyContent] = req(answers)
+      get(FakeIdentifier, formProvider(), viewmodel, NormalMode)
     }
 
     def onSubmit(viewmodel: EntityViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
-      post(FakeIdentifier, formProvider(), viewmodel, NormalMode)(request(answers, fakeRequest))
+      implicit val request: DataRequest[AnyContent] = req(answers, fakeRequest)
+      post(FakeIdentifier, formProvider(), viewmodel, NormalMode)
     }
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 
   }
 
-  def request(answers: UserAnswers = UserAnswers(), fakeRequest: Request[AnyContent] = FakeRequest()): DataRequest[AnyContent] =
+  def req(answers: UserAnswers = UserAnswers(), fakeRequest: Request[AnyContent] = FakeRequest()): DataRequest[AnyContent] =
     DataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
 
 }
 
-class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
+class AddEntityControllerSpec extends SpecBase with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
 
   import AddEntityControllerSpec._
 
@@ -101,16 +113,14 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
       )) {
         app =>
 
-          implicit val materializer: Materializer = app.materializer
+       //   implicit val materializer: Materializer = app.materializer
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[AddEntityFormProvider]
-          val messages = app.injector.instanceOf[MessagesApi].preferred(request())
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onPageLoad(viewmodel(), UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual addEntity(appConfig, formProvider(), viewmodel(), NormalMode)(request(), messages).toString
+          contentAsString(result) mustEqual view(formProvider(), viewmodel(), NormalMode)(req(), messages).toString
       }
     }
 
@@ -121,21 +131,18 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
       )) {
         app =>
 
-          implicit val materializer: Materializer = app.materializer
+    //      implicit val materializer: Materializer = app.materializer
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[AddEntityFormProvider]
-          val messages = app.injector.instanceOf[MessagesApi].preferred(request())
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onPageLoad(viewmodel(entities), UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual addEntity(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider(),
             viewmodel(entities),
             NormalMode
-          )(request(), messages).toString
+          )(req(), messages).toString
       }
     }
 
@@ -146,21 +153,18 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
       )) {
         app =>
 
-          implicit val materializer: Materializer = app.materializer
+    //      implicit val materializer: Materializer = app.materializer
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[AddEntityFormProvider]
-          val messages = app.injector.instanceOf[MessagesApi].preferred(request())
           val controller = app.injector.instanceOf[TestController]
           val result = controller.onPageLoad(viewmodel(Seq.fill(maxPartners)(johnDoePerson)), UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual addEntity(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider(),
             viewmodel(Seq.fill(maxPartners)(johnDoePerson)),
             NormalMode
-          )(request(), messages).toString
+          )(req(), messages).toString
       }
     }
   }
@@ -179,7 +183,7 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
       )) {
         app =>
 
-          implicit val materializer: Materializer = app.materializer
+     //     implicit val materializer: Materializer = app.materializer
           when(
             cacheConnector.save[Boolean, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
@@ -200,23 +204,21 @@ class AddEntityControllerSpec extends WordSpec with MustMatchers with OptionValu
       )) {
         app =>
 
-          implicit val materializer: Materializer = app.materializer
+    //      implicit val materializer: Materializer = app.materializer
 
-          val appConfig = app.injector.instanceOf[FrontendAppConfig]
           val formProvider = app.injector.instanceOf[AddEntityFormProvider]
-          val messages = app.injector.instanceOf[MessagesApi].preferred(request())
           val controller = app.injector.instanceOf[TestController]
           val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "invalid value"))
-          val result = controller.onSubmit(viewmodel(entities), UserAnswers(), request(fakeRequest = postRequest))
+          val result = controller.onSubmit(viewmodel(entities), UserAnswers(), req(fakeRequest = postRequest))
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual addEntity(
-            appConfig,
+          contentAsString(result) mustEqual view(
             formProvider().bind(Map("value" -> "invalid value")),
             viewmodel(entities),
             NormalMode
-          )(request(), messages).toString
+          )(req(), messages).toString
       }
     }
   }
+
 }

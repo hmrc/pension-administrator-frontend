@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import forms.EnterPAYEFormProvider
@@ -42,10 +42,12 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
   private val formProvider = new EnterPAYEFormProvider()
   private val form = formProvider(companyName)
 
+  val view: enterPAYE = app.injector.instanceOf[enterPAYE]
+
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyEnterPAYEController.onSubmit(NormalMode),
-      title = Message("enterPAYE.heading", Message("theCompany").resolve),
+      title = Message("enterPAYE.heading", Message("theCompany")),
       heading = Message("enterPAYE.heading", companyName),
       hint = Some(Message("enterPAYE.hint")),
       mode = NormalMode,
@@ -54,11 +56,10 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
   private val payeNumber = "123AB456"
 
-  private def viewAsString(form: Form[_] = form): String = enterPAYE(
-    frontendAppConfig,
+  private def viewAsString(form: Form[_] = form): String = view(
     form,
     viewModel
-  )(fakeRequest, messages).toString
+  )(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   "CompanyRegistrationNumber Controller" when {
 

@@ -29,13 +29,13 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Call, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewmodels.ConfirmDeleteViewModel
 import views.html.confirmDelete
 
 import scala.concurrent.Future
 
-trait ConfirmDeleteController extends FrontendController with I18nSupport with Retrievals with Variations {
+trait ConfirmDeleteController extends FrontendBaseController with I18nSupport with Retrievals with Variations {
 
   protected def appConfig: FrontendAppConfig
 
@@ -43,9 +43,11 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
 
   protected val form: Form[Boolean]
 
+  protected def view: confirmDelete
+
   def get(vm: ConfirmDeleteViewModel, isDeleted: Boolean, redirectTo: Call, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] =
     if (!isDeleted) {
-      Future.successful(Ok(confirmDelete(appConfig, form, vm, mode)))
+      Future.successful(Ok(view(form, vm, mode)))
     } else {
       Future.successful(Redirect(redirectTo))
     }
@@ -72,7 +74,7 @@ trait ConfirmDeleteController extends FrontendController with I18nSupport with R
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
-      (formWithError: Form[_]) => Future.successful(BadRequest(confirmDelete(appConfig, formWithError, vm, mode))),
+      (formWithError: Form[_]) => Future.successful(BadRequest(view(formWithError, vm, mode))),
       {
         case true =>
           id.retrieve.right.map { details =>

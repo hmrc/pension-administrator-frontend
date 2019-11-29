@@ -20,16 +20,20 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.register.company.companyUpdateDetails
 
 class CompanyUpdateDetailsControllerSpec extends ControllerSpecBase {
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyUpdateDetailsController(frontendAppConfig, messagesApi, FakeAuthAction,
-      FakeAllowAccessProvider(),
-      dataRetrievalAction, new DataRequiredActionImpl)
+  val view: companyUpdateDetails = app.injector.instanceOf[companyUpdateDetails]
 
-  def viewAsString() = companyUpdateDetails(frontendAppConfig)(fakeRequest, messages).toString
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new CompanyUpdateDetailsController(frontendAppConfig, FakeAuthAction,
+      FakeAllowAccessProvider(),
+      dataRetrievalAction, new DataRequiredActionImpl,
+      stubMessagesControllerComponents(), view)
+
+  def viewAsString(): String = view()(fakeRequest, messages).toString
 
   "CompanyUpdateDetails Controller" must {
 

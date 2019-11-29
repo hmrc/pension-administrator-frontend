@@ -19,22 +19,24 @@ package controllers.register
 import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
+import controllers.ControllerSpecBase
 import forms.register.NINOFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, ReferenceValue, UserType}
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.{AnyContent, Call, Request, Result}
+import play.api.mvc.{AnyContent, Call, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.enterNINO
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class NINOControllerSpec extends SpecBase {
 
@@ -60,7 +62,7 @@ class NINOControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewModel, UserAnswers())
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual enterNINO(frontendAppConfig, formProvider(entityName), viewModel)(FakeRequest(), messages).toString
+          contentAsString(result) mustEqual view(formProvider(entityName), viewModel)(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
 
@@ -74,11 +76,10 @@ class NINOControllerSpec extends SpecBase {
           val result = controller.onPageLoad(viewModel, UserAnswers().set(FakeIdentifier)(testNINO).get)
 
           status(result) mustEqual OK
-          contentAsString(result) mustEqual enterNINO(
-            frontendAppConfig,
+          contentAsString(result) mustEqual view(
             formProvider(entityName).fill(testNINO),
             viewModel
-          )(FakeRequest(), messages).toString
+          )(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
   }
@@ -112,28 +113,30 @@ class NINOControllerSpec extends SpecBase {
           val result = controller.onSubmit(viewModel, UserAnswers(), FakeRequest())
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual enterNINO(
-            frontendAppConfig,
+          contentAsString(result) mustEqual view(
             formProvider(entityName).bind(Map.empty[String, String]),
             viewModel
-          )(FakeRequest(), messages).toString
+          )(FakeRequest(), messagesApi.preferred(fakeRequest)).toString
       }
     }
   }
 }
-object NINOControllerSpec {
+object NINOControllerSpec extends ControllerSpecBase {
   private val entityName = "entity name"
   private val nino = "AB100100A"
   private val testNINO = ReferenceValue(nino)
   object FakeIdentifier extends TypedIdentifier[ReferenceValue]
+
+  val view: enterNINO = app.injector.instanceOf[enterNINO]
 
   class TestController @Inject()(
                                   override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,
-                                  formProvider: NINOFormProvider
-                                ) extends NINOController {
+                                  formProvider: NINOFormProvider,
+                                  val view: enterNINO
+                                )(implicit val executionContext: ExecutionContext) extends NINOController {
 
     def onPageLoad(viewmodel: CommonFormWithHintViewModel, answers: UserAnswers): Future[Result] = {
       get(FakeIdentifier, formProvider(entityName), viewmodel)(DataRequest(FakeRequest(), "cacheId",
@@ -144,6 +147,8 @@ object NINOControllerSpec {
       post(FakeIdentifier, NormalMode, formProvider(entityName), viewmodel)(DataRequest(fakeRequest, "cacheId",
         PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
     }
+
+    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
 }
 

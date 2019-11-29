@@ -28,16 +28,17 @@ import identifiers.register.partnership.partners.{PartnerNameId, PartnerPrevious
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
+import views.html.address.manualAddress
+
+import scala.concurrent.ExecutionContext
 
 class PartnerPreviousAddressController @Inject()(override val appConfig: FrontendAppConfig,
-                                                 override val messagesApi: MessagesApi,
                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                  @PartnershipPartner override val navigator: Navigator,
                                                  authenticate: AuthAction,
@@ -46,7 +47,10 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
                                                  requireData: DataRequiredAction,
                                                  formProvider: AddressFormProvider,
                                                  countryOptions: CountryOptions,
-                                                 val auditService: AuditService) extends ManualAddressController with Retrievals {
+                                                 val auditService: AuditService,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 val view: manualAddress
+                                                )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals {
 
   override protected val form: Form[Address] = formProvider()
 

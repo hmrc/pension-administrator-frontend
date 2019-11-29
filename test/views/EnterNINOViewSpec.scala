@@ -17,7 +17,7 @@
 package views
 
 import controllers.register.company.routes
-import forms.register.{EnterVATFormProvider, NINOFormProvider}
+import forms.register.NINOFormProvider
 import models.{NormalMode, ReferenceValue}
 import play.api.data.Form
 import play.api.mvc.Call
@@ -45,16 +45,16 @@ class EnterNINOViewSpec extends QuestionViewBehaviours[ReferenceValue] {
       entityName = name
     )
 
+  val view: enterNINO = app.injector.instanceOf[enterNINO]
+
   def createView: () => HtmlFormat.Appendable = () =>
-    enterNINO(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
-    enterNINO(
-      frontendAppConfig,
+    view(
       form,
       viewModel
     )(fakeRequest, messages)
@@ -73,4 +73,5 @@ class EnterNINOViewSpec extends QuestionViewBehaviours[ReferenceValue] {
       fields = "value"
     )
   }
+
 }

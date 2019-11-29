@@ -19,21 +19,20 @@
 @import viewmodels.Message
 @import models.requests._
 
-@(appConfig: FrontendAppConfig, psaId: String)(implicit request: DataRequest[_], messages: Messages)
+@this(
+    main_template: main_template,
+    formHelper: FormWithCSRF,
+    appConfig: FrontendAppConfig
+)
+
+@(psaId: String)(implicit request: DataRequest[_], messages: Messages)
 
 @registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.schemeLink")</a>}
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
 
 @main_template(
-   title= if(request.user.isExistingPSA)
-    {
-      messages("confirmation.existingPSA.title")
-    } else {
-       messages("confirmation.newPSA.title")
-    }
-    ,
-    appConfig = appConfig,
-    bodyClasses = None) {
+    if(request.user.isExistingPSA) messages("confirmation.existingPSA.title") else messages("confirmation.newPSA.title")
+) {
 
     <div class="govuk-box-highlight">
          @if(request.user.isExistingPSA){
@@ -60,7 +59,7 @@
         }
     </p>
 
-    @helpers.form(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {
         <div class="section">
             @components.submit_button(submitMessageKey = "site.finishAndSignOut")
         </div>

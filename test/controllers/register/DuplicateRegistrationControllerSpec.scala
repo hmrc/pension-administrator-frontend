@@ -20,14 +20,18 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.register.duplicateRegistration
 
 class DuplicateRegistrationControllerSpec extends ControllerSpecBase {
 
-  def controller() = new DuplicateRegistrationController(
-    frontendAppConfig, messagesApi, FakeAuthAction, FakeAllowAccessProvider(), getEmptyData)
+  val view: duplicateRegistration = app.injector.instanceOf[duplicateRegistration]
 
-  private def viewAsString() = duplicateRegistration(frontendAppConfig)(fakeRequest, messages).toString
+  def controller() = new DuplicateRegistrationController(
+    frontendAppConfig, FakeAuthAction, FakeAllowAccessProvider(), getEmptyData,
+    stubMessagesControllerComponents(), view)
+
+  private def viewAsString() = view()(fakeRequest, messages).toString
 
   "DuplicateRegistration Controller" must {
     "return OK and the correct view for a GET with the correct company name displayed" in {

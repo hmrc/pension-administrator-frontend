@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package forms
+package forms.register.adviser
 
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.Messages
 import viewmodels.Message
 
-class ConfirmDeleteAdviserFormProvider @Inject()(override val messagesApi: MessagesApi) extends Mappings with I18nSupport {
+class ConfirmDeleteAdviserFormProvider extends Mappings {
 
-  def apply(name: String): Form[Boolean] =
+  def apply(name: String)(implicit messages: Messages): Form[Boolean] =
     Form(
       "value" -> boolean(Message("confirmDelete.adviser.required", name))
     )

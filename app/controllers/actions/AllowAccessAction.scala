@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AllowAccessAction(
                          mode: Mode,
                          minimalPsaConnector: MinimalPsaConnector
-                       )(implicit ec: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
+                       )(implicit val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
 
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -61,7 +61,7 @@ class AllowAccessAction(
   }
 }
 
-class AllowAccessActionProviderImpl @Inject() (minimalPsaConnector: MinimalPsaConnector)(implicit ec: ExecutionContext)
+class AllowAccessActionProviderImpl @Inject() (minimalPsaConnector: MinimalPsaConnector)(implicit executionContext: ExecutionContext)
   extends AllowAccessActionProvider {
   def apply(mode: Mode): AllowAccessAction = {
     new AllowAccessAction(mode, minimalPsaConnector)

@@ -17,7 +17,7 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
 import identifiers.register._
 import identifiers.register.company.directors.DirectorNameId

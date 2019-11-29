@@ -20,14 +20,13 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
-import identifiers.register.partnership.partners
 import identifiers.register.partnership.partners._
 import javax.inject.Inject
 import models.Mode.checkMode
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.PartnershipPartner
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
@@ -37,25 +36,25 @@ import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject()(
-                                            appConfig: FrontendAppConfig,
-                                            authenticate: AuthAction,
-                                            allowAccess: AllowAccessActionProvider,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            @PartnershipPartner navigator: Navigator,
-                                            override val messagesApi: MessagesApi,
-                                            sectionComplete: SectionComplete,
-                                            implicit val countryOptions: CountryOptions,
-                                            override val cacheConnector: UserAnswersCacheConnector
-                                          )(implicit ec: ExecutionContext) extends FrontendController with Retrievals with Variations with I18nSupport {
+class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
+                                           authenticate: AuthAction,
+                                           allowAccess: AllowAccessActionProvider,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           @PartnershipPartner navigator: Navigator,
+                                           sectionComplete: SectionComplete,
+                                           implicit val countryOptions: CountryOptions,
+                                           override val cacheConnector: UserAnswersCacheConnector,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: check_your_answers
+                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val answersSection = Seq(
         AnswerSection(
           None,
-            PartnerNameId(index).row(Some(Link(routes.PartnerNameController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerNameId(index).row(Some(Link(routes.PartnerNameController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerDOBId(index).row(Some(Link(routes.PartnerDOBController.onPageLoad(checkMode(mode), index).url))) ++
             HasPartnerNINOId(index).row(Some(Link(routes.HasPartnerNINOController.onPageLoad(checkMode(mode), index).url))) ++
             PartnerEnterNINOId(index).row(Some(Link(routes.PartnerEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++
@@ -70,8 +69,7 @@ class CheckYourAnswersController @Inject()(
             PartnerPhoneId(index).row(Some(Link(routes.PartnerPhoneController.onPageLoad(checkMode(mode), index).url)))
         ))
 
-      Future.successful(Ok(check_your_answers(
-        appConfig,
+      Future.successful(Ok(view(
         answersSection,
         routes.CheckYourAnswersController.onSubmit(index, mode),
         psaName(),

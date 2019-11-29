@@ -16,8 +16,8 @@
 
 package controllers
 
-import base.SpecBase
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.useOrganisationCredentials
 
 class UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
@@ -28,26 +28,30 @@ class UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
 
     "return OK and the correct view" in {
 
-      val controller = testController(this)
+      val controller = testController
       val result = controller.onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(this)
+      contentAsString(result) mustBe viewAsString
 
     }
   }
+
 }
 
-object UseOrganisationCredentialsControllerSpec {
+object UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
 
-  def testController(base: SpecBase): UseOrganisationCredentialsController =
+  val view: useOrganisationCredentials = app.injector.instanceOf[useOrganisationCredentials]
+
+  def testController: UseOrganisationCredentialsController =
     new UseOrganisationCredentialsController(
-      base.frontendAppConfig,
-      base.messagesApi
+      frontendAppConfig,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  def viewAsString(base: SpecBase): String =
-    useOrganisationCredentials(base.frontendAppConfig)(base.fakeRequest, base.messages).toString()
+  def viewAsString: String =
+    view()(fakeRequest, messages).toString()
 
 }
 

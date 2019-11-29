@@ -16,7 +16,7 @@
 
 package controllers.register.company.directors
 
-import connectors.FakeUserAnswersCacheConnector
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
@@ -25,6 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
@@ -35,11 +36,14 @@ class DirectorPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorPhoneController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, messagesApi, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+  val view: phone = app.injector.instanceOf[phone]
 
-  private def phoneView(form: Form[_] = phoneForm): String = phone(frontendAppConfig, form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorPhoneController(
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
+    stubMessagesControllerComponents(), view)
+
+  private def phoneView(form: Form[_] = phoneForm): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "DirectorPhoneController" must {
 
@@ -52,6 +56,7 @@ class DirectorPhoneControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
+
 }
 
 object DirectorPhoneControllerSpec {

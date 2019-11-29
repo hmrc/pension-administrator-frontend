@@ -16,13 +16,12 @@
 
 package services
 
-import com.google.inject.ImplementedBy
+import com.google.inject.{ImplementedBy, Inject}
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.register.RegistrationInfoId
-import javax.inject.Inject
 import models.{Address, RegistrationInfo, TolerantIndividual}
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +34,7 @@ trait RegistrationService {
       individual: TolerantIndividual,
       address: Address,
       dob: LocalDate
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo]
+  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[RegistrationInfo]
 }
 
 class RegistrationServiceImpl @Inject()(
@@ -46,7 +45,7 @@ class RegistrationServiceImpl @Inject()(
       individual: TolerantIndividual,
       address: Address,
       dob: LocalDate
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = for {
+  )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[RegistrationInfo] = for {
     registrationInfo <- registrationConnector.registerWithNoIdIndividual(
       individual.firstName.getOrElse(error("First name missing")),
       individual.lastName.getOrElse(error("Last name missing")),

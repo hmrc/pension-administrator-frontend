@@ -16,9 +16,8 @@
 
 package controllers.register.partnership
 
-import base.CSRFRequest
-import connectors.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import base.SpecBase
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
@@ -27,10 +26,10 @@ import identifiers.register.partnership.PartnershipContactAddressPostCodeLookupI
 import models.{NormalMode, TolerantAddress}
 import org.scalatest.MustMatchers
 import play.api.Application
-import play.api.http.Writeable
 import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
@@ -38,41 +37,37 @@ import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
+import play.api.test.CSRFTokenHelper.addCSRFToken
 
-import scala.concurrent.Future
-
-class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with MustMatchers with CSRFRequest {
+class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with MustMatchers {
 
   import PartnershipContactAddressListControllerSpec._
 
   "PartnershipAddressListController" must {
 
     "render the view correctly on a GET request" in {
-      requestResult(
-        implicit app => addToken(FakeRequest(routes.PartnershipContactAddressListController.onPageLoad(NormalMode))),
-        (request, result) => {
+      val request = addCSRFToken(FakeRequest(GET, routes.PartnershipContactAddressListController.onPageLoad(NormalMode).url))
+      val result = route(application, request).value
           status(result) mustBe OK
-          contentAsString(result) mustBe addressList(frontendAppConfig, form, viewModel, NormalMode)(request, messages).toString()
-        }
-      )
+          contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(request)).toString()
+
     }
 
     "redirect to the next page on a POST request" in {
-      requestResult(
-        implicit App => addToken(FakeRequest(routes.PartnershipContactAddressListController.onSubmit(NormalMode))
-          .withFormUrlEncodedBody("value" -> "0")),
-        (_, result) => {
+      val request = addCSRFToken(FakeRequest(POST, routes.PartnershipContactAddressListController.onSubmit(NormalMode).url)
+          .withFormUrlEncodedBody("value" -> "0"))
+      val result = route(application, request).value
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
-        }
-      )
     }
 
   }
 
 }
 
-object PartnershipContactAddressListControllerSpec extends PartnershipContactAddressListControllerSpec {
+object PartnershipContactAddressListControllerSpec extends SpecBase {
+
+  val view: addressList = inject[addressList]
 
   val testName = "Test Partnership Name"
 
@@ -101,7 +96,7 @@ object PartnershipContactAddressListControllerSpec extends PartnershipContactAdd
     routes.PartnershipContactAddressListController.onSubmit(NormalMode),
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
     addresses,
-    Message("contactAddressList.heading", Message("thePartnership").resolve),
+    Message("contactAddressList.heading", Message("thePartnership")),
     Message("contactAddressList.heading", testName)
   )
 
@@ -110,21 +105,13 @@ object PartnershipContactAddressListControllerSpec extends PartnershipContactAdd
     PartnershipContactAddressPostCodeLookupId.toString -> addresses
   )))
 
-  private def requestResult[T](request: Application => Request[T], test: (Request[_], Future[Result]) => Unit)
-                              (implicit writeable: Writeable[T]): Unit = {
-
-    running(_.overrides(
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(retrieval),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    )) {
-      app =>
-        val req = request(app)
-        val result = route[T](app, req).value
-        test(req, result)
-    }
-  }
+    ).build()
 
 }

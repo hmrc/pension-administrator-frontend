@@ -17,15 +17,15 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors._
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register._
 import models._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import views.html.register.declarationFitAndProper
 
@@ -89,6 +89,8 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
 
   private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
+  val view: declarationFitAndProper = app.injector.instanceOf[declarationFitAndProper]
+
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,
                           fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
@@ -101,9 +103,11 @@ object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Moc
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,
-      fakeUserAnswersCacheConnector
+      fakeUserAnswersCacheConnector,
+      stubMessagesControllerComponents(),
+      view
     )
 
-  private def viewAsString = declarationFitAndProper(frontendAppConfig)(fakeRequest, messages).toString
+  private def viewAsString = view()(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
 }

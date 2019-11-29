@@ -26,8 +26,8 @@ import models.Mode
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Register
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.declarationWorkingKnowledge
@@ -36,14 +36,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationWorkingKnowledgeController @Inject()(
                                                        appConfig: FrontendAppConfig,
-                                                       override val messagesApi: MessagesApi,
                                                        dataCacheConnector: UserAnswersCacheConnector,
                                                        @Register navigator: Navigator,
                                                        authenticate: AuthAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
-                                                       formProvider: DeclarationWorkingKnowledgeFormProvider
-                                                     )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport with Enumerable.Implicits {
+                                                       formProvider: DeclarationWorkingKnowledgeFormProvider,
+                                                       val controllerComponents: MessagesControllerComponents,
+                                                       val view: declarationWorkingKnowledge
+                                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
@@ -53,14 +54,14 @@ class DeclarationWorkingKnowledgeController @Inject()(
         case None => form
         case Some(value) => form.fill(value.hasWorkingKnowledge)
       }
-      Ok(declarationWorkingKnowledge(appConfig, preparedForm, mode))
+      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(declarationWorkingKnowledge(appConfig, formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
           dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId,
             DeclarationWorkingKnowledge.declarationWorkingKnowledge(value)).map(cacheMap =>
