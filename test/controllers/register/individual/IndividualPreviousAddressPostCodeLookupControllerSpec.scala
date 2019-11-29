@@ -22,13 +22,16 @@ import controllers.ControllerSpecBase
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
 import models.{NormalMode, TolerantAddress}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.annotations.Individual
 import utils.{FakeNavigator, Navigator}
 import views.html.address.postcodeLookup
 
@@ -49,12 +52,21 @@ class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSp
     }
 
     "redirect to the next page on a POST request" in {
-      val request = FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> validPostcode)
-      val result = route(application, request).value
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      running(_.overrides(modules(getEmptyData)++
+        Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+          bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
+        ):_*)) {
+        app =>
+          val controller = app.injector.instanceOf[IndividualPreviousAddressPostCodeLookupController]
 
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> validPostcode)
+
+          val result = controller.onSubmit(NormalMode)(request)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
     }
 
   }

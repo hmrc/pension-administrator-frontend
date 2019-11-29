@@ -25,7 +25,7 @@ import identifiers.register.{BusinessNameId, BusinessUTRId}
 import models.{AddressYears, NormalMode}
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.MessagesControllerComponents
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
@@ -49,11 +49,19 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
   }
 
   "redirect to the next page on a POST request" in {
-    val request = FakeRequest(CompanyAddressYearsController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> AddressYears.OverAYear.toString)
-    val result = route(application, request).value
+    running(_.overrides(modules(dataRetrieval)++
+      Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+      ):_*)) {
+      app =>
+        val controller = app.injector.instanceOf[CompanyAddressYearsController]
+
+        val request = FakeRequest().withFormUrlEncodedBody("value" -> AddressYears.OverAYear.toString)
+
+        val result = controller.onSubmit(NormalMode)(request)
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
+    }
   }
 }
 object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSpec {

@@ -24,7 +24,7 @@ import forms.address.PostCodeLookupFormProvider
 import models.{Mode, NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject._
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.Helpers._
 import play.api.test._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -50,11 +50,20 @@ class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpe
   }
 
   "redirect to the next page on a POST request" in {
-    val request = FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> validPostcode)
-    val result = route(application, request).value
+    running(_.overrides(modules(getEmptyData)++
+      Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+        bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
+      ):_*)) {
+      app =>
+        val controller = app.injector.instanceOf[IndividualContactAddressPostCodeLookupController]
+
+        val request = FakeRequest().withFormUrlEncodedBody("value" -> validPostcode)
+
+        val result = controller.onSubmit(NormalMode)(request)
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
   }
 }
 

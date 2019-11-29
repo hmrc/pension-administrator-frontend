@@ -24,13 +24,13 @@ import identifiers.register.partnership.partners.PartnerNameId
 import models.{Index, NormalMode, PersonName}
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.annotations.Partnership
+import utils.annotations.{Partnership, PartnershipPartner}
 import utils.{FakeNavigator, Navigator}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
@@ -53,17 +53,23 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
   }
 
   "redirect to the next page on a POST request" in {
+    running(_.overrides(modules(dataRetrieval)++
+      Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[PartnershipPartner]).toInstance(new FakeNavigator(postUrl)),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+      ):_*)) {
+      app =>
+        val controller = app.injector.instanceOf[ConfirmDeletePartnerController]
 
-    val request = FakeRequest(POST, routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode).url)
-      .withFormUrlEncodedBody("value" -> "true")
+        val request = FakeRequest().withFormUrlEncodedBody("value" -> "true")
 
-    val result = route(application, request).value
+        val result = controller.onSubmit(0, NormalMode)(request)
 
-    status(result) mustBe SEE_OTHER
+        status(result) mustBe SEE_OTHER
 
-    redirectLocation(result) mustBe Some(postUrl.url)
+        redirectLocation(result) mustBe Some(postUrl.url)
 
-    application.stop()
+        application.stop()
+    }
   }
 }
 

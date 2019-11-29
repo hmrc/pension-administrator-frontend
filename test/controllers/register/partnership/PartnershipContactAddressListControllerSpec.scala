@@ -27,9 +27,9 @@ import models.{NormalMode, TolerantAddress}
 import org.scalatest.MustMatchers
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, Request}
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
@@ -37,7 +37,6 @@ import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
-import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with MustMatchers {
 
@@ -54,13 +53,18 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
     }
 
     "redirect to the next page on a POST request" in {
-      val request = addCSRFToken(FakeRequest(POST, routes.PartnershipContactAddressListController.onSubmit(NormalMode).url)
-          .withFormUrlEncodedBody("value" -> "0"))
-      val result = route(application, request).value
+      running(_.overrides(modules(retrieval) ++
+        Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)): _*)) {
+        app =>
+          val controller = app.injector.instanceOf[PartnershipContactAddressListController]
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
+          val result = controller.onSubmit(NormalMode)(request)
+
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
+      }
     }
-
   }
 
 }

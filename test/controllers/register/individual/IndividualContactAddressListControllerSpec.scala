@@ -26,7 +26,7 @@ import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -126,47 +126,47 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page on POST of valid data" in {
-      val app = application(dataRetrievalAction)
+      running(_.overrides(modules(dataRetrievalAction)++
+        Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+        app =>
+          val controller = app.injector.instanceOf[IndividualContactAddressListController]
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
+          val result = controller.onSubmit(NormalMode)(request)
 
-      val request = FakeRequest(POST, routes.IndividualContactAddressListController.onSubmit(NormalMode).url)
-        .withFormUrlEncodedBody(("value", "0"))
+          status(result) mustBe SEE_OTHER
 
-      val result = route(app, request).value
+          redirectLocation(result) mustBe Some(onwardRoute.url)
 
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-
-
+      }
     }
 
     "redirect to Session Expired controller when no session data exists on a POST request" in {
-      val app = application(dontGetAnyData)
+      running(_.overrides(modules(dontGetAnyData):_*)) {
+        app =>
+          val controller = app.injector.instanceOf[IndividualContactAddressListController]
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
+          val result = controller.onSubmit(NormalMode)(request)
 
-      val request = FakeRequest(POST, routes.IndividualContactAddressListController.onSubmit(NormalMode).url)
-        .withFormUrlEncodedBody(("value", "0"))
+          status(result) mustBe SEE_OTHER
 
-      val result = route(app, request).value
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
 
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-
-
+      }
     }
 
-    "redirect to Company Address Post Code Lookup if no address data on a POST request" in {
-      val app = application(getEmptyData)
+    "redirect to Individual Address Post Code Lookup if no address data on a POST request" in {
+      running(_.overrides(modules(getEmptyData)++
+        Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+        app =>
+          val controller = app.injector.instanceOf[IndividualContactAddressListController]
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
+          val result = controller.onSubmit(NormalMode)(request)
+          status(result) mustBe SEE_OTHER
 
-      val request = FakeRequest(POST, routes.IndividualContactAddressListController.onSubmit(NormalMode).url)
-        .withFormUrlEncodedBody(("value", "0"))
-
-      val result = route(app, request).value
-
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result) mustBe Some(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
-
+          redirectLocation(result) mustBe Some(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode).url)
+      }
 
     }
   }

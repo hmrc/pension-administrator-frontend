@@ -66,8 +66,6 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
       )) {
         app =>
 
-     //     implicit val materializer: Materializer = app.materializer
-
           val formProvider = new BusinessNameFormProvider()
           val request = FakeRequest()
           val messages = app.injector.instanceOf[MessagesApi].preferred(request)
@@ -86,7 +84,6 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
       )) {
         app =>
 
-    //      implicit val materializer: Materializer = app.materializer
 
           val formProvider = new BusinessNameFormProvider()
           val request = FakeRequest()
@@ -118,8 +115,6 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
       )) {
         app =>
 
-   //       implicit val materializer: Materializer = app.materializer
-
           when(
             cacheConnector.save[String, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
@@ -140,7 +135,6 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
       )) {
         app =>
 
-     //     implicit val materializer: Materializer = app.materializer
 
           val formProvider = new BusinessNameFormProvider()
           val request = FakeRequest().withFormUrlEncodedBody(("value", ""))
@@ -168,8 +162,6 @@ class OrganisationNameControllerSpec extends WordSpec with MustMatchers with Moc
         bind[Navigator].toInstance(FakeNavigator)
       )) {
         app =>
-
-   //       implicit val materializer: Materializer = app.materializer
 
           when(
             cacheConnector.save[String, FakeIdentifier.type](any(), eqTo(FakeIdentifier), any())(any(), any(), any())
