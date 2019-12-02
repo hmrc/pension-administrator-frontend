@@ -37,7 +37,16 @@ import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
 
-  import CheckYourAnswersControllerSpec._
+  private val email = "test@test.com"
+  private val phone = "1234"
+  private val index = Index(0)
+  private val directorName = PersonName("Test", "Name")
+  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private val defaultDirectorName = Message("theDirector").resolve
+  private def call(mode: Mode): Call = CheckYourAnswersController.onSubmit(mode, index)
+  private val address = Address("line1", "line2", None, None, Some("zz11zz"), "country")
+
+  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
   "CheckYourAnswers Controller" when {
 
@@ -221,20 +230,6 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
       }
     }
   }
-
-}
-
-object CheckYourAnswersControllerSpec extends ControllerSpecBase {
-  private val email = "test@test.com"
-  private val phone = "1234"
-  private val index = Index(0)
-  private val directorName = PersonName("Test", "Name")
-  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val defaultDirectorName = Message("theDirector").resolve
-  private def call(mode: Mode): Call = CheckYourAnswersController.onSubmit(mode, index)
-  private val address = Address("line1", "line2", None, None, Some("zz11zz"), "country")
-
-  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
   private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
                         changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message] = None): AnswerRow = {

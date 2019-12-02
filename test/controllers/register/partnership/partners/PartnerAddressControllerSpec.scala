@@ -38,7 +38,48 @@ import views.html.address.manualAddress
 
 class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
-  import PartnerAddressControllerSpec._
+  private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
+  private val form: Form[Address] = formProvider()
+
+  private val jonathanDoe = PersonName("Jonathan", "Doe")
+  private val joeBloggs = PersonName("Joe", "Bloggs")
+
+  private val doeResidence = Address("address line 1", "address line 2", Some("test town"), Some("test county"), Some("test post code"), "GB")
+  private val bloggsResidence = Address("address line 1", "address line 2", Some("test town 2"), Some("test county 2"), Some("test post code 2"), "GB")
+
+  private val partners = Json.obj(
+    "partners" -> Json.arr(
+      Json.obj(
+        PartnerNameId.toString -> jonathanDoe
+      ),
+      Json.obj(
+        PartnerNameId.toString -> joeBloggs
+      )
+    )
+  )
+
+  private val data = new FakeDataRetrievalAction(Some(partners))
+  private val partnersWithAddresses = Json.obj(
+    "partners" -> Json.arr(
+      Json.obj(
+        PartnerNameId.toString -> jonathanDoe,
+        PartnerAddressId.toString -> doeResidence
+      ),
+      Json.obj(
+        PartnerNameId.toString -> joeBloggs,
+        PartnerAddressId.toString -> bloggsResidence
+      )
+    )
+  )
+
+  private val dataWithAddresses = new FakeDataRetrievalAction(Some(partnersWithAddresses))
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
+  private val viewModel = ManualAddressViewModel(
+    routes.PartnerAddressController.onSubmit(NormalMode, firstIndex),
+    countryOptions.options,
+    Message("contactAddress.heading", Message("thePartner")),
+    Message("contactAddress.heading", "Jonathan Doe")
+  )
 
   "partnerAddress Controller" must {
 
@@ -148,46 +189,9 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
       }
     }
   }
-}
 
-object PartnerAddressControllerSpec extends ControllerSpecBase {
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
-  private val form: Form[Address] = formProvider()
-
-  private val jonathanDoe = PersonName("Jonathan", "Doe")
-  private val joeBloggs = PersonName("Joe", "Bloggs")
-
-  private val doeResidence = Address("address line 1", "address line 2", Some("test town"), Some("test county"), Some("test post code"), "GB")
-  private val bloggsResidence = Address("address line 1", "address line 2", Some("test town 2"), Some("test county 2"), Some("test post code 2"), "GB")
-
-  private val partners = Json.obj(
-    "partners" -> Json.arr(
-      Json.obj(
-        PartnerNameId.toString -> jonathanDoe
-      ),
-      Json.obj(
-        PartnerNameId.toString -> joeBloggs
-      )
-    )
-  )
-
-  private val data = new FakeDataRetrievalAction(Some(partners))
-  private val partnersWithAddresses = Json.obj(
-    "partners" -> Json.arr(
-      Json.obj(
-        PartnerNameId.toString -> jonathanDoe,
-        PartnerAddressId.toString -> doeResidence
-      ),
-      Json.obj(
-        PartnerNameId.toString -> joeBloggs,
-        PartnerAddressId.toString -> bloggsResidence
-      )
-    )
-  )
-
-  private val dataWithAddresses = new FakeDataRetrievalAction(Some(partnersWithAddresses))
 
   private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
@@ -208,15 +212,6 @@ object PartnerAddressControllerSpec extends ControllerSpecBase {
       stubMessagesControllerComponents(),
       view
     )
-
-  val view: manualAddress = app.injector.instanceOf[manualAddress]
-
-  private val viewModel = ManualAddressViewModel(
-    routes.PartnerAddressController.onSubmit(NormalMode, firstIndex),
-    countryOptions.options,
-    Message("contactAddress.heading", Message("thePartner")),
-    Message("contactAddress.heading", "Jonathan Doe")
-  )
 
   private def viewAsString(form: Form[_] = form) =
     view(

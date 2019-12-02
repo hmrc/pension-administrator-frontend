@@ -125,11 +125,9 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase {
         bind[DataRetrievalAction].toInstance(dataRetrievalAction),
         bind(classOf[Navigator]).qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
       )) { implicit app =>
-        val request =
-            FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
-
-        val result = route(app, request).value
+        val request = FakeRequest().withFormUrlEncodedBody(("value", "0"))
+        val controller = app.injector.instanceOf[IndividualPreviousAddressListController]
+        val result = controller.onSubmit(NormalMode)(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -144,11 +142,10 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase {
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
-        val request =
-         FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
+        val request = FakeRequest().withFormUrlEncodedBody(("value", "0"))
 
-        val result = route(app, request).value
+        val controller = app.injector.instanceOf[IndividualPreviousAddressListController]
+        val result = controller.onSubmit(NormalMode)(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -163,10 +160,10 @@ class IndividualPreviousAddressListControllerSpec extends ControllerSpecBase {
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getEmptyData)
       )) { implicit app =>
-        val request = FakeRequest(routes.IndividualPreviousAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
+        val request = FakeRequest().withFormUrlEncodedBody(("value", "0"))
 
-        val result = route(app, request).value
+        val controller = app.injector.instanceOf[IndividualPreviousAddressListController]
+        val result = controller.onSubmit(NormalMode)(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)

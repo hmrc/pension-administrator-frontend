@@ -17,31 +17,36 @@
 package controllers.register.partnership
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.behaviours.ControllerWithCommonBehaviour
 import controllers.register.partnership.routes._
-import controllers.routes._
 import forms.HasReferenceNumberFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.FakeRequest
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-class PartnershipTradingOverAYearControllerSpec extends ControllerSpecBase {
+class PartnershipTradingOverAYearControllerSpec extends ControllerWithCommonBehaviour {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val name = "Test Partnership Name"
   private val formProvider = new HasReferenceNumberFormProvider()
-  private val form = formProvider("trading.error.required", name)
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
-  private def viewModel: CommonFormWithHintViewModel =
+  private val partnershipName = "Test Partnership Name"
+
+  private val hasReferenceNumberForm = formProvider("error.required", partnershipName)
+
+  private def hasReferenceNumberView(form: Form[_] = hasReferenceNumberForm): String =
+    view(form, viewModel(NormalMode))(fakeRequest, messages).toString
+
+  private def viewModel(mode: Mode): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = PartnershipTradingOverAYearController.onSubmit(NormalMode),
       title = Message("trading.title", Message("thePartnership").resolve),
@@ -50,6 +55,8 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerSpecBase {
       hint = None,
       entityName = name
     )
+
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipTradingOverAYearController(frontendAppConfig,
@@ -64,23 +71,14 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerSpecBase {
       view
     )
 
-  private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
-    view(form, viewModel)(fakeRequest, messages).toString
-
   "PartnershipTradingOverAYearController" must {
-    "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
-    }
-
-    "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-      val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
-    }
+    behave like controllerWithCommonFunctions(
+      onPageLoadAction = data => controller(data).onPageLoad(NormalMode),
+      onSubmitAction = data => controller(data).onSubmit(NormalMode),
+      validData = getPartnership,
+      viewAsString = hasReferenceNumberView,
+      form = hasReferenceNumberForm,
+      request = postRequest
+    )
   }
 }

@@ -22,7 +22,6 @@ import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
 import models._
 import models.requests.DataRequest
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -30,7 +29,17 @@ import utils.UserAnswers
 import views.html.register.variationNoLongerFitAndProper
 
 class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
-  import VariationNoLongerFitAndProperControllerSpec._
+  private val psaName: String = "Mark Wright"
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+
+  val view: variationNoLongerFitAndProper = app.injector.instanceOf[variationNoLongerFitAndProper]
+
+  private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
+    RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None))
+    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
+
+  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
+
 
   "NoLongerFitAndProperController" must {
 
@@ -48,20 +57,6 @@ class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
-}
-
-object VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
-
-  private val psaName: String = "Mark Wright"
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
-
-  val view: variationNoLongerFitAndProper = app.injector.instanceOf[variationNoLongerFitAndProper]
-
-  private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
-    RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None))
-    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
-
-  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new VariationNoLongerFitAndProperController(
@@ -76,8 +71,6 @@ object VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase wi
 
   private def viewAsString(userAnswers: UserAnswers) =
     view(Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
-
-
 }
 
 

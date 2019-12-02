@@ -22,7 +22,7 @@ import views.html.useOrganisationCredentials
 
 class UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
 
-  import UseOrganisationCredentialsControllerSpec._
+  val view: useOrganisationCredentials = app.injector.instanceOf[useOrganisationCredentials]
 
   "UseOrganisationCredentialsController" must {
 
@@ -36,12 +36,6 @@ class UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
 
     }
   }
-
-}
-
-object UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
-
-  val view: useOrganisationCredentials = app.injector.instanceOf[useOrganisationCredentials]
 
   def testController: UseOrganisationCredentialsController =
     new UseOrganisationCredentialsController(

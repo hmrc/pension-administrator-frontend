@@ -36,63 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDetailsControllerSpec extends ControllerSpecBase {
 
-  import PsaDetailsControllerSpec._
-
-  "Psa details Controller" must {
-    "return 200 and  correct view for a GET for PSA company" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
-        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false)))
-
-      val result = controller(userType = UserType.Organisation, psaId = Some("test Psa id")).onPageLoad(UpdateMode)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name")
-    }
-
-    "redirect to session expired if psa id not present" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
-        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false)))
-
-      val result = controller(userType = UserType.Organisation, psaId = None).onPageLoad(UpdateMode)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    }
-  }
-}
-
-object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
-  private val externalId = "test-external-id"
-
-  val fakePsaDataService: PsaDetailsService = mock[PsaDetailsService]
-
-  val view: psa_details = app.injector.instanceOf[psa_details]
-
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType, psaId : Option[String]) =
-    new PsaDetailsController(
-      frontendAppConfig,
-      FakeNavigator,
-      new FakeAuthAction(userType, psaId),
-      FakeAllowAccessProvider(),
-      dataRetrievalAction,
-      fakePsaDataService,
-      stubMessagesControllerComponents(),
-      view
-    )
-
-  class FakeAuthAction(userType: UserType, psaId : Option[String]) extends AuthAction {
-    val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
-    implicit val executionContext: ExecutionContext = inject[ExecutionContext]
-    override def invokeBlock[A](request: Request[A],
-                                block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, externalId, PSAUser(userType, None, isExistingPSA = false, None, psaId)))
-  }
-
-  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "", isUserAnswerUpdated: Boolean = false) = {
-    val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated)
-    view(model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))(fakeRequest, messages).toString
-  }
-
   val organisationSuperSections: Seq[SuperSection] = Seq(
     SuperSection(
       None,
@@ -141,4 +84,57 @@ object PsaDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
             AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), answerIsMessageKey = false, None),
             AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), answerIsMessageKey = false, None),
             AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), answerIsMessageKey = false, None))))))
+
+  private val externalId = "test-external-id"
+
+  val fakePsaDataService: PsaDetailsService = mock[PsaDetailsService]
+
+  val view: psa_details = app.injector.instanceOf[psa_details]
+
+  "Psa details Controller" must {
+    "return 200 and  correct view for a GET for PSA company" in {
+      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false)))
+
+      val result = controller(userType = UserType.Organisation, psaId = Some("test Psa id")).onPageLoad(UpdateMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name")
+    }
+
+    "redirect to session expired if psa id not present" in {
+      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false)))
+
+      val result = controller(userType = UserType.Organisation, psaId = None).onPageLoad(UpdateMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+  }
+
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType, psaId : Option[String]) =
+    new PsaDetailsController(
+      frontendAppConfig,
+      FakeNavigator,
+      new FakeAuthAction(userType, psaId),
+      FakeAllowAccessProvider(),
+      dataRetrievalAction,
+      fakePsaDataService,
+      stubMessagesControllerComponents(),
+      view
+    )
+
+  class FakeAuthAction(userType: UserType, psaId : Option[String]) extends AuthAction {
+    val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+    implicit val executionContext: ExecutionContext = inject[ExecutionContext]
+    override def invokeBlock[A](request: Request[A],
+                                block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+      block(AuthenticatedRequest(request, externalId, PSAUser(userType, None, isExistingPSA = false, None, psaId)))
+  }
+
+  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "", isUserAnswerUpdated: Boolean = false) = {
+    val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated)
+    view(model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))(fakeRequest, messages).toString
+  }
 }

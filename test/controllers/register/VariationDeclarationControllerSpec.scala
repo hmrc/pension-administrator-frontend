@@ -36,7 +36,19 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class VariationDeclarationControllerSpec extends ControllerSpecBase {
 
-  import VariationDeclarationControllerSpec._
+  private val psaId = "test psa ID"
+
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val href = controllers.register.routes.VariationDeclarationController.onClickAgree()
+
+  private val individual = UserAnswers(Json.obj())
+    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
+    .set(VariationWorkingKnowledgeId)(true).asOpt.value
+    .set(DeclarationFitAndProperId)(true).asOpt.value
+
+  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
+
 
   "DeclarationVariationController" when {
 
@@ -82,22 +94,6 @@ class VariationDeclarationControllerSpec extends ControllerSpecBase {
       }
     }
   }
-}
-
-object VariationDeclarationControllerSpec extends ControllerSpecBase {
-
-  private val psaId = "test psa ID"
-
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-  private val href = controllers.register.routes.VariationDeclarationController.onClickAgree()
-
-  private val individual = UserAnswers(Json.obj())
-    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
-    .set(VariationWorkingKnowledgeId)(true).asOpt.value
-    .set(DeclarationFitAndProperId)(true).asOpt.value
-
-  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
   class FakePensionsSchemeConnector extends PensionsSchemeConnector {
     def reset(): Unit = updateCalledWithData = None

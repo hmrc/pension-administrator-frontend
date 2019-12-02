@@ -32,7 +32,7 @@ import views.html.register.utr
 
 class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBehaviour {
 
-  import CompanyUTRControllerSpec._
+  override val view: utr = app.injector.instanceOf[utr]
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
@@ -57,12 +57,6 @@ class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBeha
     }
 
   }
-
-}
-
-object CompanyUTRControllerSpec extends ControllerSpecBase {
-
-  val view: utr = app.injector.instanceOf[utr]
 
   def testController(
                       base: ControllerSpecBase,

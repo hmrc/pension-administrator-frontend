@@ -18,8 +18,8 @@ package controllers.register.company
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register._
+import identifiers.register.company.{CompanyPhoneId, _}
 import models._
 import models.register.BusinessType
 import play.api.libs.json.Json
@@ -32,8 +32,19 @@ import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
-  import CheckYourAnswersControllerSpec._
+  private val defaultCompany = Message("theBusiness").resolve
+  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private val address = Address(
+    "address-line-1",
+    "address-line-2",
+    None,
+    None,
+    Some("post-code"),
+    "country"
+  )
+  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
+  val contactDetailsHeading = "common.checkYourAnswers.contact.details.heading"
 
   "CheckYourAnswers Controller" when {
 
@@ -248,17 +259,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     }
   }
 
-}
-
-object CheckYourAnswersControllerSpec extends ControllerSpecBase {
-
-  private val defaultCompany = Message("theBusiness").resolve
-  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-
-  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
-
-  val contactDetailsHeading = "common.checkYourAnswers.contact.details.heading"
-
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
@@ -273,15 +273,6 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       stubMessagesControllerComponents(),
       view
     )
-
-  private val address = Address(
-    "address-line-1",
-    "address-line-2",
-    None,
-    None,
-    Some("post-code"),
-    "country"
-  )
 
   private def call = controllers.register.company.routes.CheckYourAnswersController.onSubmit()
 

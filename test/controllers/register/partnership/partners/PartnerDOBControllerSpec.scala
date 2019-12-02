@@ -28,8 +28,6 @@ import views.html.dob
 
 class PartnerDOBControllerSpec extends ControllerSpecBase {
 
-  import PartnerDOBControllerSpec._
-
   "PartnerDOBController" must {
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -49,8 +47,6 @@ class PartnerDOBControllerSpec extends ControllerSpecBase {
 
   }
 
-}
-object PartnerDOBControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction): PartnerDOBController =
     new PartnerDOBController(
       appConfig = frontendAppConfig,
@@ -63,6 +59,5 @@ object PartnerDOBControllerSpec extends ControllerSpecBase {
       controllerComponents = stubMessagesControllerComponents(),
       view = app.injector.instanceOf[dob]
     )
-
 }
 

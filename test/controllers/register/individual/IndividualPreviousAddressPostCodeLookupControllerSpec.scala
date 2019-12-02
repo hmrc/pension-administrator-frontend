@@ -24,11 +24,12 @@ import forms.address.PostCodeLookupFormProvider
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.annotations.Individual
 import utils.{FakeNavigator, Navigator}
 import views.html.address.postcodeLookup
 
@@ -37,30 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   import IndividualPreviousAddressPostCodeLookupController._
-  import IndividualPreviousAddressPostCodeLookupControllerSpec._
-
-  "IndividualPreviousAddressPostCodeLookupController" must {
-
-    "render the view correctly on a GET request" in {
-      val request = addCSRFToken(FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)))
-      val result = route(application, request).value
-      status(result) mustBe OK
-      contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
-    }
-
-    "redirect to the next page on a POST request" in {
-      val request = FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> validPostcode)
-      val result = route(application, request).value
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-
-    }
-
-  }
-}
-
-object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
@@ -86,15 +63,44 @@ object IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   }
 
   private val onwardRoute = controllers.register.individual.routes.IndividualPreviousAddressListController.onPageLoad(NormalMode)
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
-  def application: Application = new GuiceApplicationBuilder()
-    .overrides(
-      bind[AuthAction].to(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(getEmptyData),
-      bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind[Navigator].toInstance(fakeNavigator),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    ).build()
+  "IndividualPreviousAddressPostCodeLookupController" must {
 
+    "render the view correctly on a GET request" in {
+      running(_.overrides(modules(getEmptyData)++
+        Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+          bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
+        ):_*)) {
+        app =>
+          val controller = app.injector.instanceOf[IndividualPreviousAddressPostCodeLookupController]
+
+          val request = addCSRFToken(FakeRequest(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)))
+
+          val result = controller.onPageLoad(NormalMode)(request)
+
+          status(result) mustBe OK
+
+          contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
+      }
+    }
+
+    "redirect to the next page on a POST request" in {
+      running(_.overrides(modules(getEmptyData)++
+        Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+          bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
+        ):_*)) {
+        app =>
+          val controller = app.injector.instanceOf[IndividualPreviousAddressPostCodeLookupController]
+
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> validPostcode)
+
+          val result = controller.onSubmit(NormalMode)(request)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
+    }
+  }
 }

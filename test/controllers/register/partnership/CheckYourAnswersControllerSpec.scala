@@ -31,7 +31,21 @@ import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
-  import CheckYourAnswersControllerSpec._
+  private val partnershipName = "Test Partnership Name"
+  private val defaultBusiness = Message("theBusiness").resolve
+  private val defaultPartnership = Message("thePartnership").resolve
+  private val address = Address(
+    "address-line-1",
+    "address-line-2",
+    None,
+    None,
+    Some("post-code"),
+    "country"
+  )
+
+  private val businessName = "Test Partnership"
+
+  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
   "CheckYourAnswers Controller" when {
 
@@ -242,18 +256,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
     }
   }
-}
 
-object CheckYourAnswersControllerSpec extends ControllerSpecBase {
-
-  private val partnershipName = "Test Partnership Name"
-  private val defaultBusiness = Message("theBusiness").resolve
-  private val defaultPartnership = Message("thePartnership").resolve
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
-
-  private val businessName = "Test Partnership"
-
-  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new CheckYourAnswersController(
@@ -267,15 +271,6 @@ object CheckYourAnswersControllerSpec extends ControllerSpecBase {
       stubMessagesControllerComponents(),
       view
     )
-
-  private val address = Address(
-    "address-line-1",
-    "address-line-2",
-    None,
-    None,
-    Some("post-code"),
-    "country"
-  )
 
   private def call = routes.CheckYourAnswersController.onSubmit()
 

@@ -30,7 +30,16 @@ import utils.UserAnswers
 import views.html.register.incompleteChanges
 
 class IncompleteChangesControllerSpec extends ControllerSpecBase {
-  import IncompleteChangesControllerSpec._
+  private val psaName: String = "Mark Wright"
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+
+  private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
+    RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None))
+    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
+
+  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
+
+  val view: incompleteChanges = app.injector.instanceOf[incompleteChanges]
 
   "NoLongerFitAndProperController" must {
 
@@ -48,22 +57,6 @@ class IncompleteChangesControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
-}
-
-
-
-object IncompleteChangesControllerSpec extends ControllerSpecBase with MockitoSugar {
-
-  private val psaName: String = "Mark Wright"
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
-
-  private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
-    RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None))
-    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
-
-  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
-
-  val view: incompleteChanges = app.injector.instanceOf[incompleteChanges]
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IncompleteChangesController(
@@ -79,8 +72,6 @@ object IncompleteChangesControllerSpec extends ControllerSpecBase with MockitoSu
 
   private def viewAsString(userAnswers: UserAnswers) =
     view(Some(psaName), UpdateMode)(DataRequest(fakeRequest, "cacheId", psaUser, userAnswers), messages).toString
-
-
 }
 
 

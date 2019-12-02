@@ -18,7 +18,6 @@ package controllers.register
 
 import audit.testdoubles.StubSuccessfulAuditService
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.RegisterAsBusinessFormProvider
@@ -34,7 +33,15 @@ import views.html.register.registerAsBusiness
 
 class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours {
 
-  import RegisterAsBusinessControllerSpec._
+  val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
+
+  val view: registerAsBusiness = app.injector.instanceOf[registerAsBusiness]
+
+  private val auditService = new StubSuccessfulAuditService()
+
+  val validData: UserAnswers = UserAnswers().registerAsBusiness(true)
+
+  val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", true.toString))
 
   "RegisterAsBusinessController" must {
 
@@ -74,20 +81,6 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
     }
 
   }
-
-}
-
-object RegisterAsBusinessControllerSpec extends ControllerSpecBase {
-
-  val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
-
-  val view: registerAsBusiness = app.injector.instanceOf[registerAsBusiness]
-
-  private val auditService = new StubSuccessfulAuditService()
-
-  val validData: UserAnswers = UserAnswers().registerAsBusiness(true)
-
-  val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", true.toString))
 
   def onPageLoadAction(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
     controller(dataRetrievalAction, authAction).onPageLoad(NormalMode)

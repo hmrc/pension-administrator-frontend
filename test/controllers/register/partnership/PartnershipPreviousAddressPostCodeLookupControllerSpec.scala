@@ -25,7 +25,7 @@ import models._
 import models.requests.DataRequest
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,34 +43,6 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
-
-  import PartnershipPreviousAddressPostCodeLookupControllerSpec._
-
-  "PartnershipPreviousAddressPostCodeLookupController" must {
-
-    "render the view correctly on a GET request" in {
-      val request = addCSRFToken(FakeRequest(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)))
-      val result = route(application, request).value
-          status(result) mustBe OK
-          contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
-
-    }
-
-    "redirect to the next page on a POST request" in {
-      val request = FakeRequest(routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(NormalMode))
-          .withFormUrlEncodedBody("value" -> validPostcode)
-      val result = route(application, request).value
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(onwardRoute.url)
-
-    }
-
-  }
-
-}
-
-object PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
-
   implicit val request: DataRequest[AnyContent] =
     DataRequest(fakeRequest, "", PSAUser(UserType.Individual, None, isExistingPSA = false, None, None), UserAnswers())
   private val formProvider = new PostCodeLookupFormProvider()
@@ -97,6 +69,36 @@ object PartnershipPreviousAddressPostCodeLookupControllerSpec extends Controller
 
   private val onwardRoute = controllers.routes.SessionExpiredController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+
+
+  "PartnershipPreviousAddressPostCodeLookupController" must {
+
+    "render the view correctly on a GET request" in {
+      val request = addCSRFToken(FakeRequest(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)))
+      val result = route(application, request).value
+          status(result) mustBe OK
+          contentAsString(result) mustBe view(form, viewModel(NormalMode), NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
+
+    }
+
+    "redirect to the next page on a POST request" in {
+      running(_.overrides(modules(getPartnership)++
+        Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(onwardRoute)),
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+          bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
+        ):_*)) {
+        app =>
+          val controller = app.injector.instanceOf[PartnershipPreviousAddressPostCodeLookupController]
+
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> validPostcode)
+
+          val result = controller.onSubmit(NormalMode)(request)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
+    }
+
+  }
 
   def application: Application = new GuiceApplicationBuilder()
     .overrides(

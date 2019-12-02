@@ -40,7 +40,20 @@ import views.html.address.manualAddress
 
 class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
 
-  import AdviserAddressControllerSpec._
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
+
+  val formProvider = new AddressFormProvider(countryOptions)
+  val form: Form[Address] = formProvider()
+  val name = "Test Adviser Name"
+
+  val addressViewModel: ManualAddressViewModel = ManualAddressViewModel(
+    postCall = routes.AdviserAddressController.onSubmit(NormalMode),
+    countryOptions = countryOptions.options,
+    Message("common.adviser.address.heading", Message("theAdviser")),
+    Message("common.adviser.address.heading", name)
+  )
+
+  val fakeAuditService = new StubSuccessfulAuditService()
 
   "AdviserAddress Controller" must {
 
@@ -153,27 +166,10 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
       }
     }
   }
-}
 
-object AdviserAddressControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-
-  val view: manualAddress = app.injector.instanceOf[manualAddress]
-
-  val formProvider = new AddressFormProvider(countryOptions)
-  val form: Form[Address] = formProvider()
-  val name = "Test Adviser Name"
-
-  val addressViewModel = ManualAddressViewModel(
-    postCall = routes.AdviserAddressController.onSubmit(NormalMode),
-    countryOptions = countryOptions.options,
-    Message("common.adviser.address.heading", Message("theAdviser")),
-    Message("common.adviser.address.heading", name)
-  )
-
-  val fakeAuditService = new StubSuccessfulAuditService()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getAdviser) =
     new AdviserAddressController(frontendAppConfig, FakeUserAnswersCacheConnector,

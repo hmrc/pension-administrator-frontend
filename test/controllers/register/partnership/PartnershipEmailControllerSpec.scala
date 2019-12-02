@@ -17,7 +17,6 @@
 package controllers.register.partnership
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
@@ -32,7 +31,13 @@ import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
 class PartnershipEmailControllerSpec extends ControllerWithCommonBehaviour {
-  import PartnershipEmailControllerSpec._
+  private val formProvider = new EmailFormProvider()
+  private val emailForm = formProvider()
+  private val partnershipName = "Test Partnership Name"
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
+
+  val view: email = app.injector.instanceOf[email]
+
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
@@ -54,15 +59,6 @@ class PartnershipEmailControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-}
-
-object PartnershipEmailControllerSpec extends ControllerSpecBase {
-  private val formProvider = new EmailFormProvider()
-  private val emailForm = formProvider()
-  private val partnershipName = "Test Partnership Name"
-  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
-
-  val view: email = app.injector.instanceOf[email]
 
   private def viewModel(mode: Mode)(implicit messages: Messages) =
     CommonFormWithHintViewModel(

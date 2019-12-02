@@ -25,7 +25,7 @@ import identifiers.register.company.CompanyAddressId
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.CSRFTokenHelper.addCSRFToken
@@ -74,12 +74,20 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
   }
 
   "redirect to the next page on a POST request" in {
-    val request = FakeRequest(routes.CompanySameContactAddressController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> "true")
-    val result = route(application, request).value
+    running(_.overrides(modules(dataRetrieval)++
+      Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(postCall)),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+      ):_*)) {
+      app =>
+        val controller = app.injector.instanceOf[CompanySameContactAddressController]
+
+        val request = FakeRequest().withFormUrlEncodedBody("value" -> "true")
+
+        val result = controller.onSubmit(NormalMode)(request)
+
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(postCall.url)
-
+    }
   }
 
   def application: Application = new GuiceApplicationBuilder()

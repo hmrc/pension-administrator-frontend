@@ -32,9 +32,24 @@ import views.html.personName
 
 import scala.concurrent.Future
 
-trait PersonNameControllerBehaviour extends SpecBase {
-  import PersonNameControllerBehaviour._
-  // scalastyle:off method.length
+trait PersonNameControllerBehaviour extends ControllerSpecBase {
+
+  val personNameView: personName = app.injector.instanceOf[personName]
+
+  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
+  val testPersonName: PersonName =
+    PersonName(
+      firstName = "test-first-name",
+      lastName = "test-last-name"
+    )
+
+  val invalidPersonName: PersonName =
+    PersonName(
+      firstName = "",
+      lastName = ""
+    )
+
 
   def personNameController[I <: TypedIdentifier[PersonName]](viewModel: CommonFormWithHintViewModel,
                                                              id: I,
@@ -93,28 +108,6 @@ trait PersonNameControllerBehaviour extends SpecBase {
 
   }
 
-  // scalastyle:on method.length
-
-}
-
-// scalastyle:off magic.number
-
-object PersonNameControllerBehaviour extends ControllerSpecBase {
-
-  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-
-  val testPersonName =
-    PersonName(
-      firstName = "test-first-name",
-      lastName = "test-last-name"
-    )
-
-  val invalidPersonName =
-    PersonName(
-      firstName = "",
-      lastName = ""
-    )
-
   case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: PersonNameController)
 
   def testFixture(createController: (UserAnswersCacheConnector, Navigator) => PersonNameController): TestFixture = {
@@ -149,8 +142,6 @@ object PersonNameControllerBehaviour extends ControllerSpecBase {
     )
 
   }
-
-  val personNameView: personName = app.injector.instanceOf[personName]
 
   def testForm(): Form[PersonName] =
     new PersonNameFormProvider()()

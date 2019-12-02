@@ -31,8 +31,16 @@ import views.html.register.declarationFitAndProper
 
 class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  import DeclarationFitAndProperControllerSpec._
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+  val businessDetails: BusinessDetails = BusinessDetails("MyCompany", Some("1234567890"))
+  val email = "test@test.com"
+  val businessName = "MyCompany"
 
+  private val appConfig = app.injector.instanceOf[FrontendAppConfig]
+
+  val view: declarationFitAndProper = app.injector.instanceOf[declarationFitAndProper]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "DeclarationFitAndProperController" when {
@@ -76,20 +84,6 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
 
     }
   }
-}
-
-object DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
-
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-  private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-  val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
-  val email = "test@test.com"
-  val businessName = "MyCompany"
-
-  private val appConfig = app.injector.instanceOf[FrontendAppConfig]
-
-  val view: declarationFitAndProper = app.injector.instanceOf[declarationFitAndProper]
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,

@@ -37,7 +37,56 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
-  import ConfirmPartnershipDetailsControllerSpec._
+  private val testLimitedCompanyAddress = TolerantAddress(
+    Some("Some Building"),
+    Some("1 Some Street"),
+    Some("Some Village"),
+    Some("Some Town"),
+    Some("ZZ1 1ZZ"),
+    Some("UK")
+  )
+
+  private val testBusinessPartnershipAddress = TolerantAddress(
+    Some("Some Other Building"),
+    Some("2 Some Street"),
+    Some("Some Village"),
+    Some("Some Town"),
+    Some("ZZ1 1ZZ"),
+    Some("UK")
+  )
+
+  private val validLimitedCompanyUtr = "1234567890"
+  private val validBusinessPartnershipUtr = "0987654321"
+  private val invalidUtr = "INVALID"
+  private val sapNumber = "test-sap-number"
+
+  val partnershipName = "MyPartnership"
+  val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.Partnership)
+
+  private val data = Json.obj(
+    BusinessTypeId.toString -> BusinessPartnership.toString,
+    BusinessNameId.toString -> partnershipName,
+    BusinessUTRId.toString -> validBusinessPartnershipUtr
+  )
+
+  val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+
+  val formProvider = new ConfirmPartnershipDetailsFormProvider
+
+  val form: Form[Boolean] = formProvider()
+
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+
+  val regInfo = RegistrationInfo(
+    RegistrationLegalStatus.Partnership,
+    sapNumber,
+    noIdentifier = false,
+    RegistrationCustomerType.UK,
+    Some(RegistrationIdType.UTR),
+    Some(validBusinessPartnershipUtr)
+  )
+
+  val view: confirmPartnershipDetails = app.injector.instanceOf[confirmPartnershipDetails]
 
   "ConfirmPartnershipDetails Controller" must {
 
@@ -192,62 +241,8 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     }
 
   }
-}
-
-object ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
-
-  private val testLimitedCompanyAddress = TolerantAddress(
-    Some("Some Building"),
-    Some("1 Some Street"),
-    Some("Some Village"),
-    Some("Some Town"),
-    Some("ZZ1 1ZZ"),
-    Some("UK")
-  )
-
-  private val testBusinessPartnershipAddress = TolerantAddress(
-    Some("Some Other Building"),
-    Some("2 Some Street"),
-    Some("Some Village"),
-    Some("Some Town"),
-    Some("ZZ1 1ZZ"),
-    Some("UK")
-  )
-
-  private val validLimitedCompanyUtr = "1234567890"
-  private val validBusinessPartnershipUtr = "0987654321"
-  private val invalidUtr = "INVALID"
-  private val sapNumber = "test-sap-number"
-
-  val partnershipName = "MyPartnership"
-  val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.Partnership)
-
-  private val data = Json.obj(
-    BusinessTypeId.toString -> BusinessPartnership.toString,
-    BusinessNameId.toString -> partnershipName,
-    BusinessUTRId.toString -> validBusinessPartnershipUtr
-  )
-
-  val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-
-  val formProvider = new ConfirmPartnershipDetailsFormProvider
-
-  val form: Form[Boolean] = formProvider()
-
-  val countryOptions = new CountryOptions(environment, frontendAppConfig)
-
-  val regInfo = RegistrationInfo(
-    RegistrationLegalStatus.Partnership,
-    sapNumber,
-    noIdentifier = false,
-    RegistrationCustomerType.UK,
-    Some(RegistrationIdType.UTR),
-    Some(validBusinessPartnershipUtr)
-  )
-
-  val view: confirmPartnershipDetails = app.injector.instanceOf[confirmPartnershipDetails]
 
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation

@@ -131,13 +131,9 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
         bind[DataRetrievalAction].toInstance(dataRetrievalAction),
         bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(desiredRoute = onwardRoute))
       )) { implicit app =>
-        val request =
-
-            FakeRequest(routes.PartnershipPreviousAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
-
-
-        val result = route(app, request).value
+        val controller = app.injector.instanceOf[PartnershipPreviousAddressListController]
+        val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
+        val result = controller.onSubmit(NormalMode)(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -153,12 +149,9 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(dontGetAnyData)
       )) { implicit app =>
-        val request = FakeRequest(routes.PartnershipPreviousAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
-
-        implicit val mat: Materializer = app.materializer
-
-        val result = route(app, request).value
+        val controller = app.injector.instanceOf[PartnershipPreviousAddressListController]
+        val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
+        val result = controller.onSubmit(NormalMode)(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -174,11 +167,10 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[DataRetrievalAction].toInstance(getPartnership)
       )) { implicit app =>
-        val request =
-            FakeRequest(routes.PartnershipPreviousAddressListController.onSubmit(NormalMode))
-              .withFormUrlEncodedBody(("value", "0"))
 
-        val result = route(app, request).value
+        val controller = app.injector.instanceOf[PartnershipPreviousAddressListController]
+        val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
+        val result = controller.onSubmit(NormalMode)(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode).url)

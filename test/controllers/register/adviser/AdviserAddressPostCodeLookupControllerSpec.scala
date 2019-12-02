@@ -17,6 +17,7 @@
 package controllers.register.adviser
 
 import connectors.AddressLookupConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import forms.address.PostCodeLookupFormProvider
 import models.{Mode, NormalMode, TolerantAddress}
@@ -25,6 +26,7 @@ import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -70,18 +72,24 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
     }
 
     "redirect to the next page on a POST request" in {
-      when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())) thenReturn Future.successful(Seq(address))
+      running(_.overrides(modules(getEmptyData)++
+        Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(onwardRoute)),
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+          bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
+        ):_*)) {
+        app =>
+          when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())) thenReturn Future.successful(Seq(address))
+          val controller = app.injector.instanceOf[AdviserAddressPostCodeLookupController]
 
-      val request = FakeRequest(POST, routes.AdviserAddressPostCodeLookupController.onSubmit(NormalMode).url)
-        .withFormUrlEncodedBody("value" -> "ZZ1 1ZZ")
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> "ZZ1 1ZZ")
 
-      val result = route(app, request).value
+          val result = controller.onSubmit(NormalMode)(request)
 
-      status(result) mustBe SEE_OTHER
+          status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+          redirectLocation(result) mustBe Some(onwardRoute.url)
 
-
+      }
     }
   }
 

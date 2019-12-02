@@ -32,7 +32,9 @@ import views.html.register.isRegisteredName
 
 class PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRegisteredNameControllerBehaviour {
 
-  import PartnershipIsRegisteredNameControllerSpec._
+  val name = "test partnership name"
+
+  val view: isRegisteredName = app.injector.instanceOf[isRegisteredName]
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
@@ -58,11 +60,6 @@ class PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase with 
 
   }
 
-}
-
-
-object PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase {
-
   def viewModel = CommonFormViewModel(
     NormalMode,
     routes.PartnershipIsRegisteredNameController.onSubmit(),
@@ -70,9 +67,6 @@ object PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase {
     Message("isRegisteredName.partnership.heading", name)
   )
 
-  val name = "test partnership name"
-
-  val view: isRegisteredName = app.injector.instanceOf[isRegisteredName]
 
   def testController(
                       dataRetrievalAction: DataRetrievalAction

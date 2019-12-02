@@ -32,8 +32,12 @@ import viewmodels.{Message, PersonDetailsViewModel}
 import views.html.register.individual.individualName
 
 class IndividualNameControllerSpec extends ControllerSpecBase {
+  private val formProvider = new IndividualNameFormProvider()
+  private val form = formProvider()
 
-  import IndividualNameControllerSpec._
+  private val testAnswer = TolerantIndividual(Some("John"), None, Some("Doe"))
+  val view: individualName = app.injector.instanceOf[individualName]
+
 
   "IndividualNameController" must {
 
@@ -89,15 +93,8 @@ class IndividualNameControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
-}
-
-
-object IndividualNameControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-
-  private val formProvider = new IndividualNameFormProvider()
-  private val form = formProvider()
 
   def viewModel = PersonDetailsViewModel(title = "individualName.title",
                                          heading = Message("individualName.title"),
@@ -117,11 +114,9 @@ object IndividualNameControllerSpec extends ControllerSpecBase {
       view
     )
 
-  val view: individualName = app.injector.instanceOf[individualName]
 
   def viewAsString(form: Form[_] = form): String = view(form, viewModel)(fakeRequest, messages).toString
 
-  private val testAnswer = TolerantIndividual(Some("John"), None, Some("Doe"))
 }
 
 

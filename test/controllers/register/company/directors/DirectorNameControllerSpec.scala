@@ -30,7 +30,7 @@ import views.html.personName
 
 class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameControllerBehaviour {
 
-  import controllers.register.company.directors.DirectorNameControllerSpec._
+  val psaName = "test name"
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
@@ -60,12 +60,6 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
 
   }
 
-}
-
-object DirectorNameControllerSpec extends ControllerSpecBase {
-
-
-  val psaName = "test name"
   def testController(
                       dataRetrievalAction: DataRetrievalAction
                     ): DirectorNameController =

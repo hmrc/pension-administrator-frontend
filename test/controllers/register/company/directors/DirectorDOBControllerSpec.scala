@@ -27,7 +27,7 @@ import views.html.dob
 
 class DirectorDOBControllerSpec extends ControllerSpecBase {
 
-  import DirectorDOBControllerSpec._
+  val view: dob = app.injector.instanceOf[dob]
 
   "DirectorDOBController" must {
 
@@ -47,10 +47,6 @@ class DirectorDOBControllerSpec extends ControllerSpecBase {
     }
   }
 
-}
-object DirectorDOBControllerSpec extends ControllerSpecBase {
-
-  val view: dob = app.injector.instanceOf[dob]
   def testController(
                       base: ControllerSpecBase,
                       dataRetrievalAction: DataRetrievalAction

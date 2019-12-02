@@ -26,12 +26,12 @@ import play.api.mvc.AnyContent
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
-import viewmodels.{Message, MoreThanTenViewModel}
+import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
 class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
 
-  import MoreThanTenPartnersControllerSpec._
+  val view: moreThanTen = app.injector.instanceOf[moreThanTen]
 
   "MoreThanTenPartnersController" must {
 
@@ -68,12 +68,6 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
       actual mustBe expected
     }
   }
-
-}
-
-object MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
-
-  val view: moreThanTen = app.injector.instanceOf[moreThanTen]
 
   def controller: MoreThanTenPartnersController =
     new MoreThanTenPartnersController(

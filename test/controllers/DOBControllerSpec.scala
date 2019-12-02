@@ -38,8 +38,30 @@ import views.html.dob
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
 class DOBControllerSpec extends ControllerSpecBase {
+  val dobView: dob = app.injector.instanceOf[dob]
 
-  import DOBControllerSpec._
+  def viewAsString(base: ControllerSpecBase, form: Form[_] = form): String = dobView(
+    form,
+    viewModel
+  )(base.fakeRequest, messagesApi.preferred(fakeRequest)).toString
+
+  val form = new DOBFormProvider()()
+  val date: LocalDate = LocalDate.now
+  val postCall = Call("POST", "http://www.test.com")
+  lazy val viewModel =
+    CommonFormWithHintViewModel(
+      postCall,
+      title = Message("directorDob.title"),
+      heading = Message("dob.heading"),
+      None,
+      None,
+      NormalMode,
+      "psa-name"
+    )
+
+  val id: TypedIdentifier[LocalDate] = new TypedIdentifier[LocalDate] {}
+
+  val userAnswers: UserAnswers = UserAnswers().businessName().directorName()
 
   "DOBController" must {
 
@@ -94,34 +116,7 @@ class DOBControllerSpec extends ControllerSpecBase {
 
   }
 
-}
 
-object DOBControllerSpec extends ControllerSpecBase {
-
-  val dobView: dob = app.injector.instanceOf[dob]
-
-  def viewAsString(base: ControllerSpecBase, form: Form[_] = form): String = dobView(
-    form,
-    viewModel
-  )(base.fakeRequest, messagesApi.preferred(fakeRequest)).toString
-
-  val form = new DOBFormProvider()()
-  val date: LocalDate = LocalDate.now
-  val postCall = Call("POST", "http://www.test.com")
-  lazy val viewModel =
-    CommonFormWithHintViewModel(
-      postCall,
-      title = Message("directorDob.title"),
-      heading = Message("dob.heading"),
-      None,
-      None,
-      NormalMode,
-      "psa-name"
-    )
-
-  val id: TypedIdentifier[LocalDate] = new TypedIdentifier[LocalDate] {}
-
-  val userAnswers: UserAnswers = UserAnswers().businessName().directorName()
 
   def testRequest(answers: UserAnswers = userAnswers, date: Option[LocalDate] = None): DataRequest[AnyContent] = {
 

@@ -23,7 +23,7 @@ import views.html.pensionSchemePractitioner
 
 class PensionSchemePractitionerControllerSpec extends SpecBase {
 
-  import PensionSchemePractitionerControllerSpec._
+  val view: pensionSchemePractitioner = app.injector.instanceOf[pensionSchemePractitioner]
 
   "PensionSchemePractitionerController" must {
 
@@ -39,11 +39,6 @@ class PensionSchemePractitionerControllerSpec extends SpecBase {
 
   }
 
-}
-
-object PensionSchemePractitionerControllerSpec extends ControllerSpecBase {
-
-  val view: pensionSchemePractitioner = app.injector.instanceOf[pensionSchemePractitioner]
 
   def testController: PensionSchemePractitionerController =
     new PensionSchemePractitionerController(frontendAppConfig, stubMessagesControllerComponents(), view)

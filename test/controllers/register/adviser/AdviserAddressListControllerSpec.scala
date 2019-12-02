@@ -24,9 +24,10 @@ import identifiers.register.adviser.{AdviserAddressPostCodeLookupId, AdviserName
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import play.api.mvc.MessagesControllerComponents
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -34,11 +35,39 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
-import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
-  import AdviserAddressListControllerSpec._
+  private val onwardRoute = routes.AdviserAddressController.onPageLoad(NormalMode)
+  val name = "Adviser name"
+  private val addresses = Seq(
+    TolerantAddress(
+      Some("Address 1 Line 1"),
+      Some("Address 1 Line 2"),
+      Some("Address 1 Line 3"),
+      Some("Address 1 Line 4"),
+      Some("A1 1PC"),
+      Some("GB")
+    ),
+    TolerantAddress(
+      Some("Address 2 Line 1"),
+      Some("Address 2 Line 2"),
+      Some("Address 2 Line 3"),
+      Some("Address 2 Line 4"),
+      Some("123"),
+      Some("FR")
+    )
+  )
+
+  private val data =
+    UserAnswers(Json.obj())
+      .set(AdviserNameId)(name)
+      .flatMap(_.set(AdviserAddressPostCodeLookupId)(addresses))
+      .asOpt.map(_.json)
+
+  val view: addressList = app.injector.instanceOf[addressList]
+
+  private val dataRetrievalAction = new FakeDataRetrievalAction(data)
 
   "Adviser Address List Controller" must {
 
@@ -88,80 +117,53 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page on POST of valid data" in {
-      val app = application(dataRetrievalAction)
+      running(_.overrides(modules(dataRetrievalAction)++
+        Seq[GuiceableModule](
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+        app =>
+          val controller = app.injector.instanceOf[AdviserAddressListController]
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
+          val result = controller.onSubmit(NormalMode)(request)
 
-      val request = FakeRequest(POST, routes.AdviserAddressListController.onSubmit(NormalMode).url).withFormUrlEncodedBody(("value", "0"))
+          status(result) mustBe SEE_OTHER
 
-      val result = route(app, request).value
+          redirectLocation(result) mustBe Some(routes.AdviserAddressController.onPageLoad(NormalMode).url)
 
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result) mustBe Some(routes.AdviserAddressController.onPageLoad(NormalMode).url)
-
-
+      }
     }
 
     "redirect to Session Expired controller when no session data exists on a POST request" in {
-      val app = application(dontGetAnyData)
+      running(_.overrides(modules(dontGetAnyData)++
+        Seq[GuiceableModule](
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+        app =>
+          val controller = app.injector.instanceOf[AdviserAddressListController]
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
+          val result = controller.onSubmit(NormalMode)(request)
 
-      val request = FakeRequest(POST, routes.AdviserAddressListController.onSubmit(NormalMode).url).withFormUrlEncodedBody(("value", "0"))
+          status(result) mustBe SEE_OTHER
 
-      val result = route(app, request).value
-
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      }
 
     }
 
     "redirect to Adviser Address Post Code Lookup if no address data on a POST request" in {
-      val app = application(getEmptyData)
+      running(_.overrides(modules(getEmptyData)++
+        Seq[GuiceableModule](
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+        app =>
+          val controller = app.injector.instanceOf[AdviserAddressListController]
+          val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
+          val result = controller.onSubmit(NormalMode)(request)
 
-      val request = FakeRequest(POST, routes.AdviserAddressListController.onSubmit(NormalMode).url).withFormUrlEncodedBody(("value", "0"))
+          status(result) mustBe SEE_OTHER
 
-      val result = route(app, request).value
+          redirectLocation(result) mustBe Some(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url)
 
-      status(result) mustBe SEE_OTHER
-
-      redirectLocation(result) mustBe Some(routes.AdviserAddressPostCodeLookupController.onPageLoad(NormalMode).url)
-
-
+      }
     }
   }
-}
-
-object AdviserAddressListControllerSpec extends ControllerSpecBase {
-  private val onwardRoute = routes.AdviserAddressController.onPageLoad(NormalMode)
-  val name = "Adviser name"
-  private val addresses = Seq(
-    TolerantAddress(
-      Some("Address 1 Line 1"),
-      Some("Address 1 Line 2"),
-      Some("Address 1 Line 3"),
-      Some("Address 1 Line 4"),
-      Some("A1 1PC"),
-      Some("GB")
-    ),
-    TolerantAddress(
-      Some("Address 2 Line 1"),
-      Some("Address 2 Line 2"),
-      Some("Address 2 Line 3"),
-      Some("Address 2 Line 4"),
-      Some("123"),
-      Some("FR")
-    )
-  )
-
-  private val data =
-    UserAnswers(Json.obj())
-      .set(AdviserNameId)(name)
-      .flatMap(_.set(AdviserAddressPostCodeLookupId)(addresses))
-      .asOpt.map(_.json)
-
-  val view: addressList = app.injector.instanceOf[addressList]
-
-  private val dataRetrievalAction = new FakeDataRetrievalAction(data)
 
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(

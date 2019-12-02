@@ -27,14 +27,13 @@ import play.api.test.Helpers._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AllowAccessActionSpec extends SpecBase  with ScalaFutures{
+class AllowAccessActionSpec extends SpecBase with ScalaFutures{
 
   class TestAllowAccessAction(mode: Mode, isSuspended: Boolean = false) extends AllowAccessAction(mode, FakeMinimalPsaConnector(isSuspended)) {
     override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = super.filter(request)
   }
 
-
-  "AllowAccessAction" must{
+  "AllowAccessAction" must {
 
     "allow access to pages for user with no enrolment and Normal mode" in {
       val action = new TestAllowAccessAction(NormalMode)

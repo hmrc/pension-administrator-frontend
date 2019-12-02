@@ -25,13 +25,14 @@ import identifiers.register.company.directors.DirectorNameId
 import models.{Index, NormalMode, PersonName}
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
 import play.api.test.CSRFTokenHelper.addCSRFToken
+import utils.{FakeNavigator, Navigator}
 
 class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
 
@@ -45,11 +46,20 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
   }
 
   "redirect to the next page on a POST request" in {
-    val request = FakeRequest(routes.ConfirmDeleteDirectorController.onSubmit(NormalMode, firstIndex)).withFormUrlEncodedBody(
-        "value" -> "true")
-    val result = route(application, request).value
+    running(_.overrides(modules(dataRetrieval) ++
+      Seq[GuiceableModule](bind[Navigator].toInstance(
+        new FakeNavigator(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode))),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+      ): _*)) {
+      app =>
+        val controller = app.injector.instanceOf[ConfirmDeleteDirectorController]
+
+        val request = FakeRequest().withFormUrlEncodedBody("value" -> "true")
+
+        val result = controller.onSubmit(NormalMode, 0)(request)
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url)
+    }
   }
 
   application.stop()

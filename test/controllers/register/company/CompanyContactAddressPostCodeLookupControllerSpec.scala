@@ -25,7 +25,7 @@ import identifiers.register.BusinessNameId
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import play.api.mvc.MessagesControllerComponents
 import play.api.test.CSRFTokenHelper.addCSRFToken
@@ -43,28 +43,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
-  import CompanyContactAddressPostCodeLookupControllerSpec._
-
-  "render the view correctly on a GET request" in {
-    val request = addCSRFToken(FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode)))
-    val result = route(application, request).value
-        status(result) mustBe OK
-        contentAsString(result) mustBe view(formProvider(), viewModel, NormalMode)(request, messages).toString()
-
-  }
-
-  "redirect to the next page on a POST request" in {
-    val request = FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode))
-        .withFormUrlEncodedBody("value" -> validPostcode)
-    val result = route(application, request).value
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-
-  }
-
-}
-
-object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   private val formProvider = new PostCodeLookupFormProvider()
   private val validPostcode = "ZZ1 1ZZ"
 
@@ -88,7 +66,7 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
     }
   }
 
-  val viewModel = PostcodeLookupViewModel(
+  val viewModel: PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode),
     routes.CompanyContactAddressController.onPageLoad(NormalMode),
     Message("contactAddressPostCodeLookup.heading", Message("theCompany")),
@@ -101,6 +79,34 @@ object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecB
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     BusinessNameId.toString -> companyName
   )))
+
+
+
+  "render the view correctly on a GET request" in {
+    val request = addCSRFToken(FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode)))
+    val result = route(application, request).value
+        status(result) mustBe OK
+        contentAsString(result) mustBe view(formProvider(), viewModel, NormalMode)(request, messages).toString()
+
+  }
+
+  "redirect to the next page on a POST request" in {
+    running(_.overrides(modules(dataRetrieval) ++
+      Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+        bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
+      ): _*)) {
+      app =>
+        val controller = app.injector.instanceOf[CompanyContactAddressPostCodeLookupController]
+
+        val request = FakeRequest().withFormUrlEncodedBody("value" -> validPostcode)
+
+        val result = controller.onSubmit(NormalMode)(request)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+
+    }
+  }
 
   def application: Application = new GuiceApplicationBuilder()
     .overrides(
