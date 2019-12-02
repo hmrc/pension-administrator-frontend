@@ -43,8 +43,33 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+  implicit val request: DataRequest[AnyContent] =
+    DataRequest(fakeRequest, "", PSAUser(UserType.Individual, None, isExistingPSA = false, None, None), UserAnswers())
+  private val formProvider = new PostCodeLookupFormProvider()
+  private val form = formProvider()
 
-  import PartnershipPreviousAddressPostCodeLookupControllerSpec._
+  private val validPostcode = "ZZ1 1ZZ"
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
+  private val address = TolerantAddress(
+    Some("test-address-line-1"),
+    Some("test-address-line-2"),
+    None,
+    None,
+    Some(validPostcode),
+    Some("GB")
+  )
+
+  private val fakeAddressLookupConnector = new AddressLookupConnector {
+    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
+      Future.successful(Seq(address))
+    }
+  }
+
+  private val onwardRoute = controllers.routes.SessionExpiredController.onPageLoad()
+  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+
 
   "PartnershipPreviousAddressPostCodeLookupController" must {
 
@@ -74,37 +99,6 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
     }
 
   }
-
-}
-
-object PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
-
-  implicit val request: DataRequest[AnyContent] =
-    DataRequest(fakeRequest, "", PSAUser(UserType.Individual, None, isExistingPSA = false, None, None), UserAnswers())
-  private val formProvider = new PostCodeLookupFormProvider()
-  private val form = formProvider()
-
-  private val validPostcode = "ZZ1 1ZZ"
-
-  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
-
-  private val address = TolerantAddress(
-    Some("test-address-line-1"),
-    Some("test-address-line-2"),
-    None,
-    None,
-    Some(validPostcode),
-    Some("GB")
-  )
-
-  private val fakeAddressLookupConnector = new AddressLookupConnector {
-    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
-      Future.successful(Seq(address))
-    }
-  }
-
-  private val onwardRoute = controllers.routes.SessionExpiredController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
   def application: Application = new GuiceApplicationBuilder()
     .overrides(

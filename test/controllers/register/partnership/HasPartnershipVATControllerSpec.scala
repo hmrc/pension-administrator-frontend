@@ -17,23 +17,45 @@
 package controllers.register.partnership
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.ControllerSpecBase
 import controllers.actions._
+import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.HasReferenceNumberFormProvider
-import models.NormalMode
+import models.{Mode, NormalMode}
+import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.FakeRequest
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
+import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-class HasPartnershipVATControllerSpec extends ControllerSpecBase {
+class HasPartnershipVATControllerSpec extends ControllerWithCommonBehaviour {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
   private val formProvider = new HasReferenceNumberFormProvider()
+
+  private val partnershipName = "Test Partnership Name"
+
+  private val hasReferenceNumberForm = formProvider("error.required", partnershipName)
+
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))
+
+  private def viewModel(mode: Mode)(implicit messages: Messages) =
+    CommonFormWithHintViewModel(
+      postCall = routes.HasPartnershipVATController.onSubmit(mode),
+      title = Message("hasVAT.heading", Message("thePartnership")),
+      heading = Message("hasVAT.heading", partnershipName),
+      mode = mode,
+      hint = None,
+      entityName = partnershipName
+    )
+
+  private def hasReferenceNumberView(form: Form[_] = hasReferenceNumberForm): String =
+    view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new HasPartnershipVATController(frontendAppConfig,
@@ -50,19 +72,13 @@ class HasPartnershipVATControllerSpec extends ControllerSpecBase {
 
   "HasPartnershipVATController Controller" must {
 
-    "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    }
-
-    "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-      val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    }
+    behave like controllerWithCommonFunctions(
+      onPageLoadAction = data => controller(data).onPageLoad(NormalMode),
+      onSubmitAction = data => controller(data).onSubmit(NormalMode),
+      validData = getPartnership,
+      viewAsString = hasReferenceNumberView,
+      form = hasReferenceNumberForm,
+      request = postRequest
+    )
   }
 }

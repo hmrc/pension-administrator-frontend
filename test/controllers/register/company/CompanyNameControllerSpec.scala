@@ -43,7 +43,7 @@ class CompanyNameControllerSpec extends ControllerSpecBase with BusinessNameCont
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  val view: businessName = app.injector.instanceOf[businessName]
+  override val view: businessName = app.injector.instanceOf[businessName]
 
   def createController(userAnswers: UserAnswers): CompanyNameController =
     new CompanyNameController(

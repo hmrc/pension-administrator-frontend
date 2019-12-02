@@ -27,6 +27,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,39 +38,9 @@ import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
-  import PartnershipContactAddressPostCodeLookupControllerSpec._
-
-  "render the view correctly on a GET request" in {
-    val request = addCSRFToken(FakeRequest(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(NormalMode)))
-    val result = route(application, request).value
-    status(result) mustBe OK
-    contentAsString(result) mustBe view(formProvider(), viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
-
-  }
-
-  "redirect to the next page on a POST request" in {
-    running(_.overrides(modules(dataRetrieval)++
-      Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(onwardRoute)),
-        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
-      ):_*)) {
-      app =>
-        val controller = app.injector.instanceOf[PartnershipContactAddressPostCodeLookupController]
-
-        val request = FakeRequest().withFormUrlEncodedBody("value" -> validPostcode)
-
-        val result = controller.onSubmit(NormalMode)(request)
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-  }
-}
-
-object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   private val partnershipName = "PartnershipName"
 
@@ -101,6 +72,32 @@ object PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerS
   private val fakeAddressLookupConnector = new AddressLookupConnector {
     override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
       Future.successful(Seq(address))
+    }
+  }
+
+
+  "render the view correctly on a GET request" in {
+    val request = addCSRFToken(FakeRequest(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(NormalMode)))
+    val result = route(application, request).value
+    status(result) mustBe OK
+    contentAsString(result) mustBe view(formProvider(), viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString()
+
+  }
+
+  "redirect to the next page on a POST request" in {
+    running(_.overrides(modules(dataRetrieval)++
+      Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(onwardRoute)),
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+        bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
+      ):_*)) {
+      app =>
+        val controller = app.injector.instanceOf[PartnershipContactAddressPostCodeLookupController]
+
+        val request = FakeRequest().withFormUrlEncodedBody("value" -> validPostcode)
+
+        val result = controller.onSubmit(NormalMode)(request)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
     }
   }
 

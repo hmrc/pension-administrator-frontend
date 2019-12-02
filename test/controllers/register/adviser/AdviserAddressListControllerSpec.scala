@@ -27,6 +27,7 @@ import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import play.api.mvc.MessagesControllerComponents
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -34,11 +35,39 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
-import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
-  import AdviserAddressListControllerSpec._
+  private val onwardRoute = routes.AdviserAddressController.onPageLoad(NormalMode)
+  val name = "Adviser name"
+  private val addresses = Seq(
+    TolerantAddress(
+      Some("Address 1 Line 1"),
+      Some("Address 1 Line 2"),
+      Some("Address 1 Line 3"),
+      Some("Address 1 Line 4"),
+      Some("A1 1PC"),
+      Some("GB")
+    ),
+    TolerantAddress(
+      Some("Address 2 Line 1"),
+      Some("Address 2 Line 2"),
+      Some("Address 2 Line 3"),
+      Some("Address 2 Line 4"),
+      Some("123"),
+      Some("FR")
+    )
+  )
+
+  private val data =
+    UserAnswers(Json.obj())
+      .set(AdviserNameId)(name)
+      .flatMap(_.set(AdviserAddressPostCodeLookupId)(addresses))
+      .asOpt.map(_.json)
+
+  val view: addressList = app.injector.instanceOf[addressList]
+
+  private val dataRetrievalAction = new FakeDataRetrievalAction(data)
 
   "Adviser Address List Controller" must {
 
@@ -135,39 +164,6 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
       }
     }
   }
-}
-
-object AdviserAddressListControllerSpec extends ControllerSpecBase {
-  private val onwardRoute = routes.AdviserAddressController.onPageLoad(NormalMode)
-  val name = "Adviser name"
-  private val addresses = Seq(
-    TolerantAddress(
-      Some("Address 1 Line 1"),
-      Some("Address 1 Line 2"),
-      Some("Address 1 Line 3"),
-      Some("Address 1 Line 4"),
-      Some("A1 1PC"),
-      Some("GB")
-    ),
-    TolerantAddress(
-      Some("Address 2 Line 1"),
-      Some("Address 2 Line 2"),
-      Some("Address 2 Line 3"),
-      Some("Address 2 Line 4"),
-      Some("123"),
-      Some("FR")
-    )
-  )
-
-  private val data =
-    UserAnswers(Json.obj())
-      .set(AdviserNameId)(name)
-      .flatMap(_.set(AdviserAddressPostCodeLookupId)(addresses))
-      .asOpt.map(_.json)
-
-  val view: addressList = app.injector.instanceOf[addressList]
-
-  private val dataRetrievalAction = new FakeDataRetrievalAction(data)
 
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(

@@ -39,7 +39,11 @@ import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
-  import IndividualContactAddressPostCodeLookupControllerSpec._
+  private val formProvider = new PostCodeLookupFormProvider()
+  private val form = formProvider()
+  private val validPostcode = "ZZ1 1ZZ"
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
 
   "render the view correctly on a GET request" in {
     val request = addCSRFToken(FakeRequest(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(NormalMode)))
@@ -65,15 +69,6 @@ class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpe
         redirectLocation(result) mustBe Some(onwardRoute.url)
     }
   }
-}
-
-object IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
-  private val formProvider = new PostCodeLookupFormProvider()
-  private val form = formProvider()
-  private val validPostcode = "ZZ1 1ZZ"
-
-  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
-
 
   def viewModel(mode: Mode): PostcodeLookupViewModel =
     PostcodeLookupViewModel(

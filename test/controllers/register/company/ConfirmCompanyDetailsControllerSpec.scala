@@ -31,6 +31,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -46,7 +47,64 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
     FakeUserAnswersCacheConnector.reset()
   }
 
-  import ConfirmCompanyDetailsControllerSpec._
+  val view: confirmCompanyDetails = app.injector.instanceOf[confirmCompanyDetails]
+
+  private val validLimitedCompanyUtr = "1234567890"
+  private val validBusinessPartnershipUtr = "0987654321"
+  private val invalidUtr = "INVALID"
+  private val sapNumber = "test-sap-number"
+
+  val regInfo: RegistrationInfo = RegistrationInfo(
+    RegistrationLegalStatus.LimitedCompany,
+    sapNumber,
+    noIdentifier = false,
+    RegistrationCustomerType.UK,
+    Some(RegistrationIdType.UTR),
+    Some(validLimitedCompanyUtr)
+  )
+
+  private val testLimitedCompanyAddress = TolerantAddress(
+    Some("Some Building"),
+    Some("1 Some Street"),
+    Some("Some Village"),
+    Some("Some Town"),
+    Some("ZZ1 1ZZ"),
+    Some("UK")
+  )
+
+  private val testBusinessPartnershipAddress = TolerantAddress(
+    Some("Some Other Building"),
+    Some("2 Some Street"),
+    Some("Some Village"),
+    Some("Some Town"),
+    Some("ZZ1 1ZZ"),
+    Some("UK")
+  )
+
+  val companyName = "MyCompany"
+  val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
+
+  private val data = Json.obj(
+    BusinessTypeId.toString -> LimitedCompany.toString,
+    BusinessNameId.toString -> companyName,
+    BusinessUTRId.toString -> validLimitedCompanyUtr
+  )
+
+  private val dataForPost = Json.obj(
+    BusinessTypeId.toString -> LimitedCompany.toString,
+    BusinessNameId.toString -> companyName,
+    ConfirmCompanyAddressId.toString -> testLimitedCompanyAddress,
+    RegistrationInfoId.toString -> regInfo
+  )
+
+  val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+  val dataRetrievalActionForPost = new FakeDataRetrievalAction(Some(dataForPost))
+
+  val formProvider = new CompanyAddressFormProvider
+
+  val form: Form[Boolean] = formProvider()
+
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
   "CompanyAddress Controller" must {
 
@@ -197,70 +255,9 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
   }
 
-}
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-object ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
-
-  val view: confirmCompanyDetails = app.injector.instanceOf[confirmCompanyDetails]
-
-  private val validLimitedCompanyUtr = "1234567890"
-  private val validBusinessPartnershipUtr = "0987654321"
-  private val invalidUtr = "INVALID"
-  private val sapNumber = "test-sap-number"
-
-  val regInfo: RegistrationInfo = RegistrationInfo(
-    RegistrationLegalStatus.LimitedCompany,
-    sapNumber,
-    noIdentifier = false,
-    RegistrationCustomerType.UK,
-    Some(RegistrationIdType.UTR),
-    Some(validLimitedCompanyUtr)
-  )
-
-  private val testLimitedCompanyAddress = TolerantAddress(
-    Some("Some Building"),
-    Some("1 Some Street"),
-    Some("Some Village"),
-    Some("Some Town"),
-    Some("ZZ1 1ZZ"),
-    Some("UK")
-  )
-
-  private val testBusinessPartnershipAddress = TolerantAddress(
-    Some("Some Other Building"),
-    Some("2 Some Street"),
-    Some("Some Village"),
-    Some("Some Town"),
-    Some("ZZ1 1ZZ"),
-    Some("UK")
-  )
-
-  val companyName = "MyCompany"
-  val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
-
-  private val data = Json.obj(
-    BusinessTypeId.toString -> LimitedCompany.toString,
-    BusinessNameId.toString -> companyName,
-    BusinessUTRId.toString -> validLimitedCompanyUtr
-  )
-
-  private val dataForPost = Json.obj(
-    BusinessTypeId.toString -> LimitedCompany.toString,
-    BusinessNameId.toString -> companyName,
-    ConfirmCompanyAddressId.toString -> testLimitedCompanyAddress,
-    RegistrationInfoId.toString -> regInfo
-  )
-
-  val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-  val dataRetrievalActionForPost = new FakeDataRetrievalAction(Some(dataForPost))
-
-  val formProvider = new CompanyAddressFormProvider
-
-  val form: Form[Boolean] = formProvider()
-
-  val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation

@@ -24,20 +24,25 @@ import models.requests.DataRequest
 import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UserAnswers
 import views.html.register.psaVarianceSuccess
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 import scala.concurrent.Future
 
 class PSAVarianceSuccessControllerSpec extends ControllerSpecBase {
 
-  import PSAVarianceSuccessControllerSpec._
+  private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+  val view: psaVarianceSuccess = inject[psaVarianceSuccess]
 
+  private val individual = UserAnswers(Json.obj())
+    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
+
+  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
   "NoLongerFitAndProperController" must {
 
     "return OK and the correct view for a GET" in {
@@ -58,18 +63,6 @@ class PSAVarianceSuccessControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
-}
-
-object PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoSugar {
-
-  private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val psaUser = PSAUser(UserType.Individual, None, false, None)
-  val view: psaVarianceSuccess = inject[psaVarianceSuccess]
-
-  private val individual = UserAnswers(Json.obj())
-    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
-
-  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PSAVarianceSuccessController(

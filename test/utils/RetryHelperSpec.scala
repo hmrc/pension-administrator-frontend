@@ -23,14 +23,14 @@ import base.SpecBase
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Seconds, Span}
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.guice.{GuiceOneAppPerSuite, GuiceOneServerPerSuite}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HttpException, Upstream5xxResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with GuiceOneServerPerSuite {
+class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with GuiceOneAppPerSuite {
 
   private val MAX_ATTEMPTS:Int = 10
   private val INITIAL_WAIT:Int = 10
@@ -38,8 +38,6 @@ class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with 
 
   val retryHelper = new RetryHelperClass()
   val TIMEOUT = 5
-
-
 
   "RetryHelper" must {
 

@@ -32,7 +32,24 @@ import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
-  import CheckYourAnswersControllerSpec._
+  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
+  val individual = TolerantIndividual(
+    Some("Joe"),
+    None,
+    Some("Bloggs")
+  )
+  val address = Address(
+    "address-line-1",
+    "address-line-2",
+    None,
+    None,
+    Some("post-code"),
+    "country"
+  )
+
+  val cyaView: check_your_answers = app.injector.instanceOf[check_your_answers]
+
 
   "CheckYourAnswersController" when {
     "on a GET request" must {
@@ -192,31 +209,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       }
     }
   }
-}
-
-object CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private def fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
-  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
-  val individual = TolerantIndividual(
-    Some("Joe"),
-    None,
-    Some("Bloggs")
-  )
-  val address = Address(
-    "address-line-1",
-    "address-line-2",
-    None,
-    None,
-    Some("post-code"),
-    "country"
-  )
-
-  val cyaView: check_your_answers = app.injector.instanceOf[check_your_answers]
 
   private def controller(getData: DataRetrievalAction = getIndividual): CheckYourAnswersController = {
     new CheckYourAnswersController(

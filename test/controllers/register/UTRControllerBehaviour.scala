@@ -32,8 +32,14 @@ import views.html.register.utr
 
 trait UTRControllerBehaviour extends ControllerSpecBase {
 
-  
-  import UTRControllerBehaviour._
+  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  val entity: String = "limited company"
+
+  val testUTR = "1234567890"
+
+  val invalidUTR = "abcd123456"
+
+  val view: utr = app.injector.instanceOf[utr]
 
   def utrController[I <: TypedIdentifier[String]](id: I,
                                                   createController: (UserAnswersCacheConnector, Navigator) => UTRController
@@ -82,19 +88,6 @@ trait UTRControllerBehaviour extends ControllerSpecBase {
     }
 
   }
-
-}
-
-object UTRControllerBehaviour extends ControllerSpecBase {
-
-  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-  val entity: String = "limited company"
-
-  val testUTR = "1234567890"
-
-  val invalidUTR = "abcd123456"
-
-  val view: utr = app.injector.instanceOf[utr]
 
   case class TestFixture(dataCacheConnector: FakeUserAnswersCacheConnector, controller: UTRController)
 

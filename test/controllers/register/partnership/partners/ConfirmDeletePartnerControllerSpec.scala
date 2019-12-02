@@ -37,7 +37,29 @@ import views.html.confirmDelete
 
 class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
 
-  import ConfirmDeletePartnerControllerSpec._
+  override val firstIndex: Index = Index(0)
+
+  def application: Application = new GuiceApplicationBuilder()
+    .overrides(
+      bind[AuthAction].to(FakeAuthAction),
+      bind[DataRetrievalAction].toInstance(dataRetrieval),
+      bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+    ).build()
+
+  val postUrl: Call = controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
+  val redirectUrl: Call = routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode)
+  private val formProvider = new ConfirmDeleteFormProvider()
+  private val form = formProvider()
+
+  val person: PersonName = PersonName("First", "Last")
+
+  val view: confirmDelete = app.injector.instanceOf[confirmDelete]
+
+  val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
+    "partners" -> Json.arr(
+      Json.obj(PartnerNameId.toString -> person)
+    ))))
 
   "render the view correctly on a GET request" in {
 
@@ -71,33 +93,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
         application.stop()
     }
   }
-}
 
-object ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
-
-  override val firstIndex = Index(0)
-
-  def application: Application = new GuiceApplicationBuilder()
-    .overrides(
-      bind[AuthAction].to(FakeAuthAction),
-      bind[DataRetrievalAction].toInstance(dataRetrieval),
-      bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-    ).build()
-
-  val postUrl: Call = controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
-  val redirectUrl: Call = routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode)
-  private val formProvider = new ConfirmDeleteFormProvider()
-  private val form = formProvider()
-
-  val person = PersonName("First", "Last")
-
-  val view: confirmDelete = app.injector.instanceOf[confirmDelete]
-
-  val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    "partners" -> Json.arr(
-      Json.obj(PartnerNameId.toString -> person)
-    ))))
 
   def viewModel = ConfirmDeleteViewModel(
     redirectUrl,

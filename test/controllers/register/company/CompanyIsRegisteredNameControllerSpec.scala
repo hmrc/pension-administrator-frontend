@@ -16,8 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.{ControllerSpecBase, IsRegisteredNameControllerBehaviour}
 import forms.register.IsRegisteredNameFormProvider
@@ -32,8 +31,16 @@ import viewmodels.{CommonFormViewModel, Message}
 import views.html.register.isRegisteredName
 
 class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRegisteredNameControllerBehaviour {
+  val name = "test company name"
 
-  import CompanyIsRegisteredNameControllerSpec._
+  val viewModel: CommonFormViewModel = CommonFormViewModel(
+    NormalMode,
+    routes.CompanyIsRegisteredNameController.onSubmit(),
+    Message("isRegisteredName.company.title", name),
+    Message("isRegisteredName.company.heading", name)
+  )
+
+  val view: isRegisteredName = app.injector.instanceOf[isRegisteredName]
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
@@ -58,21 +65,6 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
     }
 
   }
-
-}
-
-object CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase {
-
-  def viewModel = CommonFormViewModel(
-    NormalMode,
-    routes.CompanyIsRegisteredNameController.onSubmit(),
-    Message("isRegisteredName.company.title", name),
-    Message("isRegisteredName.company.heading", name)
-  )
-
-  val name = "test company name"
-
-  val view: isRegisteredName = app.injector.instanceOf[isRegisteredName]
 
   def testController(
                       base: ControllerSpecBase,

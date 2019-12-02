@@ -16,8 +16,7 @@
 
 package controllers.register.partnership.partners
 
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.{ControllerSpecBase, PersonNameControllerBehaviour}
 import models.requests.DataRequest
@@ -30,8 +29,6 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.personName
 
 class PartnerNameControllerSpec extends ControllerSpecBase with PersonNameControllerBehaviour {
-
-  import PartnerNameControllerSpec._
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
@@ -60,12 +57,6 @@ class PartnerNameControllerSpec extends ControllerSpecBase with PersonNameContro
     }
 
   }
-
-}
-
-
-
-object PartnerNameControllerSpec extends ControllerSpecBase {
 
   def testController(dataRetrievalAction: DataRetrievalAction): PartnerNameController =
     createController(dataRetrievalAction)(FakeUserAnswersCacheConnector, FakeNavigator)

@@ -25,7 +25,6 @@ import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
@@ -37,7 +36,12 @@ import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerSpecBase {
 
-  import ConfirmationControllerSpec._
+  private val psaId: String = "A1234567"
+  private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val onwardRoute = controllers.routes.LogoutController.onPageLoad()
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+
+  val view: confirmation = app.injector.instanceOf[confirmation]
 
   "Confirmation Controller" must {
 
@@ -69,16 +73,6 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
   }
-}
-
-object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
-
-  private val psaId: String = "A1234567"
-  private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val onwardRoute = controllers.routes.LogoutController.onPageLoad()
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
-
-  val view: confirmation = app.injector.instanceOf[confirmation]
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmationController(
@@ -95,6 +89,4 @@ object ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private def viewAsString() =
     view(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messagesApi.preferred(fakeRequest)).toString
-
-
 }

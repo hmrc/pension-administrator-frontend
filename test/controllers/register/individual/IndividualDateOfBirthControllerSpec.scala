@@ -41,7 +41,26 @@ import scala.concurrent.Future
 
 class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  import IndividualDateOfBirthControllerSpec._
+
+  private val formProvider = new IndividualDateOfBirthFormProvider()
+  private val form = formProvider()
+
+  val registrationService: RegistrationService = mock[RegistrationService]
+
+  val sapNumber = "test-sap-number"
+
+  val registrationInfo = RegistrationInfo(
+    RegistrationLegalStatus.Individual,
+    sapNumber,
+    noIdentifier = false,
+    RegistrationCustomerType.NonUK,
+    None,
+    None
+  )
+
+  val view: individualDateOfBirth = app.injector.instanceOf[individualDateOfBirth]
+
+  private val testAnswer = LocalDate.now()
 
   "IndividualDateOfBirth Controller" must {
 
@@ -116,16 +135,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
     }
   }
 
-}
-
-object IndividualDateOfBirthControllerSpec extends ControllerSpecBase with MockitoSugar {
-
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-
-  private val formProvider = new IndividualDateOfBirthFormProvider()
-  private val form = formProvider()
-
-  val registrationService: RegistrationService = mock[RegistrationService]
 
   def getRequiredDataForRegistration(isUk : Boolean = false): FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
@@ -150,20 +160,6 @@ object IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mocki
       view
     )
 
-  val view: individualDateOfBirth = app.injector.instanceOf[individualDateOfBirth]
 
   def viewAsString(form: Form[_] = form): String = view(form, NormalMode)(fakeRequest, messages).toString
-
-  private val testAnswer = LocalDate.now()
-
-  val sapNumber = "test-sap-number"
-
-  val registrationInfo = RegistrationInfo(
-    RegistrationLegalStatus.Individual,
-    sapNumber,
-    noIdentifier = false,
-    RegistrationCustomerType.NonUK,
-    None,
-    None
-  )
 }

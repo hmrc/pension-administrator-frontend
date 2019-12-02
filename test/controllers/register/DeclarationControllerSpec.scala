@@ -48,7 +48,32 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  import DeclarationControllerSpec._
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val form: Form[_] = new DeclarationFormProvider()()
+  private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
+  val businessDetails: BusinessDetails = BusinessDetails("MyCompany", Some("1234567890"))
+  val email = "test@test.com"
+  val businessName = "MyCompany"
+  val registrationInfo: RegistrationInfo = RegistrationInfo(Partnership, "", noIdentifier = false, UK, Some(UTR), Some(""))
+  private val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
+    BusinessNameId.toString -> businessName
+  )
+
+  val view: declaration = app.injector.instanceOf[declaration]
+
+  private val validPsaResponse = PsaSubscriptionResponse("A0123456")
+  private val knownFacts = Some(KnownFacts(
+    Set(KnownFact("PSAID", "test-psa")),
+    Set(KnownFact("NINO", "test-nino")
+    )))
+
+  val validData: JsObject = Json.obj(DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString))
+  val dataRetrieval = new FakeDataRetrievalAction(Some(validData))
+
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockEmailConnector = mock[EmailConnector]
+  private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
   "Declaration Controller" must {
 
@@ -159,28 +184,6 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
     }
   }
 
-}
-
-object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-  private val form: Form[_] = new DeclarationFormProvider()()
-  private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-  val businessDetails = BusinessDetails("MyCompany", Some("1234567890"))
-  val email = "test@test.com"
-  val businessName = "MyCompany"
-  val registrationInfo = RegistrationInfo(Partnership, "", noIdentifier = false, UK, Some(UTR), Some(""))
-  private val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
-    BusinessNameId.toString -> businessName
-  )
-
-  val view: declaration = app.injector.instanceOf[declaration]
-
-  private val validPsaResponse = PsaSubscriptionResponse("A0123456")
-  private val knownFacts = Some(KnownFacts(
-    Set(KnownFact("PSAID", "test-psa")),
-    Set(KnownFact("NINO", "test-nino")
-    )))
 
   private def fakePensionsSchemeConnector(response: Future[PsaSubscriptionResponse] = Future.successful(validPsaResponse)): PensionsSchemeConnector =
     new PensionsSchemeConnector {
@@ -214,13 +217,6 @@ object DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
     }
 
   }
-
-  val validData: JsObject = Json.obj(DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString))
-  val dataRetrieval = new FakeDataRetrievalAction(Some(validData))
-
-  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val mockEmailConnector = mock[EmailConnector]
-  private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = dataRetrieval,

@@ -32,16 +32,6 @@ import scala.concurrent.ExecutionContextExecutor
 
 class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControllerBehaviour {
 
-  import PersonNameControllerSpec._
-
-  "PersonNameController" must {
-    behave like personNameController(viewModel, testId, createController(this))
-  }
-
-}
-
-object PersonNameControllerSpec extends ControllerSpecBase {
-
   val psaName = "test name"
 
   lazy val viewModel =
@@ -55,9 +45,10 @@ object PersonNameControllerSpec extends ControllerSpecBase {
       psaName
     )
 
-  val personNameView: personName = app.injector.instanceOf[personName]
-
   val testId: TypedIdentifier[PersonName] = new TypedIdentifier[PersonName] {}
+  "PersonNameController" must {
+    behave like personNameController(viewModel, testId, createController(this))
+  }
 
   def createController(base: ControllerSpecBase)(connector: UserAnswersCacheConnector, nav: Navigator): PersonNameController = {
     new PersonNameController {
@@ -75,7 +66,7 @@ object PersonNameControllerSpec extends ControllerSpecBase {
 
       override val controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 
-      val view: personName = personNameView
+      val view: personName = app.injector.instanceOf[personName]
     }
   }
 

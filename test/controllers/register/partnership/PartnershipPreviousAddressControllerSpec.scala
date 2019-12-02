@@ -41,7 +41,22 @@ import views.html.address.manualAddress
 
 class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
 
-  import PartnershipPreviousAddressControllerSpec._
+  val view: manualAddress = app.injector.instanceOf[manualAddress]
+
+  val messagePrefix = "previousAddress"
+  val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
+  val form: Form[Address] = formProvider("error.country.invalid")
+
+  val viewmodel = ManualAddressViewModel(
+    postCall = routes.PartnershipPreviousAddressController.onSubmit(NormalMode),
+    countryOptions = countryOptions.options,
+    title = Message(s"$messagePrefix.partnership.title"),
+    heading = Message(s"$messagePrefix.heading", "Test Partnership Name"),
+    hint = Some(Message(s"$messagePrefix.lede"))
+  )
+
+  val fakeAuditService = new StubSuccessfulAuditService()
+
 
   "PartnershipPreviousAddress Controller" must {
     "return OK and the correct view for a GET" in {
@@ -153,28 +168,10 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
       }
     }
   }
-}
 
-object PartnershipPreviousAddressControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-
-  val view: manualAddress = app.injector.instanceOf[manualAddress]
-
-  val messagePrefix = "previousAddress"
-  val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
-  val form: Form[Address] = formProvider("error.country.invalid")
-
-  val viewmodel = ManualAddressViewModel(
-    postCall = routes.PartnershipPreviousAddressController.onSubmit(NormalMode),
-    countryOptions = countryOptions.options,
-    title = Message(s"$messagePrefix.partnership.title"),
-    heading = Message(s"$messagePrefix.heading", "Test Partnership Name"),
-    hint = Some(Message(s"$messagePrefix.lede"))
-  )
-
-  val fakeAuditService = new StubSuccessfulAuditService()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipPreviousAddressController(

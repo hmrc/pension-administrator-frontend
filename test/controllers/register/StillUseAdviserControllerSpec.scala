@@ -33,7 +33,24 @@ import views.html.register.stillUseAdviser
 
 class StillUseAdviserControllerSpec extends ControllerSpecBase {
 
-  import StillUseAdviserControllerSpec._
+  private val psaName = "Blah Inc"
+  private val personWithWorkingKnowledgeName = "Bill Bloggs"
+
+  private val jsObjectAdviserAndBusinessDetails: JsObject = Json.obj(
+    AdviserNameId.toString -> personWithWorkingKnowledgeName,
+    BusinessNameId.toString ->psaName
+  )
+
+  private val dataRetrievalActionWithAdviserAndBusinessDetails =
+    new FakeDataRetrievalAction(Some(jsObjectAdviserAndBusinessDetails))
+
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+
+  val view: stillUseAdviser = app.injector.instanceOf[stillUseAdviser]
+
+  private val formProvider = new StillUseAdviserFormProvider()
+  private val form = formProvider()
+
 
   "DeclarationWorkingKnowledge Controller" must {
 
@@ -82,26 +99,7 @@ class StillUseAdviserControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
-}
 
-object StillUseAdviserControllerSpec extends ControllerSpecBase {
-  private val psaName = "Blah Inc"
-  private val personWithWorkingKnowledgeName = "Bill Bloggs"
-
-  private val jsObjectAdviserAndBusinessDetails: JsObject = Json.obj(
-    AdviserNameId.toString -> personWithWorkingKnowledgeName,
-    BusinessNameId.toString ->psaName
-  )
-
-  private val dataRetrievalActionWithAdviserAndBusinessDetails =
-    new FakeDataRetrievalAction(Some(jsObjectAdviserAndBusinessDetails))
-
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
-
-  val view: stillUseAdviser = app.injector.instanceOf[stillUseAdviser]
-
-  private val formProvider = new StillUseAdviserFormProvider()
-  private val form = formProvider()
 
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalActionWithAdviserAndBusinessDetails) =
     new StillUseAdviserController(

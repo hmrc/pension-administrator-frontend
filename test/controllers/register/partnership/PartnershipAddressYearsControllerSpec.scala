@@ -33,11 +33,25 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
-import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
 
-  import PartnershipAddressYearsControllerSpec._
+  val partnershipName = "Test Partnership Name"
+
+  val dataRetrieval: DataRetrievalAction = UserAnswers()
+    .businessName(partnershipName)
+    .dataRetrievalAction
+
+  val viewModel = AddressYearsViewModel(
+    PartnershipAddressYearsController.onSubmit(NormalMode),
+    Message("addressYears.heading", Message("thePartnership")),
+    Message("addressYears.heading").withArgs(partnershipName),
+    Message("addressYears.heading").withArgs(partnershipName)
+  )
+
+  val form = new AddressYearsFormProvider()("error.required")
+
+  val view: addressYears = app.injector.instanceOf[addressYears]
 
   "render the view correctly on a GET request" in {
     val request = addCSRFToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode)))
@@ -61,26 +75,6 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
         redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
     }
   }
-}
-
-object PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
-
-  val partnershipName = "Test Partnership Name"
-
-  val dataRetrieval: DataRetrievalAction = UserAnswers()
-    .businessName(partnershipName)
-    .dataRetrievalAction
-
-  val viewModel = AddressYearsViewModel(
-    PartnershipAddressYearsController.onSubmit(NormalMode),
-    Message("addressYears.heading", Message("thePartnership")),
-    Message("addressYears.heading").withArgs(partnershipName),
-    Message("addressYears.heading").withArgs(partnershipName)
-  )
-
-  val form = new AddressYearsFormProvider()("error.required")
-
-  val view: addressYears = app.injector.instanceOf[addressYears]
 
   def application: Application = new GuiceApplicationBuilder()
     .overrides(

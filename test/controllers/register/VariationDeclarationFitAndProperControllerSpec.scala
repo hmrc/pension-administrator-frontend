@@ -34,7 +34,13 @@ import views.html.register.variationDeclarationFitAndProper
 
 class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  import VariationDeclarationFitAndProperControllerSpec._
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
+  private val form: Form[_] = new VariationDeclarationFitAndProperFormProvider()()
+
+  private val appConfig = app.injector.instanceOf[FrontendAppConfig]
+
+  val view: variationDeclarationFitAndProper = app.injector.instanceOf[variationDeclarationFitAndProper]
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -79,18 +85,6 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
       }
     }
   }
-
-}
-
-object VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
-
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
-  private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-  private val form: Form[_] = new VariationDeclarationFitAndProperFormProvider()()
-
-  private val appConfig = app.injector.instanceOf[FrontendAppConfig]
-
-  val view: variationDeclarationFitAndProper = app.injector.instanceOf[variationDeclarationFitAndProper]
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = getEmptyData,

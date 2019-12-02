@@ -30,8 +30,9 @@ import views.html.register.businessName
 
 trait BusinessNameControllerBehaviour extends ControllerSpecBase {
 
-  import BusinessNameControllerBehaviour._
+  private val businessname = "test limited company"
 
+  val view: businessName = app.injector.instanceOf[businessName]
 
   def businessNameController[I <: TypedIdentifier[String]](answers: UserAnswers,
                                                            createController: UserAnswers => BusinessNameController,
@@ -82,20 +83,14 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
       }
     }
   }
-}
-
-object BusinessNameControllerBehaviour extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
   private def businessType(answers: UserAnswers) = answers.get(BusinessTypeId).map {
     businessType =>
-    messages(s"businessType.${businessType.toString}").toLowerCase}
+      messages(s"businessType.${businessType.toString}").toLowerCase
+  }
     .getOrElse("Missing business type in user answers")
-
-  private val businessname = "test limited company"
-
-
 
   def testRequest(answers: UserAnswers = UserAnswers(), name: Option[String] = None): DataRequest[AnyContent] = {
 
@@ -116,8 +111,6 @@ object BusinessNameControllerBehaviour extends ControllerSpecBase {
     )
 
   }
-
-  val view: businessName = app.injector.instanceOf[businessName]
 
   def viewAsString(form: Form[_],
                    answers: UserAnswers, href: Call = onwardRoute): String =

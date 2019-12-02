@@ -29,7 +29,7 @@ import play.api.test.{FakeRequest, Injecting}
 import play.api.{Application, Environment}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
-trait SpecBase extends PlaySpec with GuiceOneServerPerSuite with Injecting with BeforeAndAfterAll with MockitoSugar {
+trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with BeforeAndAfterAll with MockitoSugar {
 
   override lazy val app: Application = new GuiceApplicationBuilder()
     .build()
@@ -47,9 +47,4 @@ trait SpecBase extends PlaySpec with GuiceOneServerPerSuite with Injecting with 
   implicit def messages: Messages = stubMessagesControllerComponents().messagesApi.preferred(fakeRequest)
 
   def appRunning(): Unit = app
-
-  override def afterAll(): Unit = {
-    super.afterAll()
-    app.stop()
-  }
 }

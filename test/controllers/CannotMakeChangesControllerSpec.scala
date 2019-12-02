@@ -28,7 +28,15 @@ import utils.UserAnswers
 import views.html.cannotMakeChanges
 
 class CannotMakeChangesControllerSpec extends ControllerSpecBase {
-  import CannotMakeChangesControllerSpec._
+  private val psaName: String = "Mark Wright"
+  private val psaUser = PSAUser(UserType.Individual, None, false, None)
+
+  private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
+    RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
+
+  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
+
   "CannotMakeChangesController" must {
 
     "return OK and the correct view for a GET" in {
@@ -45,18 +53,6 @@ class CannotMakeChangesControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
   }
-}
-
-object CannotMakeChangesControllerSpec extends ControllerSpecBase with MockitoSugar {
-
-  private val psaName: String = "Mark Wright"
-  private val psaUser = PSAUser(UserType.Individual, None, false, None)
-
-  private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
-    RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
-
-  private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CannotMakeChangesController(

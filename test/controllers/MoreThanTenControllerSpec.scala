@@ -42,7 +42,13 @@ import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 
 class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
 
-  import MoreThanTenControllerSpec._
+  val moreThanTenView: moreThanTen = app.injector.instanceOf[moreThanTen]
+
+  private val form: Form[Boolean] = new MoreThanTenFormProvider()()
+
+  val testId: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {}
+
+  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   "MoreThanTenController" must {
 
@@ -131,13 +137,6 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
     }
   }
 
-}
-
-object MoreThanTenControllerSpec extends ControllerSpecBase {
-
-  val testId: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {}
-  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
-
   def testRequest(answers: UserAnswers = UserAnswers(), moreThanTen: Option[String] = None): DataRequest[AnyContent] = {
     val fakeRequest = FakeRequest("", "")
 
@@ -177,9 +176,7 @@ object MoreThanTenControllerSpec extends ControllerSpecBase {
     TestFixture(controller, connector)
   }
 
-  val moreThanTenView: moreThanTen = app.injector.instanceOf[moreThanTen]
 
-  private val form: Form[Boolean] = new MoreThanTenFormProvider()()
 
   def viewModel(id: TypedIdentifier[Boolean] = testId) =
     MoreThanTenViewModel(

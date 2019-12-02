@@ -43,7 +43,44 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
-  import CompanyContactAddressPostCodeLookupControllerSpec._
+  private val formProvider = new PostCodeLookupFormProvider()
+  private val validPostcode = "ZZ1 1ZZ"
+
+  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
+
+  private val companyName = "CompanyName"
+
+  private val onwardRoute = controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode)
+  private val address = TolerantAddress(
+    Some("test-address-line-1"),
+    Some("test-address-line-2"),
+    None,
+    None,
+    Some(validPostcode),
+    Some("GB")
+  )
+
+  private val fakeAddressLookupConnector = new AddressLookupConnector {
+    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
+      Future.successful(Seq(address))
+    }
+  }
+
+  val viewModel: PostcodeLookupViewModel = PostcodeLookupViewModel(
+    routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode),
+    routes.CompanyContactAddressController.onPageLoad(NormalMode),
+    Message("contactAddressPostCodeLookup.heading", Message("theCompany")),
+    Message("contactAddressPostCodeLookup.heading").withArgs(companyName),
+    Message("common.postcodeLookup.enterPostcode"),
+    Some(Message("common.postcodeLookup.enterPostcode.link")),
+    Message("address.postcode")
+  )
+
+  val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
+    BusinessNameId.toString -> companyName
+  )))
+
+
 
   "render the view correctly on a GET request" in {
     val request = addCSRFToken(FakeRequest(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode)))
@@ -70,46 +107,6 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
 
     }
   }
-
-}
-
-object CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
-  private val formProvider = new PostCodeLookupFormProvider()
-  private val validPostcode = "ZZ1 1ZZ"
-
-  val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
-
-  private val companyName = "CompanyName"
-
-  private val onwardRoute = controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode)
-  private val address = TolerantAddress(
-    Some("test-address-line-1"),
-    Some("test-address-line-2"),
-    None,
-    None,
-    Some(validPostcode),
-    Some("GB")
-  )
-
-  private val fakeAddressLookupConnector = new AddressLookupConnector {
-    override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
-      Future.successful(Seq(address))
-    }
-  }
-
-  val viewModel = PostcodeLookupViewModel(
-    routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode),
-    routes.CompanyContactAddressController.onPageLoad(NormalMode),
-    Message("contactAddressPostCodeLookup.heading", Message("theCompany")),
-    Message("contactAddressPostCodeLookup.heading").withArgs(companyName),
-    Message("common.postcodeLookup.enterPostcode"),
-    Some(Message("common.postcodeLookup.enterPostcode.link")),
-    Message("address.postcode")
-  )
-
-  val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
-    BusinessNameId.toString -> companyName
-  )))
 
   def application: Application = new GuiceApplicationBuilder()
     .overrides(
