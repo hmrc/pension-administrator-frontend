@@ -55,11 +55,11 @@ class AdviserAddressPostCodeLookupController @Inject()(
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel = PostcodeLookupViewModel(
     controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
     controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
-    Message("adviserAddressPostCodeLookup.heading", Message("theAdviser")),
-    Message("adviserAddressPostCodeLookup.heading", entityName),
-    Message("adviserAddressPostCodeLookup.enterPostcode"),
-    Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),
-    Message("adviserAddressPostCodeLookup.formLabel"),
+    Message("postcode.lookup.heading", Message("theAdviser")),
+    Message("postcode.lookup.heading", entityName),
+    Message("manual.entry.text"),
+    Some(Message("manual.entry.link")),
+    Message("postcode.lookup.form.label"),
     psaName = psaName()
   )
 

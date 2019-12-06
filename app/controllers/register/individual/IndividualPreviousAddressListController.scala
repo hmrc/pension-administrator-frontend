@@ -61,7 +61,7 @@ class IndividualPreviousAddressListController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, IndividualPreviousAddressListId, IndividualPreviousAddressId, mode, form(vm.addresses)))
+      viewmodel(mode).right.map(vm => post(vm, IndividualPreviousAddressId, IndividualPreviousAddressPostCodeLookupId, mode, form(vm.addresses)))
   }
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
@@ -71,10 +71,10 @@ class IndividualPreviousAddressListController @Inject()(
           postCall = routes.IndividualPreviousAddressListController.onSubmit(mode),
           manualInputCall = routes.IndividualPreviousAddressController.onPageLoad(mode),
           addresses = addresses,
-          Message("individual.previousAddressList.heading"),
-          Message("individual.previousAddressList.heading"),
-          Message("common.selectAddress.text"),
-          Message("common.selectAddress.link")
+          Message("individual.select.previous.address.heading"),
+          Message("individual.select.previous.address.heading"),
+          Message("select.address.hint.text"),
+          Message("manual.entry.link")
         )
     }.left.map(_ => Future.successful(Redirect(routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(mode))))
   }

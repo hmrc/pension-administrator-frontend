@@ -153,7 +153,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     (userAnswers.get(IndividualAddressYearsId), userAnswers.get(IndividualPreviousAddressId)) match {
       case (Some(UnderAYear), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(UpdateMode).url, "site.add"))))
+          Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))))
       case (_, Some(address)) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
           None))
@@ -196,7 +196,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     (userAnswers.get(CompanyAddressYearsId), userAnswers.get(CompanyPreviousAddressId)) match {
       case (Some(UnderAYear), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(UpdateMode).url, "site.add"))))
+          Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))))
       case (_, Some(address)) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
           None))
@@ -256,7 +256,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     (userAnswers.get(DirectorAddressYearsId(index)), userAnswers.get(DirectorPreviousAddressId(index))) match {
       case (Some(UnderAYear), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(UpdateMode, index).url, "site.add"))))
+          Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add"))))
       case (_, Some(address)) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
           None))
@@ -328,7 +328,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     (userAnswers.get(PartnershipAddressYearsId), userAnswers.get(PartnershipPreviousAddressId)) match {
       case (Some(UnderAYear), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode).url, "site.add"))))
+          Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))))
       case (_, Some(address)) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
           None))
@@ -388,7 +388,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     (userAnswers.get(PartnerAddressYearsId(index)), userAnswers.get(PartnerPreviousAddressId(index))) match {
       case (Some(UnderAYear), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, index).url, "site.add"))))
+          Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add"))))
       case (_, Some(address)) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
           None))

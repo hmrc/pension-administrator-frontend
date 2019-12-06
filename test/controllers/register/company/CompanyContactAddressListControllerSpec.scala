@@ -70,10 +70,10 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
       routes.CompanyContactAddressListController.onSubmit(NormalMode),
       routes.CompanyContactAddressController.onPageLoad(NormalMode),
       addresses,
-      Message("contactAddressList.heading").withArgs(Message("theCompany")),
-      Message("contactAddressList.heading").withArgs("test company"),
-      Message("common.selectAddress.text"),
-      Message("common.selectAddress.link")
+      Message("select.address.heading", Message("theCompany")),
+      Message("select.address.heading", "test company"),
+      Message("select.address.hint.text"),
+      Message("manual.entry.link")
     )
   }
 

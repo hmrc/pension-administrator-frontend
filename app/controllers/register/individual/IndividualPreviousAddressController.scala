@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import controllers.register.individual.routes._
 import forms.AddressFormProvider
-import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId}
+import identifiers.register.individual.IndividualPreviousAddressId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode}
@@ -48,34 +48,30 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,
                                                     val countryOptions: CountryOptions,
-                                                    val auditService: AuditService,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: manualAddress
                                                    )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualPreviousAddressController.onSubmit _
-  private[controllers] val title: Message = "individual.previousAddress.heading"
-  private[controllers] val heading: Message = "individual.previousAddress.heading"
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
     countryOptions.options,
-    title = Message(title),
-    heading = Message(heading),
+    title = Message("individual.enter.previous.address.heading"),
+    heading = Message("individual.enter.previous.address.heading"),
     psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode), mode)
+      get(viewmodel(mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode), mode, "Individual Previous Address",
-        IndividualPreviousAddressPostCodeLookupId)
+      post(IndividualPreviousAddressId, viewmodel(mode), mode)
   }
 
 }

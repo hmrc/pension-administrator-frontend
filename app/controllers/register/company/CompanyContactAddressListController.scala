@@ -52,7 +52,7 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
                                                    )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
-    formProvider(addresses, Message("select.address.error.required").withArgs(name))
+    formProvider(addresses, Message("select.address.required.error").withArgs(name))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -63,7 +63,7 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, CompanyContactAddressListId, CompanyContactAddressId, mode,
+      viewmodel(mode).right.map(vm => post(vm, CompanyContactAddressId, CompanyContactAddressPostCodeLookupId, mode,
         form(vm.addresses, entityName)))
   }
 
@@ -74,10 +74,10 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
           postCall = routes.CompanyContactAddressListController.onSubmit(mode),
           manualInputCall = routes.CompanyContactAddressController.onPageLoad(mode),
           addresses = addresses,
-          Message("contactAddressList.heading", Message("theCompany")),
-          Message("contactAddressList.heading", name),
-          Message("common.selectAddress.text"),
-          Message("common.selectAddress.link")
+          Message("select.address.heading", Message("theCompany")),
+          Message("select.address.heading", name),
+          Message("select.address.hint.text"),
+          Message("manual.entry.link")
         )
     }.left.map(_ => Future.successful(Redirect(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode))))
   }

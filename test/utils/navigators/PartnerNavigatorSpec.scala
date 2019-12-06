@@ -48,13 +48,10 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(mode), Some(partnerEnterUtrPage(checkMode(mode)))),
     (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(mode), Some(partnerNoUtrReasonPage(checkMode(mode)))),
     (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), None),
-    (PartnerAddressListId(0), emptyAnswers, addressPage(mode), None),
-    (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(mode), Some(checkYourAnswersPage(mode))),
     (PartnerAddressYearsId(0), addressYearsOverAYear, partnerEmailPage(mode), Some(checkYourAnswersPage(mode))),
     (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(mode), Some(paPostCodePage(checkMode(mode)))),
     (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
     (PartnerPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(mode), None),
-    (PartnerPreviousAddressListId(0), emptyAnswers, previousAddressPage(mode), None),
     (PartnerPreviousAddressId(0), defaultAnswers, partnerEmailPage(mode), Some(checkYourAnswersPage(mode))),
     (PartnerEmailId(0), defaultAnswers, partnerPhonePage(mode), Some(checkYourAnswersPage(mode))),
     (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(mode), Some(checkYourAnswersPage(mode))),
@@ -67,6 +64,7 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
       (PartnerNoNINOReasonId(0), emptyAnswers, partnerHasUtrPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
       (PartnerEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
       (PartnerNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
+      (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
       (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode), None)
     )
 
@@ -79,10 +77,11 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     (PartnerEnterUTRId(0), defaultAnswers, addressPostCodePage(UpdateMode), None),
     (PartnerEnterUTRId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
     (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, None),
+    (PartnerAddressId(0), emptyAnswers, confirmPreviousAddress, None),
     (PartnerAddressYearsId(0), addressYearsOverAYearExistingPartner, anyMoreChangesPage, None),
     (PartnerAddressYearsId(0), addressYearsUnderAYearExistingPartner, confirmPreviousAddress, None),
     (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressSame(0), anyMoreChangesPage, None),
-    (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(0), previousAddressPage(UpdateMode), None),
+    (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(0), paPostCodePage(UpdateMode), None),
     (PartnerPreviousAddressId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
     (PartnerEmailId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
     (PartnerPhoneId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None)

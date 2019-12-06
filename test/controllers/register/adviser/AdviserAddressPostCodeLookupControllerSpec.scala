@@ -96,11 +96,11 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
   def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
     controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
     controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
-    Message("adviserAddressPostCodeLookup.heading", Message("theAdviser")),
-    Message("adviserAddressPostCodeLookup.heading", "Test Adviser Name"),
-    Message("adviserAddressPostCodeLookup.enterPostcode"),
-    Some(Message("adviserAddressPostCodeLookup.enterPostcode.link")),
-    Message("adviserAddressPostCodeLookup.formLabel"),
+    Message("postcode.lookup.heading", Message("theAdviser")),
+    Message("postcode.lookup.heading", "Test Adviser Name"),
+    Message("manual.entry.text"),
+    Some(Message("manual.entry.link")),
+    Message("postcode.lookup.form.label"),
     psaName = None
   )
 

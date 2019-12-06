@@ -56,8 +56,8 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
   private def addressViewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.AdviserAddressController.onSubmit(mode),
     countryOptions.options,
-    Message("common.adviser.address.heading", Message("theAdviser")),
-    Message("common.adviser.address.heading", entityName),
+    Message("enter.address.heading", Message("theAdviser")),
+    Message("enter.address.heading", entityName),
     psaName = psaName()
   )
 
@@ -66,12 +66,12 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(AdviserAddressId, AdviserAddressListId, addressViewModel(mode), mode)
+      get(addressViewModel(mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdviserAddressId, AdviserAddressListId, addressViewModel(mode), mode, "Adviser Address", AdviserAddressPostCodeLookupId)
+      post(AdviserAddressId, addressViewModel(mode), mode)
   }
 
 }

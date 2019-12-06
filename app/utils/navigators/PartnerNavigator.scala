@@ -55,11 +55,9 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case PartnerNoUTRReasonId(index) => checkYourAnswersPage(index, journeyMode(mode))
 
     case PartnerAddressPostCodeLookupId(index) => PartnerAddressListController.onPageLoad(mode, index)
-    case PartnerAddressListId(index) => PartnerAddressController.onPageLoad(mode, index)
     case PartnerAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case PartnerAddressYearsId(index) => partnerAddressYearsCheckRoutes(index, ua, mode)
     case PartnerPreviousAddressPostCodeLookupId(index) => PartnerPreviousAddressListController.onPageLoad(mode, index)
-    case PartnerPreviousAddressListId(index) => PartnerPreviousAddressController.onPageLoad(mode, index)
     case PartnerPreviousAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case PartnerEmailId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case PartnerPhoneId(index) => checkYourAnswersPage(index, journeyMode(mode))
@@ -89,11 +87,10 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case PartnerNoUTRReasonId(index) => utrRoutes(index, ua, mode)
 
     case PartnerAddressPostCodeLookupId(index) => PartnerAddressListController.onPageLoad(mode, index)
-    case PartnerAddressListId(index) => PartnerAddressController.onPageLoad(mode, index)
-    case PartnerAddressId(index) => PartnerAddressYearsController.onPageLoad(mode, index)
+    case PartnerAddressId(index) if mode == NormalMode => PartnerAddressYearsController.onPageLoad(mode, index)
+    case PartnerAddressId(index) => PartnerConfirmPreviousAddressController.onPageLoad(index)
     case PartnerAddressYearsId(index) => partnerAddressYearsRoutes(index, ua, mode)
     case PartnerPreviousAddressPostCodeLookupId(index) => PartnerPreviousAddressListController.onPageLoad(mode, index)
-    case PartnerPreviousAddressListId(index) => PartnerPreviousAddressController.onPageLoad(mode, index)
     case PartnerPreviousAddressId(index) => previousAddressRoutes(index, ua, mode)
     case PartnerEmailId(index) => emailRoutes(index, ua, mode)
     case PartnerPhoneId(index) => phoneRoutes(index, ua, mode)
@@ -113,7 +110,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
   private def confirmPreviousAddressRoutes(index: Int, answers: UserAnswers): Call =
     answers.get(PartnerConfirmPreviousAddressId(index)) match {
       case Some(true) => anyMoreChangesPage
-      case Some(false) => PartnerPreviousAddressController.onPageLoad(UpdateMode, index)
+      case Some(false) => PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index)
       case _ => sessionExpired
     }
 

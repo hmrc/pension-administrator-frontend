@@ -55,11 +55,9 @@ class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigato
     case DirectorNoUTRReasonId(index) => checkYourAnswersPage(index, journeyMode(mode))
 
     case CompanyDirectorAddressPostCodeLookupId(index) => CompanyDirectorAddressListController.onPageLoad(mode, index)
-    case CompanyDirectorAddressListId(index) => DirectorAddressController.onPageLoad(mode, index)
     case DirectorAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case DirectorAddressYearsId(index) => directorAddressYearsCheckRoutes(index, ua, journeyMode(mode))
     case DirectorPreviousAddressPostCodeLookupId(index) => DirectorPreviousAddressListController.onPageLoad(mode, index)
-    case DirectorPreviousAddressListId(index) => DirectorPreviousAddressController.onPageLoad(mode, index)
     case DirectorPreviousAddressId(index) => checkYourAnswersPage(index, journeyMode(mode))
 
     case DirectorEmailId(index) => checkYourAnswersPage(index, journeyMode(mode))
@@ -93,12 +91,11 @@ class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigato
     case DirectorNoUTRReasonId(index) => utrRoutes(index, ua, mode)
 
     case CompanyDirectorAddressPostCodeLookupId(index) => CompanyDirectorAddressListController.onPageLoad(mode, index)
-    case CompanyDirectorAddressListId(index) => DirectorAddressController.onPageLoad(mode, index)
-    case DirectorAddressId(index) => DirectorAddressYearsController.onPageLoad(mode, index)
+    case DirectorAddressId(index) if mode == NormalMode => DirectorAddressYearsController.onPageLoad(mode, index)
+    case DirectorAddressId(index) => DirectorConfirmPreviousAddressController.onPageLoad(index)
 
     case DirectorAddressYearsId(index) => directorAddressYearsRoutes(index, ua, mode)
     case DirectorPreviousAddressPostCodeLookupId(index) => DirectorPreviousAddressListController.onPageLoad(mode, index)
-    case DirectorPreviousAddressListId(index) => DirectorPreviousAddressController.onPageLoad(mode, index)
     case DirectorPreviousAddressId(index) => previousAddressRoutes(index, ua, mode)
 
     case DirectorEmailId(index) => emailRoutes(index, ua, mode)
@@ -148,7 +145,7 @@ class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigato
   private def confirmPreviousAddressRoutes(index: Int, answers: UserAnswers): Call =
     answers.get(DirectorConfirmPreviousAddressId(index)) match {
       case Some(true) => anyMoreChangesPage
-      case Some(false) => DirectorPreviousAddressController.onPageLoad(UpdateMode, index)
+      case Some(false) => DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index)
       case _ => sessionExpired
     }
 

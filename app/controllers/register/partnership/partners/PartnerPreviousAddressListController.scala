@@ -54,7 +54,7 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.right.flatMap { pn =>
-        viewModel(mode, index).right.map { vm =>
+        viewModel(mode, index, pn.fullName).right.map { vm =>
           get(vm, mode, form(vm.addresses, pn.fullName))
         }
       }
@@ -63,22 +63,22 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.right.flatMap { pn =>
-        viewModel(mode, index).right.map(vm =>
-          post(vm, PartnerPreviousAddressListId(index), PartnerPreviousAddressId(index), mode, form(vm.addresses, pn.fullName)))
+        viewModel(mode, index, pn.fullName).right.map(vm =>
+          post(vm, PartnerPreviousAddressId(index), PartnerPreviousAddressPostCodeLookupId(index), mode, form(vm.addresses, pn.fullName)))
       }
   }
 
-  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+  private def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
     PartnerPreviousAddressPostCodeLookupId(index).retrieve.right.map {
       addresses =>
         AddressListViewModel(
           postCall = routes.PartnerPreviousAddressListController.onSubmit(mode, index),
           manualInputCall = routes.PartnerPreviousAddressController.onPageLoad(mode, index),
           addresses = addresses,
-          Message("common.previousAddressList.title"),
-          Message("common.previousAddressList.heading"),
-          Message("common.selectAddress.text"),
-          Message("common.selectAddress.link"),
+          Message("select.previous.address.heading", Message("thePartner")),
+          Message("select.previous.address.heading", name),
+          Message("select.address.hint.text"),
+          Message("manual.entry.link"),
           psaName = psaName()
         )
     }.left.map(_ => Future.successful(Redirect(routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode, index))))

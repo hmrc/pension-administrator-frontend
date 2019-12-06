@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
@@ -24,7 +23,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import controllers.{Retrievals, Variations}
 import forms.AddressFormProvider
-import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId}
+import identifiers.register.company.directors.DirectorAddressId
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
@@ -47,7 +46,6 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
                                           requireData: DataRequiredAction,
                                           formProvider: AddressFormProvider,
                                           countryOptions: CountryOptions,
-                                          val auditService: AuditService,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: manualAddress
                                          )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals with Variations {
@@ -58,8 +56,8 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
                               (implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.DirectorAddressController.onSubmit(mode, index),
     countryOptions.options,
-    Message("contactAddress.heading", Message("theDirector").resolve),
-    Message("contactAddress.heading", directorName),
+    Message("enter.address.heading", Message("theDirector").resolve),
+    Message("enter.address.heading", directorName),
     psaName = psaName()
   )
 
@@ -67,7 +65,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
     implicit request =>
       retrieveDirectorName(index) {
         directorName =>
-          get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName), mode)
+          get(addressViewModel(mode, index, directorName), mode)
       }
   }
 
@@ -76,8 +74,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
       retrieveDirectorName(index) {
         directorName =>
           val vm = addressViewModel(mode, index, directorName)
-          post(DirectorAddressId(index), CompanyDirectorAddressListId(index), vm, mode, s"Company Director Address: $directorName",
-            CompanyDirectorAddressPostCodeLookupId(index))
+          post(DirectorAddressId(index), vm, mode)
       }
   }
 

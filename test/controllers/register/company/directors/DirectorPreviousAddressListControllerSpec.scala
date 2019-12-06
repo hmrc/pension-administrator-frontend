@@ -85,10 +85,10 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
       postCall = routes.DirectorPreviousAddressListController.onSubmit(NormalMode, firstIndex),
       manualInputCall = routes.DirectorPreviousAddressController.onPageLoad(NormalMode, firstIndex),
       addresses = addresses,
-      Message("previousAddressList.heading", Message("theDirector").resolve),
-      Message("previousAddressList.heading", director.fullName),
-      Message("common.selectAddress.text"),
-      Message("common.selectAddress.link")
+      Message("select.previous.address.heading", Message("theDirector").resolve),
+      Message("select.previous.address.heading", director.fullName),
+      Message("select.address.hint.text"),
+      Message("manual.entry.link")
     )
 
   private def viewAsString(form: Form[_] = form): String =

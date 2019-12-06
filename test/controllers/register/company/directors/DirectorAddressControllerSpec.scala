@@ -79,7 +79,6 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
 
   private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  private val auditService = new StubSuccessfulAuditService()
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
@@ -93,7 +92,6 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      auditService,
       stubMessagesControllerComponents(),
       view
     )
@@ -101,8 +99,8 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
   private val viewModel = ManualAddressViewModel(
     routes.DirectorAddressController.onSubmit(NormalMode, firstIndex),
     countryOptions.options,
-    Message("contactAddress.heading", Message("theDirector").resolve),
-    Message("contactAddress.heading", jonathanDoe.fullName)
+    Message("enter.address.heading", Message("theDirector").resolve),
+    Message("enter.address.heading", jonathanDoe.fullName)
   )
 
   private def viewAsString(form: Form[_] = form) =
@@ -121,12 +119,6 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       contentAsString(result) mustBe viewAsString()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val result = controller(dataWithAddresses).onPageLoad(NormalMode, firstIndex)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(doeResidence))
-    }
-
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("addressLine1", "value 1"),
@@ -139,57 +131,6 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "send an audit event when valid data is submitted" in {
-
-      val existingAddress = Address(
-        "existing-line-1",
-        "existing-line-2",
-        None,
-        None,
-        None,
-        "existing-country"
-      )
-
-      val selectedAddress = TolerantAddress(None, None, None, None, None, None)
-
-      val data =
-        UserAnswers()
-          .directorAddress(firstIndex, existingAddress)
-          .companyDirectorAddressList(firstIndex, selectedAddress)
-          .dataRetrievalAction
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("addressLine1", "value 1"),
-        ("addressLine2", "value 2"),
-        ("postCode", "NE1 1NE"),
-        "country" -> "GB"
-      )
-
-      auditService.reset()
-
-      val result = controller(data).onSubmit(NormalMode, firstIndex)(postRequest)
-
-      whenReady(result) {
-        _ =>
-          auditService.verifySent(
-            AddressEvent(
-              FakeAuthAction.externalId,
-              AddressAction.LookupChanged,
-              s"Company Director Address: ${jonathanDoe.fullName}",
-              Address(
-                "value 1",
-                "value 2",
-                None,
-                None,
-                Some("NE1 1NE"),
-                "GB"
-              )
-            )
-          )
-      }
-
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

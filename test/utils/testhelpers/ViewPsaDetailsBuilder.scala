@@ -56,7 +56,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if(noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), false,
-        Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(UpdateMode).url, "site.add")))
+        Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
         None)
@@ -79,7 +79,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if(noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
-        Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(UpdateMode).url, "site.add")))
+        Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
         None)
@@ -118,7 +118,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if(noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
-        Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(UpdateMode).url, "site.add")))
+        Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
         None)
@@ -153,7 +153,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("utr.label", Seq("site.not_entered"), false,
       Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-      Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(UpdateMode, 0).url, "site.add")))
+      Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url, "site.add")))
   )
 
   val partnersSeqAnswersWithAddLinks = Seq(
@@ -164,7 +164,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("utr.label", Seq("site.not_entered"), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressController.onPageLoad(UpdateMode, 0).url, "site.add")))
+      Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url, "site.add")))
   )
 
   val pensionAdviserSuperSection = SuperSection(

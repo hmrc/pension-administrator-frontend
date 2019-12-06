@@ -55,11 +55,11 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
     routes.IndividualContactAddressPostCodeLookupController.onSubmit(mode),
     routes.IndividualContactAddressController.onPageLoad(mode),
-    Message("individualContactAddressPostCodeLookup.title"),
-    Message("individualContactAddressPostCodeLookup.heading"),
-    Message("individualContactAddressPostCodeLookup.enterPostcode"),
-    Some(Message("individualContactAddressPostCodeLookup.enterPostcode.link")),
-    Message("individualContactAddressPostCodeLookup.formLabel"),
+    Message("individual.postcode.lookup.heading"),
+    Message("individual.postcode.lookup.heading"),
+    Message("manual.entry.text"),
+    Some(Message("manual.entry.link")),
+    Message("postcode.lookup.form.label"),
     psaName = psaName(),
     findAddressMessageKey = "site.save_and_continue"
   )

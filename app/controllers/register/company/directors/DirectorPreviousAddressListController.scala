@@ -60,7 +60,7 @@ class DirectorPreviousAddressListController @Inject()(override val appConfig: Fr
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(vm => post(vm, DirectorPreviousAddressListId(index), DirectorPreviousAddressId(index),
+      viewModel(mode, index).right.map(vm => post(vm, DirectorPreviousAddressId(index), DirectorPreviousAddressPostCodeLookupId(index),
         mode, form(vm.addresses, entityName(index))))
   }
 
@@ -70,10 +70,10 @@ class DirectorPreviousAddressListController @Inject()(override val appConfig: Fr
         postCall = routes.DirectorPreviousAddressListController.onSubmit(mode, index),
         manualInputCall = routes.DirectorPreviousAddressController.onPageLoad(mode, index),
         addresses = addresses,
-        Message("previousAddressList.heading", Message("theDirector").resolve),
-        Message("previousAddressList.heading", entityName(index)),
-        Message("common.selectAddress.text"),
-        Message("common.selectAddress.link"),
+        Message("select.previous.address.heading", Message("theDirector").resolve),
+        Message("select.previous.address.heading", entityName(index)),
+        Message("select.address.hint.text"),
+        Message("manual.entry.link"),
         psaName()
       )
     }.left.map(_ => Future.successful(Redirect(routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(mode, index))))

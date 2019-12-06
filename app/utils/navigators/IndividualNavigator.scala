@@ -45,11 +45,9 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualSameContactAddressId => contactAddressRoutes(ua, NormalMode)
 
     case IndividualContactAddressPostCodeLookupId => IndividualContactAddressListController.onPageLoad(NormalMode)
-    case IndividualContactAddressListId => IndividualContactAddressController.onPageLoad(NormalMode)
     case IndividualContactAddressId => IndividualAddressYearsController.onPageLoad(NormalMode)
     case IndividualAddressYearsId => addressYearsRoutes(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(NormalMode)
-    case IndividualPreviousAddressListId => IndividualPreviousAddressController.onPageLoad(NormalMode)
     case IndividualPreviousAddressId => IndividualEmailController.onPageLoad(NormalMode)
 
     case IndividualEmailId => IndividualPhoneController.onPageLoad(NormalMode)
@@ -66,11 +64,9 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualDateOfBirthId => checkYourAnswers
     case IndividualSameContactAddressId => contactAddressRoutes(ua, CheckMode)
     case IndividualContactAddressPostCodeLookupId => IndividualContactAddressListController.onPageLoad(CheckMode)
-    case IndividualContactAddressListId => IndividualContactAddressController.onPageLoad(CheckMode)
     case IndividualContactAddressId => IndividualAddressYearsController.onPageLoad(CheckMode)
     case IndividualAddressYearsId => addressYearsRouteCheckMode(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(CheckMode)
-    case IndividualPreviousAddressListId => IndividualPreviousAddressController.onPageLoad(CheckMode)
     case IndividualPreviousAddressId => checkYourAnswers
     case IndividualEmailId => checkYourAnswers
     case IndividualPhoneId => checkYourAnswers
@@ -80,12 +76,10 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
   //noinspection ScalaStyle
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case IndividualContactAddressPostCodeLookupId => IndividualContactAddressListController.onPageLoad(UpdateMode)
-    case IndividualContactAddressListId => IndividualContactAddressController.onPageLoad(UpdateMode)
-    case IndividualContactAddressId => IndividualAddressYearsController.onPageLoad(UpdateMode)
+    case IndividualContactAddressId => IndividualConfirmPreviousAddressController.onPageLoad()
     case IndividualAddressYearsId => addressYearsRoutesUpdateMode(ua)
     case IndividualConfirmPreviousAddressId => confirmPreviousAddressRoutes(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(UpdateMode)
-    case IndividualPreviousAddressListId => IndividualPreviousAddressController.onPageLoad(UpdateMode)
     case IndividualPreviousAddressId => anyMoreChanges
     case IndividualEmailId => anyMoreChanges
     case IndividualPhoneId => anyMoreChanges
@@ -134,7 +128,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call =
     answers.get(IndividualConfirmPreviousAddressId) match {
       case Some(true) => anyMoreChanges
-      case Some(false) => IndividualPreviousAddressController.onPageLoad(UpdateMode)
+      case Some(false) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
       case _ => SessionExpiredController.onPageLoad()
     }
 

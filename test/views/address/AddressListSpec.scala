@@ -20,13 +20,14 @@ import forms.address.AddressListFormProvider
 import models.{Mode, NormalMode, TolerantAddress, UpdateMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.behaviours.ViewBehaviours
 import views.html.address.addressList
 
 class AddressListSpec extends ViewBehaviours {
 
-  private val messageKeyPrefix = "common.selectAddress"
+  private val messageKeyPrefix = "select.address"
 
   private val form = new AddressListFormProvider()(Nil, "error.required")
 
@@ -34,7 +35,8 @@ class AddressListSpec extends ViewBehaviours {
   private val addressIndexes = Seq.range(0, 2)
   private val call = controllers.routes.IndexController.onPageLoad()
 
-  private val viewModel = AddressListViewModel(call, call, addresses, psaName = Some("test-psa"))
+  private val viewModel = AddressListViewModel(call, call, addresses,
+    Message("select.address.heading"), Message("select.address.heading"), psaName = Some("test-psa"))
 
   def address(postCode: String): TolerantAddress = TolerantAddress(
     Some("address line 1"),
@@ -61,7 +63,7 @@ class AddressListSpec extends ViewBehaviours {
     )(fakeRequest, messages)
 
   "AddressListView view" must {
-    behave like normalPage(createView(), messageKeyPrefix)
+    behave like normalPageWithTitle(createView(), messageKeyPrefix, Message("select.address.heading"), Message("select.address.heading"))
 
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 

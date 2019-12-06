@@ -36,7 +36,7 @@ class AdviserNavigator @Inject() extends Navigator {
     case AdviserNameId => checkYourAnswers(journeyMode(mode))
     case AdviserEmailId => checkYourAnswers(journeyMode(mode))
     case AdviserPhoneId => checkYourAnswers(journeyMode(mode))
-    case AdviserAddressPostCodeLookupId => AdviserAddressListController.onPageLoad(journeyMode(mode))
+    case AdviserAddressPostCodeLookupId => AdviserAddressListController.onPageLoad(mode)
     case AdviserAddressListId => AdviserAddressController.onPageLoad(journeyMode(mode))
     case AdviserAddressId => checkYourAnswers(journeyMode(mode))
   }

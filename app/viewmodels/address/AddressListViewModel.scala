@@ -24,10 +24,10 @@ case class AddressListViewModel(
                                  postCall: Call,
                                  manualInputCall: Call,
                                  addresses: Seq[TolerantAddress],
-                                 title: Message = Message("common.selectAddress.title"),
-                                 heading: Message = Message("common.selectAddress.heading"),
-                                 selectAddress: Message = Message("common.selectAddress.text"),
-                                 selectAddressLink: Message = Message("common.selectAddress.link"),
+                                 title: Message,
+                                 heading: Message,
+                                 selectAddress: Message = Message("select.address.hint.text"),
+                                 selectAddressLink: Message = Message("manual.entry.link"),
                                  psaName: Option[String] = None,
                                  selectAddressPostLink: Option[Message] = None
                                )

@@ -60,7 +60,7 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(vm => post(vm, CompanyDirectorAddressListId(index), DirectorAddressId(index), mode,
+      viewModel(mode, index).right.map(vm => post(vm, DirectorAddressId(index), CompanyDirectorAddressPostCodeLookupId(index), mode,
         form(vm.addresses, entityName(index))))
   }
 
@@ -70,10 +70,10 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
         postCall = routes.CompanyDirectorAddressListController.onSubmit(mode, index),
         manualInputCall = routes.DirectorAddressController.onPageLoad(mode, index),
         addresses = addresses,
-        Message("contactAddressList.heading", Message("theDirector").resolve),
-        Message("contactAddressList.heading", entityName(index)),
-        Message("common.selectAddress.text"),
-        Message("common.selectAddress.link"),
+        Message("select.address.heading", Message("theDirector").resolve),
+        Message("select.address.heading", entityName(index)),
+        Message("select.address.hint.text"),
+        Message("manual.entry.link"),
         psaName = psaName()
       )
     }.left.map(_ => Future.successful(Redirect(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode, index))))

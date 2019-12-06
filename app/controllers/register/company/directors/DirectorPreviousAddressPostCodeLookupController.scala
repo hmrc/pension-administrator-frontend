@@ -74,11 +74,11 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
     PostcodeLookupViewModel(
       routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode, index),
       routes.DirectorPreviousAddressController.onPageLoad(mode, index),
-      Message("directorPreviousAddressPostCodeLookup.heading", Message("theDirector").resolve),
-      Message("directorPreviousAddressPostCodeLookup.heading", directorName),
-      Message("common.postcodeLookup.enterPostcode"),
-      Some(Message("common.postcodeLookup.enterPostcode.link")),
-      Message("address.postcode"),
+      Message("previous.postcode.lookup.heading", Message("theDirector").resolve),
+      Message("previous.postcode.lookup.heading", directorName),
+      Message("manual.entry.text"),
+      Some(Message("manual.entry.link")),
+      Message("postcode.lookup.form.label"),
       psaName()
     )
   }

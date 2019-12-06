@@ -49,8 +49,8 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
   val addressViewModel: ManualAddressViewModel = ManualAddressViewModel(
     postCall = routes.AdviserAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
-    Message("common.adviser.address.heading", Message("theAdviser")),
-    Message("common.adviser.address.heading", name)
+    Message("enter.address.heading", Message("theAdviser")),
+    Message("enter.address.heading", name)
   )
 
   val fakeAuditService = new StubSuccessfulAuditService()
@@ -62,17 +62,6 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(
-        AdviserNameId.toString -> name,
-        AdviserAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(Address("value 1", "value 2", None, None, None, "GB")))
     }
 
     "redirect to the next page when valid data is submitted" in {

@@ -24,7 +24,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.company.directors.{DirectorPreviousAddressId, DirectorPreviousAddressListId, DirectorPreviousAddressPostCodeLookupId}
+import identifiers.register.company.directors.DirectorPreviousAddressId
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
@@ -58,7 +58,7 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
     implicit request =>
       retrieveDirectorName(index) {
         directorName =>
-          get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName), mode)
+          get(addressViewModel(mode, index, directorName), mode)
       }
   }
 
@@ -67,8 +67,7 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
       retrieveDirectorName(index) {
         directorName =>
           val vm = addressViewModel(mode, index, directorName)
-          post(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), vm, mode, "Company Director Previous Address",
-            DirectorPreviousAddressPostCodeLookupId(index))
+          post(DirectorPreviousAddressId(index), vm, mode)
       }
   }
 
@@ -76,8 +75,8 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
     ManualAddressViewModel(
       routes.DirectorPreviousAddressController.onSubmit(mode, index),
       countryOptions.options,
-      Message("directorPreviousAddress.heading", Message("theDirector").resolve.capitalize),
-      Message("directorPreviousAddress.heading", directorName),
+      Message("enter.previous.address.heading", Message("theDirector").resolve.capitalize),
+      Message("enter.previous.address.heading", directorName),
       psaName = psaName()
     )
   }

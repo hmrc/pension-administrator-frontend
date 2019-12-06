@@ -16,8 +16,6 @@
 
 package controllers.register.partnership
 
-import audit.testdoubles.StubSuccessfulAuditService
-import audit.{AddressAction, AddressEvent}
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -45,7 +43,7 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
 
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
-  val messagePrefix = "partnership.contactAddress"
+  val messagePrefix = "enter.address"
   val partnershipName = "Test Partnership Name"
 
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
@@ -54,12 +52,9 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
   val viewmodel = ManualAddressViewModel(
     postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
-    title = Message(s"$messagePrefix.title"),
-    heading = Message(s"$messagePrefix.heading").withArgs(partnershipName),
-    hint = Some(Message(s"$messagePrefix.hint").withArgs(partnershipName))
+    title = Message(s"$messagePrefix.heading"),
+    heading = Message(s"$messagePrefix.heading").withArgs(partnershipName)
   )
-
-  val fakeAuditService = new StubSuccessfulAuditService()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipContactAddressController(
@@ -72,7 +67,6 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      fakeAuditService,
       stubMessagesControllerComponents(),
       view
     )
@@ -88,17 +82,6 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
       contentAsString(result) mustBe viewAsString()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = UserAnswers()
-        .businessName(partnershipName)
-        .partnershipContactAddress(Address("value 1", "value 2", None, None, None, "GB"))
-        .dataRetrievalAction
-
-      val result = controller(validData).onPageLoad(NormalMode)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(Address("value 1", "value 2", None, None, None, "GB")))
-    }
-
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("addressLine1", "value 1"),
@@ -111,57 +94,6 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "send an audit event when valid data is submitted" in {
-
-      val existingAddress = Address(
-        "existing-line-1",
-        "existing-line-2",
-        None,
-        None,
-        None,
-        "existing-country"
-      )
-
-      val selectedAddress = TolerantAddress(None, None, None, None, None, None)
-
-      val data =
-        UserAnswers()
-          .companyContactAddress(existingAddress)
-          .companyContactAddressList(selectedAddress)
-          .dataRetrievalAction
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("addressLine1", "value 1"),
-        ("addressLine2", "value 2"),
-        ("postCode", "NE1 1NE"),
-        "country" -> "GB"
-      )
-
-      fakeAuditService.reset()
-
-      val result = controller(data).onSubmit(NormalMode)(postRequest)
-
-      whenReady(result) {
-        _ =>
-          fakeAuditService.verifySent(
-            AddressEvent(
-              FakeAuthAction.externalId,
-              AddressAction.LookupChanged,
-              "Partnership Contact Address",
-              Address(
-                "value 1",
-                "value 2",
-                None,
-                None,
-                Some("NE1 1NE"),
-                "GB"
-              )
-            )
-          )
-      }
-
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
@@ -47,7 +46,6 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
                                                 requireData: DataRequiredAction,
                                                 formProvider: AddressFormProvider,
                                                 val countryOptions: CountryOptions,
-                                                val auditService: AuditService,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 val view: manualAddress
                                                )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
@@ -60,9 +58,8 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
         ManualAddressViewModel(
           routes.CompanyContactAddressController.onSubmit(mode),
           countryOptions.options,
-          Message("companyContactAddress.heading", Message("theCompany").resolve),
-          Message("companyContactAddress.heading", companyName),
-          Some(Message("companyContactAddress.lede", companyName)),
+          Message("enter.address.heading", Message("theCompany").resolve),
+          Message("enter.address.heading", companyName),
           psaName = psaName()
         )
       }
@@ -71,14 +68,13 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       addressViewModel(mode).retrieve.right.map(vm =>
-        get(CompanyContactAddressId, CompanyContactAddressListId, vm, mode))
+        get(vm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       addressViewModel(mode).retrieve.right.map(vm =>
-        post(CompanyContactAddressId, CompanyContactAddressListId, vm, mode, "Company Contact Address",
-          CompanyContactAddressPostCodeLookupId))
+        post(CompanyContactAddressId, vm, mode))
   }
 
 }

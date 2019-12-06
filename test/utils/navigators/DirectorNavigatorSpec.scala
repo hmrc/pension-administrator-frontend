@@ -49,13 +49,10 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (HasDirectorUTRId(0), hasUtrYes, directorEnterUtrPage(mode), Some(directorEnterUtrPage(checkMode(mode)))),
     (HasDirectorUTRId(0), hasUtrNo, directorNoUtrReasonPage(mode), Some(directorNoUtrReasonPage(checkMode(mode)))),
     (CompanyDirectorAddressPostCodeLookupId(index), emptyAnswers, addressListPage(mode), None),
-    (CompanyDirectorAddressListId(index), emptyAnswers, addressPage(mode), None),
-    (DirectorAddressId(index), emptyAnswers, directorAddressYearsPage(mode), Some(checkYourAnswersPage(mode))),
     (DirectorAddressYearsId(index), addressYearsOverAYear, directorEmailPage(mode), Some(checkYourAnswersPage(mode))),
     (DirectorAddressYearsId(index), addressYearsUnderAYear, paPostCodePage(mode), Some(paPostCodePage(checkMode(mode)))),
     (DirectorAddressYearsId(index), emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
     (DirectorPreviousAddressPostCodeLookupId(index), emptyAnswers, paAddressListPage(mode), None),
-    (DirectorPreviousAddressListId(index), emptyAnswers, previousAddressPage(mode), None),
     (DirectorPreviousAddressId(index), defaultAnswers, directorEmailPage(mode), Some(checkYourAnswersPage(mode))),
     (DirectorEmailId(index), defaultAnswers, directorPhonePage(mode), Some(checkYourAnswersPage(mode))),
     (DirectorPhoneId(index), defaultAnswers, checkYourAnswersPage(mode), Some(checkYourAnswersPage(mode))),
@@ -68,6 +65,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (DirectorNoNINOReasonId(index), emptyAnswers, directorHasUtrPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
     (DirectorEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
     (DirectorNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
+    (DirectorAddressId(index), emptyAnswers, directorAddressYearsPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
     (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode), None)
   )
 
@@ -82,9 +80,10 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
     (DirectorEnterUTRId(0), existingDirectorInUpdate(0), anyMoreChangesPage, None),
     (DirectorNoUTRReasonId(0), defaultAnswers, addressPostCodePage(UpdateMode), None),
     (DirectorNoUTRReasonId(0), existingDirectorInUpdate(0), anyMoreChangesPage, None),
+    (DirectorAddressId(index), emptyAnswers, confirmPreviousAddressPage, None),
     (DirectorAddressYearsId(index), addressYearsOverAYearExistingDirector, anyMoreChangesPage, None),
     (DirectorAddressYearsId(index), addressYearsUnderAYearExistingDirector, confirmPreviousAddressPage, None),
-    (DirectorConfirmPreviousAddressId(index), confirmPreviousAddressNotSame, previousAddressPage(UpdateMode), None),
+    (DirectorConfirmPreviousAddressId(index), confirmPreviousAddressNotSame, paPostCodePage(UpdateMode), None),
     (DirectorConfirmPreviousAddressId(index), confirmPreviousAddressSame, anyMoreChangesPage, None),
     (DirectorPreviousAddressId(index), existingDirectorInUpdate(index), anyMoreChangesPage, None),
     (DirectorEmailId(index), existingDirectorInUpdate(index), anyMoreChangesPage, None),

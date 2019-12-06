@@ -159,7 +159,7 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
                 address.country
               ),
               answerIsMessageKey = false,
-              Some(Link(DirectorAddressController.onPageLoad(checkMode(mode), index).url)),
+              Some(Link(CompanyDirectorAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url)),
               visuallyHiddenLabel = Some(Message("address.visuallyHidden.text", defaultDirectorName))
             ),
             answerRow(Message("addressYears.heading", defaultDirectorName),
@@ -175,7 +175,7 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
                 address.country
               ),
               answerIsMessageKey = false,
-              Some(Link(DirectorPreviousAddressController.onPageLoad(checkMode(mode), index).url)),
+              Some(Link(DirectorPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url)),
               visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultDirectorName)))
           )
 

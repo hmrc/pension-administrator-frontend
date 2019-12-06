@@ -147,7 +147,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             address.country
           ),
           answerIsMessageKey = false,
-          Some(Link(controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url)),
+          Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
           visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultCompany))))
 
         val sections = answerSections(None, rows)
@@ -189,7 +189,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             address.postcode.value,
             address.country
           ), answerIsMessageKey = false,
-          Some(Link(controllers.register.company.routes.CompanyPreviousAddressController.onPageLoad(CheckMode).url)),
+          Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
           visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultCompany))))
 
         val sections = answerSections(None, rows)

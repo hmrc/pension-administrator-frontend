@@ -64,9 +64,9 @@ class CheckYourAnswersController @Inject()(
             HasDirectorUTRId(index).row(Some(Link(HasDirectorUTRController.onPageLoad(checkMode(mode), index).url))) ++
             DirectorEnterUTRId(index).row(Some(Link(DirectorEnterUTRController.onPageLoad(checkMode(mode), index).url))) ++
             DirectorNoUTRReasonId(index).row(Some(Link(DirectorNoUTRReasonController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorAddressId(index).row(Some(Link(DirectorAddressController.onPageLoad(checkMode(mode), index).url))) ++
+            DirectorAddressId(index).row(Some(Link(CompanyDirectorAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url))) ++
             DirectorAddressYearsId(index).row(Some(Link(routes.DirectorAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorPreviousAddressId(index).row(Some(Link(DirectorPreviousAddressController.onPageLoad(checkMode(mode), index).url))) ++
+            DirectorPreviousAddressId(index).row(Some(Link(DirectorPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url))) ++
             DirectorEmailId(index).row(Some(Link(DirectorEmailController.onPageLoad(checkMode(mode), index).url))) ++
             DirectorPhoneId(index).row(Some(Link(DirectorPhoneController.onPageLoad(checkMode(mode), index).url)))
         ))

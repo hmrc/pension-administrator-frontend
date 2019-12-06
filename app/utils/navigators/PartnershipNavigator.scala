@@ -62,8 +62,6 @@ class PartnershipNavigator @Inject()(
       sameContactAddress(NormalMode, ua)
     case PartnershipContactAddressPostCodeLookupId =>
       PartnershipContactAddressListController.onPageLoad(NormalMode)
-    case PartnershipContactAddressListId =>
-      PartnershipContactAddressController.onPageLoad(NormalMode)
     case PartnershipContactAddressId =>
       PartnershipAddressYearsController.onPageLoad(NormalMode)
     case PartnershipAddressYearsId =>
@@ -72,8 +70,6 @@ class PartnershipNavigator @Inject()(
       tradingOverAYearRoutes(ua, NormalMode)
     case PartnershipPreviousAddressPostCodeLookupId =>
       PartnershipPreviousAddressListController.onPageLoad(NormalMode)
-    case PartnershipPreviousAddressListId =>
-      PartnershipPreviousAddressController.onPageLoad(NormalMode)
     case PartnershipPreviousAddressId =>
       PartnershipEmailController.onPageLoad(NormalMode)
     case PartnershipEmailId =>
@@ -89,63 +85,55 @@ class PartnershipNavigator @Inject()(
   }
 
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
-      case HasPAYEId if hasPaye(ua) =>
-        PartnershipEnterPAYEController.onPageLoad(CheckMode)
-      case HasPAYEId =>
-        CheckYourAnswersController.onPageLoad()
-      case EnterPAYEId =>
-        CheckYourAnswersController.onPageLoad()
-      case HasVATId =>
-        vatNavigation(ua, mode)
-      case EnterVATId =>
-        CheckYourAnswersController.onPageLoad()
-      case PartnershipSameContactAddressId =>
-        sameContactAddress(CheckMode, ua)
-      case PartnershipContactAddressPostCodeLookupId =>
-        PartnershipContactAddressListController.onPageLoad(CheckMode)
-      case PartnershipContactAddressListId =>
-        PartnershipContactAddressController.onPageLoad(CheckMode)
-      case PartnershipContactAddressId =>
-        PartnershipAddressYearsController.onPageLoad(CheckMode)
-      case PartnershipAddressYearsId =>
-        addressYearsRoutes(ua, CheckMode)
-      case PartnershipTradingOverAYearId =>
-        tradingOverAYearRoutes(ua, CheckMode)
-      case PartnershipPreviousAddressPostCodeLookupId =>
-        PartnershipPreviousAddressListController.onPageLoad(CheckMode)
-      case PartnershipPreviousAddressListId =>
-        PartnershipPreviousAddressController.onPageLoad(CheckMode)
-      case PartnershipPreviousAddressId =>
-        CheckYourAnswersController.onPageLoad()
-      case PartnershipEmailId =>
-        CheckYourAnswersController.onPageLoad()
-      case PartnershipPhoneId =>
-        CheckYourAnswersController.onPageLoad()
+    case HasPAYEId if hasPaye(ua) =>
+      PartnershipEnterPAYEController.onPageLoad(CheckMode)
+    case HasPAYEId =>
+      CheckYourAnswersController.onPageLoad()
+    case EnterPAYEId =>
+      CheckYourAnswersController.onPageLoad()
+    case HasVATId =>
+      vatNavigation(ua, mode)
+    case EnterVATId =>
+      CheckYourAnswersController.onPageLoad()
+    case PartnershipSameContactAddressId =>
+      sameContactAddress(CheckMode, ua)
+    case PartnershipContactAddressPostCodeLookupId =>
+      PartnershipContactAddressListController.onPageLoad(CheckMode)
+    case PartnershipContactAddressId =>
+      CheckYourAnswersController.onPageLoad()
+    case PartnershipAddressYearsId =>
+      addressYearsRoutes(ua, CheckMode)
+    case PartnershipTradingOverAYearId =>
+      tradingOverAYearRoutes(ua, CheckMode)
+    case PartnershipPreviousAddressPostCodeLookupId =>
+      PartnershipPreviousAddressListController.onPageLoad(CheckMode)
+    case PartnershipPreviousAddressId =>
+      CheckYourAnswersController.onPageLoad()
+    case PartnershipEmailId =>
+      CheckYourAnswersController.onPageLoad()
+    case PartnershipPhoneId =>
+      CheckYourAnswersController.onPageLoad()
   }
 
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
-      case PartnershipContactAddressPostCodeLookupId =>
-        PartnershipContactAddressListController.onPageLoad(UpdateMode)
-      case PartnershipContactAddressListId =>
-        PartnershipContactAddressController.onPageLoad(UpdateMode)
-      case PartnershipContactAddressId =>
-        PartnershipAddressYearsController.onPageLoad(UpdateMode)
-      case PartnershipAddressYearsId =>
-        addressYearsRoutes(ua, UpdateMode)
-      case PartnershipTradingOverAYearId =>
-        tradingOverAYearRoutes(ua, UpdateMode)
-      case PartnershipPreviousAddressPostCodeLookupId =>
-        PartnershipPreviousAddressListController.onPageLoad(UpdateMode)
-      case PartnershipPreviousAddressListId =>
-        PartnershipPreviousAddressController.onPageLoad(UpdateMode)
-      case PartnershipPreviousAddressId =>
-        AnyMoreChangesController.onPageLoad()
-      case PartnershipConfirmPreviousAddressId =>
-        variationManualPreviousAddressRoutes(ua, UpdateMode)
-      case PartnershipPhoneId =>
-        controllers.register.routes.AnyMoreChangesController.onPageLoad()
-      case PartnershipEmailId =>
-        controllers.register.routes.AnyMoreChangesController.onPageLoad()
+    case PartnershipContactAddressPostCodeLookupId =>
+      PartnershipContactAddressListController.onPageLoad(UpdateMode)
+    case PartnershipContactAddressId =>
+      PartnershipConfirmPreviousAddressController.onPageLoad()
+    case PartnershipAddressYearsId =>
+      addressYearsRoutes(ua, UpdateMode)
+    case PartnershipTradingOverAYearId =>
+      tradingOverAYearRoutes(ua, UpdateMode)
+    case PartnershipPreviousAddressPostCodeLookupId =>
+      PartnershipPreviousAddressListController.onPageLoad(UpdateMode)
+    case PartnershipPreviousAddressId =>
+      AnyMoreChangesController.onPageLoad()
+    case PartnershipConfirmPreviousAddressId =>
+      variationManualPreviousAddressRoutes(ua, UpdateMode)
+    case PartnershipPhoneId =>
+      controllers.register.routes.AnyMoreChangesController.onPageLoad()
+    case PartnershipEmailId =>
+      controllers.register.routes.AnyMoreChangesController.onPageLoad()
     }
 
   private def addressYearsRoutes(answers: UserAnswers, mode: Mode): Call = {
@@ -231,7 +219,7 @@ class PartnershipNavigator @Inject()(
 
   private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode: Mode): Call = {
     answers.get(PartnershipConfirmPreviousAddressId) match {
-      case Some(false) => PartnershipPreviousAddressController.onPageLoad(mode)
+      case Some(false) => PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode)
       case Some(true) => AnyMoreChangesController.onPageLoad()
       case _ => SessionExpiredController.onPageLoad()
     }

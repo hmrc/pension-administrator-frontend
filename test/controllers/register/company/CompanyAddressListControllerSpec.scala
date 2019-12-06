@@ -78,10 +78,10 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     postCall = routes.CompanyAddressListController.onSubmit(NormalMode),
     manualInputCall = routes.CompanyPreviousAddressController.onPageLoad(NormalMode),
     addresses = addresses,
-    Message("previousAddressList.heading", Message("theCompany")),
-    Message("previousAddressList.heading", companyName),
-    Message("common.selectAddress.text"),
-    Message("common.selectAddress.link")
+    Message("select.previous.address.heading", Message("theCompany").resolve),
+    Message("select.previous.address.heading", companyName),
+    Message("select.address.hint.text"),
+    Message("manual.entry.link")
   )
 
   private def viewAsString(form: Form[_] = form) =

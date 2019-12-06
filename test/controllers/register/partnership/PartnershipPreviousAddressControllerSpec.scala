@@ -16,20 +16,15 @@
 
 package controllers.register.partnership
 
-import audit.testdoubles.StubSuccessfulAuditService
-import audit.{AddressAction, AddressEvent}
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.BusinessNameId
-import identifiers.register.partnership.PartnershipPreviousAddressId
 import models.{Address, NormalMode}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -43,20 +38,16 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
 
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
-  val messagePrefix = "previousAddress"
+  val messagePrefix = "enter.previous.address"
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")
 
   val viewmodel = ManualAddressViewModel(
     postCall = routes.PartnershipPreviousAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
-    title = Message(s"$messagePrefix.partnership.title"),
-    heading = Message(s"$messagePrefix.heading", "Test Partnership Name"),
-    hint = Some(Message(s"$messagePrefix.lede"))
+    title = Message(s"$messagePrefix.heading", Message("thePartnership")),
+    heading = Message(s"$messagePrefix.heading", "Test Partnership Name")
   )
-
-  val fakeAuditService = new StubSuccessfulAuditService()
-
 
   "PartnershipPreviousAddress Controller" must {
     "return OK and the correct view for a GET" in {
@@ -64,17 +55,6 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(
-        BusinessNameId.toString -> "Test Partnership Name",
-        PartnershipPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(Address("value 1", "value 2", None, None, None, "GB")))
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -89,55 +69,6 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "send an audit event when valid data is submitted" in {
-
-      val existingAddress = Address(
-        "existing-line-1",
-        "existing-line-2",
-        None,
-        None,
-        None,
-        "existing-country"
-      )
-
-      val data =
-        UserAnswers()
-        .businessName("Test Partnership Name")
-          .partnershipPreviousAddress(existingAddress)
-          .dataRetrievalAction
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("addressLine1", "value 1"),
-        ("addressLine2", "value 2"),
-        ("postCode", "NE1 1NE"),
-        "country" -> "GB"
-      )
-
-      fakeAuditService.reset()
-
-      val result = controller(data).onSubmit(NormalMode)(postRequest)
-
-      whenReady(result) {
-        _ =>
-          fakeAuditService.verifySent(
-            AddressEvent(
-              FakeAuthAction.externalId,
-              AddressAction.LookupChanged,
-              "Partnership Previous Address",
-              Address(
-                "value 1",
-                "value 2",
-                None,
-                None,
-                Some("NE1 1NE"),
-                "GB"
-              )
-            )
-          )
-      }
-
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -184,7 +115,6 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      fakeAuditService,
       stubMessagesControllerComponents(),
       view
     )

@@ -26,8 +26,7 @@ case class DirectorConfirmPreviousAddressId(index: Int) extends TypedIdentifier[
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
       case Some(false) =>
-        userAnswers
-          .remove(DirectorPreviousAddressId(index))
+        userAnswers.set(IsDirectorCompleteId(index))(value = false).flatMap(_.remove(DirectorPreviousAddressId(index)))
       case _ => super.cleanup(value, userAnswers)
     }
   }

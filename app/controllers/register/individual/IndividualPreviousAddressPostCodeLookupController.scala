@@ -71,10 +71,10 @@ object IndividualPreviousAddressPostCodeLookupController {
   def viewModel(mode: Mode) = PostcodeLookupViewModel(
     routes.IndividualPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.IndividualPreviousAddressController.onPageLoad(mode),
-    Message("individualPreviousAddressPostCodeLookup.title"),
-    Message("individualPreviousAddressPostCodeLookup.heading"),
-    Message("individualPreviousAddressPostCodeLookup.enterPostcode"),
-    Some(Message("individualPreviousAddressPostCodeLookup.enterPostcode.link")),
-    Message("individualPreviousAddressPostCodeLookup.formLabel")
+    Message("individual.previous.postcode.lookup.heading"),
+    Message("individual.previous.postcode.lookup.heading"),
+    Message("manual.entry.text"),
+    Some(Message("manual.entry.link")),
+    Message("postcode.lookup.form.label")
   )
 }

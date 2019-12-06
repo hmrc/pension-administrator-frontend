@@ -23,7 +23,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
-import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddressListId, PartnerAddressPostCodeLookupId, PartnerNameId}
+import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddressPostCodeLookupId, PartnerNameId}
 import models.requests.DataRequest
 import models.{Index, Mode, TolerantAddress}
 import play.api.data.Form
@@ -49,7 +49,7 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
                                             )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
-    formProvider(addresses, Message("select.address.error.required").withArgs(name))
+    formProvider(addresses, Message("select.address.required.error").withArgs(name))
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -63,7 +63,7 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.right.flatMap { pn =>
-        viewModel(mode, index, pn.fullName).right.map(vm => post(vm, PartnerAddressListId(index), PartnerAddressId(index), mode,
+        viewModel(mode, index, pn.fullName).right.map(vm => post(vm, PartnerAddressId(index), PartnerAddressPostCodeLookupId(index), mode,
           form(vm.addresses, pn.fullName)))
       }
   }
@@ -75,10 +75,10 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
           postCall = routes.PartnerAddressListController.onSubmit(mode, index),
           manualInputCall = routes.PartnerAddressController.onPageLoad(mode, index),
           addresses = addresses,
-          Message("contactAddressList.heading", Message("thePartner")),
-          Message("contactAddressList.heading", name),
-          Message("common.selectAddress.text"),
-          Message("common.selectAddress.link"),
+          Message("select.address.heading", Message("thePartner")),
+          Message("select.address.heading", name),
+          Message("select.address.hint.text"),
+          Message("select.address.hint.link"),
           psaName = psaName()
         )
     }.left.map(_ => Future.successful(Redirect(routes.PartnerAddressPostCodeLookupController.onPageLoad(mode, index))))

@@ -47,12 +47,12 @@ error.country.invalid.eueea = Pension Scheme Administrators must be resident in 
 error.addressYears.required = Select yes if {0} has used this contact address for at least 1 year
 error.individual.addressYears.required = Select yes if you have used this contact address for at least 1 year
 
-error.postcode.required = Enter a postcode
+error.postcode.required = Enter the postcode
 error.postcode.length = The postcode cannot be more than 8 characters
 error.postcode.nonUK.length = The postcode cannot be more than 10 characters
 error.postcode.failed = There is a problem with the address finder. Try again or enter the address manually
-error.postcode.invalid = Enter a real postcode
-error.postcode.noResults = No addresses have been found for the postcode {0}
+error.postcode.invalid = Enter a valid postcode
+error.postcode.noResults = There are no addresses for that postcode
 
 index.title = Pension Scheme Registrations
 index.heading = Pension Scheme Registrations
@@ -100,9 +100,7 @@ common.selectContactAddress.heading = Select the contact address for {0}
 common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
 common.selectAddress.text = Select the address from the list below, or
-individual.selectAddress.text = You can
-individual.selectAddressPostLink.text = if the address is not shown below.
-common.selectAddress.link = enter the address manually
+
 common.nino = National Insurance number
 common.enterNINO.hint = Example ’QQ 12 34 56 C’
 common.error.nino.required = Enter the National Insurance number
@@ -111,20 +109,13 @@ common.error.reason.invalid = The reason contains invalid characters
 common.previousAddressList.title = Select the previous address
 common.previousAddressList.heading = Select the previous address
 
-individual.previousAddressList.heading = Select your previous contact address
-
 previousAddressList.heading = Select the previous contact address for {0}
 common.previousAddress.checkyouranswers = Previous address
 common.previousAddressList.error.required = Select an address
-common.contactAddressList.title = Select your contact address
-common.contactAddressList.heading = Select your contact address
-common.contactAddressList.error = User must select one of the addresses offered or select the 'enter address manually' link
 common.addressYears.under_a_year = No
 common.addressYears.over_a_year = Yes
 common.previousAddress.heading = Previous Address
 common.previousAddress.title = Previous Address
-
-individual.previousAddress.heading = Your previous contact address
 
 common.previousAddress.lede = This can be a residential or company address.
 individual.previousAddress.lede = You can change any part of the address if you need to.
@@ -266,7 +257,7 @@ companyPreviousAddressPostCodeLookup.postalCode = Postcode
 companyPreviousAddressPostCodeLookup.enterPostcode = You can {0}
 companyPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
-contactAddressPostCodeLookup.heading = Which address can we use to contact {0}?
+contactAddressPostCodeLookup.heading = What is {0}’s postcode?
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
 
@@ -506,13 +497,6 @@ companyReview.editLink = Change company details
 companyReview.directors.heading = {0}՚s directors
 companyReview.directors.changeLink = Change company directors
 
-individualPreviousAddressPostCodeLookup.title = What was your previous contact address?
-individualPreviousAddressPostCodeLookup.heading = What was your previous contact address?
-individualPreviousAddressPostCodeLookup.hint = This can be a residential or company address.
-individualPreviousAddressPostCodeLookup.enterPostcode = You can {0}
-individualPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
-individualPreviousAddressPostCodeLookup.formLabel = Postcode
-
 businessType.title = What type of business do you want to register?
 businessType.heading = What type of business do you want to register?
 businessType.limitedCompany = Limited company
@@ -605,13 +589,6 @@ declarationFitAndProper.statement4 = I have not participated in, or been connect
 declarationFitAndProper.statement5 = I have not been disqualified from acting as a company director or are bankrupt
 declarationFitAndProper.statement6 = I have not been disqualified from acting as a pension scheme trustee
 
-adviserAddressPostCodeLookup.title = Pension adviser’s address
-adviserAddressPostCodeLookup.heading = What is {0}’s postcode?
-adviserAddressPostCodeLookup.hint = This is usually the registered business address but you can enter any address you have for this company.
-adviserAddressPostCodeLookup.enterPostcode = You can {0}
-adviserAddressPostCodeLookup.enterPostcode.link = enter the address manually
-adviserAddressPostCodeLookup.formLabel = Postcode
-
 confirmation.newPSA.title = Your registration to become a Pension Scheme Administrator has been successful
 confirmation.existingPSA.title=You are now registered as a Pension Scheme Administrator on the new service.
 confirmation.newPSA.heading = Your registration to become a Pension Scheme Administrator has been successful.
@@ -639,20 +616,10 @@ exitToGovUK = Exit to Gov.UK
 
 individual.same.contact.address.title = Can HMRC use this address to contact you?
 individual.same.contact.address.heading = Can HMRC use this address to contact you?
-same.contact.address.error = Select yes if HMRC can use this address to contact {0}
+individual.same.contact.address.error = Select yes if HMRC can use this address to contact {0}
 
 company.same.contact.address.title = Can HMRC use this address to contact the company?
 company.same.contact.address.heading = Can HMRC use this address to contact {0}?
-
-individualContactAddressPostCodeLookup.title = Which address can we use to contact you?
-individualContactAddressPostCodeLookup.heading = Which address can we use to contact you?
-individualContactAddressPostCodeLookup.hint = This should be an address that HMRC can use to contact you.
-individualContactAddressPostCodeLookup.enterPostcode = You can {0}
-individualContactAddressPostCodeLookup.enterPostcode.link = enter the address manually
-individualContactAddressPostCodeLookup.formLabel = Postcode
-
-common.contactAddress.title = What is your contact address?
-common.contactAddress.heading = What is your contact address?
 
 companyContactAddress.title = What is the contact address?
 companyContactAddress.heading = What is {0}’s contact address?
@@ -1076,10 +1043,37 @@ previousAddress.company.title = The company’s previous contact address
 previousAddress.heading = {0}’s previous contact address
 previousAddress.lede = You can change any part of the address if you need to.
 
-individual.select.address.error.required = Select your address
-individual.select.previous.address.error.required = Select your previous address
-select.address.error.required = Select {0}’s contact address
-select.previous.address.error.required = Select {0}’s previous contact address
+adviserAddressList.heading = What is the address for {0}?
 
-adviserAddressList.heading = What is {0}’s address?
-adviserAddressList.error.required = Select {0}’s address
+
+individualPreviousAddressPostCodeLookup.title = What was your previous contact address?
+individualPreviousAddressPostCodeLookup.heading = What was your previous contact address?
+individualPreviousAddressPostCodeLookup.hint = This can be a residential or company address.
+individualPreviousAddressPostCodeLookup.enterPostcode = You can {0}
+individualPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
+individualPreviousAddressPostCodeLookup.formLabel = Postcode
+
+individual.postcode.lookup.heading = What is your postcode?
+individual.previous.postcode.lookup.heading = What was your previous postcode?
+
+individual.select.address.heading = What is your address?
+individual.select.previous.address.heading = What was your previous address?
+
+individual.enter.address.heading = Enter your address
+individual.enter.previous.address.heading = Enter your previous address
+
+postcode.lookup.heading = What is {0}’s postcode?
+previous.postcode.lookup.heading = What was {0}’s previous postcode?
+
+select.address.heading = What is {0}’s address?
+select.previous.address.heading = What was {0}’s previous address?
+
+enter.address.heading = Enter {0}’s address
+enter.previous.address.heading = Enter {0}’s previous address
+
+postcode.lookup.form.label = Postcode
+manual.entry.text = You can {0}
+manual.entry.link = enter the address manually.
+
+select.address.hint.text = Select the address from the list below, or
+select.address.required.error = User must select one of the addresses offered or select the 'enter address manually' link

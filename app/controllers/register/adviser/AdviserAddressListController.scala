@@ -49,7 +49,7 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
                                             )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
-    formProvider(addresses, Message("adviserAddressList.error.required").withArgs(name))
+    formProvider(addresses, Message("select.address.required.error").withArgs(name))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -60,7 +60,7 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).right.map(vm => post(vm, AdviserAddressListId, AdviserAddressId, mode, form(vm.addresses, entityName)))
+      viewModel(mode).right.map(vm => post(vm, AdviserAddressId, AdviserAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
   }
 
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
@@ -70,10 +70,10 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
           postCall = routes.AdviserAddressListController.onSubmit(mode),
           manualInputCall = routes.AdviserAddressController.onPageLoad(mode),
           addresses = addresses,
-          Message("adviserAddressList.heading", Message("theAdviser")),
-          Message("adviserAddressList.heading", entityName),
-          Message("common.selectAddress.text"),
-          Message("common.selectAddress.link"),
+          Message("select.address.heading", Message("theAdviser")),
+          Message("select.address.heading", entityName),
+          Message("select.address.hint.text"),
+          Message("manual.entry.link"),
           psaName = psaName()
         )
     }.left.map(_ => Future.successful(Redirect(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode))))

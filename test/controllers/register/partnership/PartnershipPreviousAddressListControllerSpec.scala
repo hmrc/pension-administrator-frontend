@@ -184,10 +184,10 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
       routes.PartnershipPreviousAddressListController.onSubmit(NormalMode),
       routes.PartnershipPreviousAddressController.onPageLoad(NormalMode),
       addresses,
-      Message("previousAddressList.heading", Message("thePartnership")),
-      Message("previousAddressList.heading", "Test Partnership Name"),
-      Message("common.selectAddress.text"),
-      Message("common.selectAddress.link")
+      Message("select.previous.address.heading", Message("thePartnership")),
+      Message("select.previous.address.heading", "Test Partnership Name"),
+      Message("select.address.hint.text"),
+      Message("manual.entry.link")
     )
   }
 

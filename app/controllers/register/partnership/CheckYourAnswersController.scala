@@ -58,9 +58,9 @@ class CheckYourAnswersController @Inject()(
         EnterPAYEId.row(Some(Link(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url))),
         HasVATId.row(Some(Link(routes.HasPartnershipVATController.onPageLoad(CheckMode).url))),
         EnterVATId.row(Some(Link(routes.PartnershipEnterVATController.onPageLoad(CheckMode).url))),
-        PartnershipContactAddressId.row(Some(Link(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url))),
+        PartnershipContactAddressId.row(Some(Link(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
         PartnershipAddressYearsId.row(Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))),
-        PartnershipPreviousAddressId.row(Some(Link(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url))),
+        PartnershipPreviousAddressId.row(Some(Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
         PartnershipEmailId.row(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url))),
         PartnershipPhoneId.row(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)))
         ).flatten
