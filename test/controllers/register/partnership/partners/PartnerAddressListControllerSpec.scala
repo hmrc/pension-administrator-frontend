@@ -186,6 +186,6 @@ object PartnerAddressListControllerSpec {
       Message("select.address.heading", Message("thePartner")),
       Message("select.address.heading", "firstName lastName"),
       Message("select.address.hint.text"),
-      Message("select.address.hint.link")
+      Message("manual.entry.link")
     )
 }

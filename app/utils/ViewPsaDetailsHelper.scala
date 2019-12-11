@@ -26,7 +26,7 @@ import identifiers.register.partnership.partners._
 import identifiers.register.{BusinessUTRId, EnterPAYEId, EnterVATId, VariationWorkingKnowledgeId}
 import models.AddressYears.UnderAYear
 import models._
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
 import viewmodels._
 
