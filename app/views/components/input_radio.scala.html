@@ -35,14 +35,15 @@
             } else {
                 <span class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@legend</span>
             }
-            @if(hint.nonEmpty){
-                <span class="form-hint">@{hint.get}</span>
-            }
-            @field.errors.map { error =>
-                <span class="error-notification" id="error-message-@{field.id}-input">
-                    <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)</span>
-            }
+
         </legend>
+        @if(hint.nonEmpty){
+        <span class="form-hint">@{hint.get}</span>
+        }
+        @field.errors.map { error =>
+        <span class="error-notification" id="error-message-@{field.id}-input">
+                    <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)</span>
+        }
         @for(input <- inputs) {
             @components.radio(field, input.label, input.value, input.dataTarget)
         }

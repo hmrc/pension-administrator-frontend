@@ -23,23 +23,14 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
 
   val answer = "answer"
 
-  def stringPage(createView: Form[String] => HtmlFormat.Appendable,
+  def stringPageWithoutHint(createView: Form[String] => HtmlFormat.Appendable,
                  messageKeyPrefix: String,
                  expectedFormAction: => String,
-                 expectedHintKey: Option[String] = None,
                  labelKey: String = "heading",
                  labelArgs: Option[String] = None
                 ): Unit = {
-
     "behave like a page with a string value field" when {
       "rendered" must {
-
-        "contain a label for the value" in {
-          val doc = asDocument(createView(form))
-          val expectedHintText = expectedHintKey map (k => messages(k))
-          val label = if (labelArgs.isEmpty) messages(s"$messageKeyPrefix.$labelKey") else messages(s"$messageKeyPrefix.$labelKey", labelArgs.get)
-          assertContainsLabel(doc, "value", label, expectedHintText)
-        }
 
         "contain an input for the value" in {
           val doc = asDocument(createView(form))
@@ -76,5 +67,27 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
         }
       }
     }
+  }
+
+    def stringPage(createView: Form[String] => HtmlFormat.Appendable,
+                 messageKeyPrefix: String,
+                 expectedFormAction: => String,
+                 expectedHintKey: Option[String] = None,
+                 labelKey: String = "heading",
+                 labelArgs: Option[String] = None
+                ): Unit = {
+
+
+      stringPageWithoutHint(createView,messageKeyPrefix, expectedFormAction, labelKey, labelArgs)
+      "behave like a page with a string value field" when {
+        "rendered" must {
+          "contain a label for the value" in {
+            val doc = asDocument(createView(form))
+            val expectedHintText = expectedHintKey map (k => messages(k))
+            val label = if (labelArgs.isEmpty) messages(s"$messageKeyPrefix.$labelKey") else messages(s"$messageKeyPrefix.$labelKey", labelArgs.get)
+            assertContainsLabel(doc, "value", label, expectedHintText)
+          }
+        }
+      }
   }
 }

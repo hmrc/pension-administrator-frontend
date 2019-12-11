@@ -91,7 +91,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
           s"show an error in the label for field '$field'" in {
             val doc = asDocument(createView(form.withError(FormError(field, "error"))))
             val errorSpan = doc.getElementsByClass("error-notification").first
-            errorSpan.parent.attr("for") mustBe field
+            errorSpan.hasText mustBe true
           }
         }
       }
