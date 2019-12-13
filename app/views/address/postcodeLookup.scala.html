@@ -43,16 +43,13 @@
         @components.error_summary(form.errors)
 
         @components.heading(
-            headingKey=components.hyphen(messages(viewmodel.heading)).toString
+        headingKey=components.hyphen(messages(viewmodel.heading)).toString
         )
-
-        <p>@Html(viewmodel.enterPostcode.withArgs(link))</p>
-
         @components.input_text(
             field = form("value"),
             label = messages(viewmodel.formLabel)
         )
-
+        <p>@Html(viewmodel.enterPostcode.withArgs(link))</p>
         <div class="section">
             @components.submit_button(viewmodel.findAddressMessageKey)
         </div>

@@ -35,7 +35,7 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
     Some("ZZ1 1ZZ"),
     Some("UK")
   )
-
+private val company = "the company"
   val formProvider = new CompanyAddressFormProvider
 
   val form: Form[Boolean] = formProvider()
@@ -49,7 +49,7 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
     () => view(
       form,
       address,
-      "MyCo",
+      company,
       countryOptions
     )(fakeRequest, messages)
 
@@ -57,7 +57,7 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
     (form: Form[_]) => view(
       form,
       testAddress,
-      "MyCo",
+      company,
       countryOptions
     )(fakeRequest, messages)
 
@@ -65,7 +65,7 @@ class ConfirmCompanyDetailsViewSpec extends ViewBehaviours with AddressBehaviour
     behave like normalPageWithDynamicTitle(
       view = createView(),
       messageKeyPrefix = messageKeyPrefix,
-      dynamicContent =  "MyCo"
+      dynamicContent =  company
     )
 
     behave like pageWithAddress(address => createView(address)(), "companyAddress")

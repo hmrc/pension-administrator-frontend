@@ -52,12 +52,11 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
 
     behave like normalPage(createView(), messageKeyPrefix)
 
-    behave like yesNoPage(
+    behave like yesNoPageWithoutHint(
       createViewUsingForm(Seq(johnDoe)),
       messageKeyPrefix,
       routes.AddCompanyDirectorsController.onSubmit(NormalMode).url,
-      s"$messageKeyPrefix.addYesNo",
-      Some(s"$messageKeyPrefix.addADirector.hint")
+      s"$messageKeyPrefix.addYesNo"
     )
 
     val directors: Seq[Person] = Seq(johnDoe, joeBloggs)

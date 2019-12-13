@@ -20,12 +20,33 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 
 trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
-
   def yesNoPage(createView: Form[Boolean] => HtmlFormat.Appendable,
                 messageKeyPrefix: String,
                 expectedFormAction: => String,
                 messageKey: String = "title",
                 expectedHintKey: Option[String] = None
+               ): Unit = {
+    yesNoPageWithoutHint(createView, messageKeyPrefix, expectedFormAction, messageKey)
+
+    "behave like a page with a Yes/No question" when {
+      "rendered" must {
+        "contain a legend for the question" in {
+          val doc = asDocument(createView(form))
+          val legends = if (expectedHintKey.nonEmpty) doc.select("legend > span") else doc.select("legend")
+          legends.size mustBe expectedHintKey.map(_ => 2).getOrElse(1)
+          legends.first.text mustBe messages(messageKey)
+          expectedHintKey.foreach(key =>
+            legends.next().text() mustBe messages(key)
+          )
+        }
+      }
+    }
+  }
+
+  def yesNoPageWithoutHint(createView: Form[Boolean] => HtmlFormat.Appendable,
+                messageKeyPrefix: String,
+                expectedFormAction: => String,
+                messageKey: String = "title"
                ): Unit = {
 
     "on form action " must {
@@ -38,15 +59,7 @@ trait YesNoViewBehaviours extends QuestionViewBehaviours[Boolean] {
 
     "behave like a page with a Yes/No question" when {
       "rendered" must {
-        "contain a legend for the question" in {
-          val doc = asDocument(createView(form))
-          val legends = if(expectedHintKey.nonEmpty) doc.select("legend > span") else doc.select("legend")
-          legends.size mustBe expectedHintKey.map(_ => 2).getOrElse(1)
-          legends.first.text mustBe messages(messageKey)
-          expectedHintKey.foreach(key =>
-            legends.next().text() mustBe messages(key)
-          )
-        }
+
 
         "contain an input for the value" in {
           val doc = asDocument(createView(form))
