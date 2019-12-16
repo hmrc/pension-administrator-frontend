@@ -88,7 +88,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
     case PartnerAddressPostCodeLookupId(index) => PartnerAddressListController.onPageLoad(mode, index)
     case PartnerAddressId(index) if mode == NormalMode => PartnerAddressYearsController.onPageLoad(mode, index)
-    case PartnerAddressId(index) => PartnerConfirmPreviousAddressController.onPageLoad(index)
+    case PartnerAddressId(index) => redirectBasedOnIsNew(ua, index, PartnerAddressYearsController.onPageLoad(mode, index), PartnerConfirmPreviousAddressController.onPageLoad(index))
     case PartnerAddressYearsId(index) => partnerAddressYearsRoutes(index, ua, mode)
     case PartnerPreviousAddressPostCodeLookupId(index) => PartnerPreviousAddressListController.onPageLoad(mode, index)
     case PartnerPreviousAddressId(index) => previousAddressRoutes(index, ua, mode)

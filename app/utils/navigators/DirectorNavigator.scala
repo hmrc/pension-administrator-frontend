@@ -92,7 +92,7 @@ class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigato
 
     case CompanyDirectorAddressPostCodeLookupId(index) => CompanyDirectorAddressListController.onPageLoad(mode, index)
     case DirectorAddressId(index) if mode == NormalMode => DirectorAddressYearsController.onPageLoad(mode, index)
-    case DirectorAddressId(index) => DirectorConfirmPreviousAddressController.onPageLoad(index)
+    case DirectorAddressId(index) => redirectBasedOnIsNew(ua, index, DirectorAddressYearsController.onPageLoad(mode, index), DirectorConfirmPreviousAddressController.onPageLoad(index))
 
     case DirectorAddressYearsId(index) => directorAddressYearsRoutes(index, ua, mode)
     case DirectorPreviousAddressPostCodeLookupId(index) => DirectorPreviousAddressListController.onPageLoad(mode, index)
