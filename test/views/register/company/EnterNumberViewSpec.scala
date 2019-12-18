@@ -20,7 +20,7 @@ import controllers.register.company.routes._
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.StringViewBehaviours
 import views.html.register.company.enterNumber
@@ -61,13 +61,14 @@ class EnterNumberViewSpec extends StringViewBehaviours {
       }
     }
 
-    behave like stringPage(
+    behave like stringPageWithoutHint(
       createView = createViewUsingForm,
       messageKeyPrefix = messageKeyPrefix,
       expectedFormAction = controllers.register.company.routes.CompanyRegistrationNumberController.onSubmit(NormalMode).url,
-      expectedHintKey = Some(s"$messageKeyPrefix.hint"),
       labelArgs = Some(companyName)
     )
   }
 
 }
+
+

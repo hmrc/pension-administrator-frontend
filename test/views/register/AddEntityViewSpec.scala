@@ -65,12 +65,11 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
 
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
-    behave like yesNoPage(
+    behave like yesNoPageWithoutHint(
       createViewUsingForm(Seq(johnDoe)),
       messageKeyPrefix,
       viewmodel(Seq(johnDoe)).postCall.url,
-      Message("addEntity.addYesNo", entityTypeSinglular).resolve,
-      Some(Message("addEntity.addAnEntity.hint", entityType).resolve)
+      Message("addEntity.addYesNo", entityTypeSinglular).resolve
     )
 
     val partners: Seq[Person] = Seq(johnDoe, joeBloggs)

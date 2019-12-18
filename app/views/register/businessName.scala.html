@@ -40,7 +40,7 @@
     @formHelper(action = href, 'autoComplete -> "off") {
         @components.input_text(
             field = form("value"),
-            label = messages("businessName.heading"),
+            label = messages("businessName.heading", businessType),
             labelClass = Some("visually-hidden")
         )
 
