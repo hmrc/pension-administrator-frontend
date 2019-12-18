@@ -142,7 +142,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             address.postcode.value,
             address.country
           ),
-          changeUrl = Some(Link(controllers.register.individual.routes.IndividualPreviousAddressController.onPageLoad(CheckMode).url)),
+          changeUrl = Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
           visuallyHiddenText = Some(Message("individualPreviousAddress.visuallyHidden.text"))
         )
         val retrievalAction = dataRetrievalAction(

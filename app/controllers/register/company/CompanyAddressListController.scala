@@ -24,12 +24,10 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
-import models.{Mode, TolerantAddress}
+import identifiers.register.company.{CompanyContactAddressPostCodeLookupId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
 import models.requests.DataRequest
+import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -52,7 +50,7 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
                                             )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
-    formProvider(addresses, Message("select.previous.address.error.required").withArgs(name))
+    formProvider(addresses, Message("select.address.required.error").withArgs(name))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -63,7 +61,7 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, CompanyAddressListId, CompanyPreviousAddressId, mode, form(vm.addresses, entityName)))
+      viewmodel(mode).right.map(vm => post(vm, CompanyPreviousAddressId, CompanyContactAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
   }
 
   def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
@@ -72,10 +70,10 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
         postCall = routes.CompanyAddressListController.onSubmit(mode),
         manualInputCall = routes.CompanyPreviousAddressController.onPageLoad(mode),
         addresses = addresses,
-        Message("previousAddressList.heading", Message("theCompany").resolve),
-        Message("previousAddressList.heading", entityName),
-        Message("common.selectAddress.text"),
-        Message("common.selectAddress.link"),
+        Message("select.previous.address.heading", Message("theCompany").resolve),
+        Message("select.previous.address.heading", entityName),
+        Message("select.address.hint.text"),
+        Message("manual.entry.link"),
         psaName = psaName()
       )
     }.left.map(_ => Future.successful(Redirect(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode))))

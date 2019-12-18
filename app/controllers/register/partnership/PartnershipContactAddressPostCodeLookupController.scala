@@ -59,11 +59,11 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
         PostcodeLookupViewModel(
           routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode),
           routes.PartnershipContactAddressController.onPageLoad(mode),
-          Message("partnershipContactAddressPostCodeLookup.title"),
-          Message("partnershipContactAddressPostCodeLookup.heading").withArgs(name),
-          Message("partnershipContactAddressPostCodeLookup.enterPostcode"),
-          Some(Message("partnershipContactAddressPostCodeLookup.enterPostcode.link")),
-          Message("address.postcode"),
+          Message("postcode.lookup.heading", Message("thePartnership")),
+          Message("postcode.lookup.heading").withArgs(name),
+          Message("manual.entry.text"),
+          Some(Message("manual.entry.link")),
+          Message("postcode.lookup.form.label"),
           psaName = psaName()
         )
       }

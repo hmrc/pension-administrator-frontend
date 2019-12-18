@@ -71,7 +71,6 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanySameContactAddressId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
 
     (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(NormalMode), Some(contactAddressList(CheckMode))),
-    (CompanyContactAddressListId, emptyAnswers, contactAddress(NormalMode), Some(contactAddress(CheckMode))),
     (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), Some(checkYourAnswersPage)),
 
     (CompanyAddressYearsId, addressYearsOverAYear, emailPage(NormalMode), Some(checkYourAnswersPage)),
@@ -83,7 +82,6 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (CompanyTradingOverAYearId, tradingUnderAYear, emailPage(NormalMode), Some(checkYourAnswersPage)),
 
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode), Some(paAddressListPage(CheckMode))),
-    (CompanyAddressListId, emptyAnswers, previousAddressPage(NormalMode), Some(previousAddressPage(CheckMode))),
     (CompanyPreviousAddressId, emptyAnswers, emailPage(NormalMode), Some(checkYourAnswersPage)),
 
     (CompanyEmailId, emptyAnswers, phonePage(NormalMode), Some(checkYourAnswersPage)),
@@ -106,15 +104,13 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
 
     (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(UpdateMode), None),
-    (CompanyContactAddressListId, emptyAnswers, contactAddress(UpdateMode), None),
-    (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(UpdateMode), None),
+    (CompanyContactAddressId, emptyAnswers, confirmPreviousAddressPage, None),
 
     (CompanyAddressYearsId, addressYearsOverAYear, anyMoreChanges, None),
     (CompanyAddressYearsId, addressYearsUnderAYear, confirmPreviousAddressPage, None),
     (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, None),
 
     (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(UpdateMode), None),
-    (CompanyAddressListId, emptyAnswers, previousAddressPage(UpdateMode), None),
     (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges, None),
 
     (CompanyEmailId, emptyAnswers, anyMoreChanges, None),

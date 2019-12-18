@@ -16,13 +16,12 @@
 
 package controllers.register.individual
 
-import audit.AuditService
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualContactAddressPostCodeLookupId}
+import identifiers.register.individual.IndividualContactAddressId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode}
@@ -47,34 +46,29 @@ class IndividualContactAddressController @Inject()(val appConfig: FrontendAppCon
                                                    requireData: DataRequiredAction,
                                                    formProvider: AddressFormProvider,
                                                    val countryOptions: CountryOptions,
-                                                   val auditService: AuditService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    val view: manualAddress
                                                   )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = routes.IndividualContactAddressController.onSubmit _
-  private[controllers] val title: Message = "common.contactAddress.title"
-  private[controllers] val heading: Message = "common.contactAddress.heading"
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
     countryOptions.options,
-    title = Message(title),
-    heading = Message(heading),
-    psaName = psaName(),
-    hint = Some("companyContactAddress.lede")
+    title = Message("individual.enter.address.heading"),
+    heading = Message("individual.enter.address.heading"),
+    psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode), mode)
+      get(viewmodel(mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode), mode, "Individual Previous Address",
-        IndividualContactAddressPostCodeLookupId)
+      post(IndividualContactAddressId, viewmodel(mode), mode)
   }
 }

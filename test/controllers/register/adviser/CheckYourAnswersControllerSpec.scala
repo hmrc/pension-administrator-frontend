@@ -75,7 +75,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         address.country
       ),
       answerIsMessageKey = false,
-      Some(Link(controllers.register.adviser.routes.AdviserAddressController.onPageLoad(CheckMode).url)),
+      Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
       Some(messages("addressFor.visuallyHidden.text", adviserName))
     ),
     AnswerRow(

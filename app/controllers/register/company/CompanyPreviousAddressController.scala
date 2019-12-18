@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
@@ -24,7 +23,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
+import identifiers.register.company.CompanyPreviousAddressId
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
@@ -47,7 +46,6 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
                                                  requireData: DataRequiredAction,
                                                  formProvider: AddressFormProvider,
                                                  val countryOptions: CountryOptions,
-                                                 val auditService: AuditService,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  val view: manualAddress
                                                 )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
@@ -57,24 +55,22 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
   private def addressViewModel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.CompanyPreviousAddressController.onSubmit(mode),
     countryOptions.options,
-    title = Message("previousAddress.company.title"),
-    heading = Message("previousAddress.heading", name),
-    hint = Some(Message("previousAddress.lede")),
+    title = Message("enter.previous.address.heading").withArgs(Message("theCompany").resolve),
+    heading = Message("enter.previous.address.heading", name),
     psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map{ name =>
-          get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode, name), mode)
+      BusinessNameId.retrieve.right.map { name =>
+        get(addressViewModel(mode, name), mode)
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
-        post(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode, name), mode, "Company Previous Address",
-          CompanyPreviousAddressPostCodeLookupId)
+        post(CompanyPreviousAddressId, addressViewModel(mode, name), mode)
       }
   }
 

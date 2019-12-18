@@ -127,7 +127,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
           status(result) mustBe SEE_OTHER
 
-          redirectLocation(result) mustBe Some(routes.AdviserAddressController.onPageLoad(NormalMode).url)
+          redirectLocation(result) mustBe Some(routes.AdviserEmailController.onPageLoad(NormalMode).url)
 
       }
     }
@@ -170,10 +170,10 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
       routes.AdviserAddressListController.onSubmit(NormalMode),
       routes.AdviserAddressController.onPageLoad(NormalMode),
       addresses,
-      Message("adviserAddressList.heading", Message("theAdviser")),
-      Message("adviserAddressList.heading", name),
-      Message("common.selectAddress.text"),
-      Message("common.selectAddress.link")
+      Message("select.address.heading", Message("theAdviser")),
+      Message("select.address.heading", name),
+      Message("select.address.hint.text"),
+      Message("manual.entry.link")
     )
   }
 

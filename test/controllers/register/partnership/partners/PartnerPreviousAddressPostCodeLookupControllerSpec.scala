@@ -72,11 +72,11 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
     PostcodeLookupViewModel(
       routes.PartnerPreviousAddressPostCodeLookupController.onSubmit(NormalMode, index),
       routes.PartnerPreviousAddressController.onPageLoad(NormalMode, index),
-      Message("previousAddressPostCode.heading", Message("thePartner")),
-      Message("previousAddressPostCode.heading", "test first name test last name"),
-      Message("common.previousAddress.enterPostcode"),
-      Some(Message("common.selectAddress.link")),
-      Message("partnerPreviousAddressPostCodeLookup.input.text")
+      Message("previous.postcode.lookup.heading", Message("thePartner")),
+      Message("previous.postcode.lookup.heading", "test first name test last name"),
+      Message("manual.entry.text"),
+      Some(Message("manual.entry.link")),
+      Message("postcode.lookup.form.label")
     )
 
   private def viewAsString(form: Form[_] = form) =

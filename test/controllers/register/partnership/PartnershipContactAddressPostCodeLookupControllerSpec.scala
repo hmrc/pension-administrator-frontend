@@ -48,11 +48,11 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
   val viewModel = PostcodeLookupViewModel(
     routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode),
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
-    Message("partnershipContactAddressPostCodeLookup.title"),
-    Message("partnershipContactAddressPostCodeLookup.heading").withArgs(partnershipName),
-    Message("partnershipContactAddressPostCodeLookup.enterPostcode"),
-    Some(Message("partnershipContactAddressPostCodeLookup.enterPostcode.link")),
-    Message("address.postcode")
+    Message("postcode.lookup.heading", Message("thePartnership")),
+    Message("postcode.lookup.heading").withArgs(partnershipName),
+    Message("manual.entry.text"),
+    Some(Message("manual.entry.link")),
+    Message("postcode.lookup.form.label")
   )
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     BusinessNameId.toString -> partnershipName

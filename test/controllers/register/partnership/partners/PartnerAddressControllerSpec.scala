@@ -77,8 +77,8 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
   private val viewModel = ManualAddressViewModel(
     routes.PartnerAddressController.onSubmit(NormalMode, firstIndex),
     countryOptions.options,
-    Message("contactAddress.heading", Message("thePartner")),
-    Message("contactAddress.heading", "Jonathan Doe")
+    Message("enter.address.heading", Message("thePartner")),
+    Message("enter.address.heading", "Jonathan Doe")
   )
 
   "partnerAddress Controller" must {
@@ -88,12 +88,6 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val result = controller(dataWithAddresses).onPageLoad(NormalMode, firstIndex)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(doeResidence))
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -108,57 +102,6 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "send an audit event when valid data is submitted" in {
-
-      val existingAddress = Address(
-        "existing-line-1",
-        "existing-line-2",
-        None,
-        None,
-        None,
-        "existing-country"
-      )
-
-      val selectedAddress = TolerantAddress(None, None, None, None, None, None)
-
-      val data =
-        UserAnswers()
-          .partnerAddress(firstIndex, existingAddress)
-          .companyDirectorAddressList(firstIndex, selectedAddress)
-          .dataRetrievalAction
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("addressLine1", "value 1"),
-        ("addressLine2", "value 2"),
-        ("postCode", "NE1 1NE"),
-        "country" -> "GB"
-      )
-
-      auditService.reset()
-
-      val result = controller(data).onSubmit(NormalMode, firstIndex)(postRequest)
-
-      whenReady(result) {
-        _ =>
-          auditService.verifySent(
-            AddressEvent(
-              FakeAuthAction.externalId,
-              AddressAction.LookupChanged,
-              s"Partnership Partner Address: ${jonathanDoe.fullName}",
-              Address(
-                "value 1",
-                "value 2",
-                None,
-                None,
-                Some("NE1 1NE"),
-                "GB"
-              )
-            )
-          )
-      }
-
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -195,8 +138,6 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
 
   private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  private val auditService = new StubSuccessfulAuditService()
-
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PartnerAddressController(
       frontendAppConfig,
@@ -208,7 +149,6 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      auditService,
       stubMessagesControllerComponents(),
       view
     )

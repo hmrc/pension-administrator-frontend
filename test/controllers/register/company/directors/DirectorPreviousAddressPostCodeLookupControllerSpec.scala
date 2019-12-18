@@ -72,11 +72,11 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
     PostcodeLookupViewModel(
       routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(NormalMode, index),
       routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index),
-      Message("directorPreviousAddressPostCodeLookup.heading", Message("theDirector").resolve),
-      Message("directorPreviousAddressPostCodeLookup.heading", directorName),
-      Message("common.postcodeLookup.enterPostcode"),
-      Some(Message("common.postcodeLookup.enterPostcode.link")),
-      Message("address.postcode")
+      Message("previous.postcode.lookup.heading", Message("theDirector").resolve),
+      Message("previous.postcode.lookup.heading", directorName),
+      Message("manual.entry.text"),
+      Some(Message("manual.entry.link")),
+      Message("postcode.lookup.form.label")
     )
 
   private def viewAsString(form: Form[_] = form) =

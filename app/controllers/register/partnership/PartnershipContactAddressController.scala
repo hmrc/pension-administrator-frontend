@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
@@ -24,7 +23,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId}
+import identifiers.register.partnership.PartnershipContactAddressId
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
@@ -48,7 +47,6 @@ class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppCo
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,
                                                     val countryOptions: CountryOptions,
-                                                    val auditService: AuditService,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: manualAddress
                                                    )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
@@ -59,9 +57,8 @@ class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppCo
     ManualAddressViewModel(
       postCall = routes.PartnershipContactAddressController.onSubmit(mode),
       countryOptions = countryOptions.options,
-      title = Message("partnership.contactAddress.title"),
-      heading = Message("partnership.contactAddress.heading").withArgs(partnershipName),
-      hint = Some(Message("partnership.contactAddress.hint")),
+      title = Message("enter.address.heading").withArgs(Message("thePartnership")),
+      heading = Message("enter.address.heading").withArgs(partnershipName),
       psaName = psaName()
     )
 
@@ -70,8 +67,6 @@ class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppCo
       BusinessNameId.retrieve.right.map {
         name =>
           get(
-            PartnershipContactAddressId,
-            PartnershipContactAddressListId,
             viewmodel(mode, name),
             mode
           )
@@ -84,11 +79,8 @@ class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppCo
         name =>
           post(
             PartnershipContactAddressId,
-            PartnershipContactAddressListId,
             viewmodel(mode, name),
-            mode,
-            context = "Partnership contact address",
-            PartnershipContactAddressPostCodeLookupId
+            mode
           )
       }
   }

@@ -18,8 +18,8 @@ package controllers.address
 
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
+import controllers.Variations
 import controllers.actions.AllowAccessActionProvider
-import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Address, Mode, TolerantAddress}
@@ -33,7 +33,7 @@ import views.html.address.addressList
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AddressListController extends FrontendBaseController with I18nSupport {
+trait AddressListController extends FrontendBaseController with I18nSupport with Variations {
 
   implicit val executionContext: ExecutionContext
 
@@ -52,8 +52,9 @@ trait AddressListController extends FrontendBaseController with I18nSupport {
     Future.successful(Ok(view(form, viewModel, mode)))
   }
 
-  protected def post(viewModel: AddressListViewModel, navigatorId: TypedIdentifier[TolerantAddress],
-                     dataId: TypedIdentifier[Address], mode: Mode, form: Form[Int])
+  protected def post(viewModel: AddressListViewModel, addressId: TypedIdentifier[Address],
+                     postCodeLookupIdForCleanUp: TypedIdentifier[Seq[TolerantAddress]],
+                     mode: Mode, form: Form[Int])
                     (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
@@ -61,13 +62,20 @@ trait AddressListController extends FrontendBaseController with I18nSupport {
         Future.successful(BadRequest(view(formWithErrors, viewModel, mode))),
       addressIndex => {
         val address = viewModel.addresses(addressIndex).copy(country = Some("GB"))
-        cacheConnector.save(request.externalId, navigatorId, address).map {
-          json =>
-            Redirect(navigator.nextPage(navigatorId, mode, UserAnswers(json)))
+        val userAnswers = request.userAnswers.set(addressId)(address.toAddress).flatMap(
+          _.remove(postCodeLookupIdForCleanUp)).asOpt.getOrElse(request.userAnswers)
+
+        cacheConnector.upsert(request.externalId, userAnswers.json).flatMap {
+          cacheMap =>
+            saveChangeFlag(mode, addressId).flatMap {
+              _ =>
+                setCompleteFlagForExistingDirOrPartners(mode, addressId, UserAnswers(cacheMap)).map { _ =>
+                  Redirect(navigator.nextPage(addressId, mode, UserAnswers(cacheMap)))
+                }
+            }
         }
       }
     )
-
   }
 
 }

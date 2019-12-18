@@ -57,11 +57,11 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
   def viewModel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
     routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
-    Message("previousAddressPostCode.heading", Message("thePartnership")),
-    Message("previousAddressPostCode.heading", name),
-    Message("common.previousAddress.enterPostcode"),
-    Some(Message("common.previousAddress.enterPostcode.link")),
-    Message("common.address.enterPostcode.formLabel"),
+    Message("previous.postcode.lookup.heading", Message("thePartnership")),
+    Message("previous.postcode.lookup.heading", name),
+    Message("manual.entry.text"),
+    Some(Message("manual.entry.link")),
+    Message("postcode.lookup.form.label"),
     psaName()
   )
 

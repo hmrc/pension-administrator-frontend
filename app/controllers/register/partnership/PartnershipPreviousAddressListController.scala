@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId}
+import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
@@ -63,7 +63,7 @@ class PartnershipPreviousAddressListController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, PartnershipPreviousAddressListId, PartnershipPreviousAddressId, mode,
+      viewmodel(mode).right.map(vm => post(vm, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId, mode,
         form(vm.addresses, entityName)))
   }
 
@@ -73,10 +73,10 @@ class PartnershipPreviousAddressListController @Inject()(
         postCall = routes.PartnershipPreviousAddressListController.onSubmit(mode),
         manualInputCall = routes.PartnershipPreviousAddressController.onPageLoad(mode),
         addresses = addresses,
-        Message("previousAddressList.heading", Message("thePartnership")),
-        Message("previousAddressList.heading", entityName),
-        Message("common.selectAddress.text"),
-        Message("common.selectAddress.link")
+        Message("select.previous.address.heading", Message("thePartnership")),
+        Message("select.previous.address.heading", entityName),
+        Message("select.address.hint.text"),
+        Message("manual.entry.link")
       )
     }.left.map(_ => Future.successful(Redirect(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode))))
   }

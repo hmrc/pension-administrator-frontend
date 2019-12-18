@@ -119,7 +119,6 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val result = controller.onSubmit(viewModel, 0, form(addresses, "error.required"))
 
         status(result) shouldBe SEE_OTHER
-        FakeUserAnswersCacheConnector.verify(fakeAddressListId, viewModel.addresses.head)
       }
 
     }
@@ -135,7 +134,6 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val result = controller.onSubmit(viewModel, 0, form(addresses, "error.required"))
 
         status(result) shouldBe SEE_OTHER
-        FakeUserAnswersCacheConnector.verifyNot(fakeAddressId)
       }
 
     }
@@ -189,11 +187,13 @@ object AddressListControllerSpec extends SpecBase {
     def onSubmit(viewModel: AddressListViewModel, value: Int, form: Form[Int]): Future[Result] = {
 
       val request = FakeRequest().withFormUrlEncodedBody("value" -> value.toString)
-
+      val fakeSeqTolerantAddressId: TypedIdentifier[Seq[TolerantAddress]] = new TypedIdentifier[Seq[TolerantAddress]] {
+        override def toString = "abc"
+      }
       post(
         viewModel,
-        fakeAddressListId,
         fakeAddressId,
+        fakeSeqTolerantAddressId,
         NormalMode,
         form
       )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))

@@ -61,7 +61,7 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, IndividualContactAddressListId, IndividualContactAddressId, mode, form(vm.addresses)))
+      viewmodel(mode).right.map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressPostCodeLookupId, mode, form(vm.addresses)))
   }
 
 
@@ -72,10 +72,10 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
           postCall = routes.IndividualContactAddressListController.onSubmit(mode),
           manualInputCall = routes.IndividualContactAddressController.onPageLoad(mode),
           addresses = addresses,
-          Message("common.contactAddressList.title"),
-          Message("common.contactAddressList.heading"),
-          Message("individual.selectAddress.text"),
-          Message("common.selectAddress.link"),
+          Message("individual.select.address.heading"),
+          Message("individual.select.address.heading"),
+          Message("select.address.hint.text"),
+          Message("manual.entry.link"),
           psaName = psaName(),
           selectAddressPostLink = Some(Message("individual.selectAddressPostLink.text"))
         )

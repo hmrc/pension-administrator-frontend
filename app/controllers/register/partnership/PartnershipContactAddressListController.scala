@@ -61,8 +61,8 @@ class PartnershipContactAddressListController @Inject()(
         routes.PartnershipContactAddressListController.onSubmit(mode),
         routes.PartnershipContactAddressController.onPageLoad(mode),
         addresses,
-        Message("contactAddressList.heading", Message("thePartnership").resolve),
-        Message("contactAddressList.heading", entityName),
+        Message("select.address.heading", Message("thePartnership").resolve),
+        Message("select.address.heading", entityName),
         psaName = psaName()
       )
     }
@@ -78,7 +78,7 @@ class PartnershipContactAddressListController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode).retrieve.right.map { vm =>
-        post(vm, PartnershipContactAddressListId, PartnershipContactAddressId, mode, form(vm.addresses, entityName))
+        post(vm, PartnershipContactAddressId, PartnershipContactAddressPostCodeLookupId, mode, form(vm.addresses, entityName))
       }
   }
 

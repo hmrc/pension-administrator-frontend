@@ -66,8 +66,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualSameContactAddressId, sameContactAddressIncompleteNonUk, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
 
     (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), Some(contactAddressListPage(CheckMode))),
-    (IndividualContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
-    (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), Some(addressYearsPage(CheckMode))),
+    (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), Some(checkYourAnswersPage)),
 
     (IndividualAddressYearsId, ukAddressYearsOverAYear, emailPage(NormalMode), Some(checkYourAnswersPage)),
     (IndividualAddressYearsId, nonUkAddressYearsOverAYear, emailPage(NormalMode), Some(checkYourAnswersPage)),
@@ -76,7 +75,6 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
 
     (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(NormalMode), Some(previousAddressListPage(CheckMode))),
-    (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(NormalMode), Some(previousAddressPage(CheckMode))),
     (IndividualPreviousAddressId, emptyAnswers, emailPage(NormalMode), Some(checkYourAnswersPage)),
 
     (IndividualEmailId, emptyAnswers, phonePage(NormalMode), Some(checkYourAnswersPage)),
@@ -89,16 +87,14 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
   def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (CheckMode)"),
     (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode), None),
-    (IndividualContactAddressListId, emptyAnswers, contactAddressPage(UpdateMode), None),
-    (IndividualContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), None),
+    (IndividualContactAddressId, emptyAnswers, confirmPreviousAddress, None),
     (IndividualAddressYearsId, ukAddressYearsOverAYear, anyMoreChanges, None),
     (IndividualAddressYearsId, ukAddressYearsUnderAYear, confirmPreviousAddress, None),
     (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage, None),
     (IndividualConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
     (IndividualConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges, None),
-    (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousAddressPage(UpdateMode), None),
+    (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode), None),
     (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode), None),
-    (IndividualPreviousAddressListId, emptyAnswers, previousAddressPage(UpdateMode), None),
     (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges, None),
     (IndividualEmailId, emptyAnswers, anyMoreChanges, None),
     (IndividualPhoneId, uk, anyMoreChanges, None),

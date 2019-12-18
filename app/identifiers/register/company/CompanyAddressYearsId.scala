@@ -32,7 +32,7 @@ case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] {
     value match {
       case Some(AddressYears.OverAYear) =>
         userAnswers.set(CompanyPreviousAddressChangedId)(true).asOpt.getOrElse(userAnswers)
-          .removeAllOf(List(CompanyPreviousAddressPostCodeLookupId, CompanyPreviousAddressId))
+          .removeAllOf(List(CompanyPreviousAddressPostCodeLookupId, CompanyPreviousAddressId, CompanyTradingOverAYearId))
       case _ => super.cleanup(value, userAnswers)
     }
   }

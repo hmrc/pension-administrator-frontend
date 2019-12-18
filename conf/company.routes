@@ -5,20 +5,20 @@ POST        /company-number                                controllers.register.
 GET         /:mode/company-number                          controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode)
 POST        /:mode/company-number                          controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode)
 
-GET         /previous-contact-address              controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /previous-contact-address              controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/previous-contact-address        controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode)
-POST        /:mode/previous-contact-address        controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode)
+GET         /enter-previous-contact-address              controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /enter-previous-contact-address              controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/enter-previous-contact-address        controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode)
+POST        /:mode/enter-previous-contact-address        controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode)
 
 GET         /contact-address-1-year                        controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode = NormalMode)
 POST        /contact-address-1-year                        controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/contact-address-1-year                  controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode)
 POST        /:mode/contact-address-1-year                  controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode)
 
-GET         /what-was-previous-contact-address                      controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
-POST        /what-was-previous-contact-address                      controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/what-was-previous-contact-address                controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
-POST        /:mode/what-was-previous-contact-address                controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
+GET         /previous-postcode                      controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST        /previous-postcode                      controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/previous-postcode                controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
+POST        /:mode/previous-postcode                controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
 
 GET         /select-previous-contact-address               controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST        /select-previous-contact-address               controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode = NormalMode)
@@ -41,10 +41,10 @@ POST        /:mode/other-directors                         controllers.register.
 GET         /confirm-address                               controllers.register.company.ConfirmCompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST        /confirm-address                               controllers.register.company.ConfirmCompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 
-GET         /which-contact-address                         controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
-POST        /which-contact-address                         controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/which-contact-address                   controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode)
-POST        /:mode/which-contact-address                   controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode)
+GET         /postcode                         controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST        /postcode                         controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/postcode                   controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode)
+POST        /:mode/postcode                   controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode)
 
 GET         /review                                        controllers.register.company.CompanyReviewController.onPageLoad(mode: Mode = NormalMode)
 POST        /review                                        controllers.register.company.CompanyReviewController.onSubmit(mode: Mode = NormalMode)
@@ -61,10 +61,10 @@ POST        /use-as-contact-address                        controllers.register.
 GET         /:mode/use-as-contact-address                  controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode)
 POST        /:mode/use-as-contact-address                  controllers.register.company.CompanySameContactAddressController.onSubmit(mode: Mode)
 
-GET         /what-is-contact-address                       controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /what-is-contact-address                       controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/what-is-contact-address                 controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode)
-POST        /:mode/what-is-contact-address                 controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode)
+GET         /enter-contact-address                       controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /enter-contact-address                       controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/enter-contact-address                 controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode)
+POST        /:mode/enter-contact-address                 controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode)
 
 GET         /select-contact-address                        controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST        /select-contact-address                        controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode = NormalMode)

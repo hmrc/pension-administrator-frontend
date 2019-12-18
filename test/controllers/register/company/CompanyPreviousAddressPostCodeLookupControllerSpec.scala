@@ -83,11 +83,11 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
   def viewModel(mode: Mode, name: String): PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.CompanyPreviousAddressController.onPageLoad(mode),
-    Message("previousAddressPostCode.heading", Message("theCompany").resolve),
-    Message("previousAddressPostCode.heading", name),
-    Message("common.previousAddress.enterPostcode"),
-    Some(Message("common.previousAddress.enterPostcode.link")),
-    Message("common.address.enterPostcode.formLabel")
+    Message("previous.postcode.lookup.heading", Message("theCompany")),
+    Message("previous.postcode.lookup.heading", name),
+    Message("manual.entry.text"),
+    Some(Message("manual.entry.link")),
+    Message("postcode.lookup.form.label")
   )
 
   private val testAnswer = "AB12 1AB"

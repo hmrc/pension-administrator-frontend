@@ -87,10 +87,10 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
       postCall = routes.PartnerPreviousAddressListController.onSubmit(NormalMode, firstIndex),
       manualInputCall = routes.PartnerPreviousAddressController.onPageLoad(NormalMode, firstIndex),
       addresses = addresses,
-      Message("common.previousAddressList.title"),
-      Message("common.previousAddressList.heading"),
-      Message("common.selectAddress.text"),
-      Message("common.selectAddress.link")
+      Message("select.previous.address.heading", Message("thePartner")),
+      Message("select.previous.address.heading", "firstName lastName"),
+      Message("select.address.hint.text"),
+      Message("manual.entry.link")
     )
 
   private def viewAsString(form: Form[_] = form): String =

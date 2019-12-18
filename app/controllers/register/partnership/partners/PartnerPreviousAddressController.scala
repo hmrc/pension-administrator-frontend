@@ -16,7 +16,6 @@
 
 package controllers.register.partnership.partners
 
-import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
@@ -24,7 +23,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.partnership.partners.{PartnerNameId, PartnerPreviousAddressId, PartnerPreviousAddressListId, PartnerPreviousAddressPostCodeLookupId}
+import identifiers.register.partnership.partners.{PartnerNameId, PartnerPreviousAddressId}
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
@@ -47,7 +46,6 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
                                                  requireData: DataRequiredAction,
                                                  formProvider: AddressFormProvider,
                                                  countryOptions: CountryOptions,
-                                                 val auditService: AuditService,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  val view: manualAddress
                                                 )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals {
@@ -57,7 +55,7 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.right.map { pn =>
-        get(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), addressViewModel(mode, index, pn.fullName), mode)
+        get(addressViewModel(mode, index, pn.fullName), mode)
       }
   }
 
@@ -65,9 +63,7 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
     implicit request =>
       PartnerNameId(index).retrieve.right.map { pn =>
         val vm = addressViewModel(mode, index, pn.fullName)
-        post(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), vm, mode,
-          "Partnership Partner Previous Address",
-          PartnerPreviousAddressPostCodeLookupId(index))
+        post(PartnerPreviousAddressId(index), vm, mode)
       }
   }
 
@@ -75,8 +71,8 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
     ManualAddressViewModel(
       routes.PartnerPreviousAddressController.onSubmit(mode, index),
       countryOptions.options,
-      Message("previousAddress.heading", Message("thePartner")).resolve.capitalize,
-      Message("previousAddress.heading", name),
+      Message("enter.previous.address.heading", Message("thePartner")).resolve.capitalize,
+      Message("enter.previous.address.heading", name),
       None,
       psaName = psaName()
     )

@@ -63,8 +63,7 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipSameContactAddressId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
 
     (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), Some(contactAddressListPage(CheckMode))),
-    (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
-    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode), Some(addressYearsPage(CheckMode))),
+    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode), Some(checkYourAnswersPage)),
 
     (PartnershipAddressYearsId, addressYearsOverAYear, emailPage, Some(checkYourAnswersPage)),
     (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(NormalMode), Some(tradingOverAYearPage(CheckMode))),
@@ -75,7 +74,6 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipTradingOverAYearId, tradingUnderAYear, emailPage, Some(checkYourAnswersPage)),
 
     (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode), Some(contactPreviousAddressListPage(CheckMode))),
-    (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(NormalMode), Some(contactPreviousAddressPage(CheckMode))),
     (PartnershipPreviousAddressId, emptyAnswers, emailPage, Some(checkYourAnswersPage)),
 
     (PartnershipEmailId, emptyAnswers, phonePage, Some(checkYourAnswersPage)),
@@ -93,8 +91,7 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
   private def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
     (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode), None),
-    (PartnershipContactAddressListId, emptyAnswers, contactAddressPage(UpdateMode), None),
-    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(UpdateMode), None),
+    (PartnershipContactAddressId, emptyAnswers, confirmPreviousAddressPage, None),
     (PartnershipAddressYearsId, addressYearsOverAYear, anyMoreChangesPage, None),
     (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(UpdateMode), None),
     (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
@@ -108,11 +105,10 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (PartnershipPhoneId, emptyAnswers, anyMoreChangesPage, None),
 
     (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(UpdateMode), None),
-    (PartnershipPreviousAddressListId, emptyAnswers, contactPreviousAddressPage(UpdateMode), None),
     (PartnershipPreviousAddressId, emptyAnswers, anyMoreChangesPage, None),
     (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage, None),
     (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage, None),
-    (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousAddressPage(UpdateMode), None)
+    (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousPostCodePage(UpdateMode), None)
   )
 
   navigator.getClass.getSimpleName must {

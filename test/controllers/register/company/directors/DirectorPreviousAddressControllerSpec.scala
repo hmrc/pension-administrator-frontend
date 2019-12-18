@@ -86,8 +86,8 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
     ManualAddressViewModel(
       routes.DirectorPreviousAddressController.onSubmit(NormalMode, index),
       countryOptions.options,
-      Message("directorPreviousAddress.heading", Message("theDirector").resolve.capitalize),
-      Message("directorPreviousAddress.heading", directorName)
+      Message("enter.previous.address.heading", Message("theDirector").resolve.capitalize),
+      Message("enter.previous.address.heading", directorName)
     )
 
   private def viewAsString(form: Form[_] = form) =
@@ -104,14 +104,6 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(getRelevantData).onPageLoad(NormalMode, index)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(Address("test address line 1", "test address line 2", None, None, None, "GB")))
     }
 
     "redirect to the next page" when {

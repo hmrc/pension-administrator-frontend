@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import audit.AuditService
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
@@ -24,7 +23,7 @@ import controllers.address.ManualAddressController
 import controllers.register.partnership.routes._
 import forms.AddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId}
+import identifiers.register.partnership.PartnershipPreviousAddressId
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode}
@@ -49,7 +48,6 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
                                                      requireData: DataRequiredAction,
                                                      formProvider: AddressFormProvider,
                                                      val countryOptions: CountryOptions,
-                                                     val auditService: AuditService,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      val view: manualAddress
                                                     )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
@@ -61,24 +59,22 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
   private def viewmodel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
     countryOptions.options,
-    title = Message("previousAddress.partnership.title"),
-    heading = Message("previousAddress.heading", name),
-    hint = Some(Message("previousAddress.lede")),
+    title = Message("enter.previous.address.heading", Message("thePartnership")),
+    heading = Message("enter.previous.address.heading", name),
     psaName = psaName()
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
-        get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode)
+        get(viewmodel(mode, name), mode)
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
-        post(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode, "Partnership Previous Address",
-          PartnershipPreviousAddressPostCodeLookupId)
+        post(PartnershipPreviousAddressId, viewmodel(mode, name), mode)
       }
   }
 

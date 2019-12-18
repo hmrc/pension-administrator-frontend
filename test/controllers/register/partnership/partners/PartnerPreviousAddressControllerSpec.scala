@@ -16,8 +16,6 @@
 
 package controllers.register.partnership.partners
 
-import audit.testdoubles.StubSuccessfulAuditService
-import audit.{AddressAction, AddressEvent}
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -30,7 +28,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
@@ -62,8 +60,6 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     )
   )
 
-  private val auditService = new StubSuccessfulAuditService()
-
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new PartnerPreviousAddressController(
       frontendAppConfig,
@@ -75,7 +71,6 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
       new DataRequiredActionImpl,
       formProvider,
       new FakeCountryOptions(environment, frontendAppConfig),
-      auditService,
       stubMessagesControllerComponents(),
       view
     )
@@ -86,8 +81,8 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     ManualAddressViewModel(
       routes.PartnerPreviousAddressController.onSubmit(NormalMode, index),
       countryOptions.options,
-      Message("previousAddress.heading", Message("thePartner")).resolve.capitalize,
-      Message("previousAddress.heading", "test first name test last name"),
+      Message("enter.previous.address.heading", Message("thePartner")).resolve.capitalize,
+      Message("enter.previous.address.heading", "test first name test last name"),
       None
     )
 
@@ -105,14 +100,6 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
-    }
-
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(getRelevantData).onPageLoad(NormalMode, index)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(Address("test address line 1", "test address line 2", None, None, None, "GB")))
     }
 
     "redirect to the next page" when {
@@ -137,57 +124,6 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)
       }
-    }
-
-    "send an audit event when valid data is submitted" in {
-
-      val existingAddress = Address(
-        "existing-line-1",
-        "existing-line-2",
-        None,
-        None,
-        None,
-        "existing-country"
-      )
-
-      val selectedAddress = TolerantAddress(None, None, None, None, None, None)
-
-      val data =
-        UserAnswers()
-          .partnerPreviousAddress(index, existingAddress)
-          .partnerPreviousAddressList(index, selectedAddress)
-          .dataRetrievalAction
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("addressLine1", "value 1"),
-        ("addressLine2", "value 2"),
-        ("postCode", "NE1 1NE"),
-        "country" -> "GB"
-      )
-
-      auditService.reset()
-
-      val result = controller(data).onSubmit(NormalMode, index)(postRequest)
-
-      whenReady(result) {
-        _ =>
-          auditService.verifySent(
-            AddressEvent(
-              FakeAuthAction.externalId,
-              AddressAction.LookupChanged,
-              s"Partnership Partner Previous Address: $partnerName",
-              Address(
-                "value 1",
-                "value 2",
-                None,
-                None,
-                Some("NE1 1NE"),
-                "GB"
-              )
-            )
-          )
-      }
-
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

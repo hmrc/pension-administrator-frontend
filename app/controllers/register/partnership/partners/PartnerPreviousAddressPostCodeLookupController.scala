@@ -72,11 +72,11 @@ class PartnerPreviousAddressPostCodeLookupController @Inject()(
         PostcodeLookupViewModel(
           routes.PartnerPreviousAddressPostCodeLookupController.onSubmit(mode, index),
           routes.PartnerPreviousAddressController.onPageLoad(mode, index),
-          Message("previousAddressPostCode.heading", Message("thePartner")),
-          Message("previousAddressPostCode.heading", name),
-          Message("common.previousAddress.enterPostcode"),
-          Some(Message("common.selectAddress.link")),
-          Message("partnerPreviousAddressPostCodeLookup.input.text"),
+          Message("previous.postcode.lookup.heading", Message("thePartner")),
+          Message("previous.postcode.lookup.heading", name),
+          Message("manual.entry.text"),
+          Some(Message("manual.entry.link")),
+          Message("postcode.lookup.form.label"),
           psaName = psaName()
         )
 

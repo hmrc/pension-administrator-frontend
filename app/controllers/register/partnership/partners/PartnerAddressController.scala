@@ -16,7 +16,6 @@
 
 package controllers.register.partnership.partners
 
-import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
@@ -24,7 +23,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddressListId, PartnerAddressPostCodeLookupId, PartnerNameId}
+import identifiers.register.partnership.partners.{PartnerAddressId, PartnerNameId}
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
@@ -47,7 +46,6 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
                                          requireData: DataRequiredAction,
                                          formProvider: AddressFormProvider,
                                          countryOptions: CountryOptions,
-                                         val auditService: AuditService,
                                          val controllerComponents: MessagesControllerComponents,
                                          val view: manualAddress
                                         )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals {
@@ -57,15 +55,15 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
   private def addressViewModel(mode: Mode, index: Index, name:String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.PartnerAddressController.onSubmit(mode, index),
     countryOptions.options,
-    Message("contactAddress.heading", Message("thePartner")),
-    Message("contactAddress.heading", name),
+    Message("enter.address.heading", Message("thePartner")),
+    Message("enter.address.heading", name),
     psaName = psaName()
   )
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.right.map { pn =>
-        get(PartnerAddressId(index), PartnerAddressListId(index), addressViewModel(mode, index, pn.fullName), mode)
+        get(addressViewModel(mode, index, pn.fullName), mode)
       }
   }
 
@@ -73,8 +71,7 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
     implicit request =>
       PartnerNameId(index).retrieve.right.map { pn =>
         val vm = addressViewModel(mode, index, pn.fullName)
-        post(PartnerAddressId(index), PartnerAddressListId(index), vm, mode, "Partnership Partner Address",
-          PartnerAddressPostCodeLookupId(index))
+        post(PartnerAddressId(index), vm, mode)
       }
   }
 

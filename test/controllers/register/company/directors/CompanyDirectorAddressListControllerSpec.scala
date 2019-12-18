@@ -86,10 +86,10 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
       postCall = routes.CompanyDirectorAddressListController.onSubmit(NormalMode, firstIndex),
       manualInputCall = routes.DirectorAddressController.onPageLoad(NormalMode, firstIndex),
       addresses = addresses,
-      Message("contactAddressList.heading", Message("theDirector").resolve),
-      Message("contactAddressList.heading", director.fullName),
-      Message("common.selectAddress.text"),
-      Message("common.selectAddress.link")
+      Message("select.address.heading", Message("theDirector").resolve),
+      Message("select.address.heading", director.fullName),
+      Message("select.address.hint.text"),
+      Message("manual.entry.link")
     )
 
   def viewAsString(form: Form[_] = form): String =

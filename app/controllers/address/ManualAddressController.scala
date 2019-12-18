@@ -16,14 +16,13 @@
 
 package controllers.address
 
-import audit.{AddressEvent, AuditService}
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Address, Mode, TolerantAddress}
+import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
@@ -42,8 +41,6 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
 
   protected def navigator: Navigator
 
-  protected def auditService: AuditService
-
   protected val form: Form[Address]
 
   protected val allowAccess: AllowAccessActionProvider
@@ -51,55 +48,31 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
   protected def view: manualAddress
 
   protected def get(
-                     id: TypedIdentifier[Address],
-                     selectedId: TypedIdentifier[TolerantAddress],
                      viewModel: ManualAddressViewModel,
                      mode: Mode
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    val preparedForm = (request.userAnswers.get(selectedId), request.userAnswers.get(id)) match {
-      case (Some(value), _) => form.fill(value.toAddress)
-      case (_, Some(value)) => form.fill(value)
-      case _ => form
-    }
-    Future.successful(Ok(view(preparedForm, viewModel, mode)))
+    Future.successful(Ok(view(form, viewModel, mode)))
   }
 
   protected def post(
                       id: TypedIdentifier[Address],
-                      selectedId: TypedIdentifier[TolerantAddress],
                       viewModel: ManualAddressViewModel,
-                      mode: Mode,
-                      context: String,
-                      postCodeLookupIdForCleanup: TypedIdentifier[Seq[TolerantAddress]]
+                      mode: Mode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithError: Form[_]) => Future.successful(BadRequest(view(formWithError, viewModel, mode))),
       address => {
-        val existingAddress = request.userAnswers.get(id)
-        val selectedAddress = request.userAnswers.get(selectedId)
-
-        val auditEvent = AddressEvent.addressEntryEvent(request.externalId, address, existingAddress, selectedAddress, context)
-
-        cacheConnector.remove(request.externalId, postCodeLookupIdForCleanup)
-          .flatMap { _ =>
-            cacheConnector.save(
-              request.externalId,
-              id,
-              address
-            ).flatMap { userAnswersJson =>
-                saveChangeFlag(mode, id)
-                  .flatMap {
-                    _ =>
-                      setCompleteFlagForExistingDirOrPartners(mode, id, UserAnswers(userAnswersJson)).map {answers =>
-                        auditEvent.foreach(auditService.sendEvent(_))
-                        Redirect(navigator.nextPage(id, mode, UserAnswers(userAnswersJson)))
-                      }
-                  }
-              }
-          }
+        cacheConnector.save(request.externalId, id, address).flatMap { userAnswersJson =>
+          saveChangeFlag(mode, id)
+            .flatMap {
+              _ =>
+                setCompleteFlagForExistingDirOrPartners(mode, id, UserAnswers(userAnswersJson)).map { _ =>
+                  Redirect(navigator.nextPage(id, mode, UserAnswers(userAnswersJson)))
+                }
+            }
+        }
       }
     )
   }
-
 }

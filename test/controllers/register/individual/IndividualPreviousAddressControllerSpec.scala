@@ -44,7 +44,7 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  val messagePrefix = "individual.previousAddress"
+  val messagePrefix = "individual.enter.previous.address"
 
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")
@@ -58,8 +58,6 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
     psaName = None
   )
 
-  val fakeAuditService = new StubSuccessfulAuditService()
-
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IndividualPreviousAddressController(
       frontendAppConfig,
@@ -71,7 +69,6 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      fakeAuditService,
       stubMessagesControllerComponents(),
       view
     )
@@ -89,15 +86,6 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
       contentAsString(result) mustBe viewAsString()
     }
 
-    "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(IndividualPreviousAddressId.toString -> Address("value 1", "value 2", None, None, None, "GB"))
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(Address("value 1", "value 2", None, None, None, "GB")))
-    }
-
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("addressLine1", "value 1"),
@@ -110,57 +98,6 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "send an audit event when valid data is submitted" in {
-
-      val existingAddress = Address(
-        "existing-line-1",
-        "existing-line-2",
-        None,
-        None,
-        None,
-        "existing-country"
-      )
-
-      val selectedAddress = TolerantAddress(None, None, None, None, None, None)
-
-      val data =
-        UserAnswers()
-          .individualPreviousAddress(existingAddress)
-          .individualPreviousAddressList(selectedAddress)
-          .dataRetrievalAction
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("addressLine1", "value 1"),
-        ("addressLine2", "value 2"),
-        ("postCode", "NE1 1NE"),
-        "country" -> "GB"
-      )
-
-      fakeAuditService.reset()
-
-      val result = controller(data).onSubmit(NormalMode)(postRequest)
-
-      whenReady(result) {
-        _ =>
-          fakeAuditService.verifySent(
-            AddressEvent(
-              FakeAuthAction.externalId,
-              AddressAction.LookupChanged,
-              "Individual Previous Address",
-              Address(
-                "value 1",
-                "value 2",
-                None,
-                None,
-                Some("NE1 1NE"),
-                "GB"
-              )
-            )
-          )
-      }
-
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

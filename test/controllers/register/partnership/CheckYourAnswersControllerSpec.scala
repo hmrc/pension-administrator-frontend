@@ -131,7 +131,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             address.country
           ),
           answerIsMessageKey = false,
-          Some(Link(routes.PartnershipContactAddressController.onPageLoad(CheckMode).url)),
+          Some(Link(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
           visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultBusiness))
         ))
 
@@ -181,7 +181,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
             address.country
           ),
           answerIsMessageKey = false,
-          Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url)),
+          Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
           visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultBusiness))
         ))
 
