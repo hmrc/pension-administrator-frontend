@@ -19,7 +19,7 @@ package controllers.register
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.PsaSubscriptionResponseId
+import identifiers.register.{PsaNameId, PsaSubscriptionResponseId}
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
@@ -37,8 +37,9 @@ import scala.concurrent.Future
 class ConfirmationControllerSpec extends ControllerSpecBase {
 
   private val psaId: String = "A1234567"
+  private val psaName: String = "psa name"
   private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val onwardRoute = controllers.routes.LogoutController.onPageLoad()
+  private def onwardRoute = controllers.routes.LogoutController.onPageLoad()
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
 
   val view: confirmation = app.injector.instanceOf[confirmation]
@@ -47,7 +48,8 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
 
     "return OK and the correct view for a GET" in {
       val data = Json.obj(
-        PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psaId)
+        PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psaId),
+        PsaNameId.toString -> psaName
       )
       when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
@@ -88,5 +90,5 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString() =
-    view(psaId)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messagesApi.preferred(fakeRequest)).toString
+    view(psaId,psaName)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messagesApi.preferred(fakeRequest)).toString
 }

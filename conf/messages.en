@@ -589,10 +589,10 @@ declarationFitAndProper.statement4 = I have not participated in, or been connect
 declarationFitAndProper.statement5 = I have not been disqualified from acting as a company director or are bankrupt
 declarationFitAndProper.statement6 = I have not been disqualified from acting as a pension scheme trustee
 
-confirmation.newPSA.title = Your registration to become a Pension Scheme Administrator has been successful
-confirmation.existingPSA.title=You are now registered as a Pension Scheme Administrator on the new service.
-confirmation.newPSA.heading = Your registration to become a Pension Scheme Administrator has been successful.
-confirmation.existingPSA.heading =You are now registered as a Pension Scheme Administrator on the new service.
+confirmation.newPSA.title = The pension scheme administrator has been registered
+confirmation.existingPSA.title= The pension scheme administrator is registered on this service.
+confirmation.newPSA.heading = {0} has been registered as a pension scheme administrator.
+confirmation.existingPSA.heading = {0} is registered as a pension scheme administrator on this service.
 confirmation.psaIdNumber = Your Admin ID reference is
 confirmation.whatYouNeedToKnow.heading = What you need to know
 confirmation.whatYouNeedToKnow.existingPSA.detail=Your administrator ID has not changed. You can now {0}. As a Pension Scheme Administrator you need to continue to meet the criteria to be a fit and proper person.

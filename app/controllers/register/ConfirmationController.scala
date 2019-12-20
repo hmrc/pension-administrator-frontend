@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.PsaSubscriptionResponseId
+import identifiers.register.{PsaNameId, PsaSubscriptionResponseId}
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -43,9 +43,10 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      PsaSubscriptionResponseId.retrieve.right.map { response =>
+      (PsaSubscriptionResponseId and PsaNameId).retrieve.right.map {
+        case response ~ name =>
         dataCacheConnector.removeAll(request.externalId)
-        Future.successful(Ok(view(response.psaId)))
+        Future.successful(Ok(view(response.psaId, name)))
       }
   }
 
