@@ -52,6 +52,13 @@ class CompanyNotFoundViewSpec extends ViewBehaviours {
       )
     }
 
+    "have link to enter details again" in {
+      createView must haveLink(
+        controllers.register.company.routes.CompanyUTRController.onPageLoad().url,
+        "enter-details-again-link"
+      )
+    }
+
   }
 
 }
