@@ -22,6 +22,7 @@
 @import play.api.mvc.AnyContent
 @import viewmodels.Person
 @import config.FrontendAppConfig
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -36,7 +37,7 @@
 }
 
 @main_template(
-    title = messages("addCompanyDirectors.title")
+    title = titleWithErrors(form, messages("addCompanyDirectors.title"))
 ) {
 
     @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {

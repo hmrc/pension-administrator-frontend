@@ -19,6 +19,7 @@
 @import models.Mode
 @import utils.FormHelpers
 @import utils.countryOptions.CountryOptions
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -28,7 +29,7 @@
 @(form: Form[_], name: String, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("confirmRegisteredAddress.title")
+    title = titleWithErrors(form, messages("confirmRegisteredAddress.title"))
 ) {
 
     @formHelper(action = ConfirmPartnershipDetailsController.onSubmit(), 'autoComplete -> "off") {

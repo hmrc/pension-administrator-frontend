@@ -18,6 +18,7 @@
 @import models.{Mode, Index}
 @import viewmodels.address.PostcodeLookupViewModel
 @import uk.gov.hmrc.urls.Link
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -34,7 +35,7 @@
 }
 
 @main_template(
-    title = viewmodel.title) {
+    title = titleWithErrors(form, viewmodel.title)) {
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 

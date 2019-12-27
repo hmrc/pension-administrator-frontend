@@ -17,6 +17,7 @@
 @import controllers.register.routes
 @import uk.gov.hmrc.play.views.html._
 @import models.Mode
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -26,7 +27,7 @@
 @(form: Form[_], psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("declarationFitAndProper.variations.title")
+    title = titleWithErrors(form, messages("declarationFitAndProper.variations.title"))
 ) {
 
     @components.back_link()

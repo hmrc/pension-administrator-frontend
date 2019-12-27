@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import models.Mode
 @import viewmodels.CommonFormViewModel
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -27,7 +28,7 @@
 @(form: Form[_], viewModel: CommonFormViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = viewModel.title
+    title = titleWithErrors(form, viewModel.title)
 ) {
 
         @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {

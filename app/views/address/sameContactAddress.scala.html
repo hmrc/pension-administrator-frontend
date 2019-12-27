@@ -20,6 +20,7 @@
 @import utils.FormHelpers
 @import utils.countryOptions.CountryOptions
 @import viewmodels.address.SameContactAddressViewModel
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -29,7 +30,7 @@
 @(form: Form[_], viewmodel: SameContactAddressViewModel, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(viewmodel.title)
+    title = titleWithErrors(form, messages(viewmodel.title))
 ) {
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {

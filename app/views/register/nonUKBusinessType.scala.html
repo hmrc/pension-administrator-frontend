@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.routes._
 @import models.register.NonUKBusinessType
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -26,7 +27,7 @@
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("nonUKBusinessType.title")
+    title = titleWithErrors(form, messages("nonUKBusinessType.title"))
 ) {
 
     @formHelper(action = NonUKBusinessTypeController.onSubmit(), 'autoComplete -> "off") {
