@@ -40,6 +40,7 @@
 
         @components.error_summary(form.errors)
 
+        <div class="form-group @if(form.hasErrors){form-group--error}">
         @components.heading(messages("stillUseAdviser.heading", psaNameOpt.getOrElse(""), personWithWorkingKnowledgeName))
 
         <p>@messages("stillUseAdviser.p1")</p>
@@ -51,7 +52,7 @@
             labelClass = Some("visually-hidden"),
             secondaryLabel = None
         )
-
+        </div>
         <div class="section">
             @components.submit_button("site.save_and_continue")
         </div>

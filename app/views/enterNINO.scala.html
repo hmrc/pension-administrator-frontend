@@ -41,6 +41,7 @@
         @components.back_link()
 
         @components.error_summary(form.errors)
+        <div class="form-group @if(form.hasErrors){form-group--error}">
 
         @components.heading(viewModel.heading)
 
@@ -50,7 +51,7 @@
             labelClass = Some("visually-hidden"),
             hint = viewModel.hint
         )
-
+        </div>
         <div class="section">
             @components.submit_button("site.save_and_continue")
         </div>
