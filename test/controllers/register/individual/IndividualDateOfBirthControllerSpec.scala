@@ -84,7 +84,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("dateOfBirth.day", "9"),
         ("dateOfBirth.month", "6"),
-        ("dateOfBirth.year", "1862"))
+        ("dateOfBirth.year", "1902"))
 
       val result = controller(
         dataRetrievalAction = getRequiredDataForRegistration(isUk = true)).onSubmit(NormalMode)(postRequest)
@@ -100,7 +100,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("dateOfBirth.day", "9"),
         ("dateOfBirth.month", "6"),
-        ("dateOfBirth.year", "1862"))
+        ("dateOfBirth.year", "2002"))
 
       val result = controller(dataRetrievalAction = getRequiredDataForRegistration()).onSubmit(NormalMode)(postRequest)
 
