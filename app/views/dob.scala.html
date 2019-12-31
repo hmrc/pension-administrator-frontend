@@ -36,7 +36,7 @@
         @components.back_link()
 
         @components.error_summary(form.errors)
-
+        <div class="form-group @if(form.hasErrors){form-group--error}">
         @components.heading(viewModel.heading)
 
         @components.input_date(
@@ -45,6 +45,7 @@
             legendClass = "visually-hidden",
             hint = Some(messages("common.dateOfBirth.hint"))
         )
+        </div>
         <div class="subsection">
             @components.submit_button("site.save_and_continue")
         </div>

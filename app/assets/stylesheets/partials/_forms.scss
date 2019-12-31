@@ -77,7 +77,8 @@ Error styling to bring in line with GDS
     border-left: 5px solid
     #b10e1e;
 }
-.form-group--error .form-field--error{
+.form-group--error .form-field--error,
+.form-group--error .form-group-error{
     padding-left: 0px;
     border-left: 0px;
 }
