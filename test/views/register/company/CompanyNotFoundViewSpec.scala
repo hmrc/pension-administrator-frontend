@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,13 @@ class CompanyNotFoundViewSpec extends ViewBehaviours {
       createView must haveLink(
         frontendAppConfig.tellHMRCChangesUrl,
         "tell-hmrc-link"
+      )
+    }
+
+    "have link to enter details again" in {
+      createView must haveLink(
+        controllers.register.company.routes.CompanyUTRController.onPageLoad().url,
+        "enter-details-again-link"
       )
     }
 

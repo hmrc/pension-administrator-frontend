@@ -1,5 +1,5 @@
 @*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
 
     @components.error_summary(form.errors)
 
+    <div class="form-group @if(form.hasErrors){form-group--error}">
     @components.heading(messages("declarationFitAndProper.variations.heading", psaNameOpt.getOrElse("")))
 
     @components.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
@@ -66,7 +67,7 @@
             labelClass = Some("visually-hidden"),
             secondaryLabel = None
         )
-
+    </div>
         <div class="subsection">
             @components.submit_button("site.agreeAndContinue")
         </div>

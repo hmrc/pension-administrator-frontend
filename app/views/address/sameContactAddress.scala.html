@@ -1,5 +1,5 @@
 @*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@
 
         @components.error_summary(form.errors)
 
+        <div class="form-group @if(form.hasErrors){form-group--error}">
         @components.heading(components.hyphen(messages(viewmodel.heading)).toString)
 
         @viewmodel.hint.map{hintText =>
@@ -57,7 +58,7 @@
             label = messages(viewmodel.heading),
             labelClass = Some("visually-hidden")
         )
-
+        </div>
         <div class="subsection">
             @components.submit_button("site.save_and_continue")
         </div>
