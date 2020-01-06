@@ -30,21 +30,20 @@ hint: Option[String] = None
               @label
             </span>
 
-        @if(hint.nonEmpty){
-        <span class="form-hint" id="@{field.id}-date-hint">@hint</span>
-        }
-
-        @if(field("day").errors.nonEmpty || field("month").errors.nonEmpty || field("year").errors.nonEmpty){
-        <span class="error-notification" id="error-message-date">
-            <span class="visually-hidden">@messages("site.error")</span> @messages("error.invalid_date")</span>
-        } else {
-        @field.errors.map { error =>
-        <span class="error-notification" id="error-message-@{field.id}-input">
-            <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)</span>
-        }
-        }
-
     </legend>
+    @if(hint.nonEmpty){
+    <span class="form-hint" id="@{field.id}-date-hint">@hint</span>
+    }
+
+    @if(field("day").errors.nonEmpty || field("month").errors.nonEmpty || field("year").errors.nonEmpty){
+    <span class="error-notification" id="error-message-date">
+            <span class="visually-hidden">@messages("site.error")</span> @messages("error.invalid_date")</span>
+    } else {
+    @field.errors.map { error =>
+    <span class="error-notification" id="error-message-@{field.id}-input">
+            <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)</span>
+    }
+    }
     <div class="form-date">
         <div class="form-group form-group-day">
             <label class="form-label" for="@field("day").id">@messages("date.day")</label>

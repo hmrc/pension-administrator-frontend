@@ -36,6 +36,7 @@
 
         @components.error_summary(form.errors)
 
+        <div class="form-group @if(form.hasErrors){form-group--error}">
         @components.heading(messages("declarationWorkingKnowledge.heading"))
 
         <p>@messages("declarationWorkingKnowledge.p1")</p>
@@ -47,7 +48,7 @@
             label = messages("declarationWorkingKnowledge.heading"),
             labelClass = Some("visually-hidden")
         )
-
+        </div>
         <div class="subsection">
             @components.submit_button("site.save_and_continue")
         </div>

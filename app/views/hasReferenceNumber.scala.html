@@ -35,7 +35,7 @@ formHelper: FormWithCSRF
         @components.back_link()
 
         @components.error_summary(form.errors)
-
+        <div class="form-group @if(form.hasErrors){form-group--error}">
         @viewmodel.hint.map{ hint =>
             @components.heading(viewmodel.heading)
             <p>@messages(hint)</p>
@@ -47,7 +47,7 @@ formHelper: FormWithCSRF
             labelClass = Some("visually-hidden"),
             headingIsLegend = viewmodel.hint.isEmpty
         )
-
+        </div>
         <div class="section">
             @components.submit_button(submitMessageKey = "site.save_and_continue")
         </div>

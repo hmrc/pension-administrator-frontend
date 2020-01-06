@@ -36,6 +36,7 @@
 
         @components.error_summary(form.errors)
 
+        <div class="form-group @if(form.hasErrors){form-group--error}">
         @components.heading(messages("confirmRegisteredAddress.heading", name ))
 
         <p>@components.tolerant_address("companyAddress", address, countryOptions)</p>
@@ -45,7 +46,7 @@
             label = messages("confirmRegisteredAddress.heading", name),
             labelClass = Some("visually-hidden")
         )
-
+        </div>
         <div class="subsection">
             @components.submit_button("site.save_and_continue")
         </div>
