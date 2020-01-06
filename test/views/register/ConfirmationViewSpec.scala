@@ -67,10 +67,8 @@ class ConfirmationViewSpec extends ViewBehaviours {
     }
 
     "display the 'what you need to know' detail " in {
-      createView must haveElementWithText(
-        "what-you-need-to-know",
-        "confirmation.whatYouNeedToKnow.existingPSA.detail",
-        messages("confirmation.whatYouNeedToKnow.schemeLink")
+      createView must haveDynamicText(
+        "confirmation.whatYouNeedToKnow.schemeLink"
       )
     }
 
@@ -122,7 +120,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
     }
 
     "display the 'what you need to know' detail " in {
-      createView must haveElementWithText(
+      createView must haveDynamicText(
         "what-you-need-to-know",
         "confirmation.whatYouNeedToKnow.newPSA.detail",
         messages("confirmation.whatYouNeedToKnow.schemeLink")

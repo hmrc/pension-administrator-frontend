@@ -19,7 +19,8 @@ package controllers.register
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.{PsaNameId, PsaSubscriptionResponseId}
+import identifiers.register.individual.IndividualDetailsId
+import identifiers.register.{BusinessNameId, PsaNameId, PsaSubscriptionResponseId}
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
@@ -49,7 +50,8 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
     "return OK and the correct view for a GET" in {
       val data = Json.obj(
         PsaSubscriptionResponseId.toString -> PsaSubscriptionResponse(psaId),
-        PsaNameId.toString -> psaName
+        BusinessNameId.toString -> psaName,
+        IndividualDetailsId.toString -> psaName
       )
       when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
