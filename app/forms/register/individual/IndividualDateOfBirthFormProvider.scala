@@ -28,6 +28,13 @@ class IndividualDateOfBirthFormProvider @Inject() extends FormErrorHelper with M
   def apply(): Form[LocalDate] =
     Form(
       "dateOfBirth" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
-        .verifying(nonFutureDate("common.error.dateOfBirth.future"))
+        .verifying(firstError(
+          nonFutureDate("common.error.dateOfBirth.future"),
+          notBeforeYear("common.error.dateOfBirth.past", IndividualDateOfBirthFormProvider.startYear)
+        ))
     )
+}
+
+object IndividualDateOfBirthFormProvider {
+  val startYear: Int = 1900
 }
