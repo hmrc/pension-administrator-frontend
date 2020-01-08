@@ -61,12 +61,12 @@ trait PeopleListBehaviours {
         }
       }
 
-      "display the edit link for each person" in {
+      "display the change link for each person" in {
         val doc = asDocument(nonEmptyView())
         people.foreach { person =>
           val link = doc.select(s"#${person.editLinkId}")
           link.size mustBe 1
-          link.first.text mustBe messages("site.edit")
+          link.first.text mustBe messages("site.change")
           link.first.attr("href") mustBe person.editLink
         }
       }
@@ -81,7 +81,7 @@ trait PeopleListBehaviours {
         val doc = asDocument(viewWithUpdateMode())
         val link = doc.select(s"#${people(1).editLinkId}")
         link.size mustBe 1
-        link.first.text mustBe messages("site.edit")
+        link.first.text mustBe messages("site.change")
         link.first.attr("href") mustBe people(1).editLink
       }
     }

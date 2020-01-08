@@ -261,8 +261,8 @@ contactAddressPostCodeLookup.heading = What is {0}’s postcode?
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
 
-addCompanyDirectors.title = Company directors
-addCompanyDirectors.heading = Company directors
+addCompanyDirectors.title = Directors
+addCompanyDirectors.heading = Directors
 addCompanyDirectors.checkYourAnswersLabel = Company directors
 addCompanyDirectors.error.required = Select yes if you want to add another director
 addCompanyDirectors.addYesNo = Do you want to add another director?
