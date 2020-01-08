@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.address.AddressYearsViewModel
 @import models.Mode
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -33,7 +34,7 @@
 )
 
 @main_template(
-    title = viewmodel.title
+    title = titleWithErrors(form, viewmodel.title)
 ) {
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {

@@ -18,6 +18,7 @@
 @import controllers.register.routes._
 @import models.Mode
 @import models.register.BusinessType
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -27,7 +28,7 @@
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("businessType.title")
+    title = titleWithErrors(form, messages("businessType.title"))
 ) {
     @components.back_link()
 

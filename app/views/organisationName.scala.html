@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.OrganisationNameViewModel
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -25,7 +26,7 @@
 @(form: Form[_], viewModel: OrganisationNameViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages(viewModel.title)
+    title = titleWithErrors(form, messages(viewModel.title))
 ) {
     @components.back_link()
 

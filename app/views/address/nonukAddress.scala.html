@@ -18,6 +18,7 @@
 @import models.{Mode, Index}
 @import viewmodels.address.ManualAddressViewModel
 @import utils.InputOption
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -27,7 +28,7 @@
 @(form: Form[_], viewmodel: ManualAddressViewModel)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = messages(viewmodel.title)
+  title = titleWithErrors(form, messages(viewmodel.title))
 ) {
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 

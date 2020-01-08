@@ -23,6 +23,7 @@
 @import play.api.mvc.AnyContent
 @import viewmodels.{Person, EntityViewModel, Message}
 @import models.Mode
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -37,7 +38,7 @@
 }
 
 @main_template(
-    title = messages(viewmodel.title)
+    title = titleWithErrors(form, messages(viewmodel.title))
 ) {
 
         @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {

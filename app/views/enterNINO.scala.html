@@ -19,6 +19,7 @@
 @import controllers.register.company.routes._
 @import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -33,7 +34,7 @@
 )
 
 @main_template(
-    title = viewModel.title
+    title = titleWithErrors(form, viewModel.title)
 ) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {

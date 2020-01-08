@@ -18,6 +18,7 @@
 @import models.{Mode, TolerantAddress}
 @import uk.gov.hmrc.play.views.html._
 @import utils.countryOptions.CountryOptions
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -27,7 +28,7 @@
 @(form: Form[_], address: TolerantAddress, name: String, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("confirmCompanyAddress.title")
+    title = titleWithErrors(form, messages("confirmCompanyAddress.title"))
 ) {
 
     @formHelper(action = ConfirmCompanyDetailsController.onSubmit(), 'autoComplete -> "off") {

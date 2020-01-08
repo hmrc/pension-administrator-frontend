@@ -19,6 +19,7 @@
 @import controllers.register.routes._
 @import utils.DateHelper._
 @import models.UpdateMode
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -32,7 +33,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("anyMoreChanges.title")
+    title = titleWithErrors(form, messages("anyMoreChanges.title"))
 ) {
 
     @formHelper(action = AnyMoreChangesController.onSubmit(), 'autoComplete -> "off") {

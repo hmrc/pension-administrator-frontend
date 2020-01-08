@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.routes.RegisterAsBusinessController
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -25,7 +26,7 @@
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("registerAsBusiness.title")
+    title = titleWithErrors(form, messages("registerAsBusiness.title"))
 ) {
     @components.error_summary(form.errors)
 

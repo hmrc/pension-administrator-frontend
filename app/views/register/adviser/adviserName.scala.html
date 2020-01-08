@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import controllers.register.adviser.routes._
 @import models.Mode
+@import utils.ViewHelper.titleWithErrors
 
 @this(
     main_template: main_template,
@@ -26,7 +27,7 @@
 @(form: Form[_], mode: Mode, psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${messages("adviserName.title")}"
+    title = titleWithErrors(form, messages("adviserName.title"))
 ) {
 
     @formHelper(action = AdviserNameController.onSubmit(mode), 'autoComplete -> "off") {
