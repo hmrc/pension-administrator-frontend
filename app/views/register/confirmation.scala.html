@@ -25,7 +25,7 @@
     appConfig: FrontendAppConfig
 )
 
-@(psaId: String)(implicit request: DataRequest[_], messages: Messages)
+@(psaId: String, psaName: String)(implicit request: DataRequest[_], messages: Messages)
 
 @registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.schemeLink")</a>}
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
@@ -36,10 +36,10 @@
 
     <div class="govuk-box-highlight">
          @if(request.user.isExistingPSA){
-              @components.heading(messages("confirmation.existingPSA.heading"))
+              @components.heading(messages("confirmation.existingPSA.heading", psaName))
 
          } else {
-                @components.heading(messages("confirmation.newPSA.heading"))
+                @components.heading(messages("confirmation.newPSA.heading", psaName))
 
               <p class="font-large">
                  @messages("confirmation.psaIdNumber")
@@ -51,13 +51,22 @@
 
     <p>@messages("confirmation.email")</p>
 
-    <h2 class="heading-large">@messages("confirmation.whatYouNeedToKnow.heading")</h2>
-    <p id="what-you-need-to-know">@if(request.user.isExistingPSA){
-           @Html(Message("confirmation.whatYouNeedToKnow.existingPSA.detail").withArgs(registerSchemeLink))
+    <h2 class="heading-small">@messages("confirmation.whatYouNeedToKnow.heading")</h2>
+    <p>@messages("confirmation.action.subheading")</p>
+
+    <ul id="what-you-need-to-know" class="list list-bullet">
+        @if(request.user.isExistingPSA){
+        <li>@Html(Message("confirmation.whatYouNeedToKnow.existingPSA.detail").withArgs(registerSchemeLink))</li>
+        <li>@messages("confirmation.action.item")</li>
         } else {
-           @Html(Message("confirmation.whatYouNeedToKnow.newPSA.detail").withArgs(registerSchemeLink))
+        <li>@Html(Message("confirmation.whatYouNeedToKnow.newPSA.detail").withArgs(registerSchemeLink))</li>
+        <li>@messages("confirmation.action.item")</li>
         }
-    </p>
+    </ul>
+
+    <div class="print-page">
+        @printThisPageLink
+    </div>
 
     @formHelper(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {
         <div class="section">
@@ -65,8 +74,6 @@
         </div>
     }
 
-    <div class="print-page">
-        @printThisPageLink
-    </div>
+
 
 }
