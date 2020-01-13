@@ -31,7 +31,7 @@
 
 
 <div class="form-group@if(field.hasErrors){ form-field--error}">
-    <fieldset class=@fieldSetClass id=@{field.id}>
+    <fieldset class=@fieldSetClass id=@{field.id} @if(hint.nonEmpty){aria-describedby="@{field.id}-yesno-hint"}>
 
         <legend>
             @if(headingIsLegend){
@@ -46,7 +46,7 @@
         </legend>
 
         @hint.map { hint =>
-        <span class="form-hint">@hint</span>
+        <span id="@{field.id}-yesno-hint" class="form-hint">@hint</span>
         }
 
         @field.errors.map { error =>

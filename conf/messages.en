@@ -349,7 +349,6 @@ enterVAT.heading = What is {0}’s VAT registration number?
 enterVAT.paragraph = This is 9 numbers, sometimes with ‘GB’ at the start, for example 123456789 or GB123456789.
 enterVAT.visuallyHidden.text = {0}’s VAT registration number
 enterVAT.error.invalid = Enter {0}’s VAT registration number in the correct format
-enterVAT.error.length = Enter {0}’s VAT registration number using 9 characters or less
 enterVAT.error.required = Enter a VAT registration number
 
 hasPAYE.heading = Does {0} have an employer PAYE reference?

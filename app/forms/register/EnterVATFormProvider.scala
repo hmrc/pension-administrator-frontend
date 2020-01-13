@@ -29,7 +29,7 @@ class EnterVATFormProvider @Inject() extends FormErrorHelper with VatMappingStri
     Form(
       "value" -> vatMapping(
         keyVatRequired = "enterVAT.error.required",
-        keyVatLength = Message("enterVAT.error.length", name),
+        keyVatLength = Message("enterVAT.error.invalid", name),
         keyVatInvalid = Message("enterVAT.error.invalid", name)
       )
     )

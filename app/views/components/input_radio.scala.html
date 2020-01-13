@@ -28,7 +28,7 @@
 )(implicit messages: Messages)
 
 <div class="form-group @if(field.hasErrors){form-field--error}">
-    <fieldset class="form-group @fieldsetClass" id="@{field.id}">
+    <fieldset class="form-group @fieldsetClass" id="@{field.id}" @if(hint.nonEmpty){aria-describedby="@{field.id}-radio-hint"}>
         <legend>
             @if(headingIsLegend) {
                 <h1 class="heading-xlarge">@legend</h1>
@@ -38,7 +38,7 @@
 
         </legend>
         @if(hint.nonEmpty){
-        <span class="form-hint">@{hint.get}</span>
+        <span id="@{field.id}-radio-hint" class="form-hint">@{hint.get}</span>
         }
         @field.errors.map { error =>
         <span class="error-notification" id="error-message-@{field.id}-input">
