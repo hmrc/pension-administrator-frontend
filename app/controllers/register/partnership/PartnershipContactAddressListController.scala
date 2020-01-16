@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ class PartnershipContactAddressListController @Inject()(
 
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
-    formProvider(addresses, Message("select.address.error.required").withArgs(name))
+    formProvider(addresses, Message("select.address.required.error").withArgs(name))
 
   def viewModel(mode: Mode) = Retrieval { implicit request =>
     PartnershipContactAddressPostCodeLookupId.retrieve.right map { addresses =>

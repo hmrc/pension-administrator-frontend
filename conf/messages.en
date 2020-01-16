@@ -616,7 +616,7 @@ exitToGovUK = Exit to Gov.UK
 
 individual.same.contact.address.title = Can HMRC use this address to contact you?
 individual.same.contact.address.heading = Can HMRC use this address to contact you?
-individual.same.contact.address.error = Select yes if HMRC can use this address to contact {0}
+same.contact.address.error = Select yes if HMRC can use this address to contact {0}
 
 company.same.contact.address.title = Can HMRC use this address to contact the company?
 company.same.contact.address.heading = Can HMRC use this address to contact {0}?
