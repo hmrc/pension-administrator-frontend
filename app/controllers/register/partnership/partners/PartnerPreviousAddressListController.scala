@@ -49,7 +49,7 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
                                                     )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
-    formProvider(addresses, Message("select.previous.address.error.required", name))
+    formProvider(addresses, Message("select.address.required.error", name))
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
