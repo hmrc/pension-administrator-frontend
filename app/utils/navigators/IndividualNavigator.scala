@@ -64,7 +64,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualDateOfBirthId => checkYourAnswers
     case IndividualSameContactAddressId => contactAddressRoutes(ua, CheckMode)
     case IndividualContactAddressPostCodeLookupId => IndividualContactAddressListController.onPageLoad(CheckMode)
-    case IndividualContactAddressId => checkYourAnswers
+    case IndividualContactAddressId => IndividualAddressYearsController.onPageLoad(CheckMode)
     case IndividualAddressYearsId => addressYearsRouteCheckMode(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(CheckMode)
     case IndividualPreviousAddressId => checkYourAnswers
