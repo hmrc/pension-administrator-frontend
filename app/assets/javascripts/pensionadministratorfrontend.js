@@ -6,7 +6,12 @@ $(document).ready(function() {
             this.click();
         }
     });
-
+    window.GOVUK.timeoutDialog({
+        timeout: 900,
+        countdown: 120,
+        keepAliveUrl: '/register-as-pension-scheme-administrator/keep-alive',
+        signOutUrl: '/register-as-pension-scheme-administrator/logout',
+      });
   // =====================================================
   // Initialise show-hide-content
   // Toggles additional content based on radio/checkbox input state
