@@ -66,7 +66,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     (IndividualSameContactAddressId, sameContactAddressIncompleteNonUk, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
 
     (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), Some(contactAddressListPage(CheckMode))),
-    (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), Some(checkYourAnswersPage)),
+    (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode), Some(addressYearsPage(CheckMode))),
 
     (IndividualAddressYearsId, ukAddressYearsOverAYear, emailPage(NormalMode), Some(checkYourAnswersPage)),
     (IndividualAddressYearsId, nonUkAddressYearsOverAYear, emailPage(NormalMode), Some(checkYourAnswersPage)),
