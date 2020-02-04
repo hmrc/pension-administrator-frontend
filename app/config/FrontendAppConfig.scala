@@ -34,6 +34,9 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   private lazy val contactHost = runModeConfiguration.getOptional[String]("contact-frontend.host").getOrElse("")
   private val contactFormServiceIdentifier = "pensionadministratorfrontend"
 
+  lazy val timeout = loadConfig("session._timeoutSeconds")
+  lazy val countdown = loadConfig("session._CountdownInSeconds")
+
   lazy val googleTagManagerIdAvailable: Boolean = runModeConfiguration.underlying.getBoolean(s"google-tag-manager.id-available")
   lazy val googleTagManagerId: String = loadConfig(s"google-tag-manager.id")
   lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
