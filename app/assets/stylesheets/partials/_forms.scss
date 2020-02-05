@@ -75,7 +75,7 @@ Error styling to bring in line with GDS
 .form-group--error {
     padding-left: 15px;
     border-left: 5px solid
-    #b10e1e;
+    #d4351c;
 }
 .form-group--error .form-field--error,
 .form-group--error .form-group-error{
@@ -87,34 +87,34 @@ Error styling to bring in line with GDS
     margin-left: 0;
 }
 .form-field--error .error-notification {
-    color: #b10e1e;
+    color: #d4351c;
     font-weight: 700;
 }
 @media screen and (min-width: 640px){
     .form-field--error .error-notification {
-        color: #b10e1e;
+        color: #d4351c;
         font-size: 19px;
     }
 }
 .form-field--error {
-    border-left: 5px solid #b10e1e;
+    border-left: 5px solid #d4351c;
 }
 .error-summary {
-    border: 5px solid #b10e1e;
+    border: 5px solid #d4351c;
     margin-top: 15px;
     margin-bottom: 15px;
     padding: 15px 10px;
 }
 @media (min-width: 641px){
     .error-summary {
-        border: 5px solid #b10e1e;
+        border: 5px solid #d4351c;
         margin-top: 30px;
         margin-bottom: 30px;
         padding: 20px 15px 15px;
     }
 }
 .error-summary .error-summary-list a {
-    color: #b10e1e;
+    color: #d4351c;
     font-weight: bold;
     text-decoration: underline;
 }
