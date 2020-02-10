@@ -42,11 +42,6 @@ trait CheckYourAnswersBusiness[I <: TypedIdentifier.PathDependent] extends Check
     ua.get(BusinessNameId).map(Message(messageKey, _)).getOrElse(Message(messageKey, Message("theBusiness")))
 }
 
-trait CheckYourAnswersIndividual[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua: UserAnswers, messageKey: String): Message =
-    ua.get(IndividualDetailsId).map(i => Message(messageKey, i.fullName)).getOrElse(Message(messageKey, Message("theIndividual")))
-}
-
 trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
   protected def dynamicMessage(ua:UserAnswers, messageKey:String)(implicit messages:Messages): Message =
     ua.get(BusinessNameId).map(name => Message(messageKey, name)).getOrElse(Message(messageKey, Message("thePartnership")))
@@ -69,18 +64,6 @@ trait CheckYourAnswersAdviser[I <: TypedIdentifier.PathDependent] extends CheckY
 
 object CheckYourAnswers {
 
-  implicit def businessDetails[I <: TypedIdentifier[BusinessDetails]](implicit r: Reads[BusinessDetails]): CheckYourAnswers[I] = BusinessDetailsCYA()()
-
-  implicit def tolerantAddress[I <: TypedIdentifier[TolerantAddress]](implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = TolerantAddressCYA()()
-
-  implicit def address[I <: TypedIdentifier[Address]](implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = AddressCYA()()
-
-  implicit def addressYears[I <: TypedIdentifier[AddressYears]](implicit r: Reads[AddressYears]): CheckYourAnswers[I] = AddressYearsCYA()()
-
-  implicit def string[I <: TypedIdentifier[String]](implicit rds: Reads[String]): CheckYourAnswers[I] = StringCYA()()
-
-  implicit def boolean[I <: TypedIdentifier[Boolean]](implicit rds: Reads[Boolean]): CheckYourAnswers[I] = BooleanCYA()()
-
   implicit def reference[I <: TypedIdentifier[ReferenceValue]]
   (implicit rds: Reads[ReferenceValue], messages: Messages): CheckYourAnswers[I] = ReferenceValueCYA()()
 
@@ -88,28 +71,6 @@ object CheckYourAnswers {
 
   implicit def date[I <: TypedIdentifier[LocalDate]](implicit rds: Reads[LocalDate], messages: Messages): CheckYourAnswers[I] = DateCYA()()
 
-  implicit def paye[I <: TypedIdentifier[Paye]](implicit r: Reads[Paye]): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        userAnswers.get(id).map {
-          case Paye.Yes(paye) => Seq(
-            AnswerRow(
-              "commom.paye.label",
-              Seq(paye),
-              false,
-              changeUrl
-            )
-          )
-          case Paye.No => Seq(
-            AnswerRow(
-              "commom.paye.label",
-              Seq("site.no"),
-              true,
-              changeUrl
-            ))
-        } getOrElse Seq.empty[AnswerRow]
-    }
-  }
 }
 
 case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None) {

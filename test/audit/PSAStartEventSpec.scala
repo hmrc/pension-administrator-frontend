@@ -64,13 +64,23 @@ class PSAStartEventSpec extends AsyncFlatSpec with Matchers {
 
     PSAStartEvent.sendEvent(auditService)
 
+    val psaStartEvent = PSAStartEvent(
+      externalId,
+      UserType.Organisation,
+      existingUser = false
+    )
+
+    psaStartEvent.auditType shouldBe "PSAStart"
+    psaStartEvent.details shouldBe
+      Map(
+        "externalId" -> externalId,
+        "userType" -> UserType.Organisation.toString,
+        "existingUser" -> "false"
+      )
+
     Future {
       auditService.verifySent(
-        PSAStartEvent(
-          externalId,
-          UserType.Organisation,
-          false
-        )
+        psaStartEvent
       ) shouldBe true
     }
 
