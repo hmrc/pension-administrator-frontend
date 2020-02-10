@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{PSAUser, PersonName, ReferenceValue, UserType}
+import models._
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.{DateHelper, UserAnswers}

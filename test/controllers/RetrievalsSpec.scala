@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import com.google.inject.Inject
 import identifiers.TypedIdentifier
+import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.requests.DataRequest
 import org.scalatest.EitherValues
@@ -77,6 +78,24 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
       implicit val request: DataRequest[AnyContent] = dataRequest(validData)
 
       val result = controller.retrieveDirectorName(0)(success)
+
+      status(result) must be(OK)
+    }
+  }
+
+  "retrievePartnerName" must {
+    "reach the intended result when partner name is found" in {
+      val validData = Json.obj(
+        "partners" -> Json.arr(
+          Json.obj(
+            PartnerNameId.toString -> PersonName("john", "doe")
+          )
+        )
+      )
+
+      implicit val request: DataRequest[AnyContent] = dataRequest(validData)
+
+      val result = controller.retrievePartnerName(0)(success)
 
       status(result) must be(OK)
     }

@@ -83,12 +83,6 @@ trait Retrievals {
         override def retrieve(implicit request: DataRequest[AnyContent]): Either[Future[Result], A] =
           f(request)
       }
-
-    def static[A](a: A): Retrieval[A] =
-      Retrieval {
-        implicit request =>
-          Right(a)
-      }
   }
 
   implicit def fromId[A](id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent], reads: Reads[A]): Retrieval[A] =
