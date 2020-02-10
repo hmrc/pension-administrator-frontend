@@ -91,48 +91,6 @@ case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.
   }
 }
 
-case class BusinessDetailsCYA[I <: TypedIdentifier[BusinessDetails]](nameLabel: String = "cya.label.name", utrLabel: String = "businessDetails.utr") {
-  def apply()(implicit rds: Reads[BusinessDetails]): CheckYourAnswers[I] = new CheckYourAnswers[I] {
-    override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-      userAnswers.get(id).map { businessDetails =>
-        val optionAnswerRow = businessDetails.uniqueTaxReferenceNumber.map { utr =>
-          AnswerRow(
-            utrLabel,
-            Seq(utr),
-            false,
-            None
-          )
-        }.toSeq
-
-        val nameRow = AnswerRow(
-          nameLabel,
-          Seq(businessDetails.companyName),
-          false,
-          None
-        )
-
-        Seq(nameRow) ++ optionAnswerRow
-      } getOrElse Seq.empty[AnswerRow]
-  }
-}
-
-case class TolerantAddressCYA[I <: TypedIdentifier[TolerantAddress]](label: String = "common.manual.address.checkyouranswers") {
-  def apply()(implicit r: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = {
-    new CheckYourAnswers[I] {
-      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        userAnswers.get(id).map { address =>
-          Seq(AnswerRow(
-            label,
-            address.lines(countryOptions),
-            false,
-            None
-          ))
-        } getOrElse Seq.empty[AnswerRow]
-      }
-    }
-  }
-}
-
 case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "checkyouranswers.partnership.address.years",
                                                                hiddenLabel: Option[Message] = None) {
   def apply()(implicit r: Reads[AddressYears]): CheckYourAnswers[I] = {
