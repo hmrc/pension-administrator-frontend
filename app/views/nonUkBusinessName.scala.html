@@ -34,17 +34,17 @@
     @components.error_summary(form.errors)
 
     <div class="form-group @if(form.hasErrors){form-group--error}">
-    @components.heading(messages(viewModel.heading), "heading-xlarge", None)
+        @components.heading(messages(viewModel.heading), "heading-xlarge", None)
 
-    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
-        @components.input_text(
-            field = form("value"),
-            label = messages(viewModel.heading),
-            labelClass = Some("visually-hidden")
-        )
+        @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
+            @components.input_text(
+                field = form("value"),
+                label = messages(viewModel.heading),
+                labelClass = Some("visually-hidden")
+            )
+        <div class="section">
+            @components.submit_button("site.save_and_continue")
+        </div>
+        }
     </div>
-    <div class="section">
-        @components.submit_button("site.save_and_continue")
-    </div>
-    }
 }

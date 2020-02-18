@@ -35,19 +35,19 @@
     @components.error_summary(form.errors)
 
     <div class="form-group @if(form.hasErrors){form-group--error}">
-    @components.heading(messages("businessName.heading", businessType))
+        @components.heading(messages("businessName.heading", businessType))
 
-    <p>@messages("businessName.p1")</p>
+        <p>@messages("businessName.p1")</p>
 
-    @formHelper(action = href, 'autoComplete -> "off") {
-        @components.input_text(
-            field = form("value"),
-            label = messages("businessName.heading", businessType),
-            labelClass = Some("visually-hidden")
-        )
+        @formHelper(action = href, 'autoComplete -> "off") {
+            @components.input_text(
+                field = form("value"),
+                label = messages("businessName.heading", businessType),
+                labelClass = Some("visually-hidden")
+            )
+            <div class="section">
+                @components.submit_button("site.save_and_continue")
+            </div>
+        }
     </div>
-        <div class="section">
-            @components.submit_button("site.save_and_continue")
-        </div>
-    }
 }

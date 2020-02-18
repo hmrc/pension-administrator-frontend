@@ -35,22 +35,22 @@
     @components.error_summary(form.errors)
 
     <div class="form-group @if(form.hasErrors){form-group--error}">
-    @components.heading(messages(viewModel.heading))
+        @components.heading(messages(viewModel.heading))
 
-    @components.paragraph_text(messages("contact.body", viewModel.entityName))
+        @components.paragraph_text(messages("contact.body", viewModel.entityName))
 
-    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
-        @components.input_text(
-            field = form("value"),
-            label = messages("contactDetails.email"),
-            inputClass = Some("form-control-3-4"),
-            labelClass = Some("visually-hidden")
-        )
+        @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
+            @components.input_text(
+                field = form("value"),
+                label = messages("contactDetails.email"),
+                inputClass = Some("form-control-3-4"),
+                labelClass = Some("visually-hidden")
+            )
+            <div class="section">
+                @components.submit_button("site.save_and_continue")
+            </div>
+
+            @components.return_link(viewModel.entityName, viewModel.mode)
+        }
     </div>
-        <div class="section">
-            @components.submit_button("site.save_and_continue")
-        </div>
-
-        @components.return_link(viewModel.entityName, viewModel.mode)
-    }
 }
