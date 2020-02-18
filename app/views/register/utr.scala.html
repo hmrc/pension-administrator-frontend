@@ -34,23 +34,23 @@
 
     @components.error_summary(form.errors)
 
-    <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(messages("utr.heading", businessType))
+    @formHelper(action = href, 'autoComplete -> "off") {
+        <div class="form-group @if(form.hasErrors){form-group--error}">
+            @components.heading(messages("utr.heading", businessType))
 
-        <p>@messages("utr.p1")</p>
-        <p>@messages("utr.p2")</p>
-        <p>@messages("utr.p3")</p>
+            <p>@messages("utr.p1")</p>
+            <p>@messages("utr.p2")</p>
+            <p>@messages("utr.p3")</p>
 
-        @formHelper(action = href, 'autoComplete -> "off") {
             @components.input_text(
                 field = form("value"),
                 label = messages("utr.heading", businessType),
                 labelClass = Some("visually-hidden")
             )
+        </div>
 
-            <div class="section">
-                @components.submit_button("site.save_and_continue")
-            </div>
-        }
-    </div>
+        <div class="section">
+            @components.submit_button("site.save_and_continue")
+        </div>
+    }
 }

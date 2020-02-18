@@ -34,12 +34,12 @@
 
     @components.error_summary(form.errors)
 
-    <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(messages(viewModel.heading))
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
+        <div class="form-group @if(form.hasErrors){form-group--error}">
+            @components.heading(messages(viewModel.heading))
 
-        @components.paragraph_text(messages(viewModel.hint))
+            @components.paragraph_text(messages(viewModel.hint))
 
-        @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
             @components.input_yes_no(
                 field = form("value"),
                 label = messages(viewModel.heading),
@@ -48,10 +48,10 @@
             <div class="subsection">
                 @components.submit_button("site.save_and_continue")
             </div>
-        }
+        </div>
+    }
 
-        @viewModel.psaName.map { psaName =>
-            @components.return_link(psaName, mode)
-        }
-    </div>
+    @viewModel.psaName.map { psaName =>
+        @components.return_link(psaName, mode)
+    }
 }
