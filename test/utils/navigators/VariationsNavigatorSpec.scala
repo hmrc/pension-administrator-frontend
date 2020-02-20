@@ -23,53 +23,61 @@ import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import models._
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor4
+import org.scalatest.prop.{TableFor3, TableFor4}
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import VariationsNavigatorSpec._
 
-  val navigator = new VariationsNavigator(frontendAppConfig)
+  val navigator: Navigator = injector.instanceOf[VariationsNavigator]
 
-  def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id", "User Answers", "Next Page (UpdateMode)", "Next Page (CheckUpdateMode)"),
-    (ConfirmDeleteAdviserId, confirmDeleteYes, variationWorkingKnowledgePage(UpdateMode), None),
-    (ConfirmDeleteAdviserId, confirmDeleteNo, checkYourAnswersPage, None),
-    (ConfirmDeleteAdviserId, emptyAnswers, sessionExpiredPage, None),
+  "VariationsNavigator in UpdateMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (ConfirmDeleteAdviserId,      confirmDeleteYes,     variationWorkingKnowledgePage(UpdateMode)),
+      (ConfirmDeleteAdviserId,      confirmDeleteNo,      checkYourAnswersPage),
+      (ConfirmDeleteAdviserId,      emptyAnswers,         sessionExpiredPage),
 
-    (AnyMoreChangesId, haveMoreChanges, checkYourAnswersPage, None),
-    (AnyMoreChangesId, noMoreChangesAdviserUnchanged, variationWorkingKnowledgePage(CheckUpdateMode), None),
-    (AnyMoreChangesId, noMoreChangesAdviserChanged, variationDeclarationFitAndProperPage, None),
-    (AnyMoreChangesId, emptyAnswers, sessionExpiredPage, None),
+      (AnyMoreChangesId,            haveMoreChanges,      checkYourAnswersPage),
+      (AnyMoreChangesId,            noMoreChangesAdviserUnchanged, variationWorkingKnowledgePage(CheckUpdateMode)),
+      (AnyMoreChangesId,            noMoreChangesAdviserChanged, variationDeclarationFitAndProperPage),
+      (AnyMoreChangesId,            emptyAnswers, sessionExpiredPage),
 
-    (VariationWorkingKnowledgeId, haveWorkingKnowledge, anyMoreChangesPage, Some(variationDeclarationFitAndProperPage)),
-    (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage, Some(adviserNamePage)),
-    (VariationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, None),
+      (VariationWorkingKnowledgeId, haveWorkingKnowledge, anyMoreChangesPage),
+      (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage),
+      (VariationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage),
 
-    (VariationStillDeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, None),
-    (VariationStillDeclarationWorkingKnowledgeId, stillHaveWorkingKnowledge, variationDeclarationFitAndProperPage, None),
-    (VariationStillDeclarationWorkingKnowledgeId, stillNotHaveWorkingKnowledge, variationWorkingKnowledgePage(CheckUpdateMode), None),
+      (VariationStillDeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage),
+      (VariationStillDeclarationWorkingKnowledgeId, stillHaveWorkingKnowledge, variationDeclarationFitAndProperPage),
+      (VariationStillDeclarationWorkingKnowledgeId, stillNotHaveWorkingKnowledge, variationWorkingKnowledgePage(CheckUpdateMode)),
 
-    (DeclarationFitAndProperId, haveFitAndProper, variationDeclarationPage, None),
-    (DeclarationFitAndProperId, noFitAndProper, variationNoLongerFitAndProperPage, None),
-    (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage, None),
+      (DeclarationFitAndProperId, haveFitAndProper, variationDeclarationPage),
+      (DeclarationFitAndProperId, noFitAndProper, variationNoLongerFitAndProperPage),
+      (DeclarationFitAndProperId, emptyAnswers, sessionExpiredPage),
 
-    (DeclarationChangedId, declarationChangedWithIncompleteIndividual, incompleteChangesPage, None),
-    (DeclarationChangedId, declarationChangedWithCompleteIndividual, variationDeclarationFitAndProperPage, None),
-    (DeclarationChangedId, declarationNotChangedWithAdviser, variationStillWorkingKnowledgePage, None),
-    (DeclarationChangedId, completeIndividual, variationWorkingKnowledgePage(CheckUpdateMode), None),
+      (DeclarationChangedId, declarationChangedWithIncompleteIndividual, incompleteChangesPage),
+      (DeclarationChangedId, declarationChangedWithCompleteIndividual, variationDeclarationFitAndProperPage),
+      (DeclarationChangedId, declarationNotChangedWithAdviser, variationStillWorkingKnowledgePage),
+      (DeclarationChangedId, completeIndividual, variationWorkingKnowledgePage(CheckUpdateMode)),
 
-    (DeclarationId, emptyAnswers, variationSuccessPage, None)
-  )
-
-  navigator.getClass.getSimpleName must {
-    appRunning()
-    behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, updateRoutes(), dataDescriber, UpdateMode)
+      (DeclarationId, emptyAnswers, variationSuccessPage)
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
   }
+
+  "VariationsNavigator in CheckUpdateMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+
+      (VariationWorkingKnowledgeId, haveWorkingKnowledge, variationDeclarationFitAndProperPage),
+      (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage)
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckUpdateMode)
+  }
+
 }
 
 object VariationsNavigatorSpec extends OptionValues {

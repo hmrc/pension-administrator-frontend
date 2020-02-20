@@ -20,58 +20,65 @@ import base.SpecBase
 import controllers.register.routes
 import identifiers.Identifier
 import identifiers.register.{BusinessNameId, _}
-import models.NormalMode
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
+import models.{CheckMode, NormalMode}
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor4
+import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import RegisterNavigatorSpec._
 
-  //scalastyle:off line.size.limit
-  def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
-    (BusinessTypeId, unlimitedCompany, companyUTRPage, None),
-    (BusinessTypeId, limitedCompany, companyUTRPage, None),
-    (BusinessTypeId, businessPartnership, partnershipUTRPage, None),
-    (BusinessTypeId, limitedPartnership, partnershipUTRPage, None),
-    (BusinessTypeId, limitedLiabilityPartnership, partnershipUTRPage, None),
+  val navigator: Navigator = injector.instanceOf[RegisterNavigator]
+
+  "RegisterNavigator in NormalMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (BusinessTypeId, unlimitedCompany, companyUTRPage),
+      (BusinessTypeId, limitedCompany, companyUTRPage),
+      (BusinessTypeId, businessPartnership, partnershipUTRPage),
+      (BusinessTypeId, limitedPartnership, partnershipUTRPage),
+      (BusinessTypeId, limitedLiabilityPartnership, partnershipUTRPage),
 
 
-    (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage, None),
-    (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserName, None),
-    (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage, None),
+      (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage),
+      (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserName),
+      (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage),
 
-    (DeclarationFitAndProperId, emptyAnswers, declarationPage, None),
-    (DeclarationId, emptyAnswers, confirmation, None),
+      (DeclarationFitAndProperId, emptyAnswers, declarationPage),
+      (DeclarationId, emptyAnswers, confirmation),
 
-    (AreYouInUKId, inUk, ukBusinessType, Some(registerAsBusiness)),
-    (AreYouInUKId, notInUk, nonUkBusinessType, Some(registerAsBusiness)),
+      (AreYouInUKId, inUk, ukBusinessType),
+      (AreYouInUKId, notInUk, nonUkBusinessType),
 
-    (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, businessWynPage, None),
-    (RegisterAsBusinessId, registerAsBusinessIdIndividual, individualWynPage, None),
+      (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, businessWynPage),
+      (RegisterAsBusinessId, registerAsBusinessIdIndividual, individualWynPage),
 
-    (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyRegisteredName, None),
-    (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipRegisteredName, None)
-  )
-
-  //scalastyle:on line.size.limit
-  val navigator = new RegisterNavigator(frontendAppConfig)
-  s"${navigator.getClass.getSimpleName} when toggle is on" must {
-    appRunning()
-    behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, routes(), dataDescriber)
+      (NonUKBusinessTypeId, nonUkCompany, nonUkCompanyRegisteredName),
+      (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipRegisteredName)
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
   }
+
+  "RegisterNavigator in CheckMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+
+      (AreYouInUKId, inUk, registerAsBusiness),
+      (AreYouInUKId, notInUk, registerAsBusiness)
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckMode)
+  }
+
 }
 
 object RegisterNavigatorSpec extends OptionValues {
 
-  lazy val emptyAnswers = UserAnswers(Json.obj())
+  lazy val emptyAnswers: UserAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
   lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad()
   lazy val partnershipUTRPage: Call = controllers.register.partnership.routes.PartnershipUTRController.onPageLoad()

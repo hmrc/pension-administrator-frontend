@@ -17,55 +17,84 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.cache.FakeUserAnswersCacheConnector
 import identifiers.Identifier
 import identifiers.register.adviser._
 import identifiers.register.{AreYouInUKId, PAInDeclarationJourneyId}
 import models._
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor4
+import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import models.Mode.journeyMode
 
 class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import AdviserNavigatorSpec._
 
-  val navigator = new AdviserNavigator
+  val navigator: Navigator = injector.instanceOf[AdviserNavigator]
 
-  def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id", "User Answers", "Next Page (NormalMode)", "Next Page (CheckMode)"),
-    (AdviserNameId, emptyAnswers, adviserPostCodeLookUpPage(NormalMode), Some(checkYourAnswersPage(Mode.journeyMode(CheckMode)))),
-    (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(NormalMode), Some(adviserAddressListPage(CheckMode))),
-    (AdviserAddressId, emptyAnswers, adviserEmailPage(NormalMode), Some(checkYourAnswersPage(CheckMode))),
-    (AdviserEmailId, emptyAnswers, adviserPhonePage(NormalMode), Some(checkYourAnswersPage(CheckMode))),
-    (AdviserPhoneId, emptyAnswers, checkYourAnswersPage(NormalMode), Some(checkYourAnswersPage(Mode.journeyMode(CheckMode)))),
+  "AdviserNavigator in NormalMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (AdviserNameId, emptyAnswers, adviserPostCodeLookUpPage(NormalMode)),
+      (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(NormalMode)),
+      (AdviserAddressId, emptyAnswers, adviserEmailPage(NormalMode)),
+      (AdviserEmailId, emptyAnswers, adviserPhonePage(NormalMode)),
+      (AdviserPhoneId, emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (CheckYourAnswersId, emptyAnswers, declarationFitAndProperPage)
+    )
 
-    (CheckYourAnswersId, emptyAnswers, declarationFitAndProperPage, None)
-  )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
+  }
 
-  def updateModeRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id", "User Answers", "Next Page (NormalMode)", "Next Page (CheckMode)"),
-    (AdviserNameId, emptyAnswers, psaDetailsPage, Some(checkYourAnswersPage(UpdateMode))),
-    (AdviserNameId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode), Some(checkYourAnswersPage(UpdateMode))),
-    (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode), Some(adviserAddressListPage(CheckUpdateMode))),
-    (AdviserAddressId, emptyAnswers, psaDetailsPage, Some(checkYourAnswersPage(UpdateMode))),
-    (AdviserAddressId, adviserUpdated, adviserEmailPage(UpdateMode), None),
-    (AdviserEmailId, emptyAnswers, psaDetailsPage, None),
-    (AdviserEmailId, adviserUpdated, adviserPhonePage(UpdateMode),  Some(checkYourAnswersPage(UpdateMode))),
-    (AdviserPhoneId, emptyAnswers, psaDetailsPage,  Some(checkYourAnswersPage(UpdateMode))),
-    (AdviserPhoneId, adviserUpdated, psaDetailsPage,  Some(checkYourAnswersPage(UpdateMode))),
+  "AdviserNavigator in CheckMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (AdviserNameId, emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(CheckMode)),
+      (AdviserAddressId, emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (AdviserEmailId, emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (AdviserPhoneId, emptyAnswers, checkYourAnswersPage(NormalMode))
+    )
 
-    (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage, None),
-    (CheckYourAnswersId, declarationPensionAdvisorTrue, variationDeclarationFitAndProperPage, None),
-    (invalidIdForNavigator, emptyAnswers, defaultPage, Some(defaultPage))
-  )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckMode)
+  }
 
-  navigator.getClass.getSimpleName must {
-    appRunning()
-    behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, updateModeRoutes(), dataDescriber, UpdateMode)
+  "AdviserNavigator in UpdateMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page (NormalMode)"),
+      (AdviserNameId, emptyAnswers, psaDetailsPage),
+      (AdviserNameId, adviserUpdated, adviserPostCodeLookUpPage(UpdateMode)),
+      (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(UpdateMode)),
+      (AdviserAddressId, emptyAnswers, psaDetailsPage),
+      (AdviserAddressId, adviserUpdated, adviserEmailPage(UpdateMode)),
+      (AdviserEmailId, emptyAnswers, psaDetailsPage),
+      (AdviserEmailId, adviserUpdated, adviserPhonePage(UpdateMode)),
+      (AdviserPhoneId, emptyAnswers, psaDetailsPage),
+      (AdviserPhoneId, adviserUpdated, psaDetailsPage),
+
+      (CheckYourAnswersId, emptyAnswers, haveMoreChangesPage),
+      (CheckYourAnswersId, declarationPensionAdvisorTrue, variationDeclarationFitAndProperPage),
+      (invalidIdForNavigator, emptyAnswers, defaultPage)
+    )
+
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
+  }
+
+  "AdviserNavigator in CheckUpdateMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (AdviserNameId, emptyAnswers, checkYourAnswersPage(UpdateMode)),
+      (AdviserNameId, adviserUpdated, checkYourAnswersPage(UpdateMode)),
+      (AdviserAddressPostCodeLookupId, emptyAnswers, adviserAddressListPage(CheckUpdateMode)),
+      (AdviserAddressId, emptyAnswers, checkYourAnswersPage(UpdateMode)),
+      (AdviserEmailId, adviserUpdated, checkYourAnswersPage(UpdateMode)),
+      (AdviserPhoneId, emptyAnswers, checkYourAnswersPage(UpdateMode)),
+      (AdviserPhoneId, adviserUpdated, checkYourAnswersPage(UpdateMode))
+    )
+
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckUpdateMode)
   }
 }
 
