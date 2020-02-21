@@ -37,6 +37,9 @@ class DirectorConfirmPreviousAddressIdSpec extends WordSpec with MustMatchers wi
       "remove the data for `DirectorPreviousAddress`" in {
         result.get(DirectorPreviousAddressId(0)) mustNot be(defined)
       }
+      "set the IsDirectorComplete flag to false" in {
+        result.get(IsDirectorCompleteId(0)) mustBe Some(false)
+      }
     }
 
     "`DirectorConfirmPreviousAddress` is set to `true` (when it is already false)" must {
@@ -45,6 +48,10 @@ class DirectorConfirmPreviousAddressIdSpec extends WordSpec with MustMatchers wi
 
       "not remove the data for `DirectorPreviousAddress`" in {
         result.get(DirectorPreviousAddressId(0)) must be(defined)
+      }
+
+      "set the IsDirectorComplete flag to true" in {
+        result.get(IsDirectorCompleteId(0)) mustBe Some(true)
       }
     }
   }
