@@ -17,7 +17,6 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.register.partnership.routes
 import identifiers._
 import identifiers.register.partnership._
@@ -25,98 +24,126 @@ import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId, _}
 import models._
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor4
+import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import PartnershipNavigatorSpec._
 
-  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  val navigator: Navigator = injector.instanceOf[PartnershipNavigator]
 
-  val navigator = new PartnershipNavigator(FakeUserAnswersCacheConnector, countryOptions, frontendAppConfig)
+  "PartnershipNavigator in NormalMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (BusinessUTRId, emptyAnswers, partnershipNamePage),
+      (BusinessNameId, uk, partnershipIsRegisteredNamePage),
+      (BusinessNameId, nonUk, nonUkAddress),
+      (IsRegisteredNameId, isRegisteredNameTrue, confirmPartnershipDetailsPage),
+      (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate),
+      (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, hasPayePage),
 
-  //scalastyle:off line.size.limit
-  private def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
+      (HasPAYEId, hasPAYEYes, payePage(NormalMode)),
+      (HasPAYEId, hasPAYENo, hasVatPage),
+      (EnterPAYEId, emptyAnswers, hasVatPage),
+      (HasVATId, hasVatYes, enterVatPage(NormalMode)),
+      (HasVATId, hasVatNo, sameContactAddressPage),
+      (EnterVATId, emptyAnswers, sameContactAddressPage),
 
-    (BusinessUTRId, emptyAnswers, partnershipNamePage, None),
-    (BusinessNameId, uk, partnershipIsRegisteredNamePage, None),
-    (BusinessNameId, nonUk, nonUkAddress, None),
-    (IsRegisteredNameId, isRegisteredNameTrue, confirmPartnershipDetailsPage, None),
-    (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, None),
-    (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, hasPayePage, None),
+      (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(NormalMode)),
+      (PartnershipSameContactAddressId, notSameContactAddressUk, contactPostcodePage(NormalMode)),
+      (PartnershipSameContactAddressId, notSameContactAddressNonUk, contactAddressPage(NormalMode)),
 
-    (HasPAYEId, hasPAYEYes, payePage(NormalMode), Some(payePage(CheckMode))),
-    (HasPAYEId, hasPAYENo, hasVatPage, Some(checkYourAnswersPage)),
-    (EnterPAYEId, emptyAnswers, hasVatPage, Some(checkYourAnswersPage)),
-    (HasVATId, hasVatYes, enterVatPage(NormalMode), Some(enterVatPage(CheckMode))),
-    (HasVATId, hasVatNo, sameContactAddressPage, Some(checkYourAnswersPage)),
-    (EnterVATId, emptyAnswers, sameContactAddressPage, Some(checkYourAnswersPage)),
+      (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode)),
+      (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode)),
 
-    (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(NormalMode), Some(addressYearsPage(CheckMode))),
-    (PartnershipSameContactAddressId, notSameContactAddressUk, contactPostcodePage(NormalMode), Some(contactPostcodePage(CheckMode))),
-    (PartnershipSameContactAddressId, notSameContactAddressNonUk, contactAddressPage(NormalMode), Some(contactAddressPage(CheckMode))),
-    (PartnershipSameContactAddressId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
+      (PartnershipAddressYearsId, addressYearsOverAYear, emailPage),
+      (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(NormalMode)),
 
-    (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode), Some(contactAddressListPage(CheckMode))),
-    (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode), Some(checkYourAnswersPage)),
+      (PartnershipTradingOverAYearId, tradingOverAYearUk, contactPreviousPostCodePage(NormalMode)),
+      (PartnershipTradingOverAYearId, tradingOverAYearNonUk, contactPreviousAddressPage(NormalMode)),
+      (PartnershipTradingOverAYearId, tradingUnderAYear, emailPage),
 
-    (PartnershipAddressYearsId, addressYearsOverAYear, emailPage, Some(checkYourAnswersPage)),
-    (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(NormalMode), Some(tradingOverAYearPage(CheckMode))),
-    (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
+      (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode)),
+      (PartnershipPreviousAddressId, emptyAnswers, emailPage),
 
-    (PartnershipTradingOverAYearId, tradingOverAYearUk, contactPreviousPostCodePage(NormalMode), Some(contactPreviousPostCodePage(CheckMode))),
-    (PartnershipTradingOverAYearId, tradingOverAYearNonUk, contactPreviousAddressPage(NormalMode), Some(contactPreviousAddressPage(CheckMode))),
-    (PartnershipTradingOverAYearId, tradingUnderAYear, emailPage, Some(checkYourAnswersPage)),
+      (PartnershipEmailId, emptyAnswers, phonePage),
+      (PartnershipPhoneId, emptyAnswers, checkYourAnswersPage),
 
-    (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode), Some(contactPreviousAddressListPage(CheckMode))),
-    (PartnershipPreviousAddressId, emptyAnswers, emailPage, Some(checkYourAnswersPage)),
+      (CheckYourAnswersId, emptyAnswers, wynPage),
+      (CheckYourAnswersId, hasPartner, addPartnersPage()),
+      (PartnershipReviewId, emptyAnswers, declarationWorkingKnowledgePage(NormalMode)),
 
-    (PartnershipEmailId, emptyAnswers, phonePage, Some(checkYourAnswersPage)),
-    (PartnershipPhoneId, emptyAnswers, checkYourAnswersPage, Some(checkYourAnswersPage)),
-
-    (CheckYourAnswersId, emptyAnswers, wynPage, None),
-    (CheckYourAnswersId, hasPartner, addPartnersPage(), None),
-    (PartnershipReviewId, emptyAnswers, declarationWorkingKnowledgePage(NormalMode), None),
-
-    (PartnershipRegisteredAddressId, nonUkEuAddress, sameContactAddressPage, None),
-    (PartnershipRegisteredAddressId, uKAddress, reconsiderAreYouInUk, None),
-    (PartnershipRegisteredAddressId, nonUkNonEuAddress, outsideEuEea, None)
-  )
-
-  private def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
-    (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode), None),
-    (PartnershipContactAddressId, emptyAnswers, confirmPreviousAddressPage, None),
-    (PartnershipAddressYearsId, addressYearsOverAYear, anyMoreChangesPage, None),
-    (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(UpdateMode), None),
-    (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
-
-    (PartnershipEmailId, uk, anyMoreChangesPage, None),
-    (PartnershipEmailId, nonUk, anyMoreChangesPage, None),
-    (PartnershipEmailId, emptyAnswers, anyMoreChangesPage, None),
-
-    (PartnershipPhoneId, uk, anyMoreChangesPage, None),
-    (PartnershipPhoneId, nonUk, anyMoreChangesPage, None),
-    (PartnershipPhoneId, emptyAnswers, anyMoreChangesPage, None),
-
-    (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(UpdateMode), None),
-    (PartnershipPreviousAddressId, emptyAnswers, anyMoreChangesPage, None),
-    (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage, None),
-    (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage, None),
-    (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousPostCodePage(UpdateMode), None)
-  )
-
-  navigator.getClass.getSimpleName must {
-    appRunning()
-    behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, routes(), dataDescriber)
-    behave like navigatorWithRoutes(navigator, updateRoutes(), dataDescriber, UpdateMode)
+      (PartnershipRegisteredAddressId, nonUkEuAddress, sameContactAddressPage),
+      (PartnershipRegisteredAddressId, uKAddress, reconsiderAreYouInUk),
+      (PartnershipRegisteredAddressId, nonUkNonEuAddress, outsideEuEea)
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
   }
+
+  "PartnershipNavigator in CheckMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (HasPAYEId, hasPAYEYes, payePage(CheckMode)),
+      (HasPAYEId, hasPAYENo, checkYourAnswersPage),
+      (EnterPAYEId, emptyAnswers, checkYourAnswersPage),
+      (HasVATId, hasVatYes, enterVatPage(CheckMode)),
+      (HasVATId, hasVatNo, checkYourAnswersPage),
+      (EnterVATId, emptyAnswers, checkYourAnswersPage),
+
+      (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(CheckMode)),
+      (PartnershipSameContactAddressId, notSameContactAddressUk, contactPostcodePage(CheckMode)),
+      (PartnershipSameContactAddressId, notSameContactAddressNonUk, contactAddressPage(CheckMode)),
+      (PartnershipSameContactAddressId, emptyAnswers, sessionExpiredPage),
+
+      (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(CheckMode)),
+      (PartnershipContactAddressId, emptyAnswers, checkYourAnswersPage),
+
+      (PartnershipAddressYearsId, addressYearsOverAYear, checkYourAnswersPage),
+      (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(CheckMode)),
+
+      (PartnershipTradingOverAYearId, tradingOverAYearUk, contactPreviousPostCodePage(CheckMode)),
+      (PartnershipTradingOverAYearId, tradingOverAYearNonUk, contactPreviousAddressPage(CheckMode)),
+      (PartnershipTradingOverAYearId, tradingUnderAYear, checkYourAnswersPage),
+
+      (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(CheckMode)),
+      (PartnershipPreviousAddressId, emptyAnswers, checkYourAnswersPage),
+
+      (PartnershipEmailId, emptyAnswers, checkYourAnswersPage),
+      (PartnershipPhoneId, emptyAnswers, checkYourAnswersPage)
+
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckMode)
+  }
+
+  "PartnershipNavigator in UpdateMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode)),
+      (PartnershipContactAddressId, emptyAnswers, confirmPreviousAddressPage),
+      (PartnershipAddressYearsId, addressYearsOverAYear, anyMoreChangesPage),
+      (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(UpdateMode)),
+      (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage),
+
+      (PartnershipEmailId, uk, anyMoreChangesPage),
+      (PartnershipEmailId, nonUk, anyMoreChangesPage),
+      (PartnershipEmailId, emptyAnswers, anyMoreChangesPage),
+
+      (PartnershipPhoneId, uk, anyMoreChangesPage),
+      (PartnershipPhoneId, nonUk, anyMoreChangesPage),
+      (PartnershipPhoneId, emptyAnswers, anyMoreChangesPage),
+
+      (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(UpdateMode)),
+      (PartnershipPreviousAddressId, emptyAnswers, anyMoreChangesPage),
+      (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
+      (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage),
+      (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousPostCodePage(UpdateMode))
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
+  }
+  
 }
 
 object PartnershipNavigatorSpec extends OptionValues {
@@ -126,8 +153,6 @@ object PartnershipNavigatorSpec extends OptionValues {
   private lazy val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
   private lazy val confirmPartnershipDetailsPage: Call = routes.ConfirmPartnershipDetailsController.onPageLoad()
-
-  private lazy val whatYouWillNeedPage: Call = routes.WhatYouWillNeedController.onPageLoad()
 
   private lazy val partnershipNamePage = routes.PartnershipNameController.onPageLoad()
 
@@ -144,8 +169,6 @@ object PartnershipNavigatorSpec extends OptionValues {
   private lazy val hasVatPage: Call = routes.HasPartnershipVATController.onPageLoad(NormalMode)
 
   private def enterVatPage(mode: Mode): Call = routes.PartnershipEnterVATController.onPageLoad(mode)
-
-  private lazy val payeNumberPage: Call = routes.HasPartnershipPAYEController.onPageLoad(NormalMode)
 
   private def tradingOverAYearPage(mode: Mode): Call = routes.PartnershipTradingOverAYearController.onPageLoad(mode)
 

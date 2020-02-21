@@ -17,7 +17,6 @@
 package utils.navigators
 
 import base.SpecBase
-import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.register.company.routes
 import identifiers.register._
 import identifiers.register.company.directors.DirectorNameId
@@ -27,103 +26,141 @@ import identifiers.{Identifier, LastPageId}
 import models._
 import models.register.BusinessType
 import org.scalatest.OptionValues
-import org.scalatest.prop.TableFor4
+import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import RegisterCompanyNavigatorSpec._
 
-  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  val navigator: Navigator = injector.instanceOf[RegisterCompanyNavigator]
 
-  val navigator = new RegisterCompanyNavigator(countryOptions, frontendAppConfig)
+  "RegisterCompanyNavigator in NormalMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (BusinessUTRId, emptyAnswers, companyNamePage),
+      (BusinessNameId, uk, companyIsRegisteredNamePage),
+      (BusinessNameId, nonUk, nonUkAddress),
+      (IsRegisteredNameId, isRegisteredNameTrue, confirmCompanyDetailsPage),
+      (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate),
 
-  private def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
-    (BusinessUTRId, emptyAnswers, companyNamePage, None),
-    (BusinessNameId, uk, companyIsRegisteredNamePage, None),
-    (BusinessNameId, nonUk, nonUkAddress, None),
-    (IsRegisteredNameId, isRegisteredNameTrue, confirmCompanyDetailsPage, None),
-    (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate, None),
+      (ConfirmCompanyAddressId, confirmAddressTrueLimitedCompany, companyRegistrationNumberPage(NormalMode)),
+      (ConfirmCompanyAddressId, confirmAddressTrueUnlimitedCompany, hasCRNPage(NormalMode)),
 
-    (ConfirmCompanyAddressId, confirmAddressTrueLimitedCompany, companyRegistrationNumberPage(NormalMode), None),
-    (ConfirmCompanyAddressId, confirmAddressTrueUnlimitedCompany, hasCRNPage(NormalMode), None),
+      (HasCompanyCRNId, hasCRN(true), companyRegistrationNumberPage(NormalMode)),
+      (HasCompanyCRNId, hasCRN(false), hasPayePage),
+      (CompanyRegistrationNumberId, emptyAnswers, hasPayePage),
 
-    (HasCompanyCRNId, hasCRN(true), companyRegistrationNumberPage(NormalMode), Some(companyRegistrationNumberPage(CheckMode))),
-    (HasCompanyCRNId, hasCRN(false), hasPayePage, Some(checkYourAnswersPage)),
-    (CompanyRegistrationNumberId, emptyAnswers, hasPayePage, Some(checkYourAnswersPage)),
+      (HasPAYEId, hasPAYEYes, payePage()),
+      (HasPAYEId, hasPAYENo, hasVatPage),
+      (EnterPAYEId, emptyAnswers, hasVatPage),
 
-    (HasPAYEId, hasPAYEYes, payePage(), Some(payePage(CheckMode))),
-    (HasPAYEId, hasPAYENo, hasVatPage, Some(checkYourAnswersPage)),
-    (EnterPAYEId, emptyAnswers, hasVatPage, Some(checkYourAnswersPage)),
+      (HasVATId, hasVATYes, vatPage()),
+      (HasVATId, hasVATNo, sameContactAddress(NormalMode)),
 
-    (HasVATId, hasVATYes, vatPage(), Some(vatPage(CheckMode))),
-    (HasVATId, hasVATNo, sameContactAddress(NormalMode), Some(checkYourAnswersPage)),
+      (EnterVATId, emptyAnswers, sameContactAddress(NormalMode)),
 
-    (EnterVATId, emptyAnswers, sameContactAddress(NormalMode), Some(checkYourAnswersPage)),
+      (CompanySameContactAddressId, isSameContactAddress, companyAddressYearsPage(NormalMode)),
+      (CompanySameContactAddressId, notSameContactAddressUk, contactAddressPostCode(NormalMode)),
+      (CompanySameContactAddressId, notSameContactAddressNonUk, contactAddress(NormalMode)),
+      (CompanySameContactAddressId, emptyAnswers, sessionExpiredPage),
 
-    (CompanySameContactAddressId, isSameContactAddress, companyAddressYearsPage(NormalMode), Some(companyAddressYearsPage(CheckMode))),
-    (CompanySameContactAddressId, notSameContactAddressUk, contactAddressPostCode(NormalMode), Some(contactAddressPostCode(CheckMode))),
-    (CompanySameContactAddressId, notSameContactAddressNonUk, contactAddress(NormalMode), Some(contactAddress(CheckMode))),
-    (CompanySameContactAddressId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
+      (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(NormalMode)),
+      (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode)),
 
-    (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(NormalMode), Some(contactAddressList(CheckMode))),
-    (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode), Some(checkYourAnswersPage)),
+      (CompanyAddressYearsId, addressYearsOverAYear, emailPage(NormalMode)),
+      (CompanyAddressYearsId, addressYearsUnderAYear, hasBeenTradingPage(NormalMode)),
+      (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage),
 
-    (CompanyAddressYearsId, addressYearsOverAYear, emailPage(NormalMode), Some(checkYourAnswersPage)),
-    (CompanyAddressYearsId, addressYearsUnderAYear, hasBeenTradingPage(NormalMode), Some(hasBeenTradingPage(CheckMode))),
-    (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
+      (CompanyTradingOverAYearId, tradingOverAYearUk, paPostCodePage(NormalMode)),
+      (CompanyTradingOverAYearId, tradingOverAYearNonUk, previousAddressPage(NormalMode)),
+      (CompanyTradingOverAYearId, tradingUnderAYear, emailPage(NormalMode)),
 
-    (CompanyTradingOverAYearId, tradingOverAYearUk, paPostCodePage(NormalMode), Some(paPostCodePage(CheckMode))),
-    (CompanyTradingOverAYearId, tradingOverAYearNonUk, previousAddressPage(NormalMode), Some(previousAddressPage(CheckMode))),
-    (CompanyTradingOverAYearId, tradingUnderAYear, emailPage(NormalMode), Some(checkYourAnswersPage)),
+      (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode)),
+      (CompanyPreviousAddressId, emptyAnswers, emailPage(NormalMode)),
 
-    (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode), Some(paAddressListPage(CheckMode))),
-    (CompanyPreviousAddressId, emptyAnswers, emailPage(NormalMode), Some(checkYourAnswersPage)),
+      (CompanyEmailId, emptyAnswers, phonePage(NormalMode)),
+      (CompanyPhoneId, uk, checkYourAnswersPage),
+      (CompanyPhoneId, nonUk, checkYourAnswersPage),
 
-    (CompanyEmailId, emptyAnswers, phonePage(NormalMode), Some(checkYourAnswersPage)),
-    (CompanyPhoneId, uk, checkYourAnswersPage, Some(checkYourAnswersPage)),
-    (CompanyPhoneId, nonUk, checkYourAnswersPage, Some(checkYourAnswersPage)),
+      (CheckYourAnswersId, emptyAnswers, whatYouWillNeedDirectorPage),
+      (CheckYourAnswersId, hasDirector, addCompanyDirectors(NormalMode)),
 
-    (CheckYourAnswersId, emptyAnswers, whatYouWillNeedDirectorPage, None),
-    (CheckYourAnswersId, hasDirector, addCompanyDirectors(NormalMode), None),
+      (CompanyReviewId, emptyAnswers, declarationWorkingKnowledgePage(NormalMode)),
 
-    (CompanyReviewId, emptyAnswers, declarationWorkingKnowledgePage(NormalMode), None),
+      (CompanyAddressId, nonUkEuAddress, whatYouWillNeedPage),
+      (CompanyAddressId, nonUkButUKAddress, reconsiderAreYouInUk),
+      (CompanyAddressId, nonUkNonEuAddress, outsideEuEea),
 
-    (CompanyAddressId, nonUkEuAddress, whatYouWillNeedPage, None),
-    (CompanyAddressId, nonUkButUKAddress, reconsiderAreYouInUk, None),
-    (CompanyAddressId, nonUkNonEuAddress, outsideEuEea, None),
-
-    (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode), None)
-  )
-
-  private def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
-
-    (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(UpdateMode), None),
-    (CompanyContactAddressId, emptyAnswers, confirmPreviousAddressPage, None),
-
-    (CompanyAddressYearsId, addressYearsOverAYear, anyMoreChanges, None),
-    (CompanyAddressYearsId, addressYearsUnderAYear, confirmPreviousAddressPage, None),
-    (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage, None),
-
-    (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(UpdateMode), None),
-    (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges, None),
-
-    (CompanyEmailId, emptyAnswers, anyMoreChanges, None),
-    (CompanyPhoneId, uk, anyMoreChanges, None),
-    (CompanyPhoneId, nonUk, anyMoreChanges, None)
-  )
-
-  navigator.getClass.getSimpleName must {
-    appRunning()
-    behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, routes(), dataDescriber)
-    behave like navigatorWithRoutes(navigator, updateRoutes(), dataDescriber, UpdateMode)
+      (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode))
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
   }
+
+  "RegisterCompanyNavigator in CheckMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+
+      (HasCompanyCRNId, hasCRN(true), companyRegistrationNumberPage(CheckMode)),
+      (HasCompanyCRNId, hasCRN(false), checkYourAnswersPage),
+      (CompanyRegistrationNumberId, emptyAnswers, checkYourAnswersPage),
+
+      (HasPAYEId, hasPAYEYes,payePage(CheckMode)),
+      (HasPAYEId, hasPAYENo, checkYourAnswersPage),
+      (EnterPAYEId, emptyAnswers, checkYourAnswersPage),
+
+      (HasVATId, hasVATYes, vatPage(CheckMode)),
+      (HasVATId, hasVATNo, checkYourAnswersPage),
+
+      (EnterVATId, emptyAnswers, checkYourAnswersPage),
+
+      (CompanySameContactAddressId, isSameContactAddress, companyAddressYearsPage(CheckMode)),
+      (CompanySameContactAddressId, notSameContactAddressUk, contactAddressPostCode(CheckMode)),
+      (CompanySameContactAddressId, notSameContactAddressNonUk, contactAddress(CheckMode)),
+
+      (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(CheckMode)),
+      (CompanyContactAddressId, emptyAnswers, checkYourAnswersPage),
+
+      (CompanyAddressYearsId, addressYearsOverAYear, checkYourAnswersPage),
+      (CompanyAddressYearsId, addressYearsUnderAYear, hasBeenTradingPage(CheckMode)),
+
+      (CompanyTradingOverAYearId, tradingOverAYearUk, paPostCodePage(CheckMode)),
+      (CompanyTradingOverAYearId, tradingOverAYearNonUk, previousAddressPage(CheckMode)),
+      (CompanyTradingOverAYearId, tradingUnderAYear, checkYourAnswersPage),
+
+      (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(CheckMode)),
+      (CompanyPreviousAddressId, emptyAnswers, checkYourAnswersPage),
+
+      (CompanyEmailId, emptyAnswers, checkYourAnswersPage),
+      (CompanyPhoneId, uk, checkYourAnswersPage),
+      (CompanyPhoneId, nonUk, checkYourAnswersPage)
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckMode)
+  }
+
+  "RegisterCompanyNavigator in UpdateMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(UpdateMode)),
+      (CompanyContactAddressId, emptyAnswers, confirmPreviousAddressPage),
+
+      (CompanyAddressYearsId, addressYearsOverAYear, anyMoreChanges),
+      (CompanyAddressYearsId, addressYearsUnderAYear, confirmPreviousAddressPage),
+      (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage),
+
+      (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(UpdateMode)),
+      (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges),
+
+      (CompanyEmailId, emptyAnswers, anyMoreChanges),
+      (CompanyPhoneId, uk, anyMoreChanges),
+      (CompanyPhoneId, nonUk, anyMoreChanges)
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
+  }
+
+
 }
 
 object RegisterCompanyNavigatorSpec extends OptionValues {

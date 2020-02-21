@@ -1078,3 +1078,6 @@ manual.entry.link = enter the address manually.
 
 select.address.hint.text = Select the address from the list below, or
 select.address.required.error = User must select one of the addresses offered or select the 'enter address manually' link
+
+select.address.error.required = Select {0}’s address
+select.previous.address.error.required = Select {0}’s previous address

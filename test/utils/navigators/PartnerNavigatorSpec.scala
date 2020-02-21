@@ -26,85 +26,132 @@ import models._
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatest.prop.TableFor4
+import org.scalatest.prop.{TableFor3, TableFor4}
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBehaviour {
 
   import PartnerNavigatorSpec._
+  
+  val navigator: Navigator = injector.instanceOf[PartnerNavigator]
 
-  val navigator = new PartnerNavigator(frontendAppConfig)
+  "PartnerNavigator in NormalMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(NormalMode)),
+      (AddPartnersId, addPartnersTrue, partnerDetailsPage(NormalMode)),
+      (PartnerNameId(0), emptyAnswers, partnerDOBPage(NormalMode)),
+      (PartnerDOBId(0), emptyAnswers, partnerHasNinoPage(NormalMode)),
+      (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(NormalMode)),
+      (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(NormalMode)),
+      (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(NormalMode)),
+      (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(NormalMode)),
+      (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(NormalMode)),
+      (PartnerAddressYearsId(0), addressYearsOverAYear, partnerEmailPage(NormalMode)),
+      (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(NormalMode)),
+      (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage),
+      (PartnerPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(NormalMode)),
+      (PartnerPreviousAddressId(0), defaultAnswers, partnerEmailPage(NormalMode)),
+      (PartnerEmailId(0), defaultAnswers, partnerPhonePage(NormalMode)),
+      (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
+      (CheckYourAnswersId, emptyAnswers, addPartnersPage(NormalMode)),
+      (AddPartnersId, addPartnersFalse, partnershipReviewPage(NormalMode)),
+      (PartnerEnterNINOId(0), emptyAnswers, partnerHasUtrPage(NormalMode)),
+      (PartnerNoNINOReasonId(0), emptyAnswers, partnerHasUtrPage(NormalMode)),
+      (PartnerEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode)),
+      (PartnerNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode)),
+      (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(NormalMode)),
+      (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode))
 
-  //scalastyle:off line.size.limit
-  def routes(mode: Mode): Seq[(Identifier, UserAnswers, Call, Option[Call])] = Seq(
-    (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(mode), None),
-    (AddPartnersId, addPartnersTrue, partnerDetailsPage(mode), None),
-    (PartnerNameId(0), emptyAnswers, partnerDOBPage(mode), Some(checkYourAnswersPage(mode))),
-    (PartnerDOBId(0), emptyAnswers, partnerHasNinoPage(mode), Some(checkYourAnswersPage(mode))),
-    (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(mode), Some(partnerEnterNinoPage(checkMode(mode)))),
-    (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(mode), Some(partnerNoNinoPage(checkMode(mode)))),
-    (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(mode), Some(partnerEnterUtrPage(checkMode(mode)))),
-    (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(mode), Some(partnerNoUtrReasonPage(checkMode(mode)))),
-    (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(mode), None),
-    (PartnerAddressYearsId(0), addressYearsOverAYear, partnerEmailPage(mode), Some(checkYourAnswersPage(mode))),
-    (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(mode), Some(paPostCodePage(checkMode(mode)))),
-    (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage, Some(sessionExpiredPage)),
-    (PartnerPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(mode), None),
-    (PartnerPreviousAddressId(0), defaultAnswers, partnerEmailPage(mode), Some(checkYourAnswersPage(mode))),
-    (PartnerEmailId(0), defaultAnswers, partnerPhonePage(mode), Some(checkYourAnswersPage(mode))),
-    (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(mode), Some(checkYourAnswersPage(mode))),
-    (CheckYourAnswersId, emptyAnswers, addPartnersPage(mode), None)
-  )
-
-  def normalOnlyRoutes: Seq[(Identifier, UserAnswers, Call, Option[Call])] =
-    Seq((AddPartnersId, addPartnersFalse, partnershipReviewPage(NormalMode), None),
-      (PartnerEnterNINOId(0), emptyAnswers, partnerHasUtrPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
-      (PartnerNoNINOReasonId(0), emptyAnswers, partnerHasUtrPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
-      (PartnerEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
-      (PartnerNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
-      (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(NormalMode), Some(checkYourAnswersPage(NormalMode))),
-      (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode), None)
     )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
+  }
 
-  def updateOnlyRoutes(): Seq[(Identifier, UserAnswers, Call, Option[Call])] = Seq(
-    (AddPartnersId, addPartnersFalse, anyMoreChangesPage, None),
-    (PartnerEnterNINOId(0), defaultAnswers, partnerHasUtrPage(UpdateMode), None),
-    (PartnerEnterNINOId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
-    (PartnerNoNINOReasonId(0), defaultAnswers, partnerHasUtrPage(UpdateMode), None),
-    (PartnerNoNINOReasonId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
-    (PartnerEnterUTRId(0), defaultAnswers, addressPostCodePage(UpdateMode), None),
-    (PartnerEnterUTRId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
-    (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage, None),
-    (PartnerAddressId(0), defaultAnswers, partnerAddressYearsPage(UpdateMode), None),
-    (PartnerAddressId(0), existingPartnerInUpdate(0), confirmPreviousAddress, None),
-    (PartnerAddressYearsId(0), addressYearsOverAYearExistingPartner, anyMoreChangesPage, None),
-    (PartnerAddressYearsId(0), addressYearsUnderAYearExistingPartner, confirmPreviousAddress, None),
-    (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressSame(0), anyMoreChangesPage, None),
-    (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(0), paPostCodePage(UpdateMode), None),
-    (PartnerPreviousAddressId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
-    (PartnerEmailId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None),
-    (PartnerPhoneId(0), existingPartnerInUpdate(0), anyMoreChangesPage, None)
-  )
+  "PartnerNavigator in CheckMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (PartnerNameId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerDOBId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(CheckMode)),
+      (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(CheckMode)),
+      (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(CheckMode)),
+      (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(CheckMode)),
+      (PartnerAddressYearsId(0), addressYearsOverAYear, checkYourAnswersPage(NormalMode)),
+      (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(CheckMode)),
+      (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage),
+      (PartnerPreviousAddressId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerEmailId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerEnterNINOId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerNoNINOReasonId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerEnterUTRId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerNoUTRReasonId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerAddressId(0), emptyAnswers, checkYourAnswersPage(NormalMode))
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckMode)
+  }
 
-  def normalRoutes: TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
-    normalOnlyRoutes ++ routes(NormalMode): _*
-  )
+  "PartnerNavigator in UpdateMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (AddPartnersId, addPartnersMoreThan10, moreThanTenPartnersPage(UpdateMode)),
+      (AddPartnersId, addPartnersTrue, partnerDetailsPage(UpdateMode)),
+      (PartnerNameId(0), emptyAnswers, partnerDOBPage(UpdateMode)),
+      (PartnerDOBId(0), emptyAnswers, partnerHasNinoPage(UpdateMode)),
+      (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(UpdateMode)),
+      (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(UpdateMode)),
+      (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(UpdateMode)),
+      (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(UpdateMode)),
+      (PartnerAddressPostCodeLookupId(0), emptyAnswers, addressListPage(UpdateMode)),
+      (PartnerAddressYearsId(0), addressYearsOverAYear, partnerEmailPage(UpdateMode)),
+      (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(UpdateMode)),
+      (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage),
+      (PartnerPreviousAddressPostCodeLookupId(0), emptyAnswers, paAddressListPage(UpdateMode)),
+      (PartnerPreviousAddressId(0), defaultAnswers, partnerEmailPage(UpdateMode)),
+      (PartnerEmailId(0), defaultAnswers, partnerPhonePage(UpdateMode)),
+      (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(UpdateMode)),
+      (CheckYourAnswersId, emptyAnswers, addPartnersPage(UpdateMode)),
+      (AddPartnersId, addPartnersFalse, anyMoreChangesPage),
+      (PartnerEnterNINOId(0), defaultAnswers, partnerHasUtrPage(UpdateMode)),
+      (PartnerEnterNINOId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
+      (PartnerNoNINOReasonId(0), defaultAnswers, partnerHasUtrPage(UpdateMode)),
+      (PartnerNoNINOReasonId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
+      (PartnerEnterUTRId(0), defaultAnswers, addressPostCodePage(UpdateMode)),
+      (PartnerEnterUTRId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
+      (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage),
+      (PartnerAddressId(0), defaultAnswers, partnerAddressYearsPage(UpdateMode)),
+      (PartnerAddressId(0), existingPartnerInUpdate(0), confirmPreviousAddress),
+      (PartnerAddressYearsId(0), addressYearsOverAYearExistingPartner, anyMoreChangesPage),
+      (PartnerAddressYearsId(0), addressYearsUnderAYearExistingPartner, confirmPreviousAddress),
+      (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressSame(0), anyMoreChangesPage),
+      (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(0), paPostCodePage(UpdateMode)),
+      (PartnerPreviousAddressId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
+      (PartnerEmailId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
+      (PartnerPhoneId(0), existingPartnerInUpdate(0), anyMoreChangesPage)
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
+  }
 
-  def updateRoutes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
-    ("Id", "User Answers", "Next Page (Normal Mode)", "Next Page (Check Mode)"),
-    updateOnlyRoutes ++ routes(UpdateMode): _*
-  )
+  "PartnerNavigator in CheckUpdateMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (PartnerNameId(0), emptyAnswers, checkYourAnswersPage(UpdateMode)),
+      (PartnerDOBId(0), emptyAnswers, checkYourAnswersPage(UpdateMode)),
+      (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(CheckUpdateMode)),
+      (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(CheckUpdateMode)),
+      (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(CheckUpdateMode)),
+      (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(CheckUpdateMode)),
+      (PartnerAddressYearsId(0), addressYearsOverAYear, checkYourAnswersPage(UpdateMode)),
+      (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(CheckUpdateMode)),
+      (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage),
+      (PartnerPreviousAddressId(0), defaultAnswers, checkYourAnswersPage(UpdateMode)),
+      (PartnerEmailId(0), defaultAnswers, checkYourAnswersPage(UpdateMode)),
+      (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(UpdateMode))
 
-  //scalastyle:on line.size.limit
-
-  navigator.getClass.getSimpleName must {
-    appRunning()
-    behave like nonMatchingNavigator(navigator)
-    behave like navigatorWithRoutes(navigator, normalRoutes, dataDescriber)
-    behave like navigatorWithRoutes(navigator, updateRoutes(), dataDescriber, UpdateMode)
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckUpdateMode)
   }
 }
 
