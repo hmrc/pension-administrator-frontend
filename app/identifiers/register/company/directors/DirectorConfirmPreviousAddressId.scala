@@ -27,6 +27,8 @@ case class DirectorConfirmPreviousAddressId(index: Int) extends TypedIdentifier[
     value match {
       case Some(false) =>
         userAnswers.set(IsDirectorCompleteId(index))(value = false).flatMap(_.remove(DirectorPreviousAddressId(index)))
+      case Some(true) =>
+        userAnswers.set(IsDirectorCompleteId(index))(value = true)
       case _ => super.cleanup(value, userAnswers)
     }
   }
