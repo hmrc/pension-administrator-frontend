@@ -34,6 +34,8 @@
 
     @components.error_summary(form.errors)
 
+    @formHelper(action = routes.VariationDeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
+
     <div class="form-group @if(form.hasErrors){form-group--error}">
     @components.heading(messages("declarationFitAndProper.variations.heading", psaNameOpt.getOrElse("")))
 
@@ -60,8 +62,6 @@
         </li>
     </ul>
 
-    @formHelper(action = routes.VariationDeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
-
         @components.input_yes_no(
             field = form("value"),
             label = messages("declarationFitAndProper.variations.heading"),
@@ -72,9 +72,9 @@
         <div class="subsection">
             @components.submit_button("site.agreeAndContinue")
         </div>
-    }
 
     @psaNameOpt.map{ psaName =>
         @components.return_link(psaName, UpdateMode)
+    }
     }
 }
