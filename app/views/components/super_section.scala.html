@@ -38,8 +38,6 @@
     }
 }
 
-<ul>
     @for((section, i) <- superSection.sections.zipWithIndex){
         @components.answer_section(section, idPath + "-" + i.toString)
     }
-</ul>
