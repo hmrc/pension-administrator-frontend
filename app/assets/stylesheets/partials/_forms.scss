@@ -119,6 +119,16 @@ Error styling to bring in line with GDS
     text-decoration: underline;
 }
 
+.form-field--error .form-control,
+.form-field--error .form-control-wrapper input {
+  border: 5px solid #d4351c;
+}
+.form-field--error .form-control:focus,
+.form-field--error .form-control-wrapper input:focus {
+    border-color: #0b0c0c;
+    -webkit-box-shadow: none;
+    box-shadow: none
+  }
    .form-group  h1, .listAddress{
       margin-top: .25em;
       margin-bottom:.50em;
