@@ -33,6 +33,7 @@
     @components.back_link()
 
     @components.error_summary(form.errors)
+    @formHelper(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
     <div class="form-group @if(form.hasErrors){form-group--error}">
     @components.heading(messages("variationWorkingKnowledge.heading"))
 
@@ -40,7 +41,6 @@
     <p>@messages("variationWorkingKnowledge.p2")</p>
     <p>@messages("variationWorkingKnowledge.p3")</p>
 
-    @formHelper(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
         @components.input_yes_no(
             field = form("value"),
             label = messages("variationWorkingKnowledge.heading"),
@@ -50,7 +50,6 @@
         <div class="subsection">
             @components.submit_button("site.save_and_continue")
         </div>
-    }
 
     @psaNameOpt.map{ psaName =>
         @if(mode == UpdateMode | mode == CheckUpdateMode) {
@@ -62,5 +61,6 @@
                 </div>
             </div>
         }
+    }
     }
 }

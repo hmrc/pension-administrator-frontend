@@ -24,11 +24,14 @@ hint: Option[String] = None
 
 @ariaDescribedBy = @{
     val hintId = if(hint.nonEmpty){field.id+"-date-hint "}else{" "}
-    val errorId = if(field("day").errors.nonEmpty || field("month").errors.nonEmpty || field("year").errors.nonEmpty) {
-        "error-message-date"
-    } else {
-        "error-message-" + field.id + "-input"
-    }
+    val errorId =
+        if(field("day").errors.nonEmpty || field("month").errors.nonEmpty || field("year").errors.nonEmpty) {
+            "error-message-date"
+        } else if (field.errors.nonEmpty) {
+            "error-message-" + field.id + "-input"
+        } else {
+            ""
+        }
     hintId + errorId
 }
 

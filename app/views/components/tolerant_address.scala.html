@@ -18,7 +18,7 @@
 @import utils.countryOptions.CountryOptions
 
 @(fieldName: String, address: TolerantAddress, countryOptions: CountryOptions)
-
+<div class="listAddress">
 @if(address.addressLine1.isDefined) {
     <div id="@fieldName-addressLine1">@address.addressLine1</div>
 }
@@ -37,3 +37,4 @@
 @if(address.country.isDefined) {
     <div id="@fieldName-country">@countryOptions.getCountryNameFromCode(address)</div>
 }
+</div>
