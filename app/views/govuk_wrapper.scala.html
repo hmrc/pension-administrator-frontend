@@ -51,7 +51,7 @@
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/pensionadministratorfrontend-app.css")' />
-
+    <script src='@routes.Assets.versioned("javascripts/autocomplete/location-autocomplete.min.js")'> </script>
     @if(appConfig.googleTagManagerIdAvailable) {
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);            })(window,document,'script','dataLayer','@appConfig.googleTagManagerId');        </script>
     }
@@ -87,13 +87,14 @@
       gaCalls = None,
       allowQueryStringInAnalytics = true)
       <script src='@routes.Assets.versioned("javascripts/pensionadministratorfrontend-app.min.js")'> </script>
+
       <script>
-      window.GOVUK.timeoutDialog({
-        timeout: @appConfig.timeout,
-        countdown: @appConfig.countdown,
-        keepAliveUrl: location.href,
-        signOutUrl: "@routes.LogoutController.onPageLoad"
-      });
+          window.GOVUK.timeoutDialog({
+            timeout: @appConfig.timeout,
+            countdown: @appConfig.countdown,
+            keepAliveUrl: location.href,
+            signOutUrl: "@routes.LogoutController.onPageLoad"
+          });
       </script>
 
 }
