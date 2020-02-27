@@ -60,7 +60,8 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
         hint = "moreThanTenPartners.hint",
         postCall = routes.MoreThanTenPartnersController.onSubmit(NormalMode),
         id = MoreThanTenPartnersId,
-        None
+        None,
+        errorKey = "moreThanTenPartners.error.required"
       )
 
       val actual = controller.viewModel(NormalMode)

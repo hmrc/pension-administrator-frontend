@@ -21,10 +21,10 @@ import play.api.data.FormError
 
 class MoreThanTenFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "moreThanTen.error.required"
+  private val requiredKey = "moreThanTenDirectors.error.required"
   val invalidKey = "error.boolean"
 
-  val form = new MoreThanTenFormProvider()()
+  val form = new MoreThanTenFormProvider()(requiredKey)
 
   ".value" must {
 

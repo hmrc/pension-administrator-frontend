@@ -50,9 +50,9 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
   val postUrl: Call = controllers.register.partnership.routes.AddPartnerController.onPageLoad(NormalMode)
   val redirectUrl: Call = routes.ConfirmDeletePartnerController.onSubmit(firstIndex, NormalMode)
   private val formProvider = new ConfirmDeleteFormProvider()
-  private val form = formProvider()
-
   val person: PersonName = PersonName("First", "Last")
+
+  private val form = formProvider(person.fullName)
 
   val view: confirmDelete = app.injector.instanceOf[confirmDelete]
 
@@ -100,7 +100,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
     postUrl,
     Message("confirmDelete.partner.title"),
     "confirmDelete.partner.heading",
-    Some(person.fullName),
+    person.fullName,
     None
   )
 

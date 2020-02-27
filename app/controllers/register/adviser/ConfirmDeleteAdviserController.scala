@@ -53,7 +53,7 @@ class ConfirmDeleteAdviserController @Inject()(val appConfig: FrontendAppConfig,
     controllers.routes.PsaDetailsController.onPageLoad(),
     Message("confirmDelete.adviser.title"),
     "confirmDelete.adviser.heading",
-    Some(name),
+    name,
     psaName = psaName()
   )
 
