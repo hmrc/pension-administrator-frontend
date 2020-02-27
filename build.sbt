@@ -63,6 +63,8 @@ lazy val appName: String = "pension-administrator-frontend"
       Concat.groups := Seq(
         "javascripts/pensionadministratorfrontend-app.js" -> group(Seq(
           "javascripts/show-hide-content.js",
+          "javascripts/textarea/polyfill.js",
+          "javascripts/textarea/textarea.js",          
           "javascripts/pensionadministratorfrontend.js",
           "javascripts/autocomplete/location-autocomplete.min.js"
         ))),

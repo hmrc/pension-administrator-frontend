@@ -120,7 +120,8 @@ Error styling to bring in line with GDS
 }
 
 .form-field--error .form-control,
-.form-field--error .form-control-wrapper input {
+.form-field--error .form-control-wrapper input,
+.form-field--error .form-input-textarea{
   border: 5px solid #d4351c;
 }
 .form-field--error .form-control:focus,

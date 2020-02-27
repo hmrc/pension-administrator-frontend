@@ -20,6 +20,14 @@ $(document).ready(function() {
     numberInputs();
 
   // =====================================================
+  // Initialise character counter for textareas
+  // =====================================================
+  var $count = document.querySelector('[data-module="govuk-character-count"]')
+  if ($count) {
+      new CharacterCount($count).init()
+  }
+
+  // =====================================================
   // Back link mimics browser back functionality
   // =====================================================
   $('#back-link').on('click', function(e){

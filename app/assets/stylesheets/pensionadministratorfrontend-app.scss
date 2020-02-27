@@ -17,3 +17,17 @@
 @import 'partials/_lists';
 @import 'partials/_palette';
 @import 'partials/_focus';
+
+.form-group textarea {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.govuk-error-message {
+    font-weight: 700;
+    line-height: 1.25;
+    display: block;
+    margin-bottom: 15px;
+    clear: both;
+    color: #d4351c;
+}
