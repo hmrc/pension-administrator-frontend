@@ -19,8 +19,8 @@
 @(row: AnswerRow, idPath: String)(implicit messages: Messages)
 
 <div>
-    <dt id="cya-@idPath-question" class="cya-question">
-        <h2 class="bold std-text">@messages(row.label)</h2>
+    <dt id="cya-@idPath-question" class="cya-question bold std-text">
+        @messages(row.label)
     </dt>
     <dd class="cya-answer">
             @if(row.answerIsMessageKey){
