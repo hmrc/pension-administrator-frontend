@@ -17,7 +17,6 @@
 import java.time.LocalDate
 
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
-import identifiers.LastPageId
 import identifiers.register.adviser._
 import identifiers.register.company._
 import identifiers.register.company.directors._
@@ -33,10 +32,6 @@ package object utils {
 
   //scalastyle:off number.of.methods
   implicit class UserAnswerOps(answers: UserAnswers) extends OptionValues {
-
-    def lastPage(page: LastPage): UserAnswers = {
-      answers.set(LastPageId)(page).asOpt.value
-    }
 
     def registrationInfo(answer: RegistrationInfo): UserAnswers = {
       answers.set(RegistrationInfoId)(answer).asOpt.value

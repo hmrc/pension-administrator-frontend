@@ -18,11 +18,11 @@ package utils.navigators
 
 import base.SpecBase
 import controllers.register.company.routes
+import identifiers.Identifier
 import identifiers.register._
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
-import identifiers.{Identifier, LastPageId}
 import models._
 import models.register.BusinessType
 import org.scalatest.OptionValues
@@ -235,8 +235,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val isSameContactAddress = UserAnswers().companySameContactAddress(true)
   private val notSameContactAddressUk = UserAnswers().areYouInUk(true).companySameContactAddress(false)
   private val notSameContactAddressNonUk = UserAnswers().areYouInUk(false).companySameContactAddress(false)
-  private lazy val lastPage = UserAnswers(Json.obj())
-    .set(LastPageId)(LastPage("GET", "www.test.com")).asOpt.value
 
   private val hasPAYEYes = UserAnswers().set(HasPAYEId)(value = true).asOpt.value
   private val hasPAYENo = UserAnswers().set(HasPAYEId)(value = false).asOpt.value
