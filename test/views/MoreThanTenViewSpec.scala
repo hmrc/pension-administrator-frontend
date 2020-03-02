@@ -30,16 +30,17 @@ class MoreThanTenViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "moreThanTenDirectors"
 
-  val form = new MoreThanTenFormProvider()()
+  val form = new MoreThanTenFormProvider()("moreThanTenDirectors.error.required")
 
-  def viewModel =
+  def viewModel: MoreThanTenViewModel =
     MoreThanTenViewModel(
       title = "moreThanTenDirectors.title",
       heading = Message("moreThanTenDirectors.heading"),
       hint = "moreThanTenDirectors.hint",
       postCall = controllers.register.company.routes.MoreThanTenDirectorsController.onSubmit(NormalMode),
       id = new TypedIdentifier[Boolean] {},
-      psaName = Some("test psa")
+      psaName = Some("test psa"),
+      errorKey = "moreThanTenDirectors.error.required"
     )
 
   val view: moreThanTen = app.injector.instanceOf[moreThanTen]

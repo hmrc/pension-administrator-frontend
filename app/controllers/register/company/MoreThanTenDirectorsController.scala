@@ -52,7 +52,8 @@ class MoreThanTenDirectorsController @Inject()(val appConfig: FrontendAppConfig,
       hint = "moreThanTenDirectors.hint",
       postCall = routes.MoreThanTenDirectorsController.onSubmit(mode),
       id = MoreThanTenDirectorsId,
-      psaName = psaName()
+      psaName = psaName(),
+      errorKey = "moreThanTenDirectors.error.required"
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {

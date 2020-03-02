@@ -36,7 +36,7 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new MoreThanTenFormProvider()
-  val form: Form[Boolean] = formProvider()
+  val form: Form[Boolean] = formProvider("moreThanTenDirectors.error.required")
 
   val view: moreThanTen = inject[moreThanTen]
 
@@ -47,7 +47,8 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
       hint = "moreThanTenDirectors.hint",
       postCall = controllers.register.company.routes.MoreThanTenDirectorsController.onSubmit(NormalMode),
       id = MoreThanTenDirectorsId,
-      None
+      None,
+      errorKey = "moreThanTenDirectors.error.required"
     )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =

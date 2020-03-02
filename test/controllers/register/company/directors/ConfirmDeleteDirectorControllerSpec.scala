@@ -66,23 +66,23 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
 }
 
 object ConfirmDeleteDirectorControllerSpec extends SpecBase {
-  val firstIndex = Index(0)
-  val person = PersonName("First", "Last")
+  val firstIndex: Index = Index(0)
+  val person: PersonName = PersonName("First", "Last")
 
   private val formProvider = new ConfirmDeleteFormProvider()
-  private val form = formProvider()
+  private val form = formProvider(person.fullName)
   val view: confirmDelete = app.injector.instanceOf[confirmDelete]
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     "directors" -> Json.arr(
       Json.obj(DirectorNameId.toString -> person)
     ))))
 
-  def viewModel = ConfirmDeleteViewModel(
+  def viewModel: ConfirmDeleteViewModel = ConfirmDeleteViewModel(
     routes.ConfirmDeleteDirectorController.onSubmit(NormalMode, firstIndex),
     controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
     Message("confirmDeleteDirector.title"),
     "confirmDeleteDirector.heading",
-    Some(person.fullName),
+    person.fullName,
     None
   )
 

@@ -23,7 +23,7 @@ case class ConfirmDeleteViewModel(
                                    cancelUrl: Call,
                                    title: Message,
                                    heading: String,
-                                   token: Option[String] = None,
+                                   name: String,
                                    secondaryHeader: Option[String] = None,
                                    psaName: Option[String] = None
                                  )

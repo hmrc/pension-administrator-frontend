@@ -44,7 +44,7 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
     controllers.routes.PsaDetailsController.onPageLoad(),
     Message("confirmDelete.adviser.title"),
     "confirmDelete.adviser.heading",
-    Some(name),
+    name,
     None
   )
 

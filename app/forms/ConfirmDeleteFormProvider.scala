@@ -19,11 +19,13 @@ package forms
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
+import play.api.i18n.Messages
+import viewmodels.Message
 
 class ConfirmDeleteFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(name: String)(implicit messages: Messages): Form[Boolean] =
     Form(
-      "value" -> boolean("error.boolean.required")
+      "value" -> boolean(Message("confirmDelete.error.required", name))
     )
 }

@@ -36,20 +36,20 @@ trait MoreThanTenController extends FrontendBaseController with I18nSupport with
 
   protected def navigator: Navigator
 
-  private val form: Form[Boolean] = new MoreThanTenFormProvider()()
+  private def form(errorKey: String): Form[Boolean] = new MoreThanTenFormProvider()(errorKey)
 
   protected def view: moreThanTen
 
   def get(viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
     val preparedForm = request.userAnswers.get(viewModel.id) match {
-      case None => form
-      case Some(value) => form.fill(value)
+      case None => form(viewModel.errorKey)
+      case Some(value) => form(viewModel.errorKey).fill(value)
     }
     Ok(view(preparedForm, viewModel, mode))
   }
 
   def post(viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
-    form.bindFromRequest().fold(
+    form(viewModel.errorKey).bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel, mode))),
       value => {
