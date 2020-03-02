@@ -1,0 +1,43 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@(
+field: Field,
+label: String,
+charLimit: Int,
+labelClass: Option[String] = None
+)(implicit messages: Messages)
+
+<div class="govuk-character-count @if(field.hasErrors){form-field--error}" data-module="govuk-character-count" data-maxlength="@charLimit"  >
+    <div class="govuk-form-group">
+        <label class="govuk-label @if(labelClass.nonEmpty){@labelClass}" for="@{field.id}">
+            @label
+        </label>
+
+        @field.errors.map { error =>
+            <span class="error-notification" id="error-notification-@{field.id}-input">
+                <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args:_*)
+            </span>
+        }
+
+        <textarea class="govuk-textarea govuk-js-character-count @if(field.hasErrors){form-input-textarea}"
+                  id="@{field.id}"
+                  name="@{field.id}"
+                  rows="4"
+                  aria-describedby="@{field.id}-info">@{field.value}</textarea>
+    </div>
+
+</div>
