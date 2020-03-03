@@ -85,7 +85,7 @@ class ConfirmPartnershipDetailsController @Inject()(
 
     (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.right.map {
       case name ~ utr ~ businessType =>
-        val organisation = Organisation(name.replaceAll("""[^a-zA-Z0-9 '&\/]+""", ""), businessType)
+        val organisation = Organisation(name, businessType)
         val legalStatus = RegistrationLegalStatus.Partnership
         registrationConnector.registerWithIdOrganisation(utr, organisation, legalStatus).flatMap {
           registration =>
