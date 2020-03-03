@@ -51,7 +51,7 @@
 
             @if(viewmodel.entities.isEmpty) {
                 @components.paragraph_text(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
-                <div class="section">
+                <div class="subsection">
                     @components.submit_button(Message("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
                 </div>
             } else {
@@ -69,7 +69,7 @@
                     @components.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
                 }
 
-                <div class="section">
+                <div class="subsection">
                     @components.submit_button(disabled = disableSubmission)
                 </div>
             }

@@ -44,7 +44,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
 
   val moreThanTenView: moreThanTen = app.injector.instanceOf[moreThanTen]
 
-  private val form: Form[Boolean] = new MoreThanTenFormProvider()()
+  private val form: Form[Boolean] = new MoreThanTenFormProvider()("moreThanTenDirectors.error.required")
 
   val testId: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {}
 
@@ -178,14 +178,15 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
 
 
 
-  def viewModel(id: TypedIdentifier[Boolean] = testId) =
+  def viewModel(id: TypedIdentifier[Boolean] = testId): MoreThanTenViewModel =
     MoreThanTenViewModel(
       title = "moreThanTenDirectors.title",
       heading = "moreThanTenDirectors.heading",
       hint = "moreThanTenDirectors.hint",
       postCall = Call("POST", "/"),
       id,
-      None
+      None,
+      errorKey = "moreThanTenDirectors.error.required"
     )
 
   def viewAsString(base: SpecBase, form: Form[_] = form): String =

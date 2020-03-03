@@ -22,9 +22,9 @@ import play.api.data.Form
 
 class MoreThanTenFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(errorKey: String): Form[Boolean] =
     Form(
-      "value" -> boolean("moreThanTen.error.required")
+      "value" -> boolean(errorKey)
     )
 
 }

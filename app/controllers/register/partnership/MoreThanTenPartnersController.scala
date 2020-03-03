@@ -50,7 +50,8 @@ class MoreThanTenPartnersController @Inject()(val appConfig: FrontendAppConfig,
       hint = "moreThanTenPartners.hint",
       postCall = routes.MoreThanTenPartnersController.onSubmit(mode),
       id = MoreThanTenPartnersId,
-      psaName = psaName()
+      psaName = psaName(),
+      errorKey = "moreThanTenPartners.error.required"
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {

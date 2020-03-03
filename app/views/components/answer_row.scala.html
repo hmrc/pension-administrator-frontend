@@ -18,12 +18,11 @@
 
 @(row: AnswerRow, idPath: String)(implicit messages: Messages)
 
-<li>
-    <div id="cya-@idPath-question" class="cya-question">
-        <h2 class="bold std-text">@messages(row.label)</h2>
-    </div>
-    <div class="cya-answer">
-        <p>
+<div>
+    <dt id="cya-@idPath-question" class="cya-question">
+        @messages(row.label)
+    </dt>
+    <dd class="cya-answer">
             @if(row.answerIsMessageKey){
                 <span id="cya-@idPath-0-answer">@messages(row.answer.head)</span>
             } else{
@@ -31,12 +30,11 @@
                     <span id="cya-@idPath-@i-answer" class="address-multi-line">@r</span>
                 }
             }
-        </p>
-    </div>
-    <div class="cya-change">
+    </dd>
+    <dd class="cya-change">
         @row.changeUrl.map { changeUrl =>
             <a id="cya-@idPath-change" href='@{changeUrl.url}'>
-                <span aria-hidden="true">@messages(changeUrl.text)</span>
+                <span>@messages(changeUrl.text)</span>
                 @row.visuallyHiddenText.map{ hiddenLabel =>
                     <span class="visually-hidden">@hiddenLabel.resolve</span>
                 }.getOrElse {
@@ -45,5 +43,5 @@
 
             </a>
         }
-    </div>
-</li>
+    </dd>
+</div>

@@ -27,7 +27,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
@@ -46,14 +46,14 @@ class ConfirmDeleteDirectorController @Inject()(val appConfig: FrontendAppConfig
                                                 val view: confirmDelete
                                                )(implicit val executionContext: ExecutionContext) extends ConfirmDeleteController with Retrievals {
 
-  val form: Form[Boolean] = formProvider()
+  def form(directorName: String)(implicit messages: Messages): Form[Boolean] = formProvider(directorName)
 
   private def vm(index: Index, name: String, mode: Mode)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
     routes.ConfirmDeleteDirectorController.onSubmit(mode, index),
     controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
     Message("confirmDeleteDirector.title"),
     "confirmDeleteDirector.heading",
-    Some(name),
+    name,
     None,
     psaName()
   )
