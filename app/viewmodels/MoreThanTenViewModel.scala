@@ -24,5 +24,6 @@ case class MoreThanTenViewModel(title: String,
                                 hint: String,
                                 postCall: Call,
                                 id: TypedIdentifier[Boolean],
-                                psaName: Option[String]
+                                psaName: Option[String],
+                                errorKey: String
                                )

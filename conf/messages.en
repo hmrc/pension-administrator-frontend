@@ -29,7 +29,6 @@ error.non_numeric = Give a value using only numbers
 error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There was a problem with the page
-error.boolean.required = You must make a selection
 
 error.address_line_1.required = Enter the first line of address
 error.address_line_2.required = Enter the second line of address
@@ -281,7 +280,7 @@ moreThanTenDirectors.heading = Do you need to tell us about other directors?
 moreThanTenDirectors.checkYourAnswersLabel = Do you need to tell us about other directors?
 moreThanTenDirectors.hint = We will contact you if we need their information.
 
-moreThanTen.error.required = You must make a selection
+moreThanTenDirectors.error.required = Select yes if you need to tell us about other directors
 
 confirmDeleteDirector.title = Are you sure you want to delete this person as a director?
 confirmDeleteDirector.heading = Are you sure you want to delete {0} as a director?
@@ -744,6 +743,7 @@ checkyouranswers.partnership.contact.details.heading = Partnership contact detai
 
 confirmDelete.partner.title = Are you sure you want to delete this person as a partner?
 confirmDelete.partner.heading = Are you sure you want to delete {0}?
+confirmDelete.error.required = Select yes if you want to delete {0}
 confirmDelete.partner.body = confirmDeletePartner
 
 partnerPreviousAddress.checkYourAnswersLabel = Previous Address
@@ -767,6 +767,7 @@ moreThanTenPartners.title = Do you need to tell us about other partners?
 moreThanTenPartners.heading = Do you need to tell us about other partners?
 moreThanTenPartners.checkYourAnswersLabel = Do you need to tell us about other partners?
 moreThanTenPartners.hint = We will contact you if we need their information.
+moreThanTenPartners.error.required = Select yes if you need to tell us about other partners
 
 partnerAddress.title = Partner’s address
 partnerAddress.heading = Partner’s address

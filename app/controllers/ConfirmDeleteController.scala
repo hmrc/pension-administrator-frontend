@@ -26,7 +26,7 @@ import identifiers.register.partnership.partners.PartnerNameId
 import models.requests.DataRequest
 import models.{Mode, PersonName, UpdateMode}
 import play.api.data.Form
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -41,13 +41,13 @@ trait ConfirmDeleteController extends FrontendBaseController with I18nSupport wi
 
   protected def cacheConnector: UserAnswersCacheConnector
 
-  protected val form: Form[Boolean]
+  protected def form(name: String)(implicit messages: Messages): Form[Boolean]
 
   protected def view: confirmDelete
 
   def get(vm: ConfirmDeleteViewModel, isDeleted: Boolean, redirectTo: Call, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] =
     if (!isDeleted) {
-      Future.successful(Ok(view(form, vm, mode)))
+      Future.successful(Ok(view(form(vm.name), vm, mode)))
     } else {
       Future.successful(Redirect(redirectTo))
     }
@@ -73,7 +73,7 @@ trait ConfirmDeleteController extends FrontendBaseController with I18nSupport wi
   def post(vm: ConfirmDeleteViewModel, id: TypedIdentifier[PersonName], postUrl: Call, mode: Mode)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    form.bindFromRequest().fold(
+    form(vm.name).bindFromRequest().fold(
       (formWithError: Form[_]) => Future.successful(BadRequest(view(formWithError, vm, mode))),
       {
         case true =>

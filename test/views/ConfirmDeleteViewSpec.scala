@@ -38,13 +38,13 @@ class ConfirmDeleteViewSpec extends ViewBehaviours {
     routes.ConfirmDeletePartnerController.onPageLoad(firstIndex, NormalMode),
     s"$messageKeyPrefix.title",
     s"$messageKeyPrefix.heading",
-    Some("Name"),
+    "Name",
     None,
     psaName = Some("test-psa")
   )
 
   val formProvider = new ConfirmDeleteFormProvider()
-  val form: Form[Boolean] = formProvider()
+  val form: Form[Boolean] = formProvider("Name")
 
   def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () => view(form, viewModel, mode)(fakeRequest, messages)
 
