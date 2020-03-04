@@ -17,7 +17,7 @@
 package forms.behaviours
 
 import forms.FormSpec
-import forms.mappings.{Constraints, PayeMapping, PayeMappingString}
+import forms.mappings.{Constraints, PayeMappingString}
 import play.api.data.{Form, FormError}
 import wolfendale.scalacheck.regexp.RegexpGen
 
@@ -47,8 +47,8 @@ trait PayeStringBehaviours extends FormSpec with StringFieldBehaviours with Cons
       behave like fieldWithMaxLength(
         form,
         fieldName,
-        maxLength = PayeMapping.maxPayeLength,
-        lengthError = FormError(fieldName, keyPayeLength, Seq(PayeMapping.maxPayeLength))
+        maxLength = PayeMappingString.maxPayeLength,
+        lengthError = FormError(fieldName, keyPayeLength, Seq(PayeMappingString.maxPayeLength))
       )
 
       behave like fieldWithRegex(
