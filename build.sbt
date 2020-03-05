@@ -63,9 +63,7 @@ lazy val appName: String = "pension-administrator-frontend"
       Concat.groups := Seq(
         "javascripts/pensionadministratorfrontend-app.js" -> group(Seq(
           "javascripts/show-hide-content.js",
-          "javascripts/textarea/textarea.js",
-          "javascripts/pensionadministratorfrontend.js",
-          "javascripts/textarea/polyfills.js"
+          "javascripts/pensionadministratorfrontend.js"
 
         ))),
       // prevent removal of unused code which generates warning errors due to use of third-party libs

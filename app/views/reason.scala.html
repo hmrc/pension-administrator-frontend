@@ -40,10 +40,9 @@
         <div class="form-group @if(form.hasErrors){form-group--error}">
         @components.heading(viewModel.heading)
 
-        @components.text_area_with_character_count(
+        @components.input_textarea(
             field = form("value"),
             label = viewModel.title,
-            charLimit = 160,
             labelClass = Some("visually-hidden")
         )
 
