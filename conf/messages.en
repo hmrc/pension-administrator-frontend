@@ -841,13 +841,13 @@ director-add-link-onlyOne-additionalText = There must be a minimum of 1 director
 director-add-link-lessThanTen = Add or delete a Director
 director-add-link-incomplete = Change or delete a Director
 director-add-link-Ten = Delete a director
-director-add-link-Ten-additionalText = A maximum of 10 directors can be added. If you want to add another director, you must first delete an existing one.
+director-add-link-Ten-additionalText = A maximum of 10 directors can be added. If you want to add another director, you must first delete one.
 partner-add-link-onlyOne = Add a partner
 partner-add-link-onlyOne-additionalText = There must be a minimum of 1 partner. If you want to remove this partner, you must first add a new one.
 partner-add-link-lessThanTen = Add or delete a partner
 partner-add-link-incomplete = Change or delete a partner
 partner-add-link-Ten = Delete a partner
-partner-add-link-Ten-additionalText = A maximum of 10 partners can be added. If you want to add another partners, you must first delete an existing one.
+partner-add-link-Ten-additionalText = A maximum of 10 partners can be added. If you want to add another partners, you must first delete one.
 adviser-delete-link = Delete {0}
 adviser-delete-link-additionalText = If you delete {0}, you will need to give the details of who has working knowledge.
 
