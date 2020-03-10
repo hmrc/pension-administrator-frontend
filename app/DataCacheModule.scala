@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import connectors.cache.{DualCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{PensionAdminDataCacheConnector, UserAnswersCacheConnector}
 import play.api.inject.{Binding, Module}
 import play.api.{Configuration, Environment}
 
 class DataCacheModule extends Module {
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
-    Seq(bind[UserAnswersCacheConnector].to[DualCacheConnector])
+    Seq(bind[UserAnswersCacheConnector].to[PensionAdminDataCacheConnector])
   }
 }
