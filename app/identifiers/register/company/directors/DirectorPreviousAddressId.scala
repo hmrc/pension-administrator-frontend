@@ -17,7 +17,7 @@
 package identifiers.register.company.directors
 
 import identifiers._
-import models.{Address, Index}
+import models.{Address, AddressYears, Index}
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import utils.{UserAnswers, checkyouranswers}
@@ -41,8 +41,14 @@ object DirectorPreviousAddressId {
         dynamicMessage(ua, messageKey = "previousAddress.visuallyHidden.text", index)
 
       override def row(id: DirectorPreviousAddressId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        checkyouranswers.AddressCYA[DirectorPreviousAddressId](label(userAnswers, id.index),
-          Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+        (userAnswers.get(DirectorAddressYearsId(id.index)), userAnswers.get(DirectorPreviousAddressId(id.index))) match {
+          case (Some(AddressYears.UnderAYear), None) =>
+            checkyouranswers.AddressCYA[DirectorPreviousAddressId](label(userAnswers, id.index),
+              Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+          case _ =>
+            checkyouranswers.AddressCYA[DirectorPreviousAddressId](label(userAnswers, id.index),
+              Some(hiddenLabel(userAnswers, id.index)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
       }
     }
 }

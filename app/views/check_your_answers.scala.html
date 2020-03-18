@@ -19,21 +19,27 @@
 @import play.api.mvc.Call
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.{Section, AnswerSection, RepeaterAnswerSection}
+@import viewmodels.Message
 
 @this(
     main_template: main_template,
     formHelper: FormWithCSRF
 )
 
-@(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode, errorSeq: Seq[Message] = Nil)(implicit request: Request[_], messages: Messages)
 
     @main_template(
         title = messages("checkYourAnswers.title")
     ) {
 
-        @formHelper(action = postUrl, 'autoComplete -> "off") {
+            @formHelper(action = postUrl, 'autoComplete -> "off") {
 
-        @components.back_link()
+            @components.back_link()
+
+            @if(errorSeq.nonEmpty) {
+                @components.cya_alert(errorSeq)
+            }
+
             @components.heading(
                     headingKey=messages("checkYourAnswers.heading").toString
             )
@@ -50,6 +56,7 @@
         <div class="subsection">
              @components.submit_button("site.save_and_continue")
         </div>
+
         @psaNameOpt.map { psaName =>
             @components.return_link(psaName, mode)
         }

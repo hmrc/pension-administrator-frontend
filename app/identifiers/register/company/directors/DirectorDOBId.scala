@@ -41,7 +41,6 @@ object DirectorDOBId {
       private def hiddenLabel(ua: UserAnswers, index: Index): Message =
         dynamicMessage(ua, messageKey = "dob.visuallyHidden.text", index)
 
-
       override def row(id: DirectorDOBId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
         DateCYA[DirectorDOBId](Some(label(userAnswers, id.index)),
           Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)

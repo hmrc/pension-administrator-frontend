@@ -1082,3 +1082,22 @@ select.address.required.error = User must select one of the addresses offered or
 
 select.address.error.required = Select {0}’s address
 select.previous.address.error.required = Select {0}’s previous address
+
+incomplete.utr = Unique Taxpayer Reference
+incomplete.businessName = Name of the limited company
+incomplete.companyRegistrationNumber = Company number
+incomplete.companyContactAddress = Contact address
+incomplete.companyPreviousAddress = Previous address
+incomplete.companyAddressYears = Address years
+incomplete.hasPaye = Employer PAYE reference
+incomplete.paye = Employer PAYE reference
+incomplete.hasVat = VAT registration number
+incomplete.vat = VAT registration number
+incomplete.email = Email address
+incomplete.phone = Phone number
+
+incomplete.directorDetails = Name
+incomplete.dateOfBirth = Date Of Birth
+incomplete.dateOfBirth = Date Of Birth
+
+cya.alert.p1 = You must complete the following before you can submit your changes:

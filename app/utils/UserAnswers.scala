@@ -28,12 +28,13 @@ import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNa
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import play.api.libs.json._
+import utils.dataCompletion.DataCompletion
 import viewmodels.Person
 
 import scala.annotation.tailrec
 import scala.language.implicitConversions
 
-case class UserAnswers(json: JsValue = Json.obj()) {
+case class UserAnswers(json: JsValue = Json.obj()) extends DataCompletion {
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] = {
     get[A](id.path)
   }

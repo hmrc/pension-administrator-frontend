@@ -37,7 +37,7 @@ case object HasCompanyCRNId extends TypedIdentifier[Boolean] {
         dynamicMessage(ua, "hasCompanyNumber.visuallyHidden.text")
 
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        BooleanCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+        BooleanCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)), isMandatory = false)().row(id)(changeUrl, userAnswers)
     }
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {

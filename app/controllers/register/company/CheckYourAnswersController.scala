@@ -29,7 +29,8 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.RegisterCompany
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
-import utils.{Enumerable, Navigator}
+import utils.dataCompletion.DataCompletion
+import utils.{Enumerable, Navigator, UserAnswers}
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
@@ -44,7 +45,8 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            implicit val countryOptions: CountryOptions,
                                            val controllerComponents: MessagesControllerComponents,
                                            val view: check_your_answers
-                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
+                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals
+  with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
@@ -69,7 +71,8 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
         Seq(companyDetails),
         controllers.register.company.routes.CheckYourAnswersController.onSubmit(),
         None,
-        mode
+        mode,
+        request.userAnswers.getIncompleteCompanyDetails
       ))
   }
 

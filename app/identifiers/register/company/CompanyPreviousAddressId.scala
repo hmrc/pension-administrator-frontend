@@ -17,7 +17,7 @@
 package identifiers.register.company
 
 import identifiers._
-import models.Address
+import models.{Address, AddressYears}
 import play.api.i18n.Messages
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersBusiness}
 import utils.countryOptions.CountryOptions
@@ -32,14 +32,18 @@ case object CompanyPreviousAddressId extends TypedIdentifier[Address] {
   implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[self.type] =
     new CheckYourAnswersBusiness[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "previousAddress.checkYourAnswersLabel")
+        dynamicMessage(ua, messageKey = "previousAddress.checkYourAnswersLabel")
 
       private def hiddenLabel(ua: UserAnswers): Message =
-        dynamicMessage(ua, "previousAddress.visuallyHidden.text")
+        dynamicMessage(ua, messageKey = "previousAddress.visuallyHidden.text")
 
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        checkyouranswers.AddressCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+        (userAnswers.get(CompanyAddressYearsId), userAnswers.get(CompanyTradingOverAYearId), userAnswers.get(CompanyPreviousAddressId)) match {
+          case (Some(AddressYears.UnderAYear), Some(true), None) =>
+            checkyouranswers.AddressCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+          case _ =>
+            checkyouranswers.AddressCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
       }
     }
-
 }

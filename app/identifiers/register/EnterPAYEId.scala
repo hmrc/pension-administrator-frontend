@@ -36,6 +36,11 @@ case object EnterPAYEId extends TypedIdentifier[String] {
 
 
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+        (userAnswers.get(HasPAYEId), userAnswers.get(EnterPAYEId)) match {
+          case (Some(true), None) =>
+            StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers))).addLink(label(userAnswers), changeUrl)
+          case _ =>
+            StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
     }
 }

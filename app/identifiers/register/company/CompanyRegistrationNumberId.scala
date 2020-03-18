@@ -34,7 +34,6 @@ case object CompanyRegistrationNumberId extends TypedIdentifier[String] {
       private def hiddenLabel(ua: UserAnswers): String =
         dynamicMessage(ua, "companyRegistrationNumber.visuallyHidden.text")
 
-
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
         StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
     }

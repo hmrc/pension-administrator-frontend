@@ -45,7 +45,13 @@ case object CompanyAddressYearsId extends TypedIdentifier[AddressYears] {
       private def hiddenLabel(ua: UserAnswers): Message =
         dynamicMessage(ua, "addressYears.visuallyHidden.text")
 
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        AddressYearsCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        userAnswers.get(CompanyContactAddressId) match {
+          case Some(_) =>
+              AddressYearsCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+          case _ =>
+            AddressYearsCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
+      }
     }
 }

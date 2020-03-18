@@ -58,8 +58,14 @@ object DirectorAddressYearsId {
         dynamicMessage(ua, "addressYears.visuallyHidden.text", index)
 
       override def row(id: DirectorAddressYearsId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        AddressYearsCYA(label(id.index, userAnswers), Some(hiddenLabel(id.index, userAnswers)))()
-          .row(id)(changeUrl, userAnswers)
+        userAnswers.get(DirectorAddressId(id.index)) match {
+          case Some(_) =>
+            AddressYearsCYA(label(id.index, userAnswers), Some(hiddenLabel(id.index, userAnswers)))()
+              .row(id)(changeUrl, userAnswers)
+          case _ =>
+            AddressYearsCYA(label(id.index, userAnswers), Some(hiddenLabel(id.index, userAnswers)), isMandatory = false)()
+              .row(id)(changeUrl, userAnswers)
+        }
     }
   }
 }

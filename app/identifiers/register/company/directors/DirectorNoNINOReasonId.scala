@@ -40,7 +40,14 @@ object DirectorNoNINOReasonId {
 
 
       override def row(id: DirectorNoNINOReasonId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[DirectorNoNINOReasonId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+        userAnswers.get(HasDirectorNINOId(id.index)) match {
+          case Some(false) =>
+            StringCYA[DirectorNoNINOReasonId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().
+              row(id)(changeUrl, userAnswers)
+          case _ =>
+            StringCYA[DirectorNoNINOReasonId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)), isMandatory = false)().
+              row(id)(changeUrl, userAnswers)
+        }
     }
 }
 
