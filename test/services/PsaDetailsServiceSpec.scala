@@ -19,10 +19,10 @@ package services
 import base.SpecBase
 import connectors.SubscriptionConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
+import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual._
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
+import identifiers.register.partnership.partners.{PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId}
 import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId}
 import identifiers.{IndexId, UpdateModeId}
@@ -33,7 +33,6 @@ import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results.Ok
 import uk.gov.hmrc.http.HeaderCarrier
@@ -87,7 +86,6 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
           _ mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false)
         }
 
-        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(IsDirectorCompleteId(0)).value mustBe true
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe companyExpectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(DirectorsExistingCurrentAddressId(0)).value mustBe directorExpectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
@@ -104,8 +102,6 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         whenReady(result) {
           _ mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name", false)
         }
-
-        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(IsPartnerCompleteId(0)).value mustBe true
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe partnershipExpectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(PartnersExistingCurrentAddressId(0)).value mustBe partnerExpectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true

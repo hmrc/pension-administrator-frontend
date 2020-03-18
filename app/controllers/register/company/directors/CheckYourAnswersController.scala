@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.CompanyDirector
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
-import utils.{Enumerable, Navigator, SectionComplete}
+import utils.{Enumerable, Navigator}
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
@@ -44,7 +44,6 @@ class CheckYourAnswersController @Inject()(
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             @CompanyDirector navigator: Navigator,
-                                            sectionComplete: SectionComplete,
                                             override val cacheConnector: UserAnswersCacheConnector,
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,

@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
-import identifiers.register.company.directors.{DirectorNameId, IsDirectorCompleteId}
+import identifiers.register.company.directors.DirectorNameId
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, PersonName, UserType}
 import play.api.data.Form
@@ -205,8 +205,8 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
   private def dataRetrievalAction(directors: PersonName*): FakeDataRetrievalAction = {
     val validData = Json.obj("directors" ->
       directors.map(d => Json.obj(
-        DirectorNameId.toString -> Json.toJson(d),
-        IsDirectorCompleteId.toString -> true
+        DirectorNameId.toString -> Json.toJson(d)/*,
+        IsDirectorCompleteId.toString -> true*/
       ))
     )
     new FakeDataRetrievalAction(Some(validData))

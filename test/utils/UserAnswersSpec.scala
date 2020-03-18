@@ -18,9 +18,9 @@ package utils
 
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
-import identifiers.register.company.directors.{DirectorAddressId, DirectorNameId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
+import identifiers.register.company.directors.{DirectorAddressId, DirectorNameId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
+import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.{JsPath, JsResultException, Json}
@@ -62,9 +62,9 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
     "return a map of director names, edit links, delete links and isComplete flag" in {
       val userAnswers = UserAnswers()
-        .set(DirectorNameId(0))(PersonName("First", "Last"))
+        .set(DirectorNameId(0))(PersonName("First", "Last"))/*
         .flatMap(_.set(IsDirectorCompleteId(0))(true))
-        .flatMap(_.set(IsDirectorCompleteId(1))(false))
+        .flatMap(_.set(IsDirectorCompleteId(1))(false))*/
         .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
 
       val directorEntities = Seq(
@@ -164,9 +164,9 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .companyAddressYears(AddressYears.UnderAYear)
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
           .variationWorkingKnowledge(true)
-          .set(DirectorNameId(0))(PersonName("First", "Last"))
+          .set(DirectorNameId(0))(PersonName("First", "Last"))/*
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
-          .flatMap(_.set(IsDirectorCompleteId(1))(false))
+          .flatMap(_.set(IsDirectorCompleteId(1))(false))*/
           .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
 
 
@@ -178,9 +178,9 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .companyAddressYears(AddressYears.UnderAYear)
           .variationWorkingKnowledge(true)
-          .set(DirectorNameId(0))(PersonName("First", "Last"))
+          .set(DirectorNameId(0))(PersonName("First", "Last"))/*
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
-          .flatMap(_.set(IsDirectorCompleteId(1))(true))
+          .flatMap(_.set(IsDirectorCompleteId(1))(true))*/
           .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
 
 
@@ -193,9 +193,9 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .partnershipAddressYears(AddressYears.UnderAYear)
           .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
           .variationWorkingKnowledge(true)
-          .set(PartnerNameId(0))(PersonName("First", "Last"))
+          .set(PartnerNameId(0))(PersonName("First", "Last"))/*
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
-          .flatMap(_.set(IsPartnerCompleteId(1))(false))
+          .flatMap(_.set(IsPartnerCompleteId(1))(false))*/
           .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
 
 
@@ -207,9 +207,9 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
           .variationWorkingKnowledge(true)
-          .set(PartnerNameId(0))(PersonName("First", "Last"))
+          .set(PartnerNameId(0))(PersonName("First", "Last"))/*
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
-          .flatMap(_.set(IsPartnerCompleteId(1))(true))
+          .flatMap(_.set(IsPartnerCompleteId(1))(true))*/
           .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
@@ -255,9 +255,9 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .companyAddressYears(AddressYears.UnderAYear)
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
           .variationWorkingKnowledge(true)
-          .set(DirectorNameId(0))(PersonName("First", "Last"))
+          .set(DirectorNameId(0))(PersonName("First", "Last"))/*
           .flatMap(_.set(IsDirectorCompleteId(0))(true))
-          .flatMap(_.set(IsDirectorCompleteId(1))(true))
+          .flatMap(_.set(IsDirectorCompleteId(1))(true))*/
           .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
@@ -292,9 +292,9 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
           .adviserEmail("email")
           .adviserPhone("234")
-          .set(PartnerNameId(0))(PersonName("First", "Last"))
+          .set(PartnerNameId(0))(PersonName("First", "Last"))/*
           .flatMap(_.set(IsPartnerCompleteId(0))(true))
-          .flatMap(_.set(IsPartnerCompleteId(1))(true))
+          .flatMap(_.set(IsPartnerCompleteId(1))(true))*/
           .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false

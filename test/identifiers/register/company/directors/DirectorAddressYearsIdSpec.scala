@@ -72,10 +72,6 @@ class DirectorAddressYearsIdSpec extends SpecBase {
 
       val result: UserAnswers = answersWithPreviousAddress.set(DirectorAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
 
-      "remove the IsDirectorComplete flag" in {
-        result.get(IsDirectorCompleteId(0)).value mustBe false
-      }
-
       "not remove the data for `PreviousPostCodeLookup`" in {
         result.get(DirectorPreviousAddressPostCodeLookupId(0)) mustBe defined
       }

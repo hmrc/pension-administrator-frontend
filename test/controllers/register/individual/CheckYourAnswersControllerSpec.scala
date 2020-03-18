@@ -16,10 +16,11 @@
 
 package controllers.register.individual
 
+import java.time.LocalDate
+
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.individual.CheckYourAnswersController.postUrl
-import identifiers.register.individual._
 import models._
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -33,7 +34,10 @@ import views.html.check_your_answers
 class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
+  private val dob = LocalDate.now().minusYears(20)
+  private val addressYears = AddressYears.OverAYear
+  private val email = "test@email"
+  private val phone = "123"
   val individual = TolerantIndividual(
     Some("Joe"),
     None,
@@ -50,105 +54,79 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   val cyaView: check_your_answers = app.injector.instanceOf[check_your_answers]
 
+  private val completeUserAnswers = UserAnswers().individualDetails(individual).
+    individualSameContactAddress(areSame = true).nonUkIndividualAddress(address).
+    individualDob(dob).individualContactAddress(address).individualAddressYears(addressYears).individualPreviousAddress(address).
+    individualEmail(email).individualPhone(phone)
 
   "CheckYourAnswersController" when {
     "on a GET request" must {
-      "render the view correctly for no answers" in {
-        val sections = Seq(AnswerSection(None, Seq.empty[AnswerRow]))
-        testRenderedView(sections, getEmptyData)
-      }
-
-      "render the view correctly for the Name section" in {
-        val sections = answerSections("individualDetailsCorrect.name", Seq(individual.fullName))
-        val retrievalAction = dataRetrievalAction(
-          IndividualDetailsId.toString -> individual
-        )
-        testRenderedView(sections, retrievalAction)
-      }
-
-      "render the view correctly for the registered address section" in {
-        val address = TolerantAddress(
-          Some("address-line-1"),
-          Some("address-line-2"),
-          None,
-          None,
-          Some("post-code"),
-          Some("country")
-        )
-        val sections = answerSections("individualDetailsCorrect.address", address.lines(countryOptions))
-        val retrievalAction = dataRetrievalAction(
-          IndividualAddressId.toString -> address
-        )
-        testRenderedView(sections, retrievalAction)
-      }
-
-      "render the view correctly for the Is this address same as your contact address" in {
-        val sections = answerSections("cya.label.individual.same.contact.address", Seq("site.yes"), answerIsMessageKey = true,
-          Some(Link(controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url)
+      "render the view correctly for all the rows of answer section" in {
+        val retrievalAction = completeUserAnswers.dataRetrievalAction
+        val rows = Seq(
+          answerRow(
+            "individualDetailsCorrect.name",
+            Seq(individual.fullName)
           ),
-          Some(Message("individualContactAddress.visuallyHidden.text"))
-        )
-        val retrievalAction = dataRetrievalAction(
-          IndividualSameContactAddressId.toString -> true
-        )
-        testRenderedView(sections, retrievalAction)
-      }
-
-      "render the view correctly for the Contact Address section" in {
-        val sections = answerSections(
-          "cya.label.individual.contact.address",
-          Seq(
-            address.addressLine1,
-            address.addressLine2,
-            address.postcode.value,
-            address.country
-          ))
-        val retrievalAction = dataRetrievalAction(
-          IndividualContactAddressId.toString -> address
-        )
-        testRenderedView(sections, retrievalAction)
-      }
-
-      "render the view correctly for the How Long at Address section" in {
-        val addressYears = AddressYears.OverAYear
-        val sections = Seq(
-          AnswerSection(
-            None,
+          answerRow(
+            label = "individualDateOfBirth.heading",
+            answer = Seq(DateHelper.formatDate(dob)),
+            changeUrl = Some(Link(controllers.register.individual.routes.IndividualDateOfBirthController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some("individualDateOfBirth.visuallyHidden.text")
+          ),
+          answerRow(
+            "individualDetailsCorrect.address",
+            address.lines(countryOptions)
+          ),
+          answerRow(
+            "cya.label.individual.same.contact.address",
+            Seq("site.yes"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some("individualContactAddress.visuallyHidden.text")
+          ),
+          answerRow(
+            "cya.label.individual.contact.address",
             Seq(
-              AnswerRow("individualDetailsCorrect.name", Seq(individual.fullName), answerIsMessageKey = false, None),
-              AnswerRow(
-                Message("individualAddressYears.title", "Joe Bloggs").resolve,
-                Seq(s"common.addressYears.${addressYears.toString}"),
-                answerIsMessageKey = true,
-                Some(Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)),
-                Some(Message("individualAddressYears.visuallyHidden.text"))
-              )
+              address.addressLine1,
+              address.addressLine2,
+              address.postcode.value,
+              address.country
             )
+          ),
+          answerRow(
+            Message("individualAddressYears.title", "Joe Bloggs").resolve,
+            Seq(s"common.addressYears.${addressYears.toString}"),
+            answerIsMessageKey = true,
+            Some(Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)),
+            Some("individualAddressYears.visuallyHidden.text")
+          ),
+          answerRow(
+            "individualPreviousAddress.checkYourAnswersLabel",
+            Seq(
+              address.addressLine1,
+              address.addressLine2,
+              address.postcode.value,
+              address.country
+            ),
+            changeUrl = Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some("individualPreviousAddress.visuallyHidden.text")
+          ),
+          answerRow(
+            label = messages("individual.email.title"),
+            answer = Seq(email),
+            changeUrl = Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some("individualEmail.visuallyHidden.text")
+          ),
+          answerRow(
+            label = messages("individual.phone.title"),
+            answer = Seq(phone),
+            changeUrl = Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(CheckMode).url)),
+            visuallyHiddenLabel = Some("individualPhone.visuallyHidden.text")
           )
         )
-        val retrievalAction = new FakeDataRetrievalAction(Some(Json.obj(
-          IndividualDetailsId.toString -> individual,
-          IndividualAddressYearsId.toString -> addressYears.toString
-        )))
-        testRenderedView(sections, retrievalAction)
-      }
 
-      "render the view correctly for the Previous Address section" in {
-        val sections = answerSections(
-          "individualPreviousAddress.checkYourAnswersLabel",
-          Seq(
-            address.addressLine1,
-            address.addressLine2,
-            address.postcode.value,
-            address.country
-          ),
-          changeUrl = Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
-          visuallyHiddenText = Some(Message("individualPreviousAddress.visuallyHidden.text"))
-        )
-        val retrievalAction = dataRetrievalAction(
-          IndividualPreviousAddressId.toString -> address
-        )
-
+        val sections = Seq(AnswerSection(None, rows))
         testRenderedView(sections, retrievalAction)
       }
 
@@ -157,39 +135,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-      }
-    }
-
-    "on a GET request for Contact Details section " must {
-
-      "render the view correctly for email and phone" in {
-        val rows = Seq(
-          answerRow(
-            label = messages("individual.email.title"),
-            answer = Seq("test@email"),
-            changeUrl = Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(CheckMode).url)),
-            visuallyHiddenLabel = Some(Message("individualEmail.visuallyHidden.text"))
-          ),
-          answerRow(
-            label = messages("individual.phone.title"),
-            answer = Seq("1234567890"),
-            changeUrl = Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(CheckMode).url)),
-            visuallyHiddenLabel = Some(Message("individualPhone.visuallyHidden.text"))
-          )
-        )
-
-        val sections = Seq(AnswerSection(None, rows))
-
-        val retrievalAction = dataRetrievalAction(
-          "individualContactDetails" -> Json.obj(
-            IndividualPhoneId.toString -> "1234567890",
-            IndividualEmailId.toString -> "test@email"
-          )
-        )
-
-        testRenderedView(
-          sections = sections, dataRetrievalAction = retrievalAction
-        )
       }
     }
 
@@ -214,7 +159,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private def fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
-
   private def controller(getData: DataRetrievalAction = getIndividual): CheckYourAnswersController = {
     new CheckYourAnswersController(
       appConfig = frontendAppConfig,
@@ -224,7 +168,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       requireData = new DataRequiredActionImpl(),
       navigator = fakeNavigator,
       messagesApi = messagesApi,
-      checkYourAnswersFactory = checkYourAnswersFactory,
+      countryOptions = countryOptions,
       controllerComponents = stubMessagesControllerComponents(),
       view = cyaView
     )
@@ -238,7 +182,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
 
   private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
-                        changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message]= None): AnswerRow = {
+                        changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message] = None): AnswerRow = {
     AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
 
@@ -255,7 +199,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         sections,
         postUrl,
         None,
-        NormalMode
+        NormalMode,
+        Nil
       )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
   }
 }

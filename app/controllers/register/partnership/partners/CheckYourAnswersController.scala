@@ -24,13 +24,13 @@ import identifiers.register.partnership.partners._
 import javax.inject.Inject
 import models.Mode.checkMode
 import models._
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.Navigator
 import utils.annotations.PartnershipPartner
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
-import utils.{Navigator, SectionComplete}
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
@@ -42,7 +42,6 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            @PartnershipPartner navigator: Navigator,
-                                           sectionComplete: SectionComplete,
                                            implicit val countryOptions: CountryOptions,
                                            override val cacheConnector: UserAnswersCacheConnector,
                                            val controllerComponents: MessagesControllerComponents,

@@ -19,12 +19,10 @@ package controllers.register.partnership.partners
 import java.time.LocalDate
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import controllers.register.partnership.partners.routes._
 import identifiers.register.DirectorsOrPartnersChangedId
-import identifiers.register.partnership.partners._
 import models.Mode.{checkMode, _}
 import models._
 import play.api.mvc.Call
@@ -37,16 +35,27 @@ import views.html.check_your_answers
 
 class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
 
+  private val address = Address("line1", "line2", None, None, Some("zz11zz"), "country")
   private val email = "test@test.com"
   private val phone = "1234"
   private val index = Index(0)
   private val partnerDetails = PersonName("Test", "Name")
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val defaultPartnerName = Message("thePartner").resolve
+  private val nino = ReferenceValue("AB100100A")
+  private val reason = "test reason"
+  private val utr = ReferenceValue("1111111111")
+  private val addressYears = AddressYears.UnderAYear
+  private val dob = LocalDate.now().minusYears(20)
+
+  private val completeUserAnswers = UserAnswers().partnerName(index = 0, partnerDetails).
+    partnerDob(index = 0, dob).
+    partnerHasNINO(index = 0, flag = true).partnerEnterNINO(index = 0, nino).partnerNoNINOReason(index = 0, reason).
+    partnerHasUTR(index = 0, flag = true).partnerEnterUTR(index = 0, utr).partnerNoUTRReason(index = 0, reason = reason).
+    partnerAddress(index, address).partnerAddressYears(index, addressYears).partnerPreviousAddress(index, address).
+    partnerEmail(index = 0, email).partnerPhone(index = 0, phone)
 
   private def call(mode: Mode): Call = CheckYourAnswersController.onSubmit(index, mode)
-
-  private val address = Address("line1", "line2", None, None, Some("zz11zz"), "country")
 
   private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
                         changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message] = None): AnswerRow = {
@@ -60,36 +69,21 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
     "on a GET" must {
 
       Seq(NormalMode, UpdateMode).foreach { mode =>
-        s"render the view correctly for name and dob in ${jsLiteral.to(mode)}" in {
-          val retrievalAction = UserAnswers().set(PartnerNameId(index))(partnerDetails).flatMap(
-            _.set(PartnerDOBId(0))(LocalDate.now)).asOpt.value.dataRetrievalAction
+        s"render the view correctly for all the rows of answer section in ${jsLiteral.to(mode)}" in {
+          val retrievalAction = completeUserAnswers.dataRetrievalAction
           val rows = Seq(
-            AnswerRow(
-              "partnerName.cya.label",
-              Seq(s"${partnerDetails.firstName} ${partnerDetails.lastName}"),
-              answerIsMessageKey = false,
-              Some(Link(routes.PartnerNameController.onPageLoad(checkMode(mode), index).url)),
-              Some(Message("partnerName.visuallyHidden.text"))
+            answerRow(
+              label = "partnerName.cya.label",
+              answer = Seq(s"${partnerDetails.firstName} ${partnerDetails.lastName}"),
+              changeUrl = Some(Link(routes.PartnerNameController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("partnerName.visuallyHidden.text"))
             ),
-            AnswerRow(
-              messages("dob.heading", partnerDetails.fullName),
-              Seq(s"${DateHelper.formatDate(LocalDate.now)}"),
-              answerIsMessageKey = false,
-              Some(Link(PartnerDOBController.onPageLoad(checkMode(mode), index).url)),
-              Some(Message("dob.visuallyHidden.text", partnerDetails.fullName))
-            ))
-          val sections = Seq(AnswerSection(None, rows))
-          testRenderedView(
-            sections = sections, dataRetrievalAction = retrievalAction, mode = mode
-          )
-        }
-
-        s"render the view correctly for nino in ${jsLiteral.to(mode)}" in {
-          val nino = ReferenceValue("AB100100A")
-          val reason = "test reason"
-          val retrievalAction = UserAnswers().partnerHasNINO(index, flag = true).partnerEnterNINO(index, nino)
-            .partnerNoNINOReason(index, reason).dataRetrievalAction
-          val rows = Seq(
+            answerRow(
+              label = messages("dob.heading", partnerDetails.fullName),
+              answer = Seq(s"${DateHelper.formatDate(dob)}"),
+              changeUrl = Some(Link(PartnerDOBController.onPageLoad(checkMode(mode), index).url)),
+              visuallyHiddenLabel = Some(Message("dob.visuallyHidden.text", partnerDetails.fullName))
+            ),
             answerRow(
               label = messages("hasNINO.heading", defaultPartnerName),
               answer = Seq("site.yes"),
@@ -108,22 +102,7 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
               answer = Seq(reason),
               changeUrl = Some(Link(PartnerNoNINOReasonController.onPageLoad(checkMode(mode), index).url)),
               visuallyHiddenLabel = Some(Message("whyNoNINO.visuallyHidden.text", defaultPartnerName))
-            )
-          )
-
-          val sections = Seq(AnswerSection(None, rows))
-
-          testRenderedView(
-            sections = sections, dataRetrievalAction = retrievalAction, mode = mode
-          )
-        }
-
-        s"render the view correctly for utr in ${jsLiteral.to(mode)}" in {
-          val utr = ReferenceValue("1111111111")
-          val reason = "test reason"
-          val retrievalAction = UserAnswers().partnerHasUTR(index, flag = true).partnerEnterUTR(index, utr)
-            .partnerNoUTRReason(index, reason).dataRetrievalAction
-          val rows = Seq(
+            ),
             answerRow(
               label = messages("hasUTR.heading", defaultPartnerName),
               answer = Seq("site.yes"),
@@ -142,21 +121,7 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
               answer = Seq(reason),
               changeUrl = Some(Link(PartnerNoUTRReasonController.onPageLoad(checkMode(mode), index).url)),
               visuallyHiddenLabel = Some(Message("whyNoUTR.visuallyHidden.text", defaultPartnerName))
-            )
-          )
-
-          val sections = Seq(AnswerSection(None, rows))
-
-          testRenderedView(
-            sections = sections, dataRetrievalAction = retrievalAction, mode = mode
-          )
-        }
-
-        s"render the view correctly for address in ${jsLiteral.to(mode)}" in {
-          val addressYears = AddressYears.UnderAYear
-          val retrievalAction = UserAnswers().partnerAddress(index, address).partnerAddressYears(index, addressYears)
-            .partnerPreviousAddress(index, address).dataRetrievalAction
-          val rows = Seq(
+            ),
             answerRow(Message("address.checkYourAnswersLabel", defaultPartnerName),
               Seq(
                 address.addressLine1,
@@ -182,20 +147,8 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
               ),
               answerIsMessageKey = false,
               Some(Link(PartnerPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url)),
-              visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultPartnerName)))
-          )
-
-          val sections = Seq(AnswerSection(None, rows))
-
-          testRenderedView(
-            sections = sections, dataRetrievalAction = retrievalAction, mode = mode
-          )
-        }
-
-        s"render the view correctly for email and phone in ${jsLiteral.to(mode)}" in {
-          val retrievalAction = UserAnswers().set(PartnerEmailId(index))(email).flatMap(
-            _.set(PartnerPhoneId(index))(phone)).asOpt.value.dataRetrievalAction
-          val rows = Seq(
+              visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultPartnerName))
+            ),
             answerRow(
               label = messages("email.title", defaultPartnerName),
               answer = Seq(email),
@@ -209,12 +162,10 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
               visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultPartnerName))
             )
           )
-
           val sections = Seq(AnswerSection(None, rows))
 
           testRenderedView(
-            sections = sections, dataRetrievalAction = retrievalAction, mode = mode
-          )
+            sections, retrievalAction, mode = mode)
         }
       }
     }
@@ -225,7 +176,6 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
         val result = controller().onSubmit(index, NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        FakeSectionComplete.verify(IsPartnerCompleteId(index), value = true)
         FakeUserAnswersCacheConnector.verifyNot(DirectorsOrPartnersChangedId)
       }
 
@@ -246,19 +196,20 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeNavigator,
-      FakeSectionComplete,
       countryOptions,
       FakeUserAnswersCacheConnector,
       stubMessagesControllerComponents(),
       view
     )
 
-  private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction, mode: Mode = NormalMode): Unit = {
+  private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction,
+                               mode: Mode = NormalMode): Unit = {
     val result = controller(dataRetrievalAction).onPageLoad(index, mode)(fakeRequest)
     val expectedResult = view(sections,
       call(mode),
       None,
-      mode
+      mode,
+      Nil
     )(fakeRequest, messages).toString()
 
     status(result) mustBe OK
