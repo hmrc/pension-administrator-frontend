@@ -61,14 +61,15 @@ class CheckYourAnswersController @Inject()(
         IndividualDateOfBirthId.row(Some(Link(IndividualDateOfBirthController.onPageLoad(checkMode(mode)).url))),
         IndividualAddressId.row(None),
         IndividualSameContactAddressId.row(Some(Link(IndividualSameContactAddressController.onPageLoad(checkMode(mode)).url))),
-        IndividualContactAddressId.row(None),
+        IndividualContactAddressId.row(Some(Link(IndividualContactAddressPostCodeLookupController.onPageLoad(checkMode(mode)).url))),
         IndividualAddressYearsId.row(Some(Link(IndividualAddressYearsController.onPageLoad(checkMode(mode)).url))),
-        IndividualPreviousAddressId.row(Some(Link(IndividualPreviousAddressController.onPageLoad(checkMode(mode)).url))),
+        IndividualPreviousAddressId.row(Some(Link(
+          controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode)).url))),
         IndividualEmailId.row(Some(Link(IndividualEmailController.onPageLoad(checkMode(mode)).url))),
         IndividualPhoneId.row(Some(Link(IndividualPhoneController.onPageLoad(checkMode(mode)).url)))
       ).flatten)
       val sections = Seq(individualDetails)
-      Ok(view(sections, postUrl, None, mode))
+      Ok(view(sections, postUrl, None, mode, request.userAnswers.getIncompleteIndividualDetails))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {

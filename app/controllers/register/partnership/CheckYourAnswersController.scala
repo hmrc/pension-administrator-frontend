@@ -70,7 +70,8 @@ class CheckYourAnswersController @Inject()(
         Seq(partnershipDetails),
         controllers.register.partnership.routes.CheckYourAnswersController.onSubmit(),
         None,
-        mode
+        mode,
+        request.userAnswers.getIncompletePartnershipDetails
       ))
   }
 

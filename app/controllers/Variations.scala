@@ -93,7 +93,7 @@ trait Variations extends FrontendBaseController {
     result.fold(doNothing)(identity)
   }
 
-  def setCompleteFlagForExistingDirOrPartners(mode: Mode, inputId: TypedIdentifier[Address],
+  /*def setCompleteFlagForExistingDirOrPartners(mode: Mode, inputId: TypedIdentifier[Address],
                                               userAnswers: UserAnswers)(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
     (mode, inputId) match {
       case (UpdateMode, DirectorPreviousAddressId(index)) =>
@@ -103,7 +103,7 @@ trait Variations extends FrontendBaseController {
       case _ =>
         doNothing
     }
-  }
+  }*/
 
   private def setCompleteFlag(userAnswers: UserAnswers, id: TypedIdentifier[PersonName],
                                     index: Int, completeId: TypedIdentifier[Boolean])

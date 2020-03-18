@@ -31,7 +31,7 @@ case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
 
   override def cleanup(value: Option[AddressYears], userAnswers: UserAnswers): JsResult[UserAnswers] = value match {
     case Some(OverAYear) =>
-      userAnswers.set(PartnershipPreviousAddressChangedId)(true).asOpt.getOrElse(userAnswers)
+      userAnswers.set(PartnershipPreviousAddressChangedId)(value = true).asOpt.getOrElse(userAnswers)
         .removeAllOf(List(PartnershipPreviousAddressPostCodeLookupId, PartnershipPreviousAddressListId,
           PartnershipPreviousAddressId, PartnershipTradingOverAYearId))
     case _ => super.cleanup(value, userAnswers)
@@ -40,12 +40,19 @@ case object PartnershipAddressYearsId extends TypedIdentifier[AddressYears] {
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswersPartnership[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "addressYears.heading")
+        dynamicMessage(ua, messageKey = "addressYears.heading")
 
       private def hiddenLabel(ua: UserAnswers): Message =
-        dynamicMessage(ua, "addressYears.visuallyHidden.text")
+        dynamicMessage(ua, messageKey = "addressYears.visuallyHidden.text")
 
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        AddressYearsCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        userAnswers.get(PartnershipContactAddressId) match {
+          case Some(_) =>
+            AddressYearsCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+          case _ =>
+            AddressYearsCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
+
+      }
     }
 }

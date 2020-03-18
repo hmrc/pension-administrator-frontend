@@ -39,9 +39,15 @@ object PartnerNoNINOReasonId {
       private def hiddenLabel(ua: UserAnswers, index: Index): Message =
         dynamicMessage(ua, messageKey = "whyNoNINO.visuallyHidden.text", index)
 
-
       override def row(id: PartnerNoNINOReasonId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[PartnerNoNINOReasonId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+        userAnswers.get(HasPartnerNINOId(id.index)) match {
+          case Some(false) =>
+            StringCYA[PartnerNoNINOReasonId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().
+              row(id)(changeUrl, userAnswers)
+          case _ =>
+            StringCYA[PartnerNoNINOReasonId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)), isMandatory = false)().
+              row(id)(changeUrl, userAnswers)
+        }
     }
 }
 

@@ -21,10 +21,10 @@ import identifiers.TypedIdentifier
 import identifiers.register._
 import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import identifiers.register.company._
-import identifiers.register.company.directors.{DirectorNameId, IsDirectorCompleteId}
+import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual._
 import identifiers.register.partnership._
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
+import identifiers.register.partnership.partners.PartnerNameId
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import play.api.libs.json._
@@ -65,7 +65,7 @@ case class UserAnswers(json: JsValue = Json.obj()) extends DataCompletion {
       if (director.isDeleted) {
         Seq.empty
       } else {
-        val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
+        val isComplete = isDirectorComplete(index)
         val editUrl = if (isComplete) {
           routes.CheckYourAnswersController.onPageLoad(mode, Index(index)).url
         } else {
@@ -102,7 +102,7 @@ case class UserAnswers(json: JsValue = Json.obj()) extends DataCompletion {
       if (partner.isDeleted) {
         Seq.empty
       } else {
-        val isComplete = get(IsPartnerCompleteId(index)).getOrElse(false)
+        val isComplete = isPartnerComplete(index)
         val editUrl = if (isComplete) {
           controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
         } else {

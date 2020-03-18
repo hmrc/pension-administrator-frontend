@@ -73,16 +73,15 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
         answersSection,
         routes.CheckYourAnswersController.onSubmit(index, mode),
         psaName(),
-        mode))
+        mode,
+        request.userAnswers.getIncompletePartnerDetails(index)))
       )
   }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) flatMap { _ =>
-        saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
-          Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
-        }
+      saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
+        Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
       }
   }
 }

@@ -25,7 +25,7 @@ import identifiers.register.company.directors._
 import javax.inject.Inject
 import models.Mode.checkMode
 import models.{Mode, _}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.CompanyDirector
@@ -81,10 +81,8 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      sectionComplete.setComplete(IsDirectorCompleteId(index), request.userAnswers) flatMap { _ =>
-        saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
-          Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
-        }
+      saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
+        Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
       }
   }
 }

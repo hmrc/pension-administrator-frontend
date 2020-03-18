@@ -17,11 +17,11 @@
 package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
-import models.Address
+import models.{Address, AddressYears}
 import play.api.i18n.Messages
-import utils.{UserAnswers, checkyouranswers}
-import utils.checkyouranswers.{AddressCYA, CheckYourAnswers, CheckYourAnswersBusiness}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersBusiness}
 import utils.countryOptions.CountryOptions
+import utils.{UserAnswers, checkyouranswers}
 import viewmodels.{AnswerRow, Link, Message}
 
 case object PartnershipPreviousAddressId extends TypedIdentifier[Address] {
@@ -31,13 +31,18 @@ case object PartnershipPreviousAddressId extends TypedIdentifier[Address] {
   implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[self.type] =
     new CheckYourAnswersBusiness[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "previousAddress.checkYourAnswersLabel")
+        dynamicMessage(ua, messageKey = "previousAddress.checkYourAnswersLabel")
 
       private def hiddenLabel(ua: UserAnswers): Message =
-        dynamicMessage(ua, "previousAddress.visuallyHidden.text")
+        dynamicMessage(ua, messageKey = "previousAddress.visuallyHidden.text")
 
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        checkyouranswers.AddressCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+        (userAnswers.get(PartnershipAddressYearsId), userAnswers.get(PartnershipTradingOverAYearId), userAnswers.get(PartnershipPreviousAddressId)) match {
+          case (Some(AddressYears.UnderAYear), Some(true) | None, None) =>
+            checkyouranswers.AddressCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+          case _ =>
+            checkyouranswers.AddressCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
       }
     }
 }

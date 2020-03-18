@@ -44,8 +44,14 @@ object PartnerEnterUTRId {
 
 
       override def row(id: PartnerEnterUTRId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        ReferenceValueCYA[PartnerEnterUTRId](Some(label(userAnswers, id.index)),
-          Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+        userAnswers.get(HasPartnerUTRId(id.index)) match {
+          case Some(true) =>
+            ReferenceValueCYA[PartnerEnterUTRId](Some(label(userAnswers, id.index)),
+              Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+          case _ =>
+            ReferenceValueCYA[PartnerEnterUTRId](Some(label(userAnswers, id.index)),
+              Some(hiddenLabel(userAnswers, id.index)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
     }
 }
 

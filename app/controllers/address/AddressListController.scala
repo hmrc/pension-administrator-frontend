@@ -69,9 +69,7 @@ trait AddressListController extends FrontendBaseController with I18nSupport with
           cacheMap =>
             saveChangeFlag(mode, addressId).flatMap {
               _ =>
-                setCompleteFlagForExistingDirOrPartners(mode, addressId, UserAnswers(cacheMap)).map { _ =>
-                  Redirect(navigator.nextPage(addressId, mode, UserAnswers(cacheMap)))
-                }
+                Future.successful(Redirect(navigator.nextPage(addressId, mode, UserAnswers(cacheMap))))
             }
         }
       }

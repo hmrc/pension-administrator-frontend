@@ -31,7 +31,13 @@ case object IndividualContactAddressId extends TypedIdentifier[Address] {
   implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[self.type] =
     new CheckYourAnswers[self.type] {
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        checkyouranswers.AddressCYA[self.type](label = "cya.label.individual.contact.address", None)().row(id)(changeUrl, userAnswers)
+        userAnswers.get(id) match {
+          case Some(_) =>
+            checkyouranswers.AddressCYA[self.type](label = "cya.label.individual.contact.address", None)().row(id)(None, userAnswers)
+          case _ =>
+            checkyouranswers.AddressCYA[self.type](label = "cya.label.individual.contact.address", None)().row(id)(changeUrl, userAnswers)
+        }
+
       }
     }
 

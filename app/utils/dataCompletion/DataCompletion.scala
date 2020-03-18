@@ -20,6 +20,9 @@ import identifiers._
 import identifiers.register._
 import identifiers.register.company._
 import identifiers.register.company.directors._
+import identifiers.register.individual._
+import identifiers.register.partnership._
+import identifiers.register.partnership.partners._
 import models._
 import play.api.libs.json.Reads
 import utils.UserAnswers
@@ -67,7 +70,9 @@ trait DataCompletion {
       case (None, _) => Left(Message(s"incomplete.${lastPath(currentAddressId)}"))
       case (Some(_), Some(AddressYears.UnderAYear)) =>
         (get(previousAddressId), tradingTime) match {
-          case (Some(_), Some(tradingTimeId)) if get(tradingTimeId).contains(true) =>
+          case (Some(_), Some(tradingTimeId)) if get(tradingTimeId).isEmpty | get(tradingTimeId).contains(true) =>
+            Right(true)
+          case (Some(_), None) =>
             Right(true)
           case (_, Some(tradingTimeId)) if get(tradingTimeId).contains(false) =>
             Right(true)
@@ -86,6 +91,7 @@ trait DataCompletion {
       case (_, Some(_), _) => Right(true)
       case (_, _, Some(noReasonId)) if get(noReasonId).isDefined => Right(true)
       case (Some(false), _, None) => Right(true)
+      case (Some(false), _, Some(noReasonId)) if get(noReasonId).isEmpty => Left(Message(s"incomplete.${lastPath(noReasonId)}"))
       case _ => Left(Message(s"incomplete.${lastPath(yesValueId)}"))
     }
 
@@ -115,6 +121,20 @@ trait DataCompletion {
     )
   }
 
+  def getIncompletePartnershipDetails: Seq[Message] = {
+    isCompleteNew(
+      Seq(
+        isAnswerComplete(BusinessNameId),
+        isAnswerComplete(BusinessUTRId),
+        isAnswerComplete(HasPAYEId, EnterPAYEId, None),
+        isAnswerComplete(HasVATId, EnterVATId, None),
+        isAddressComplete(PartnershipContactAddressId, PartnershipPreviousAddressId, PartnershipAddressYearsId, Some(PartnershipTradingOverAYearId)),
+        isAnswerComplete(PartnershipEmailId),
+        isAnswerComplete(PartnershipPhoneId)
+      )
+    )
+  }
+
   def getIncompleteDirectorDetails(index: Int): Seq[Message] = {
     isCompleteNew(
       Seq(
@@ -125,6 +145,42 @@ trait DataCompletion {
         isAddressComplete(DirectorAddressId(index), DirectorPreviousAddressId(index), DirectorAddressYearsId(index), None),
         isAnswerComplete(DirectorEmailId(index)),
         isAnswerComplete(DirectorPhoneId(index))
+      )
+    )
+  }
+
+  def getIncompletePartnerDetails(index: Int): Seq[Message] = {
+    isCompleteNew(
+      Seq(
+        isAnswerComplete(PartnerNameId(index)),
+        isAnswerComplete(PartnerDOBId(index)),
+        isAnswerComplete(HasPartnerNINOId(index), PartnerEnterNINOId(index), Some(PartnerNoNINOReasonId(index))),
+        isAnswerComplete(HasPartnerUTRId(index), PartnerEnterUTRId(index), Some(PartnerNoUTRReasonId(index))),
+        isAddressComplete(PartnerAddressId(index), PartnerPreviousAddressId(index), PartnerAddressYearsId(index), None),
+        isAnswerComplete(PartnerEmailId(index)),
+        isAnswerComplete(PartnerPhoneId(index))
+      )
+    )
+  }
+
+  def isPartnerComplete(index: Int): Boolean = {
+    getIncompletePartnerDetails(index).isEmpty
+  }
+
+  def isDirectorComplete(index: Int): Boolean = {
+    getIncompleteDirectorDetails(index).isEmpty
+  }
+
+  def getIncompleteIndividualDetails: Seq[Message] = {
+    isCompleteNew(
+      Seq(
+        isAnswerComplete(IndividualDetailsId),
+        isAnswerComplete(IndividualDateOfBirthId),
+        isAnswerComplete(IndividualAddressId),
+        isAnswerComplete(IndividualSameContactAddressId),
+        isAddressComplete(IndividualContactAddressId, IndividualPreviousAddressId, IndividualAddressYearsId, None),
+        isAnswerComplete(IndividualEmailId),
+        isAnswerComplete(IndividualPhoneId)
       )
     )
   }

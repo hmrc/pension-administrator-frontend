@@ -17,12 +17,12 @@
 package identifiers.register.partnership.partners
 
 import identifiers._
-import models.{Address, Index}
+import models.{Address, AddressYears, Index}
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
-import utils.UserAnswers
-import utils.checkyouranswers.{AddressCYA, CheckYourAnswers, CheckYourAnswersPartner}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersPartner}
 import utils.countryOptions.CountryOptions
+import utils.{UserAnswers, checkyouranswers}
 import viewmodels.{AnswerRow, Link, Message}
 
 case class PartnerPreviousAddressId(index: Int) extends TypedIdentifier[Address] {
@@ -42,8 +42,14 @@ object PartnerPreviousAddressId {
         dynamicMessage(ua, messageKey = "previousAddress.visuallyHidden.text", index)
 
       override def row(id: PartnerPreviousAddressId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
-        AddressCYA[PartnerPreviousAddressId](label(userAnswers, id.index),
-          Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+        (userAnswers.get(PartnerAddressYearsId(id.index)), userAnswers.get(PartnerPreviousAddressId(id.index))) match {
+          case (Some(AddressYears.UnderAYear), None) =>
+            checkyouranswers.AddressCYA[PartnerPreviousAddressId](label(userAnswers, id.index),
+              Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+          case _ =>
+            checkyouranswers.AddressCYA[PartnerPreviousAddressId](label(userAnswers, id.index),
+              Some(hiddenLabel(userAnswers, id.index)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
       }
     }
 
