@@ -17,11 +17,22 @@
 package identifiers.register.individual
 
 import identifiers.TypedIdentifier
+import play.api.i18n.Messages
 import play.api.libs.json.JsResult
 import utils.UserAnswers
+import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers}
+import viewmodels.{AnswerRow, Link}
 
 case object IndividualSameContactAddressId extends TypedIdentifier[Boolean] {
+  self =>
   override def toString: String = "individualSameContactAddress"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
+    new CheckYourAnswers[self.type] {
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        BooleanCYA[self.type](Some("cya.label.individual.same.contact.address"),
+          Some("individualContactAddress.visuallyHidden.text"))().row(id)(changeUrl, userAnswers)
+    }
 
   override def cleanup(value: Option[Boolean], answers: UserAnswers): JsResult[UserAnswers] = {
     answers

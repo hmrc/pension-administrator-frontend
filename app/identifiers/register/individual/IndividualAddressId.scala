@@ -18,7 +18,20 @@ package identifiers.register.individual
 
 import identifiers.TypedIdentifier
 import models.TolerantAddress
+import play.api.i18n.Messages
+import utils.checkyouranswers.CheckYourAnswers
+import utils.countryOptions.CountryOptions
+import utils.{UserAnswers, checkyouranswers}
+import viewmodels.{AnswerRow, Link}
 
 case object IndividualAddressId extends TypedIdentifier[TolerantAddress] {
+  self =>
   override def toString: String = "individualAddress"
+
+  implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[self.type] =
+    new CheckYourAnswers[self.type] {
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        checkyouranswers.TolerantAddressCYA[self.type](label = "individualDetailsCorrect.address", None)().row(id)(changeUrl, userAnswers)
+      }
+    }
 }

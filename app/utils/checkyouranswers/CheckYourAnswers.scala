@@ -70,11 +70,40 @@ object CheckYourAnswers {
 
   implicit def date[I <: TypedIdentifier[LocalDate]](implicit rds: Reads[LocalDate], messages: Messages): CheckYourAnswers[I] = DateCYA()()
 
+  implicit def tolerantIndividual[I <: TypedIdentifier[TolerantIndividual]]
+  (implicit rds: Reads[TolerantIndividual], messages: Messages): CheckYourAnswers[I] = TolerantIndividualCYA()()
+
 }
 
 case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None,
                                                      isMandatory: Boolean = true) {
   def apply()(implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = {
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        userAnswers.get(id).map { address =>
+          Seq(AnswerRow(
+            label,
+            address.lines(countryOptions),
+            answerIsMessageKey = false,
+            changeUrl,
+            visuallyHiddenText = hiddenLabel
+          ))
+        } getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(label, Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
+      }
+    }
+  }
+}
+
+case class TolerantAddressCYA[I <: TypedIdentifier[TolerantAddress]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None,
+                                                     isMandatory: Boolean = true) {
+  def apply()(implicit rds: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
         userAnswers.get(id).map { address =>
@@ -228,6 +257,31 @@ case class DateCYA[I <: TypedIdentifier[LocalDate]](label: Option[String] = None
             Seq(AnswerRow(
               label getOrElse s"${id.toString}.heading",
               answer = Seq(DateHelper.formatDate(date)),
+              answerIsMessageKey = false,
+              changeUrl = changeUrl,
+              visuallyHiddenText = hiddenLabel
+            ))
+        } getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(label getOrElse s"${id.toString}.checkYourAnswersLabel", Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
+    }
+}
+
+case class TolerantIndividualCYA[I <: TypedIdentifier[TolerantIndividual]](label: Option[String] = None,
+                                                                           hiddenLabel: Option[Message] = None, isMandatory: Boolean = true) {
+  def apply()(implicit rds: Reads[TolerantIndividual]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          individual =>
+            Seq(AnswerRow(
+              label getOrElse s"${id.toString}.heading",
+              answer = Seq(individual.fullName),
               answerIsMessageKey = false,
               changeUrl = changeUrl,
               visuallyHiddenText = hiddenLabel
