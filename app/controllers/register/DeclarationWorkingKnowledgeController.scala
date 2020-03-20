@@ -25,7 +25,7 @@ import javax.inject.Inject
 import models.Mode
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Register
@@ -41,7 +41,6 @@ class DeclarationWorkingKnowledgeController @Inject()(
                                                        authenticate: AuthAction,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
-                                                       allowDeclaration: AllowDeclarationActionProvider,
                                                        formProvider: DeclarationWorkingKnowledgeFormProvider,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        val view: declarationWorkingKnowledge
@@ -49,7 +48,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen allowDeclaration(mode) andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.get(DeclarationWorkingKnowledgeId) match {
         case None => form
@@ -58,7 +57,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen allowDeclaration(mode) andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>

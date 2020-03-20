@@ -213,7 +213,7 @@ class CheckYourAnswersControllerSpec extends ControllerWithCommonBehaviour {
       call(mode),
       None,
       mode,
-      Nil
+      isComplete = true
     )(fakeRequest, messages).toString()
 
     status(result) mustBe OK

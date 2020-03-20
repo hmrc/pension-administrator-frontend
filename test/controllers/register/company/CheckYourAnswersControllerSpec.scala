@@ -19,7 +19,6 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions._
 import models._
-import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -194,21 +193,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   private def call: Call = controllers.register.company.routes.CheckYourAnswersController.onSubmit()
 
-  private def answerSections(sectionLabel: Option[String] = None, rows: Seq[AnswerRow]): Seq[AnswerSection] = {
-    val section = AnswerSection(sectionLabel, rows)
-    Seq(section)
-  }
-
   private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
                         changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message] = None): AnswerRow = {
     AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
-
-  private def dataRetrievalAction(fields: (String, Json.JsValueWrapper)*): DataRetrievalAction = {
-    val data = Json.obj(fields: _*)
-    new FakeDataRetrievalAction(Some(data))
-  }
-
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -217,7 +205,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       call,
       None,
       NormalMode,
-      Nil
+      isComplete = true
     )(fakeRequest, messages).toString()
 
     status(result) mustBe OK

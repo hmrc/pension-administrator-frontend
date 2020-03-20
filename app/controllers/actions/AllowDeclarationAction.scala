@@ -17,10 +17,10 @@
 package controllers.actions
 
 import com.google.inject.Inject
-import identifiers.register.{BusinessTypeId, RegisterAsBusinessId}
+import identifiers.register.RegistrationInfoId
 import models.Mode
-import models.register.BusinessType
-import models.requests.{DataRequest, OptionalDataRequest}
+import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
+import models.requests.OptionalDataRequest
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 import utils.UserAnswers
@@ -32,18 +32,18 @@ class AllowDeclarationAction(mode: Mode)(implicit val executionContext: Executio
   override protected def filter[A](request: OptionalDataRequest[A]): Future[Option[Result]] = {
     val userAnswers = request.userAnswers.getOrElse(UserAnswers())
 
-    val isComplete = if (userAnswers.get(RegisterAsBusinessId).contains(true)) {
-      userAnswers.get(BusinessTypeId) match {
-        case Some(BusinessType.LimitedCompany | BusinessType.UnlimitedCompany) =>
-          userAnswers.isCompanyComplete(mode)
-        case _ =>
-          userAnswers.isPartnershipComplete(mode)
-      }
-    } else {
-      userAnswers.isIndividualComplete
+    val isComplete = userAnswers.get(RegistrationInfoId).map(_.legalStatus) match {
+      case Some(Individual) =>
+        userAnswers.isIndividualComplete(mode)
+      case Some(LimitedCompany) =>
+        userAnswers.isCompanyComplete(mode)
+      case Some(Partnership) =>
+        userAnswers.isPartnershipComplete(mode)
+      case _ =>
+        true
     }
 
-    if (isComplete) {
+    if (isComplete && !userAnswers.isAdviserIncomplete) {
       Future(None)
     } else {
       Future.successful(Some(Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())))

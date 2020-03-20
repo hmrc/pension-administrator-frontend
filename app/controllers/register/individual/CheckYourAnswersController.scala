@@ -67,7 +67,7 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      val isDataComplete = request.userAnswers.getIncompleteIndividualDetails.isEmpty
+      val isDataComplete = request.userAnswers.isIndividualComplete(mode)
       if (isDataComplete) {
         Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
       } else {
@@ -89,7 +89,7 @@ class CheckYourAnswersController @Inject()(
       IndividualPhoneId.row(Some(Link(IndividualPhoneController.onPageLoad(checkMode(mode)).url)))
     ).flatten)
     val sections = Seq(individualDetails)
-    Ok(view(sections, postUrl, None, mode, request.userAnswers.getIncompleteIndividualDetails))
+    Ok(view(sections, postUrl, None, mode, request.userAnswers.isIndividualComplete(mode)))
   }
 }
 

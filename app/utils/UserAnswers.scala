@@ -222,21 +222,20 @@ case class UserAnswers(json: JsValue = Json.obj()) extends DataCompletion {
     def incompleteDetails: Boolean =
       get(RegistrationInfoId).map(_.legalStatus) match {
         case Some(Individual) =>
-          !isIndividualComplete
+          !isIndividualComplete(UpdateMode)
         case Some(LimitedCompany) =>
           allDirectorsAfterDelete(UpdateMode).exists(!_.isComplete) |
-            getIncompleteCompanyDetails(UpdateMode).nonEmpty
+            !isCompanyDetailsComplete(UpdateMode)
         case Some(Partnership) =>
-          getIncompletePartnershipDetails.nonEmpty |
+          !isPartnershipDetailsComplete |
             allPartnersAfterDelete(UpdateMode).exists(!_.isComplete)
         case _ =>
           true
       }
-
     isAdviserIncomplete | incompleteDetails
   }
 
-  private def isAdviserIncomplete: Boolean = {
+  def isAdviserIncomplete: Boolean = {
     if (get(VariationWorkingKnowledgeId).contains(true)) {
       false
     } else {

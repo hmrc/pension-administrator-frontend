@@ -47,12 +47,18 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val adviserName = AdviserNameId.row(Some(Link(routes.AdviserNameController.onPageLoad(checkMode(mode)).url)))
-      val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressPostCodeLookupController.onPageLoad(checkMode(mode)).url)))
-      val details = AdviserEmailId.row(Some(Link(routes.AdviserEmailController.onPageLoad(checkMode(mode)).url))) ++
-        AdviserPhoneId.row(Some(Link(routes.AdviserPhoneController.onPageLoad(checkMode(mode)).url)))
-      val sections = Seq(AnswerSection(None, adviserName ++ address ++ details))
-      Ok(view(sections, routes.CheckYourAnswersController.onSubmit(mode), psaName(), mode))
+      request.userAnswers.get(AdviserNameId) match {
+        case Some(_) =>
+          val adviserName = AdviserNameId.row(Some(Link(routes.AdviserNameController.onPageLoad(checkMode(mode)).url)))
+          val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressPostCodeLookupController.onPageLoad(checkMode(mode)).url)))
+          val details = AdviserEmailId.row(Some(Link(routes.AdviserEmailController.onPageLoad(checkMode(mode)).url))) ++
+            AdviserPhoneId.row(Some(Link(routes.AdviserPhoneController.onPageLoad(checkMode(mode)).url)))
+          val sections = Seq(AnswerSection(None, adviserName ++ address ++ details))
+          Ok(view(sections, routes.CheckYourAnswersController.onSubmit(mode), psaName(), mode, !request.userAnswers.isAdviserIncomplete))
+        case _ =>
+          Redirect(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(mode))
+      }
+
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {

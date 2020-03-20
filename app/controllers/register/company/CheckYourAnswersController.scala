@@ -60,7 +60,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val isDataComplete = request.userAnswers.getIncompleteCompanyDetails(mode).isEmpty
+      val isDataComplete = request.userAnswers.isCompanyDetailsComplete(mode)
       if (isDataComplete) {
         Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
       } else {
@@ -98,7 +98,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       controllers.register.company.routes.CheckYourAnswersController.onSubmit(),
       None,
       mode,
-      request.userAnswers.getIncompleteCompanyDetails(mode)
+      request.userAnswers.isCompanyDetailsComplete(mode)
     ))
   }
 }

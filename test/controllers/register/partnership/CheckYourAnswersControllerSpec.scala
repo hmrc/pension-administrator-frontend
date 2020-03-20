@@ -19,7 +19,6 @@ package controllers.register.partnership
 import controllers.ControllerSpecBase
 import controllers.actions._
 import models._
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
@@ -193,11 +192,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
 
-  private def dataRetrievalAction(fields: (String, Json.JsValueWrapper)*): DataRetrievalAction = {
-    val data = Json.obj(fields: _*)
-    new FakeDataRetrievalAction(Some(data))
-  }
-
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
     val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
     status(result) mustBe OK
@@ -206,7 +200,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         sections,
         call,
         None,
-        NormalMode
+        NormalMode,
+        isComplete = true
       )(fakeRequest, messages).toString()
   }
 }

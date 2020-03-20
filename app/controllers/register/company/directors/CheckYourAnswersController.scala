@@ -65,7 +65,7 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val isDataComplete = request.userAnswers.getIncompleteDirectorDetails(index).isEmpty
+      val isDataComplete = request.userAnswers.isDirectorComplete(index)
       if (isDataComplete) {
         saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
           Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
@@ -98,7 +98,7 @@ class CheckYourAnswersController @Inject()(
       controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
       psaName(),
       mode,
-      request.userAnswers.getIncompleteDirectorDetails(index)
+      request.userAnswers.isDirectorComplete(index)
     )))
   }
 }

@@ -33,12 +33,13 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
 
   val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
-  def createView(mode: Mode = NormalMode): () => HtmlFormat.Appendable = () =>
+  def createView(mode: Mode = NormalMode, isComplete: Boolean = true): () => HtmlFormat.Appendable = () =>
     view(
       emptyAnswerSections,
       fakeCall,
       Some("test psa"),
-      mode
+      mode,
+      isComplete
     )(fakeRequest, messagesApi.preferred(fakeRequest))
 
   def createViewWithData: Seq[Section] => HtmlFormat.Appendable = sections =>
@@ -46,7 +47,8 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
       sections,
       fakeCall,
       None,
-      NormalMode
+      NormalMode,
+      isComplete = false
     )(fakeRequest, messagesApi.preferred(fakeRequest))
 
   "check_your_answers view" must {
@@ -57,6 +59,11 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
 
     behave like checkYourAnswersPage(createViewWithData)
+
+    "have cya alert when not complete" in {
+      val doc = asDocument(createView(NormalMode, isComplete = false)())
+      assertRenderedById(doc, id = "alert-heading")
+    }
   }
 
 }

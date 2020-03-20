@@ -113,7 +113,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       sections,
       postCall,
       None,
-      NormalMode
+      NormalMode,
+      isComplete = true
     )(fakeRequest, messages).toString
 
   "CheckYourAnswers Controller" must {

@@ -26,7 +26,7 @@
     formHelper: FormWithCSRF
 )
 
-@(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode, errorSeq: Seq[Message] = Nil)(implicit request: Request[_], messages: Messages)
+@(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode, isComplete: Boolean)(implicit request: Request[_], messages: Messages)
 
     @main_template(
         title = messages("checkYourAnswers.title")
@@ -36,8 +36,8 @@
 
             @components.back_link()
 
-            @if(errorSeq.nonEmpty) {
-                @components.cya_alert(errorSeq)
+            @if(!isComplete) {
+                @components.cya_alert()
             }
 
             @components.heading(

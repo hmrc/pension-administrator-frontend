@@ -16,19 +16,11 @@
 
 @import viewmodels.Message
 
-@(errors: Seq[Message])(implicit messages: Messages)
-@if(errors.nonEmpty) {
-    <div class="error-summary error-summary--show" role="alert" aria-labelledby="error-summary-heading">
+@()(implicit messages: Messages)
+<div class="error-summary error-summary--show" role="alert" aria-labelledby="error-summary-heading">
 
-        <h2 class="h2-heading error-summary-heading" id="error-summary-heading">
-            @messages("cya.alert.p1")
-        </h2>
+    <h2 class="h2-heading error-summary-heading" id="alert-heading">
+        @messages("cya.alert.p1")
+    </h2>
 
-        <ul role="list" class="error-summary-list">
-            @for(error <- errors) {
-                <li id="error-message-@{error}">@messages(error)</li>
-            }
-        </ul>
-
-    </div>
-}
+</div>

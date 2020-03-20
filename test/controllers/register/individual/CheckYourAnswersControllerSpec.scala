@@ -22,7 +22,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.individual.CheckYourAnswersController.postUrl
 import models._
-import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -174,21 +173,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
     )
   }
 
-  private def answerSections(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false, changeUrl: Option[Link] = None, visuallyHiddenText: Option[Message] = None): Seq[AnswerSection] = {
-    val answerRow = AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenText)
-    val section = AnswerSection(None, Seq(answerRow))
-    Seq(section)
-  }
-
-
   private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
                         changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message] = None): AnswerRow = {
     AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
-  }
-
-  private def dataRetrievalAction(fields: (String, Json.JsValueWrapper)*): DataRetrievalAction = {
-    val data = Json.obj(fields: _*)
-    new FakeDataRetrievalAction(Some(data))
   }
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction): Unit = {
@@ -200,7 +187,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
         postUrl,
         None,
         NormalMode,
-        Nil
+        isComplete = true
       )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
   }
 }
