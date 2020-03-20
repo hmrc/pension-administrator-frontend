@@ -38,23 +38,24 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
                                                   allowAccess: AllowAccessActionProvider,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
+                                                  allowDeclaration: AllowDeclarationActionProvider,
                                                   @Register navigator: Navigator,
                                                   dataCacheConnector: UserAnswersCacheConnector,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   val view: declarationFitAndProper
                                                  )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen
+    getData andThen allowDeclaration(mode) andThen requireData).async {
     implicit request =>
       Future.successful(Ok(view()))
   }
 
-  def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen
+    getData andThen allowDeclaration(mode) andThen requireData).async {
     implicit request =>
       dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, value = true).map { cacheMap =>
         Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
       }
   }
-
-
 }

@@ -36,8 +36,14 @@ case object HasVATId extends TypedIdentifier[Boolean] {
         dynamicMessage(ua, messageKey = "hasVAT.visuallyHidden.text")
 
 
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        BooleanCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        userAnswers.get(AreYouInUKId) match {
+          case Some(false) =>
+            Nil
+          case _ =>
+            BooleanCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+        }
+      }
     }
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {

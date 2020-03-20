@@ -24,6 +24,7 @@ import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
 import models._
+import models.register.BusinessType
 import play.api.libs.json.Reads
 import utils.UserAnswers
 import viewmodels.Message
@@ -63,23 +64,53 @@ trait DataCompletion {
   def isAddressComplete(currentAddressId: TypedIdentifier[Address],
                         previousAddressId: TypedIdentifier[Address],
                         timeAtAddress: TypedIdentifier[AddressYears],
-                        tradingTime: Option[TypedIdentifier[Boolean]]
+                        tradingTime: Option[TypedIdentifier[Boolean]],
+                        confirmPreviousAddress: TypedIdentifier[Boolean]
                        ): Either[Message, Boolean] = {
-    (get(currentAddressId), get(timeAtAddress)) match {
-      case (Some(_), Some(AddressYears.OverAYear)) => Right(true)
-      case (None, _) => Left(Message(s"incomplete.${lastPath(currentAddressId)}"))
-      case (Some(_), Some(AddressYears.UnderAYear)) =>
-        (get(previousAddressId), tradingTime) match {
-          case (Some(_), Some(tradingTimeId)) if get(tradingTimeId).isEmpty | get(tradingTimeId).contains(true) =>
-            Right(true)
-          case (Some(_), None) =>
-            Right(true)
-          case (_, Some(tradingTimeId)) if get(tradingTimeId).contains(false) =>
-            Right(true)
-          case _ =>
-            Left(Message(s"incomplete.${lastPath(previousAddressId)}"))
+    (get(currentAddressId), get(timeAtAddress), get(confirmPreviousAddress)) match {
+      case (Some(_), _, Some(true)) =>
+        Right(true)
+      case (Some(_), _, Some(false)) =>
+        get(previousAddressId) match {
+          case Some(_) => Right(true)
+          case _ => Left(Message(s"incomplete.${lastPath(previousAddressId)}"))
         }
-      case _ => Left(Message(s"incomplete.${lastPath(timeAtAddress)}"))
+      case (Some(_), Some(AddressYears.OverAYear), _) =>
+        Right(true)
+      case (None, _,_) =>
+        Left(Message(s"incomplete.${lastPath(currentAddressId)}"))
+      case (Some(_), Some(AddressYears.UnderAYear), _) =>
+        isAddressCompleteUnderAYear(previousAddressId, tradingTime)
+      case _ =>
+        Left(Message(s"incomplete.${lastPath(timeAtAddress)}"))
+    }
+  }
+
+  private def isAddressCompleteUnderAYear(previousAddressId: TypedIdentifier[Address],
+                                          tradingTime: Option[TypedIdentifier[Boolean]]): Either[Message, Boolean] = {
+    (get(previousAddressId), tradingTime) match {
+      case (Some(_), Some(tradingTimeId)) if get(tradingTimeId).isEmpty | get(tradingTimeId).contains(true) =>
+        Right(true)
+      case (Some(_), None) =>
+        Right(true)
+      case (_, Some(tradingTimeId)) if get(tradingTimeId).contains(false) =>
+        Right(true)
+      case _ =>
+        Left(Message(s"incomplete.${lastPath(previousAddressId)}"))
+    }
+  }
+
+  def isAddressComplete(currentAddressId: TypedIdentifier[Address],
+                        previousAddressId: TypedIdentifier[Address],
+                        confirmPreviousAddressId: TypedIdentifier[Boolean]): Either[Message, Boolean] = {
+    (get(currentAddressId), get(confirmPreviousAddressId)) match {
+      case (Some(_), Some(true)) => Right(true)
+      case (Some(_), Some(false)) =>
+        get(previousAddressId) match {
+          case Some(_) => Right(true)
+          case _ => Left(Message(s"incomplete.${lastPath(previousAddressId)}"))
+        }
+      case _ => Left(Message(s"incomplete.${lastPath(currentAddressId)}"))
     }
   }
 
@@ -102,37 +133,77 @@ trait DataCompletion {
     }
   }
 
-  def isCompanyComplete: Boolean = {
-    getIncompleteCompanyDetails.isEmpty
+  def isCompanyComplete(mode: Mode): Boolean = {
+    val allDirectorsCompleted = allDirectorsAfterDelete(mode).nonEmpty & allDirectorsAfterDelete(mode).forall(_.isComplete)
+    getIncompleteCompanyDetails(mode).isEmpty && allDirectorsCompleted
   }
 
-  def getIncompleteCompanyDetails: Seq[Message] = {
-    isCompleteNew(
-      Seq(
-        isAnswerComplete(BusinessNameId),
-        isAnswerComplete(BusinessUTRId),
-        isAnswerComplete(CompanyRegistrationNumberId),
-        isAnswerComplete(HasPAYEId, EnterPAYEId, None),
-        isAnswerComplete(HasVATId, EnterVATId, None),
-        isAddressComplete(CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId)),
-        isAnswerComplete(CompanyEmailId),
-        isAnswerComplete(CompanyPhoneId)
-      )
-    )
+  def isPartnershipComplete(mode: Mode): Boolean = {
+    val allPartnersCompleted = allPartnersAfterDelete(mode).nonEmpty & allPartnersAfterDelete(mode).forall(_.isComplete)
+    getIncompletePartnershipDetails.isEmpty && allPartnersCompleted
+  }
+
+  def getIncompleteCompanyDetails(mode: Mode): Seq[Message] = {
+    get(AreYouInUKId) match {
+      case Some(true) =>
+        isCompleteNew(
+          Seq(
+            isAnswerComplete(BusinessNameId),
+            isAnswerComplete(BusinessUTRId),
+            if (get(BusinessTypeId).contains(BusinessType.UnlimitedCompany)) {
+              isAnswerComplete(HasCompanyCRNId, CompanyRegistrationNumberId, None)
+            } else {
+              isAnswerComplete(CompanyRegistrationNumberId)
+            },
+            isAnswerComplete(HasPAYEId, EnterPAYEId, None),
+            isAnswerComplete(HasVATId, EnterVATId, None),
+              isAddressComplete(CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
+                Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId),
+            isAnswerComplete(CompanyEmailId),
+            isAnswerComplete(CompanyPhoneId)
+          )
+        )
+      case _ =>
+        isCompleteNew(
+          Seq(
+            isAnswerComplete(BusinessNameId),
+            isAnswerComplete(CompanyAddressId),
+            isAddressComplete(CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
+              Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId),
+            isAnswerComplete(CompanyEmailId),
+            isAnswerComplete(CompanyPhoneId)
+          )
+        )
+    }
   }
 
   def getIncompletePartnershipDetails: Seq[Message] = {
-    isCompleteNew(
-      Seq(
-        isAnswerComplete(BusinessNameId),
-        isAnswerComplete(BusinessUTRId),
-        isAnswerComplete(HasPAYEId, EnterPAYEId, None),
-        isAnswerComplete(HasVATId, EnterVATId, None),
-        isAddressComplete(PartnershipContactAddressId, PartnershipPreviousAddressId, PartnershipAddressYearsId, Some(PartnershipTradingOverAYearId)),
-        isAnswerComplete(PartnershipEmailId),
-        isAnswerComplete(PartnershipPhoneId)
-      )
-    )
+    get(AreYouInUKId) match {
+      case Some(true) =>
+        isCompleteNew(
+          Seq(
+            isAnswerComplete(BusinessNameId),
+            isAnswerComplete(BusinessUTRId),
+            isAnswerComplete(HasPAYEId, EnterPAYEId, None),
+            isAnswerComplete(HasVATId, EnterVATId, None),
+            isAddressComplete(PartnershipContactAddressId, PartnershipPreviousAddressId, PartnershipAddressYearsId,
+              Some(PartnershipTradingOverAYearId), PartnershipConfirmPreviousAddressId),
+            isAnswerComplete(PartnershipEmailId),
+            isAnswerComplete(PartnershipPhoneId)
+          )
+        )
+      case _ =>
+        isCompleteNew(
+          Seq(
+            isAnswerComplete(BusinessNameId),
+            isAnswerComplete(PartnershipRegisteredAddressId),
+            isAddressComplete(PartnershipContactAddressId, PartnershipPreviousAddressId,
+              PartnershipAddressYearsId, Some(PartnershipTradingOverAYearId), PartnershipConfirmPreviousAddressId),
+            isAnswerComplete(PartnershipEmailId),
+            isAnswerComplete(PartnershipPhoneId)
+          )
+        )
+    }
   }
 
   def getIncompleteDirectorDetails(index: Int): Seq[Message] = {
@@ -142,7 +213,8 @@ trait DataCompletion {
         isAnswerComplete(DirectorDOBId(index)),
         isAnswerComplete(HasDirectorNINOId(index), DirectorEnterNINOId(index), Some(DirectorNoNINOReasonId(index))),
         isAnswerComplete(HasDirectorUTRId(index), DirectorEnterUTRId(index), Some(DirectorNoUTRReasonId(index))),
-        isAddressComplete(DirectorAddressId(index), DirectorPreviousAddressId(index), DirectorAddressYearsId(index), None),
+        isAddressComplete(DirectorAddressId(index), DirectorPreviousAddressId(index),
+          DirectorAddressYearsId(index), None, DirectorConfirmPreviousAddressId(index)),
         isAnswerComplete(DirectorEmailId(index)),
         isAnswerComplete(DirectorPhoneId(index))
       )
@@ -156,7 +228,7 @@ trait DataCompletion {
         isAnswerComplete(PartnerDOBId(index)),
         isAnswerComplete(HasPartnerNINOId(index), PartnerEnterNINOId(index), Some(PartnerNoNINOReasonId(index))),
         isAnswerComplete(HasPartnerUTRId(index), PartnerEnterUTRId(index), Some(PartnerNoUTRReasonId(index))),
-        isAddressComplete(PartnerAddressId(index), PartnerPreviousAddressId(index), PartnerAddressYearsId(index), None),
+        isAddressComplete(PartnerAddressId(index), PartnerPreviousAddressId(index), PartnerAddressYearsId(index), None, PartnerConfirmPreviousAddressId(index)),
         isAnswerComplete(PartnerEmailId(index)),
         isAnswerComplete(PartnerPhoneId(index))
       )
@@ -178,10 +250,15 @@ trait DataCompletion {
         isAnswerComplete(IndividualDateOfBirthId),
         isAnswerComplete(IndividualAddressId),
         isAnswerComplete(IndividualSameContactAddressId),
-        isAddressComplete(IndividualContactAddressId, IndividualPreviousAddressId, IndividualAddressYearsId, None),
+        isAddressComplete(IndividualContactAddressId, IndividualPreviousAddressId, IndividualAddressYearsId, None, IndividualConfirmPreviousAddressId),
         isAnswerComplete(IndividualEmailId),
         isAnswerComplete(IndividualPhoneId)
       )
     )
+  }
+
+  def isIndividualComplete: Boolean = {
+    println("\n\n\n getIncompleteIndividualDetails : "+getIncompleteIndividualDetails)
+    getIncompleteIndividualDetails.isEmpty
   }
 }

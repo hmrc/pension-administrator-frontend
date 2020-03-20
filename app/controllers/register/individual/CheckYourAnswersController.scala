@@ -24,8 +24,9 @@ import controllers.register.individual.routes._
 import identifiers.register.individual._
 import models.Mode
 import models.Mode.checkMode
+import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
 import utils.checkyouranswers.Ops._
@@ -55,26 +56,40 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-
-      val individualDetails = AnswerSection(None, Seq(
-        IndividualDetailsId.row(None),
-        IndividualDateOfBirthId.row(Some(Link(IndividualDateOfBirthController.onPageLoad(checkMode(mode)).url))),
-        IndividualAddressId.row(None),
-        IndividualSameContactAddressId.row(Some(Link(IndividualSameContactAddressController.onPageLoad(checkMode(mode)).url))),
-        IndividualContactAddressId.row(Some(Link(IndividualContactAddressPostCodeLookupController.onPageLoad(checkMode(mode)).url))),
-        IndividualAddressYearsId.row(Some(Link(IndividualAddressYearsController.onPageLoad(checkMode(mode)).url))),
-        IndividualPreviousAddressId.row(Some(Link(
-          controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode)).url))),
-        IndividualEmailId.row(Some(Link(IndividualEmailController.onPageLoad(checkMode(mode)).url))),
-        IndividualPhoneId.row(Some(Link(IndividualPhoneController.onPageLoad(checkMode(mode)).url)))
-      ).flatten)
-      val sections = Seq(individualDetails)
-      Ok(view(sections, postUrl, None, mode, request.userAnswers.getIncompleteIndividualDetails))
+      val userAnswers = request.userAnswers
+      (userAnswers.get(IndividualDetailsId), userAnswers.get(IndividualAddressId)) match {
+        case (Some(_), Some(_)) =>
+          loadCyaPage(mode)
+        case _ =>
+          Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+      val isDataComplete = request.userAnswers.getIncompleteIndividualDetails.isEmpty
+      if (isDataComplete) {
+        Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+      } else {
+        loadCyaPage(mode)
+      }
+  }
+
+  private def loadCyaPage(mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
+    val individualDetails = AnswerSection(None, Seq(
+      IndividualDetailsId.row(None),
+      IndividualDateOfBirthId.row(Some(Link(IndividualDateOfBirthController.onPageLoad(checkMode(mode)).url))),
+      IndividualAddressId.row(None),
+      IndividualSameContactAddressId.row(Some(Link(IndividualSameContactAddressController.onPageLoad(checkMode(mode)).url))),
+      IndividualContactAddressId.row(Some(Link(IndividualContactAddressPostCodeLookupController.onPageLoad(checkMode(mode)).url))),
+      IndividualAddressYearsId.row(Some(Link(IndividualAddressYearsController.onPageLoad(checkMode(mode)).url))),
+      IndividualPreviousAddressId.row(Some(Link(
+        controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode)).url))),
+      IndividualEmailId.row(Some(Link(IndividualEmailController.onPageLoad(checkMode(mode)).url))),
+      IndividualPhoneId.row(Some(Link(IndividualPhoneController.onPageLoad(checkMode(mode)).url)))
+    ).flatten)
+    val sections = Seq(individualDetails)
+    Ok(view(sections, postUrl, None, mode, request.userAnswers.getIncompleteIndividualDetails))
   }
 }
 

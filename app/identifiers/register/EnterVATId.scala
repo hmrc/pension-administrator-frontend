@@ -35,12 +35,16 @@ case object EnterVATId extends TypedIdentifier[String] {
         dynamicMessage(ua, messageKey = "enterVAT.visuallyHidden.text")
 
 
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        (userAnswers.get(HasVATId), userAnswers.get(EnterVATId)) match {
-          case (Some(true), None) =>
-            StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers))).addLink(label(userAnswers), changeUrl)
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+
+        (userAnswers.get(AreYouInUKId), userAnswers.get(HasVATId), userAnswers.get(EnterVATId)) match {
+          case (Some(false), _, _) =>
+            Nil
+          case (_, Some(true), None) =>
+            StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
           case _ =>
             StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)), isMandatory = false)().row(id)(changeUrl, userAnswers)
         }
+      }
     }
 }

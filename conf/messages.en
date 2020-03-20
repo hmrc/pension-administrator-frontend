@@ -1085,6 +1085,7 @@ select.previous.address.error.required = Select {0}’s previous address
 
 incomplete.utr = Unique Taxpayer Reference
 incomplete.businessName = Name of the limited company
+incomplete.hasCrn = Company number
 incomplete.companyRegistrationNumber = Company number
 incomplete.companyContactAddress = Contact address
 incomplete.companyPreviousAddress = Previous address
@@ -1099,10 +1100,15 @@ incomplete.hasNino = Nino
 incomplete.nino = Nino
 incomplete.hasUtr = Unique Taxpayer Reference
 incomplete.partnerAddress = Address
+incomplete.partnershipAddressYears = Address Years
 incomplete.noNinoReason = No Nino Reason
 incomplete.noUtrReason = No Utr Reason
+incomplete.partnershipContactAddress = Address
 
 incomplete.directorDetails = Name
+incomplete.directorAddress = Address
+incomplete.directorAddressYears = Address Years
+incomplete.directorPreviousAddress = Previous Address
 incomplete.dateOfBirth = Date Of Birth
 incomplete.individualDateOfBirth = Date Of Birth
 incomplete.individualSameContactAddress = Same Contact Address
@@ -1111,5 +1117,6 @@ incomplete.individualAddressYears = Address Years
 incomplete.partnerAddressYears = Address Years
 incomplete.individualPreviousAddress = Previous Address
 incomplete.partnerPreviousAddress = Previous Address
+incomplete.partnershipPreviousAddress = Previous Address
 
 cya.alert.p1 = You must complete the following before you can submit your changes:

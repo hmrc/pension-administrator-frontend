@@ -17,6 +17,8 @@
 package identifiers.register.company
 
 import identifiers.TypedIdentifier
+import identifiers.register.{AreYouInUKId, BusinessTypeId}
+import models.register.BusinessType
 import play.api.i18n.Messages
 import play.api.libs.json.{JsResult, JsSuccess}
 import utils.UserAnswers
@@ -31,13 +33,21 @@ case object HasCompanyCRNId extends TypedIdentifier[Boolean] {
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswersBusiness[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "hasCompanyNumber.heading")
+        dynamicMessage(ua, messageKey = "hasCompanyNumber.heading")
 
       private def hiddenLabel(ua: UserAnswers): Message =
-        dynamicMessage(ua, "hasCompanyNumber.visuallyHidden.text")
+        dynamicMessage(ua, messageKey = "hasCompanyNumber.visuallyHidden.text")
 
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        BooleanCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        (userAnswers.get(AreYouInUKId), userAnswers.get(BusinessTypeId)) match {
+          case (Some(false), _) =>
+            Nil
+          case (Some(true), Some(BusinessType.UnlimitedCompany)) =>
+            BooleanCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+          case _ =>
+            BooleanCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
+      }
     }
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {

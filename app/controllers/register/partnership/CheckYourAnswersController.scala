@@ -19,14 +19,15 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.partnership.{CheckYourAnswersId, _}
 import identifiers.register._
+import identifiers.register.partnership.{CheckYourAnswersId, _}
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{CheckMode, Mode, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import utils.annotations.Partnership
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
@@ -50,34 +51,53 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-
-      val partnershipDetails = AnswerSection(None, Seq(
-        BusinessNameId.row(None),
-        BusinessUTRId.row(None),
-        HasPAYEId.row(Some(Link(routes.HasPartnershipPAYEController.onPageLoad(CheckMode).url))),
-        EnterPAYEId.row(Some(Link(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url))),
-        HasVATId.row(Some(Link(routes.HasPartnershipVATController.onPageLoad(CheckMode).url))),
-        EnterVATId.row(Some(Link(routes.PartnershipEnterVATController.onPageLoad(CheckMode).url))),
-        PartnershipContactAddressId.row(Some(Link(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
-        PartnershipAddressYearsId.row(Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))),
-        PartnershipPreviousAddressId.row(Some(Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
-        PartnershipEmailId.row(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url))),
-        PartnershipPhoneId.row(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)))
-        ).flatten
-      )
-
-      Ok(view(
-        Seq(partnershipDetails),
-        controllers.register.partnership.routes.CheckYourAnswersController.onSubmit(),
-        None,
-        mode,
-        request.userAnswers.getIncompletePartnershipDetails
-      ))
+      if (isMandatoryDataPresent(request.userAnswers)) {
+        loadCyaPage(mode)
+      } else {
+        Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+      val isDataComplete = request.userAnswers.getIncompletePartnershipDetails.isEmpty
+      if (isDataComplete) {
+        Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+      } else {
+        loadCyaPage(mode)
+      }
+  }
 
+  private def isMandatoryDataPresent(userAnswers: UserAnswers): Boolean = {
+    if (userAnswers.get(AreYouInUKId).contains(false)) {
+      userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(PartnershipRegisteredAddressId).nonEmpty
+    } else {
+      userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(BusinessUTRId).nonEmpty
+    }
+  }
+
+  private def loadCyaPage(mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
+    val partnershipDetails = AnswerSection(None, Seq(
+      BusinessNameId.row(None),
+      BusinessUTRId.row(None),
+      HasPAYEId.row(Some(Link(routes.HasPartnershipPAYEController.onPageLoad(CheckMode).url))),
+      EnterPAYEId.row(Some(Link(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url))),
+      HasVATId.row(Some(Link(routes.HasPartnershipVATController.onPageLoad(CheckMode).url))),
+      EnterVATId.row(Some(Link(routes.PartnershipEnterVATController.onPageLoad(CheckMode).url))),
+      PartnershipContactAddressId.row(Some(Link(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
+      PartnershipAddressYearsId.row(Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))),
+      PartnershipPreviousAddressId.row(Some(Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
+      PartnershipEmailId.row(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url))),
+      PartnershipPhoneId.row(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)))
+    ).flatten
+    )
+
+    Ok(view(
+      Seq(partnershipDetails),
+      controllers.register.partnership.routes.CheckYourAnswersController.onSubmit(),
+      None,
+      mode,
+      request.userAnswers.getIncompletePartnershipDetails
+    ))
   }
 }

@@ -222,12 +222,12 @@ case class UserAnswers(json: JsValue = Json.obj()) extends DataCompletion {
     def incompleteDetails: Boolean =
       get(RegistrationInfoId).map(_.legalStatus) match {
         case Some(Individual) =>
-          isPreviousAddressIncomplete(get(IndividualAddressYearsId), IndividualPreviousAddressId)
+          !isIndividualComplete
         case Some(LimitedCompany) =>
           allDirectorsAfterDelete(UpdateMode).exists(!_.isComplete) |
-            isPreviousAddressIncomplete(get(CompanyAddressYearsId), CompanyPreviousAddressId)
+            getIncompleteCompanyDetails(UpdateMode).nonEmpty
         case Some(Partnership) =>
-          isPreviousAddressIncomplete(get(PartnershipAddressYearsId), PartnershipPreviousAddressId) |
+          getIncompletePartnershipDetails.nonEmpty |
             allPartnersAfterDelete(UpdateMode).exists(!_.isComplete)
         case _ =>
           true
@@ -241,15 +241,6 @@ case class UserAnswers(json: JsValue = Json.obj()) extends DataCompletion {
       false
     } else {
       get(AdviserEmailId).isEmpty | get(AdviserPhoneId).isEmpty | get(AdviserNameId).isEmpty | get(AdviserAddressId).isEmpty
-    }
-  }
-
-  private def isPreviousAddressIncomplete(addressYears: Option[AddressYears], addressId: TypedIdentifier[Address]): Boolean = {
-    addressYears match {
-      case Some(AddressYears.UnderAYear) =>
-        get(addressId).isEmpty
-      case _ =>
-        false
     }
   }
 

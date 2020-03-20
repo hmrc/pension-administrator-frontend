@@ -24,9 +24,10 @@ import controllers.{Retrievals, Variations}
 import identifiers.register.company.directors._
 import javax.inject.Inject
 import models.Mode.checkMode
+import models.requests.DataRequest
 import models.{Mode, _}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.CompanyDirector
 import utils.checkyouranswers.Ops._
@@ -53,35 +54,51 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val answersSection = Seq(
-        AnswerSection(None,
-          DirectorNameId(index).row(Some(Link(routes.DirectorNameController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorDOBId(index).row(Some(Link(routes.DirectorDOBController.onPageLoad(checkMode(mode), index).url))) ++
-            HasDirectorNINOId(index).row(Some(Link(routes.HasDirectorNINOController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorEnterNINOId(index).row(Some(Link(routes.DirectorEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorNoNINOReasonId(index).row(Some(Link(routes.DirectorNoNINOReasonController.onPageLoad(checkMode(mode), index).url))) ++
-            HasDirectorUTRId(index).row(Some(Link(HasDirectorUTRController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorEnterUTRId(index).row(Some(Link(DirectorEnterUTRController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorNoUTRReasonId(index).row(Some(Link(DirectorNoUTRReasonController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorAddressId(index).row(Some(Link(CompanyDirectorAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorAddressYearsId(index).row(Some(Link(routes.DirectorAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorPreviousAddressId(index).row(Some(Link(DirectorPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorEmailId(index).row(Some(Link(DirectorEmailController.onPageLoad(checkMode(mode), index).url))) ++
-            DirectorPhoneId(index).row(Some(Link(DirectorPhoneController.onPageLoad(checkMode(mode), index).url)))
-        ))
-
-      Future.successful(Ok(view(
-        answersSection,
-        controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
-        psaName(),
-        mode
-      )))
+      val userAnswers = request.userAnswers
+      userAnswers.get(DirectorNameId(index)) match {
+        case Some(_) =>
+          loadCyaPage(index, mode)
+        case _ =>
+          Future.successful(Redirect(routes.DirectorNameController.onPageLoad(mode, index).url))
+      }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
-        Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+      val isDataComplete = request.userAnswers.getIncompleteDirectorDetails(index).isEmpty
+      if (isDataComplete) {
+        saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
+          Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+        }
+      } else {
+        loadCyaPage(index, mode)
       }
+  }
+
+  private def loadCyaPage(index: Int, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val answersSection = Seq(
+      AnswerSection(None,
+        DirectorNameId(index).row(Some(Link(routes.DirectorNameController.onPageLoad(checkMode(mode), index).url))) ++
+          DirectorDOBId(index).row(Some(Link(routes.DirectorDOBController.onPageLoad(checkMode(mode), index).url))) ++
+          HasDirectorNINOId(index).row(Some(Link(routes.HasDirectorNINOController.onPageLoad(checkMode(mode), index).url))) ++
+          DirectorEnterNINOId(index).row(Some(Link(routes.DirectorEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++
+          DirectorNoNINOReasonId(index).row(Some(Link(routes.DirectorNoNINOReasonController.onPageLoad(checkMode(mode), index).url))) ++
+          HasDirectorUTRId(index).row(Some(Link(HasDirectorUTRController.onPageLoad(checkMode(mode), index).url))) ++
+          DirectorEnterUTRId(index).row(Some(Link(DirectorEnterUTRController.onPageLoad(checkMode(mode), index).url))) ++
+          DirectorNoUTRReasonId(index).row(Some(Link(DirectorNoUTRReasonController.onPageLoad(checkMode(mode), index).url))) ++
+          DirectorAddressId(index).row(Some(Link(CompanyDirectorAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url))) ++
+          DirectorAddressYearsId(index).row(Some(Link(routes.DirectorAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
+          DirectorPreviousAddressId(index).row(Some(Link(DirectorPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url))) ++
+          DirectorEmailId(index).row(Some(Link(DirectorEmailController.onPageLoad(checkMode(mode), index).url))) ++
+          DirectorPhoneId(index).row(Some(Link(DirectorPhoneController.onPageLoad(checkMode(mode), index).url)))
+      ))
+
+    Future.successful(Ok(view(
+      answersSection,
+      controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
+      psaName(),
+      mode,
+      request.userAnswers.getIncompleteDirectorDetails(index)
+    )))
   }
 }

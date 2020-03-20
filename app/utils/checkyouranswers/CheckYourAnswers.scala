@@ -174,9 +174,6 @@ case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None,
           }
         }
     }
-
-  def addLink(label: String, changeUrl: Option[Link]): Seq[AnswerRow] = Seq(AnswerRow(label, Seq("site.not_entered"),
-    answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
 }
 
 case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = None, hiddenLabel: Option[Message] = None, isMandatory: Boolean = true) {
