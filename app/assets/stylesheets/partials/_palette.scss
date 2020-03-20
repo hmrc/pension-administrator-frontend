@@ -243,7 +243,8 @@ button:active,
 .error-message,
 .error-summary .error-summary-list a,
 .error-summary .error-summary-list .link-style,
-.error-summary .error-summary-list .button--link-style {
+.error-summary .error-summary-list .button--link-style,
+#alert-heading {
   color: #d4351c;
 }
 .email-form-errors .error-notification,
