@@ -128,7 +128,6 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "exclude the deleted directors from the list" in {
-      val directors = Seq(johnDoe, joeBloggs.copy(isDeleted = true))
       val getRelevantData = UserAnswers().completeDirector(0).completeDirector(1, isDeleted = true).dataRetrievalAction
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 

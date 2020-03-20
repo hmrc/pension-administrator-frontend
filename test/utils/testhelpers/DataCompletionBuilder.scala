@@ -38,8 +38,8 @@ object DataCompletionBuilder {
         directorEmail(index, email).directorPhone(index, phone)
     }
 
-    def completePartner(index: Int): UserAnswers = {
-      answers.partnerName(index, PersonName(s"first$index", s"last$index")).partnerDob(index, dob).
+    def completePartner(index: Int, isDeleted: Boolean = false): UserAnswers = {
+      answers.partnerName(index, PersonName(s"first$index", s"last$index", isDeleted)).partnerDob(index, dob).
         partnerHasNINO(index, flag = false).partnerNoNINOReason(index, reason).partnerHasUTR(index, flag = false).
         partnerNoUTRReason(index, reason).partnerAddress(index, address).partnerAddressYears(index, AddressYears.OverAYear).
         partnerEmail(index, email).partnerPhone(index, phone)
