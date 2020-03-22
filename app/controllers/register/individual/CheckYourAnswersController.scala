@@ -31,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Individual
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
+import utils.dataCompletion.DataCompletion
 import utils.{Enumerable, Navigator}
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
@@ -44,6 +45,7 @@ class CheckYourAnswersController @Inject()(
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
+                                            dataCompletion: DataCompletion,
                                             @Individual navigator: Navigator,
                                             override val messagesApi: MessagesApi,
                                             implicit val countryOptions: CountryOptions,
@@ -67,7 +69,7 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      val isDataComplete = request.userAnswers.isIndividualComplete(mode)
+      val isDataComplete = dataCompletion.isIndividualComplete(request.userAnswers, mode)
       if (isDataComplete) {
         Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
       } else {
@@ -89,7 +91,7 @@ class CheckYourAnswersController @Inject()(
       IndividualPhoneId.row(Some(Link(IndividualPhoneController.onPageLoad(checkMode(mode)).url)))
     ).flatten)
     val sections = Seq(individualDetails)
-    Ok(view(sections, postUrl, None, mode, request.userAnswers.isIndividualComplete(mode)))
+    Ok(view(sections, postUrl, None, mode, dataCompletion.isIndividualComplete(request.userAnswers, mode)))
   }
 }
 

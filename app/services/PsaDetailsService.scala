@@ -114,7 +114,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
   }
 
   private def getPsaDetailsViewModel(userAnswers: UserAnswers)(implicit messages: Messages): PsaViewDetailsViewModel = {
-    val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
+    val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
     val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)
 

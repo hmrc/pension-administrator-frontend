@@ -19,11 +19,13 @@ package controllers.actions
 import models.requests.OptionalDataRequest
 import models.{Mode, NormalMode}
 import play.api.mvc.Result
+import utils.dataCompletion.DataCompletion
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class FakeAllowDeclarationAction(mode: Mode) extends AllowDeclarationAction(mode) {
+class FakeAllowDeclarationAction(mode: Mode) extends AllowDeclarationAction(mode, new DataCompletion) {
+
   override def filter[A](request: OptionalDataRequest[A]): Future[Option[Result]] =
     Future.successful(None)
 }

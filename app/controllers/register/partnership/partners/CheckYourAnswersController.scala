@@ -32,6 +32,7 @@ import utils.Navigator
 import utils.annotations.PartnershipPartner
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
+import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
@@ -42,6 +43,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
+                                           dataCompletion: DataCompletion,
                                            @PartnershipPartner navigator: Navigator,
                                            implicit val countryOptions: CountryOptions,
                                            override val cacheConnector: UserAnswersCacheConnector,
@@ -62,7 +64,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val isDataComplete = request.userAnswers.isPartnerComplete(index)
+      val isDataComplete = dataCompletion.isPartnerComplete(request.userAnswers, index)
       if (isDataComplete) {
         saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
           Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
@@ -95,7 +97,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       routes.CheckYourAnswersController.onSubmit(index, mode),
       psaName(),
       mode,
-      request.userAnswers.isPartnerComplete(index)))
+      dataCompletion.isPartnerComplete(request.userAnswers, index)))
     )
   }
 }

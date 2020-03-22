@@ -23,10 +23,11 @@ import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import models._
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
-import org.scalatest.prop.{TableFor3, TableFor4}
+import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -37,14 +38,14 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
   "VariationsNavigator in UpdateMode" must {
     def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
       ("Id", "User Answers", "Next Page"),
-      (ConfirmDeleteAdviserId,      confirmDeleteYes,     variationWorkingKnowledgePage(UpdateMode)),
-      (ConfirmDeleteAdviserId,      confirmDeleteNo,      checkYourAnswersPage),
-      (ConfirmDeleteAdviserId,      emptyAnswers,         sessionExpiredPage),
+      (ConfirmDeleteAdviserId, confirmDeleteYes, variationWorkingKnowledgePage(UpdateMode)),
+      (ConfirmDeleteAdviserId, confirmDeleteNo, checkYourAnswersPage),
+      (ConfirmDeleteAdviserId, emptyAnswers, sessionExpiredPage),
 
-      (AnyMoreChangesId,            haveMoreChanges,      checkYourAnswersPage),
-      (AnyMoreChangesId,            noMoreChangesAdviserUnchanged, variationWorkingKnowledgePage(CheckUpdateMode)),
-      (AnyMoreChangesId,            noMoreChangesAdviserChanged, variationDeclarationFitAndProperPage),
-      (AnyMoreChangesId,            emptyAnswers, sessionExpiredPage),
+      (AnyMoreChangesId, haveMoreChanges, checkYourAnswersPage),
+      (AnyMoreChangesId, noMoreChangesAdviserUnchanged, variationWorkingKnowledgePage(CheckUpdateMode)),
+      (AnyMoreChangesId, noMoreChangesAdviserChanged, variationDeclarationFitAndProperPage),
+      (AnyMoreChangesId, emptyAnswers, sessionExpiredPage),
 
       (VariationWorkingKnowledgeId, haveWorkingKnowledge, anyMoreChangesPage),
       (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage),
@@ -61,10 +62,11 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (DeclarationChangedId, declarationChangedWithIncompleteIndividual, incompleteChangesPage),
       (DeclarationChangedId, declarationChangedWithCompleteIndividual, variationDeclarationFitAndProperPage),
       (DeclarationChangedId, declarationNotChangedWithAdviser, variationStillWorkingKnowledgePage),
-      (DeclarationChangedId, completeIndividual, variationWorkingKnowledgePage(CheckUpdateMode)),
+      (DeclarationChangedId, completeIndividualDetails, variationWorkingKnowledgePage(CheckUpdateMode)),
 
       (DeclarationId, emptyAnswers, variationSuccessPage)
     )
+
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
   }
 
@@ -75,26 +77,30 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (VariationWorkingKnowledgeId, haveWorkingKnowledge, variationDeclarationFitAndProperPage),
       (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage)
     )
+
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckUpdateMode)
   }
 
 }
 
 object VariationsNavigatorSpec extends OptionValues {
+
+  import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
+
   private val declarationChangedWithIncompleteIndividual = UserAnswers(Json.obj()).registrationInfo(
     RegistrationInfo(
       RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None)
   ).individualAddressYears(AddressYears.OverAYear)
 
-  private val completeIndividual = declarationChangedWithIncompleteIndividual.variationWorkingKnowledge(true)
+  private val completeIndividualDetails = UserAnswers().completeIndividual.variationWorkingKnowledge(true)
 
-  private val declarationChangedWithCompleteIndividual: UserAnswers = completeIndividual.set(DeclarationChangedId)(true).asOpt.value
+  private val declarationChangedWithCompleteIndividual: UserAnswers = completeIndividualDetails.set(DeclarationChangedId)(true).asOpt.value
 
-  private val haveMoreChanges: UserAnswers = completeIndividual.set(AnyMoreChangesId)(true).asOpt.value
+  private val haveMoreChanges: UserAnswers = completeIndividualDetails.set(AnyMoreChangesId)(true).asOpt.value
   private val confirmDeleteYes: UserAnswers = UserAnswers(Json.obj()).set(ConfirmDeleteAdviserId)(true).asOpt.value
   private val confirmDeleteNo: UserAnswers = UserAnswers(Json.obj()).set(ConfirmDeleteAdviserId)(false).asOpt.value
-  private val noMoreChangesAdviserUnchanged: UserAnswers = completeIndividual.set(AnyMoreChangesId)(false).asOpt.value
-  private val noMoreChangesAdviserChanged: UserAnswers = completeIndividual
+  private val noMoreChangesAdviserUnchanged: UserAnswers = completeIndividualDetails.set(AnyMoreChangesId)(false).asOpt.value
+  private val noMoreChangesAdviserChanged: UserAnswers = completeIndividualDetails
     .set(AnyMoreChangesId)(false).asOpt.value
     .set(DeclarationChangedId)(true).asOpt.value
 
@@ -104,7 +110,7 @@ object VariationsNavigatorSpec extends OptionValues {
   private val stillHaveWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationStillDeclarationWorkingKnowledgeId)(true).asOpt.value
   private val stillNotHaveWorkingKnowledge: UserAnswers = UserAnswers(Json.obj()).set(VariationStillDeclarationWorkingKnowledgeId)(false).asOpt.value
 
-  private val declarationNotChangedWithAdviser: UserAnswers = completeIndividual
+  private val declarationNotChangedWithAdviser: UserAnswers = completeIndividualDetails
     .set(AdviserNameId)("adviser-Name").asOpt.value
 
   private val haveFitAndProper: UserAnswers = UserAnswers(Json.obj()).set(DeclarationFitAndProperId)(true).asOpt.value

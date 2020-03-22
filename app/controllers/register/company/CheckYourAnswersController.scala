@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.RegisterCompany
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
+import utils.dataCompletion.DataCompletion
 import utils.{Enumerable, Navigator, UserAnswers}
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
@@ -41,6 +42,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
+                                           dataCompletion: DataCompletion,
                                            @RegisterCompany navigator: Navigator,
                                            implicit val countryOptions: CountryOptions,
                                            val controllerComponents: MessagesControllerComponents,
@@ -50,7 +52,6 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-
       if(isMandatoryDataPresent(request.userAnswers)) {
         loadCyaPage(mode)
       } else {
@@ -60,7 +61,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val isDataComplete = request.userAnswers.isCompanyDetailsComplete(mode)
+      val isDataComplete = dataCompletion.isCompanyDetailsComplete(request.userAnswers, mode)
       if (isDataComplete) {
         Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
       } else {
@@ -98,7 +99,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       controllers.register.company.routes.CheckYourAnswersController.onSubmit(),
       None,
       mode,
-      request.userAnswers.isCompanyDetailsComplete(mode)
+      dataCompletion.isCompanyDetailsComplete(request.userAnswers, mode)
     ))
   }
 }

@@ -31,6 +31,7 @@ import utils.{Navigator, UserAnswers}
 import utils.annotations.Partnership
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
+import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
@@ -43,6 +44,7 @@ class CheckYourAnswersController @Inject()(
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
+                                            dataCompletion: DataCompletion,
                                             @Partnership navigator: Navigator,
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
@@ -60,7 +62,7 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val isDataComplete = request.userAnswers.isPartnershipDetailsComplete
+      val isDataComplete = dataCompletion.isPartnershipDetailsComplete(request.userAnswers)
       if (isDataComplete) {
         Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
       } else {
@@ -97,7 +99,7 @@ class CheckYourAnswersController @Inject()(
       controllers.register.partnership.routes.CheckYourAnswersController.onSubmit(),
       None,
       mode,
-      request.userAnswers.isPartnershipDetailsComplete
+      dataCompletion.isPartnershipDetailsComplete(request.userAnswers)
     ))
   }
 }

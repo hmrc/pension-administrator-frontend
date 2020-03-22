@@ -32,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.CompanyDirector
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
+import utils.dataCompletion.DataCompletion
 import utils.{Enumerable, Navigator}
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
@@ -44,6 +45,7 @@ class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
+                                            dataCompletion: DataCompletion,
                                             @CompanyDirector navigator: Navigator,
                                             override val cacheConnector: UserAnswersCacheConnector,
                                             implicit val countryOptions: CountryOptions,
@@ -65,8 +67,8 @@ class CheckYourAnswersController @Inject()(
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val isDataComplete = request.userAnswers.isDirectorComplete(index)
-      if (isDataComplete) {
+      val isDirectorComplete = dataCompletion.isDirectorComplete(request.userAnswers, index)
+      if (isDirectorComplete) {
         saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
           Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
         }
@@ -98,7 +100,7 @@ class CheckYourAnswersController @Inject()(
       controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
       psaName(),
       mode,
-      request.userAnswers.isDirectorComplete(index)
+      dataCompletion.isDirectorComplete(request.userAnswers, index)
     )))
   }
 }

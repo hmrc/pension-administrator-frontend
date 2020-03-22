@@ -24,26 +24,28 @@ import models.requests.OptionalDataRequest
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 import utils.UserAnswers
+import utils.dataCompletion.DataCompletion
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AllowDeclarationAction(mode: Mode)(implicit val executionContext: ExecutionContext) extends ActionFilter[OptionalDataRequest] {
+class AllowDeclarationAction(mode: Mode, dataCompletion: DataCompletion)
+                            (implicit val executionContext: ExecutionContext) extends ActionFilter[OptionalDataRequest] {
 
   override protected def filter[A](request: OptionalDataRequest[A]): Future[Option[Result]] = {
     val userAnswers = request.userAnswers.getOrElse(UserAnswers())
 
     val isComplete = userAnswers.get(RegistrationInfoId).map(_.legalStatus) match {
       case Some(Individual) =>
-        userAnswers.isIndividualComplete(mode)
+        dataCompletion.isIndividualComplete(userAnswers, mode)
       case Some(LimitedCompany) =>
-        userAnswers.isCompanyComplete(mode)
+        dataCompletion.isCompanyComplete(userAnswers, mode)
       case Some(Partnership) =>
-        userAnswers.isPartnershipComplete(mode)
+        dataCompletion.isPartnershipComplete(userAnswers, mode)
       case _ =>
         true
     }
 
-    if (isComplete && !userAnswers.isAdviserIncomplete) {
+    if (isComplete && !dataCompletion.isAdviserIncomplete(userAnswers, mode)) {
       Future(None)
     } else {
       Future.successful(Some(Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())))
@@ -51,12 +53,12 @@ class AllowDeclarationAction(mode: Mode)(implicit val executionContext: Executio
   }
 }
 
-class AllowDeclarationActionProviderImpl @Inject()(implicit executionContext: ExecutionContext) extends AllowDeclarationActionProvider {
+class AllowDeclarationActionProviderImpl @Inject()(dataCompletion: DataCompletion)
+                                                  (implicit executionContext: ExecutionContext) extends AllowDeclarationActionProvider {
   def apply(mode: Mode): AllowDeclarationAction = {
-    new AllowDeclarationAction(mode)
+    new AllowDeclarationAction(mode, dataCompletion)
   }
 }
-
 
 trait AllowDeclarationActionProvider {
   def apply(mode: Mode): AllowDeclarationAction

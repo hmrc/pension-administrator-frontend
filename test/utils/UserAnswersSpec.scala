@@ -16,6 +16,8 @@
 
 package utils
 
+import java.time.LocalDate
+
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
 import identifiers.register.company.directors.{DirectorAddressId, DirectorNameId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
@@ -25,6 +27,7 @@ import models._
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.{JsPath, JsResultException, Json}
 import viewmodels.Person
+import utils.testhelpers.DataCompletionBuilder._
 
 class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
@@ -61,17 +64,13 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
   ".allDirectorsAfterDelete" must {
 
     "return a map of director names, edit links, delete links and isComplete flag" in {
-      val userAnswers = UserAnswers()
-        .set(DirectorNameId(0))(PersonName("First", "Last"))/*
-        .flatMap(_.set(IsDirectorCompleteId(0))(true))
-        .flatMap(_.set(IsDirectorCompleteId(1))(false))*/
-        .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
+      val userAnswers = UserAnswers().completeDirector(index = 0).directorName(index = 1, name = PersonName("first1", "last1"))
 
       val directorEntities = Seq(
-        Person(0, "First Last", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 0).url,
+        Person(0, "first0 last0", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 0).url,
           routes.CheckYourAnswersController.onPageLoad(NormalMode, Index(0)).url,
           isDeleted = false, isComplete = true),
-        Person(1, "First1 Last1", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 1).url,
+        Person(1, "first1 last1", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 1).url,
           routes.DirectorNameController.onPageLoad(NormalMode, Index(1)).url,
           isDeleted = false, isComplete = false))
 
@@ -86,13 +85,13 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
     "return false if isChanged is not present" in {
       val userAnswers = UserAnswers(establishers)
-      userAnswers.isUserAnswerUpdated() mustBe false
+      userAnswers.isUserAnswerUpdated mustBe false
     }
 
     "return true if isChanged with true is present for a change" in {
       val userAnswersData = Json.obj("areYouInUK" -> true, "isChanged" -> true)
       val userAnswers = UserAnswers(userAnswersData)
-      userAnswers.isUserAnswerUpdated() mustBe true
+      userAnswers.isUserAnswerUpdated mustBe true
     }
 
     "return true if isChanged with true is present for multiple changes" in {
@@ -100,7 +99,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         "areDirectorsOrPartnersChanged" -> true,
         "isMoreThanTenDirectorsOrPartnersChanged" -> true)
       val userAnswers = UserAnswers(userAnswersData)
-      userAnswers.isUserAnswerUpdated() mustBe true
+      userAnswers.isUserAnswerUpdated mustBe true
     }
 
     "return true if isChanged with true is present for one of multiple changes" in {
@@ -108,13 +107,13 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         "areDirectorsOrPartnersChanged" -> true,
         "isMoreThanTenDirectorsOrPartnersChanged" -> false)
       val userAnswers = UserAnswers(userAnswersData)
-      userAnswers.isUserAnswerUpdated() mustBe true
+      userAnswers.isUserAnswerUpdated mustBe true
     }
 
     "return false if isChanged with false is present for MoreThanTenDirectorsOrPartnersChangedId" in {
       val userAnswersData = Json.obj("areYouInUK" -> true, "isMoreThanTenDirectorsOrPartnersChanged" -> false)
       val userAnswers = UserAnswers(userAnswersData)
-      userAnswers.isUserAnswerUpdated() mustBe false
+      userAnswers.isUserAnswerUpdated mustBe false
     }
 
 
@@ -123,7 +122,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         "areDirectorsOrPartnersChanged" -> false,
         "isMoreThanTenDirectorsOrPartnersChanged" -> false)
       val userAnswers = UserAnswers(userAnswersData)
-      userAnswers.isUserAnswerUpdated() mustBe false
+      userAnswers.isUserAnswerUpdated mustBe false
     }
   }
 
@@ -154,7 +153,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
     }
   }
 
-  "isPsaUpdateDetailsInComplete" must {
+  /*"isPsaUpdateDetailsInComplete" must {
 
     "set the flag as true(incomplete)" when {
 
@@ -163,11 +162,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .companyAddressYears(AddressYears.UnderAYear)
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(true)
-          .set(DirectorNameId(0))(PersonName("First", "Last"))/*
-          .flatMap(_.set(IsDirectorCompleteId(0))(true))
-          .flatMap(_.set(IsDirectorCompleteId(1))(false))*/
-          .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
+          .variationWorkingKnowledge(true).completeDirector(index = 0).directorName(index = 1)
 
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
@@ -177,11 +172,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .companyAddressYears(AddressYears.UnderAYear)
-          .variationWorkingKnowledge(true)
-          .set(DirectorNameId(0))(PersonName("First", "Last"))/*
-          .flatMap(_.set(IsDirectorCompleteId(0))(true))
-          .flatMap(_.set(IsDirectorCompleteId(1))(true))*/
-          .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
+          .variationWorkingKnowledge(true).completeDirector(index = 0).completeDirector(index = 1)
 
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
@@ -192,11 +183,8 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
           .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(true)
-          .set(PartnerNameId(0))(PersonName("First", "Last"))/*
-          .flatMap(_.set(IsPartnerCompleteId(0))(true))
-          .flatMap(_.set(IsPartnerCompleteId(1))(false))*/
-          .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
+          .variationWorkingKnowledge(true).completePartner(index = 0).
+          partnerName(index = 1, PersonName("first", "last"))
 
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
@@ -206,11 +194,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
-          .variationWorkingKnowledge(true)
-          .set(PartnerNameId(0))(PersonName("First", "Last"))/*
-          .flatMap(_.set(IsPartnerCompleteId(0))(true))
-          .flatMap(_.set(IsPartnerCompleteId(1))(true))*/
-          .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
+          .variationWorkingKnowledge(true).completePartner(index = 0).completePartner(index = 1)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe true
       }
@@ -250,15 +234,14 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
     "set the flag as false(complete)" when {
 
       "all the details of company is complete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+        val userAnswers = UserAnswers().areYouInUk(true).registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
+          .companyContactAddress(Address("line1", "line2", None, None, None, "GB"))
           .companyAddressYears(AddressYears.UnderAYear)
+          .companyEmail("s@s.com").companyPhone("123").companyCrn("123")
+          .businessName().businessUtr().hasVat(false).hasPaye(false)
           .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(true)
-          .set(DirectorNameId(0))(PersonName("First", "Last"))/*
-          .flatMap(_.set(IsDirectorCompleteId(0))(true))
-          .flatMap(_.set(IsDirectorCompleteId(1))(true))*/
-          .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
+          .variationWorkingKnowledge(true).completeDirector(index = 0).completeDirector(index = 1)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
@@ -266,8 +249,12 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
       "all the details of individual including previous address with less than 12 months address years is complete" in {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+          .individualDetails(TolerantIndividual(Some(""), None, Some("")))
+          .individualDob(LocalDate.now().minusYears(20))
           .individualAddressYears(AddressYears.UnderAYear)
+          .individualContactAddress(Address("line1", "line2", None, None, None, "GB"))
           .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
+          .individualEmail("s@s.com").individualPhone("123")
           .variationWorkingKnowledge(true)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
@@ -276,31 +263,34 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
       "all the details of individual with more than 12 months address years is complete" in {
         val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+          .individualDetails(TolerantIndividual(Some(""), None, Some("")))
+          .individualDob(LocalDate.now().minusYears(20))
           .individualAddressYears(AddressYears.OverAYear)
+          .individualContactAddress(Address("line1", "line2", None, None, None, "GB"))
+          .individualEmail("s@s.com").individualPhone("123")
           .variationWorkingKnowledge(true)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
 
       "all the details of partnership is complete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
+        val userAnswers = UserAnswers().areYouInUk(true).registrationInfo(RegistrationInfo(
           RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
           .partnershipAddressYears(AddressYears.UnderAYear)
+          .partnershipContactAddress(Address("line1", "line2", None, None, None, "GB"))
           .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
+          .partnershipEmail("s@s.com").partnershipPhone("123")
           .variationWorkingKnowledge(false)
+          .businessName().businessUtr().hasVat(false).hasPaye(false)
           .adviserName("test adviser")
           .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
           .adviserEmail("email")
-          .adviserPhone("234")
-          .set(PartnerNameId(0))(PersonName("First", "Last"))/*
-          .flatMap(_.set(IsPartnerCompleteId(0))(true))
-          .flatMap(_.set(IsPartnerCompleteId(1))(true))*/
-          .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
+          .adviserPhone("234").completePartner(index = 0).completePartner(index = 1)
 
         userAnswers.isPsaUpdateDetailsInComplete mustBe false
       }
     }
-  }
+  }*/
 
   "remove" must {
 

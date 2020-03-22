@@ -18,7 +18,7 @@ package utils.testhelpers
 
 import java.time.LocalDate
 
-import models.{Address, AddressYears, PersonName}
+import models._
 import org.scalatest.OptionValues
 import utils.UserAnswers
 
@@ -39,6 +39,13 @@ object DataCompletionBuilder {
         partnerHasNINO(index, flag = false).partnerNoNINOReason(index, reason = "no nino").partnerHasUTR(index, flag = false).
         partnerNoUTRReason(index, reason = "no utr").partnerAddress(index, address).partnerAddressYears(index, AddressYears.OverAYear).
         partnerEmail(index, email = "s@s.com").partnerPhone(index, phone = "123")
+    }
+
+    def completeIndividual: UserAnswers = {
+      answers.individualDetails(TolerantIndividual(Some(""), None, Some(""))).individualDob(LocalDate.now().minusYears(20))
+        .individualContactAddress(address).individualAddressYears(AddressYears.OverAYear).individualEmail("s@s.com").individualPhone("7777")
+        .registrationInfo(RegistrationInfo(
+          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
     }
   }
 }

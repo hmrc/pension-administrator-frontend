@@ -25,6 +25,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
+import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerRow, AnswerSection, Link}
 import views.html.check_your_answers
 
@@ -96,6 +97,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
 
   def sections: Seq[AnswerSection] = Seq(AnswerSection(None, adviserDetails))
 
+  private val mockDataCompletion = mock[DataCompletion]
+
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CheckYourAnswersController(
       frontendAppConfig,
@@ -103,6 +106,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
+      mockDataCompletion,
       countryOptions,
       stubMessagesControllerComponents(),
       view
