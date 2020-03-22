@@ -20,12 +20,12 @@ import java.time.LocalDate
 
 import base.SpecBase
 import identifiers.TypedIdentifier
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import utils.{DateHelper, UserAnswers}
 import utils.checkyouranswers.Ops._
+import utils.{DateHelper, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
 
 class CheckYourAnswersSpec extends SpecBase {
@@ -39,30 +39,36 @@ class CheckYourAnswersSpec extends SpecBase {
   def dataRequest(answers: UserAnswers): DataRequest[AnyContent] =
     DataRequest(FakeRequest(), "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
 
-  "CheckYourAnswers" must {
+  "CheckYourAnswers" when {
+    "reference value " must {
+      "produce row of answers for reference value" in {
+        val request = dataRequest(UserAnswers().set(testIdentifier[ReferenceValue])(ReferenceValue(value = "test-ref")).asOpt.value)
 
-    "produce row of answers for reference value" in {
-      val request = dataRequest(UserAnswers().set(testIdentifier[ReferenceValue])(ReferenceValue(value = "test-ref")).asOpt.value)
-
-      testIdentifier[ReferenceValue].row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-        AnswerRow(label = Message("testId.heading"), answer = Seq("test-ref"), answerIsMessageKey = false,
-          changeUrl = Some(Link(onwardUrl)))))
+        testIdentifier[ReferenceValue].row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("testId.heading"), answer = Seq("test-ref"), answerIsMessageKey = false,
+            changeUrl = Some(Link(onwardUrl)))))
+      }
     }
 
-    "produce row of answers for personName" in {
-      val request = dataRequest(UserAnswers().set(testIdentifier[PersonName])(PersonName("first", "last")).asOpt.value)
+    "person name" must {
+      "produce row of answers for personName" in {
+        val request = dataRequest(UserAnswers().set(testIdentifier[PersonName])(PersonName("first", "last")).asOpt.value)
 
-      testIdentifier[PersonName].row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-        AnswerRow(label = Message("testId.heading"), answer = Seq("first last"), answerIsMessageKey = false,
-          changeUrl = Some(Link(onwardUrl)))))
+        testIdentifier[PersonName].row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("testId.heading"), answer = Seq("first last"), answerIsMessageKey = false,
+            changeUrl = Some(Link(onwardUrl)))))
+      }
     }
 
-    "produce row of answers for date" in {
-      val request = dataRequest(UserAnswers().set(testIdentifier[LocalDate])(LocalDate.now()).asOpt.value)
+    "LocalDate" must {
 
-      testIdentifier[LocalDate].row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-        AnswerRow(label = Message("testId.heading"), answer = Seq(DateHelper.formatDate(LocalDate.now())), answerIsMessageKey = false,
-          changeUrl = Some(Link(onwardUrl)))))
+      "produce row of answers for date" in {
+        val request = dataRequest(UserAnswers().set(testIdentifier[LocalDate])(LocalDate.now()).asOpt.value)
+
+        testIdentifier[LocalDate].row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("testId.heading"), answer = Seq(DateHelper.formatDate(LocalDate.now())), answerIsMessageKey = false,
+            changeUrl = Some(Link(onwardUrl)))))
+      }
     }
   }
 }

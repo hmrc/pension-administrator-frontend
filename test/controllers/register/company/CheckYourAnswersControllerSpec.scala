@@ -30,20 +30,21 @@ import utils.dataCompletion.DataCompletion
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
+import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
-    when(mockDataCompletion.isCompanyDetailsComplete(any(), any())).thenReturn(true)
+    when(mockDataCompletion.isCompanyDetailsComplete(any())).thenReturn(true)
   }
   "CheckYourAnswers Controller" when {
 
     "on a GET" must {
 
       "render the view correctly for all the rows of answer section if business name and utr is present for UK" in {
-        val retrievalAction = completeUserAnswers.dataRetrievalAction
+        val retrievalAction = UserAnswers().completeCompanyDetailsUK.dataRetrievalAction
         val result = controller(retrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
         val sections = Seq(AnswerSection(None, answerRows))
@@ -51,21 +52,21 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       }
 
       "render the view correctly for all the rows of answer section if business name and address is present for NON UK" in {
-        val retrievalAction = completeUserAnswersNonUK.dataRetrievalAction
+        val retrievalAction = UserAnswers().completeCompanyDetailsNonUK.dataRetrievalAction
         val result = controller(retrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
         val sections = Seq(AnswerSection(None, answerRowsNonUK))
         testRenderedView(sections, result)
       }
 
-      "redirect to register as business page when business name and utr is not present for UK" in {
+      "redirect to register as business page when business name, registration info and utr is not present for UK" in {
         val result = controller(UserAnswers().areYouInUk(answer = true).dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.routes.RegisterAsBusinessController.onPageLoad().url)
       }
 
-      "redirect to register as business page when business name and address is not present for NON UK" in {
+      "redirect to register as business page when business name, registration info and address is not present for NON UK" in {
         val result = controller(UserAnswers().areYouInUk(answer = false).dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
@@ -88,8 +89,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       }
 
       "load the same cya page when data is not complete" in {
-        when(mockDataCompletion.isCompanyDetailsComplete(any(), any())).thenReturn(false)
-        val retrievalAction = completeUserAnswers.dataRetrievalAction
+        when(mockDataCompletion.isCompanyDetailsComplete(any())).thenReturn(false)
+        val retrievalAction = UserAnswers().completeCompanyDetailsUK.dataRetrievalAction
         val result = controller(retrievalAction).onSubmit(NormalMode)(fakeRequest)
 
         val sections = Seq(AnswerSection(None, answerRows))
@@ -109,25 +110,14 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private val mockDataCompletion = mock[DataCompletion]
   private val defaultCompany = Message("theBusiness").resolve
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val crn = "test reg no"
-  private val vat = "Test Vat"
-  private val paye = "Test Paye"
-  private val addressYears = AddressYears.OverAYear
-  private val email = "test@email"
-  private val phone = "123"
-  private val address = Address("address-line-1", "address-line-2", None, None, Some("post-code"), "country")
+  private val crn = "test-crn"
+  private val vat = "test-vat"
+  private val paye = "test-paye"
+  private val addressYears = AddressYears.UnderAYear
+  private val email = "test@test.com"
+  private val phone = "111"
+  private val address = Address("Telford1", "Telford2", None, None, Some("TF3 4ER"), "Country of GB")
   private val view: check_your_answers = app.injector.instanceOf[check_your_answers]
-
-  private val completeUserAnswers: UserAnswers =
-    UserAnswers().areYouInUk(answer = true).businessName().businessUtr().companyHasCrn(hasCrn = true).
-    companyCrn(crn).hasPaye(flag = true).enterPaye(paye).hasVatRegistrationNumber(flag = true).enterVat(vat).
-    companyContactAddress(address).companyAddressYears(addressYears).companyPreviousAddress(address).
-    companyEmail(email).companyPhone(phone)
-
-  private val completeUserAnswersNonUK: UserAnswers =
-    UserAnswers().areYouInUk(answer = false).businessName().nonUkCompanyAddress(address).
-      companyContactAddress(address).companyAddressYears(addressYears).companyPreviousAddress(address).
-      companyEmail(email).companyPhone(phone)
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CheckYourAnswersController(

@@ -61,7 +61,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val isDataComplete = dataCompletion.isCompanyDetailsComplete(request.userAnswers, mode)
+      val isDataComplete = dataCompletion.isCompanyDetailsComplete(request.userAnswers)
       if (isDataComplete) {
         Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
       } else {
@@ -70,10 +70,11 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
   }
 
   private def isMandatoryDataPresent(userAnswers: UserAnswers): Boolean ={
+    val isRegInfoComplete = userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(RegistrationInfoId).nonEmpty
     if(userAnswers.get(AreYouInUKId).contains(false)){
-      userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(CompanyAddressId).nonEmpty
+      isRegInfoComplete && userAnswers.get(CompanyAddressId).nonEmpty
     } else {
-      userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(BusinessUTRId).nonEmpty
+      isRegInfoComplete && userAnswers.get(BusinessUTRId).nonEmpty
     }
   }
 
@@ -99,7 +100,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       controllers.register.company.routes.CheckYourAnswersController.onSubmit(),
       None,
       mode,
-      dataCompletion.isCompanyDetailsComplete(request.userAnswers, mode)
+      dataCompletion.isCompanyDetailsComplete(request.userAnswers)
     ))
   }
 }

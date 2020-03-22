@@ -17,43 +17,55 @@
 package controllers
 
 import identifiers.TypedIdentifier
+import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
-import models.PersonName
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
+import models.{Mode, PersonName}
 import play.api.libs.json.Reads
 import play.api.mvc.Results._
-import play.api.mvc.{AnyContent, Result}
+import play.api.mvc.{AnyContent, Call, Result}
 
 import scala.concurrent.Future
 import scala.language.implicitConversions
 
 trait Retrievals {
 
-  private[controllers] def retrieveDirectorName(index: Int)
+  private[controllers] def retrieveDirectorName(mode: Mode, index: Int)
                                                (f: String => Future[Result])
                                                (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    retrieve[PersonName](DirectorNameId(index)) { directorDetails =>
+    retrieve[PersonName](DirectorNameId(index),
+      controllers.register.company.directors.routes.DirectorNameController.onPageLoad(mode, index)
+    ) { directorDetails =>
       f(directorDetails.fullName)
     }
   }
 
-  private[controllers] def retrievePartnerName(index: Int)
+  private[controllers] def retrievePartnerName(mode: Mode, index: Int)
                                               (f: String => Future[Result])
                                               (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    retrieve[PersonName](PartnerNameId(index)) { partnerDetails =>
+    retrieve[PersonName](PartnerNameId(index),
+      controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(mode, index)) { partnerDetails =>
       f(partnerDetails.fullName)
     }
   }
 
-  private[controllers] def retrieve[A](id: TypedIdentifier[A])
+  private[controllers] def retrieveAdviserName(mode: Mode)
+                                               (f: String => Future[Result])
+                                               (implicit request: DataRequest[AnyContent]): Future[Result] = {
+    retrieve[String](AdviserNameId,
+      controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(mode))(f(_))
+  }
+
+  private[controllers] def retrieve[A](id: TypedIdentifier[A],
+                                       failedCall: Call = controllers.routes.SessionExpiredController.onPageLoad())
                                       (f: A => Future[Result])
                                       (implicit request: DataRequest[AnyContent], r: Reads[A]): Future[Result] = {
     request.userAnswers.get(id).map(f).getOrElse {
-      Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+      Future.successful(Redirect(failedCall))
     }
 
   }

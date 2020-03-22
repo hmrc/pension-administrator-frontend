@@ -71,10 +71,11 @@ class CheckYourAnswersController @Inject()(
   }
 
   private def isMandatoryDataPresent(userAnswers: UserAnswers): Boolean = {
+    val isRegInfoComplete = userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(RegistrationInfoId).nonEmpty
     if (userAnswers.get(AreYouInUKId).contains(false)) {
-      userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(PartnershipRegisteredAddressId).nonEmpty
+      isRegInfoComplete && userAnswers.get(PartnershipRegisteredAddressId).nonEmpty
     } else {
-      userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(BusinessUTRId).nonEmpty
+      isRegInfoComplete && userAnswers.get(BusinessUTRId).nonEmpty
     }
   }
 

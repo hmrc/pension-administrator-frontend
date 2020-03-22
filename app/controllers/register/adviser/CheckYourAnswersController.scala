@@ -35,7 +35,7 @@ import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            @Adviser navigator: Navigator,
@@ -48,20 +48,16 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            val view: check_your_answers
                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      request.userAnswers.get(AdviserNameId) match {
-        case Some(_) =>
-          cyaPage(mode)
-        case _ =>
-          Redirect(controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(mode))
+      retrieveAdviserName(mode) { _ =>
+        Future.successful(cyaPage(mode))
       }
-
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      val isDataComplete = !dataCompletion.isAdviserIncomplete(request.userAnswers, mode)
+      val isDataComplete = dataCompletion.isAdviserComplete(request.userAnswers, mode)
       if (isDataComplete) {
         Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
       } else {
@@ -78,6 +74,6 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
     val sections = Seq(AnswerSection(None, adviserName ++ address ++ details))
 
     Ok(view(sections, routes.CheckYourAnswersController.onSubmit(mode),
-      psaName(), mode, !dataCompletion.isAdviserIncomplete(request.userAnswers, mode)))
+      psaName(), mode, dataCompletion.isAdviserComplete(request.userAnswers, mode)))
   }
 }

@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.individual.routes._
+import identifiers.register.RegistrationInfoId
 import identifiers.register.individual._
 import models.Mode
 import models.Mode.checkMode
@@ -58,8 +59,8 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      val userAnswers = request.userAnswers
-      (userAnswers.get(IndividualDetailsId), userAnswers.get(IndividualAddressId)) match {
+      val ua = request.userAnswers
+      (ua.get(IndividualDetailsId), ua.get(IndividualAddressId)) match {
         case (Some(_), Some(_)) =>
           loadCyaPage(mode)
         case _ =>

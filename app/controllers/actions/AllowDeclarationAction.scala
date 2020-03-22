@@ -45,7 +45,7 @@ class AllowDeclarationAction(mode: Mode, dataCompletion: DataCompletion)
         true
     }
 
-    if (isComplete && !dataCompletion.isAdviserIncomplete(userAnswers, mode)) {
+    if (isComplete && dataCompletion.isAdviserComplete(userAnswers, mode)) {
       Future(None)
     } else {
       Future.successful(Some(Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())))

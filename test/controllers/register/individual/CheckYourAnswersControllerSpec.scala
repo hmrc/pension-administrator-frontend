@@ -33,6 +33,7 @@ import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
+import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 import scala.concurrent.Future
 
@@ -45,7 +46,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
     "on a GET request" must {
 
       "render the view correctly for all the rows of answer section if individual name and address is present" in {
-        val retrievalAction = completeUserAnswers.dataRetrievalAction
+        val retrievalAction = UserAnswers().completeIndividual.dataRetrievalAction
         val result = controller(retrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
         val sections = Seq(AnswerSection(None, answerRows))
@@ -77,7 +78,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
       "load the same cya page when data is not complete" in {
         when(mockDataCompletion.isIndividualComplete(any(), any())).thenReturn(false)
-        val retrievalAction = completeUserAnswers.dataRetrievalAction
+        val retrievalAction = UserAnswers().completeIndividual.dataRetrievalAction
         val result = controller(retrievalAction).onSubmit(NormalMode)(fakeRequest)
 
         val sections = Seq(AnswerSection(None, answerRows))
@@ -96,18 +97,13 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val dob = LocalDate.now().minusYears(20)
-  private val addressYears = AddressYears.OverAYear
-  private val email = "test@email"
-  private val phone = "123"
-  private val individual = TolerantIndividual(Some("Joe"), None, Some("Bloggs"))
-  private val address = Address("address-line-1", "address-line-2", None, None, Some("post-code"), "country")
+  private val addressYears = AddressYears.UnderAYear
+  private val email = "test@test.com"
+  private val phone = "111"
+  private val individual = TolerantIndividual(Some("first"), None, Some("last"))
+  private val address = Address("Telford1", "Telford2", None, None, Some("TF3 4ER"), "Country of GB")
 
   private val cyaView: check_your_answers = app.injector.instanceOf[check_your_answers]
-
-  private val completeUserAnswers = UserAnswers().individualDetails(individual).
-    individualSameContactAddress(areSame = true).nonUkIndividualAddress(address).
-    individualDob(dob).individualContactAddress(address).individualAddressYears(addressYears).individualPreviousAddress(address).
-    individualEmail(email).individualPhone(phone)
 
   private def fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 

@@ -53,12 +53,8 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val userAnswers = request.userAnswers
-      userAnswers.get(PartnerNameId(index)) match {
-        case Some(_) =>
-          loadCyaPage(index, mode)
-        case _ =>
-          Future.successful(Redirect(routes.PartnerNameController.onPageLoad(mode, index)))
+      retrievePartnerName(mode, index) {_ =>
+        loadCyaPage(index, mode)
       }
   }
 

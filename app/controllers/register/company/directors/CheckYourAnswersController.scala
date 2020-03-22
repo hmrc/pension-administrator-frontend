@@ -56,12 +56,8 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val userAnswers = request.userAnswers
-      userAnswers.get(DirectorNameId(index)) match {
-        case Some(_) =>
-          loadCyaPage(index, mode)
-        case _ =>
-          Future.successful(Redirect(routes.DirectorNameController.onPageLoad(mode, index).url))
+      retrieveDirectorName(mode, index) {_ =>
+        loadCyaPage(index, mode)
       }
   }
 

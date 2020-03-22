@@ -25,6 +25,7 @@ import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
 import identifiers.register._
 import models._
+import models.register.{BusinessType, DeclarationWorkingKnowledge}
 import org.scalatest.OptionValues
 
 
@@ -80,7 +81,7 @@ package object utils {
       answers.set(IndividualPreviousAddressListId)(address).asOpt.value
     }
 
-    def nonUkIndividualAddress(address: Address): UserAnswers = {
+    def individualAddress(address: Address): UserAnswers = {
       answers.set(IndividualAddressId)(address.toTolerantAddress).asOpt.value
     }
 
@@ -96,6 +97,14 @@ package object utils {
 
     def companyCrn(crn: String): UserAnswers = {
       answers.set(CompanyRegistrationNumberId)(crn).asOpt.value
+    }
+
+    def companyIsThisPreviousAddress(flag: Boolean): UserAnswers = {
+      answers.set(CompanyConfirmPreviousAddressId)(flag).asOpt.value
+    }
+
+    def companyTradingOverAYear(flag: Boolean): UserAnswers = {
+      answers.set(CompanyTradingOverAYearId)(flag).asOpt.value
     }
 
     def companyHasCrn(hasCrn: Boolean): UserAnswers = {
@@ -244,8 +253,16 @@ package object utils {
       answers.set(VariationWorkingKnowledgeId)(value).asOpt.value
     }
 
+    def declarationWorkingKnowledge(value: DeclarationWorkingKnowledge): UserAnswers = {
+      answers.set(DeclarationWorkingKnowledgeId)(value).asOpt.value
+    }
+
     def businessName(name: String = "test company"): UserAnswers = {
       answers.set(BusinessNameId)(name).asOpt.value
+    }
+
+    def businessType(businessType: BusinessType): UserAnswers = {
+      answers.set(BusinessTypeId)(businessType).asOpt.value
     }
 
     def businessUtr(utr: String = "1111111111"): UserAnswers = {
@@ -257,6 +274,11 @@ package object utils {
     }
 
     // Partnership
+
+    def partnershipTradingOverAYear(flag: Boolean): UserAnswers = {
+      answers.set(PartnershipTradingOverAYearId)(flag).asOpt.value
+    }
+
     def partnershipContactAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(PartnershipContactAddressListId)(address).asOpt.value
     }

@@ -25,27 +25,74 @@ import utils.UserAnswers
 object DataCompletionBuilder {
 
   implicit class DataCompletionUserAnswerOps(answers: UserAnswers) extends OptionValues {
-    val address = Address("Telford1", "Telford2", Some("Telford3"), Some("Telford4"), Some("TF3 4ER"), "GB")
+    private val address = Address("Telford1", "Telford2", None, None, Some("TF3 4ER"), "GB")
+    private val email = "test@test.com"
+    private val phone = "111"
+    private val reason = "not available"
+    private val dob = LocalDate.now().minusYears(20)
 
     def completeDirector(index: Int, isDeleted: Boolean = false): UserAnswers = {
-      answers.directorName(index, PersonName(s"first$index", s"last$index", isDeleted)).directorDob(index, LocalDate.now().minusYears(20)).
-        directorHasNINO(index, flag = false).directorNoNINOReason(index, reason = "no nino").directorHasUTR(index, flag = false).
-        directorNoUTRReason(index, reason = "no utr").directorAddress(index, address).directorAddressYears(index, AddressYears.OverAYear).
-        directorEmail(index, email = "s@s.com").directorPhone(index, phone = "123")
+      answers.directorName(index, PersonName(s"first$index", s"last$index", isDeleted)).directorDob(index, dob).
+        directorHasNINO(index, flag = false).directorNoNINOReason(index, reason).directorHasUTR(index, flag = false).
+        directorNoUTRReason(index, reason).directorAddress(index, address).directorAddressYears(index, AddressYears.OverAYear).
+        directorEmail(index, email).directorPhone(index, phone)
     }
 
     def completePartner(index: Int): UserAnswers = {
-      answers.partnerName(index, PersonName(s"first$index", s"last$index")).partnerDob(index, LocalDate.now().minusYears(20)).
-        partnerHasNINO(index, flag = false).partnerNoNINOReason(index, reason = "no nino").partnerHasUTR(index, flag = false).
-        partnerNoUTRReason(index, reason = "no utr").partnerAddress(index, address).partnerAddressYears(index, AddressYears.OverAYear).
-        partnerEmail(index, email = "s@s.com").partnerPhone(index, phone = "123")
+      answers.partnerName(index, PersonName(s"first$index", s"last$index")).partnerDob(index, dob).
+        partnerHasNINO(index, flag = false).partnerNoNINOReason(index, reason).partnerHasUTR(index, flag = false).
+        partnerNoUTRReason(index, reason).partnerAddress(index, address).partnerAddressYears(index, AddressYears.OverAYear).
+        partnerEmail(index, email).partnerPhone(index, phone)
     }
 
     def completeIndividual: UserAnswers = {
-      answers.individualDetails(TolerantIndividual(Some(""), None, Some(""))).individualDob(LocalDate.now().minusYears(20))
-        .individualContactAddress(address).individualAddressYears(AddressYears.OverAYear).individualEmail("s@s.com").individualPhone("7777")
-        .registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+      answers.individualAddress(address).individualSameContactAddress(areSame = true).
+        individualDetails(TolerantIndividual(Some("first"), None, Some("last"))).individualDob(dob)
+        .individualContactAddress(address).individualAddressYears(AddressYears.UnderAYear).
+        individualPreviousAddress(address).individualEmail(email).individualPhone(phone)
+        .registrationInfo(RegistrationInfo(RegistrationLegalStatus.Individual, "test-sap", noIdentifier = false, RegistrationCustomerType.UK, None, None))
     }
+
+    def completeIndividualVariations: UserAnswers = {
+      answers.individualDetails(TolerantIndividual(Some("first"), None, Some("last"))).individualDob(dob)
+        .individualContactAddress(address).individualAddressYears(AddressYears.OverAYear).individualEmail(email).individualPhone(phone)
+        .registrationInfo(RegistrationInfo(RegistrationLegalStatus.Individual, "test-sap", noIdentifier = false, RegistrationCustomerType.UK, None, None))
+    }
+
+    def completeCompanyDetailsUK: UserAnswers = {
+      answers.areYouInUk(answer = true).regInfo(RegistrationLegalStatus.LimitedCompany).
+        hasVat(true).enterVat("test-vat").companyHasCrn(true)
+        .businessUtr().companyCrn(crn = "test-crn").
+        hasPaye(flag = true).enterPaye(paye = "test-paye").companyContactAddress(address).companyAddressYears(AddressYears.UnderAYear).
+        companyTradingOverAYear(flag = true).companyPreviousAddress(address).companyEmail(email).companyPhone(phone).businessName()
+    }
+
+    def completePartnershipDetailsUK: UserAnswers = {
+      answers.areYouInUk(answer = true).regInfo(RegistrationLegalStatus.Partnership).
+        businessUtr().hasVat(answer = true).hasPaye(flag = true).enterPaye(paye = "test-paye").enterVat(vat = "test-vat").
+        partnershipContactAddress(address).partnershipAddressYears(AddressYears.UnderAYear).
+        partnershipTradingOverAYear(flag = true).partnershipPreviousAddress(address).partnershipEmail(email).
+        partnershipPhone(phone).businessName()
+    }
+
+    def completeCompanyDetailsNonUK: UserAnswers = {
+      answers.areYouInUk(answer = false).regInfo(RegistrationLegalStatus.LimitedCompany).
+        businessName().nonUkCompanyAddress(address).companyContactAddress(address).
+        companyAddressYears(AddressYears.UnderAYear).companyTradingOverAYear(flag = true).companyPreviousAddress(address).
+        companyEmail(email).companyPhone(phone)
+    }
+
+    def completePartnershipDetailsNonUK: UserAnswers = {
+      answers.areYouInUk(answer = false).businessName().regInfo(RegistrationLegalStatus.Partnership).
+        nonUkPartnershipAddress(address).partnershipContactAddress(address).
+        partnershipAddressYears(AddressYears.UnderAYear).partnershipTradingOverAYear(flag = true).
+        partnershipPreviousAddress(address).
+        partnershipEmail(email).partnershipPhone(phone)
+    }
+
+    def regInfo(legalStatus: RegistrationLegalStatus): UserAnswers = answers.
+      registrationInfo(answer = RegistrationInfo(legalStatus, "test-sap",
+        noIdentifier = false, RegistrationCustomerType.UK, None, None))
   }
+
 }
