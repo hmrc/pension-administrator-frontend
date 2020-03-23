@@ -17,8 +17,7 @@
 package identifiers.register.company
 
 import identifiers._
-import identifiers.register.{AreYouInUKId, BusinessTypeId}
-import models.register.BusinessType
+import identifiers.register.AreYouInUKId
 import play.api.i18n.Messages
 import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersBusiness, StringCYA}
