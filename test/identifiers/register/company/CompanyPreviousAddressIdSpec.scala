@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package identifiers.register.company.directors
+package identifiers.register.company
 
 import base.SpecBase
-import models._
 import models.requests.DataRequest
+import models.{Address, AddressYears, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.checkyouranswers.Ops._
@@ -26,43 +26,43 @@ import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
 
-class DirectorPreviousAddressIdSpec extends SpecBase {
-  private val address = Address("line1", "line2", None, None, None, "country")
+class CompanyPreviousAddressIdSpec extends SpecBase {
+
+  private val address = Address("foo", "bar", None, None, None, "GB")
+  private val onwardUrl = "onwardUrl"
   implicit val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val index = 0
-  private val onwardUrl = controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index).url
 
   "cya" when {
     "in normal mode" must {
 
       "return answers rows with change links when have value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().directorPreviousAddress(index, address).
-            directorName(index, PersonName("first", "last")))
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().companyPreviousAddress(address).businessName())
 
-        DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+        CompanyPreviousAddressId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
           AnswerRow(label = Message("previousAddress.checkYourAnswersLabel"),
             answer = address.lines(countryOptions), answerIsMessageKey = false,
-            changeUrl = Some(Link(onwardUrl)), Some(Message("previousAddress.visuallyHidden.text", "first last")))))
+            changeUrl = Some(Link(onwardUrl)), Some(Message("previousAddress.visuallyHidden.text", "test company")))))
       }
 
-      "return answers rows with add links when address years is under a year, and no previous address" in {
+      "return answers rows with add links when address years is under a year, trading over a year is true and no previous address" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
           PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()
-            .directorAddressYears(index, AddressYears.UnderAYear).directorName(index, PersonName("first", "last")))
+            .companyAddressYears(AddressYears.UnderAYear).companyTradingOverAYear(flag = true).businessName())
 
-        DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+        CompanyPreviousAddressId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
           AnswerRow(label = Message("previousAddress.checkYourAnswersLabel"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("previousAddress.visuallyHidden.text", "first last")))))
+            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("previousAddress.visuallyHidden.text", "test company")))))
       }
 
-      "return no answers rows when not mandatory and not have previous address" in {
+      "return no answers rows when not mandatory and not have contact address" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
           PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()
-            .directorAddressYears(index, AddressYears.OverAYear).directorName(index, PersonName("first", "last")))
+            .companyAddressYears(AddressYears.OverAYear).businessName())
 
-        DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
+        CompanyPreviousAddressId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }
     }
   }
+
 }
