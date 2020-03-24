@@ -72,10 +72,6 @@ class DirectorAddressYearsIdSpec extends SpecBase {
 
       val result: UserAnswers = answersWithPreviousAddress.set(DirectorAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
 
-      "remove the IsDirectorComplete flag" in {
-        result.get(IsDirectorCompleteId(0)).value mustBe false
-      }
-
       "not remove the data for `PreviousPostCodeLookup`" in {
         result.get(DirectorPreviousAddressPostCodeLookupId(0)) mustBe defined
       }
@@ -112,25 +108,37 @@ class DirectorAddressYearsIdSpec extends SpecBase {
   }
 
   "cya" when {
-    def answers: UserAnswers =
-      UserAnswers()
-        .set(DirectorNameId(0))(personDetails).asOpt.value
-        .set(DirectorAddressYearsId(0))(value = AddressYears.OverAYear).asOpt.value
-
+    val address = Address("foo", "bar", None, None, None, "GB")
     "in normal mode" must {
-      "return answers rows with change links" in {
-        val answerRows =
-          Seq(AnswerRow(
-            Message("addressYears.heading").withArgs(personDetails.fullName),
-            Seq(s"common.addressYears.${addressYears.toString}"),
-            answerIsMessageKey = true,
-            Some(Link(onwardUrl)),
-            Some(Message("addressYears.visuallyHidden.text").withArgs(personDetails.fullName))
-          ))
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
 
-        DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(answerRows)
+      "return answers rows with change links when have value" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().directorAddressYears(0, AddressYears.OverAYear).
+            directorName(0, PersonName("first", "last")))
+
+        DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("addressYears.heading"),
+            answer = Seq("common.addressYears.over_a_year"), answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl)), Some(Message("addressYears.visuallyHidden.text", "first last")))))
+      }
+
+      "return answers rows with add links when there is address but no address years" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+          UserAnswers().directorAddress(0, address).
+            directorName(0, PersonName("first", "last")))
+
+        DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("addressYears.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("addressYears.visuallyHidden.text", "first last")))))
+      }
+
+      "return no answers rows when there is no address and address years" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+            directorName(0, PersonName("first", "last")))
+
+        DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }
     }
   }

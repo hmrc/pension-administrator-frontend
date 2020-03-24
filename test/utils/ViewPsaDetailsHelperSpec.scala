@@ -22,11 +22,12 @@ import base.{JsonFileReader, SpecBase}
 import identifiers.register.company.directors._
 import identifiers.register.partnership.partners._
 import models._
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
 import play.api.libs.json.{JsObject, Json}
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels._
+import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 class ViewPsaDetailsHelperSpec extends SpecBase with MustMatchers {
 
@@ -174,36 +175,12 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
     "directors" + ("directors" -> Json.arr(
     Json.obj(DirectorNameId.toString -> PersonName("John", "One"))))
 
-  private val companyUserAnswersWithTwoDirectors = readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
-    "directors" + ("directors" -> Json.arr(
-    Json.obj(DirectorNameId.toString -> PersonName("John", "One"),
-      IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorNameId.toString -> PersonName("John", "Two"),
-      IsDirectorCompleteId.toString -> true)
-  ))
-  private val companyUserAnswersWithTenDirectors = readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
-    "directors" + ("directors" -> Json.arr(
-    Json.obj(DirectorNameId.toString -> PersonName("John", "One"),
-      IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorNameId.toString -> PersonName("John", "Two"),
-      IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorNameId.toString -> PersonName("John", "Three"),
-      IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorNameId.toString -> PersonName("John", "Four"),
-      IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorNameId.toString -> PersonName("John", "Five"),
-      IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorNameId.toString -> PersonName("John", "Six"),
-      IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorNameId.toString -> PersonName("John", "Seven"),
-      IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorNameId.toString -> PersonName("John", "Eight"),
-      IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorNameId.toString -> PersonName("John", "Nine"),
-      IsDirectorCompleteId.toString -> true),
-    Json.obj(DirectorNameId.toString -> PersonName("John", "Ten"),
-      IsDirectorCompleteId.toString -> true)
-  ))
+  private val companyUserAnswersWithTwoDirectors = UserAnswers(readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
+    "directors").completeDirector(index = 0).completeDirector(index = 1)
+
+  private val companyUserAnswersWithTenDirectors = UserAnswers(readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
+    "directors").completeDirector(0).completeDirector(index = 1).completeDirector(index = 2).completeDirector(index = 3).completeDirector(index = 4).
+    completeDirector(index = 5).completeDirector(index = 6).completeDirector(index = 7).completeDirector(index = 8).completeDirector(index = 9)
 
   private val companyUserAnswersWithAddLinks = readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
     "companyPreviousAddress" - "directors" + ("directors" -> Json.arr(
@@ -221,37 +198,13 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
       Json.obj(PartnerNameId.toString -> PersonName("John", "One"))
     ))
 
-  private val partnershipUserAnswersWithTwoPartners = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
-    "partners" + ("partners" -> Json.arr(
-    Json.obj(PartnerNameId.toString -> PersonName("John", "One"),
-      IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonName("John", "Two"),
-      IsPartnerCompleteId.toString -> true)
-  ))
+  private val partnershipUserAnswersWithTwoPartners = UserAnswers(readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
+    "partners").completePartner(index = 0).completePartner(index = 1)
 
-  private val partnershipUserAnswersWithTenPartners = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
-    "partners" + ("partners" -> Json.arr(
-    Json.obj(PartnerNameId.toString -> PersonName("John", "One"),
-      IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonName("John", "Two"),
-      IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonName("John", "Three"),
-      IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonName("John", "Four"),
-      IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonName("John", "Five"),
-      IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonName("John", "Six"),
-      IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonName("John", "Seven"),
-      IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonName("John", "Eight"),
-      IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonName("John", "Nine"),
-      IsPartnerCompleteId.toString -> true),
-    Json.obj(PartnerNameId.toString -> PersonName("John", "Ten"),
-      IsPartnerCompleteId.toString -> true)
-  ))
+  private val partnershipUserAnswersWithTenPartners = UserAnswers(readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
+    "partners").completePartner(index = 0).completePartner(index = 1).completePartner(index = 2).completePartner(index = 3).completePartner(index = 4).
+  completePartner(index = 5).completePartner(index = 6).completePartner(index = 7).completePartner(index = 8).completePartner(index = 9)
+
   private val partnershipUserAnswersWithAddLinks = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] - "partnershipPreviousAddress" -
     "partners" + ("partners" -> Json.arr(
     Json.obj(
@@ -273,13 +226,13 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   private val individualResultWithAddLink: Seq[SuperSection] = psaDetailsHelper(UserAnswers(individualUserAnswersWithoutPrevAddr)).individualSections
   private val companyResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswers)).companySections
   private val companyResultIncomplete: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswersIncomplete)).companySections
-  private val companyResultWithTwoDirectors: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswersWithTwoDirectors)).companySections
-  private val companyResultWithTenDirectors: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswersWithTenDirectors)).companySections
+  private val companyResultWithTwoDirectors: Seq[SuperSection] = psaDetailsHelper(companyUserAnswersWithTwoDirectors).companySections
+  private val companyResultWithTenDirectors: Seq[SuperSection] = psaDetailsHelper(companyUserAnswersWithTenDirectors).companySections
   private val companyResultWithAddLinks: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswersWithAddLinks)).companySections
   private val partnershipResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswers)).partnershipSections
   private val partnershipResultIncomplete: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswersIncomplete)).partnershipSections
-  private val partnershipResultWithTwoPartners: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswersWithTwoPartners)).partnershipSections
-  private val partnershipResultWithTenPartners: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswersWithTenPartners)).partnershipSections
+  private val partnershipResultWithTwoPartners: Seq[SuperSection] = psaDetailsHelper(partnershipUserAnswersWithTwoPartners).partnershipSections
+  private val partnershipResultWithTenPartners: Seq[SuperSection] = psaDetailsHelper(partnershipUserAnswersWithTenPartners).partnershipSections
   private val partnershipResultWithAddLinks: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswersWithAddLinks)).partnershipSections
 
   private val partnerDetailsSuperSectionKey = Some("partner.supersection.header")

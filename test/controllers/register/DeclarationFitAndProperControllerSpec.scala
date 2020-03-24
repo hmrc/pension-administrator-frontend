@@ -96,6 +96,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
+      FakeAllowDeclarationActionProvider(),
       fakeNavigator,
       fakeUserAnswersCacheConnector,
       stubMessagesControllerComponents(),

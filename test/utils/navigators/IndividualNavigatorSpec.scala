@@ -227,9 +227,9 @@ object IndividualNavigatorSpec extends OptionValues {
   private val nonUkNoIndividualDetails = UserAnswers(Json.obj())
     .set(AreYouInUKId)(false).asOpt.value
 
-  private val nonUkEuAddress = UserAnswers().nonUkIndividualAddress(address("AT"))
-  private val nonUkButUKAddress = UserAnswers().nonUkIndividualAddress(address("GB"))
-  private val nonUkNonEuAddress = UserAnswers().nonUkIndividualAddress(address("AF"))
+  private val nonUkEuAddress = UserAnswers().individualAddress(address("AT"))
+  private val nonUkButUKAddress = UserAnswers().individualAddress(address("GB"))
+  private val nonUkNonEuAddress = UserAnswers().individualAddress(address("AF"))
 
   private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 

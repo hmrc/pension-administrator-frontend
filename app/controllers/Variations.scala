@@ -93,29 +93,6 @@ trait Variations extends FrontendBaseController {
     result.fold(doNothing)(identity)
   }
 
-  def setCompleteFlagForExistingDirOrPartners(mode: Mode, inputId: TypedIdentifier[Address],
-                                              userAnswers: UserAnswers)(implicit request: DataRequest[AnyContent]): Future[JsValue] = {
-    (mode, inputId) match {
-      case (UpdateMode, DirectorPreviousAddressId(index)) =>
-        setCompleteFlag(userAnswers, DirectorNameId(index), index, IsDirectorCompleteId(index))
-      case (UpdateMode, PartnerPreviousAddressId(index)) =>
-        setCompleteFlag(userAnswers, PartnerNameId(index), index, IsPartnerCompleteId(index))
-      case _ =>
-        doNothing
-    }
-  }
-
-  private def setCompleteFlag(userAnswers: UserAnswers, id: TypedIdentifier[PersonName],
-                                    index: Int, completeId: TypedIdentifier[Boolean])
-                                   (implicit request: DataRequest[AnyContent]): Future[JsValue] = {
-    userAnswers.get(id) match {
-      case Some(details) if !details.isNew =>
-        cacheConnector.save(request.externalId, completeId, true)
-      case _ =>
-        doNothing
-    }
-  }
-
   def setNewFlag(id: TypedIdentifier[PersonName], mode: Mode, userAnswers: UserAnswers)
                 (implicit request: DataRequest[_]): Future[JsValue] = {
     if (mode == UpdateMode | mode == CheckUpdateMode) {

@@ -22,7 +22,7 @@ import controllers.actions._
 import forms.register.AddEntityFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.partnership.AddPartnersId
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
+import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.requests.DataRequest
 import play.api.data.Form
@@ -34,6 +34,7 @@ import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{EntityViewModel, Message, Person}
 import views.html.register.addEntity
+import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 class AddPartnerControllerSpec extends ControllerSpecBase {
 
@@ -49,11 +50,11 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
     }
 
     "not populate the view on a GET when the question has previously been answered" in {
-      val partners = Seq(johnDoe)
-      val getRelevantData = dataRetrievalAction(partners: _*)
+      val partners = Seq(Person(0, "first0 last0", deleteLink(0), editLink(0), isDeleted = false, isComplete = true))
+      val getRelevantData = UserAnswers().completePartner(index = 0).dataRetrievalAction
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson(0)))
+      contentAsString(result) mustBe viewAsString(form, partners)
     }
 
     "redirect to the next page when no partners exist and the user submits" in {
@@ -75,10 +76,8 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when less than maximum partners exist and invalid data is submitted" in {
-      val partners = Seq.fill(maxPartners - 1)(johnDoe)
-      val partnerAsPerson = (0 until maxPartners - 1).map( index => johnDoePerson(index))
-
-      val getRelevantData = dataRetrievalAction(partners: _*)
+      val getRelevantData = UserAnswers().completePartner(index = 0).completePartner(1).dataRetrievalAction
+      val partnerAsPerson = Seq(person(0), person(1))
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -119,22 +118,19 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
-
     "populate the view with partners when they exist" in {
-      val partners = Seq(johnDoe, joeBloggs)
-      val partnersAsPerson = Seq(johnDoePerson(0), joeBloggsPerson)
-      val getRelevantData = dataRetrievalAction(partners: _*)
+      val partnersAsPerson = Seq(person(0), person(1))
+      val getRelevantData = UserAnswers().completePartner(index = 0).completePartner(index = 1).dataRetrievalAction
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form, partnersAsPerson)
     }
 
     "exclude the deleted partners from the list" in {
-      val partners = Seq(johnDoe, joeBloggs.copy(isDeleted = true))
-      val getRelevantData = dataRetrievalAction(partners: _*)
+      val getRelevantData = UserAnswers().completePartner(0).completePartner(1, isDeleted = true).dataRetrievalAction
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson(0)))
+      contentAsString(result) mustBe viewAsString(form, Seq(person(0)))
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -198,6 +194,9 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private def viewAsString(form: Form[_] = form, partners: Seq[Person] = Nil) =
     view(form, viewmodel(partners), NormalMode)(request, messages).toString
 
+  private def person(index: Int, isDeleted: Boolean = false) = Person(index,
+    s"first$index last$index", deleteLink(index), editLink(index), isDeleted = isDeleted, isComplete = true)
+
   // scalastyle:off magic.number
   private val johnDoe = PersonName("John", "Doe")
   private val joeBloggs = PersonName("Joe", "Bloggs")
@@ -208,7 +207,8 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private def editLink(index: Int) = controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(index, NormalMode).url
 
   // scalastyle:off magic.number
-  private def johnDoePerson(index:Int) = Person(index, "John Doe", deleteLink(index), editLink(index), isDeleted = false, isComplete = true)
+  private def johnDoePerson(index: Int) = Person(index, "John Doe", deleteLink(index), editLink(index), isDeleted = false, isComplete = true)
+
   private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
 
   private val maxPartners = frontendAppConfig.maxPartners
@@ -216,8 +216,8 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private def dataRetrievalAction(partners: PersonName*): FakeDataRetrievalAction = {
     val validData = Json.obj("partners" ->
       partners.map(d => Json.obj(
-        PartnerNameId.toString -> Json.toJson(d),
-        IsPartnerCompleteId.toString -> true
+        PartnerNameId.toString -> Json.toJson(d) /*,
+        IsPartnerCompleteId.toString -> true*/
       ))
     )
     new FakeDataRetrievalAction(Some(validData))

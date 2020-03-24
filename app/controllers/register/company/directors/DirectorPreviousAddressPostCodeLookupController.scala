@@ -55,7 +55,7 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) {
+      retrieveDirectorName(mode, index) {
         directorName =>
           get(viewModel(mode, index, directorName), mode)
       }
@@ -63,7 +63,7 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) {
+      retrieveDirectorName(mode, index) {
         directorName =>
           post(DirectorPreviousAddressPostCodeLookupId(index), viewModel(mode, index, directorName), mode)
       }

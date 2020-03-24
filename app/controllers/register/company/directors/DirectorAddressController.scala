@@ -63,7 +63,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) {
+      retrieveDirectorName(mode, index) {
         directorName =>
           get(addressViewModel(mode, index, directorName), mode)
       }
@@ -71,7 +71,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) {
+      retrieveDirectorName(mode, index) {
         directorName =>
           val vm = addressViewModel(mode, index, directorName)
           post(DirectorAddressId(index), vm, mode)

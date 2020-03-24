@@ -30,8 +30,14 @@ case object BusinessUTRId extends TypedIdentifier[String] {
   implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
     new CheckYourAnswers[self.type] {
 
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA(Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        userAnswers.get(AreYouInUKId) match {
+          case Some(false) =>
+            Nil
+          case _ =>
+            StringCYA(Some(label(userAnswers)))().row(id)(changeUrl, userAnswers)
+        }
+      }
     }
 
   private def label(userAnswers: UserAnswers)(implicit messages: Messages): String =

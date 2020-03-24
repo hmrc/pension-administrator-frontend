@@ -16,13 +16,20 @@
 
 package identifiers.register.company
 
-import models.{Address, AddressYears}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import base.SpecBase
+import models.requests.DataRequest
+import models.{Address, AddressYears, PSAUser, UserType}
 import play.api.libs.json.Json
-import utils.{Enumerable, UserAnswers}
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import utils.UserAnswers
+import utils.checkyouranswers.Ops._
+import viewmodels.{AnswerRow, Link, Message}
 
-class CompanyAddressYearsIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class CompanyAddressYearsIdSpec extends SpecBase {
 
+  private val address = Address("foo", "bar", None, None, None, "GB")
+  private val onwardUrl = "onwardUrl"
   "Cleanup" when {
 
     val answersWithPreviousAddress = UserAnswers(Json.obj())
@@ -67,6 +74,38 @@ class CompanyAddressYearsIdSpec extends WordSpec with MustMatchers with OptionVa
 
       "not remove the data for `PreviousAddress`" in {
         result.get(CompanyPreviousAddressId) mustBe defined
+      }
+    }
+  }
+
+  "cya" when {
+    "in normal mode" must {
+
+      "return answers rows with change links when have value" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().companyAddressYears(AddressYears.OverAYear)
+        .companyContactAddress(address).businessName())
+
+        CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("addressYears.heading"), answer = Seq("common.addressYears.over_a_year"), answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl)), Some(Message("addressYears.visuallyHidden.text", "test company")))))
+      }
+
+      "return answers rows with add links when mandatory and have contact address" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()
+            .companyContactAddress(address).businessName())
+
+        CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("addressYears.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("addressYears.visuallyHidden.text", "test company")))))
+      }
+
+      "return no answers rows when not mandatory and not have contact address" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+
+        CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }
     }
   }

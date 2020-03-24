@@ -19,17 +19,19 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.partnership.{CheckYourAnswersId, _}
 import identifiers.register._
+import identifiers.register.partnership.{CheckYourAnswersId, _}
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{CheckMode, Mode, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import utils.annotations.Partnership
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
+import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
@@ -42,6 +44,7 @@ class CheckYourAnswersController @Inject()(
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
+                                            dataCompletion: DataCompletion,
                                             @Partnership navigator: Navigator,
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
@@ -50,33 +53,54 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-
-      val partnershipDetails = AnswerSection(None, Seq(
-        BusinessNameId.row(None),
-        BusinessUTRId.row(None),
-        HasPAYEId.row(Some(Link(routes.HasPartnershipPAYEController.onPageLoad(CheckMode).url))),
-        EnterPAYEId.row(Some(Link(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url))),
-        HasVATId.row(Some(Link(routes.HasPartnershipVATController.onPageLoad(CheckMode).url))),
-        EnterVATId.row(Some(Link(routes.PartnershipEnterVATController.onPageLoad(CheckMode).url))),
-        PartnershipContactAddressId.row(Some(Link(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
-        PartnershipAddressYearsId.row(Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))),
-        PartnershipPreviousAddressId.row(Some(Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
-        PartnershipEmailId.row(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url))),
-        PartnershipPhoneId.row(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)))
-        ).flatten
-      )
-
-      Ok(view(
-        Seq(partnershipDetails),
-        controllers.register.partnership.routes.CheckYourAnswersController.onSubmit(),
-        None,
-        mode
-      ))
+      if (isMandatoryDataPresent(request.userAnswers)) {
+        loadCyaPage(mode)
+      } else {
+        Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
-      Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+      val isDataComplete = dataCompletion.isPartnershipDetailsComplete(request.userAnswers)
+      if (isDataComplete) {
+        Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
+      } else {
+        loadCyaPage(mode)
+      }
+  }
 
+  private def isMandatoryDataPresent(userAnswers: UserAnswers): Boolean = {
+    val isRegInfoComplete = userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(RegistrationInfoId).nonEmpty
+    if (userAnswers.get(AreYouInUKId).contains(false)) {
+      isRegInfoComplete && userAnswers.get(PartnershipRegisteredAddressId).nonEmpty
+    } else {
+      isRegInfoComplete && userAnswers.get(BusinessUTRId).nonEmpty
+    }
+  }
+
+  private def loadCyaPage(mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
+    val partnershipDetails = AnswerSection(None, Seq(
+      BusinessNameId.row(None),
+      BusinessUTRId.row(None),
+      HasPAYEId.row(Some(Link(routes.HasPartnershipPAYEController.onPageLoad(CheckMode).url))),
+      EnterPAYEId.row(Some(Link(routes.PartnershipEnterPAYEController.onPageLoad(CheckMode).url))),
+      HasVATId.row(Some(Link(routes.HasPartnershipVATController.onPageLoad(CheckMode).url))),
+      EnterVATId.row(Some(Link(routes.PartnershipEnterVATController.onPageLoad(CheckMode).url))),
+      PartnershipContactAddressId.row(Some(Link(routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
+      PartnershipAddressYearsId.row(Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url))),
+      PartnershipPreviousAddressId.row(Some(Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
+      PartnershipEmailId.row(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url))),
+      PartnershipPhoneId.row(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)))
+    ).flatten
+    )
+
+    Ok(view(
+      Seq(partnershipDetails),
+      controllers.register.partnership.routes.CheckYourAnswersController.onSubmit(),
+      None,
+      mode,
+      dataCompletion.isPartnershipDetailsComplete(request.userAnswers)
+    ))
   }
 }

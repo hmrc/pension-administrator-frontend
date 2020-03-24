@@ -40,7 +40,14 @@ object PartnerNoUTRReasonId {
 
 
       override def row(id: PartnerNoUTRReasonId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[PartnerNoUTRReasonId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+        userAnswers.get(HasPartnerUTRId(id.index)) match {
+          case Some(false) =>
+            StringCYA[PartnerNoUTRReasonId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)))().
+              row(id)(changeUrl, userAnswers)
+          case _ =>
+            StringCYA[PartnerNoUTRReasonId](Some(label(userAnswers, id.index)), Some(hiddenLabel(userAnswers, id.index)), isMandatory = false)().
+              row(id)(changeUrl, userAnswers)
+        }
     }
 }
 

@@ -23,8 +23,9 @@ import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
-import identifiers.register.{BusinessNameId, RegisterAsBusinessId, RegistrationInfoId, VariationWorkingKnowledgeId}
+import identifiers.register._
 import models._
+import models.register.{BusinessType, DeclarationWorkingKnowledge}
 import org.scalatest.OptionValues
 
 
@@ -58,11 +59,20 @@ package object utils {
       answers.set(IndividualDetailsId)(individualDetails).asOpt.value
     }
 
+    def individualDob(dob: LocalDate): UserAnswers = {
+      answers.set(IndividualDateOfBirthId)(dob).asOpt.value
+    }
+
     def individualContactAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(IndividualContactAddressListId)(address).asOpt.value
     }
 
     // Individual PSA
+
+    def individualSameContactAddress(areSame: Boolean): UserAnswers = {
+      answers.set(IndividualSameContactAddressId)(areSame).asOpt.value
+    }
+
     def individualPreviousAddress(address: Address): UserAnswers = {
       answers.set(IndividualPreviousAddressId)(address).asOpt.value
     }
@@ -71,11 +81,60 @@ package object utils {
       answers.set(IndividualPreviousAddressListId)(address).asOpt.value
     }
 
-    def nonUkIndividualAddress(address: Address): UserAnswers = {
+    def individualAddress(address: Address): UserAnswers = {
       answers.set(IndividualAddressId)(address.toTolerantAddress).asOpt.value
     }
 
+    def individualEmail(email: String): UserAnswers = {
+      answers.set(IndividualEmailId)(email).asOpt.value
+    }
+
+    def individualPhone(phone: String): UserAnswers = {
+      answers.set(IndividualPhoneId)(phone).asOpt.value
+    }
+
     // Company PSA
+
+    def companyCrn(crn: String): UserAnswers = {
+      answers.set(CompanyRegistrationNumberId)(crn).asOpt.value
+    }
+
+    def companyIsThisPreviousAddress(flag: Boolean): UserAnswers = {
+      answers.set(CompanyConfirmPreviousAddressId)(flag).asOpt.value
+    }
+
+    def companyTradingOverAYear(flag: Boolean): UserAnswers = {
+      answers.set(CompanyTradingOverAYearId)(flag).asOpt.value
+    }
+
+    def companyHasCrn(hasCrn: Boolean): UserAnswers = {
+      answers.set(HasCompanyCRNId)(hasCrn).asOpt.value
+    }
+
+    def hasPaye(flag: Boolean): UserAnswers = {
+      answers.set(HasPAYEId)(flag).asOpt.value
+    }
+
+    def enterPaye(paye: String): UserAnswers = {
+      answers.set(EnterPAYEId)(paye).asOpt.value
+    }
+
+    def hasVatRegistrationNumber(flag: Boolean): UserAnswers = {
+      answers.set(HasVATId)(flag).asOpt.value
+    }
+
+    def enterVat(vat: String): UserAnswers = {
+      answers.set(EnterVATId)(vat).asOpt.value
+    }
+
+    def companyEmail(email: String): UserAnswers = {
+      answers.set(CompanyEmailId)(email).asOpt.value
+    }
+
+    def companyPhone(phone: String): UserAnswers = {
+      answers.set(CompanyPhoneId)(phone).asOpt.value
+    }
+
     def companyPreviousAddress(address: Address): UserAnswers = {
       answers.set(CompanyPreviousAddressId)(address).asOpt.value
     }
@@ -194,8 +253,20 @@ package object utils {
       answers.set(VariationWorkingKnowledgeId)(value).asOpt.value
     }
 
+    def declarationWorkingKnowledge(value: DeclarationWorkingKnowledge): UserAnswers = {
+      answers.set(DeclarationWorkingKnowledgeId)(value).asOpt.value
+    }
+
     def businessName(name: String = "test company"): UserAnswers = {
       answers.set(BusinessNameId)(name).asOpt.value
+    }
+
+    def businessType(businessType: BusinessType): UserAnswers = {
+      answers.set(BusinessTypeId)(businessType).asOpt.value
+    }
+
+    def businessUtr(utr: String = "1111111111"): UserAnswers = {
+      answers.set(BusinessUTRId)(utr).asOpt.value
     }
 
     def companyContactAddressList(addresses: Seq[TolerantAddress]): UserAnswers = {
@@ -203,12 +274,25 @@ package object utils {
     }
 
     // Partnership
+
+    def partnershipTradingOverAYear(flag: Boolean): UserAnswers = {
+      answers.set(PartnershipTradingOverAYearId)(flag).asOpt.value
+    }
+
     def partnershipContactAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(PartnershipContactAddressListId)(address).asOpt.value
     }
 
     def partnershipSameContactAddress(areSame: Boolean): UserAnswers = {
       answers.set(PartnershipSameContactAddressId)(areSame).asOpt.value
+    }
+
+    def partnershipEmail(email: String): UserAnswers = {
+      answers.set(PartnershipEmailId)(email).asOpt.value
+    }
+
+    def partnershipPhone(phone: String): UserAnswers = {
+      answers.set(PartnershipPhoneId)(phone).asOpt.value
     }
 
     def companyAddressYears(underOrOverAddressYear: AddressYears): UserAnswers = {
@@ -239,6 +323,10 @@ package object utils {
 
     def partnerName(index: Int, personName: PersonName): UserAnswers = {
       answers.set(PartnerNameId(index))(personName).asOpt.value
+    }
+
+    def partnerDob(index: Int, dob: LocalDate): UserAnswers = {
+      answers.set(PartnerDOBId(index))(dob).asOpt.value
     }
 
     def partnerPreviousAddress(index: Int, address: Address): UserAnswers = {
@@ -279,6 +367,14 @@ package object utils {
 
     def partnerAddressYears(index: Int, addressYears: AddressYears): UserAnswers = {
       answers.set(PartnerAddressYearsId(index))(addressYears).asOpt.value
+    }
+
+    def partnerEmail(index: Int, email: String): UserAnswers = {
+      answers.set(PartnerEmailId(index))(email).asOpt.value
+    }
+
+    def partnerPhone(index: Int, phone: String): UserAnswers = {
+      answers.set(PartnerPhoneId(index))(phone).asOpt.value
     }
 
     // Non-UK

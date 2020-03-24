@@ -77,7 +77,7 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
 
       implicit val request: DataRequest[AnyContent] = dataRequest(validData)
 
-      val result = controller.retrieveDirectorName(0)(success)
+      val result = controller.retrieveDirectorName(NormalMode, 0)(success)
 
       status(result) must be(OK)
     }
@@ -95,7 +95,7 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
 
       implicit val request: DataRequest[AnyContent] = dataRequest(validData)
 
-      val result = controller.retrievePartnerName(0)(success)
+      val result = controller.retrievePartnerName(NormalMode, 0)(success)
 
       status(result) must be(OK)
     }

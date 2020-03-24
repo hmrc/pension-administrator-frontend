@@ -20,10 +20,10 @@ import com.google.inject.{ImplementedBy, Inject}
 import connectors.SubscriptionConnector
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.register._
-import identifiers.register.company.directors.{DirectorAddressId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
+import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual._
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
+import identifiers.register.partnership.partners.{PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
 import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
@@ -114,7 +114,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
   }
 
   private def getPsaDetailsViewModel(userAnswers: UserAnswers)(implicit messages: Messages): PsaViewDetailsViewModel = {
-    val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated()
+    val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
     val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)
 
@@ -149,23 +149,21 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
 
       case Some(LimitedCompany) =>
         val allDirectors = userAnswers.allDirectorsAfterDelete(UpdateMode)
-        val allDirectorsCompleteIds = allDirectors.map(director => IsDirectorCompleteId(allDirectors.indexOf(director))).toList
         val allDirectorsAddressIdMap = allDirectors.map { director =>
           val index = allDirectors.indexOf(director)
           (DirectorAddressId(index), DirectorsExistingCurrentAddressId(index))
         }.toMap
 
-        (allDirectorsCompleteIds, Map(CompanyContactAddressId -> CompanyExistingCurrentAddressId) ++ allDirectorsAddressIdMap)
+        (Nil, Map(CompanyContactAddressId -> CompanyExistingCurrentAddressId) ++ allDirectorsAddressIdMap)
 
       case Some(Partnership) =>
         val allPartners = userAnswers.allPartnersAfterDelete(UpdateMode)
-        val allPartnersCompleteIds = allPartners.map(partner => IsPartnerCompleteId(allPartners.indexOf(partner))).toList
         val allPartnersAddressIds = allPartners.map { partner =>
           val index = allPartners.indexOf(partner)
           (PartnerAddressId(index), PartnersExistingCurrentAddressId(index))
         }.toMap
 
-        (allPartnersCompleteIds, Map(PartnershipContactAddressId -> PartnershipExistingCurrentAddressId) ++ allPartnersAddressIds)
+        (Nil, Map(PartnershipContactAddressId -> PartnershipExistingCurrentAddressId) ++ allPartnersAddressIds)
 
       case _ =>
         (Nil, Map.empty)

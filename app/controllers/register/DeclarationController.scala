@@ -49,6 +49,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       allowAccess: AllowAccessActionProvider,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
+                                      allowDeclaration: AllowDeclarationActionProvider,
                                       @Register navigator: Navigator,
                                       dataCacheConnector: UserAnswersCacheConnector,
                                       pensionsSchemeConnector: PensionsSchemeConnector,
@@ -59,7 +60,8 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
                                       val view: declaration
                                      )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen
+    getData andThen allowDeclaration(mode) andThen requireData).async {
     implicit request =>
       DeclarationWorkingKnowledgeId.retrieve.right.map {
         workingKnowledge =>
@@ -69,7 +71,8 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
 
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen
+    getData andThen allowDeclaration(mode) andThen requireData).async {
     implicit request =>
       dataCacheConnector.save(request.externalId, DeclarationId, value = true).flatMap { cacheMap =>
         val answers = UserAnswers(cacheMap).set(ExistingPSAId)(ExistingPSA(

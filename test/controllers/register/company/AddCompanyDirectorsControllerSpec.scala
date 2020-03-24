@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
-import identifiers.register.company.directors.{DirectorNameId, IsDirectorCompleteId}
+import identifiers.register.company.directors.DirectorNameId
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, PersonName, UserType}
 import play.api.data.Form
@@ -30,6 +30,7 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
@@ -48,11 +49,11 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "not populate the view on a GET when the question has previously been answered" in {
-      val directors = Seq(johnDoe)
-      val getRelevantData = dataRetrievalAction(directors: _*)
+      val directors = Seq(Person(0, "first0 last0", deleteLink(0), editLink(0), isDeleted = false, isComplete = true))
+      val getRelevantData = UserAnswers().completeDirector(index = 0).dataRetrievalAction
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson(0)))
+      contentAsString(result) mustBe viewAsString(form, directors)
     }
 
     "redirect to the next page when no directors exist and the user submits" in {
@@ -74,10 +75,9 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when less than maximum directors exist and invalid data is submitted" in {
-      val directors = Seq.fill(maxDirectors - 1)(johnDoe)
-      val directorAsPerson = (0 until maxDirectors - 1).map( index => johnDoePerson(index))
 
-      val getRelevantData = dataRetrievalAction(directors: _*)
+      val getRelevantData = UserAnswers().completeDirector(index = 0).completeDirector(1).dataRetrievalAction
+      val directorAsPerson = Seq(person(0), person(1))
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -120,20 +120,18 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view with directors when they exist" in {
-      val directors = Seq(johnDoe, joeBloggs)
-      val directorsAsPerson = Seq(johnDoePerson(0), joeBloggsPerson)
-      val getRelevantData = dataRetrievalAction(directors: _*)
+      val directorsAsPerson = Seq(person(0), person(1))
+      val getRelevantData = UserAnswers().completeDirector(index = 0).completeDirector(index = 1).dataRetrievalAction
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form, directorsAsPerson)
     }
 
     "exclude the deleted directors from the list" in {
-      val directors = Seq(johnDoe, joeBloggs.copy(isDeleted = true))
-      val getRelevantData = dataRetrievalAction(directors: _*)
+      val getRelevantData = UserAnswers().completeDirector(0).completeDirector(1, isDeleted = true).dataRetrievalAction
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form, Seq(johnDoePerson(0)))
+      contentAsString(result) mustBe viewAsString(form, Seq(person(0)))
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -188,6 +186,9 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
     view(form, NormalMode, directors, None)(request, messages).toString
 
   // scalastyle:off magic.number
+  private def person(index: Int, isDeleted: Boolean = false) = Person(index,
+    s"first$index last$index", deleteLink(index), editLink(index), isDeleted = isDeleted, isComplete = true)
+
   private val johnDoe = PersonName("John", "Doe")
   private val joeBloggs = PersonName("Joe", "Bloggs")
   // scalastyle:on magic.number
@@ -197,16 +198,12 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
   private def editLink(index: Int) = controllers.register.company.directors.routes.CheckYourAnswersController.onPageLoad(NormalMode, index).url
 
   // scalastyle:off magic.number
-  private def johnDoePerson(index:Int) = Person(index, "John Doe", deleteLink(index), editLink(index), isDeleted = false, isComplete = true)
-  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
-
   private val maxDirectors = frontendAppConfig.maxDirectors
 
   private def dataRetrievalAction(directors: PersonName*): FakeDataRetrievalAction = {
     val validData = Json.obj("directors" ->
       directors.map(d => Json.obj(
-        DirectorNameId.toString -> Json.toJson(d),
-        IsDirectorCompleteId.toString -> true
+        DirectorNameId.toString -> Json.toJson(d)
       ))
     )
     new FakeDataRetrievalAction(Some(validData))

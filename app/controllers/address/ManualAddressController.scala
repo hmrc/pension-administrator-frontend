@@ -67,9 +67,7 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
           saveChangeFlag(mode, id)
             .flatMap {
               _ =>
-                setCompleteFlagForExistingDirOrPartners(mode, id, UserAnswers(userAnswersJson)).map { _ =>
-                  Redirect(navigator.nextPage(id, mode, UserAnswers(userAnswersJson)))
-                }
+                Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(userAnswersJson))))
             }
         }
       }

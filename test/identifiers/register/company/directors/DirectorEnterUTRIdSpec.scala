@@ -45,23 +45,36 @@ class DirectorEnterUTRIdSpec extends SpecBase {
   }
 
   "cya" when {
-    def answers: UserAnswers =
-      UserAnswers()
-        .set(DirectorNameId(0))(personDetails).asOpt.value
-        .set(DirectorEnterUTRId(0))(value = ReferenceValue("test-UTR")).asOpt.value
-
     "in normal mode" must {
-      "return answers rows with change links" in {
-        val answerRows =
-          Seq(
-            AnswerRow(Message("enterUTR.heading").withArgs(personDetails.fullName).resolve, Seq("test-UTR"), answerIsMessageKey = false,
-              Some(Link("site.change", onwardUrl)), Some(Message("enterUTR.visuallyHidden.text").withArgs(personDetails.fullName))
-            )
-          )
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
 
-        DirectorEnterUTRId(0).row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(answerRows)
+      "return answers rows with change links when have value" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().directorEnterUTR(0, ReferenceValue("test-utr")).
+            directorName(0, PersonName("first", "last")))
+
+        DirectorEnterUTRId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("enterUTR.heading"),
+            answer = Seq("test-utr"), answerIsMessageKey = false,
+            changeUrl = Some(Link(onwardUrl)), Some(Message("enterUTR.visuallyHidden.text", "first last")))))
+      }
+
+      "return answers rows with add links when has utr is true but no utr" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+          UserAnswers().directorHasUTR(0, flag = true).
+            directorName(0, PersonName("first", "last")))
+
+        DirectorEnterUTRId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("enterUTR.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("enterUTR.visuallyHidden.text", "first last")))))
+      }
+
+      "return no answers rows when has utr is false" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().directorHasUTR(0, flag = false)
+            directorName(0, PersonName("first", "last")))
+
+        DirectorEnterUTRId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }
     }
   }

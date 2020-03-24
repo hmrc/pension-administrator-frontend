@@ -19,7 +19,17 @@ package identifiers.register.individual
 import java.time.LocalDate
 
 import identifiers._
+import play.api.i18n.Messages
+import utils.UserAnswers
+import utils.checkyouranswers.{CheckYourAnswers, DateCYA}
+import viewmodels.{AnswerRow, Link}
 
 case object IndividualDateOfBirthId extends TypedIdentifier[LocalDate] {
+  self =>
   override def toString: String = "individualDateOfBirth"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] = new CheckYourAnswers[self.type] {
+    override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+      DateCYA[self.type](Some("individualDateOfBirth.heading"), Some("individualDateOfBirth.visuallyHidden.text"))().row(id)(changeUrl, userAnswers)
+  }
 }

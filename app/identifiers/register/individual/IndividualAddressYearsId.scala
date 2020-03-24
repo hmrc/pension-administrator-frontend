@@ -18,11 +18,29 @@ package identifiers.register.individual
 
 import identifiers._
 import models.AddressYears
+import play.api.i18n.Messages
 import play.api.libs.json.JsResult
 import utils.UserAnswers
+import utils.checkyouranswers.{AddressYearsCYA, CheckYourAnswers}
+import viewmodels.{AnswerRow, Link}
 
 case object IndividualAddressYearsId extends TypedIdentifier[AddressYears] {
+  self =>
   override def toString: String = "individualAddressYears"
+
+  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] = {
+    new CheckYourAnswers[self.type] {
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(IndividualContactAddressId) match {
+          case Some(_) =>
+            AddressYearsCYA("individualAddressYears.title", Some("individualAddressYears.visuallyHidden.text"))().
+              row(id)(changeUrl, userAnswers)
+          case _ =>
+            AddressYearsCYA("individualAddressYears.title", Some("individualAddressYears.visuallyHidden.text"), isMandatory = false)().
+              row(id)(changeUrl, userAnswers)
+        }
+    }
+  }
 
   override def cleanup(value: Option[AddressYears], answers: UserAnswers): JsResult[UserAnswers] = {
     value match {

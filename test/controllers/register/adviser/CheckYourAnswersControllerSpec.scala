@@ -20,45 +20,110 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import models.{Address, CheckMode, NormalMode}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
+import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerRow, AnswerSection, Link}
 import views.html.check_your_answers
 
-class CheckYourAnswersControllerSpec extends ControllerSpecBase {
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
+
+  private def sections: Seq[AnswerSection] = Seq(AnswerSection(None, adviserDetails))
+
+  private val mockDataCompletion = mock[DataCompletion]
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+    new CheckYourAnswersController(
+      frontendAppConfig,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      mockDataCompletion,
+      countryOptions,
+      stubMessagesControllerComponents(),
+      view
+    )
+
+  private def viewAsString(isComplete: Boolean = true): String =
+    view(
+      sections,
+      postCall,
+      None,
+      NormalMode,
+      isComplete
+    )(fakeRequest, messages).toString
+
+  override def beforeEach(): Unit = {
+    when(mockDataCompletion.isAdviserComplete(any(), any())).thenReturn(true)
+  }
+
+  "CheckYourAnswers Controller" must {
+
+    "return OK and the correct view for a GET" in {
+      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString()
+    }
+
+    "redirect to Session Expired on a GET request if there is no cached data" in {
+      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+
+    "redirect to the next page on a POST request" in {
+      val result = controller().onSubmit(NormalMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "reload the cya page on a POST request when adviser is not complete" in {
+      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
+      when(mockDataCompletion.isAdviserComplete(any(), any())).thenReturn(false)
+      val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString(isComplete = false)
+    }
+
+    "redirect to Session expired on a POST request if there is no cached data" in {
+      val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+    }
+  }
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
-
   private def postCall = controllers.register.adviser.routes.CheckYourAnswersController.onSubmit(NormalMode)
 
-  val view: check_your_answers = app.injector.instanceOf[check_your_answers]
+  private val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
-  val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  val checkYourAnswersFactory = new CheckYourAnswersFactory(countryOptions)
-  val adviserName = "test adviser name"
-  val advEmail = "test@test.com"
-  val advPhone = "01234567890"
+  private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private val adviserName = "test adviser name"
+  private val advEmail = "test@test.com"
+  private val advPhone = "01234567890"
 
-  val address = Address(
-    "address-line-1",
-    "address-line-2",
-    None,
-    None,
-    Some("post-code"),
-    "country"
-  )
+  private val address = Address("address-line-1", "address-line-2", None, None, Some("post-code"), "country")
 
-  val validData: JsObject = Json.obj(
+  private val validData: JsObject = Json.obj(
     AdviserNameId.toString -> adviserName,
     AdviserEmailId.toString -> advEmail,
     AdviserPhoneId.toString -> advPhone,
     AdviserAddressId.toString -> address
   )
 
-  def adviserDetails: Seq[AnswerRow] = Seq(
+  private def adviserDetails: Seq[AnswerRow] = Seq(
     AnswerRow(
       messages("adviserName.heading"),
       Seq(adviserName),
@@ -93,59 +158,5 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase {
       Some(messages("phone.visuallyHidden.text", adviserName))
     )
   )
-
-  def sections: Seq[AnswerSection] = Seq(AnswerSection(None, adviserDetails))
-
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CheckYourAnswersController(
-      frontendAppConfig,
-      new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAuthAction,
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      countryOptions,
-      stubMessagesControllerComponents(),
-      view
-    )
-
-  def viewAsString(): String =
-    view(
-      sections,
-      postCall,
-      None,
-      NormalMode
-    )(fakeRequest, messages).toString
-
-  "CheckYourAnswers Controller" must {
-
-    "return OK and the correct view for a GET" in {
-      val getRelevantData = new FakeDataRetrievalAction(Some(validData))
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
-    }
-
-    "redirect to Session Expired on a GET request if there is no cached data" in {
-      val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    }
-
-    "redirect to the next page on a POST request" in {
-      val result = controller().onSubmit(NormalMode)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "redirect to Session expired on a POST request if there is no cached data" in {
-      val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-    }
-  }
 
 }

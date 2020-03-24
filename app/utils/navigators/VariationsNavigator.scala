@@ -23,9 +23,11 @@ import identifiers.register._
 import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import models.{CheckUpdateMode, Mode, UpdateMode}
 import play.api.mvc.Call
+import utils.dataCompletion.DataCompletion
 import utils.{Enumerable, Navigator, UserAnswers}
 
-class VariationsNavigator @Inject()(config: FrontendAppConfig) extends Navigator with Enumerable.Implicits {
+class VariationsNavigator @Inject()(config: FrontendAppConfig,
+                                    dataCompletion: DataCompletion) extends Navigator with Enumerable.Implicits {
 
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case _ => controllers.routes.IndexController.onPageLoad()
@@ -90,7 +92,7 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig) extends Navigator
   }
 
   private def declarationChange(ua: UserAnswers): Call = {
-    if (ua.isPsaUpdateDetailsInComplete) {
+    if (dataCompletion.isPsaUpdateDetailsInComplete(ua)) {
       controllers.register.routes.IncompleteChangesController.onPageLoad()
     } else {
       ua.get(DeclarationChangedId) match {

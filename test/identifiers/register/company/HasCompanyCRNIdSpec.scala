@@ -16,12 +16,19 @@
 
 package identifiers.register.company
 
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import base.SpecBase
+import models.register.BusinessType
+import models.requests.DataRequest
+import models.{PSAUser, UserType}
 import play.api.libs.json.Json
-import utils.{Enumerable, UserAnswers}
+import play.api.mvc.AnyContent
+import play.api.test.FakeRequest
+import utils.UserAnswers
+import utils.checkyouranswers.Ops._
+import viewmodels.{AnswerRow, Link, Message}
 
-class HasCompanyCRNIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
-
+class HasCompanyCRNIdSpec extends SpecBase {
+  private val onwardUrl = "onwardUrl"
   "Cleanup" when {
     "`HasCompanyCRNId` is set to `false`" must {
       "remove the CompanyRegistrationNumberId" in {
@@ -39,5 +46,45 @@ class HasCompanyCRNIdSpec extends WordSpec with MustMatchers with OptionValues w
       }
     }
 
+  }
+
+  "cya" when {
+    "in normal mode" must {
+      "return no rows when non uk" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().areYouInUk(false))
+
+        HasCompanyCRNId.row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(Nil)
+      }
+
+      "return answers rows with change links when uk and have value" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+            areYouInUk(true).businessType(BusinessType.UnlimitedCompany).businessName()
+        .companyHasCrn(true))
+
+        HasCompanyCRNId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("hasCompanyNumber.heading"), answer = Seq("site.yes"), answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl)), Some(Message("hasCompanyNumber.visuallyHidden.text", "test company")))))
+      }
+
+      "return answers rows with add links when uk and unlimited company" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+            areYouInUk(true).businessType(BusinessType.UnlimitedCompany).businessName())
+
+        HasCompanyCRNId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
+          AnswerRow(label = Message("hasCompanyNumber.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("hasCompanyNumber.visuallyHidden.text", "test company")))))
+      }
+
+      "return no answers rows when uk and limited company" in {
+        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+            areYouInUk(true).businessType(BusinessType.LimitedCompany).businessName())
+
+        HasCompanyCRNId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
+      }
+    }
   }
 }

@@ -22,7 +22,6 @@ import identifiers.TypedIdentifier
 import identifiers.register.BusinessNameId
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
-import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import play.api.i18n.Messages
@@ -43,7 +42,7 @@ trait CheckYourAnswersBusiness[I <: TypedIdentifier.PathDependent] extends Check
 }
 
 trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua:UserAnswers, messageKey:String)(implicit messages:Messages): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String)(implicit messages: Messages): Message =
     ua.get(BusinessNameId).map(name => Message(messageKey, name)).getOrElse(Message(messageKey, Message("thePartnership")))
 }
 
@@ -53,7 +52,7 @@ trait CheckYourAnswersPartner[I <: TypedIdentifier.PathDependent] extends CheckY
 }
 
 trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua:UserAnswers, messageKey:String, index: Index)(implicit messages:Messages): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String, index: Index)(implicit messages: Messages): Message =
     ua.get(DirectorNameId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("theDirector")))
 }
 
@@ -71,9 +70,13 @@ object CheckYourAnswers {
 
   implicit def date[I <: TypedIdentifier[LocalDate]](implicit rds: Reads[LocalDate], messages: Messages): CheckYourAnswers[I] = DateCYA()()
 
+  implicit def tolerantIndividual[I <: TypedIdentifier[TolerantIndividual]]
+  (implicit rds: Reads[TolerantIndividual], messages: Messages): CheckYourAnswers[I] = TolerantIndividualCYA()()
+
 }
 
-case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None) {
+case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None,
+                                                     isMandatory: Boolean = true) {
   def apply()(implicit rds: Reads[Address], countryOptions: CountryOptions): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
@@ -85,14 +88,48 @@ case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.
             changeUrl,
             visuallyHiddenText = hiddenLabel
           ))
-        } getOrElse Seq.empty[AnswerRow]
+        } getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(label, Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
+      }
+    }
+  }
+}
+
+case class TolerantAddressCYA[I <: TypedIdentifier[TolerantAddress]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None,
+                                                     isMandatory: Boolean = true) {
+  def apply()(implicit rds: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = {
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        userAnswers.get(id).map { address =>
+          Seq(AnswerRow(
+            label,
+            address.lines(countryOptions),
+            answerIsMessageKey = false,
+            changeUrl,
+            visuallyHiddenText = hiddenLabel
+          ))
+        } getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(label, Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
       }
     }
   }
 }
 
 case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "checkyouranswers.partnership.address.years",
-                                                               hiddenLabel: Option[Message] = None) {
+                                                               hiddenLabel: Option[Message] = None,
+                                                               isMandatory: Boolean = true) {
   def apply()(implicit r: Reads[AddressYears]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
@@ -103,12 +140,19 @@ case class AddressYearsCYA[I <: TypedIdentifier[AddressYears]](label: String = "
             answerIsMessageKey = true,
             changeUrl,
             visuallyHiddenText = hiddenLabel
-          ))) getOrElse Seq.empty[AnswerRow]
+          ))) getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(label, Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
     }
   }
 }
 
-case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
+case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None, hiddenLabel: Option[Message] = None, isMandatory: Boolean = true) {
   def apply()(implicit rds: Reads[String]): CheckYourAnswers[I] =
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
@@ -121,12 +165,18 @@ case class StringCYA[I <: TypedIdentifier[String]](label: Option[String] = None,
               changeUrl = changeUrl,
               visuallyHiddenText = hiddenLabel
             ))
-        } getOrElse Seq.empty[AnswerRow]
-      }
-
+        } getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(label getOrElse s"${id.toString}.checkYourAnswersLabel", Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
+    }
 }
 
-case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
+case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = None, hiddenLabel: Option[Message] = None, isMandatory: Boolean = true) {
   implicit def apply()(implicit rds: Reads[Boolean]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
@@ -139,15 +189,22 @@ case class BooleanCYA[I <: TypedIdentifier[Boolean]](label: Option[String] = Non
               changeUrl,
               hiddenLabel
             ))
-        } getOrElse Seq.empty[AnswerRow]
+        } getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(label getOrElse s"${id.toString}.checkYourAnswersLabel", Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
     }
   }
 }
 
 case class ReferenceValueCYA[I <: TypedIdentifier[ReferenceValue]](
                                                                     nameLabel: Option[String] = None,
-                                                                    hiddenNameLabel: Option[Message] = None) {
-
+                                                                    hiddenNameLabel: Option[Message] = None,
+                                                                    isMandatory: Boolean = true) {
   def apply()(implicit rds: Reads[ReferenceValue]): CheckYourAnswers[I] = {
     new CheckYourAnswers[I] {
 
@@ -159,7 +216,14 @@ case class ReferenceValueCYA[I <: TypedIdentifier[ReferenceValue]](
             changeUrl,
             hiddenNameLabel
           ))
-        }.getOrElse(Seq.empty[AnswerRow])
+        } getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(nameLabel getOrElse s"${id.toString}.heading", Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenNameLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
     }
   }
 }
@@ -181,7 +245,7 @@ case class PersonNameCYA[I <: TypedIdentifier[PersonName]](label: Option[String]
     }
 }
 
-case class DateCYA[I <: TypedIdentifier[LocalDate]](label: Option[String] = None, hiddenLabel: Option[Message] = None) {
+case class DateCYA[I <: TypedIdentifier[LocalDate]](label: Option[String] = None, hiddenLabel: Option[Message] = None, isMandatory: Boolean = true) {
   def apply()(implicit rds: Reads[LocalDate]): CheckYourAnswers[I] =
     new CheckYourAnswers[I] {
       override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
@@ -194,6 +258,38 @@ case class DateCYA[I <: TypedIdentifier[LocalDate]](label: Option[String] = None
               changeUrl = changeUrl,
               visuallyHiddenText = hiddenLabel
             ))
-        } getOrElse Seq.empty[AnswerRow]
+        } getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(label getOrElse s"${id.toString}.checkYourAnswersLabel", Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
+    }
+}
+
+case class TolerantIndividualCYA[I <: TypedIdentifier[TolerantIndividual]](label: Option[String] = None,
+                                                                           hiddenLabel: Option[Message] = None, isMandatory: Boolean = true) {
+  def apply()(implicit rds: Reads[TolerantIndividual]): CheckYourAnswers[I] =
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
+        userAnswers.get(id).map {
+          individual =>
+            Seq(AnswerRow(
+              label getOrElse s"${id.toString}.heading",
+              answer = Seq(individual.fullName),
+              answerIsMessageKey = false,
+              changeUrl = changeUrl,
+              visuallyHiddenText = hiddenLabel
+            ))
+        } getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(label getOrElse s"${id.toString}.checkYourAnswersLabel", Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
     }
 }

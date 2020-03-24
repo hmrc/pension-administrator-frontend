@@ -71,5 +71,7 @@ class PODSModule extends AbstractModule {
     bind(classOf[AllowAccessActionProvider])
       .to(classOf[AllowAccessActionProviderImpl])
 
+    bind(classOf[AllowDeclarationActionProvider])
+      .to(classOf[AllowDeclarationActionProviderImpl])
   }
 }

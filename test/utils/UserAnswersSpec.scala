@@ -18,12 +18,12 @@ package utils
 
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
-import identifiers.register.company.directors.{DirectorAddressId, DirectorNameId, IsDirectorCompleteId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
+import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
 import models._
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.{JsPath, JsResultException, Json}
+import utils.testhelpers.DataCompletionBuilder._
 import viewmodels.Person
 
 class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
@@ -61,17 +61,13 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
   ".allDirectorsAfterDelete" must {
 
     "return a map of director names, edit links, delete links and isComplete flag" in {
-      val userAnswers = UserAnswers()
-        .set(DirectorNameId(0))(PersonName("First", "Last"))
-        .flatMap(_.set(IsDirectorCompleteId(0))(true))
-        .flatMap(_.set(IsDirectorCompleteId(1))(false))
-        .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
+      val userAnswers = UserAnswers().completeDirector(index = 0).directorName(index = 1, name = PersonName("first1", "last1"))
 
       val directorEntities = Seq(
-        Person(0, "First Last", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 0).url,
+        Person(0, "first0 last0", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 0).url,
           routes.CheckYourAnswersController.onPageLoad(NormalMode, Index(0)).url,
           isDeleted = false, isComplete = true),
-        Person(1, "First1 Last1", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 1).url,
+        Person(1, "first1 last1", routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, 1).url,
           routes.DirectorNameController.onPageLoad(NormalMode, Index(1)).url,
           isDeleted = false, isComplete = false))
 
@@ -86,13 +82,13 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
     "return false if isChanged is not present" in {
       val userAnswers = UserAnswers(establishers)
-      userAnswers.isUserAnswerUpdated() mustBe false
+      userAnswers.isUserAnswerUpdated mustBe false
     }
 
     "return true if isChanged with true is present for a change" in {
       val userAnswersData = Json.obj("areYouInUK" -> true, "isChanged" -> true)
       val userAnswers = UserAnswers(userAnswersData)
-      userAnswers.isUserAnswerUpdated() mustBe true
+      userAnswers.isUserAnswerUpdated mustBe true
     }
 
     "return true if isChanged with true is present for multiple changes" in {
@@ -100,7 +96,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         "areDirectorsOrPartnersChanged" -> true,
         "isMoreThanTenDirectorsOrPartnersChanged" -> true)
       val userAnswers = UserAnswers(userAnswersData)
-      userAnswers.isUserAnswerUpdated() mustBe true
+      userAnswers.isUserAnswerUpdated mustBe true
     }
 
     "return true if isChanged with true is present for one of multiple changes" in {
@@ -108,13 +104,13 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         "areDirectorsOrPartnersChanged" -> true,
         "isMoreThanTenDirectorsOrPartnersChanged" -> false)
       val userAnswers = UserAnswers(userAnswersData)
-      userAnswers.isUserAnswerUpdated() mustBe true
+      userAnswers.isUserAnswerUpdated mustBe true
     }
 
     "return false if isChanged with false is present for MoreThanTenDirectorsOrPartnersChangedId" in {
       val userAnswersData = Json.obj("areYouInUK" -> true, "isMoreThanTenDirectorsOrPartnersChanged" -> false)
       val userAnswers = UserAnswers(userAnswersData)
-      userAnswers.isUserAnswerUpdated() mustBe false
+      userAnswers.isUserAnswerUpdated mustBe false
     }
 
 
@@ -123,7 +119,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
         "areDirectorsOrPartnersChanged" -> false,
         "isMoreThanTenDirectorsOrPartnersChanged" -> false)
       val userAnswers = UserAnswers(userAnswersData)
-      userAnswers.isUserAnswerUpdated() mustBe false
+      userAnswers.isUserAnswerUpdated mustBe false
     }
   }
 
@@ -151,154 +147,6 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
     "return the same user answers if map is empty" in {
       val result = userAnswers.setAllExistingAddress(Map.empty).get
       result mustBe userAnswers
-    }
-  }
-
-  "isPsaUpdateDetailsInComplete" must {
-
-    "set the flag as true(incomplete)" when {
-
-      "any one of the directors is incomplete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
-          .companyAddressYears(AddressYears.UnderAYear)
-          .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(true)
-          .set(DirectorNameId(0))(PersonName("First", "Last"))
-          .flatMap(_.set(IsDirectorCompleteId(0))(true))
-          .flatMap(_.set(IsDirectorCompleteId(1))(false))
-          .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
-
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      "company previous address is incomplete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
-          .companyAddressYears(AddressYears.UnderAYear)
-          .variationWorkingKnowledge(true)
-          .set(DirectorNameId(0))(PersonName("First", "Last"))
-          .flatMap(_.set(IsDirectorCompleteId(0))(true))
-          .flatMap(_.set(IsDirectorCompleteId(1))(true))
-          .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
-
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      "any one of the partners is incomplete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
-          .partnershipAddressYears(AddressYears.UnderAYear)
-          .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(true)
-          .set(PartnerNameId(0))(PersonName("First", "Last"))
-          .flatMap(_.set(IsPartnerCompleteId(0))(true))
-          .flatMap(_.set(IsPartnerCompleteId(1))(false))
-          .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
-
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      "partnership previous address is incomplete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
-          .partnershipAddressYears(AddressYears.UnderAYear)
-          .variationWorkingKnowledge(true)
-          .set(PartnerNameId(0))(PersonName("First", "Last"))
-          .flatMap(_.set(IsPartnerCompleteId(0))(true))
-          .flatMap(_.set(IsPartnerCompleteId(1))(true))
-          .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      "individual previous address is incomplete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-          .individualAddressYears(AddressYears.UnderAYear)
-          .variationWorkingKnowledge(true)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      " adviser is incomplete i.e the flag value is false and only some details is entered" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-          .individualAddressYears(AddressYears.UnderAYear)
-          .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(false)
-          .adviserName("test adviser")
-          .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      "adviser is incomplete i.e flag value is false and no details is entered" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-          .individualAddressYears(AddressYears.UnderAYear)
-          .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(false)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-    }
-
-    "set the flag as false(complete)" when {
-
-      "all the details of company is complete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
-          .companyAddressYears(AddressYears.UnderAYear)
-          .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(true)
-          .set(DirectorNameId(0))(PersonName("First", "Last"))
-          .flatMap(_.set(IsDirectorCompleteId(0))(true))
-          .flatMap(_.set(IsDirectorCompleteId(1))(true))
-          .flatMap(_.set(DirectorNameId(1))(PersonName("First1", "Last1"))).get
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe false
-      }
-
-      "all the details of individual including previous address with less than 12 months address years is complete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-          .individualAddressYears(AddressYears.UnderAYear)
-          .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(true)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe false
-      }
-
-      "all the details of individual with more than 12 months address years is complete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-          .individualAddressYears(AddressYears.OverAYear)
-          .variationWorkingKnowledge(true)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe false
-      }
-
-      "all the details of partnership is complete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
-          .partnershipAddressYears(AddressYears.UnderAYear)
-          .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(false)
-          .adviserName("test adviser")
-          .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
-          .adviserEmail("email")
-          .adviserPhone("234")
-          .set(PartnerNameId(0))(PersonName("First", "Last"))
-          .flatMap(_.set(IsPartnerCompleteId(0))(true))
-          .flatMap(_.set(IsPartnerCompleteId(1))(true))
-          .flatMap(_.set(PartnerNameId(1))(PersonName("First", "Last"))).get
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe false
-      }
     }
   }
 

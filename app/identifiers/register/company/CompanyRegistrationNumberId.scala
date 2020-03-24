@@ -17,9 +17,10 @@
 package identifiers.register.company
 
 import identifiers._
+import identifiers.register.AreYouInUKId
 import play.api.i18n.Messages
 import utils.UserAnswers
-import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers, CheckYourAnswersBusiness, StringCYA}
+import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersBusiness, StringCYA}
 import viewmodels.{AnswerRow, Link}
 
 case object CompanyRegistrationNumberId extends TypedIdentifier[String] {
@@ -34,9 +35,15 @@ case object CompanyRegistrationNumberId extends TypedIdentifier[String] {
       private def hiddenLabel(ua: UserAnswers): String =
         dynamicMessage(ua, "companyRegistrationNumber.visuallyHidden.text")
 
-
-      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+      override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        (userAnswers.get(AreYouInUKId), userAnswers.get(HasCompanyCRNId), userAnswers.get(CompanyRegistrationNumberId)) match {
+          case (Some(false), _, _) =>
+            Nil
+          case (_, Some(true) | None, None) =>
+            StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
+          case _ =>
+            StringCYA[self.type](Some(label(userAnswers)), Some(hiddenLabel(userAnswers)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
+      }
     }
-
 }

@@ -19,15 +19,15 @@ package utils
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
 import identifiers.register._
-import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import identifiers.register.company._
-import identifiers.register.company.directors.{DirectorNameId, IsDirectorCompleteId}
+import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual._
 import identifiers.register.partnership._
-import identifiers.register.partnership.partners.{IsPartnerCompleteId, PartnerNameId}
+import identifiers.register.partnership.partners.PartnerNameId
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import play.api.libs.json._
+import utils.dataCompletion.DataCompletion
 import viewmodels.Person
 
 import scala.annotation.tailrec
@@ -64,7 +64,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       if (director.isDeleted) {
         Seq.empty
       } else {
-        val isComplete = get(IsDirectorCompleteId(index)).getOrElse(false)
+        val isComplete = DataCompletion.isDirectorComplete(UserAnswers(json), index)
         val editUrl = if (isComplete) {
           routes.CheckYourAnswersController.onPageLoad(mode, Index(index)).url
         } else {
@@ -101,7 +101,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       if (partner.isDeleted) {
         Seq.empty
       } else {
-        val isComplete = get(IsPartnerCompleteId(index)).getOrElse(false)
+        val isComplete = DataCompletion.isPartnerComplete(UserAnswers(json), index)
         val editUrl = if (isComplete) {
           controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
         } else {
@@ -216,43 +216,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     removeRec(ids, JsSuccess(this))
   }
 
-
-  def isPsaUpdateDetailsInComplete: Boolean = {
-    def incompleteDetails: Boolean =
-      get(RegistrationInfoId).map(_.legalStatus) match {
-        case Some(Individual) =>
-          isPreviousAddressIncomplete(get(IndividualAddressYearsId), IndividualPreviousAddressId)
-        case Some(LimitedCompany) =>
-          allDirectorsAfterDelete(UpdateMode).exists(!_.isComplete) |
-            isPreviousAddressIncomplete(get(CompanyAddressYearsId), CompanyPreviousAddressId)
-        case Some(Partnership) =>
-          isPreviousAddressIncomplete(get(PartnershipAddressYearsId), PartnershipPreviousAddressId) |
-            allPartnersAfterDelete(UpdateMode).exists(!_.isComplete)
-        case _ =>
-          true
-      }
-
-    isAdviserIncomplete | incompleteDetails
-  }
-
-  private def isAdviserIncomplete: Boolean = {
-    if (get(VariationWorkingKnowledgeId).contains(true)) {
-      false
-    } else {
-      get(AdviserEmailId).isEmpty | get(AdviserPhoneId).isEmpty | get(AdviserNameId).isEmpty | get(AdviserAddressId).isEmpty
-    }
-  }
-
-  private def isPreviousAddressIncomplete(addressYears: Option[AddressYears], addressId: TypedIdentifier[Address]): Boolean = {
-    addressYears match {
-      case Some(AddressYears.UnderAYear) =>
-        get(addressId).isEmpty
-      case _ =>
-        false
-    }
-  }
-
-  def isUserAnswerUpdated(): Boolean = {
+  def isUserAnswerUpdated: Boolean = {
     List(
       get[Boolean](DeclarationChangedId),
       get[Boolean](DirectorsOrPartnersChangedId),

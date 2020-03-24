@@ -56,7 +56,7 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) {
+      retrieveDirectorName(mode, index) {
         directorName =>
           get(addressViewModel(mode, index, directorName), mode)
       }
@@ -64,7 +64,7 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(index) {
+      retrieveDirectorName(mode, index) {
         directorName =>
           val vm = addressViewModel(mode, index, directorName)
           post(DirectorPreviousAddressId(index), vm, mode)

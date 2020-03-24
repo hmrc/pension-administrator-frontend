@@ -30,6 +30,7 @@ case class PartnerEnterNINOId(index: Int) extends TypedIdentifier[ReferenceValue
   override def cleanup(value: Option[ReferenceValue], userAnswers: UserAnswers): JsResult[UserAnswers] =
     userAnswers.remove(PartnerNoNINOReasonId(this.index))
 }
+
 object PartnerEnterNINOId {
   override lazy val toString: String = "nino"
 
@@ -41,10 +42,15 @@ object PartnerEnterNINOId {
       private def hiddenLabel(ua: UserAnswers, index: Index): Message =
         dynamicMessage(ua, messageKey = "enterNINO.visuallyHidden.text", index)
 
-
       override def row(id: PartnerEnterNINOId)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
-        ReferenceValueCYA[PartnerEnterNINOId](Some(label(userAnswers, id.index)),
-          Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+        userAnswers.get(HasPartnerNINOId(id.index)) match {
+          case Some(true) =>
+            ReferenceValueCYA[PartnerEnterNINOId](Some(label(userAnswers, id.index)),
+              Some(hiddenLabel(userAnswers, id.index)))().row(id)(changeUrl, userAnswers)
+          case _ =>
+            ReferenceValueCYA[PartnerEnterNINOId](Some(label(userAnswers, id.index)),
+              Some(hiddenLabel(userAnswers, id.index)), isMandatory = false)().row(id)(changeUrl, userAnswers)
+        }
     }
 }
 

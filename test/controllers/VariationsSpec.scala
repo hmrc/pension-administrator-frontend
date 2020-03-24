@@ -19,7 +19,7 @@ package controllers
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.address.ManualAddressControllerSpec.externalId
 import identifiers.TypedIdentifier
-import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressId, IsDirectorCompleteId}
+import identifiers.register.company.directors.DirectorNameId
 import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
@@ -82,7 +82,7 @@ class VariationsSpec extends ControllerSpecBase {
 
   "Variations" must {
 
-    "set the complete flag for existing director or partner" in {
+/*    "set the complete flag for existing director or partner" in {
       FakeUserAnswersCacheConnector.reset()
       Await.result(testVariationsNonIndexed.setCompleteFlagForExistingDirOrPartners(
         UpdateMode, DirectorPreviousAddressId(0), userAnswersWithDirector())(dataRequest()), Duration.Inf)
@@ -101,7 +101,7 @@ class VariationsSpec extends ControllerSpecBase {
       Await.result(testVariationsNonIndexed.setCompleteFlagForExistingDirOrPartners(
         NormalMode, DirectorPreviousAddressId(0), userAnswersWithDirector())(dataRequest()), Duration.Inf)
       FakeUserAnswersCacheConnector.verifyNot(IsDirectorCompleteId(0))
-    }
+    }*/
 
     "update the changed flag when save is called in Update Mode" in {
       FakeUserAnswersCacheConnector.reset()

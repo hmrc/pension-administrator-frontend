@@ -24,13 +24,15 @@ import identifiers.register.partnership.partners._
 import javax.inject.Inject
 import models.Mode.checkMode
 import models._
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import models.requests.DataRequest
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.Navigator
 import utils.annotations.PartnershipPartner
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
-import utils.{Navigator, SectionComplete}
+import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
@@ -41,8 +43,8 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
+                                           dataCompletion: DataCompletion,
                                            @PartnershipPartner navigator: Navigator,
-                                           sectionComplete: SectionComplete,
                                            implicit val countryOptions: CountryOptions,
                                            override val cacheConnector: UserAnswersCacheConnector,
                                            val controllerComponents: MessagesControllerComponents,
@@ -51,38 +53,47 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val answersSection = Seq(
-        AnswerSection(
-          None,
-          PartnerNameId(index).row(Some(Link(routes.PartnerNameController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerDOBId(index).row(Some(Link(routes.PartnerDOBController.onPageLoad(checkMode(mode), index).url))) ++
-            HasPartnerNINOId(index).row(Some(Link(routes.HasPartnerNINOController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerEnterNINOId(index).row(Some(Link(routes.PartnerEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerNoNINOReasonId(index).row(Some(Link(routes.PartnerNoNINOReasonController.onPageLoad(checkMode(mode), index).url))) ++
-            HasPartnerUTRId(index).row(Some(Link(routes.HasPartnerUTRController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerEnterUTRId(index).row(Some(Link(routes.PartnerEnterUTRController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerNoUTRReasonId(index).row(Some(Link(routes.PartnerNoUTRReasonController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerAddressId(index).row(Some(Link(routes.PartnerAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerAddressYearsId(index).row(Some(Link(routes.PartnerAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerPreviousAddressId(index).row(Some(Link(routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerEmailId(index).row(Some(Link(routes.PartnerEmailController.onPageLoad(checkMode(mode), index).url))) ++
-            PartnerPhoneId(index).row(Some(Link(routes.PartnerPhoneController.onPageLoad(checkMode(mode), index).url)))
-        ))
-
-      Future.successful(Ok(view(
-        answersSection,
-        routes.CheckYourAnswersController.onSubmit(index, mode),
-        psaName(),
-        mode))
-      )
+      retrievePartnerName(mode, index) {_ =>
+        loadCyaPage(index, mode)
+      }
   }
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      sectionComplete.setComplete(IsPartnerCompleteId(index), request.userAnswers) flatMap { _ =>
+      val isDataComplete = dataCompletion.isPartnerComplete(request.userAnswers, index)
+      if (isDataComplete) {
         saveChangeFlag(mode, CheckYourAnswersId).map { _ =>
           Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
         }
+      } else {
+        loadCyaPage(index, mode)
       }
+  }
+
+  private def loadCyaPage(index: Int, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val answerSection = Seq(
+      AnswerSection(
+        None,
+        PartnerNameId(index).row(Some(Link(routes.PartnerNameController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerDOBId(index).row(Some(Link(routes.PartnerDOBController.onPageLoad(checkMode(mode), index).url))) ++
+          HasPartnerNINOId(index).row(Some(Link(routes.HasPartnerNINOController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerEnterNINOId(index).row(Some(Link(routes.PartnerEnterNINOController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerNoNINOReasonId(index).row(Some(Link(routes.PartnerNoNINOReasonController.onPageLoad(checkMode(mode), index).url))) ++
+          HasPartnerUTRId(index).row(Some(Link(routes.HasPartnerUTRController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerEnterUTRId(index).row(Some(Link(routes.PartnerEnterUTRController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerNoUTRReasonId(index).row(Some(Link(routes.PartnerNoUTRReasonController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerAddressId(index).row(Some(Link(routes.PartnerAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerAddressYearsId(index).row(Some(Link(routes.PartnerAddressYearsController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerPreviousAddressId(index).row(Some(Link(routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerEmailId(index).row(Some(Link(routes.PartnerEmailController.onPageLoad(checkMode(mode), index).url))) ++
+          PartnerPhoneId(index).row(Some(Link(routes.PartnerPhoneController.onPageLoad(checkMode(mode), index).url)))
+      ))
+    Future.successful(Ok(view(
+      answerSection,
+      routes.CheckYourAnswersController.onSubmit(index, mode),
+      psaName(),
+      mode,
+      dataCompletion.isPartnerComplete(request.userAnswers, index)))
+    )
   }
 }

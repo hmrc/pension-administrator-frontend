@@ -16,8 +16,6 @@
 
 package identifiers.register.partnership.partners
 
-import java.time.LocalDate
-
 import base.SpecBase
 import identifiers.register.DirectorsOrPartnersChangedId
 import models._
@@ -59,10 +57,6 @@ class PartnerAddressYearsIdSpec extends SpecBase {
     "`AddressYears` is set to `UnderAYear`" must {
 
       val result: UserAnswers = answersWithPreviousAddress.set(PartnerAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
-
-      "remove the IsPartnerComplete flag" in {
-        result.get(IsPartnerCompleteId(0)).value mustBe false
-      }
 
       "not remove the data for `PreviousPostCodeLookup`" in {
         result.get(PartnerPreviousAddressPostCodeLookupId(0)) mustBe defined

@@ -1082,3 +1082,5 @@ select.address.required.error = User must select one of the addresses offered or
 
 select.address.error.required = Select {0}’s address
 select.previous.address.error.required = Select {0}’s previous address
+
+cya.alert.p1 = You must complete any section marked as "Not entered" before you can continue

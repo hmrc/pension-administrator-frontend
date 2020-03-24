@@ -32,10 +32,10 @@ case object CompanyContactAddressId extends TypedIdentifier[Address] {
   implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[self.type] =
     new CheckYourAnswersBusiness[self.type] {
       private def label(ua: UserAnswers): String =
-        dynamicMessage(ua, "cya.label.contact.address")
+        dynamicMessage(ua, messageKey = "cya.label.contact.address")
 
       private def hiddenLabel(ua: UserAnswers): Message =
-        dynamicMessage(ua, "contactAddress.visuallyHidden.text")
+        dynamicMessage(ua, messageKey = "contactAddress.visuallyHidden.text")
 
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
         checkyouranswers.AddressCYA[self.type](label(userAnswers), Some(hiddenLabel(userAnswers)))().row(id)(changeUrl, userAnswers)
