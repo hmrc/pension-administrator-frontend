@@ -16,18 +16,15 @@
 
 package utils
 
-import java.time.LocalDate
-
 import controllers.register.company.directors.routes
 import identifiers.TypedIdentifier
-import identifiers.register.company.directors.{DirectorAddressId, DirectorNameId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
+import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
-import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.libs.json.{JsPath, JsResultException, Json}
-import viewmodels.Person
 import utils.testhelpers.DataCompletionBuilder._
+import viewmodels.Person
 
 class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
 
@@ -152,145 +149,6 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
       result mustBe userAnswers
     }
   }
-
-  /*"isPsaUpdateDetailsInComplete" must {
-
-    "set the flag as true(incomplete)" when {
-
-      "any one of the directors is incomplete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
-          .companyAddressYears(AddressYears.UnderAYear)
-          .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(true).completeDirector(index = 0).directorName(index = 1)
-
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      "company previous address is incomplete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
-          .companyAddressYears(AddressYears.UnderAYear)
-          .variationWorkingKnowledge(true).completeDirector(index = 0).completeDirector(index = 1)
-
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      "any one of the partners is incomplete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
-          .partnershipAddressYears(AddressYears.UnderAYear)
-          .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(true).completePartner(index = 0).
-          partnerName(index = 1, PersonName("first", "last"))
-
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      "partnership previous address is incomplete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
-          .partnershipAddressYears(AddressYears.UnderAYear)
-          .variationWorkingKnowledge(true).completePartner(index = 0).completePartner(index = 1)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      "individual previous address is incomplete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-          .individualAddressYears(AddressYears.UnderAYear)
-          .variationWorkingKnowledge(true)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      " adviser is incomplete i.e the flag value is false and only some details is entered" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-          .individualAddressYears(AddressYears.UnderAYear)
-          .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(false)
-          .adviserName("test adviser")
-          .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-
-      "adviser is incomplete i.e flag value is false and no details is entered" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-          .individualAddressYears(AddressYears.UnderAYear)
-          .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(false)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe true
-      }
-    }
-
-    "set the flag as false(complete)" when {
-
-      "all the details of company is complete" in {
-        val userAnswers = UserAnswers().areYouInUk(true).registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
-          .companyContactAddress(Address("line1", "line2", None, None, None, "GB"))
-          .companyAddressYears(AddressYears.UnderAYear)
-          .companyEmail("s@s.com").companyPhone("123").companyCrn("123")
-          .businessName().businessUtr().hasVat(false).hasPaye(false)
-          .companyPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .variationWorkingKnowledge(true).completeDirector(index = 0).completeDirector(index = 1)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe false
-      }
-
-      "all the details of individual including previous address with less than 12 months address years is complete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-          .individualDetails(TolerantIndividual(Some(""), None, Some("")))
-          .individualDob(LocalDate.now().minusYears(20))
-          .individualAddressYears(AddressYears.UnderAYear)
-          .individualContactAddress(Address("line1", "line2", None, None, None, "GB"))
-          .individualPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .individualEmail("s@s.com").individualPhone("123")
-          .variationWorkingKnowledge(true)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe false
-      }
-
-      "all the details of individual with more than 12 months address years is complete" in {
-        val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
-          .individualDetails(TolerantIndividual(Some(""), None, Some("")))
-          .individualDob(LocalDate.now().minusYears(20))
-          .individualAddressYears(AddressYears.OverAYear)
-          .individualContactAddress(Address("line1", "line2", None, None, None, "GB"))
-          .individualEmail("s@s.com").individualPhone("123")
-          .variationWorkingKnowledge(true)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe false
-      }
-
-      "all the details of partnership is complete" in {
-        val userAnswers = UserAnswers().areYouInUk(true).registrationInfo(RegistrationInfo(
-          RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
-          .partnershipAddressYears(AddressYears.UnderAYear)
-          .partnershipContactAddress(Address("line1", "line2", None, None, None, "GB"))
-          .partnershipPreviousAddress(Address("line1", "line2", None, None, None, "GB"))
-          .partnershipEmail("s@s.com").partnershipPhone("123")
-          .variationWorkingKnowledge(false)
-          .businessName().businessUtr().hasVat(false).hasPaye(false)
-          .adviserName("test adviser")
-          .adviserAddress(Address("line1", "line2", None, None, None, "GB"))
-          .adviserEmail("email")
-          .adviserPhone("234").completePartner(index = 0).completePartner(index = 1)
-
-        userAnswers.isPsaUpdateDetailsInComplete mustBe false
-      }
-    }
-  }*/
 
   "remove" must {
 
