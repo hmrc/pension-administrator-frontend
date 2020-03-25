@@ -19,9 +19,7 @@
         formHelper: FormWithCSRF
 )
 
-@import akka.http.scaladsl.model.headers.LinkParams.title
 @(href: Call)(implicit request: Request[_], messages: Messages)
-
 
 @main_template(
     title = messages("tellUsAboutAnotherPartner.title")
