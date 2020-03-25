@@ -22,19 +22,20 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.AddEntityController
 import forms.register.AddEntityFormProvider
+import identifiers.TypedIdentifier
 import identifiers.register.partnership.AddPartnersId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
 import viewmodels.{EntityViewModel, Message, Person}
 import views.html.register.addEntity
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddPartnerController @Inject()(
                                       override val appConfig: FrontendAppConfig,
@@ -60,6 +61,11 @@ class AddPartnerController @Inject()(
     entityType = Message("addPartners.entityType").resolve,
     psaName = psaName()
   )
+
+  protected override def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
+                   (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
+    Future.successful(Ok(view(form, viewmodel, mode)))
+  }
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

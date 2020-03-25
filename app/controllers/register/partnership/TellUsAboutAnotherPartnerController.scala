@@ -18,19 +18,20 @@ package controllers.register.partnership
 
 import config.FrontendAppConfig
 import controllers.actions._
+import identifiers.register.partnership.TellUsAboutAnotherPartnerId
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
-import utils.annotations.Partnership
+import utils.annotations.PartnershipPartner
 import views.html.register.partnership.tellUsAboutAnotherPartner
 
 import scala.concurrent.ExecutionContext
 
 class TellUsAboutAnotherPartnerController @Inject()(appConfig: FrontendAppConfig,
-                                                    @Partnership navigator: Navigator,
+                                                    @PartnershipPartner navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
@@ -40,9 +41,9 @@ class TellUsAboutAnotherPartnerController @Inject()(appConfig: FrontendAppConfig
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) { implicit request =>
-    val x = Call("", "")
-    Ok(view.apply(x))
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+    implicit request =>
+      Ok(view(navigator.nextPage(TellUsAboutAnotherPartnerId, mode, request.userAnswers)))
   }
 
 }
