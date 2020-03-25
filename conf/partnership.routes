@@ -120,3 +120,6 @@ GET         /vat-registration-number                       controllers.register.
 POST        /vat-registration-number                       controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onPageLoad(mode: Mode)
 POST        /:mode/vat-registration-number                 controllers.register.partnership.PartnershipEnterVATController.onSubmit(mode: Mode)
+
+GET         /add-another-partner                       controllers.register.partnership.TellUsAboutAnotherPartnerController.onPageLoad(mode: Mode = NormalMode)
+GET         /:mode/add-another-partner                       controllers.register.partnership.TellUsAboutAnotherPartnerController.onPageLoad(mode: Mode)
