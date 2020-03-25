@@ -302,6 +302,7 @@ whatYouWillNeed.directorsOrPartners.body.item5 = current address
 whatYouWillNeed.directorsOrPartners.body.item6 = previous address if they have been at their current address for less than 1 year
 whatYouWillNeed.directorsOrPartners.body.item7 = contact email address
 whatYouWillNeed.directorsOrPartners.body.item8 = contact phone number
+whatYouWillNeed.directorsOrPartners.hint = You will need to tell us details for at least two partners. You should make sure you have these details before you continue.
 
 partnerDetails.title = Partner
 partnerDetails.heading = Partner
