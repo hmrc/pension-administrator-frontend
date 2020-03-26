@@ -33,7 +33,7 @@
 @(form: Form[_], mode: Mode, directors: Seq[Person], psaNameOpt: Option[String])(implicit request: DataRequest[AnyContent], messages: Messages)
 
 @disableSubmission = @{
-    directors.exists(!_.isComplete)
+    directors.exists(x => if(mode == NormalMode) !x.isComplete else x.isNew && !x.isComplete)
 }
 
 @main_template(

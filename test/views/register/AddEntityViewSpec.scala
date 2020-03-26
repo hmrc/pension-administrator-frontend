@@ -19,6 +19,7 @@ package views.register
 import forms.register.AddEntityFormProvider
 import models._
 import models.requests.DataRequest
+import org.jsoup.Jsoup
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
@@ -76,7 +77,7 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
 
     behave like peopleList(createView(),
       createView(partners),
-      createView(Seq(johnDoe, joeBloggs.copy(isComplete = false)), UpdateMode),
+      createView(Seq(johnDoe, joeBloggs.copy(isComplete = false, isNew = true)), UpdateMode),
       partners
     )
 
@@ -119,14 +120,36 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
         controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(0, UpdateMode).url, "person-0-delete")
     }
 
+    "show the edit link always in NormalMode" in {
+      val view = createView(Seq(johnDoe, joeBloggs), NormalMode)
+      view must haveLink(
+        controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(NormalMode, 0).url, "person-0-edit")
+      view must haveLink(
+        controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(NormalMode, 1).url, "person-1-edit")
+    }
+
     "show the edit link in UpdateMode only for newly added partners" in {
-      val view = createView(Seq(johnUpdateMode, joeUpdateMode), UpdateMode)
+      val view = createView(Seq(johnUpdateMode.copy(isComplete = false), joeUpdateMode), UpdateMode)
       view mustNot haveLink(
         controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(UpdateMode, 0).url, "person-0-edit")
       view must haveLink(
         controllers.register.partnership.partners.routes.PartnerNameController.onPageLoad(UpdateMode, 1).url, "person-1-edit")
     }
 
+    "disable submission in Normal Mode when any partner is incomplete" in {
+      val view = createView(Seq(johnDoe, joeBloggs.copy(isComplete = false)), NormalMode)
+      Jsoup.parse(view().toString()).getElementById("submit").hasAttr("disabled") mustBe true
+    }
+
+    "not disable submission in UpdateMode when existing partner is incomplete" in {
+      val view = createView(Seq(johnUpdateMode.copy(isComplete = false), joeUpdateMode), UpdateMode)
+      Jsoup.parse(view().toString()).getElementById("submit").hasAttr("disabled") mustBe false
+    }
+
+    "disable submission in UpdateMode only when newly added partner is incomplete" in {
+      val view = createView(Seq(johnUpdateMode, joeUpdateMode.copy(isComplete = false)), UpdateMode)
+      Jsoup.parse(view().toString()).getElementById("submit").hasAttr("disabled") mustBe true
+    }
   }
 
 }

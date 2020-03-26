@@ -34,7 +34,7 @@
 @(form: Form[_], viewmodel: EntityViewModel, mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
 
 @disableSubmission = @{
-    viewmodel.entities.exists(!_.isComplete)
+    viewmodel.entities.exists(x => if(mode == NormalMode) !x.isComplete else x.isNew && !x.isComplete)
 }
 
 @main_template(

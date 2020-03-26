@@ -77,7 +77,7 @@ trait PeopleListBehaviours {
         link.size mustBe 0
       }
 
-      "display the edit link when in update mode and completed" in {
+      "display the edit link when in update mode, new entity and completed" in {
         val doc = asDocument(viewWithUpdateMode())
         val link = doc.select(s"#${people(1).editLinkId}")
         link.size mustBe 1
