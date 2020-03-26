@@ -70,7 +70,6 @@ class AddPartnerController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete(mode)
-
       post(AddPartnersId, form, viewmodel(partners, mode), mode)
   }
 

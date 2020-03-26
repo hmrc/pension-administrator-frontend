@@ -23,7 +23,7 @@ import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.Mode
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -54,7 +54,6 @@ class AddCompanyDirectorsController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete(mode)
-      val y = directors.exists(x => if(mode == NormalMode) !x.isComplete else  x.isNew && !x.isComplete)
       Ok(view(form, mode, directors, psaName()))
   }
 
