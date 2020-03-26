@@ -71,6 +71,11 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     }
   }
 
+  def spy[A](x:A):A = {
+    println( "\n****>>>" + x)
+    x
+  }
+
   //noinspection ScalaStyle
   private def normalAndUpdateRoutes(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AddPartnersId => addPartnerRoutes(ua, mode)
@@ -96,8 +101,12 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case PartnerPreviousAddressId(index) => previousAddressRoutes(index, ua, mode)
     case PartnerEmailId(index) => emailRoutes(index, ua, mode)
     case PartnerPhoneId(index) => phoneRoutes(index, ua, mode)
+    case CheckYourAnswersId if countPartnersAfterDelete(ua) < 2 => TellUsAboutAnotherPartnerController.onPageLoad(mode)
     case CheckYourAnswersId => AddPartnerController.onPageLoad(mode)
   }
+
+  private def countPartnersAfterDelete(ua:UserAnswers): Int =
+    ua.getAll[PersonName](PartnerNameId.collectionPath).getOrElse(Nil).count(!_.isDeleted)
 
   private def checkYourAnswersPage(index: Int, mode: Mode = NormalMode) = CheckYourAnswersController.onPageLoad(index, mode)
 
