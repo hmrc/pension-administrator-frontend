@@ -71,29 +71,29 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
   }
 
-  //"PartnerNavigator in CheckMode" must {
-  //  def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
-  //    ("Id", "User Answers", "Next Page"),
-  //    (PartnerNameId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
-  //    (PartnerDOBId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
-  //    (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(CheckMode)),
-  //    (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(CheckMode)),
-  //    (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(CheckMode)),
-  //    (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(CheckMode)),
-  //    (PartnerAddressYearsId(0), addressYearsOverAYear, checkYourAnswersPage(NormalMode)),
-  //    (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(CheckMode)),
-  //    (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage),
-  //    (PartnerPreviousAddressId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
-  //    (PartnerEmailId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
-  //    (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
-  //    (PartnerEnterNINOId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
-  //    (PartnerNoNINOReasonId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
-  //    (PartnerEnterUTRId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
-  //    (PartnerNoUTRReasonId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
-  //    (PartnerAddressId(0), emptyAnswers, checkYourAnswersPage(NormalMode))
-  //  )
-  //  behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckMode)
-  //}
+  "PartnerNavigator in CheckMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (PartnerNameId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerDOBId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(CheckMode)),
+      (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(CheckMode)),
+      (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(CheckMode)),
+      (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(CheckMode)),
+      (PartnerAddressYearsId(0), addressYearsOverAYear, checkYourAnswersPage(NormalMode)),
+      (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(CheckMode)),
+      (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage),
+      (PartnerPreviousAddressId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerEmailId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerEnterNINOId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerNoNINOReasonId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerEnterUTRId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerNoUTRReasonId(0), emptyAnswers, checkYourAnswersPage(NormalMode)),
+      (PartnerAddressId(0), emptyAnswers, checkYourAnswersPage(NormalMode))
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckMode)
+  }
 
   "PartnerNavigator in UpdateMode" must {
     def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
@@ -114,7 +114,8 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
       (PartnerPreviousAddressId(0), defaultAnswers, partnerEmailPage(UpdateMode)),
       (PartnerEmailId(0), defaultAnswers, partnerPhonePage(UpdateMode)),
       (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(UpdateMode)),
-      (CheckYourAnswersId, emptyAnswers, addPartnersPage(UpdateMode)),
+      (CheckYourAnswersId, only1Partner, tellUsAboutAnotherPartnerPage(UpdateMode)),
+      (CheckYourAnswersId, twoPartners, addPartnersPage(UpdateMode)),
       (AddPartnersId, addPartnersFalse, anyMoreChangesPage),
       (PartnerEnterNINOId(0), defaultAnswers, partnerHasUtrPage(UpdateMode)),
       (PartnerEnterNINOId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
@@ -136,25 +137,25 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
   }
 
-  //"PartnerNavigator in CheckUpdateMode" must {
-  //  def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
-  //    ("Id", "User Answers", "Next Page"),
-  //    (PartnerNameId(0), emptyAnswers, checkYourAnswersPage(UpdateMode)),
-  //    (PartnerDOBId(0), emptyAnswers, checkYourAnswersPage(UpdateMode)),
-  //    (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(CheckUpdateMode)),
-  //    (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(CheckUpdateMode)),
-  //    (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(CheckUpdateMode)),
-  //    (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(CheckUpdateMode)),
-  //    (PartnerAddressYearsId(0), addressYearsOverAYear, checkYourAnswersPage(UpdateMode)),
-  //    (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(CheckUpdateMode)),
-  //    (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage),
-  //    (PartnerPreviousAddressId(0), defaultAnswers, checkYourAnswersPage(UpdateMode)),
-  //    (PartnerEmailId(0), defaultAnswers, checkYourAnswersPage(UpdateMode)),
-  //    (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(UpdateMode))
-  //
-  //  )
-  //  behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckUpdateMode)
-  //}
+  "PartnerNavigator in CheckUpdateMode" must {
+    def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
+      ("Id", "User Answers", "Next Page"),
+      (PartnerNameId(0), emptyAnswers, checkYourAnswersPage(UpdateMode)),
+      (PartnerDOBId(0), emptyAnswers, checkYourAnswersPage(UpdateMode)),
+      (HasPartnerNINOId(0), hasNinoYes, partnerEnterNinoPage(CheckUpdateMode)),
+      (HasPartnerNINOId(0), hasNinoNo, partnerNoNinoPage(CheckUpdateMode)),
+      (HasPartnerUTRId(0), hasUtrYes, partnerEnterUtrPage(CheckUpdateMode)),
+      (HasPartnerUTRId(0), hasUtrNo, partnerNoUtrReasonPage(CheckUpdateMode)),
+      (PartnerAddressYearsId(0), addressYearsOverAYear, checkYourAnswersPage(UpdateMode)),
+      (PartnerAddressYearsId(0), addressYearsUnderAYear, paPostCodePage(CheckUpdateMode)),
+      (PartnerAddressYearsId(0), defaultAnswers, sessionExpiredPage),
+      (PartnerPreviousAddressId(0), defaultAnswers, checkYourAnswersPage(UpdateMode)),
+      (PartnerEmailId(0), defaultAnswers, checkYourAnswersPage(UpdateMode)),
+      (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(UpdateMode))
+
+    )
+    behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckUpdateMode)
+  }
 }
 
 object PartnerNavigatorSpec extends OptionValues {
