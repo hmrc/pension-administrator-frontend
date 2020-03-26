@@ -71,15 +71,10 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     }
   }
 
-  def spy[A](x:A):A = {
-    println( "\n****>>>" + x)
-    x
-  }
-
   //noinspection ScalaStyle
   private def normalAndUpdateRoutes(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AddPartnersId => addPartnerRoutes(ua, mode)
-    case TellUsAboutAnotherPartnerId => addPartnerRoutesTwo(ua, mode)
+    case TellUsAboutAnotherPartnerId => PartnerNameController.onPageLoad(mode, ua.partnersCount)
     case PartnerNameId(index) => PartnerDOBController.onPageLoad(mode, index)
     case PartnerDOBId(index) => HasPartnerNINOController.onPageLoad(mode, index)
 
@@ -204,22 +199,19 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
   }
 
   private def addPartnerRoutes(answers: UserAnswers, mode: Mode): Call = {
-    val index = answers.allPartnersAfterDelete(mode).length
     answers.get(AddPartnersId) match {
-      case Some(false) if mode == NormalMode && index < 2 => TellUsAboutAnotherPartnerController.onPageLoad(NormalMode)
+      case Some(false) if mode == NormalMode && countPartnersAfterDelete(answers) < 2 =>
+        TellUsAboutAnotherPartnerController.onPageLoad(NormalMode)
       case Some(false) if mode == NormalMode => PartnershipReviewController.onPageLoad()
       case Some(false) if mode == UpdateMode => anyMoreChangesPage
       case _ =>
+        val index = answers.allPartnersAfterDelete(mode).length
         if (index >= config.maxPartners) {
           MoreThanTenPartnersController.onPageLoad(mode)
         } else {
           PartnerNameController.onPageLoad(mode, answers.partnersCount)
         }
     }
-  }
-  private def addPartnerRoutesTwo(answers: UserAnswers, mode: Mode): Call = {
-        val index = answers.allPartnersAfterDelete(mode).length
-          PartnerNameController.onPageLoad(mode, answers.partnersCount)
   }
 
   private def partnerAddressYearsCheckRoutes(index: Int, answers: UserAnswers, mode: Mode): Call = {

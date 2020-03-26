@@ -209,15 +209,15 @@ object PartnerNavigatorSpec extends OptionValues {
   private def partner(index: Int) =
     PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = (index % 2 == 0), isNew = true)
 
-  private def data2(n: Int) = {
+  private def createPartners(n: Int) = {
     def partner(index: Int) = PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = false, isNew = true)
     (0 until n).map(index => Json.obj(
       PartnerNameId.toString -> partner(index))
     ).toArray
   }
 
-  private def data(n: Int) = {
-    (0 to n).map(index => Json.obj(
+  private def data = {
+    (0 to 19).map(index => Json.obj(
       PartnerNameId.toString -> partner(index))
     ).toArray
   }
@@ -247,13 +247,13 @@ object PartnerNavigatorSpec extends OptionValues {
     .set(AddPartnersId)(false).asOpt.value
 
   private val addPartnersFalseMoreThan1 = UserAnswers(Json.obj(
-    "partners" -> data(3))).set(AddPartnersId)(false).asOpt.value
+    "partners" -> createPartners(3))).set(AddPartnersId)(false).asOpt.value
 
   private val only1Partner = UserAnswers(Json.obj(
-    "partners" -> data(1)))
+    "partners" -> createPartners(1)))
 
   private val twoPartners = UserAnswers(Json.obj(
-    "partners" -> data2(2)))
+    "partners" -> createPartners(2)))
 
   private val addPartnersTrue = UserAnswers(Json.obj())
     .set(AddPartnersId)(true).asOpt.value
@@ -270,7 +270,7 @@ object PartnerNavigatorSpec extends OptionValues {
     .set(PartnerConfirmPreviousAddressId(0))(false).asOpt.value
 
   val addPartnersMoreThan10 = UserAnswers(Json.obj(
-    "partners" -> data(19)))
+    "partners" -> data))
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"
