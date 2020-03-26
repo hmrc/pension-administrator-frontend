@@ -62,15 +62,10 @@ class AddPartnerController @Inject()(
     psaName = psaName()
   )
 
-  protected override def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
-                   (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
-    Future.successful(Ok(view(form, viewmodel, mode)))
-  }
-
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete(mode)
-      get(AddPartnersId, form, viewmodel(partners, mode), mode)
+      Future.successful(Ok(view(form, viewmodel(partners, mode), mode)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
