@@ -90,6 +90,16 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
       doc.select("legend > span").size() mustBe 0
     }
 
+    "not show the indented text if there 2 or more partners" in {
+      val doc = asDocument(createViewUsingForm(Seq.fill(2)(johnDoe))(form))
+      assertNotRenderedById(doc, "too-few-partners-hint")
+    }
+
+    "show the indented text if there are less than 2 partners" in {
+      val doc = asDocument(createViewUsingForm(Seq.fill(1)(johnDoe))(form))
+      assertRenderedById(doc, "too-few-partners-hint")
+    }
+
     "show the Continue button when there are partners" in {
       val doc = asDocument(createViewUsingForm(Seq(johnDoe))(form))
       val submit = doc.select("button#submit")
@@ -149,6 +159,7 @@ object AddEntityViewSpec {
   // scalastyle:off magic.number
   private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
   private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
+
 
   private val johnUpdateMode = johnDoe.copy(deleteLink = deleteLink(0, UpdateMode), editLink = editLink(0, UpdateMode))
   private val joeUpdateMode = joeBloggs.copy(deleteLink = deleteLink(1, UpdateMode), editLink = editLink(1, UpdateMode), isNew = true)

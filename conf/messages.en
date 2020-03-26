@@ -728,6 +728,7 @@ partnerUniqueTaxReference.error.reason.required = You need to tell us why the pa
 partnerUniqueTaxReference.checkYourAnswersLabel = Does the partner have a Self Assessment Unique Taxpayer Reference number?
 partnerUniqueTaxReference.checkYourAnswersLabel.reason = Why the partner does not have a UTR
 
+addEntity.hintText = You will need to tell us details for at least two partners.
 addEntity.error.required = Select yes if you want to add another partner
 addEntity.addYesNo = Do you want to add another {0}?
 addEntity.addAnEntity = Add a {0}

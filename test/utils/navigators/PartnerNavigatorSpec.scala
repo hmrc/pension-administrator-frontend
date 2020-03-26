@@ -57,7 +57,8 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
       (PartnerEmailId(0), defaultAnswers, partnerPhonePage(NormalMode)),
       (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
       (CheckYourAnswersId, emptyAnswers, addPartnersPage(NormalMode)),
-      (AddPartnersId, addPartnersFalse, partnershipReviewPage(NormalMode)),
+      (AddPartnersId, addPartnersFalse, tellUsAboutAnotherPartnerPage(NormalMode)),
+      (AddPartnersId, addPartnersFalseMoreThan1, partnershipReviewPage(NormalMode)),
       (PartnerEnterNINOId(0), emptyAnswers, partnerHasUtrPage(NormalMode)),
       (PartnerNoNINOReasonId(0), emptyAnswers, partnerHasUtrPage(NormalMode)),
       (PartnerEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode)),
@@ -165,6 +166,8 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
 
+  private def tellUsAboutAnotherPartnerPage(mode: Mode) = controllers.register.partnership.routes.TellUsAboutAnotherPartnerController.onPageLoad(mode)
+
   private def partnerDOBPage(mode: Mode) = routes.PartnerDOBController.onPageLoad(mode, 0)
 
   private def partnerAddressYearsPage(mode: Mode) = routes.PartnerAddressYearsController.onPageLoad(mode, 0)
@@ -204,8 +207,8 @@ object PartnerNavigatorSpec extends OptionValues {
   private def partner(index: Int) =
     PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = (index % 2 == 0), isNew = true)
 
-  private def data = {
-    (0 to 19).map(index => Json.obj(
+  private def data(n: Int) = {
+    (0 to n).map(index => Json.obj(
       PartnerNameId.toString -> partner(index))
     ).toArray
   }
@@ -233,6 +236,10 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private val addPartnersFalse = UserAnswers(Json.obj())
     .set(AddPartnersId)(false).asOpt.value
+
+  val addPartnersFalseMoreThan1 = UserAnswers(Json.obj(
+    "partners" -> data(3))).set(AddPartnersId)(false).asOpt.value
+
   private val addPartnersTrue = UserAnswers(Json.obj())
     .set(AddPartnersId)(true).asOpt.value
 
@@ -248,7 +255,7 @@ object PartnerNavigatorSpec extends OptionValues {
     .set(PartnerConfirmPreviousAddressId(0))(false).asOpt.value
 
   val addPartnersMoreThan10 = UserAnswers(Json.obj(
-    "partners" -> data))
+    "partners" -> data(19)))
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"
