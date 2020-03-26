@@ -56,10 +56,10 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
       (PartnerPreviousAddressId(0), defaultAnswers, partnerEmailPage(NormalMode)),
       (PartnerEmailId(0), defaultAnswers, partnerPhonePage(NormalMode)),
       (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(NormalMode)),
-      (CheckYourAnswersId, only1Partner, tellUsAboutAnotherPartnerPage(NormalMode)),
+      (CheckYourAnswersId, onlyOnePartner, tellUsAboutAnotherPartnerPage(NormalMode)),
       (CheckYourAnswersId, twoPartners, addPartnersPage(NormalMode)),
       (AddPartnersId, addPartnersFalse, tellUsAboutAnotherPartnerPage(NormalMode)),
-      (AddPartnersId, addPartnersFalseMoreThan1, partnershipReviewPage(NormalMode)),
+      (AddPartnersId, moreThan1PartnerAddPartnerFalse, partnershipReviewPage(NormalMode)),
       (PartnerEnterNINOId(0), emptyAnswers, partnerHasUtrPage(NormalMode)),
       (PartnerNoNINOReasonId(0), emptyAnswers, partnerHasUtrPage(NormalMode)),
       (PartnerEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode)),
@@ -114,7 +114,7 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
       (PartnerPreviousAddressId(0), defaultAnswers, partnerEmailPage(UpdateMode)),
       (PartnerEmailId(0), defaultAnswers, partnerPhonePage(UpdateMode)),
       (PartnerPhoneId(0), defaultAnswers, checkYourAnswersPage(UpdateMode)),
-      (CheckYourAnswersId, only1Partner, tellUsAboutAnotherPartnerPage(UpdateMode)),
+      (CheckYourAnswersId, onlyOnePartner, tellUsAboutAnotherPartnerPage(UpdateMode)),
       (CheckYourAnswersId, twoPartners, addPartnersPage(UpdateMode)),
       (AddPartnersId, addPartnersFalse, anyMoreChangesPage),
       (PartnerEnterNINOId(0), defaultAnswers, partnerHasUtrPage(UpdateMode)),
@@ -209,9 +209,9 @@ object PartnerNavigatorSpec extends OptionValues {
   private def partner(index: Int) =
     PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = (index % 2 == 0), isNew = true)
 
-  private def createPartners(n: Int) = {
+  private def createPartners(numberOfPartnersToCreate: Int) = {
     def partner(index: Int) = PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = false, isNew = true)
-    (0 until n).map(index => Json.obj(
+    (0 until numberOfPartnersToCreate).map(index => Json.obj(
       PartnerNameId.toString -> partner(index))
     ).toArray
   }
@@ -246,14 +246,14 @@ object PartnerNavigatorSpec extends OptionValues {
   private val addPartnersFalse = UserAnswers(Json.obj())
     .set(AddPartnersId)(false).asOpt.value
 
-  private val addPartnersFalseMoreThan1 = UserAnswers(Json.obj(
-    "partners" -> createPartners(3))).set(AddPartnersId)(false).asOpt.value
+  private val moreThan1PartnerAddPartnerFalse = UserAnswers(Json.obj(
+    "partners" -> createPartners(numberOfPartnersToCreate = 3))).set(AddPartnersId)(false).asOpt.value
 
-  private val only1Partner = UserAnswers(Json.obj(
-    "partners" -> createPartners(1)))
+  private val onlyOnePartner = UserAnswers(Json.obj(
+    "partners" -> createPartners(numberOfPartnersToCreate = 1)))
 
   private val twoPartners = UserAnswers(Json.obj(
-    "partners" -> createPartners(2)))
+    "partners" -> createPartners(numberOfPartnersToCreate = 2)))
 
   private val addPartnersTrue = UserAnswers(Json.obj())
     .set(AddPartnersId)(true).asOpt.value
