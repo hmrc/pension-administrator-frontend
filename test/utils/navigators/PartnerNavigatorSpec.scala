@@ -210,14 +210,7 @@ object PartnerNavigatorSpec extends OptionValues {
     PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = (index % 2 == 0), isNew = true)
 
   private def createPartners(numberOfPartnersToCreate: Int) = {
-    def partner(index: Int) = PersonName(s"testFirstName$index", s"testLastName$index", isDeleted = false, isNew = true)
-    (0 until numberOfPartnersToCreate).map(index => Json.obj(
-      PartnerNameId.toString -> partner(index))
-    ).toArray
-  }
-
-  private def data = {
-    (0 to 19).map(index => Json.obj(
+    (0 until numberOfPartnersToCreate * 2).map(index => Json.obj(
       PartnerNameId.toString -> partner(index))
     ).toArray
   }
@@ -270,7 +263,7 @@ object PartnerNavigatorSpec extends OptionValues {
     .set(PartnerConfirmPreviousAddressId(0))(false).asOpt.value
 
   val addPartnersMoreThan10 = UserAnswers(Json.obj(
-    "partners" -> data))
+    "partners" -> createPartners(numberOfPartnersToCreate = 10)))
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"
