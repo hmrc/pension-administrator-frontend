@@ -152,31 +152,16 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
     AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
 
-  def writeToDesktop(content:String, fileName:String):Unit = {
-    import java.io._
-    val pw = new PrintWriter(new File( s"/home/grant/Desktop/$fileName" ))
-    pw.write(content)
-    pw.close()
-  }
-
-
-
-
   private def testRenderedView(sections: Seq[AnswerSection], result: Future[Result], isComplete: Boolean = true): Unit = {
     status(result) mustBe OK
 
-    val act = contentAsString(result)
-    writeToDesktop(act, "act.html")
-    val exp = cyaView(
+    contentAsString(result) mustBe cyaView(
       sections,
       postUrl,
       None,
       NormalMode,
       isComplete
     )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
-    writeToDesktop(exp, "exp.html")
-
-    act mustBe exp
   }
 
   // scalastyle:off method.length
