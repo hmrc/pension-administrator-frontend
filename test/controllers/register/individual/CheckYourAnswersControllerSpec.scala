@@ -25,13 +25,17 @@ import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.{Call, Result}
+import play.api.mvc.Call
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
-import viewmodels.{AnswerRow, AnswerSection, Link, Message}
+import viewmodels.AnswerRow
+import viewmodels.AnswerSection
+import viewmodels.Link
+import viewmodels.Message
 import views.html.check_your_answers
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
@@ -42,14 +46,31 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   override def beforeEach(): Unit = {
     when(mockDataCompletion.isIndividualComplete(any(), any())).thenReturn(true)
   }
+
   "CheckYourAnswersController" when {
     "on a GET request" must {
 
-      "render the view correctly for all the rows of answer section if individual name and address is present" in {
+      "render the view correctly - with NO change link for contact address - for all the rows of answer section if individual name and address is present" in {
         val retrievalAction = UserAnswers().completeIndividual.dataRetrievalAction
         val result = controller(retrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-        val sections = Seq(AnswerSection(None, answerRows))
+        val sections = Seq(AnswerSection(None, answerRows()))
+        testRenderedView(sections, result)
+      }
+
+      "render the view correctly - including a change link for contact address - for all the rows of answer section " +
+        "if individual name and address is present and not the same address" in {
+        val retrievalAction = UserAnswers().completeIndividualNotSameAddress.dataRetrievalAction
+        val result = controller(retrievalAction).onPageLoad(NormalMode)(fakeRequest)
+
+        val sections = Seq(
+          AnswerSection(None,
+            answerRows(
+              changeUrlContactAddress = Some(Link(
+                controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(CheckMode).url))
+            )
+          )
+        )
         testRenderedView(sections, result)
       }
 
@@ -81,7 +102,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
         val retrievalAction = UserAnswers().completeIndividual.dataRetrievalAction
         val result = controller(retrievalAction).onSubmit(NormalMode)(fakeRequest)
 
-        val sections = Seq(AnswerSection(None, answerRows))
+        val sections = Seq(AnswerSection(None, answerRows()))
         testRenderedView(sections, result, isComplete = false)
       }
 
@@ -95,6 +116,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   }
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val dob = LocalDate.now().minusYears(20)
   private val addressYears = AddressYears.UnderAYear
@@ -130,19 +152,35 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
     AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
 
-  private def testRenderedView(sections: Seq[AnswerSection], result: Future[Result], isComplete: Boolean = true): Unit = {
-    status(result) mustBe OK
-    contentAsString(result) mustBe
-      cyaView(
-        sections,
-        postUrl,
-        None,
-        NormalMode,
-        isComplete
-      )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
+  def writeToDesktop(content:String, fileName:String):Unit = {
+    import java.io._
+    val pw = new PrintWriter(new File( s"/home/grant/Desktop/$fileName" ))
+    pw.write(content)
+    pw.close()
   }
 
-  private val answerRows = Seq(
+
+
+
+  private def testRenderedView(sections: Seq[AnswerSection], result: Future[Result], isComplete: Boolean = true): Unit = {
+    status(result) mustBe OK
+
+    val act = contentAsString(result)
+    writeToDesktop(act, "act.html")
+    val exp = cyaView(
+      sections,
+      postUrl,
+      None,
+      NormalMode,
+      isComplete
+    )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
+    writeToDesktop(exp, "exp.html")
+
+    act mustBe exp
+  }
+
+  // scalastyle:off method.length
+  private def answerRows(changeUrlContactAddress: Option[Link] = None) = Seq(
     answerRow(
       "individualDetailsCorrect.name",
       Seq(individual.fullName)
@@ -159,7 +197,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
     ),
     answerRow(
       "cya.label.individual.same.contact.address",
-      Seq("site.yes"),
+      if (changeUrlContactAddress.isDefined) Seq("site.no") else Seq("site.yes"),
       answerIsMessageKey = true,
       changeUrl = Some(Link(controllers.register.individual.routes.IndividualSameContactAddressController.onPageLoad(CheckMode).url)),
       visuallyHiddenLabel = Some("individualContactAddress.visuallyHidden.text")
@@ -171,7 +209,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
         address.addressLine2,
         address.postcode.value,
         address.country
-      )
+      ),
+      changeUrl = changeUrlContactAddress
     ),
     answerRow(
       Message("individualAddressYears.title", "Joe Bloggs").resolve,
