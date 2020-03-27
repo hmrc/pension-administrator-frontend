@@ -96,12 +96,9 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case PartnerPreviousAddressId(index) => previousAddressRoutes(index, ua, mode)
     case PartnerEmailId(index) => emailRoutes(index, ua, mode)
     case PartnerPhoneId(index) => phoneRoutes(index, ua, mode)
-    case CheckYourAnswersId if countPartnersAfterDelete(ua) < 2 => TellUsAboutAnotherPartnerController.onPageLoad(mode)
+    case CheckYourAnswersId if ua.countPartnersAfterDelete < 2 => TellUsAboutAnotherPartnerController.onPageLoad(mode)
     case CheckYourAnswersId => AddPartnerController.onPageLoad(mode)
   }
-
-  private def countPartnersAfterDelete(ua:UserAnswers): Int =
-    ua.getAll[PersonName](PartnerNameId.collectionPath).getOrElse(Nil).count(!_.isDeleted)
 
   private def checkYourAnswersPage(index: Int, mode: Mode = NormalMode) = CheckYourAnswersController.onPageLoad(index, mode)
 
@@ -200,7 +197,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
   private def addPartnerRoutes(answers: UserAnswers, mode: Mode): Call = {
     answers.get(AddPartnersId) match {
-      case Some(false) if mode == NormalMode && countPartnersAfterDelete(answers) < 2 =>
+      case Some(false) if mode == NormalMode && answers.countPartnersAfterDelete < 2 =>
         TellUsAboutAnotherPartnerController.onPageLoad(NormalMode)
       case Some(false) if mode == NormalMode => PartnershipReviewController.onPageLoad()
       case Some(false) if mode == UpdateMode => anyMoreChangesPage
