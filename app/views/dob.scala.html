@@ -38,12 +38,12 @@
 
         @components.error_summary(form.errors)
         <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(viewModel.heading)
 
         @components.input_date(
             field = form("value"),
-            label = messages("common.dateOfBirth"),
-            legendClass = "visually-hidden",
+            label = messages(viewModel.heading),
+            headingIsLegend = true,
+            labelClass = "visually-hidden",
             hint = messages("common.dateOfBirth.hint")
         )
         </div>
