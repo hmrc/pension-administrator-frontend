@@ -56,7 +56,7 @@
                 </div>
             } else {
 
-                @components.person_list(appConfig, viewmodel.entities, mode)
+                @components.person_list(viewmodel.entities, mode)
 
                 @if(viewmodel.entities.size < viewmodel.maxLimit) {
                     @components.input_yes_no(

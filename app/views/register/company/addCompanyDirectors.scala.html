@@ -55,7 +55,7 @@
             </div>
         } else {
 
-            @components.person_list(appConfig, directors, mode)
+            @components.person_list(directors, mode)
 
             @if(directors.size < appConfig.maxDirectors) {
                 @components.input_yes_no(
