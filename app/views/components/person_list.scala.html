@@ -29,7 +29,7 @@
 
                 @if(mode != UpdateMode || (mode == UpdateMode && !person.isComplete) || person.isNew) {
                     <div>
-                        <a id="@person.editLinkId" href="@person.editLink">
+                        <a id="@person.editLinkId" href="@person.editLink" aria-label="@messages("site.change") @person.name">
                             @messages("site.change")
                         </a>
                     </div>
@@ -37,7 +37,7 @@
 
                 @if(mode != UpdateMode || people.size > 1) {
                     <div>
-                        <a id="@person.deleteLinkId" href="@person.deleteLink">
+                        <a id="@person.deleteLinkId" href="@person.deleteLink" aria-label="@messages("site.delete") @person.name">
                             @messages("site.delete")
                         </a>
                     </div>

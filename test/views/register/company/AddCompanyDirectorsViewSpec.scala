@@ -83,6 +83,12 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
       submit.first().text() mustBe messages("site.continue")
     }
 
+    "have aria label for edit and remove links" in {
+      val doc = asDocument(createViewUsingForm(Seq(johnDoe))(form))
+      doc.select(s"a[aria-label='Change ${johnDoe.name}']").size() mustBe 1
+      doc.select(s"a[aria-label='Remove ${johnDoe.name}']").size() mustBe 1
+    }
+
     "show the Add a Director button when there are zero directors" in {
       val doc = asDocument(createViewUsingForm()(form))
       val submit = doc.select("button#submit")
