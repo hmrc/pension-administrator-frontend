@@ -30,7 +30,7 @@
                 <h2 id="@person.id" class="bold std-text">@person.name</h2>
             </div>
 
-            @if(mode != UpdateMode || (mode == UpdateMode && !person.isComplete) || (person.isNew)) {
+            @if(mode != UpdateMode || person.isNew) {
                 <div>
                     <a id="@person.editLinkId" href="@person.editLink">
                         @messages("site.change")
