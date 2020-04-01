@@ -58,6 +58,10 @@
 
                 @components.person_list(appConfig, viewmodel.entities, mode)
 
+              @if(viewmodel.entities.size < 2) {
+                <p id="too-few-partners-hint" class="panel panel panel-border-wide">@messages("addEntity.hintText")</p>
+              }
+
                 @if(viewmodel.entities.size < viewmodel.maxLimit) {
                     @components.input_yes_no(
                         field = form("value"),
