@@ -27,13 +27,13 @@
                     <h2 id="@person.id" class="bold std-text">@person.name</h2>
                 </div>
 
-                @if(mode != UpdateMode || (mode == UpdateMode && !person.isComplete) || person.isNew) {
-                    <div>
-                        <a id="@person.editLinkId" href="@person.editLink" aria-label="@messages("site.change") @person.name">
-                            @messages("site.change")
-                        </a>
-                    </div>
-                }
+            @if(mode != UpdateMode || person.isNew) {
+                <div>
+                    <a id="@person.editLinkId" href="@person.editLink" aria-label="@messages("site.change") @person.name">
+                        @messages("site.change")
+                    </a>
+                </div>
+            }
 
                 @if(mode != UpdateMode || people.size > 1) {
                     <div>

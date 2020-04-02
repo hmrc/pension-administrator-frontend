@@ -20,6 +20,7 @@ import controllers.register.company.routes
 import forms.register.company.AddCompanyDirectorsFormProvider
 import models.requests.DataRequest
 import models._
+import org.jsoup.Jsoup
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
@@ -63,7 +64,7 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
 
     behave like peopleList(createView(),
       createView(directors),
-      createView(Seq(johnDoe, joeBloggs.copy(isComplete = false)), UpdateMode),
+      createView(Seq(johnDoe, joeBloggs.copy(isComplete = false, isNew = true)), UpdateMode),
       directors)
 
     "not show the yes no inputs if there are no directors" in {
@@ -106,6 +107,21 @@ class AddCompanyDirectorsViewSpec extends YesNoViewBehaviours with PeopleListBeh
       view must haveDynamicText("addCompanyDirectors.tellUsIfYouHaveMore")
     }
 
+    "disable submission in Normal Mode when any partner is incomplete" in {
+      val view = createView(Seq(johnDoe, joeBloggs.copy(isComplete = false)), NormalMode)
+      Jsoup.parse(view().toString()).getElementById("submit").hasAttr("disabled") mustBe true
+    }
+
+    "not disable submission in UpdateMode when existing partner is incomplete" in {
+      val view = createView(Seq(johnUpdateMode.copy(isComplete = false), joeUpdateMode), UpdateMode)
+      Jsoup.parse(view().toString()).getElementById("submit").hasAttr("disabled") mustBe false
+    }
+
+    "disable submission in UpdateMode only when newly added partner is incomplete" in {
+      val view = createView(Seq(johnUpdateMode, joeUpdateMode.copy(isComplete = false)), UpdateMode)
+      Jsoup.parse(view().toString()).getElementById("submit").hasAttr("disabled") mustBe true
+    }
+
     behave like pageWithReturnLink(createView(mode = UpdateMode), controllers.routes.PsaDetailsController.onPageLoad().url)
   }
 
@@ -120,13 +136,16 @@ object AddCompanyDirectorsViewSpec {
     UserAnswers(Json.obj())
   )
 
-  private def deleteLink(index: Int) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(NormalMode, index).url
+  private def deleteLink(index: Int, mode: Mode = NormalMode) = controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onPageLoad(mode, index).url
 
-  private def editLink(index: Int) = controllers.register.company.directors.routes.DirectorNameController.onPageLoad(NormalMode, index).url
+  private def editLink(index: Int, mode: Mode = NormalMode) = controllers.register.company.directors.routes.DirectorNameController.onPageLoad(mode, index).url
 
   // scalastyle:off magic.number
   private val johnDoe = Person(0, "John Doe", deleteLink(0), editLink(0), isDeleted = false, isComplete = true)
   private val joeBloggs = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
+
+  private val johnUpdateMode = johnDoe.copy(deleteLink = deleteLink(0, UpdateMode), editLink = editLink(0, UpdateMode))
+  private val joeUpdateMode = joeBloggs.copy(deleteLink = deleteLink(1, UpdateMode), editLink = editLink(1, UpdateMode), isNew = true)
   // scalastyle:on magic.number
 
 }

@@ -302,6 +302,12 @@ whatYouWillNeed.directorsOrPartners.body.item5 = current address
 whatYouWillNeed.directorsOrPartners.body.item6 = previous address if they have been at their current address for less than 1 year
 whatYouWillNeed.directorsOrPartners.body.item7 = contact email address
 whatYouWillNeed.directorsOrPartners.body.item8 = contact phone number
+whatYouWillNeed.directorsOrPartners.hint = You will need to tell us details for at least two partners. You should make sure you have these details before you continue.
+
+tellUsAboutAnotherPartner.title = You need to tell us about another partner
+tellUsAboutAnotherPartner.heading = You need to tell us about another partner
+tellUsAboutAnotherPartner.body.text1 = There must be at least two partners associated with the partnership you’re registering.
+tellUsAboutAnotherPartner.body.text2 = You must now tell us about another partner within the partnership.
 
 partnerDetails.title = Partner
 partnerDetails.heading = Partner
@@ -722,6 +728,7 @@ partnerUniqueTaxReference.error.reason.required = You need to tell us why the pa
 partnerUniqueTaxReference.checkYourAnswersLabel = Does the partner have a Self Assessment Unique Taxpayer Reference number?
 partnerUniqueTaxReference.checkYourAnswersLabel.reason = Why the partner does not have a UTR
 
+addEntity.hintText = You will need to tell us details for at least two partners.
 addEntity.error.required = Select yes if you want to add another partner
 addEntity.addYesNo = Do you want to add another {0}?
 addEntity.addAnEntity = Add a {0}

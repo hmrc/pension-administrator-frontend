@@ -33,7 +33,11 @@ case object IndividualContactAddressId extends TypedIdentifier[Address] {
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
         userAnswers.get(id) match {
           case Some(_) =>
-            checkyouranswers.AddressCYA[self.type](label = "cya.label.individual.contact.address", None)().row(id)(None, userAnswers)
+            val optionChangeUrl = userAnswers.get(IndividualSameContactAddressId) match {
+              case Some(false) => changeUrl
+              case _ => None
+            }
+            checkyouranswers.AddressCYA[self.type](label = "cya.label.individual.contact.address", None)().row(id)(optionChangeUrl, userAnswers)
           case _ =>
             checkyouranswers.AddressCYA[self.type](label = "cya.label.individual.contact.address", None)().row(id)(changeUrl, userAnswers)
         }

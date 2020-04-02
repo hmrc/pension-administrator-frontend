@@ -96,6 +96,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     getAll[PersonName](PartnerNameId.collectionPath).getOrElse(Nil)
   }
 
+  def countPartnersAfterDelete:Int = getAll[PersonName](PartnerNameId.collectionPath).getOrElse(Nil).count(!_.isDeleted)
+
   def allPartnersAfterDelete(mode: Mode): Seq[Person] = {
     val partners = for ((partner, index) <- allPartners.zipWithIndex) yield {
       if (partner.isDeleted) {
