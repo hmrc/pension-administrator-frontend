@@ -56,7 +56,7 @@
                 </div>
             } else {
 
-                @components.person_list(appConfig, viewmodel.entities, mode)
+                @components.person_list(viewmodel.entities, mode)
 
               @if(viewmodel.entities.size < 2) {
                 <p id="too-few-partners-hint" class="panel panel panel-border-wide">@messages("addEntity.hintText")</p>

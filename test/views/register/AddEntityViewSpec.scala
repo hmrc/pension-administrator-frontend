@@ -19,6 +19,7 @@ package views.register
 import forms.register.AddEntityFormProvider
 import models._
 import models.requests.DataRequest
+import org.jsoup.select.Elements
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -38,9 +39,9 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
 
   private val messageKeyPrefix = "addPartners"
   private val entityType = "partners"
-  private val entityTypeSinglular = "partner"
+  private val entityTypeSingular = "partner"
 
-  def viewmodel(entities: Seq[Person] = Seq.empty) = EntityViewModel(
+  def viewModel(entities: Seq[Person] = Seq.empty) = EntityViewModel(
     postCall = Call("GET", "/"),
     title = Message("addPartners.title"),
     heading = Message("addPartners.heading"),
@@ -53,10 +54,10 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
   val view: addEntity = app.injector.instanceOf[addEntity]
 
   private def createView(entities: Seq[Person] = Nil, mode: Mode = NormalMode): () => Html = () =>
-    view(form, viewmodel(entities), mode)(request, messages)
+    view(form, viewModel(entities), mode)(request, messages)
 
   private def createViewUsingForm(entities: Seq[Person] = Nil, mode: Mode = NormalMode): Form[_] => Html = (form: Form[_]) =>
-    view(form, viewmodel(entities), mode)(request, messages)
+    view(form, viewModel(entities), mode)(request, messages)
 
   val form = new AddEntityFormProvider()()
 
@@ -69,8 +70,8 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
     behave like yesNoPageWithoutHint(
       createViewUsingForm(Seq(johnDoe)),
       messageKeyPrefix,
-      viewmodel(Seq(johnDoe)).postCall.url,
-      Message("addEntity.addYesNo", entityTypeSinglular).resolve
+      viewModel(Seq(johnDoe)).postCall.url,
+      Message("addEntity.addYesNo", entityTypeSingular).resolve
     )
 
     val partners: Seq[Person] = Seq(johnDoe, joeBloggs)
@@ -112,11 +113,17 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
       val doc = asDocument(createViewUsingForm()(form))
       val submit = doc.select("button#submit")
       submit.size() mustBe 1
-      submit.first().text() mustBe Message("addEntity.addAnEntity", entityTypeSinglular).resolve
+      submit.first().text() mustBe Message("addEntity.addAnEntity", entityTypeSingular).resolve
     }
 
     "show the add partner hint when there are zero partners" in {
       createView() must haveDynamicText("addEntity.addAnEntity.hint", entityType)
+    }
+
+    "have aria label for edit and remove links" in {
+      val doc = asDocument(createViewUsingForm(Seq(johnDoe))(form))
+      doc.select(s"a[aria-label='Change ${johnDoe.name}']").size() mustBe 1
+      doc.select(s"a[aria-label='Remove ${johnDoe.name}']").size() mustBe 1
     }
 
     "show the maximum number of partners message when there are 10 partners" in {
