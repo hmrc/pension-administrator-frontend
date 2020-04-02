@@ -37,12 +37,12 @@
         @components.error_summary(form.errors)
 
         <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(messages("individualDateOfBirth.heading"))
 
         @components.input_date(
             field = form("dateOfBirth"),
-            label = messages("common.dateOfBirth"),
-            legendClass = "visuallyhidden",
+            label = messages("individualDateOfBirth.heading"),
+            headingIsLegend = true,
+            labelClass = "visuallyhidden",
             hint = messages("common.dateOfBirth.hint")
         )
         </div>
