@@ -242,18 +242,17 @@ class DataCompletion {
     def incompleteDetails: Boolean =
       ua.get(RegistrationInfoId).map(_.legalStatus) match {
         case Some(Individual) =>
-          !DataCompletion.isIndividualComplete(ua, UpdateMode)
+          !isIndividualComplete(ua, UpdateMode)
         case Some(LimitedCompany) =>
           ua.allDirectorsAfterDelete(UpdateMode).exists(!_.isComplete) |
-            !DataCompletion.isCompanyDetailsComplete(ua)
+            !isCompanyDetailsComplete(ua)
         case Some(Partnership) =>
-          !DataCompletion.isPartnershipDetailsComplete(ua) |
+          !isPartnershipDetailsComplete(ua) |
             ua.allPartnersAfterDelete(UpdateMode).exists(!_.isComplete)
         case _ =>
           true
       }
-
-    !DataCompletion.isAdviserComplete(ua, UpdateMode) | incompleteDetails
+    !isAdviserComplete(ua, UpdateMode) | incompleteDetails
   }
 }
 

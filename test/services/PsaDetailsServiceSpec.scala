@@ -30,7 +30,7 @@ import models.requests.OptionalDataRequest
 import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
-import org.scalatest.OptionValues
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
@@ -39,6 +39,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
 import utils.countryOptions.CountryOptions
+import utils.dataCompletion.DataCompletion
 import utils.testhelpers.ViewPsaDetailsBuilder.{companyWithChangeLinks, individualWithChangeLinks, partnershipWithChangeLinks}
 import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
@@ -47,16 +48,20 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
-class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar with ScalaFutures {
+class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
   import PsaDetailsServiceSpec._
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val request = OptionalDataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, false, Some("test Psa id")),
+  implicit val request: OptionalDataRequest[_] = OptionalDataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, false, Some("test Psa id")),
     Some(UserAnswers(Json.obj()).set(DeclarationChangedId)(true).asOpt.value))
 
-  private val mode = UpdateMode
+  override def beforeEach(): Unit = {
+    reset(mockSubscriptionConnector, mockUserAnswersConnector, mockDataCompletion)
+    when(mockDataCompletion.isPsaUpdateDetailsInComplete(any())).thenReturn(false)
+  }
 
+  private val mode = UpdateMode
 
     "retrievePsaDataAndGenerateViewModel" must {
 
@@ -68,7 +73,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
         val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
         whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", false)
+          _ mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", isUserAnswerUpdated = false, isUserAnswersComplete = true)
         }
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(ExistingCurrentAddressId).value mustBe expectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
@@ -83,7 +88,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
         val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
         whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", false)
+          _ mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false, isUserAnswersComplete = true)
         }
 
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe companyExpectedAddress
@@ -97,10 +102,11 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
         when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(partnershipUserAnswers))
+        when(mockDataCompletion.isPsaUpdateDetailsInComplete(any())).thenReturn(true)
 
         val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
         whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name", false)
+          _ mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name", isUserAnswerUpdated = false, isUserAnswersComplete = false)
         }
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe partnershipExpectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(PartnersExistingCurrentAddressId(0)).value mustBe partnerExpectedAddress
@@ -165,6 +171,7 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
   private val mockSubscriptionConnector = mock[SubscriptionConnector]
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val mockUserAnswersConnector = mock[UserAnswersCacheConnector]
+  private val mockDataCompletion = mock[DataCompletion]
 
   object LocalFakeUserAnswersCacheConnector extends FakeUserAnswersCacheConnector {
     override def fetch(cacheId: String)(implicit
@@ -180,7 +187,8 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
     mockSubscriptionConnector,
     countryOptions,
     cacheConnector,
-    stubMessagesControllerComponents()
+    stubMessagesControllerComponents(),
+    mockDataCompletion
   )
 
   private val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")

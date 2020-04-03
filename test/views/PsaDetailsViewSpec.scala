@@ -38,15 +38,15 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
 
   val view: psa_details = app.injector.instanceOf[psa_details]
 
-  def createView(isUserAnswerUpdated: Boolean = false): () => HtmlFormat.Appendable = () =>
+  def createView(isUserAnswerUpdated: Boolean = false, isUserAnswersCompleted: Boolean = true): () => HtmlFormat.Appendable = () =>
     view(
-      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated),
+      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated, isUserAnswersCompleted),
       controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     )(fakeRequest, messages)
 
   def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     view(
-      PsaViewDetailsViewModel(sections, secondaryHeader, isUserAnswerUpdated = false),
+      PsaViewDetailsViewModel(sections, secondaryHeader, isUserAnswerUpdated = false, isUserAnswersComplete = true),
       controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     )(fakeRequest, messages)
 
@@ -60,7 +60,7 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
     }
 
     "display the declaration button when user answer is updated" in {
-      val doc = Jsoup.parse(createView(true).apply().toString())
+      val doc = Jsoup.parse(createView(isUserAnswerUpdated = true).apply().toString())
       doc must haveLinkWithUrlAndContent(
         "declaration-link",
         controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url,
@@ -108,6 +108,11 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
         frontendAppConfig.schemesOverviewUrl,
         "return-to-overview"
       )
+    }
+
+    "have incomplete alert when not complete" in {
+      val doc = asDocument(createView(isUserAnswersCompleted = false)())
+      assertRenderedById(doc, id = "alert-heading")
     }
   }
 

@@ -101,6 +101,7 @@ common.selectAddress.title = Select the address
 common.selectAddress.text = Select the address from the list below, or
 
 common.nino = National Insurance number
+common.nino.optional = National Insurance number (optional)
 common.enterNINO.hint = Example ’QQ 12 34 56 C’
 common.error.nino.required = Enter the National Insurance number
 common.error.nino.invalid = Enter a valid National Insurance number in the format QQ 12 34 56 C
@@ -835,6 +836,7 @@ vat.label = VAT number
 paye.label = Employer PAYE reference number
 crn.label = Company registration number
 utr.label = Unique Taxpayer Reference
+utr.label.optional = Unique Taxpayer Reference (optional)
 pensionAdvisor.section.header = Person with working knowledge of pensions
 director-add-link-onlyOne = Add a director
 director-add-link-onlyOne-additionalText = There must be a minimum of 1 director. If you want to remove this director, you must first add a new one.
@@ -1083,4 +1085,4 @@ select.address.required.error = User must select one of the addresses offered or
 select.address.error.required = Select {0}’s address
 select.previous.address.error.required = Select {0}’s previous address
 
-cya.alert.p1 = You must complete any section marked as "Not entered" before you can continue
+incomplete.alert.message = You must complete any section marked as "Not entered" before you can continue

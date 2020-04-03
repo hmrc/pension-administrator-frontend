@@ -34,11 +34,15 @@
 
         @components.back_link()
 
+        @if(!psaDetails.isUserAnswersComplete) {
+            @components.incomplete_alert()
+        }
+
         @components.heading(
             headingKey=psaDetails.header
         )
 
-            <h2 id="psadetails-header" class="heading-large">@messages("psaDetails.header")</h2>
+        <h2 id="psadetails-header" class="heading-large">@messages("psaDetails.header")</h2>
 
         @for((section, i) <- psaDetails.superSections.zipWithIndex){
             @{
