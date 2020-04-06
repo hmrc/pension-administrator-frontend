@@ -193,8 +193,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   private def companyPreviousAddress: Option[AnswerRow] = {
-    (userAnswers.get(CompanyAddressYearsId), userAnswers.get(CompanyPreviousAddressId)) match {
-      case (Some(UnderAYear), None) =>
+    (userAnswers.get(CompanyConfirmPreviousAddressId), userAnswers.get(CompanyPreviousAddressId)) match {
+      case (Some(false), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
           Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))))
       case (_, Some(address)) =>
@@ -232,7 +232,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     case Some(ReferenceValue(nino, true)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
       Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, index).url))))
 
-    case None => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
+    case None => Some(AnswerRow("common.nino.optional", Seq(""), answerIsMessageKey = true,
       Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
@@ -243,7 +243,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     case Some(ReferenceValue(utr, true)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
       Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, index).url)), None))
 
-    case None => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
+    case None => Some(AnswerRow("utr.label.optional", Seq(""), answerIsMessageKey = true,
       Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
@@ -253,10 +253,11 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   private def directorPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = {
-    (userAnswers.get(DirectorAddressYearsId(index)), userAnswers.get(DirectorPreviousAddressId(index))) match {
-      case (Some(UnderAYear), None) =>
+    (userAnswers.get(DirectorConfirmPreviousAddressId(index)), userAnswers.get(DirectorPreviousAddressId(index))) match {
+      case (Some(false), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add"))))
+          Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url,
+            "site.add"))))
       case (_, Some(address)) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
           None))
@@ -325,8 +326,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   private def partnershipPreviousAddress: Option[AnswerRow] = {
-    (userAnswers.get(PartnershipAddressYearsId), userAnswers.get(PartnershipPreviousAddressId)) match {
-      case (Some(UnderAYear), None) =>
+    (userAnswers.get(PartnershipConfirmPreviousAddressId), userAnswers.get(PartnershipPreviousAddressId)) match {
+      case (Some(false), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
           Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))))
       case (_, Some(address)) =>
@@ -364,7 +365,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     case Some(ReferenceValue(nino, true)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, index).url))))
 
-    case None => Some(AnswerRow("common.nino", Seq("site.not_entered"), answerIsMessageKey = true,
+    case None => Some(AnswerRow("common.nino.optional", Seq(""), answerIsMessageKey = true,
       Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
@@ -375,7 +376,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     case Some(ReferenceValue(utr, true)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, index).url)), None))
 
-    case None => Some(AnswerRow("utr.label", Seq("site.not_entered"), answerIsMessageKey = true,
+    case None => Some(AnswerRow("utr.label.optional", Seq(""), answerIsMessageKey = true,
       Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")), None))
   }
 
@@ -385,8 +386,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = {
-    (userAnswers.get(PartnerAddressYearsId(index)), userAnswers.get(PartnerPreviousAddressId(index))) match {
-      case (Some(UnderAYear), None) =>
+    (userAnswers.get(PartnerConfirmPreviousAddressId(index)), userAnswers.get(PartnerPreviousAddressId(index))) match {
+      case (Some(false), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
           Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add"))))
       case (_, Some(address)) =>

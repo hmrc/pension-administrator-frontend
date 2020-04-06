@@ -60,7 +60,7 @@ class CheckYourAnswersViewSpec extends CheckYourAnswersBehaviours with ViewBehav
 
     behave like checkYourAnswersPage(createViewWithData)
 
-    "have cya alert when not complete" in {
+    "have incomplete alert when not complete" in {
       val doc = asDocument(createView(NormalMode, isComplete = false)())
       assertRenderedById(doc, id = "alert-heading")
     }

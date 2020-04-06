@@ -148,9 +148,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
   val directorsSeqAnswersWithAddLinks = Seq(
     AnswerRow("cya.label.dob", Seq("2019-10-23"), false,
       None),
-    AnswerRow("common.nino", Seq("site.not_entered"), false,
+    AnswerRow("common.nino.optional", Seq(""), false,
       Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, 0).url, "site.add"))),
-    AnswerRow("utr.label", Seq("site.not_entered"), false,
+    AnswerRow("utr.label.optional", Seq(""), false,
       Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
       Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url, "site.add")))
@@ -159,9 +159,9 @@ object ViewPsaDetailsBuilder extends SpecBase {
   val partnersSeqAnswersWithAddLinks = Seq(
     AnswerRow("cya.label.dob", Seq(LocalDate.now().toString), false,
       None),
-    AnswerRow("common.nino", Seq("site.not_entered"), false,
+    AnswerRow("common.nino.optional", Seq(""), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, 0).url, "site.add"))),
-    AnswerRow("utr.label", Seq("site.not_entered"), false,
+    AnswerRow("utr.label.optional", Seq(""), false,
       Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
       Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url, "site.add")))

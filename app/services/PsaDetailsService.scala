@@ -34,6 +34,7 @@ import play.api.libs.json._
 import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
+import utils.dataCompletion.DataCompletion
 import utils.{UserAnswers, ViewPsaDetailsHelper}
 import viewmodels.{PsaViewDetailsViewModel, SuperSection}
 
@@ -48,7 +49,8 @@ trait PsaDetailsService {
 class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnector,
                                      countryOptions: CountryOptions,
                                      userAnswersCacheConnector: UserAnswersCacheConnector,
-                                     controllerComponents: MessagesControllerComponents
+                                     controllerComponents: MessagesControllerComponents,
+                                     dataCompletion: DataCompletion
                                     ) extends PsaDetailsService {
 
   override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
@@ -59,7 +61,8 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
   }
 
   def retrievePsaDataFromUserAnswers(psaId: String, mode: Mode
-                                    )(implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
+                                    )(implicit hc: HeaderCarrier, executionContext: ExecutionContext,
+                                      request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
     for {
       userAnswers <- getUserAnswers(psaId, mode)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
@@ -107,7 +110,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
     val answers = UserAnswers(response)
     val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
     Future.successful(
-      setCompleteAndAddressIdsToUserAnswers(answers, legalStatus, mode).flatMap(_.set(UpdateModeId)(true))
+      setAddressIdsToUserAnswers(answers, legalStatus, mode).flatMap(_.set(UpdateModeId)(true))
         .flatMap(_.setAllFlagsToValue(changeFlagIds, value = false))
         .asOpt.getOrElse(answers)
     )
@@ -115,6 +118,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
 
   private def getPsaDetailsViewModel(userAnswers: UserAnswers)(implicit messages: Messages): PsaViewDetailsViewModel = {
     val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated
+    val isDataComplete = !dataCompletion.isPsaUpdateDetailsInComplete(userAnswers)
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
     val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)
 
@@ -135,17 +139,16 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
         throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")
     }
 
-    PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated)
+    PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, isDataComplete)
   }
 
-  private def setCompleteAndAddressIdsToUserAnswers(userAnswers: UserAnswers,
-                                                    legalStatus: Option[RegistrationLegalStatus],
-                                                    mode: Mode): JsResult[UserAnswers] = {
+  private def setAddressIdsToUserAnswers(userAnswers: UserAnswers,
+                                         legalStatus: Option[RegistrationLegalStatus],
+                                         mode: Mode): JsResult[UserAnswers] = {
 
-    val (seqOfCompleteIds, mapOfAddressIds):
-      (List[TypedIdentifier[Boolean]], Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]]) = legalStatus match {
+    val mapOfAddressIds: Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]] = legalStatus match {
       case Some(Individual) =>
-        (Nil, Map(IndividualContactAddressId -> ExistingCurrentAddressId))
+        Map(IndividualContactAddressId -> ExistingCurrentAddressId)
 
       case Some(LimitedCompany) =>
         val allDirectors = userAnswers.allDirectorsAfterDelete(UpdateMode)
@@ -154,7 +157,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
           (DirectorAddressId(index), DirectorsExistingCurrentAddressId(index))
         }.toMap
 
-        (Nil, Map(CompanyContactAddressId -> CompanyExistingCurrentAddressId) ++ allDirectorsAddressIdMap)
+        Map(CompanyContactAddressId -> CompanyExistingCurrentAddressId) ++ allDirectorsAddressIdMap
 
       case Some(Partnership) =>
         val allPartners = userAnswers.allPartnersAfterDelete(UpdateMode)
@@ -163,11 +166,11 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
           (PartnerAddressId(index), PartnersExistingCurrentAddressId(index))
         }.toMap
 
-        (Nil, Map(PartnershipContactAddressId -> PartnershipExistingCurrentAddressId) ++ allPartnersAddressIds)
+        Map(PartnershipContactAddressId -> PartnershipExistingCurrentAddressId) ++ allPartnersAddressIds
 
       case _ =>
-        (Nil, Map.empty)
+        Map.empty
     }
-    userAnswers.setAllFlagsToValue(seqOfCompleteIds, value = true).flatMap(ua => ua.setAllExistingAddress(mapOfAddressIds))
+    userAnswers.setAllExistingAddress(mapOfAddressIds)
   }
 }

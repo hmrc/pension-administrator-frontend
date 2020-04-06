@@ -23,11 +23,11 @@ import identifiers.register.company.directors._
 import identifiers.register.partnership.partners._
 import models._
 import org.scalatest.MustMatchers
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsBoolean, JsObject, Json}
 import utils.countryOptions.CountryOptions
+import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels._
-import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 class ViewPsaDetailsHelperSpec extends SpecBase with MustMatchers {
 
@@ -183,12 +183,13 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
     completeDirector(index = 5).completeDirector(index = 6).completeDirector(index = 7).completeDirector(index = 8).completeDirector(index = 9)
 
   private val companyUserAnswersWithAddLinks = readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
-    "companyPreviousAddress" - "directors" + ("directors" -> Json.arr(
+    "companyPreviousAddress" + ("companyConfirmPreviousAddress" -> JsBoolean(false)) - "directors" + ("directors" -> Json.arr(
     Json.obj(
       DirectorNameId.toString -> PersonName("test first name", "test last name"),
       DirectorDOBId.toString -> LocalDate.of(2019,10, 23),
       DirectorNoNINOReasonId.toString -> "reason",
       DirectorAddressYearsId.toString -> AddressYears.UnderAYear.toString,
+      DirectorConfirmPreviousAddressId.toString -> false,
       DirectorNoUTRReasonId.toString -> "reason"
     )
   ))
@@ -205,7 +206,8 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
     "partners").completePartner(index = 0).completePartner(index = 1).completePartner(index = 2).completePartner(index = 3).completePartner(index = 4).
   completePartner(index = 5).completePartner(index = 6).completePartner(index = 7).completePartner(index = 8).completePartner(index = 9)
 
-  private val partnershipUserAnswersWithAddLinks = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] - "partnershipPreviousAddress" -
+  private val partnershipUserAnswersWithAddLinks = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
+    "partnershipPreviousAddress" + ("partnershipConfirmPreviousAddress" -> JsBoolean(false)) -
     "partners" + ("partners" -> Json.arr(
     Json.obj(
       PartnerNameId.toString -> PersonName("test first name", "test last name"),
@@ -213,6 +215,7 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
       HasPartnerNINOId.toString -> false,
       PartnerNoNINOReasonId.toString -> "reason",
       PartnerAddressYearsId.toString -> AddressYears.UnderAYear.toString,
+      PartnerConfirmPreviousAddressId.toString -> false,
       HasPartnerUTRId.toString -> false,
       PartnerNoUTRReasonId.toString -> "reason"
     )
