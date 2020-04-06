@@ -19,11 +19,12 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.register.partnership.partners.routes._
+import controllers.register.partnership.routes.TellUsAboutAnotherPartnerController
 import controllers.register.partnership.routes.{AddPartnerController, MoreThanTenPartnersController, PartnershipReviewController}
 import controllers.routes.SessionExpiredController
 import identifiers.Identifier
 import identifiers.register.partnership.partners._
-import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
+import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId, TellUsAboutAnotherPartnerId}
 import models.Mode.journeyMode
 import models._
 import play.api.mvc.Call
@@ -73,6 +74,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
   //noinspection ScalaStyle
   private def normalAndUpdateRoutes(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AddPartnersId => addPartnerRoutes(ua, mode)
+    case TellUsAboutAnotherPartnerId => PartnerNameController.onPageLoad(mode, ua.partnersCount)
     case PartnerNameId(index) => PartnerDOBController.onPageLoad(mode, index)
     case PartnerDOBId(index) => HasPartnerNINOController.onPageLoad(mode, index)
 
@@ -94,6 +96,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case PartnerPreviousAddressId(index) => previousAddressRoutes(index, ua, mode)
     case PartnerEmailId(index) => emailRoutes(index, ua, mode)
     case PartnerPhoneId(index) => phoneRoutes(index, ua, mode)
+    case CheckYourAnswersId if ua.countPartnersAfterDelete < 2 => TellUsAboutAnotherPartnerController.onPageLoad(mode)
     case CheckYourAnswersId => AddPartnerController.onPageLoad(mode)
   }
 
@@ -194,6 +197,8 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
   private def addPartnerRoutes(answers: UserAnswers, mode: Mode): Call = {
     answers.get(AddPartnersId) match {
+      case Some(false) if mode == NormalMode && answers.countPartnersAfterDelete < 2 =>
+        TellUsAboutAnotherPartnerController.onPageLoad(NormalMode)
       case Some(false) if mode == NormalMode => PartnershipReviewController.onPageLoad()
       case Some(false) if mode == UpdateMode => anyMoreChangesPage
       case _ =>

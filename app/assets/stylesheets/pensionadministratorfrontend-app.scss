@@ -35,3 +35,11 @@
 background: #00703c;
 }
 
+/*
+====================================
+Fix to render radio buttons visible in IE8
+====================================
+*/
+@media \0screen\,screen\9 {
+.multiple-choice input {filter: none}
+}

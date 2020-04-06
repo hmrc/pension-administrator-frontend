@@ -34,7 +34,7 @@
 @(form: Form[_], viewmodel: EntityViewModel, mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
 
 @disableSubmission = @{
-    viewmodel.entities.exists(!_.isComplete)
+    viewmodel.entities.exists(entity => if(mode == NormalMode) !entity.isComplete else entity.isNew && !entity.isComplete)
 }
 
 @main_template(
@@ -56,7 +56,11 @@
                 </div>
             } else {
 
-                @components.person_list(appConfig, viewmodel.entities, mode)
+                @components.person_list(viewmodel.entities, mode)
+
+              @if(viewmodel.entities.size < 2) {
+                <p id="too-few-partners-hint" class="panel panel panel-border-wide">@messages("addEntity.hintText")</p>
+              }
 
                 @if(viewmodel.entities.size < viewmodel.maxLimit) {
                     @components.input_yes_no(

@@ -115,10 +115,6 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
                          label: String,
                          hint: Option[String]): Unit = {
 
-    "hava a date label?" in {
-      assertFieldExists(createView, s"$fieldName-label", Some(label))
-    }
-
     "have a hint?" in {
       hint match {
         case Some(_) => assertFieldExists(createView, s"$fieldName-date-hint", hint)

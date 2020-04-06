@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package viewmodels
+@this(
+        main_template: main_template,
+        formHelper: FormWithCSRF
+)
 
-import scala.language.implicitConversions
+@(href: Call)(implicit request: Request[_], messages: Messages)
 
-case class Person(index: Int,
-                  name: String,
-                  deleteLink: String,
-                  editLink: String,
-                  isDeleted: Boolean,
-                  isComplete: Boolean,
-                  isNew: Boolean = false
-                 ) {
+@main_template(
+    title = messages("tellUsAboutAnotherPartner.title")
+) {
 
-  def id = s"person-$index"
+    @components.back_link()
 
-  def deleteLinkId = s"$id-delete"
+    @components.heading(messages("tellUsAboutAnotherPartner.heading"))
 
-  def editLinkId = s"$id-edit"
+    @components.paragraph_text(messages("tellUsAboutAnotherPartner.body.text1"))
+
+    @components.paragraph_text(messages("tellUsAboutAnotherPartner.body.text2"))
+
+    <div class="subsection">
+    @components.button_link("site.continue", href.url, "submit")
+    </div>
 }
-

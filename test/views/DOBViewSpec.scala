@@ -64,7 +64,7 @@ class DOBViewSpec extends QuestionViewBehaviours[LocalDate] {
     behave like pageWithDateField(
       createViewUsingForm,
       "value",
-      messages("common.dateOfBirth"),
+      messages(viewModel(NormalMode).heading),
       Some(messages("common.dateOfBirth.hint"))
     )
 

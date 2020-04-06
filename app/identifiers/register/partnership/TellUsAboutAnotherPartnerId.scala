@@ -14,23 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels
+package identifiers.register.partnership
 
-import scala.language.implicitConversions
+import identifiers.Identifier
 
-case class Person(index: Int,
-                  name: String,
-                  deleteLink: String,
-                  editLink: String,
-                  isDeleted: Boolean,
-                  isComplete: Boolean,
-                  isNew: Boolean = false
-                 ) {
-
-  def id = s"person-$index"
-
-  def deleteLinkId = s"$id-delete"
-
-  def editLinkId = s"$id-edit"
+case object TellUsAboutAnotherPartnerId extends Identifier {
+  override def toString: String = "tellUsAboutAnotherPartner"
 }
-

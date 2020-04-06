@@ -53,6 +53,14 @@ object DataCompletionBuilder {
         .registrationInfo(RegistrationInfo(RegistrationLegalStatus.Individual, "test-sap", noIdentifier = false, RegistrationCustomerType.UK, None, None))
     }
 
+    def completeIndividualNotSameAddress: UserAnswers = {
+      answers.individualAddress(address).individualSameContactAddress(areSame = false).
+        individualDetails(TolerantIndividual(Some("first"), None, Some("last"))).individualDob(dob)
+        .individualContactAddress(address).individualAddressYears(AddressYears.UnderAYear).
+        individualPreviousAddress(address).individualEmail(email).individualPhone(phone)
+        .registrationInfo(RegistrationInfo(RegistrationLegalStatus.Individual, "test-sap", noIdentifier = false, RegistrationCustomerType.UK, None, None))
+    }
+
     def completeIndividualVariations: UserAnswers = {
       answers.individualDetails(TolerantIndividual(Some("first"), None, Some("last"))).individualDob(dob)
         .individualContactAddress(address).individualAddressYears(AddressYears.OverAYear).individualEmail(email).individualPhone(phone)

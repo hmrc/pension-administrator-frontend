@@ -39,7 +39,7 @@ class WhatYouWillNeedViewSpec extends ViewBehaviours {
       title = Message("whatYouWillNeed.directorsOrPartners.title"),
       pageHeader = Message("whatYouWillNeed.partners.heading"),
       expectedGuidanceKeys = "body.item1", "body.item2", "body.item3", "body.item4",
-      "body.item5", "body.item6", "body.item7", "body.item8")
+      "body.item5", "body.item6", "body.item7", "body.item8", "hint")
 
     "display the correct paragraph" in {
       val doc = asDocument(createView())
