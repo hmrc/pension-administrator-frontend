@@ -31,11 +31,11 @@ This service has a corresponding back-end service, namely pension-administrator 
 |Pension Administrator     | POST        | /pension-administrator/psa-variation/:id        | Update PSA Subscription Details                                        |
 |Pension Administrator     | GET        | /pension-administrator/can-deregister/:id        | Can de register a PSA                                        |
 |Pension Administrator     | GET        | /pension-administrator/psa-subscription-details        | Returns PSA Subscription Details                                        |
-|Pension Administrator     | GET        | /pension-administrator/get-minimal-psa        | Get PSA minimal Details                                        |
+|Pension Administrator     | GET        | /pension-administrator/get-minimal-psa        | Returns PSA minimal Details                                        |
 |Address Lookup         | GET         | /v2/uk/addresses                                          | Returns a list of addresses that match a given postcode              | 
 |Email                  | POST        | /hmrc/email                                               | Sends an email to an email address                                   | 
 |Identity Verification Proxy                 | POST        | /identity-verification-proxy/journey/start                                               | Store IV Journey Data and generates a link that can be used to start IV Process                                   | 
-|Identity Verification                 | GET        | /identity-verification/journey/:journeyId                                               | Get the journey data e.g NINO for the given journey id                                   | 
+|Identity Verification                 | GET        | /identity-verification/journey/:journeyId                                               | Return the journey data e.g NINO for the given journey id                                   | 
 |Tax Enrolments                 | POST        | /tax-enrolments/service/:serviceName/enrolment                                               | Enrols a user synchronously for a given service name                                 | 
 
 ## Running the service
@@ -45,9 +45,6 @@ Service Manager: PODS_ALL
 Port: 8201
 
 Link: http://localhost:8201/register-as-pension-scheme-administrator
-
-Enrolment key: HMRC-PODS-ORG
-
 
 ## Tests and prototype
 
