@@ -24,6 +24,7 @@ import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.{BusinessNameId, PsaNameId, PsaSubscriptionResponseId}
 import javax.inject.Inject
 import models.Mode
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -43,23 +44,22 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
                                        val view: confirmation
                                       )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  private def getPSAName(ua:UserAnswers) ={
-    (ua.get(BusinessNameId), ua.get(IndividualDetailsId)) match {
-      case (Some(name), _) => name
-      case (_, Some(p)) => p.fullName
-      case _ => throw new RuntimeException("No name found error")
-    }
-  }
-
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      PsaSubscriptionResponseId.retrieve.right.map {response  =>
-        dataCacheConnector.removeAll(request.externalId)
-        Future.successful(Ok(view(response.psaId, getPSAName(request.userAnswers))))
+      PsaSubscriptionResponseId.retrieve.right.map { response =>
+        dataCacheConnector.removeAll(request.externalId).flatMap { _ =>
+          (psaName, psaEmail) match {
+            case (Some(name), Some(email)) =>
+              Future.successful(Ok(view(response.psaId, name, email)))
+            case (noPsaName, noEmail) =>
+              Logger.warn(s"No Psa Name $noPsaName Or Email $noEmail Found")
+              Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+          }
+        }
       }
   }
 
-  def onSubmit(mode:Mode): Action[AnyContent] = authenticate {
+  def onSubmit(mode: Mode): Action[AnyContent] = authenticate {
     _ => Redirect(controllers.routes.LogoutController.onPageLoad())
   }
 

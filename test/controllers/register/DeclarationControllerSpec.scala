@@ -103,13 +103,15 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
           )
 
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
-          when(mockEmailConnector.sendEmail(eqTo(email), any(), eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
+          when(mockEmailConnector.sendEmail(eqTo(email), any(), eqTo(Map("psaName" -> businessName)),
+            eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
             fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, times(1)).sendEmail(eqTo(email), any(), eqTo(PsaId("A0123456")))(any(), any())
+          verify(mockEmailConnector, times(1)).sendEmail(eqTo(email), any(),
+            eqTo(Map("psaName" -> businessName)), eqTo(PsaId("A0123456")))(any(), any())
         }
 
         "on a valid request and not send the email" in {
@@ -120,7 +122,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, never()).sendEmail(eqTo(email), any(), eqTo(PsaId("A0123456")))(any(), any())
+          verify(mockEmailConnector, never()).sendEmail(eqTo(email), any(), any(), eqTo(PsaId("A0123456")))(any(), any())
         }
       }
 
