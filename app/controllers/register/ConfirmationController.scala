@@ -20,15 +20,13 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.{BusinessNameId, PsaNameId, PsaSubscriptionResponseId}
+import identifiers.register.PsaSubscriptionResponseId
 import javax.inject.Inject
 import models.Mode
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.UserAnswers
 import views.html.register.confirmation
 
 import scala.concurrent.{ExecutionContext, Future}
