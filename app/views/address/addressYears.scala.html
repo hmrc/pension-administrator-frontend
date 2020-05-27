@@ -51,8 +51,9 @@
             fieldsetClass = Some("inline"),
             headingIsLegend = true
         )
-        
-        @components.submit_button(submitMessageKey = "site.save_and_continue")
+        <div class="subsection">
+            @components.submit_button(submitMessageKey = "site.save_and_continue")
+        </div>
 
         @viewmodel.psaName.map { psaName =>
             @components.return_link(psaName, mode)
