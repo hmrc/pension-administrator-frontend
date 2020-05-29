@@ -25,7 +25,7 @@
 )(implicit messages: Messages)
 
 @ariaDescribedBy = @{
-    val errorId = if (field.hasErrors) Seq(s"error-notification-${field.id}-input") else Seq.empty
+    val errorId = if (field.hasErrors) Seq(s"error-message-${field.id}-input") else Seq.empty
     val hintId = if (hint.nonEmpty) Seq(s"hint-${field.id}") else Seq.empty
     (hintId ++ errorId).mkString(" ")
 }
