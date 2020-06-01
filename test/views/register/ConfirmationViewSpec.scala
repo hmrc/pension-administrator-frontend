@@ -27,7 +27,6 @@ class ConfirmationViewSpec extends ViewBehaviours {
 
   val psaId: String = "A1234567"
   private val psaName: String = "psa name"
-  private val psaEmail: String = "test@test.com"
   val view: confirmation = inject[confirmation]
 
   "Confirmation view where user is existing PSA" must {
@@ -35,7 +34,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
     val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = true, None)
     val request = DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers())
 
-    def createView(): () => Html = () => view(psaId, psaName, psaEmail)(request, messages)
+    def createView(): () => Html = () => view(psaId,psaName )(request, messages)
 
     behave like normalPageWithPageTitleCheck(createView(), messageKeyPrefix)
 
@@ -90,7 +89,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
     val messageKeyPrefix = "confirmation.newPSA"
     val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
 
-    def createView(): () => Html = () => view(psaId, psaName, psaEmail)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+    def createView(): () => Html = () => view(psaId, psaName)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
 
     behave like normalPageWithPageTitleCheck(createView(), messageKeyPrefix)
 
@@ -116,8 +115,8 @@ class ConfirmationViewSpec extends ViewBehaviours {
       createView must haveDynamicText("confirmation.whatYouNeedToKnow.heading")
     }
 
-    "display the psa email " in {
-      createView must haveDynamicText(psaEmail)
+    "display the 'email notification' detail " in {
+      createView must haveDynamicText("confirmation.email")
     }
 
     "display the 'what you need to know' detail " in {

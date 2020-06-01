@@ -38,7 +38,7 @@ case object EmailNotSent extends EmailStatus
 @ImplementedBy(classOf[EmailConnectorImpl])
 trait EmailConnector {
 
-  def sendEmail(emailAddress: String, templateName: String, templateParams: Map[String, String], psaId: PsaId)
+  def sendEmail(emailAddress: String, templateName: String, psaId: PsaId)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus]
 }
 
@@ -56,12 +56,11 @@ class EmailConnectorImpl @Inject()(
   override def sendEmail(
                           emailAddress: String,
                           templateName: String,
-                          templateParams: Map[String, String],
                           psaId: PsaId
                         )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus] = {
     val emailServiceUrl = appConfig.emailUrl
 
-    val sendEmailReq = SendEmailRequest(List(emailAddress), templateName, templateParams, appConfig.emailSendForce, callBackUrl(psaId))
+    val sendEmailReq = SendEmailRequest(List(emailAddress), templateName, Map.empty, appConfig.emailSendForce, callBackUrl(psaId))
 
     val jsonData = Json.toJson(sendEmailReq)
 
