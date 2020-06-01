@@ -178,44 +178,5 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
     }
   }
 
-  "psaEmail" must {
-    val email = "test@test.com"
-    "retrieve PSA email for a company" in {
-
-      val companyName = "test company"
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.LimitedCompany, "", noIdentifier = false, RegistrationCustomerType.UK, None, None)).
-        businessName().companyEmail(email)
-
-      implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), userAnswers)
-
-      val result = controller.psaEmail
-      result.value mustBe email
-    }
-
-    "retrieve PSA email for a partnership" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Partnership, "", noIdentifier = false, RegistrationCustomerType.UK, None, None)).
-        businessName("test partnership").partnershipEmail(email)
-
-      implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), userAnswers)
-
-      val result = controller.psaEmail
-      result.value mustBe email
-    }
-
-    "retrieve PSA email for an individual" in {
-      val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None)).
-        individualDetails(TolerantIndividual(Some("test"), None, Some("last"))).individualEmail(email)
-
-      implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-        PSAUser(UserType.Individual, None, isExistingPSA = false, None), userAnswers)
-
-      val result = controller.psaEmail
-      result.value mustBe email
-    }
-  }
+//  override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 }
