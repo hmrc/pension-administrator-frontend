@@ -98,20 +98,13 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  private def getEmail(answers: UserAnswers): Option[String] = {
-    answers.get(RegistrationInfoId).flatMap { registrationInfo =>
-      registrationInfo.legalStatus match {
-        case Individual => answers.get(IndividualEmailId)
-        case LimitedCompany => answers.get(CompanyEmailId)
-        case Partnership => answers.get(PartnershipEmailId)
-      }
+  private def sendEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[EmailStatus] = {
+    (psaEmail, psaName) match {
+      case (Some(email), Some(name)) =>
+        val templateParams = Map("psaName" -> name)
+        emailConnector.sendEmail(email, appConfig.emailTemplateId, templateParams, PsaId(psaId))
+      case _ => Future.successful(EmailNotSent)
     }
-  }
-
-  private def sendEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier): Future[EmailStatus] = {
-    getEmail(answers) map { email =>
-      emailConnector.sendEmail(email, appConfig.emailTemplateId, PsaId(psaId))
-    } getOrElse Future.successful(EmailNotSent)
   }
 
   private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {

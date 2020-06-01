@@ -18,8 +18,10 @@ package controllers
 
 import identifiers.TypedIdentifier
 import identifiers.register.adviser.AdviserNameId
+import identifiers.register.company.CompanyEmailId
 import identifiers.register.company.directors.DirectorNameId
-import identifiers.register.individual.IndividualDetailsId
+import identifiers.register.individual.{IndividualDetailsId, IndividualEmailId}
+import identifiers.register.partnership.PartnershipEmailId
 import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
@@ -119,6 +121,17 @@ trait Retrievals {
       case Some(LimitedCompany) | Some(Partnership) => request.userAnswers.get(BusinessNameId)
 
       case _ => None
+    }
+  }
+
+  private[controllers] def psaEmail(implicit request: DataRequest[AnyContent]): Option[String] = {
+    val answers = request.userAnswers
+    answers.get(RegistrationInfoId).flatMap { registrationInfo =>
+      registrationInfo.legalStatus match {
+        case Individual => answers.get(IndividualEmailId)
+        case LimitedCompany => answers.get(CompanyEmailId)
+        case Partnership => answers.get(PartnershipEmailId)
+      }
     }
   }
 }

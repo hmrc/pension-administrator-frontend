@@ -32,7 +32,8 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
   private lazy val connector = injector.instanceOf[EmailConnector]
   private val testEmailAddress = "test@test.com"
   private val testTemplate = "testTemplate"
-  val testPsaId = PsaId("A1234567")
+  private val testPsaId = PsaId("A1234567")
+  private val templateParams = Map("psaName" -> "test psa")
 
   ".sendEmail" must {
     "return an EmailSent" when {
@@ -44,7 +45,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
               .withHeader("Content-Type", "application/json")
           )
         )
-        connector.sendEmail(testEmailAddress, testTemplate, testPsaId).map {
+        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId).map {
           result =>
             result mustBe EmailSent
         }
@@ -59,7 +60,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
               .withHeader("Content-Type", "application/json")
           )
         )
-        connector.sendEmail(testEmailAddress, testTemplate, testPsaId).map {
+        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId).map {
           result =>
             result mustBe EmailNotSent
         }
@@ -75,7 +76,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
           )
         )
 
-        connector.sendEmail(testEmailAddress, testTemplate, testPsaId).map {
+        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId).map {
           result =>
             result mustBe EmailNotSent
         }
