@@ -30,7 +30,7 @@ class PsaDeRegistrationNavigatorSpec extends SpecBase with NavigatorBehaviour {
   import PsaDeRegistrationNavigatorSpec._
 
   private val navigator = new PsaDeRegistrationNavigator(frontendAppConfig)
-  private lazy val psaDetailsPage: Call = Call("GET", frontendAppConfig.registeredPsaDetailsUrl)
+  private lazy val psaDetailsPage: Call = controllers.routes.PsaDetailsController.onPageLoad()
 
   def routes(): TableFor4[Identifier, UserAnswers, Call, Option[Call]] = Table(
     ("Id", "User Answers", "Next Page (NormalMode)", "Next Page (CheckMode)"),

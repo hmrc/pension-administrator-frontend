@@ -17,10 +17,13 @@
 package utils
 
 import identifiers.Identifier
+import models.CheckMode
 import models.requests.IdentifiedRequest
 import models.{Mode, NormalMode}
+import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 import org.scalatest.prop.TableFor3
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.prop.TableFor4
+import org.scalatest.{OptionValues, MustMatchers, WordSpec}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -55,6 +58,80 @@ trait NavigatorBehaviour extends ScalaCheckPropertyChecks with OptionValues {
         }
     }
 
+
+  }
+
+  def navigatorWithRoutes[A <: Identifier, B <: Option[Call]](
+                                                               navigator: Navigator,
+                                                               routes: TableFor4[A, UserAnswers, Call, B],
+                                                               describer: UserAnswers => String
+                                                             ): Unit = {
+
+    "behave like a navigator" when {
+
+      "navigating in NormalMode" must {
+
+        try {
+          forAll(routes) {
+            (id: Identifier, userAnswers: UserAnswers, call: Call, _: Option[Call]) =>
+              s"move from $id to $call with data: ${describer(userAnswers)}" in {
+                val result = navigator.nextPage(id, NormalMode, userAnswers)
+                result mustBe call
+              }
+          }
+        }
+        catch {
+          case e: TableDrivenPropertyCheckFailedException =>
+            println(s"Invalid routes: ${e.toString}")
+            throw e
+        }
+
+      }
+
+      "navigating in CheckMode" must {
+
+        try {
+          if (routes.nonEmpty) {
+            forAll(routes) { (id: Identifier, userAnswers: UserAnswers, _: Call, editCall: Option[Call]) =>
+              if (editCall.isDefined) {
+                s"move from $id to ${editCall.value} with data: ${describer(userAnswers)}" in {
+                  val result = navigator.nextPage(id, CheckMode, userAnswers)
+                  result mustBe editCall.value
+                }
+              }
+            }
+          }
+        }
+        catch {
+          case e: TableDrivenPropertyCheckFailedException =>
+            println(s"Invalid routes: ${e.toString}")
+            throw e
+        }
+
+      }
+
+    }
+
+  }
+
+
+  def nonMatchingNavigator(navigator: Navigator): Unit = {
+
+    val testId: Identifier = new Identifier {}
+
+    "behaviour like a navigator without routes" when {
+      "navigating in NormalMode" must {
+        "return a call given a non-configured Id" in {
+          navigator.nextPage(testId, NormalMode, UserAnswers()) mustBe a[Call]
+        }
+      }
+
+      "navigating in CheckMode" must {
+        "return a call given a non-configured Id" in {
+          navigator.nextPage(testId, CheckMode, UserAnswers()) mustBe a[Call]
+        }
+      }
+    }
 
   }
 

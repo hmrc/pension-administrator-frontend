@@ -29,7 +29,7 @@ import views.html.cannotMakeChanges
 
 class CannotMakeChangesControllerSpec extends ControllerSpecBase {
   private val psaName: String = "Mark Wright"
-  private val psaUser = PSAUser(UserType.Individual, None, false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, false, None, None, "")
 
   private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
     RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))

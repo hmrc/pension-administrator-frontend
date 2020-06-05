@@ -31,7 +31,7 @@ class SuccessfulDeregistrationViewSpec extends ViewBehaviours {
     behave like normalPage(createView(), messageKeyPrefix, messages(s"messages__${messageKeyPrefix}__title"),"p1")
 
     "have a link to 'exit to gov uk'" in {
-      createView must haveLink(url = frontendAppConfig.govUkLink, linkId = "gov-uk-link")
+      createView must haveLink(url = frontendAppConfig.govUkUrl, linkId = "gov-uk-link")
     }
 
   }

@@ -31,7 +31,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
 
   "Confirmation view where user is existing PSA" must {
     val messageKeyPrefix = "confirmation.existingPSA"
-    val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = true, None)
+    val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = true, None, None, "")
     val request = DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers())
 
     def createView(): () => Html = () => view(psaId,psaName )(request, messages)

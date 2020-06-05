@@ -34,13 +34,11 @@ class CannotDeregisterViewSpec extends ViewBehaviours {
     behave like normalPage(
       createView,
       messageKeyPrefix,
-      messages(s"messages__${messageKeyPrefix}__title"),
       expectedGuidanceKeys = "_p1", "_p2"
     )
 
     "have link to return to your pension schemes" in {
-      Jsoup.parse(createView().toString()).select("a[id=return-to-schemes]") must
-        haveLink(controllers.routes.ListSchemesController.onPageLoad().url)
+      createView must haveLink(frontendAppConfig.managePensionsYourPensionSchemesUrl, "return-to-schemes")
     }
   }
 }

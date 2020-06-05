@@ -16,7 +16,6 @@
 
 package views.deregister
 
-import org.jsoup.Jsoup
 import views.behaviours.ViewBehaviours
 import views.html.deregister.unableToStopBeingPsa
 
@@ -32,11 +31,10 @@ class UnableToStopBeingPsaViewSpec extends ViewBehaviours {
 
   "Unable to Stop Being Psa view" must {
     "have link to return to your pension schemes" in {
-      Jsoup.parse(createView()().toString()).select("a[id=return-link]") must
-        haveLink(controllers.routes.ListSchemesController.onPageLoad().url)
+      createView() must haveLink(frontendAppConfig.managePensionsYourPensionSchemesUrl, linkId = "return-link")
     }
 
-    behave like normalPage(createView(), messageKeyPrefix, pageHeader = messages("messages__unableToStopBeingPsa__heading"), "p1")
+    behave like normalPage(createView(), messageKeyPrefix)
 
   }
 }
