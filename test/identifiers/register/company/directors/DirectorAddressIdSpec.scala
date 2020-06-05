@@ -50,7 +50,7 @@ class DirectorAddressIdSpec extends SpecBase {
             visuallyHiddenText = Some(Message("address.visuallyHidden.text").withArgs(personDetails.fullName))
           ))
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers)
 
         DirectorAddressId(index).row(Some(Link(onwardUrl.url)))(request, implicitly) must equal(answerRows)
       }

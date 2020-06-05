@@ -33,14 +33,14 @@ class HasPayeIdSpec extends SpecBase {
     "in normal mode" must {
       "return no rows when non uk" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().areYouInUk(false))
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().areYouInUk(false))
 
         HasPAYEId.row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(Nil)
       }
 
       "return answers rows with change links when uk and have value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
             areYouInUk(true).businessName().hasPaye(flag = true))
 
         HasPAYEId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -50,7 +50,7 @@ class HasPayeIdSpec extends SpecBase {
 
       "return answers rows with add links when uk and have no value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
             areYouInUk(true).businessName())
 
         HasPAYEId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(

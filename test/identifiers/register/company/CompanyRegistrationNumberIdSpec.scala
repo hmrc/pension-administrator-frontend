@@ -34,14 +34,14 @@ class CompanyRegistrationNumberIdSpec extends SpecBase {
 
       "return no answers rows when not in uk" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().areYouInUk(false))
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().areYouInUk(false))
 
         CompanyRegistrationNumberId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }
 
       "return answers rows with add link when in uk, has company crn is true and no crn" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().businessName()
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().businessName()
         .companyHasCrn(true).areYouInUk(true))
 
         CompanyRegistrationNumberId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -51,7 +51,7 @@ class CompanyRegistrationNumberIdSpec extends SpecBase {
 
       "return answers rows with change links when crn has value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().companyCrn("test-crn").businessName())
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().companyCrn("test-crn").businessName())
 
         CompanyRegistrationNumberId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
           AnswerRow(label = Message("companyRegistrationNumber.heading"),
@@ -61,7 +61,7 @@ class CompanyRegistrationNumberIdSpec extends SpecBase {
 
       "return no answers rows when has Crn is false and no value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().companyHasCrn(false).businessName())
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().companyHasCrn(false).businessName())
 
         CompanyRegistrationNumberId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }

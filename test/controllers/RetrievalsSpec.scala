@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValues with ScalaFutures {
 
   def dataRequest(data: JsValue): DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(data))
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers(data))
 
   class TestController @Inject()(
                                   val controllerComponents: MessagesControllerComponents
@@ -143,7 +143,7 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
         RegistrationLegalStatus.LimitedCompany, "", noIdentifier = false, RegistrationCustomerType.UK, None, None)).businessName()
 
       implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), userAnswers)
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), userAnswers)
 
       val result = controller.psaName()
       result.value mustBe companyName
@@ -157,7 +157,7 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
         businessName("test partnership")
 
       implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), userAnswers)
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), userAnswers)
 
       val result = controller.psaName()
       result.value mustBe partnershipName
@@ -171,7 +171,7 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
         individualDetails(TolerantIndividual(Some(firstName), None, Some(lastName)))
 
       implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
-        PSAUser(UserType.Individual, None, isExistingPSA = false, None), userAnswers)
+        PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, ""), userAnswers)
 
       val result = controller.psaName()
       result.value mustBe firstName + " " + lastName

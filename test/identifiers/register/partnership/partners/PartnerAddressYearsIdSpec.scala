@@ -105,7 +105,7 @@ class PartnerAddressYearsIdSpec extends SpecBase {
             Some(Message("addressYears.visuallyHidden.text").withArgs(partnerDetails.fullName))
           ))
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers)
 
         PartnerAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(answerRows)
       }

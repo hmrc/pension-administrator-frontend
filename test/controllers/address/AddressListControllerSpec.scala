@@ -180,7 +180,7 @@ object AddressListControllerSpec extends SpecBase {
         viewModel,
         NormalMode,
         form
-      )(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))
+      )(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers()))
 
     }
 
@@ -196,7 +196,7 @@ object AddressListControllerSpec extends SpecBase {
         fakeSeqTolerantAddressId,
         NormalMode,
         form
-      )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()))
+      )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers()))
 
     }
 

@@ -42,7 +42,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), testUserId,
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
 
   private def url: String = s"/tax-enrolments/service/HMRC-PODS-ORG/enrolment"
 

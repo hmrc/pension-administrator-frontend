@@ -37,7 +37,7 @@ class DirectorPreviousAddressIdSpec extends SpecBase {
 
       "return answers rows with change links when have value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().directorPreviousAddress(index, address).
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorPreviousAddress(index, address).
             directorName(index, PersonName("first", "last")))
 
         DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -48,7 +48,7 @@ class DirectorPreviousAddressIdSpec extends SpecBase {
 
       "return answers rows with add links when address years is under a year, and no previous address" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers()
             .directorAddressYears(index, AddressYears.UnderAYear).directorName(index, PersonName("first", "last")))
 
         DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -58,7 +58,7 @@ class DirectorPreviousAddressIdSpec extends SpecBase {
 
       "return no answers rows when not mandatory and not have previous address" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers()
             .directorAddressYears(index, AddressYears.OverAYear).directorName(index, PersonName("first", "last")))
 
         DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)

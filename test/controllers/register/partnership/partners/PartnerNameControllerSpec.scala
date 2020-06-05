@@ -31,7 +31,7 @@ import views.html.personName
 class PartnerNameControllerSpec extends ControllerSpecBase with PersonNameControllerBehaviour {
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
 
   "PartnerNameController" must {
 

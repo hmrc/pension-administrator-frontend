@@ -31,7 +31,7 @@ import views.html.register.incompleteChanges
 
 class IncompleteChangesControllerSpec extends ControllerSpecBase {
   private val psaName: String = "Mark Wright"
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
 
   private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
     RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None))

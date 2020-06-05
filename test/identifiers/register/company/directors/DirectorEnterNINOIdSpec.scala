@@ -49,7 +49,7 @@ class DirectorEnterNINOIdSpec extends SpecBase {
 
       "return answers rows with change links when have value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().directorEnterNINO(0, ReferenceValue("test-nino")).
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorEnterNINO(0, ReferenceValue("test-nino")).
             directorName(0, PersonName("first", "last")))
 
         DirectorEnterNINOId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -60,7 +60,7 @@ class DirectorEnterNINOIdSpec extends SpecBase {
 
       "return answers rows with add links when has nino is true but no nino" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
           UserAnswers().directorHasNINO(0, flag = true).
             directorName(0, PersonName("first", "last")))
 
@@ -71,7 +71,7 @@ class DirectorEnterNINOIdSpec extends SpecBase {
 
       "return no answers rows when has nino is false" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().directorHasNINO(0, flag = false)
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorHasNINO(0, flag = false)
             directorName(0, PersonName("first", "last")))
 
         DirectorEnterNINOId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)

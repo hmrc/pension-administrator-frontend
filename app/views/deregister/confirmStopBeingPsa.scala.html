@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.play.views.html._
 @import views.html._
 @import viewmodels.Message
+@import models._
 @import views.html._
 @import utils.ViewHelper.titleWithErrors
 
@@ -54,6 +55,6 @@
         </div>
         @components.submit_button()
 
-        @components.return_link(controllers.routes.SchemesOverviewController.onPageLoad(), Some(psaName))
+        @components.return_link(psaName, NormalMode)
     }
 }

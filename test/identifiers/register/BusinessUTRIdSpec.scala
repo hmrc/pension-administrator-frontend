@@ -33,14 +33,14 @@ class BusinessUTRIdSpec extends SpecBase {
     "in normal mode" must {
       "return no rows when non uk" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().areYouInUk(false))
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().areYouInUk(false))
 
         BusinessUTRId.row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(Nil)
       }
 
       "return answers rows with change links when uk and have value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
             areYouInUk(true).businessName().businessUtr())
 
         BusinessUTRId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -50,7 +50,7 @@ class BusinessUTRIdSpec extends SpecBase {
 
       "return answers rows with add links when uk and have no value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
             areYouInUk(true).businessType(BusinessType.UnlimitedCompany).businessName())
 
         BusinessUTRId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(

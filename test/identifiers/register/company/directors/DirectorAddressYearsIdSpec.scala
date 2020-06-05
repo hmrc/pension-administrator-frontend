@@ -113,7 +113,7 @@ class DirectorAddressYearsIdSpec extends SpecBase {
 
       "return answers rows with change links when have value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().directorAddressYears(0, AddressYears.OverAYear).
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorAddressYears(0, AddressYears.OverAYear).
             directorName(0, PersonName("first", "last")))
 
         DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -124,7 +124,7 @@ class DirectorAddressYearsIdSpec extends SpecBase {
 
       "return answers rows with add links when there is address but no address years" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
           UserAnswers().directorAddress(0, address).
             directorName(0, PersonName("first", "last")))
 
@@ -135,7 +135,7 @@ class DirectorAddressYearsIdSpec extends SpecBase {
 
       "return no answers rows when there is no address and address years" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
             directorName(0, PersonName("first", "last")))
 
         DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)

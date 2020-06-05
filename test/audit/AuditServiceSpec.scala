@@ -52,6 +52,24 @@ class AuditServiceSpec extends AsyncFlatSpec with Matchers with Inside {
 
   }
 
+  "AuditServiceImpl" should "construct and send the correct DeregisterEvent event" in {
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = fakeRequest()
+
+    val event = DeregisterEvent("user-id", "psa-id")
+
+    auditService().sendEvent(event)
+
+    val sentEvent = FakeAuditConnector.lastSentEvent
+
+    inside(sentEvent) {
+      case DataEvent(auditSource, auditType, _, _, detail, _) =>
+        auditSource shouldBe appName
+        auditType shouldBe "PSADeEnrolment"
+        detail shouldBe Map("userId" -> "user-id", "psaId" -> "psa-id")
+    }
+
+  }
+
 }
 
 object AuditServiceSpec {

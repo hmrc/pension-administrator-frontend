@@ -33,7 +33,7 @@ class EnterPAYEIdSpec extends SpecBase {
 
       "return answers rows with change links when enter paye has a value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
           UserAnswers().businessName().enterPaye("test-paye"))
 
         EnterPAYEId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -43,7 +43,7 @@ class EnterPAYEIdSpec extends SpecBase {
 
       "return answers rows with add links when has paye is true but enter paye has no value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().businessName().hasPaye(flag = true))
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().businessName().hasPaye(flag = true))
 
         EnterPAYEId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
           AnswerRow(label = Message("enterPAYE.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
@@ -52,7 +52,7 @@ class EnterPAYEIdSpec extends SpecBase {
 
       "return no answers rows has paye is false but enter paye has no value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().businessName().hasPaye(flag = false))
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().businessName().hasPaye(flag = false))
 
         EnterPAYEId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }

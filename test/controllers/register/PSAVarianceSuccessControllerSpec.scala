@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class PSAVarianceSuccessControllerSpec extends ControllerSpecBase {
 
   private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
   val view: psaVarianceSuccess = inject[psaVarianceSuccess]
 
   private val individual = UserAnswers(Json.obj())

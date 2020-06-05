@@ -43,7 +43,7 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
   val view: isRegisteredName = app.injector.instanceOf[isRegisteredName]
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
 
   "CompanyIsRegisteredNameController" must {
 

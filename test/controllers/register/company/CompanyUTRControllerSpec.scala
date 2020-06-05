@@ -35,7 +35,7 @@ class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBeha
   override val view: utr = app.injector.instanceOf[utr]
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
 
   "CompanyUTRController" must {
 

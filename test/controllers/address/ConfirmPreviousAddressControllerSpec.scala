@@ -231,13 +231,13 @@ object ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
 
     def onPageLoad(viewmodel: SameContactAddressViewModel, answers: UserAnswers): Future[Result] = {
       implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers)
       get(FakeIdentifier, viewmodel)
     }
 
     def onSubmit(viewmodel: SameContactAddressViewModel, answers: UserAnswers, fakeRequest: Request[AnyContent]): Future[Result] = {
       implicit val request: DataRequest[AnyContent] = DataRequest(fakeRequest, "cacheId",
-        PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+        PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers)
       post(FakeIdentifier, PreviousAddressId, viewmodel, NormalMode)
     }
   }

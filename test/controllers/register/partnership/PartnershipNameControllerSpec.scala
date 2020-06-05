@@ -36,7 +36,7 @@ import views.html.register.businessName
 class PartnershipNameControllerSpec extends ControllerSpecBase with BusinessNameControllerBehaviour {
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
 
   def validData = UserAnswers(Json.obj(
       BusinessTypeId.toString -> BusinessType.LimitedPartnership.toString

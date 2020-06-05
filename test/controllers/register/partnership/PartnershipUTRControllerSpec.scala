@@ -35,7 +35,7 @@ class PartnershipUTRControllerSpec extends ControllerSpecBase with UTRController
   override val view: utr = app.injector.instanceOf[utr]
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
 
   "PartnershipUTRController" must {
 

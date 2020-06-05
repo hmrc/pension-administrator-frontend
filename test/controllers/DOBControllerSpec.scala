@@ -103,7 +103,7 @@ class DOBControllerSpec extends ControllerSpecBase {
       val dataRequest: DataRequest[AnyContent] = DataRequest(
         request = request,
         externalId = "test-external-id",
-        user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+        user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
         userAnswers = userAnswers
       )
       val formWithErrors = form.bindFromRequest()(dataRequest)
@@ -134,7 +134,7 @@ class DOBControllerSpec extends ControllerSpecBase {
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+      user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
       userAnswers = answers
     )
 

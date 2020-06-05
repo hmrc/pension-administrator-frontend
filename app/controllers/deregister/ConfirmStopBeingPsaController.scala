@@ -31,6 +31,7 @@ import play.api.i18n.I18nSupport
 import play.api.i18n.MessagesApi
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
+import play.api.mvc.Call
 import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.PensionAdminCache
@@ -57,48 +58,58 @@ class ConfirmStopBeingPsaController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (auth andThen allowAccess).async {
     implicit request =>
-      deregistrationConnector.canDeRegister(request.psaId.id).flatMap {
-        case true =>
-          minimalPsaConnector.getMinimalPsaDetails(request.psaId.id).map { minimalDetails =>
-            getPsaName(minimalDetails) match {
-              case Some(psaName) => Ok(view(form, psaName))
-              case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+      request.user.alreadyEnrolledPsaId.map { psaId =>
+        deregistrationConnector.canDeRegister(psaId).flatMap {
+          case true =>
+            minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalDetails =>
+              getPsaName(minimalDetails) match {
+                case Some(psaName) => Ok(view(form, psaName))
+                case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+              }
             }
-          }
-        case false =>
-          Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad()))
-      }
+          case false =>
+            Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad()))
+        }
+      }.getOrElse(
+        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+      )
   }
 
   def onSubmit: Action[AnyContent] = auth.async {
     implicit request =>
-      val psaId = request.psaId.id
-      val userId = request.userId
-      minimalPsaConnector.getMinimalPsaDetails(psaId).flatMap {
-        minimalDetails =>
-          getPsaName(minimalDetails) match {
-            case Some(psaName) =>
-              form.bindFromRequest().fold(
-                (formWithErrors: Form[Boolean]) =>
-                  Future.successful(BadRequest(view(formWithErrors, psaName))),
-                value => {
-                  if (value) {
-                    for {
-                      _ <- deregistrationConnector.stopBeingPSA(psaId)
-                      _ <- enrolments.deEnrol(userId, psaId, request.externalId)
-                      _ <- dataCacheConnector.removeAll(request.externalId)
-                    } yield {
-                      Redirect(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad())
+      request.user.alreadyEnrolledPsaId.map { psaId =>
+        val userId = request.user.userId
+        minimalPsaConnector.getMinimalPsaDetails(psaId).flatMap {
+          minimalDetails =>
+            getPsaName(minimalDetails) match {
+              case Some(psaName) =>
+                form.bindFromRequest().fold(
+                  (formWithErrors: Form[Boolean]) =>
+                    Future.successful(BadRequest(view(formWithErrors, psaName))),
+                  value => {
+                    if (value) {
+                      for {
+                        _ <- deregistrationConnector.stopBeingPSA(psaId)
+                        _ <- enrolments.deEnrol(userId, psaId, request.externalId)
+                        _ <- dataCacheConnector.removeAll(request.externalId)
+                      } yield {
+                        Redirect(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad())
+                      }
+                    } else {
+                      Future.successful(Redirect(Call("GET", appConfig.schemesOverviewUrl)))
                     }
-                  } else {
-                    Future.successful(Redirect(controllers.routes.SchemesOverviewController.onPageLoad()))
                   }
-                }
-              )
-            case _ =>
-              Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-          }
-      }
+                )
+              case _ =>
+                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+            }
+        }
+      }.getOrElse(
+        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+      )
+
+
+
   }
 
   private def getPsaName(minimalDetails: MinimalPSA): Option[String] = {

@@ -37,7 +37,7 @@ class CheckYourAnswersSpec extends SpecBase {
   }
 
   def dataRequest(answers: UserAnswers): DataRequest[AnyContent] =
-    DataRequest(FakeRequest(), "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+    DataRequest(FakeRequest(), "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers)
 
   "CheckYourAnswers" when {
     "reference value " must {

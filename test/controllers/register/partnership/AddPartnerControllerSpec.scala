@@ -189,7 +189,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   )
 
   val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers(Json.obj()))
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers(Json.obj()))
 
   private def viewAsString(form: Form[_] = form, partners: Seq[Person] = Nil) =
     view(form, viewmodel(partners), NormalMode)(request, messages).toString

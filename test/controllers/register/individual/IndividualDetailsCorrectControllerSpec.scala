@@ -54,7 +54,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
     implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-      block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), isExistingPSA = false, None)))
+      block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), isExistingPSA = false, None, None, "")))
   }
 
   private val registrationInfo = RegistrationInfo(
