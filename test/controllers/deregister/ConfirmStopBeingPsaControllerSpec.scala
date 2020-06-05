@@ -16,25 +16,32 @@
 
 package controllers.deregister
 
-import audit.StubSuccessfulAuditService
+import audit.testdoubles.StubSuccessfulAuditService
 import connectors._
-import connectors.admin.{MinimalPsaConnector, TaxEnrolmentsConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.deregister.ConfirmStopBeingPsaFormProvider
-import identifiers.PSANameId
-import models.{IndividualDetails, MinimalPSA}
+import models.IndividualDetails
+import models.MinimalPSA
+import models.register.KnownFacts
+import models.requests.DataRequest
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsFormUrlEncoded, BodyParsers, RequestHeader}
+import play.api.libs.json.Writes
+import play.api.mvc.AnyContent
+import play.api.mvc.AnyContentAsFormUrlEncoded
+import play.api.mvc.RequestHeader
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.HttpResponse
 import views.html.deregister.confirmStopBeingPsa
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFutures {
@@ -125,7 +132,7 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
 
   val fakeAuditService = new StubSuccessfulAuditService()
 
-  private def overviewPage = controllers.routes.SchemesOverviewController.onPageLoad().url
+  private def overviewPage = frontendAppConfig.schemesOverviewUrl
 
   private val formProvider = new ConfirmStopBeingPsaFormProvider
   private val form: Form[Boolean] = formProvider()
@@ -136,10 +143,13 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
   private val postRequestCancel: FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest().withFormUrlEncodedBody(("value", "false"))
 
-  private def testData = new FakeDataRetrievalAction(Some(Json.obj(PSANameId.toString -> "psaName")))
+  //private def testData = new FakeDataRetrievalAction(Some(Json.obj(PSANameId.toString -> "psaName")))
 
 
   private def fakeTaxEnrolmentsConnector: TaxEnrolmentsConnector = new TaxEnrolmentsConnector {
+    override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
+             (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse] = ???
+
     override def deEnrol(groupId: String, psaId: String, userId: String)(
       implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT))
   }
@@ -152,11 +162,14 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
   }
 
   private def fakeMinimalPsaConnector(minimalPsaDetailsIndividual: MinimalPSA): MinimalPsaConnector = new MinimalPsaConnector {
+
+    override  def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = ???
+
     override def getMinimalPsaDetails(psaId: String)(
       implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = Future.successful(minimalPsaDetailsIndividual)
 
-    override def getPsaNameFromPsaID(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] =
-      Future.successful(None)
+    //override def getPsaNameFromPsaID(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] =
+    //  Future.successful(None)
   }
 
   private val minimalPsaDetailsIndividual = MinimalPSA("test@test.com", isPsaSuspended = false, None, Some(IndividualDetails("John", Some("Doe"), "Doe")))
