@@ -16,18 +16,13 @@
 
 package controllers.actions
 
-import controllers.actions.FakeAuthAction.defaultPsaId
-import controllers.actions.FakeAuthAction.defaultUserId
-import models.Individual
-import models.RegistrationLegalStatus.Individual
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{UserType, PSAUser}
-import play.api.mvc.{Request, Result, AnyContent, BodyParser}
-import uk.gov.hmrc.domain.PsaId
+import models.{PSAUser, UserType}
+import play.api.mvc.{AnyContent, BodyParser, Request, Result}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
-import scala.concurrent.{Future, ExecutionContextExecutor}
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
 case class FakeAuthAction(userType: UserType, psaId:String = "test psa id") extends AuthAction {
   val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
@@ -45,7 +40,7 @@ object FakeAuthAction extends AuthAction {
       val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
       implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
       override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
-        block(AuthenticatedRequest(request, externalId, PsaId(defaultPsaId), Individual, defaultUserId))
+        block(AuthenticatedRequest(request, externalId, PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some(defaultPsaId))))
     }
   }
 

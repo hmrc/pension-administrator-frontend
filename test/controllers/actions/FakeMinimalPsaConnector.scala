@@ -17,11 +17,13 @@
 package controllers.actions
 
 import connectors.MinimalPsaConnector
+import models.MinimalPSA
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 case class FakeMinimalPsaConnector(isSuspended: Boolean = false) extends MinimalPsaConnector {
+  override def getMinimalPsaDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = ???
   override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean] = {
     Future.successful(isSuspended)
   }
