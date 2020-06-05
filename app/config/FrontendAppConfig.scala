@@ -82,7 +82,11 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   lazy val tpssUrl: String = loadConfig("urls.tpss")
   lazy val subscriptionDetailsUrl: String = s"${s"${servicesConfig.baseUrl("pension-administrator")}${runModeConfiguration
     .underlying.getString("urls.pension-administrator.subscriptionDetails")}"}"
-
+/* Moved over from manage:-
+  lazy val deregisterPsaUrl : String = s"${servicesConfig.baseUrl("pension-administrator")}${runModeConfiguration.underlying.getString("urls.deregisterPsa")}"
+  def canDeRegisterPsaUrl(psaId: String): String = s"${servicesConfig.baseUrl("pension-administrator") +
+    runModeConfiguration.underlying.getString("urls.canDeRegister").format(psaId)}"
+*/
   lazy val updateSubscriptionDetailsUrl: String = s"${s"${servicesConfig.baseUrl("pension-administrator")}${runModeConfiguration
     .underlying.getString("urls.pension-administrator.updateSubscriptionDetails")}"}"
 

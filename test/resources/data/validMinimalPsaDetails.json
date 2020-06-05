@@ -1,0 +1,12 @@
+{
+	"processingDate": "2001-12-17T09:30:47Z",
+	"individualDetails" : {
+		"firstName": "First",
+		"middleName": "Middle",
+		"lastName": "Last"
+	},
+	"email": "test@test.com",
+	"isPsaSuspended": false
+}
+
+

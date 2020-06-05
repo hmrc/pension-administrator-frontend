@@ -18,23 +18,47 @@ package connectors
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
+import models.MinimalPSA
+import models.MinimalPSA
 import play.api.Logger
 import play.api.http.Status._
+import play.api.libs.json.JsError
+import play.api.libs.json.JsResultException
+import play.api.libs.json.JsSuccess
+import play.api.libs.json.Json
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.HttpResponseHelper
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 import scala.util.Failure
 
 @ImplementedBy(classOf[MinimalPsaConnectorImpl])
 trait MinimalPsaConnector {
+  def getMinimalPsaDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA]
 
   def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
 }
 
 class MinimalPsaConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends MinimalPsaConnector with HttpResponseHelper {
+  override def getMinimalPsaDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = {
+    val psaHc = hc.withExtraHeaders("psaId" -> psaId)
 
+    http.GET[HttpResponse](config.minimalPsaDetailsUrl)(implicitly, psaHc, implicitly) map { response =>
+
+      response.status match {
+        case OK =>
+          Json.parse(response.body).validate[MinimalPSA] match {
+            case JsSuccess(value, _) => value
+            case JsError(errors) => throw JsResultException(errors)
+          }
+
+        case _ => handleErrorResponse("GET", config.minimalPsaDetailsUrl)(response)
+      }
+    } andThen {
+      case Failure(t: Throwable) => Logger.warn("Unable to invite PSA to administer scheme", t)
+    }
+  }
   override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     val psaHc = hc.withExtraHeaders("psaId" -> psaId)
 

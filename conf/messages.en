@@ -1093,3 +1093,5 @@ select.address.error.required = Select {0}’s address
 select.previous.address.error.required = Select {0}’s previous address
 
 incomplete.alert.message = You must complete any section marked as "Not entered" before you can continue
+
+messages__youNeedToRegister__govUk__link = Exit to GOV.UK

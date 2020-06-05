@@ -16,13 +16,22 @@
 
 package connectors
 
+import base.JsonFileReader
 import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalatest.{AsyncFlatSpec, Matchers, OptionValues}
+import models.IndividualDetails
+import models.MinimalPSA
+import org.scalatest.AsyncFlatSpec
+import org.scalatest.Matchers
+import org.scalatest.OptionValues
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsResultException, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import play.api.libs.json.JsResultException
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.BadRequestException
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.NotFoundException
 import utils.WireMockHelper
+import play.api.http.Status
 
 class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
 
@@ -91,9 +100,65 @@ class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireM
     }
 
   }
+
+  "getMinimalPsaDetails" should "return the MinimalPsa for a valid request/response" in {
+
+    server.stubFor(
+      get(urlEqualTo(minimalPsaDetailsUrl))
+        .withHeader("psaId", equalTo(psaId))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+            .withHeader("Content-Type", "application/json")
+            .withBody(validMinimalPsaDetailsResponse)
+        )
+    )
+
+    val connector = injector.instanceOf[MinimalPsaConnector]
+
+    connector.getMinimalPsaDetails(psaId).map(psa =>
+      psa shouldBe expectedResponse
+    )
+
+  }
+
+  it should "throw BadRequestException for a 400 INVALID_PSAID response" in {
+
+    server.stubFor(
+      get(urlEqualTo(minimalPsaDetailsUrl))
+        .withHeader("psaId", equalTo(psaId))
+        .willReturn(
+          badRequest
+            .withHeader("Content-Type", "application/json")
+            .withBody(errorResponse("INVALID_PSAID"))
+        )
+    )
+
+    val connector = injector.instanceOf[MinimalPsaConnector]
+    recoverToSucceededIf[BadRequestException] {
+      connector.getMinimalPsaDetails(psaId)
+    }
+  }
+
+  it should "throw BadRequest for a 400 INVALID_CORRELATIONID response" in {
+
+    server.stubFor(
+      get(urlEqualTo(minimalPsaDetailsUrl))
+        .willReturn(
+          badRequest
+            .withHeader("Content-Type", "application/json")
+            .withBody(errorResponse("INVALID_CORRELATIONID"))
+        )
+    )
+    val connector = injector.instanceOf[MinimalPsaConnector]
+
+    recoverToSucceededIf[BadRequestException] {
+      connector.getMinimalPsaDetails(psaId)
+    }
+  }
 }
 
-object MinimalPsaConnectorImplSpec extends OptionValues {
+object MinimalPsaConnectorImplSpec extends OptionValues with JsonFileReader {
 
   private val minimalPsaDetailsUrl = "/pension-administrator/get-minimal-psa"
 
@@ -114,4 +179,16 @@ object MinimalPsaConnectorImplSpec extends OptionValues {
         "isPsaSuspended" -> "reason"
       )
     )
+    def errorResponse(code: String): String = {
+      Json.stringify(
+        Json.obj(
+          "code" -> code,
+          "reason" -> s"Reason for $code"
+        )
+      )
+    }
+  private val validMinimalPsaDetailsResponse = readJsonFromFile("/data/validMinimalPsaDetails.json").toString()
+  private val email = "test@test.com"
+  private val expectedResponse = MinimalPSA(email,false,None,Some(IndividualDetails("First",Some("Middle"),"Last")))
+
 }

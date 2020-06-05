@@ -1,5 +1,6 @@
 # microservice specific routes
 ->         /register                                    register.Routes
+->          /                                           remove.Routes
 
 GET        /                                            controllers.LoginController.onPageLoad
 
