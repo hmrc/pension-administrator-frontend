@@ -16,26 +16,26 @@
 
 package controllers.deregister
 
-import audit.StubSuccessfulAuditService
+import audit.testdoubles.StubSuccessfulAuditService
 import connectors._
-import connectors.admin.{MinimalPsaConnector, TaxEnrolmentsConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.deregister.ConfirmStopBeingPsaFormProvider
-import identifiers.PSANameId
+import identifiers.register.PsaNameId
 import models.{IndividualDetails, MinimalPSA}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsFormUrlEncoded, BodyParsers, RequestHeader}
+import play.api.mvc.{AnyContentAsFormUrlEncoded, RequestHeader}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.deregister.confirmStopBeingPsa
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFutures {
 
@@ -136,7 +136,7 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
   private val postRequestCancel: FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest().withFormUrlEncodedBody(("value", "false"))
 
-  private def testData = new FakeDataRetrievalAction(Some(Json.obj(PSANameId.toString -> "psaName")))
+  private def testData = new FakeDataRetrievalAction(Some(Json.obj(PsaNameId.toString -> "psaName")))
 
 
   private def fakeTaxEnrolmentsConnector: TaxEnrolmentsConnector = new TaxEnrolmentsConnector {
