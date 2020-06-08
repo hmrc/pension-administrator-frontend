@@ -603,7 +603,7 @@ confirmation.whatYouNeedToKnow.heading = What happens next
 confirmation.whatYouNeedToKnow.existingPSA.detail=Your administrator ID has not changed. You can now {0}
 confirmation.whatYouNeedToKnow.newPSA.detail = {0}, or
 confirmation.whatYouNeedToKnow.schemeLink = applying to register a new pension scheme
-confirmation.email = We have sent a confirmation email to the email address you gave us.
+confirmation.email = We have sent a confirmation email to
 confirmation.action.subheading = The pension scheme administrator can now manage pension schemes, either by:
 confirmation.action.item = being invited to be a pension scheme administrator for an existing pension
 
