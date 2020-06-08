@@ -42,7 +42,6 @@ import scala.concurrent.Future
 class ConfirmStopBeingPsaController @Inject()(
                                                appConfig: FrontendAppConfig,
                                                auth: AuthAction,
-                                               override val messagesApi: MessagesApi,
                                                formProvider: ConfirmStopBeingPsaFormProvider,
                                                minimalPsaConnector: MinimalPsaConnector,
                                                deregistrationConnector: DeregistrationConnector,

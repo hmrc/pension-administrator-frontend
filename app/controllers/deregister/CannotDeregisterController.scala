@@ -29,7 +29,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class CannotDeregisterController @Inject()(
                                                appConfig: FrontendAppConfig,
                                                auth: AuthAction,
-                                               override val messagesApi: MessagesApi,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: cannotDeregister
                                              )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {

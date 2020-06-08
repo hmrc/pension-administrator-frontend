@@ -29,7 +29,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class UnableToStopBeingPsaController @Inject()(
                                                appConfig: FrontendAppConfig,
                                                auth: AuthAction,
-                                               override val messagesApi: MessagesApi,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: unableToStopBeingPsa
                                              )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {

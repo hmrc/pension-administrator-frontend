@@ -27,7 +27,6 @@ import views.html.deregister.successful_deregistration
 import scala.concurrent.{ExecutionContext, Future}
 
 class SuccessfulDeregistrationController @Inject()(appConfig: FrontendAppConfig,
-                                                   override val messagesApi: MessagesApi,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: successful_deregistration
                                       )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {

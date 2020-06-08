@@ -46,7 +46,6 @@ object UnableToStopBeingPsaControllerSpec extends ControllerSpecBase {
     new UnableToStopBeingPsaController(
       frontendAppConfig,
       FakeAuthAction(),
-      messagesApi,
       stubMessagesControllerComponents(),
       view
     )
