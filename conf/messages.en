@@ -1112,3 +1112,9 @@ deregisterSuccess.heading = You have stopped being a pension scheme administrato
 deregisterSuccess.p1 = Your administrator ID has been deleted.
 
 schemesOverview.manage.link = View your pension schemes
+
+unableToStopBeingPsa.title = You cannot stop being a pension scheme administrator
+unableToStopBeingPsa.heading = You cannot stop being a pension scheme administrator
+unableToStopBeingPsa.p1 = You must remove yourself from all of the schemes you are a scheme administrator of.
+unableToStopBeingPsa.continue.link = Continue to your pension schemes
+
