@@ -32,7 +32,7 @@ case class FakeAuthAction(userType: UserType, psaId:String = "test psa id") exte
 }
 
 object FakeAuthAction extends AuthAction {
-  private val externalId: String = "id"
+  val externalId: String = "id"
   private val defaultPsaId: String = "A0000000"
   private val defaultUserId: String = "user-id"
   def apply(): AuthAction = {

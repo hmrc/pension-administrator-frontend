@@ -30,13 +30,13 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("messages__cannotDeregister__title")) {
+    title = messages("cannotDeregister.title")) {
     @components.back_link()
-    @components.heading(messages("messages__cannotDeregister__title"))
+    @components.heading(messages("cannotDeregister.heading"))
 
-    <p>@messages("messages__cannotDeregister__p1")</p>
-    <p class="panel panel-border-wide">@messages("messages__cannotDeregister__p2")</p>
+    <p>@messages("cannotDeregister.p1")</p>
+    <p class="panel panel-border-wide">@messages("cannotDeregister.p2")</p>
 
-    <p><a id="return-to-schemes" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("messages__schemesOverview__manage__link")</a></p>
+    <p><a id="return-to-schemes" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("schemesOverview.manage.link")</a></p>
 
 }

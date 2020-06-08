@@ -29,14 +29,14 @@ appConfig: FrontendAppConfig
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("messages__unableToStopBeingPsa__title")
+title = messages("unableToStopBeingPsa.title")
 ) {
     @components.back_link()
 
-    @components.heading(messages("messages__unableToStopBeingPsa__heading"))
+    @components.heading(messages("unableToStopBeingPsa.heading"))
 
-    <p>@messages("messages__unableToStopBeingPsa_p1")</p>
+    <p>@messages("unableToStopBeingPsa_p1")</p>
 
-    <p><a id="return-link" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("messages__unableToStopBeingPsa__continue__link")</a></p>
+    <p><a id="return-link" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("unableToStopBeingPsa.continue.link")</a></p>
 
 }

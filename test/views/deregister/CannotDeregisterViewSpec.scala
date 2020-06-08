@@ -34,7 +34,7 @@ class CannotDeregisterViewSpec extends ViewBehaviours {
     behave like normalPage(
       createView,
       messageKeyPrefix,
-      expectedGuidanceKeys = "_p1", "_p2"
+      expectedGuidanceKeys = "p1", "p2"
     )
 
     "have link to return to your pension schemes" in {

@@ -32,7 +32,7 @@
 @(form: Form[_], psaName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = titleWithErrors(form, messages("messages__confirmStopBeingPsa__title"))
+    title = titleWithErrors(form, messages("confirmStopBeingPsa.title"))
 ) {
 
     @formHelper(action = controllers.deregister.routes.ConfirmStopBeingPsaController.onSubmit(), 'autoComplete -> "off") {
@@ -42,19 +42,25 @@
         @components.error_summary(form.errors)
 
         <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(messages("messages__confirmStopBeingPsa__heading"))
+        @components.heading(messages("confirmStopBeingPsa.heading"))
 
-        <p>@messages("messages__confirmStopBeingPsa_p1")</p>
-        <p>@messages("messages__confirmStopBeingPsa_p2")</p>
+        <p>@messages("confirmStopBeingPsa.p1")</p>
+        <p>@messages("confirmStopBeingPsa.p2")</p>
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("messages__confirmStopBeingPsa__title"),
+            label = messages("confirmStopBeingPsa.title"),
             labelClass = Some("visually-hidden")
         )
         </div>
         @components.submit_button()
 
-        @components.return_link(psaName, NormalMode)
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <p class="govuk-margin-top-5">
+                    <a id="return-link" href="@{appConfig.schemesOverviewUrl}">@messages("site.return_to", psaName)</a>
+                </p>
+            </div>
+        </div>
     }
 }

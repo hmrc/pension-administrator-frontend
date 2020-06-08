@@ -34,7 +34,6 @@ import play.api.mvc.AnyContent
 import play.api.mvc.Call
 import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.PensionAdminCache
 import views.html.deregister.confirmStopBeingPsa
 
 import scala.concurrent.ExecutionContext
@@ -49,7 +48,7 @@ class ConfirmStopBeingPsaController @Inject()(
                                                deregistrationConnector: DeregistrationConnector,
                                                enrolments: TaxEnrolmentsConnector,
                                                allowAccess: AllowAccessForNonSuspendedUsersAction,
-                                               @PensionAdminCache dataCacheConnector: UserAnswersCacheConnector,
+                                               dataCacheConnector: UserAnswersCacheConnector,
                                                val controllerComponents: MessagesControllerComponents,
                                                view: confirmStopBeingPsa
                                              )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {

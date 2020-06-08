@@ -33,15 +33,15 @@
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
 
 @main_template(
-   title = messages("messages__deregisterSuccess__title")
+   title = messages("deregisterSuccess.title")
 ) {
 
     <div class="govuk-box-highlight">
-          @components.heading(messages("messages__deregisterSuccess__heading"))
+          @components.heading(messages("deregisterSuccess.heading"))
     </div>
 
-    <p>@messages("messages__deregisterSuccess_p1")</p>
+    <p>@messages("deregisterSuccess_p1")</p>
 
-    <a id="gov-uk-link" href="@appConfig.govUkUrl" role="button">@messages("messages__youNeedToRegister__govUk__link")</a>
+    <a id="gov-uk-link" href="@appConfig.govUkUrl" role="button">@messages("youNeedToRegister.govUk.link")</a>
 
 }
