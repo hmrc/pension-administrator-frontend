@@ -65,6 +65,14 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
     }
 
     "return OK and the correct view for a GET and ensure audit service is successfully called" in {
+
+      def writeToDesktop(content:String, fileName:String):Unit = {
+        import java.io._
+        val pw = new PrintWriter(new File( s"/home/grant/Desktop/$fileName" ))
+        pw.write(content)
+        pw.close()
+      }
+
       val psa = PsaId("A1234567")
       val user = "Fred"
       val request = fakeRequest.withJsonBody(Json.obj(
@@ -75,6 +83,10 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
       val result = controller(minimalPsaDetailsIndividual)(hc).onPageLoad()(request)
 
       status(result) mustBe OK
+
+      writeToDesktop(contentAsString(result), "act.html")
+      writeToDesktop(viewAsString(), "exp.html")
+
       contentAsString(result) mustBe viewAsString()
     }
 
@@ -200,8 +212,12 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
     )
   }
 
-  private def viewAsString(): String =
+  private def viewAsString(): String = {
+
+    println( "\n>>>>>>I AM HERE:" + messages("select.address.hint.text"))
+
     view(form, "John Doe Doe")(fakeRequest, messages).toString
+  }
 
 }
 

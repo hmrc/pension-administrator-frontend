@@ -72,7 +72,9 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   lazy val tellHMRCCompanyChangesUrl: String = loadConfig("urls.companyChangesHMRC")
   lazy val registerSchemeUrl: String = loadConfig("urls.pensions-scheme-frontend.registerScheme")
   lazy val schemesOverviewUrl : String = loadConfig("urls.manage-pensions-frontend.schemesOverview")
-  lazy val deregisterPsaUrl : String = loadConfig("urls.manage-pensions-frontend.deregisterPsa")
+
+  lazy val deregisterPsaUrl : String = s"${servicesConfig.baseUrl("pension-administrator")}${runModeConfiguration.underlying.getString("urls.pension-administrator.deregisterPsa")}"
+
   lazy val locationCanonicalList: String = loadConfig("location.canonical.list.all")
   lazy val locationCanonicalListEUAndEEA: String = loadConfig("location.canonical.list.EUAndEEA")
   lazy val maxDirectors: Int = loadConfig("register.company.maxDirectors").toInt
@@ -85,11 +87,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
 
   lazy val managePensionsYourPensionSchemesUrl: String = loadConfig("urls.manage-pensions-frontend.yourPensionSchemes")
 
-/* Moved over from manage:-
-  lazy val deregisterPsaUrl : String = s"${servicesConfig.baseUrl("pension-administrator")}${runModeConfiguration.underlying.getString("urls.deregisterPsa")}"
-  def canDeRegisterPsaUrl(psaId: String): String = s"${servicesConfig.baseUrl("pension-administrator") +
-    runModeConfiguration.underlying.getString("urls.canDeRegister").format(psaId)}"
-*/
   lazy val updateSubscriptionDetailsUrl: String = s"${s"${servicesConfig.baseUrl("pension-administrator")}${runModeConfiguration
     .underlying.getString("urls.pension-administrator.updateSubscriptionDetails")}"}"
 

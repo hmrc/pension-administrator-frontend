@@ -28,7 +28,7 @@ class SuccessfulDeregistrationViewSpec extends ViewBehaviours {
 
     def createView() = () => view()(fakeRequest, messages)
 
-    behave like normalPage(createView(), messageKeyPrefix, messages(s"messages__${messageKeyPrefix}__title"),"p1")
+    behave like normalPage(createView(), messageKeyPrefix,"p1")
 
     "have a link to 'exit to gov uk'" in {
       createView must haveLink(url = frontendAppConfig.govUkUrl, linkId = "gov-uk-link")

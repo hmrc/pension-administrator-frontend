@@ -1107,5 +1107,8 @@ confirmStopBeingPsa.p1 = Your administrator ID will be deleted when you stop bei
 confirmStopBeingPsa.p2 = You will have to register as a pension scheme administrator again if you need an administrator ID in the future.
 confirmStopBeingPsa.required = Select yes if you are sure you want to stop being a pension scheme administrator
 
+deregisterSuccess.title = You have stopped being a pension scheme administrator
+deregisterSuccess.heading = You have stopped being a pension scheme administrator
+deregisterSuccess.p1 = Your administrator ID has been deleted.
 
 
