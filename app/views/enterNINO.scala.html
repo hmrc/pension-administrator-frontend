@@ -44,13 +44,11 @@
         @components.error_summary(form.errors)
         <div class="form-group @if(form.hasErrors){form-group--error}">
 
-        @components.heading(viewModel.heading)
-
         @components.input_text(
             field = form("value"),
             label = viewModel.heading,
-            labelClass = Some("visually-hidden"),
-            hint = viewModel.hint
+            hint = viewModel.hint,
+            headingIsLegend = true
         )
         </div>
         <div class="subsection">
