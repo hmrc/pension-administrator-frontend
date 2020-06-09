@@ -36,7 +36,7 @@
             <a id="cya-@idPath-change" href='@{changeUrl.url}'>
                 <span>@messages(changeUrl.text)</span>
                 @row.visuallyHiddenText.map{ hiddenLabel =>
-                    <span class="visually-hidden">@hiddenLabel.resolve</span>
+                    <span class="visually-hidden">@messages(hiddenLabel)</span>
                 }.getOrElse {
                     <span class="visually-hidden">@messages("site.hidden-edit", messages(row.label))</span>
                 }

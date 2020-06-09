@@ -70,7 +70,7 @@ class PartnerNoUTRReasonController @Inject()(@PartnershipPartner val navigator: 
   private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = PartnerNoUTRReasonController.onSubmit(mode, index),
-      title = Message("whyNoUTR.heading", Message("thePartner").resolve),
+      title = Message("whyNoUTR.heading", Message("thePartner")),
       heading = Message("whyNoUTR.heading", partnerName),
       mode = mode,
       entityName = partnerName

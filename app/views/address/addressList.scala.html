@@ -43,7 +43,7 @@
         )
 
         <p>
-            @viewModel.selectAddress.resolve <a id="manual-address-link" href="@viewModel.manualInputCall">@viewModel.selectAddressLink.resolve</a>
+            @messages(viewModel.selectAddress) <a id="manual-address-link" href="@viewModel.manualInputCall">@messages(viewModel.selectAddressLink)</a>
         </p>
 
         @components.fieldSet(

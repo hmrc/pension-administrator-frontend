@@ -69,7 +69,7 @@ class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navig
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = DirectorEnterUTRController.onSubmit(mode, index),
-      title = Message("enterUTR.heading", Message("theDirector").resolve),
+      title = Message("enterUTR.heading", Message("theDirector")),
       heading = Message("enterUTR.heading", directorName),
       mode = mode,
       entityName = directorName

@@ -69,7 +69,7 @@ class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navi
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorEnterNINOController.onSubmit(mode, index),
-      title = Message("enterNINO.heading", Message("theDirector").resolve),
+      title = Message("enterNINO.heading", Message("theDirector")),
       heading = Message("enterNINO.heading", directorName),
       hint = Some(Message("enterNINO.hint")),
       mode = mode,

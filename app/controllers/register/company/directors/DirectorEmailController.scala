@@ -65,7 +65,7 @@ class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigato
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorEmailController.onSubmit(mode, index),
-      title = Message("email.title", Message("theDirector").resolve),
+      title = Message("email.title", Message("theDirector")),
       heading = Message("email.title", directorName),
       mode = mode,
       entityName = directorName

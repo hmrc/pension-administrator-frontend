@@ -70,7 +70,7 @@ class PartnerEnterUTRController @Inject()(@PartnershipPartner val navigator: Nav
   private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = PartnerEnterUTRController.onSubmit(mode, index),
-      title = Message("enterUTR.heading", Message("thePartner").resolve),
+      title = Message("enterUTR.heading", Message("thePartner")),
       heading = Message("enterUTR.heading", partnerName),
       mode = mode,
       entityName = partnerName

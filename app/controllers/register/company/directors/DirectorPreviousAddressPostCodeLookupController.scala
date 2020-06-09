@@ -74,7 +74,7 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
     PostcodeLookupViewModel(
       routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode, index),
       routes.DirectorPreviousAddressController.onPageLoad(mode, index),
-      Message("previous.postcode.lookup.heading", Message("theDirector").resolve),
+      Message("previous.postcode.lookup.heading", Message("theDirector")),
       Message("previous.postcode.lookup.heading", directorName),
       Message("manual.entry.text"),
       Some(Message("manual.entry.link")),

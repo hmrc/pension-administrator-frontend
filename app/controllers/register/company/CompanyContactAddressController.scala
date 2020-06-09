@@ -58,7 +58,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
         ManualAddressViewModel(
           routes.CompanyContactAddressController.onSubmit(mode),
           countryOptions.options,
-          Message("enter.address.heading", Message("theCompany").resolve),
+          Message("enter.address.heading", Message("theCompany")),
           Message("enter.address.heading", companyName),
           psaName = psaName()
         )

@@ -71,7 +71,7 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
     ManualAddressViewModel(
       routes.PartnerPreviousAddressController.onSubmit(mode, index),
       countryOptions.options,
-      Message("enter.previous.address.heading", Message("thePartner")).resolve.capitalize,
+      Message("enter.previous.address.heading", Message("thePartner")),
       Message("enter.previous.address.heading", name),
       None,
       psaName = psaName()

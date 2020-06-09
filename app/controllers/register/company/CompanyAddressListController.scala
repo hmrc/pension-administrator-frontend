@@ -70,7 +70,7 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
         postCall = routes.CompanyAddressListController.onSubmit(mode),
         manualInputCall = routes.CompanyPreviousAddressController.onPageLoad(mode),
         addresses = addresses,
-        Message("select.previous.address.heading", Message("theCompany").resolve),
+        Message("select.previous.address.heading", Message("theCompany")),
         Message("select.previous.address.heading", entityName),
         Message("select.address.hint.text"),
         Message("manual.entry.link"),

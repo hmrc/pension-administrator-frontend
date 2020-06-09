@@ -69,7 +69,7 @@ class PartnerEnterNINOController @Inject()(@PartnershipPartner val navigator: Na
   private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerEnterNINOController.onSubmit(mode, index),
-      title = Message("enterNINO.heading", Message("thePartner").resolve),
+      title = Message("enterNINO.heading", Message("thePartner")),
       heading = Message("enterNINO.heading", partnerName),
       hint = Some(Message("enterNINO.hint")),
       mode = mode,

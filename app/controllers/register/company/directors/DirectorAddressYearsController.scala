@@ -66,12 +66,12 @@ class DirectorAddressYearsController @Inject()(@CompanyDirector override val nav
   }
 
   private def entityName(index: Int)(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector").resolve)
+    request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
     AddressYearsViewModel(
       postCall = routes.DirectorAddressYearsController.onSubmit(mode, index),
-      title = Message("addressYears.heading", Message("theDirector").resolve),
+      title = Message("addressYears.heading", Message("theDirector")),
       heading = Message("addressYears.heading", directorName),
       legend = Message("addressYears.heading", directorName),
       psaName = psaName()

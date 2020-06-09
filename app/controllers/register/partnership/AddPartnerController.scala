@@ -57,7 +57,7 @@ class AddPartnerController @Inject()(
     heading = Message("addPartners.heading"),
     entities = partners,
     maxLimit = appConfig.maxPartners,
-    entityType = Message("addPartners.entityType").resolve,
+    entityType = Message("addPartners.entityType"),
     psaName = psaName()
   )
 

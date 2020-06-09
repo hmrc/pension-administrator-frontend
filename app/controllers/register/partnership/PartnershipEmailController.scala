@@ -60,12 +60,12 @@ class PartnershipEmailController @Inject()(@Partnership val navigator: Navigator
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).fold(Message("thePartnership").resolve)(identity)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership"))
 
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnershipEmailController.onSubmit(mode),
-      title = Message("email.title", Message("thePartnership").resolve),
+      title = Message("email.title", Message("thePartnership")),
       heading = Message("email.title", entityName),
       mode = mode,
       entityName = entityName

@@ -75,7 +75,7 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
     ManualAddressViewModel(
       routes.DirectorPreviousAddressController.onSubmit(mode, index),
       countryOptions.options,
-      Message("enter.previous.address.heading", Message("theDirector").resolve.capitalize),
+      Message("enter.previous.address.heading", Message("theDirector")),
       Message("enter.previous.address.heading", directorName),
       psaName = psaName()
     )

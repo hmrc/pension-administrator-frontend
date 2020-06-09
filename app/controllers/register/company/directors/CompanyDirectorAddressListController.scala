@@ -70,7 +70,7 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
         postCall = routes.CompanyDirectorAddressListController.onSubmit(mode, index),
         manualInputCall = routes.DirectorAddressController.onPageLoad(mode, index),
         addresses = addresses,
-        Message("select.address.heading", Message("theDirector").resolve),
+        Message("select.address.heading", Message("theDirector")),
         Message("select.address.heading", entityName(index)),
         Message("select.address.hint.text"),
         Message("manual.entry.link"),

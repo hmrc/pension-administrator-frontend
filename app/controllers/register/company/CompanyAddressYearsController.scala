@@ -70,7 +70,7 @@ class CompanyAddressYearsController @Inject()(@RegisterCompany override val navi
   private def viewModel(mode: Mode, companyName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel = {
     AddressYearsViewModel(
       postCall = routes.CompanyAddressYearsController.onSubmit(mode),
-      title = Message("addressYears.heading", Message("theCompany").resolve),
+      title = Message("addressYears.heading", Message("theCompany")),
       heading = Message("addressYears.heading", companyName),
       legend = Message("addressYears.heading", companyName),
       psaName = psaName()

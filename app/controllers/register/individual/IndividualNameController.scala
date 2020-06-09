@@ -53,7 +53,7 @@ class IndividualNameController @Inject()(val appConfig: FrontendAppConfig,
   private[individual] def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     PersonDetailsViewModel(
       title = "individualName.title",
-      heading = Message("individualName.title").resolve,
+      heading = Message("individualName.title"),
       postCall = routes.IndividualNameController.onSubmit(mode)
     )
 

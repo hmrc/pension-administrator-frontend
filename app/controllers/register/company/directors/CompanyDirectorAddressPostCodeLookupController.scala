@@ -70,7 +70,7 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
     PostcodeLookupViewModel(
       routes.CompanyDirectorAddressPostCodeLookupController.onSubmit(mode, index),
       routes.DirectorAddressController.onPageLoad(mode, index),
-      Message("postcode.lookup.heading", Message("theDirector").resolve),
+      Message("postcode.lookup.heading", Message("theDirector")),
       Message("postcode.lookup.heading", entityName(index)),
       Message("manual.entry.text"),
       Some(Message("manual.entry.link")),

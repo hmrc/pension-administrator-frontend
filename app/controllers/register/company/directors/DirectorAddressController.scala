@@ -56,7 +56,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
                               (implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.DirectorAddressController.onSubmit(mode, index),
     countryOptions.options,
-    Message("enter.address.heading", Message("theDirector").resolve),
+    Message("enter.address.heading", Message("theDirector")),
     Message("enter.address.heading", directorName),
     psaName = psaName()
   )
