@@ -36,15 +36,14 @@
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
         <div class="form-group @if(form.hasErrors){form-group--error}">
-            @components.heading(messages(viewModel.heading))
-
-            @components.paragraph_text(messages("contact.body", viewModel.entityName))
 
             @components.input_text(
                 field = form("value"),
-                label = messages("contactDetails.email"),
+                label = messages(viewModel.heading),
                 inputClass = Some("form-control-3-4"),
-                labelClass = Some("visually-hidden")
+                labelClass = Some("visually-hidden"),
+                paragraphText = Some(messages("contact.body", viewModel.entityName)),
+                headingIsLegend = true
             )
         </div>
 
