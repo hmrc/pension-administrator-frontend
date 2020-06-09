@@ -43,9 +43,7 @@
             headingIsLegend = true
         )
 
-        <div class="subsection">
-            @components.submit_button("site.confirm")
-        </div>
+        @components.submit_button("site.confirm")
 
         @viewModel.psaName.map { psaName =>
             @components.return_link(psaName, mode)

@@ -37,9 +37,7 @@
         @components.heading(
             headingKey = messages("confirmDeleteDirector.heading", fullName))
 
-        <div class="subsection">
-            @components.submit_button("site.confirm")
-        </div>
+        @components.submit_button("site.confirm")
 
         <a id="cancel" href=@controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url>
             @messages("site.cancel")
