@@ -37,13 +37,12 @@
         @components.error_summary(form.errors)
 
         <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(messages("adviserName.heading"))
-
-        <p>@messages("adviserName.p1")</p>
 
         @components.input_text(
           field = form("adviserName"),
-          label = messages("adviserName.label")
+          label = messages("adviserName.heading"),
+            paragraphText = Some(messages("adviserName.p1")),
+            headingIsLegend = true
         )
         </div>
         <div class="subsection">
