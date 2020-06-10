@@ -42,7 +42,7 @@ class PartnerNoNINOReasonIdSpec extends SpecBase {
       "return answers rows with change links" in {
         val answerRows =
         Seq(
-          AnswerRow(Message("whyNoNINO.heading").withArgs(personDetails.fullName).resolve, Seq("test-reason"), answerIsMessageKey = false,
+          AnswerRow(Message("whyNoNINO.heading").withArgs(personDetails.fullName), Seq("test-reason"), answerIsMessageKey = false,
             Some(Link("site.change", onwardUrl)), Some(Message("whyNoNINO.visuallyHidden.text").withArgs(personDetails.fullName))
           )
         )

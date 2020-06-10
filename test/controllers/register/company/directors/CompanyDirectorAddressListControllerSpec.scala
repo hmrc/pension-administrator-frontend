@@ -86,7 +86,7 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
       postCall = routes.CompanyDirectorAddressListController.onSubmit(NormalMode, firstIndex),
       manualInputCall = routes.DirectorAddressController.onPageLoad(NormalMode, firstIndex),
       addresses = addresses,
-      Message("select.address.heading", Message("theDirector").resolve),
+      Message("select.address.heading", Message("theDirector")),
       Message("select.address.heading", director.fullName),
       Message("select.address.hint.text"),
       Message("manual.entry.link")

@@ -108,8 +108,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val partnershipName = "test company"
-  private val defaultBusiness = Message("theBusiness").resolve
-  private val defaultPartnership = Message("thePartnership").resolve
+  private val defaultBusiness = Message("theBusiness")
+  private val defaultPartnership = Message("thePartnership")
   private val vat = "test-vat"
   private val paye = "test-paye"
   private val addressYears = AddressYears.UnderAYear
@@ -156,11 +156,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private val answerRows = Seq(
     answerRow(
       Message("businessName.heading",
-        Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(partnershipName)
+        Message("businessType.limitedPartnership.lc")), Seq(partnershipName)
     ),
     answerRow(
       Message("utr.heading",
-        Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq("1111111111")
+        Message("businessType.limitedPartnership")), Seq("1111111111")
     ),
     answerRow(
       Message("hasPAYE.heading", businessName), Seq("site.yes"), answerIsMessageKey = true,
@@ -234,7 +234,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private val answerRowsNonUK = Seq(
     answerRow(
       Message("businessName.heading",
-        Message("businessType.limitedPartnership").resolve.toLowerCase()).resolve, Seq(partnershipName)
+        Message("businessType.limitedPartnership")), Seq(partnershipName)
     ),
     answerRow(
       Message("cya.label.contact.address", defaultBusiness),

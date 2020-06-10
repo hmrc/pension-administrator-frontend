@@ -37,13 +37,13 @@ class UseOrganisationCredentialsViewSpec extends ViewBehaviours {
     "display the gg link from p2" in {
       val doc = Jsoup.parse(createView().apply().toString())
       doc must haveLinkWithUrlAndContent("p2-login-link", frontendAppConfig.loginUrl,
-        Message("useOrganisationCredentials.p2.link").resolve)
+        Message("useOrganisationCredentials.p2.link"))
     }
 
     "display the gg link from p3" in {
       val doc = Jsoup.parse(createView().apply().toString())
       doc must haveLinkWithUrlAndContent("p3-login-link", frontendAppConfig.loginUrl,
-        Message("useOrganisationCredentials.p3.link").resolve)
+        Message("useOrganisationCredentials.p3.link"))
     }
   }
 

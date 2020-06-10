@@ -68,8 +68,8 @@ object DirectorNoNINOReasonControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorNoNINOReasonController.onSubmit(mode, index),
-      title = Message("whyNoNINO.heading", Message("theDirector").resolve).resolve,
-      heading = Message("whyNoNINO.heading", directorName).resolve,
+      title = Message("whyNoNINO.heading", Message("theDirector")),
+      heading = Message("whyNoNINO.heading", directorName),
       mode = mode,
       entityName = directorName
     )

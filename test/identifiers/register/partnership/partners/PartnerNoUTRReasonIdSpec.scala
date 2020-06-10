@@ -40,7 +40,7 @@ class PartnerNoUTRReasonIdSpec extends SpecBase {
       "return answers rows with change links" in {
         val answerRows =
           Seq(
-            AnswerRow(Message("whyNoUTR.heading").withArgs(personDetails.fullName).resolve, Seq("test-reason"), answerIsMessageKey = false,
+            AnswerRow(Message("whyNoUTR.heading").withArgs(personDetails.fullName), Seq("test-reason"), answerIsMessageKey = false,
               Some(Link("site.change", onwardUrl)), Some(Message("whyNoUTR.visuallyHidden.text").withArgs(personDetails.fullName))
             )
           )

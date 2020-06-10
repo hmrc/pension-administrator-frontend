@@ -78,7 +78,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
     postCall = routes.CompanyAddressListController.onSubmit(NormalMode),
     manualInputCall = routes.CompanyPreviousAddressController.onPageLoad(NormalMode),
     addresses = addresses,
-    Message("select.previous.address.heading", Message("theCompany").resolve),
+    Message("select.previous.address.heading", Message("theCompany")),
     Message("select.previous.address.heading", companyName),
     Message("select.address.hint.text"),
     Message("manual.entry.link")

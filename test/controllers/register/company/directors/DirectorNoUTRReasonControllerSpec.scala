@@ -64,8 +64,8 @@ object DirectorNoUTRReasonControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorNoUTRReasonController.onSubmit(mode, index),
-      title = Message("whyNoUTR.heading", Message("theDirector").resolve).resolve,
-      heading = Message("whyNoUTR.heading", directorName).resolve,
+      title = Message("whyNoUTR.heading", Message("theDirector")),
+      heading = Message("whyNoUTR.heading", directorName),
       mode = mode,
       entityName = directorName
     )

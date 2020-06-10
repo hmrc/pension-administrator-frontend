@@ -40,7 +40,7 @@ class PartnerPhoneIdSpec extends SpecBase {
       "return answers rows with change links" in {
         val answerRows =
           Seq(
-            AnswerRow(Message("phone.title").withArgs(personDetails.fullName).resolve, Seq("1234"), answerIsMessageKey = false,
+            AnswerRow(Message("phone.title").withArgs(personDetails.fullName), Seq("1234"), answerIsMessageKey = false,
               Some(Link("site.change", onwardUrl)), Some(Message("phone.visuallyHidden.text").withArgs(personDetails.fullName))
             )
           )

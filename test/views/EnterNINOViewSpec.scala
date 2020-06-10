@@ -39,7 +39,7 @@ class EnterNINOViewSpec extends QuestionViewBehaviours[ReferenceValue] {
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = postCall,
-      title = Message(s"$messageKeyPrefix.title", Message("theCompany").resolve),
+      title = Message(s"$messageKeyPrefix.title", Message("theCompany")),
       heading = Message(s"$messageKeyPrefix.heading", name),
       mode = NormalMode,
       entityName = name
@@ -63,7 +63,7 @@ class EnterNINOViewSpec extends QuestionViewBehaviours[ReferenceValue] {
     behave like normalPageWithDynamicTitle(
       view = createView,
       messageKeyPrefix = messageKeyPrefix,
-      dynamicContent = Message("theCompany").resolve
+      dynamicContent = Message("theCompany")
     )
 
     behave like pageWithTextFields(

@@ -44,7 +44,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
   private def viewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.HasCompanyVATController.onSubmit(NormalMode),
-      title = Message("hasVAT.heading", Message("theCompany").resolve),
+      title = Message("hasVAT.heading", Message("theCompany")),
       heading = Message("hasVAT.heading", companyName),
       mode = NormalMode,
       hint = None,

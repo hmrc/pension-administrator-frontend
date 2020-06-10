@@ -70,7 +70,7 @@ object IndividualEmailControllerSpec {
       title = Message("individual.email.title"),
       heading = Message("individual.email.title"),
       mode = mode,
-      entityName = Message("common.you").resolve
+      entityName = Message("common.you")
     )
 }
 

@@ -86,7 +86,7 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
     ManualAddressViewModel(
       routes.DirectorPreviousAddressController.onSubmit(NormalMode, index),
       countryOptions.options,
-      Message("enter.previous.address.heading", Message("theDirector").resolve.capitalize),
+      Message("enter.previous.address.heading", Message("theDirector")),
       Message("enter.previous.address.heading", directorName)
     )
 

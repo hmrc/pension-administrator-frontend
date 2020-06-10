@@ -60,7 +60,7 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyRegistrationNumberController.onSubmit(NormalMode),
-      title = Message("companyRegistrationNumber.heading", Message("theCompany").resolve),
+      title = Message("companyRegistrationNumber.heading", Message("theCompany")),
       heading = Message("companyRegistrationNumber.heading", companyName),
       hint = Some(Message("companyRegistrationNumber.hint")),
       mode = NormalMode,

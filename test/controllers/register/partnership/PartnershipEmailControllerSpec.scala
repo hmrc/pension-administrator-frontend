@@ -63,7 +63,7 @@ class PartnershipEmailControllerSpec extends ControllerWithCommonBehaviour {
   private def viewModel(mode: Mode)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnershipEmailController.onSubmit(mode),
-      title = Message("email.title", Message("thePartnership").resolve),
+      title = Message("email.title", Message("thePartnership")),
       heading = Message("email.title", partnershipName),
       mode = mode,
       entityName = partnershipName

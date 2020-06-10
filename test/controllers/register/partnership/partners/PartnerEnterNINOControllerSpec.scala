@@ -69,7 +69,7 @@ object PartnerEnterNINOControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerEnterNINOController.onSubmit(mode, index),
-      title = Message("enterNINO.heading", Message("thePartner").resolve),
+      title = Message("enterNINO.heading", Message("thePartner")),
       heading = Message("enterNINO.heading", partnerName),
       hint = Some(Message("enterNINO.hint")),
       mode = mode,

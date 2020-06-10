@@ -67,7 +67,7 @@ object HasDirectorUTRControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.HasDirectorUTRController.onSubmit(mode, index),
-      title = Message("hasUTR.heading", Message("theDirector").resolve),
+      title = Message("hasUTR.heading", Message("theDirector")),
       heading = Message("hasUTR.heading", directorName),
       hint = Some(Message("utr.p1")),
       mode = mode,

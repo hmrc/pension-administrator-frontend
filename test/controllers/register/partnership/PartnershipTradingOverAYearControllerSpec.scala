@@ -49,7 +49,7 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerWithCommonBeha
   private def viewModel(mode: Mode): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = PartnershipTradingOverAYearController.onSubmit(NormalMode),
-      title = Message("trading.title", Message("thePartnership").resolve),
+      title = Message("trading.title", Message("thePartnership")),
       heading = Message("trading.title", name),
       mode = NormalMode,
       hint = None,

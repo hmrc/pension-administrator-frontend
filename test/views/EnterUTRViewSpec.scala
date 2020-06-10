@@ -39,7 +39,7 @@ class EnterUTRViewSpec extends QuestionViewBehaviours[ReferenceValue] {
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = postCall,
-      title = Message(s"$messageKeyPrefix.title", Message("theCompany").resolve),
+      title = Message(s"$messageKeyPrefix.title", Message("theCompany")),
       heading = Message(s"$messageKeyPrefix.heading", name),
       mode = NormalMode,
       entityName = name
@@ -63,7 +63,7 @@ class EnterUTRViewSpec extends QuestionViewBehaviours[ReferenceValue] {
     behave like normalPageWithTitle(
       view = createView,
       messageKeyPrefix = messageKeyPrefix,
-      title = Message(s"$messageKeyPrefix.title", Message("theCompany").resolve),
+      title = Message(s"$messageKeyPrefix.title", Message("theCompany")),
       pageHeader = Message(s"$messageKeyPrefix.heading", name)
     )
 

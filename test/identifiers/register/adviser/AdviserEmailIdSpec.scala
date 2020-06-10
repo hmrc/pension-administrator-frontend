@@ -40,7 +40,7 @@ class AdviserEmailIdSpec extends SpecBase {
       "return answers rows with change links" in {
         val answerRows =
           Seq(
-            AnswerRow(Message("email.title").withArgs(personDetails).resolve, Seq("test@test.com"), answerIsMessageKey = false,
+            AnswerRow(Message("email.title").withArgs(personDetails), Seq("test@test.com"), answerIsMessageKey = false,
               Some(Link("site.change", onwardUrl)), Some(Message("email.visuallyHidden.text").withArgs(personDetails))
             )
           )

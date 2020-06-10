@@ -70,7 +70,7 @@ object PartnerEnterUTRControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerEnterUTRController.onSubmit(mode, index),
-      title = Message("enterUTR.heading", Message("thePartner").resolve),
+      title = Message("enterUTR.heading", Message("thePartner")),
       heading = Message("enterUTR.heading", partnerName),
       mode = mode,
       entityName = partnerName

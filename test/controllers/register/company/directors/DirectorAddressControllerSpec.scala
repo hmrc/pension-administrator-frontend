@@ -99,7 +99,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
   private val viewModel = ManualAddressViewModel(
     routes.DirectorAddressController.onSubmit(NormalMode, firstIndex),
     countryOptions.options,
-    Message("enter.address.heading", Message("theDirector").resolve),
+    Message("enter.address.heading", Message("theDirector")),
     Message("enter.address.heading", jonathanDoe.fullName)
   )
 

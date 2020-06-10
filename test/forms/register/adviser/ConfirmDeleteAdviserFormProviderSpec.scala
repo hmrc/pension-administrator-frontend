@@ -23,7 +23,7 @@ import viewmodels.Message
 class ConfirmDeleteAdviserFormProviderSpec extends BooleanFieldBehaviours {
 
   val adviserName = "test adviser"
-  val requiredKey: String = Message("confirmDelete.adviser.required", adviserName).resolve
+  val requiredKey: String = Message("confirmDelete.adviser.required", adviserName)
   val invalidKey = "error.boolean"
 
   val form = new ConfirmDeleteAdviserFormProvider()(adviserName)

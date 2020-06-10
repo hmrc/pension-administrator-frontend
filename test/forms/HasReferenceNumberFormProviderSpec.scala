@@ -23,7 +23,7 @@ import viewmodels.Message
 class HasReferenceNumberFormProviderSpec extends BooleanFieldBehaviours {
 
   private val companyName = "ABC"
-  private val requiredKey = Message("error.required", companyName).resolve
+  private val requiredKey = Message("error.required", companyName)
   private val invalidKey = "error.boolean"
   private val fieldName = "value"
 

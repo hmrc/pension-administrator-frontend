@@ -59,7 +59,7 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyEnterVATController.onSubmit(NormalMode),
-      title = Message("enterVAT.title", Message("theCompany").resolve),
+      title = Message("enterVAT.title", Message("theCompany")),
       heading = Message("enterVAT.heading", companyName),
       mode = NormalMode,
       entityName = companyName

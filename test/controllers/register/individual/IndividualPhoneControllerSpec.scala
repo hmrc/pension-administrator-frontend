@@ -68,7 +68,7 @@ object IndividualPhoneControllerSpec {
       title = Message("individual.phone.title"),
       heading = Message("individual.phone.title"),
       mode = mode,
-      entityName = Message("common.you").resolve
+      entityName = Message("common.you")
     )
 }
 

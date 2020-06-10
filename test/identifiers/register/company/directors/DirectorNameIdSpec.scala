@@ -83,7 +83,7 @@ class DirectorNameIdSpec extends SpecBase {
       "return answers rows with change links" in {
         val answerRows =
           Seq(
-            AnswerRow(Message("directorName.cya.label").resolve, Seq("test first test last"),
+            AnswerRow(Message("directorName.cya.label"), Seq("test first test last"),
               answerIsMessageKey = false, Some(Link("site.change", onwardUrl)),
               Some(Message("directorName.visuallyHidden.text"))
             )

@@ -72,7 +72,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
     PostcodeLookupViewModel(
       routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(NormalMode, index),
       routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index),
-      Message("previous.postcode.lookup.heading", Message("theDirector").resolve),
+      Message("previous.postcode.lookup.heading", Message("theDirector")),
       Message("previous.postcode.lookup.heading", directorName),
       Message("manual.entry.text"),
       Some(Message("manual.entry.link")),

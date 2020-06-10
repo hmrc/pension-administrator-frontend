@@ -70,7 +70,7 @@ object HasPartnerNINOControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.HasPartnerNINOController.onSubmit(mode, index),
-      title = Message("hasNINO.heading", Message("thePartner").resolve),
+      title = Message("hasNINO.heading", Message("thePartner")),
       heading = Message("hasNINO.heading", partnerName),
       mode = mode,
       entityName = partnerName

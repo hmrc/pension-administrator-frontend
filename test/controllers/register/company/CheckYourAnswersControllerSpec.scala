@@ -108,7 +108,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val mockDataCompletion = mock[DataCompletion]
-  private val defaultCompany = Message("theBusiness").resolve
+  private val defaultCompany = Message("theBusiness")
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val crn = "test-crn"
   private val vat = "test-vat"
@@ -155,11 +155,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
   private val answerRows = Seq(
     answerRow(
-      Message("businessName.heading", Message("businessType.limitedCompany").resolve.toLowerCase()).resolve,
+      Message("businessName.heading", Message("businessType.limitedCompany.lc")),
       Seq("test company")
     ),
     answerRow(
-      Message("utr.heading", Message("businessType.limitedCompany").resolve.toLowerCase()).resolve,
+      Message("utr.heading", Message("businessType.limitedCompany")),
       Seq("1111111111")
     ),
     answerRow(
@@ -211,10 +211,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultCompany))
     ),
     answerRow(
-      Message("addressYears.heading", Message("theBusiness").resolve),
+      Message("addressYears.heading", Message("theBusiness")),
       Seq(s"common.addressYears.${addressYears.toString}"), answerIsMessageKey = true,
       Some(Link(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("theBusiness").resolve))
+      visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("theBusiness")))
     ),
     answerRow(
       Message("previousAddress.checkYourAnswersLabel", defaultCompany),
@@ -243,7 +243,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
   private val answerRowsNonUK = Seq(
     answerRow(
-      Message("businessName.heading", Message("businessType.limitedCompany").resolve.toLowerCase()).resolve,
+      Message("businessName.heading", Message("businessType.limitedCompany.lc")),
       Seq("test company")
     ),
     answerRow(
@@ -259,10 +259,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultCompany))
     ),
     answerRow(
-      Message("addressYears.heading", Message("theBusiness").resolve),
+      Message("addressYears.heading", Message("theBusiness")),
       Seq(s"common.addressYears.${addressYears.toString}"), answerIsMessageKey = true,
       Some(Link(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("theBusiness").resolve))
+      visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("theBusiness")))
     ),
     answerRow(
       Message("previousAddress.checkYourAnswersLabel", defaultCompany),

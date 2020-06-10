@@ -40,7 +40,7 @@ class HasDirectorUTRIdSpec extends SpecBase {
       "return answers rows with change links" in {
         val answerRows =
           Seq(
-            AnswerRow(Message("hasUTR.heading", personDetails.fullName).resolve, Seq("site.no"), answerIsMessageKey = true,
+            AnswerRow(Message("hasUTR.heading", personDetails.fullName), Seq("site.no"), answerIsMessageKey = true,
               Some(Link("site.change", onwardUrl)), Some(Message("hasUTR.visuallyHidden.text").withArgs(personDetails.fullName))
             )
           )
