@@ -51,9 +51,7 @@
 
             @if(viewmodel.entities.isEmpty) {
                 @components.paragraph_text(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
-                <div class="subsection">
-                    @components.submit_button(Message("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
-                </div>
+                @components.submit_button(Message("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
             } else {
 
                 @components.person_list(viewmodel.entities, mode)
@@ -73,9 +71,7 @@
                     @components.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
                 }
 
-                <div class="subsection">
-                    @components.submit_button(disabled = disableSubmission)
-                </div>
+                @components.submit_button(disabled = disableSubmission)
             }
             @viewmodel.psaName.map { psaName =>
                 @components.return_link(psaName, mode)

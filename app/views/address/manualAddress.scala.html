@@ -45,12 +45,10 @@
     }
 
     @components.address(form, viewmodel.countryOptions)
-        <div class="subsection">
-            @components.submit_button("site.save_and_continue")
-        </div>
+    @components.submit_button("site.save_and_continue")
 
-        @viewmodel.psaName.map { psaName =>
-            @components.return_link(psaName, mode)
-        }
+            @viewmodel.psaName.map { psaName =>
+                @components.return_link(psaName, mode)
+            }
   }
 }

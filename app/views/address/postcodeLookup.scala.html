@@ -54,9 +54,7 @@
             <p>@Html(viewmodel.enterPostcode.withArgs(link))</p>
         </div>
 
-        <div class="subsection">
-            @components.submit_button(viewmodel.findAddressMessageKey)
-        </div>
+        @components.submit_button(viewmodel.findAddressMessageKey)
 
         @viewmodel.psaName.map { psaName =>
             @components.return_link(psaName, mode)

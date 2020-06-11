@@ -72,9 +72,7 @@
     </div>
 
     @formHelper(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {
-        <div class="subsection">
-            @components.submit_button(submitMessageKey = "site.finishAndSignOut")
-        </div>
+        @components.submit_button(submitMessageKey = "site.finishAndSignOut")
     }
 
 
