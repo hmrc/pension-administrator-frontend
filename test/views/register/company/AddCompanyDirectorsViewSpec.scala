@@ -132,7 +132,7 @@ object AddCompanyDirectorsViewSpec {
   val request: DataRequest[AnyContent] = DataRequest(
     FakeRequest(),
     "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
     UserAnswers(Json.obj())
   )
 

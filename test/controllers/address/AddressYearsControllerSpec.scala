@@ -59,7 +59,7 @@ object AddressYearsControllerSpec {
     override val allowAccess = FakeAllowAccessProvider()
 
     def request(answers: UserAnswers, fakeRequest: Request[AnyContent] = FakeRequest()): DataRequest[AnyContent] =
-      DataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+      DataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers)
 
     def onPageLoad(viewmodel: AddressYearsViewModel, answers: UserAnswers): Future[Result] = {
       implicit val req: DataRequest[AnyContent] = request(answers)

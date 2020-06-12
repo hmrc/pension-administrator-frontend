@@ -106,7 +106,7 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+      user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
       userAnswers = answers
     )
 

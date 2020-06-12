@@ -52,14 +52,14 @@ class HasCompanyCRNIdSpec extends SpecBase {
     "in normal mode" must {
       "return no rows when non uk" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().areYouInUk(false))
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().areYouInUk(false))
 
         HasCompanyCRNId.row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(Nil)
       }
 
       "return answers rows with change links when uk and have value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
             areYouInUk(true).businessType(BusinessType.UnlimitedCompany).businessName()
         .companyHasCrn(true))
 
@@ -70,7 +70,7 @@ class HasCompanyCRNIdSpec extends SpecBase {
 
       "return answers rows with add links when uk and unlimited company" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
             areYouInUk(true).businessType(BusinessType.UnlimitedCompany).businessName())
 
         HasCompanyCRNId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -80,7 +80,7 @@ class HasCompanyCRNIdSpec extends SpecBase {
 
       "return no answers rows when uk and limited company" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
             areYouInUk(true).businessType(BusinessType.LimitedCompany).businessName())
 
         HasCompanyCRNId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)

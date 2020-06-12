@@ -45,7 +45,7 @@ class AdviserEmailIdSpec extends SpecBase {
             )
           )
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers)
 
         AdviserEmailId.row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(answerRows)
       }

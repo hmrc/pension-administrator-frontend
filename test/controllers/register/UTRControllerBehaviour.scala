@@ -119,7 +119,7 @@ trait UTRControllerBehaviour extends ControllerSpecBase {
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(UserType.Individual, None, isExistingPSA = false, None),
+      user = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, ""),
       userAnswers = answers
     )
 

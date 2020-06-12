@@ -59,7 +59,7 @@ object ManualAddressControllerSpec extends SpecBase {
     override def toString = "abc"
   }
 
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
   private val testContext = "test-context"
 
   val view: manualAddress = app.injector.instanceOf[manualAddress]

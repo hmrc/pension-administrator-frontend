@@ -40,7 +40,7 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures {
   }
 
   private def optionalRequest(ua: UserAnswers) =
-    OptionalDataRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), Some(ua))
+    OptionalDataRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), Some(ua))
 
   "AllowDeclarationAction" must {
 

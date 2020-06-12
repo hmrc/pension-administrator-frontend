@@ -30,7 +30,7 @@ import views.html.register.variationNoLongerFitAndProper
 
 class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
   private val psaName: String = "Mark Wright"
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
 
   val view: variationNoLongerFitAndProper = app.injector.instanceOf[variationNoLongerFitAndProper]
 

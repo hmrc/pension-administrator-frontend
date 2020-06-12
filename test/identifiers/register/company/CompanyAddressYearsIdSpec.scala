@@ -83,7 +83,7 @@ class CompanyAddressYearsIdSpec extends SpecBase {
 
       "return answers rows with change links when have value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().companyAddressYears(AddressYears.OverAYear)
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().companyAddressYears(AddressYears.OverAYear)
         .companyContactAddress(address).businessName())
 
         CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -93,7 +93,7 @@ class CompanyAddressYearsIdSpec extends SpecBase {
 
       "return answers rows with add links when mandatory and have contact address" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers()
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers()
             .companyContactAddress(address).businessName())
 
         CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -103,7 +103,7 @@ class CompanyAddressYearsIdSpec extends SpecBase {
 
       "return no answers rows when not mandatory and not have contact address" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
 
         CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }

@@ -58,13 +58,13 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
   val requestDirectors: DataRequest[AnyContent] = DataRequest(
     FakeRequest().withFormUrlEncodedBody(
       "value" -> "true"
-    ), "cacheId", PSAUser(UserType.Individual, None, isExistingPSA = false, None),
+    ), "cacheId", PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, ""),
     UserAnswers(Json.obj("directors" -> Json.arr(Json.obj(DirectorNameId.toString -> person)),
       MoreThanTenDirectorsId.toString -> true))
   )
 
   val requestDirectorsNoValue: DataRequest[AnyContent] = DataRequest(
-    FakeRequest(), "cacheId", PSAUser(UserType.Individual, None, isExistingPSA = false, None),
+    FakeRequest(), "cacheId", PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, ""),
     UserAnswers(Json.obj("directors" -> Json.arr(Json.obj(DirectorNameId.toString -> person)),
       MoreThanTenDirectorsId.toString -> true))
   )
@@ -72,13 +72,13 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
   val requestPartners: DataRequest[AnyContent] = DataRequest(
     FakeRequest().withFormUrlEncodedBody(
       "value" -> "true"
-    ), "cacheId", PSAUser(UserType.Individual, None, isExistingPSA = false, None),
+    ), "cacheId", PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, ""),
     UserAnswers(Json.obj("partners" -> Json.arr(Json.obj(PartnerNameId.toString -> person)),
       MoreThanTenDirectorsId.toString -> true))
   )
 
   val requestPartnersNoValue: DataRequest[AnyContent] = DataRequest(
-    FakeRequest(), "cacheId", PSAUser(UserType.Individual, None, isExistingPSA = false, None),
+    FakeRequest(), "cacheId", PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, ""),
     UserAnswers(Json.obj("partners" -> Json.arr(Json.obj(PartnerNameId.toString -> person)),
       MoreThanTenDirectorsId.toString -> true))
   )

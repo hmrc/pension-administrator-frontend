@@ -70,11 +70,11 @@ object PostcodeLookupControllerSpec extends SpecBase {
     override val allowAccess = FakeAllowAccessProvider()
 
     def onPageLoad(viewmodel: PostcodeLookupViewModel, answers: UserAnswers): Future[Result] =
-      get(viewmodel, NormalMode)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+      get(viewmodel, NormalMode)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers))
 
     def onSubmit(viewmodel: PostcodeLookupViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
       post(FakeIdentifier, viewmodel, NormalMode, invalidError)(DataRequest(request,
-        "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers))
+        "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers))
 
     private val invalidError: Message = "foo"
 

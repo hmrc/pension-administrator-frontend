@@ -51,7 +51,7 @@ class PartnerPreviousAddressIdSpec extends SpecBase {
             visuallyHiddenText = Some(Message("previousAddress.visuallyHidden.text").withArgs(personDetails.fullName))
           ))
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), answers)
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers)
 
         PartnerPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(answerRows)
       }

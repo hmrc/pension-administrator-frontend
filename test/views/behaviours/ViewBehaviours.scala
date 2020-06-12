@@ -49,7 +49,6 @@ trait ViewBehaviours extends ViewSpecBase {
   def normalPageWithPageTitleCheck(view: () => HtmlFormat.Appendable,
                                    messageKeyPrefix: String,
                                    expectedGuidanceKeys: String*): Unit = {
-
     "behave like a normal page" when {
       "rendered" must {
         "have the correct banner title" in {

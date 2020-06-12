@@ -32,11 +32,21 @@ case class FakeAuthAction(userType: UserType, psaId:String = "test psa id") exte
 }
 
 object FakeAuthAction extends AuthAction {
+  val externalId: String = "id"
+  private val defaultPsaId: String = "A0000000"
+  private val defaultUserId: String = "user-id"
+  def apply(): AuthAction = {
+    new AuthAction {
+      val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+      implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+      override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
+        block(AuthenticatedRequest(request, externalId, PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some(defaultPsaId))))
+    }
+  }
 
   val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
   implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
     block(AuthenticatedRequest(request, externalId, PSAUser(UserType.Organisation, None, isExistingPSA = false, Some("test Psa id"))))
 
-  val externalId: String = "id"
 }

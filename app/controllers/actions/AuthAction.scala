@@ -54,10 +54,12 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
       Retrievals.externalId and
         Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
-        Retrievals.allEnrolments) {
-      case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments =>
+        Retrievals.allEnrolments and
+        Retrievals.credentials
+    ) {
+      case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) =>
         redirectToInterceptPages(enrolments, affinityGroup).fold {
-          val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, None, enrolments))
+          val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, None, enrolments, credentials.providerId))
           successRedirect(affinityGroup, cl, enrolments, authRequest, block)
         } { result => Future.successful(result) }
       case _ =>
@@ -201,9 +203,9 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   }
 
   protected def psaUser(cl: ConfidenceLevel, affinityGroup: AffinityGroup,
-                        nino: Option[String], enrolments: Enrolments): PSAUser = {
+                        nino: Option[String], enrolments: Enrolments, userId: String): PSAUser = {
     val psa = existingPSA(enrolments)
-    PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa)
+    PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa, None, userId)
   }
 
   protected def getPSAId(enrolments: Enrolments): String =

@@ -58,7 +58,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
           implicit val request: DataRequest[AnyContent] = DataRequest(
             FakeRequest(),
             externalId,
-            PSAUser(UserType.Individual, Some(nino), isExistingPSA = false, None),
+            PSAUser(UserType.Individual, Some(nino), isExistingPSA = false, None, None, ""),
             UserAnswers(Json.obj(
               ConfirmCompanyAddressId.toString -> TolerantAddress(
                 Some("1 Street"),
@@ -98,7 +98,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             implicit val request: DataRequest[AnyContent] = DataRequest(
               FakeRequest(),
               externalId,
-              PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+              PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
               UserAnswers(Json.obj(
                 ConfirmCompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
@@ -135,7 +135,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             implicit val request: DataRequest[AnyContent] = DataRequest(
               FakeRequest(),
               externalId,
-              PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+              PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
               UserAnswers(Json.obj(
                 PartnershipRegisteredAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
@@ -173,7 +173,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             implicit val request: DataRequest[AnyContent] = DataRequest(
               FakeRequest(),
               externalId,
-              PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+              PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
               UserAnswers(Json.obj(
                 ConfirmCompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),
@@ -210,7 +210,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             implicit val request: DataRequest[AnyContent] = DataRequest(
               FakeRequest(),
               externalId,
-              PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+              PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
               UserAnswers(Json.obj(
                 CompanyAddressId.toString -> TolerantAddress(
                   Some("1 Street"),

@@ -37,7 +37,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
 
     "allow access to pages for user with no enrolment and Normal mode" in {
       val action = new TestAllowAccessAction(NormalMode)
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None)))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, "")))
 
       whenReady(futureResult) { result =>
 
@@ -47,7 +47,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
 
     "allow access to pages for user with no enrolment and Check mode" in {
       val action = new TestAllowAccessAction(CheckMode)
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None)))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, "")))
 
       whenReady(futureResult) { result =>
 
@@ -68,7 +68,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
 
     "redirect to SessionExpiredPage for user with no enrolment and UpdateMode" in {
       val action = new TestAllowAccessAction(UpdateMode)
-      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None)))
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, "")))
 
       whenReady(futureResult) { result =>
 

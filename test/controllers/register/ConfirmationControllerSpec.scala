@@ -43,7 +43,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
   private val psaEmail: String = "test@test.com"
   private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private def onwardRoute = controllers.routes.LogoutController.onPageLoad()
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
 
   val view: confirmation = app.injector.instanceOf[confirmation]
 

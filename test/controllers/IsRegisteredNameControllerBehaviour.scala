@@ -123,7 +123,7 @@ object IsRegisteredNameControllerBehaviour extends SpecBase {
     DataRequest(
       request = request,
       externalId = "test-external-id",
-      user = PSAUser(userType = UserType.Individual, nino = None, isExistingPSA = false, existingPSAId = None),
+      user = PSAUser(userType = UserType.Individual, nino = None, isExistingPSA = false, existingPSAId = None, None, ""),
       userAnswers = answers
     )
 

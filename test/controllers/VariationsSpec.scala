@@ -32,7 +32,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
 
 class VariationsSpec extends ControllerSpecBase {
-  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
 
   val testId: TypedIdentifier[Address] = new TypedIdentifier[Address] {
     override def toString = "testId"

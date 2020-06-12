@@ -42,7 +42,7 @@ import play.api.test.CSRFTokenHelper.addCSRFToken
 class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers())
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
   implicit val request: DataRequest[AnyContent] =
     DataRequest(fakeRequest, "", PSAUser(UserType.Individual, None, isExistingPSA = false, None, None), UserAnswers())
   private val formProvider = new PostCodeLookupFormProvider()

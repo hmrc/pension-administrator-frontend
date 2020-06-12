@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-import connectors.cache.{PensionAdminDataCacheConnector, UserAnswersCacheConnector}
-import play.api.inject.{Binding, Module}
-import play.api.{Configuration, Environment}
+import connectors.cache.PensionAdminDataCacheConnector
+import connectors.cache.UserAnswersCacheConnector
+import play.api.inject.Binding
+import play.api.inject.Module
+import play.api.Configuration
+import play.api.Environment
 
 class DataCacheModule extends Module {
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {

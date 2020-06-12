@@ -33,7 +33,7 @@ class DirectorNoUTRReasonIdSpec extends SpecBase {
 
       "return answers rows with change links when have value" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().directorNoUTRReason(0, "no reason").
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorNoUTRReason(0, "no reason").
             directorName(0, PersonName("first", "last")))
 
         DirectorNoUTRReasonId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
@@ -44,7 +44,7 @@ class DirectorNoUTRReasonIdSpec extends SpecBase {
 
       "return answers rows with add links when has utr is false but no utr reason" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None),
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
           UserAnswers().directorHasUTR(0, flag = false).
             directorName(0, PersonName("first", "last")))
 
@@ -55,7 +55,7 @@ class DirectorNoUTRReasonIdSpec extends SpecBase {
 
       "return no answers rows when has utr is true" in {
         val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None), UserAnswers().directorHasUTR(0, flag = true)
+          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorHasUTR(0, flag = true)
             directorName(0, PersonName("first", "last")))
 
         DirectorNoUTRReasonId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)

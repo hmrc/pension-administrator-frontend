@@ -15,8 +15,9 @@
  */
 
 import com.google.inject.AbstractModule
-import controllers.actions.{AuthAction, FullAuthentication, _}
+import controllers.actions.{FullAuthentication, AuthAction, _}
 import utils.Navigator
+import utils.annotations.PsaDeRegistration
 import utils.annotations._
 import utils.countryOptions.{CountryOptions, CountryOptionsEUAndEEA}
 import utils.navigators._
@@ -73,5 +74,10 @@ class PODSModule extends AbstractModule {
 
     bind(classOf[AllowDeclarationActionProvider])
       .to(classOf[AllowDeclarationActionProviderImpl])
+
+
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[PsaDeRegistration])
+      .to(classOf[PsaDeRegistrationNavigator])
   }
 }

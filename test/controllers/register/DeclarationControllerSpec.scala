@@ -23,28 +23,29 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.partnership.PartnershipEmailId
-import identifiers.register.{BusinessNameId, PsaSubscriptionResponseId, RegistrationInfoId, _}
+import identifiers.register.{PsaSubscriptionResponseId, RegistrationInfoId, BusinessNameId, _}
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
 import models.UserType.UserType
-import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse}
+import models.register.{KnownFacts, DeclarationWorkingKnowledge, PsaSubscriptionResponse, KnownFact}
 import models.requests.DataRequest
-import models.{BusinessDetails, NormalMode, RegistrationInfo, UserType}
+import models.{UserType, NormalMode, BusinessDetails, RegistrationInfo}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString, Json, Writes}
+import play.api.libs.json.{JsString, Writes, Json, JsObject}
 import play.api.mvc.AnyContent
+import play.api.mvc.RequestHeader
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, Upstream4xxResponse}
+import uk.gov.hmrc.http.{HttpResponse, HeaderCarrier, BadRequestException, Upstream4xxResponse, HttpException}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
+import utils.{FakeNavigator, UserAnswers, KnownFactsRetrieval}
 import views.html.register.declaration
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
@@ -207,6 +208,9 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
     new TaxEnrolmentsConnector {
+      override def deEnrol(groupId: String, psaId:String, userId: String)
+                          (implicit hc: HeaderCarrier, ec: ExecutionContext, rh:RequestHeader): Future[HttpResponse] = ???
+
       override def enrol(enrolmentKey: String, knownFacts: KnownFacts
                         )(implicit w: Writes[KnownFacts],
                           hc: HeaderCarrier,

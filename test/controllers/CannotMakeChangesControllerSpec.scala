@@ -17,10 +17,10 @@
 package controllers
 
 import controllers.actions._
+import controllers.deregister.ConfirmStopBeingPsaControllerSpec.viewAsString
 import identifiers.register.individual.IndividualDetailsId
 import models._
 import models.requests.DataRequest
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -29,7 +29,7 @@ import views.html.cannotMakeChanges
 
 class CannotMakeChangesControllerSpec extends ControllerSpecBase {
   private val psaName: String = "Mark Wright"
-  private val psaUser = PSAUser(UserType.Individual, None, false, None)
+  private val psaUser = PSAUser(UserType.Individual, None, false, None, None, "")
 
   private val individual = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
     RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
@@ -43,6 +43,7 @@ class CannotMakeChangesControllerSpec extends ControllerSpecBase {
       val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
+
       contentAsString(result) mustBe viewAsString(individual)
     }
 
