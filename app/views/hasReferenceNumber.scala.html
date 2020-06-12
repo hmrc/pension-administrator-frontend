@@ -37,16 +37,13 @@ formHelper: FormWithCSRF
 
         @components.error_summary(form.errors)
         <div class="form-group @if(form.hasErrors){form-group--error}">
-        @viewmodel.hint.map{ hint =>
-            @components.heading(viewmodel.heading)
-            <p>@messages(hint)</p>
-        }
 
         @components.input_yes_no(
             field = form(viewmodel.formFieldName.fold("value")(identity)),
             label = viewmodel.heading,
             labelClass = Some("visually-hidden"),
-            headingIsLegend = viewmodel.hint.isEmpty
+            paragraphText = viewmodel.hint,
+            headingIsLegend = true
         )
         </div>
         @components.submit_button(submitMessageKey = "site.save_and_continue")

@@ -36,14 +36,13 @@
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
         <div class="form-group @if(form.hasErrors){form-group--error}">
-            @components.heading(messages(viewModel.heading))
-
-            @components.paragraph_text(messages(viewModel.hint))
 
             @components.input_yes_no(
                 field = form("value"),
                 label = messages(viewModel.heading),
-                labelClass = Some("visually-hidden")
+                labelClass = Some("visually-hidden"),
+                paragraphText = Some(messages(viewModel.hint)),
+                headingIsLegend = true
             )
         </div>
         @components.submit_button("site.save_and_continue")

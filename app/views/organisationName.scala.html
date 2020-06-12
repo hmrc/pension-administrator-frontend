@@ -36,12 +36,12 @@
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
         <div class="form-group @if(form.hasErrors){form-group--error}">
-            @components.heading(messages(viewModel.heading), "heading-xlarge", None)
 
             @components.input_text(
                 field = form("value"),
                 label = messages(viewModel.heading),
-                labelClass = Some("visually-hidden")
+                labelClass = Some("visually-hidden"),
+                headingIsLegend = true
             )
         </div>
 

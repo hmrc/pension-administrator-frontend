@@ -42,15 +42,14 @@
         @components.error_summary(form.errors)
 
         <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(viewModel.heading)
-
-        @components.paragraph_text(messages("enterVAT.paragraph", viewModel.entityName))
 
         @components.input_text(
             field = form("value"),
             label = viewModel.heading,
             labelClass = Some("visually-hidden"),
-            hint = viewModel.hint
+            hint = viewModel.hint,
+            paragraphText = Some(messages("enterVAT.paragraph", viewModel.entityName)),
+            headingIsLegend = true
         )
         </div>
         @components.submit_button("site.save_and_continue")
