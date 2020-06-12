@@ -15,6 +15,7 @@
  *@
 
 @(submitMessageKey: String = "site.continue", disabled: Boolean = false)(implicit messages: Messages)
-
+<div class="subsection">
     <button id="submit" class="button" @if(disabled) {disabled}>@messages(submitMessageKey)</button>
+</div>
 

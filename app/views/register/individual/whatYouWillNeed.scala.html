@@ -42,9 +42,7 @@
     <div id="hintText" class="panel panel-border-wide"><p>@messages("whatYouWillNeed.main.body.hint")</p></div>
 
     @formHelper(action = controllers.register.individual.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
-        <div class="subsection">
             @components.submit_button("site.continue")
-        </div>
     }
 
 }

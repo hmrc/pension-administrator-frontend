@@ -40,9 +40,7 @@
     </ul>
 
     @formHelper(action = controllers.register.company.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
-        <div class="subsection">
             @components.submit_button("site.continue")
-        </div>
     }
 
 }

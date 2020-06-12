@@ -53,9 +53,7 @@
 
     </ol>
 
-    <div class="subsection">
-        @components.button_link("site.agreeAndContinue", href.url, "submit")
-    </div>
+    @components.button_link("site.agreeAndContinue", href.url, "submit")
 
     @psaNameOpt.map { psaName =>
         @components.return_link(psaName, UpdateMode)
