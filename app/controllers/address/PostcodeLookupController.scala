@@ -105,6 +105,6 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
 
 
   protected def formWithError(message: Message)(implicit request: DataRequest[AnyContent]): Form[String] = {
-    form.withError("value", message.resolve)
+    form.withError("value", message)
   }
 }

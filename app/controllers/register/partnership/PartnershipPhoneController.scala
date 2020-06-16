@@ -61,12 +61,12 @@ class PartnershipPhoneController @Inject()(@Partnership val navigator: Navigator
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).fold(Message("thePartnership").resolve)(identity)
+    request.userAnswers.get(BusinessNameId).fold(Message("thePartnership"))(identity)
 
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnershipPhoneController.onSubmit(mode),
-      title = Message("phone.title", Message("thePartnership").resolve),
+      title = Message("phone.title", Message("thePartnership")),
       heading = Message("phone.title", entityName),
       mode = mode,
       entityName = entityName

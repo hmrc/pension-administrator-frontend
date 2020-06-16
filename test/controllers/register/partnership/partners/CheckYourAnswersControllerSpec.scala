@@ -103,7 +103,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private val index = Index(0)
   private val partnerDetails = PersonName("Test", "Name")
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val defaultPartnerName = Message("thePartner").resolve
+  private val defaultPartnerName = Message("thePartner")
   private val nino = ReferenceValue("AB100100A")
   private val reason = "test reason"
   private val utr = ReferenceValue("1111111111")

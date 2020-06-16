@@ -260,7 +260,8 @@ object ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
     mode = NormalMode
   )
 
-  private def errorMessage(implicit messages: Messages): String = Message("confirmPreviousAddress.error", "Test name").resolve
+  private def errorMessage(implicit messages: Messages): String =
+    messages("confirmPreviousAddress.error", "Test name")
 
 
 }

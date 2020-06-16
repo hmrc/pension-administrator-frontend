@@ -66,7 +66,7 @@ object DirectorEnterNINOControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorEnterNINOController.onSubmit(mode, index),
-      title = Message("enterNINO.heading", Message("theDirector").resolve),
+      title = Message("enterNINO.heading", Message("theDirector")),
       heading = Message("enterNINO.heading", directorName),
       hint = Some(Message("enterNINO.hint")),
       mode = mode,

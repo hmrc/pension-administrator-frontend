@@ -66,7 +66,7 @@ object AdviserEmailControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.AdviserEmailController.onSubmit(mode),
-      title = Message("email.title", Message("theAdviser").resolve),
+      title = Message("email.title", Message("theAdviser")),
       heading = Message("email.title", adviserName),
       mode = mode,
       entityName = adviserName

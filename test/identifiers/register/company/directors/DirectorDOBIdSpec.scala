@@ -42,7 +42,7 @@ class DirectorDOBIdSpec extends SpecBase {
       "return answers rows with change links" in {
         val answerRows =
         Seq(
-          AnswerRow(Message("dob.heading").withArgs(personDetails.fullName).resolve, Seq(DateHelper.formatDate(LocalDate.now())),
+          AnswerRow(Message("dob.heading").withArgs(personDetails.fullName), Seq(DateHelper.formatDate(LocalDate.now())),
             answerIsMessageKey = false, Some(Link("site.change", onwardUrl)),
             Some(Message("dob.visuallyHidden.text").withArgs(personDetails.fullName))
           )

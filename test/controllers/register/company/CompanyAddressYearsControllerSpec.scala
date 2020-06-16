@@ -76,7 +76,7 @@ object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSp
 
   val viewModel = AddressYearsViewModel(
     CompanyAddressYearsController.onSubmit(NormalMode),
-    title = Message("addressYears.heading", Message("theCompany").resolve),
+    title = Message("addressYears.heading", Message("theCompany")),
     heading = Message("addressYears.heading", companyName),
     legend = Message("addressYears.heading", companyName)
   )

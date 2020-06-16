@@ -198,7 +198,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       changeUrl = changeUrlContactAddress
     ),
     answerRow(
-      Message("individualAddressYears.title", "Joe Bloggs").resolve,
+      Message("individualAddressYears.title", "Joe Bloggs"),
       Seq(s"common.addressYears.${addressYears.toString}"),
       answerIsMessageKey = true,
       Some(Link(controllers.register.individual.routes.IndividualAddressYearsController.onPageLoad(CheckMode).url)),

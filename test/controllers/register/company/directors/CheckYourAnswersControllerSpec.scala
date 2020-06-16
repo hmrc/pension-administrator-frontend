@@ -139,7 +139,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private val index = Index(0)
   private val directorName = PersonName("Test", "Name")
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val defaultDirectorName = Message("theDirector").resolve
+  private val defaultDirectorName = Message("theDirector")
 
   private def call(mode: Mode): Call = CheckYourAnswersController.onSubmit(mode, index)
 

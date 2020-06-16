@@ -71,7 +71,7 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
       createViewUsingForm(Seq(johnDoe)),
       messageKeyPrefix,
       viewModel(Seq(johnDoe)).postCall.url,
-      Message("addEntity.addYesNo", entityTypeSingular).resolve
+      messages("addEntity.addYesNo", entityTypeSingular)
     )
 
     val partners: Seq[Person] = Seq(johnDoe, joeBloggs)
@@ -113,7 +113,7 @@ class AddEntityViewSpec extends YesNoViewBehaviours with PeopleListBehaviours {
       val doc = asDocument(createViewUsingForm()(form))
       val submit = doc.select("button#submit")
       submit.size() mustBe 1
-      submit.first().text() mustBe Message("addEntity.addAnEntity", entityTypeSingular).resolve
+      submit.first().text() mustBe messages("addEntity.addAnEntity", entityTypeSingular)
     }
 
     "show the add partner hint when there are zero partners" in {

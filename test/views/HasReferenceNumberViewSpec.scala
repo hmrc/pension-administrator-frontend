@@ -46,7 +46,7 @@ class HasReferenceNumberViewSpec extends YesNoViewBehaviours {
 
     def apply(errorKey: String, name: String)(implicit messages: Messages): Form[Boolean] =
       Form(
-        "value" -> boolean(Message(errorKey, name).resolve)
+        "value" -> boolean(Message(errorKey, name))
       )
   }
 

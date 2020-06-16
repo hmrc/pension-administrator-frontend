@@ -69,8 +69,8 @@ object PartnerNoNINOReasonControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerNoNINOReasonController.onSubmit(mode, index),
-      title = Message("whyNoNINO.heading", Message("thePartner").resolve).resolve,
-      heading = Message("whyNoNINO.heading", partnerName).resolve,
+      title = Message("whyNoNINO.heading", Message("thePartner")),
+      heading = Message("whyNoNINO.heading", partnerName),
       mode = mode,
       entityName = partnerName
     )

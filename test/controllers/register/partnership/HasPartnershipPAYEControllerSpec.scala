@@ -69,7 +69,7 @@ object HasPartnershipPAYEControllerSpec {
   private def viewModel(mode: Mode)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.HasPartnershipPAYEController.onSubmit(mode),
-      title = Message("hasPAYE.heading", Message("thePartnership").resolve),
+      title = Message("hasPAYE.heading", Message("thePartnership")),
       heading = Message("hasPAYE.heading", partnershipName),
       hint = Some(Message("hasPAYE.hint")),
       mode = mode,

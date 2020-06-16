@@ -60,7 +60,7 @@ class HasPartnershipPAYEController @Inject()(override val appConfig: FrontendApp
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider("hasPAYE.error.required", partnershipName)
 
   private def partnershipName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

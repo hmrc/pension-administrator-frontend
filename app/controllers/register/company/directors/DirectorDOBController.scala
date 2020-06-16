@@ -50,7 +50,7 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
                                    directorName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorDOBController.onSubmit(mode, index),
-      title = Message("dob.heading", Message("theDirector").resolve),
+      title = Message("dob.heading", Message("theDirector")),
       heading = Message("dob.heading", directorName),
       None,
       None,

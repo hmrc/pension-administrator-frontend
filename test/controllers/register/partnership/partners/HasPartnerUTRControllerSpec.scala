@@ -69,7 +69,7 @@ object HasPartnerUTRControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.HasPartnerUTRController.onSubmit(mode, index),
-      title = Message("hasUTR.heading", Message("thePartner").resolve),
+      title = Message("hasUTR.heading", Message("thePartner")),
       heading = Message("hasUTR.heading", partnerName),
       hint = Some(Message("utr.p1")),
       mode = mode,

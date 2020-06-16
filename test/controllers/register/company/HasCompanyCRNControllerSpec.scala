@@ -45,7 +45,7 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
   private def viewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.HasCompanyCRNController.onSubmit(NormalMode),
-      title = Message("hasCompanyNumber.heading", Message("theCompany").resolve),
+      title = Message("hasCompanyNumber.heading", Message("theCompany")),
       heading = Message("hasCompanyNumber.heading", companyName),
       mode = NormalMode,
       hint = Some(Message("hasCompanyNumber.hint")),

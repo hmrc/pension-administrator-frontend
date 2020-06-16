@@ -61,7 +61,7 @@ class PartnershipContactAddressListController @Inject()(
         routes.PartnershipContactAddressListController.onSubmit(mode),
         routes.PartnershipContactAddressController.onPageLoad(mode),
         addresses,
-        Message("select.address.heading", Message("thePartnership").resolve),
+        Message("select.address.heading", Message("thePartnership")),
         Message("select.address.heading", entityName),
         psaName = psaName()
       )

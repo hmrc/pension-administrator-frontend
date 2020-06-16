@@ -67,7 +67,7 @@ object PartnershipPhoneControllerSpec {
   private def viewModel(mode: Mode)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnershipPhoneController.onSubmit(mode),
-      title = Message("phone.title", Message("thePartnership").resolve),
+      title = Message("phone.title", Message("thePartnership")),
       heading = Message("phone.title", partnershipName),
       mode = mode,
       entityName = partnershipName

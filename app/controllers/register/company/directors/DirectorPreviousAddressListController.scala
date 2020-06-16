@@ -70,7 +70,7 @@ class DirectorPreviousAddressListController @Inject()(override val appConfig: Fr
         postCall = routes.DirectorPreviousAddressListController.onSubmit(mode, index),
         manualInputCall = routes.DirectorPreviousAddressController.onPageLoad(mode, index),
         addresses = addresses,
-        Message("select.previous.address.heading", Message("theDirector").resolve),
+        Message("select.previous.address.heading", Message("theDirector")),
         Message("select.previous.address.heading", entityName(index)),
         Message("select.address.hint.text"),
         Message("manual.entry.link"),

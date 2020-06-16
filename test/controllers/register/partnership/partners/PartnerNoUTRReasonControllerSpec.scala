@@ -68,8 +68,8 @@ object PartnerNoUTRReasonControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerNoUTRReasonController.onSubmit(mode, index),
-      title = Message("whyNoUTR.heading", Message("thePartner").resolve).resolve,
-      heading = Message("whyNoUTR.heading", partnerName).resolve,
+      title = Message("whyNoUTR.heading", Message("thePartner")),
+      heading = Message("whyNoUTR.heading", partnerName),
       mode = mode,
       entityName = partnerName
     )

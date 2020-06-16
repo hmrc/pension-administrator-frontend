@@ -64,7 +64,7 @@ class PartnerPhoneController @Inject()(@PartnershipPartner val navigator: Naviga
   private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerPhoneController.onSubmit(mode, index),
-      title = Message("phone.title", Message("thePartner").resolve),
+      title = Message("phone.title", Message("thePartner")),
       heading = Message("phone.title", partnerName),
       mode = mode,
       entityName = partnerName

@@ -85,7 +85,7 @@ class DirectorPreviousAddressListControllerSpec extends ControllerSpecBase {
       postCall = routes.DirectorPreviousAddressListController.onSubmit(NormalMode, firstIndex),
       manualInputCall = routes.DirectorPreviousAddressController.onPageLoad(NormalMode, firstIndex),
       addresses = addresses,
-      Message("select.previous.address.heading", Message("theDirector").resolve),
+      Message("select.previous.address.heading", Message("theDirector")),
       Message("select.previous.address.heading", director.fullName),
       Message("select.address.hint.text"),
       Message("manual.entry.link")

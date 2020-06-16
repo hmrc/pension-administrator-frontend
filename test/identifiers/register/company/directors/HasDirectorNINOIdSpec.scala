@@ -77,7 +77,7 @@ class HasDirectorNINOIdSpec extends SpecBase {
       "return answers rows with change links" in {
         val answerRows =
         Seq(
-          AnswerRow(Message("hasNINO.heading", personDetails.fullName).resolve, Seq("site.no"), answerIsMessageKey = true,
+          AnswerRow(Message("hasNINO.heading", personDetails.fullName), Seq("site.no"), answerIsMessageKey = true,
             Some(Link("site.change", onwardUrl)), Some(Message("hasNINO.visuallyHidden.text").withArgs(personDetails.fullName))
           )
         )

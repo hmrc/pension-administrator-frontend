@@ -56,7 +56,7 @@ class PartnerEnterNINOIdSpec extends SpecBase {
       "return answers rows with change links" in {
         val answerRows =
           Seq(
-            AnswerRow(Message("enterNINO.heading").withArgs(personDetails.fullName).resolve, Seq("test-nino"), answerIsMessageKey = false,
+            AnswerRow(Message("enterNINO.heading").withArgs(personDetails.fullName), Seq("test-nino"), answerIsMessageKey = false,
               Some(Link("site.change", onwardUrl)), Some(Message("enterNINO.visuallyHidden.text").withArgs(personDetails.fullName))
             )
           )

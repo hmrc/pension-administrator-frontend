@@ -32,7 +32,7 @@ class AddressYearsViewSpec extends ViewBehaviours {
 
   val form = new AddressYearsFormProvider()("error")
   val name = "Name"
-  val title = Message("addressYears.heading", Message("theCompany").resolve)
+  val title = Message("addressYears.heading", Message("theCompany"))
   val heading = Message("addressYears.heading", name)
   val viewmodel = AddressYearsViewModel(
     postCall = Call("GET", "www.example.com"),

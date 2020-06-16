@@ -69,7 +69,7 @@ class PartnerNoNINOReasonController @Inject()(@PartnershipPartner val navigator:
   private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerNoNINOReasonController.onSubmit(mode, index),
-      title = Message("whyNoNINO.heading", Message("thePartner").resolve),
+      title = Message("whyNoNINO.heading", Message("thePartner")),
       heading = Message("whyNoNINO.heading", partnerName),
       mode = mode,
       entityName = partnerName

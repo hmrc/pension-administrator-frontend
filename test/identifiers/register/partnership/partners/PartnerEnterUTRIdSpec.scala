@@ -52,7 +52,7 @@ class PartnerEnterUTRIdSpec extends SpecBase {
       "return answers rows with change links" in {
         val answerRows =
           Seq(
-            AnswerRow(Message("enterUTR.heading").withArgs(personDetails.fullName).resolve, Seq("test-UTR"), answerIsMessageKey = false,
+            AnswerRow(Message("enterUTR.heading").withArgs(personDetails.fullName), Seq("test-UTR"), answerIsMessageKey = false,
               Some(Link("site.change", onwardUrl)), Some(Message("enterUTR.visuallyHidden.text").withArgs(personDetails.fullName))
             )
           )

@@ -69,7 +69,7 @@ object HasDirectorNINOControllerSpec {
   private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
     CommonFormWithHintViewModel(
       postCall = routes.HasDirectorNINOController.onSubmit(mode, index),
-      title = Message("hasNINO.heading", Message("theDirector").resolve),
+      title = Message("hasNINO.heading", Message("theDirector")),
       heading = Message("hasNINO.heading", directorName),
       mode = mode,
       entityName = directorName

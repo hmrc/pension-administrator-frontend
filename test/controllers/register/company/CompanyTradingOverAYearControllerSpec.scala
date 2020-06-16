@@ -43,7 +43,7 @@ class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
   private def viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = CompanyTradingOverAYearController.onSubmit(NormalMode),
-      title = Message("trading.title", Message("theCompany").resolve),
+      title = Message("trading.title", Message("theCompany")),
       heading = Message("trading.title", companyName),
       mode = NormalMode,
       hint = None,

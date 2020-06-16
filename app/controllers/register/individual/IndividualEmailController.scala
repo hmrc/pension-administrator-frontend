@@ -58,15 +58,12 @@ class IndividualEmailController @Inject()(@Individual val navigator: Navigator,
       post(IndividualEmailId, mode, form, viewModel(mode))
   }
 
-  private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(IndividualDetailsId).fold(Message("theIndividual").resolve)(_.fullName)
-
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.IndividualEmailController.onSubmit(mode),
       title = Message("individual.email.title"),
       heading = Message("individual.email.title"),
       mode = mode,
-      entityName = Message("common.you").resolve
+      entityName = Message("common.you")
     )
 }

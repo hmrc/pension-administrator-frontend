@@ -517,6 +517,15 @@ nonUKBusinessType.heading = What is the business registered as?
 nonUKBusinessType.company = Company
 nonUKBusinessType.businessPartnership = Partnership
 
+businessType.limitedCompany.lc = limited company
+businessType.businessPartnership.lc = business partnership
+businessType.limitedPartnership.lc = limited partnership
+businessType.limitedLiabilityPartnership.lc = limited liability partnership
+businessType.unlimitedCompany.lc = unlimited company
+businessType.overseasCompany.lc = overseas company
+nonUKBusinessType.company.lc = company
+nonUKBusinessType.businessPartnership.lc = partnership
+
 companyAddress.title = Company address
 companyAddress.heading = Company address
 companyAddress.error.required = Select yes if this is the registered address
