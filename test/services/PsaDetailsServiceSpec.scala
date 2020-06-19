@@ -187,7 +187,6 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
     mockSubscriptionConnector,
     countryOptions,
     cacheConnector,
-    stubMessagesControllerComponents(),
     mockDataCompletion
   )
 

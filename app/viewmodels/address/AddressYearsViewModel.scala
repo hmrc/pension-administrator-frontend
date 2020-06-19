@@ -21,11 +21,9 @@ import play.api.mvc.Call
 import utils.InputOption
 import viewmodels.Message
 
-case class AddressYearsViewModel(
-                                  postCall: Call,
-                                  title: Message,
-                                  heading: Message,
-                                  legend: Message,
-                                  inputs: Seq[InputOption] = AddressYears.options,
-                                  psaName: Option[String] = None
-                                )
+case class AddressYearsViewModel(postCall: Call,
+                                 title: Message,
+                                 heading: Message,
+                                 legend: Message,
+                                 inputs: Seq[InputOption] = AddressYears.options,
+                                 psaName: Option[String] = None)

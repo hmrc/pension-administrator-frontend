@@ -26,7 +26,7 @@ import identifiers.register._
 import javax.inject.Inject
 import models._
 import models.register.DeclarationWorkingKnowledge
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Variations
@@ -45,7 +45,8 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                                                pensionsSchemeConnector: PensionsSchemeConnector,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: variationDeclaration
-                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                              )(implicit val executionContext: ExecutionContext)
+                                                extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

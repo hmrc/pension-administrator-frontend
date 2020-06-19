@@ -46,7 +46,8 @@ class ConfirmDeleteAdviserController @Inject()(val appConfig: FrontendAppConfig,
                                                @annotations.Variations navigator: Navigator,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: confirmDelete
-                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals with Variations {
+                                              )(implicit val executionContext: ExecutionContext)
+                                                extends FrontendBaseController with I18nSupport with Retrievals with Variations {
 
   private def viewModel(name: String)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
     routes.ConfirmDeleteAdviserController.onSubmit(),

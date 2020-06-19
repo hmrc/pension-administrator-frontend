@@ -21,17 +21,16 @@ import connectors.SubscriptionConnector
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.register._
 import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
-import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
+import identifiers.register.company.{ExistingCurrentAddressId => CompanyExistingCurrentAddressId, _}
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
-import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId, ExistingCurrentAddressId => PartnershipExistingCurrentAddressId}
+import identifiers.register.partnership.{ExistingCurrentAddressId => PartnershipExistingCurrentAddressId, _}
 import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import models.requests.OptionalDataRequest
 import play.api.i18n.Messages
 import play.api.libs.json._
-import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
@@ -43,18 +42,23 @@ import scala.concurrent.{ExecutionContext, Future}
 @ImplementedBy(classOf[PsaDetailServiceImpl])
 trait PsaDetailsService {
   def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
-                                         (implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel]
+                                         (implicit hc: HeaderCarrier,
+                                          executionContext: ExecutionContext,
+                                          request: OptionalDataRequest[_],
+                                          messages: Messages): Future[PsaViewDetailsViewModel]
 }
 
 class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnector,
                                      countryOptions: CountryOptions,
                                      userAnswersCacheConnector: UserAnswersCacheConnector,
-                                     controllerComponents: MessagesControllerComponents,
                                      dataCompletion: DataCompletion
                                     ) extends PsaDetailsService {
 
   override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
-                                                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
+                                                  (implicit hc: HeaderCarrier,
+                                                   executionContext: ExecutionContext,
+                                                   request: OptionalDataRequest[_],
+                                                   messages: Messages): Future[PsaViewDetailsViewModel] = {
 
     retrievePsaDataFromUserAnswers(psaId, mode)
 
@@ -74,21 +78,16 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
   private[services] def getUserAnswers(psaId: String, mode: Mode
                                       )(implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_]): Future[UserAnswers] =
     userAnswersCacheConnector.fetch(request.externalId).flatMap {
-      case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap {
-        getUpdatedUserAnswers(_, mode)
-      }
-      case Some(data) => {
+      case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap{getUpdatedUserAnswers}
+      case Some(data) =>
         (UserAnswers(data).get(IndexId), UserAnswers(data).get(RegistrationInfoId)) match {
           case (Some(_), None) =>
             userAnswersCacheConnector.removeAll(request.externalId).flatMap { _ =>
-              subscriptionConnector.getSubscriptionDetails(psaId).flatMap {
-                getUpdatedUserAnswers(_, mode)
-              }
+              subscriptionConnector.getSubscriptionDetails(psaId).flatMap {getUpdatedUserAnswers}
             }
           case _ =>
             Future(UserAnswers(data))
         }
-      }
     }
 
   private val changeFlagIds = List(
@@ -106,11 +105,11 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
     DirectorsOrPartnersChangedId
   )
 
-  private def getUpdatedUserAnswers(response: JsValue, mode: Mode)(implicit executionContext: ExecutionContext): Future[UserAnswers] = {
+  private def getUpdatedUserAnswers(response: JsValue)(implicit executionContext: ExecutionContext): Future[UserAnswers] = {
     val answers = UserAnswers(response)
     val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
     Future.successful(
-      setAddressIdsToUserAnswers(answers, legalStatus, mode).flatMap(_.set(UpdateModeId)(true))
+      setAddressIdsToUserAnswers(answers, legalStatus).flatMap(_.set(UpdateModeId)(true))
         .flatMap(_.setAllFlagsToValue(changeFlagIds, value = false))
         .asOpt.getOrElse(answers)
     )
@@ -143,8 +142,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
   }
 
   private def setAddressIdsToUserAnswers(userAnswers: UserAnswers,
-                                         legalStatus: Option[RegistrationLegalStatus],
-                                         mode: Mode): JsResult[UserAnswers] = {
+                                         legalStatus: Option[RegistrationLegalStatus]): JsResult[UserAnswers] = {
 
     val mapOfAddressIds: Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]] = legalStatus match {
       case Some(Individual) =>

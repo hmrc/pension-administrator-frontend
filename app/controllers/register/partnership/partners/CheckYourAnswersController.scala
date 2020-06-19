@@ -49,7 +49,8 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            override val cacheConnector: UserAnswersCacheConnector,
                                            val controllerComponents: MessagesControllerComponents,
                                            val view: check_your_answers
-                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with Variations with I18nSupport {
+                                          )(implicit val executionContext: ExecutionContext)
+                                            extends FrontendBaseController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

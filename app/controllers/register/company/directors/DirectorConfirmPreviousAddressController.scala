@@ -25,7 +25,7 @@ import identifiers.register.company.directors.{DirectorConfirmPreviousAddressId,
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -46,7 +46,9 @@ class DirectorConfirmPreviousAddressController @Inject()(val appConfig: Frontend
                                                          val countryOptions: CountryOptions,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          val view: sameContactAddress
-                                                        )(implicit val executionContext: ExecutionContext) extends ConfirmPreviousAddressController with I18nSupport {
+                                                        )(implicit val executionContext: ExecutionContext)
+                                                          extends ConfirmPreviousAddressController with I18nSupport {
+
   private[controllers] val title: Message = "confirmPreviousAddress.title"
   private[controllers] val heading: Message = "confirmPreviousAddress.heading"
 

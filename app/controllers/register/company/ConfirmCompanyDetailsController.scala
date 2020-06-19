@@ -30,7 +30,7 @@ import models._
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.NotFoundException
@@ -54,13 +54,14 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
                                                 countryOptions: CountryOptions,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 val view: confirmCompanyDetails
-                                               )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                               )(implicit val executionContext: ExecutionContext)
+                                                extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      getCompanyDetails(mode) { registration =>
+      getCompanyDetails { registration =>
         upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
           upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
             upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
@@ -96,8 +97,7 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
       )
   }
 
-  private def getCompanyDetails(mode: Mode)
-                               (fn: OrganizationRegistration => Future[Result])
+  private def getCompanyDetails(fn: OrganizationRegistration => Future[Result])
                                (implicit request: DataRequest[AnyContent]): Either[Future[Result], Future[Result]] = {
     (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.right.map {
       case businessName ~ utr ~ businessType =>

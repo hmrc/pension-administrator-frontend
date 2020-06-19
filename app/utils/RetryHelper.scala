@@ -38,7 +38,8 @@ trait RetryHelper  {
 
   private def retryWithBackOff[T] (currentAttempt: Int,
                                    currentWait: Int,
-                                   f: () => Future[T], config: FrontendAppConfig)(implicit executionContext: ExecutionContext): Future[T] = {
+                                   f: () => Future[T], config: FrontendAppConfig)
+                                  (implicit executionContext: ExecutionContext): Future[T] = {
     f.apply().recoverWith {
       case e: Upstream5xxResponse =>
         if ( currentAttempt < config.retryAttempts) {

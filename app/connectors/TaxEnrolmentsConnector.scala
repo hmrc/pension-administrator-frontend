@@ -52,7 +52,10 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
   def url: String = config.taxEnrolmentsUrl("HMRC-PODS-ORG")
 
   override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
-                    (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse] = {
+                    (implicit w: Writes[KnownFacts],
+                     hc: HeaderCarrier,
+                     executionContext: ExecutionContext,
+                     request: DataRequest[AnyContent]): Future[HttpResponse] = {
     retryOnFailure(() => enrolmentRequest(enrolmentKey, knownFacts), config)
   } andThen {
     logExceptions(knownFacts)

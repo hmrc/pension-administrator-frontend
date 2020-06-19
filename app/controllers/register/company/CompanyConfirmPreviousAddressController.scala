@@ -24,7 +24,7 @@ import identifiers.register.BusinessNameId
 import identifiers.register.company._
 import javax.inject.Inject
 import models.Mode
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
@@ -45,7 +45,8 @@ class CompanyConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
                                                         val countryOptions: CountryOptions,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         val view: sameContactAddress
-                                                       )(implicit val executionContext: ExecutionContext) extends ConfirmPreviousAddressController with I18nSupport {
+                                                       )(implicit val executionContext: ExecutionContext)
+                                                        extends ConfirmPreviousAddressController with I18nSupport {
 
   private[controllers] val postCall = routes.CompanyConfirmPreviousAddressController.onSubmit _
   private[controllers] val title: Message = "confirmPreviousAddress.title"

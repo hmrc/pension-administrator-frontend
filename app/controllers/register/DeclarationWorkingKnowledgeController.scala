@@ -44,7 +44,8 @@ class DeclarationWorkingKnowledgeController @Inject()(
                                                        formProvider: DeclarationWorkingKnowledgeFormProvider,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        val view: declarationWorkingKnowledge
-                                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+                                                     )(implicit val executionContext: ExecutionContext)
+                                                       extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
