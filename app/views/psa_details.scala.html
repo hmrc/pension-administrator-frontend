@@ -34,8 +34,8 @@
 
         @components.back_link()
 
-        @if(!psaDetails.isUserAnswersComplete) {
-            @components.incomplete_alert()
+        @psaDetails.userAnswersIncompleteMessage.map { incompleteMessage =>
+            @components.incomplete_alert(incompleteMessage)
         }
 
         @components.heading(

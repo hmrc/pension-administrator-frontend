@@ -92,7 +92,7 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig,
   }
 
   private def declarationChange(ua: UserAnswers): Call = {
-    if (dataCompletion.isPsaUpdateDetailsInComplete(ua)) {
+    if (dataCompletion.psaUpdateDetailsInCompleteAlert(ua).nonEmpty) {
       controllers.register.routes.IncompleteChangesController.onPageLoad()
     } else {
       ua.get(DeclarationChangedId) match {

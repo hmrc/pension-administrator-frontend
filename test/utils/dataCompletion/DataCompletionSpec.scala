@@ -391,54 +391,61 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues {
       }
     }
 
-    "isPsaUpdateDetailsInComplete" must {
+    "psaUpdateDetailsInCompleteAlert" must {
 
-      "return true " when {
+      "return alert message " when {
 
         "no answers are present" in {
-          DataCompletion.isPsaUpdateDetailsInComplete(UserAnswers()) mustBe true
+          DataCompletion.psaUpdateDetailsInCompleteAlert(UserAnswers()) mustBe Some("incomplete.alert.message")
         }
 
         "individual details are not complete" in {
           val ua = UserAnswers().regInfo(RegistrationLegalStatus.Individual).
             individualDetails(TolerantIndividual(Some("first"), None, Some("last"))).individualEmail(email = "s@s.com")
-          DataCompletion.isPsaUpdateDetailsInComplete(ua) mustBe true
+          DataCompletion.psaUpdateDetailsInCompleteAlert(ua) mustBe Some("incomplete.alert.message")
         }
 
         "individual details are complete but adviser is not complete" in {
           val ua = UserAnswers().regInfo(RegistrationLegalStatus.Individual).completeIndividualVariations.variationWorkingKnowledge(value = false)
-          DataCompletion.isPsaUpdateDetailsInComplete(ua) mustBe true
+          DataCompletion.psaUpdateDetailsInCompleteAlert(ua) mustBe Some("incomplete.alert.message")
         }
 
         "company is not complete" in {
           val ua = UserAnswers().regInfo(RegistrationLegalStatus.LimitedCompany).completeCompanyDetailsUK
-          DataCompletion.isPsaUpdateDetailsInComplete(ua) mustBe true
+          DataCompletion.psaUpdateDetailsInCompleteAlert(ua) mustBe Some("incomplete.alert.message")
         }
 
-        "partnership is not complete" in {
-          val ua = UserAnswers().regInfo(RegistrationLegalStatus.Partnership).completePartnershipDetailsUK
-          DataCompletion.isPsaUpdateDetailsInComplete(ua) mustBe true
+        "partnership partner is not complete" in {
+          val ua = UserAnswers().regInfo(RegistrationLegalStatus.Partnership).completePartnershipDetailsUK.completePartner(index = 0)
+            .partnerName(1, PersonName("first", "last"))
+          DataCompletion.psaUpdateDetailsInCompleteAlert(ua) mustBe Some("incomplete.alert.message")
+        }
+
+        "partnership is complete but no of partners is less than two" in {
+          val ua = UserAnswers().areYouInUk(true).regInfo(RegistrationLegalStatus.Partnership).completePartnershipDetailsUK.completePartner(index = 0).
+            variationWorkingKnowledge(value = true)
+          DataCompletion.psaUpdateDetailsInCompleteAlert(ua) mustBe Some("incomplete.alert.message.less.partners")
         }
       }
 
-      "return false " when {
+      "return None " when {
 
         "individual details are complete" in {
           val ua = UserAnswers().regInfo(RegistrationLegalStatus.Individual).completeIndividualVariations.variationWorkingKnowledge(value = true)
-          DataCompletion.isPsaUpdateDetailsInComplete(ua) mustBe false
+          DataCompletion.psaUpdateDetailsInCompleteAlert(ua) mustBe None
         }
 
         "company is complete" in {
           val ua = UserAnswers().areYouInUk(true).regInfo(RegistrationLegalStatus.LimitedCompany).
             completeCompanyDetailsUK.completeDirector(index = 0).
             variationWorkingKnowledge(value = true)
-          DataCompletion.isPsaUpdateDetailsInComplete(ua) mustBe false
+          DataCompletion.psaUpdateDetailsInCompleteAlert(ua) mustBe None
         }
 
         "partnership is complete" in {
           val ua = UserAnswers().areYouInUk(true).regInfo(RegistrationLegalStatus.Partnership).completePartnershipDetailsUK.completePartner(index = 0).
-            variationWorkingKnowledge(value = true)
-          DataCompletion.isPsaUpdateDetailsInComplete(ua) mustBe false
+            completePartner(index = 1).variationWorkingKnowledge(value = true)
+          DataCompletion.psaUpdateDetailsInCompleteAlert(ua) mustBe None
         }
       }
     }
