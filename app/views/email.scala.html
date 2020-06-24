@@ -34,12 +34,13 @@
 
     @components.error_summary(form.errors)
 
-    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off", 'novalidate -> "novalidate") {
         <div class="form-group @if(form.hasErrors){form-group--error}">
 
             @components.input_text(
                 field = form("value"),
                 label = messages(viewModel.heading),
+                typeValue = "email",
                 inputClass = Some("form-control-3-4"),
                 labelClass = Some("visually-hidden"),
                 paragraphText = Some(messages("contact.body", viewModel.entityName)),

@@ -35,7 +35,7 @@
     title = titleWithErrors(form, viewModel.title)
 ) {
 
-    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @components.back_link()
 
@@ -48,6 +48,7 @@
             label = viewModel.heading,
             labelClass = Some("visually-hidden"),
             hint = viewModel.hint,
+            numericField = true,
             paragraphText = Some(messages("enterVAT.paragraph", viewModel.entityName)),
             headingIsLegend = true
         )

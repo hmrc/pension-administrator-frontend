@@ -34,7 +34,7 @@
 
     @components.error_summary(form.errors)
 
-    @formHelper(action = href, 'autoComplete -> "off") {
+    @formHelper(action = href, 'autoComplete -> "off", 'novalidate -> "novalidate") {
         <div class="form-group @if(form.hasErrors){form-group--error}">
             @components.heading(messages("utr.heading", businessType))
 
@@ -45,7 +45,8 @@
             @components.input_text(
                 field = form("value"),
                 label = messages("utr.heading", businessType),
-                labelClass = Some("visually-hidden")
+                labelClass = Some("visually-hidden"),
+                numericField = true
             )
         </div>
 
