@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
-import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualContactAddressPostCodeLookupId}
+import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
@@ -50,7 +50,8 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
                                                       )(implicit val executionContext: ExecutionContext
                                                       ) extends AddressListController with Retrievals with I18nSupport {
 
-  def form(addresses: Seq[TolerantAddress])(implicit request: DataRequest[AnyContent]): Form[Int] = formProvider(addresses, Message("select.address.required.error"))
+  def form(addresses: Seq[TolerantAddress])(implicit request: DataRequest[AnyContent]): Form[Int] =
+    formProvider(addresses, Message("select.address.required.error"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

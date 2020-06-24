@@ -49,7 +49,8 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
                                                                  formProvider: PostCodeLookupFormProvider,
                                                                  val controllerComponents: MessagesControllerComponents,
                                                                  val view: postcodeLookup
-                                                               )(implicit val executionContext: ExecutionContext) extends PostcodeLookupController with Retrievals {
+                                                               )(implicit val executionContext: ExecutionContext)
+                                                                 extends PostcodeLookupController with Retrievals {
 
   override protected def form: Form[String] = formProvider()
 

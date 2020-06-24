@@ -52,7 +52,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def addressViewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = Retrieval(
+  private def addressViewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): Retrieval[ManualAddressViewModel] = Retrieval(
     implicit request =>
       BusinessNameId.retrieve.right.map { companyName =>
         ManualAddressViewModel(

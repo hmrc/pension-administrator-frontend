@@ -48,7 +48,8 @@ class PartnershipAddressYearsController @Inject()(val appConfig: FrontendAppConf
                                                   formProvider: AddressYearsFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   val view: addressYears
-                                                 )(implicit val executionContext: ExecutionContext) extends AddressYearsController with Retrievals with I18nSupport {
+                                                 )(implicit val executionContext: ExecutionContext)
+                                                   extends AddressYearsController with Retrievals with I18nSupport {
 
 
   private def viewModel(mode: Mode, partnershipName: String)

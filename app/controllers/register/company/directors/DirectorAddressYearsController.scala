@@ -47,7 +47,8 @@ class DirectorAddressYearsController @Inject()(@CompanyDirector override val nav
                                                formProvider: AddressYearsFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: addressYears
-                                              )(implicit val executionContext: ExecutionContext) extends AddressYearsController with Retrievals with I18nSupport {
+                                              )(implicit val executionContext: ExecutionContext)
+                                                extends AddressYearsController with Retrievals with I18nSupport {
 
   private def form(directorName: String)
                   (implicit request: DataRequest[AnyContent]): Form[AddressYears] = formProvider(directorName)

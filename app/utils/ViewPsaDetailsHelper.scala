@@ -16,6 +16,7 @@
 
 package utils
 
+import controllers.register.partnership.partners.{routes => partnerRoutes}
 import identifiers.TypedIdentifier
 import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import identifiers.register.company._
@@ -389,7 +390,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     (userAnswers.get(PartnerConfirmPreviousAddressId(index)), userAnswers.get(PartnerPreviousAddressId(index))) match {
       case (Some(false), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add"))))
+          Some(Link(partnerRoutes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add"))))
       case (_, Some(address)) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
           None))

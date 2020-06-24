@@ -49,7 +49,8 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
                                                                formProvider: PostCodeLookupFormProvider,
                                                                val controllerComponents: MessagesControllerComponents,
                                                                val view: postcodeLookup
-                                                             )(implicit val executionContext: ExecutionContext) extends PostcodeLookupController with Retrievals {
+                                                             )(implicit val executionContext: ExecutionContext)
+                                                               extends PostcodeLookupController with Retrievals {
 
 
   def viewModel(mode: Mode): Retrieval[PostcodeLookupViewModel] = Retrieval(

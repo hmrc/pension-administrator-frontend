@@ -30,9 +30,8 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class RegisterCompanyNavigator @Inject()(
-                                          countryOptions: CountryOptions,
-                                          appConfig: FrontendAppConfig) extends Navigator {
+class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
+                                         appConfig: FrontendAppConfig) extends Navigator {
 
   //scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
@@ -271,9 +270,10 @@ class RegisterCompanyNavigator @Inject()(
     }
 
   private def directorRoutes(answers: UserAnswers, mode: Mode): Call =
-    if (answers.allDirectorsAfterDelete(mode).isEmpty)
+    if (answers.allDirectorsAfterDelete(mode).isEmpty) {
       controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad()
-      else
+    } else {
       routes.AddCompanyDirectorsController.onPageLoad(mode)
+    }
 
 }
