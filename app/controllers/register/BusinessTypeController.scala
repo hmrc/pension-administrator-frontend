@@ -43,7 +43,8 @@ class BusinessTypeController @Inject()(appConfig: FrontendAppConfig,
                                        formProvider: BusinessTypeFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
                                        val view: businessType
-                                      )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+                                      )(implicit val executionContext: ExecutionContext)
+                                        extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 

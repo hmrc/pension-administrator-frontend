@@ -21,12 +21,10 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
 import controllers.register.individual.routes._
-import forms.address.{ConfirmPreviousAddressFormProvider, SameContactAddressFormProvider}
 import identifiers.register.individual._
 import javax.inject.Inject
 import models.Mode
-import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
@@ -34,6 +32,7 @@ import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
+
 import scala.concurrent.ExecutionContext
 
 class IndividualConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
@@ -46,7 +45,8 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
                                                            val countryOptions: CountryOptions,
                                                            val controllerComponents: MessagesControllerComponents,
                                                            val view: sameContactAddress
-                                                      )(implicit val executionContext: ExecutionContext) extends ConfirmPreviousAddressController with I18nSupport {
+                                                      )(implicit val executionContext: ExecutionContext)
+                                                        extends ConfirmPreviousAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualConfirmPreviousAddressController.onSubmit _
   private[controllers] val title: Message = "confirmPreviousAddress.title"

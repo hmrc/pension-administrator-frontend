@@ -17,7 +17,6 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
@@ -38,7 +37,6 @@ import views.html.register.company.addCompanyDirectors
 import scala.concurrent.ExecutionContext
 
 class AddCompanyDirectorsController @Inject()(appConfig: FrontendAppConfig,
-                                              dataCacheConnector: UserAnswersCacheConnector,
                                               @CompanyDirector navigator: Navigator,
                                               authenticate: AuthAction,
                                               allowAccess: AllowAccessActionProvider,
@@ -47,7 +45,8 @@ class AddCompanyDirectorsController @Inject()(appConfig: FrontendAppConfig,
                                               formProvider: AddCompanyDirectorsFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               val view: addCompanyDirectors
-                                             )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                             )(implicit val executionContext: ExecutionContext)
+                                              extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 

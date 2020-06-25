@@ -45,7 +45,8 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
                                                            dataCacheConnector: UserAnswersCacheConnector,
                                                            val controllerComponents: MessagesControllerComponents,
                                                            val view: variationDeclarationFitAndProper
-                                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                                          )(implicit val executionContext: ExecutionContext)
+                                                            extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 

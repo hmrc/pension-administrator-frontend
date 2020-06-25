@@ -53,7 +53,8 @@ class IndividualRegisteredAddressController @Inject()(
                                                        val countryOptions: CountryOptions,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        val view: nonukAddress
-                                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
+                                                     )(implicit val executionContext: ExecutionContext)
+                                                       extends FrontendBaseController with Retrievals with I18nSupport {
 
   protected val form: Form[Address] = formProvider()
 
