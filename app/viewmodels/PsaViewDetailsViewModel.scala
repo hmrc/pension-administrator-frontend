@@ -16,4 +16,5 @@
 
 package viewmodels
 
-case class PsaViewDetailsViewModel(superSections: Seq[SuperSection], header: String, isUserAnswerUpdated: Boolean, isUserAnswersComplete: Boolean)
+case class PsaViewDetailsViewModel(superSections: Seq[SuperSection], header: String,
+                                   isUserAnswerUpdated: Boolean, userAnswersIncompleteMessage: Option[String] = None)

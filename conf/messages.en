@@ -860,8 +860,9 @@ director-add-link-lessThanTen = Add or delete a Director
 director-add-link-incomplete = Change or delete a Director
 director-add-link-Ten = Delete a director
 director-add-link-Ten-additionalText = A maximum of 10 directors can be added. If you want to add another director, you must first delete one.
-partner-add-link-onlyOne = Add a partner
-partner-add-link-onlyOne-additionalText = There must be a minimum of 1 partner. If you want to remove this partner, you must first add a new one.
+partner-add-link-lessThanTwo = Add a partner
+partner-add-link-onlyOne-additionalText = There must always be at least 2 partners. If you want to remove this partner, you must first add two new ones.
+partner-add-link-onlyTwo-additionalText = There must always be at least 2 partners. If you want to remove a partner, you must first add a new one.
 partner-add-link-lessThanTen = Add or delete a partner
 partner-add-link-incomplete = Change or delete a partner
 partner-add-link-Ten = Delete a partner
@@ -1102,6 +1103,7 @@ select.address.error.required = Select {0}’s address
 select.previous.address.error.required = Select {0}’s previous address
 
 incomplete.alert.message = You must complete any section marked as "Not entered" before you can continue
+incomplete.alert.message.less.partners = There must always be at least 2 partners
 
 youNeedToRegister.govUkLlink = Exit to GOV.UK
 

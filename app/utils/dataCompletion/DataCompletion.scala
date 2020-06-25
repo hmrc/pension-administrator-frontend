@@ -238,21 +238,37 @@ class DataCompletion {
     }
   }
 
-  def isPsaUpdateDetailsInComplete(ua: UserAnswers): Boolean = {
-    def incompleteDetails: Boolean =
+  def psaUpdateDetailsInCompleteAlert(ua: UserAnswers): Option[String] = {
+    val defaultIncompleteMessage = Some("incomplete.alert.message")
+
+    def incompleteEntityDetails: Option[String] =
       ua.get(RegistrationInfoId).map(_.legalStatus) match {
         case Some(Individual) =>
-          !isIndividualComplete(ua, UpdateMode)
+          if(!isIndividualComplete(ua, UpdateMode)) defaultIncompleteMessage else None
+
         case Some(LimitedCompany) =>
-          ua.allDirectorsAfterDelete(UpdateMode).exists(!_.isComplete) |
-            !isCompanyDetailsComplete(ua)
+          val isCompanyIncomplete = ua.allDirectorsAfterDelete(UpdateMode).exists(!_.isComplete) |
+          !isCompanyDetailsComplete(ua)
+          if(isCompanyIncomplete) defaultIncompleteMessage else None
+
         case Some(Partnership) =>
-          !isPartnershipDetailsComplete(ua) |
+          val isPartnershipIncomplete = !isPartnershipDetailsComplete(ua) |
             ua.allPartnersAfterDelete(UpdateMode).exists(!_.isComplete)
+
+          (ua.allPartnersAfterDelete(UpdateMode).size < 2, isPartnershipIncomplete) match {
+            case (true, _) => Some("incomplete.alert.message.less.partners")
+            case (_, true) => defaultIncompleteMessage
+            case _ => None
+          }
         case _ =>
-          true
+          None
       }
-    !isAdviserComplete(ua, UpdateMode) | incompleteDetails
+
+    incompleteEntityDetails match {
+      case Some(_) => incompleteEntityDetails
+      case None if !isAdviserComplete(ua, UpdateMode) => defaultIncompleteMessage
+      case _ => None
+    }
   }
 }
 

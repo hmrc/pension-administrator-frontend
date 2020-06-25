@@ -117,7 +117,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
 
   private def getPsaDetailsViewModel(userAnswers: UserAnswers)(implicit messages: Messages): PsaViewDetailsViewModel = {
     val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated
-    val isDataComplete = !dataCompletion.isPsaUpdateDetailsInComplete(userAnswers)
+    val incompleteMessage = dataCompletion.psaUpdateDetailsInCompleteAlert(userAnswers)
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
     val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)
 
@@ -138,7 +138,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
         throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")
     }
 
-    PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, isDataComplete)
+    PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, incompleteMessage)
   }
 
   private def setAddressIdsToUserAnswers(userAnswers: UserAnswers,

@@ -58,7 +58,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
   override def beforeEach(): Unit = {
     reset(mockSubscriptionConnector, mockUserAnswersConnector, mockDataCompletion)
-    when(mockDataCompletion.isPsaUpdateDetailsInComplete(any())).thenReturn(false)
+    when(mockDataCompletion.psaUpdateDetailsInCompleteAlert(any())).thenReturn(None)
   }
 
   private val mode = UpdateMode
@@ -73,7 +73,8 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
         val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
         whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", isUserAnswerUpdated = false, isUserAnswersComplete = true)
+          _ mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", isUserAnswerUpdated = false,
+            userAnswersIncompleteMessage = None)
         }
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(ExistingCurrentAddressId).value mustBe expectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
@@ -88,7 +89,8 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
         val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
         whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false, isUserAnswersComplete = true)
+          _ mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false,
+            userAnswersIncompleteMessage = None)
         }
 
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe companyExpectedAddress
@@ -102,11 +104,12 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
         when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(partnershipUserAnswers))
-        when(mockDataCompletion.isPsaUpdateDetailsInComplete(any())).thenReturn(true)
+        when(mockDataCompletion.psaUpdateDetailsInCompleteAlert(any())).thenReturn(Some("incomplete.alert.message"))
 
         val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
         whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name", isUserAnswerUpdated = false, isUserAnswersComplete = false)
+          _ mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name",
+            isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"))
         }
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe partnershipExpectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(PartnersExistingCurrentAddressId(0)).value mustBe partnerExpectedAddress

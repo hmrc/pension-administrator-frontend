@@ -210,7 +210,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     )),
     Some(AddLink(
       Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url,
-        "partner-add-link-onlyOne"
+        "partner-add-link-lessThanTwo"
       ),
       Some("partner-add-link-onlyOne-additionalText")
     ))

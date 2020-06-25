@@ -118,16 +118,23 @@ class ViewPsaDetailsHelperSpec extends SpecBase with MustMatchers {
 
     "have add link for partners for only one partner" in {
       partnershipResult.exists(_.addLink.contains(AddLink(
-        Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, "partner-add-link-onlyOne"),
+        Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, "partner-add-link-lessThanTwo"),
         Some("partner-add-link-onlyOne-additionalText"))
       )) mustBe true
     }
 
-    "have add link for partners for less than 10 partners" in {
+    "have add link for partners for only two partner" in {
       partnershipResultWithTwoPartners.exists(_.addLink.contains(AddLink(
+        Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, "partner-add-link-lessThanTwo"),
+        Some("partner-add-link-onlyTwo-additionalText"))
+      )) mustBe true
+    }
+
+    "have add link for partners for less than 10 partners" in {
+      partnershipResultWithThreePartners.exists(_.addLink.contains(AddLink(
         Link(controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode).url, "partner-add-link-lessThanTen"),
-        None
-      ))) mustBe true
+        None)
+      )) mustBe true
     }
 
     "have add link for partners for 10 partners" in {
@@ -202,6 +209,9 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   private val partnershipUserAnswersWithTwoPartners = UserAnswers(readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
     "partners").completePartner(index = 0).completePartner(index = 1)
 
+  private val partnershipUserAnswersWithThreePartners = UserAnswers(readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
+    "partners").completePartner(index = 0).completePartner(index = 1).completePartner(index = 2)
+
   private val partnershipUserAnswersWithTenPartners = UserAnswers(readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] -
     "partners").completePartner(index = 0).completePartner(index = 1).completePartner(index = 2).completePartner(index = 3).completePartner(index = 4).
   completePartner(index = 5).completePartner(index = 6).completePartner(index = 7).completePartner(index = 8).completePartner(index = 9)
@@ -235,6 +245,7 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   private val partnershipResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswers)).partnershipSections
   private val partnershipResultIncomplete: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswersIncomplete)).partnershipSections
   private val partnershipResultWithTwoPartners: Seq[SuperSection] = psaDetailsHelper(partnershipUserAnswersWithTwoPartners).partnershipSections
+  private val partnershipResultWithThreePartners: Seq[SuperSection] = psaDetailsHelper(partnershipUserAnswersWithThreePartners).partnershipSections
   private val partnershipResultWithTenPartners: Seq[SuperSection] = psaDetailsHelper(partnershipUserAnswersWithTenPartners).partnershipSections
   private val partnershipResultWithAddLinks: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswersWithAddLinks)).partnershipSections
 
