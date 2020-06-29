@@ -47,12 +47,18 @@
     }
 }
 
+@contentBody = {
+    <div class="content__body">
+        @mainContent
+    </div>
+}
+
 @govuk_wrapper(title = s"$title - ${Messages("pension.scheme.administrator.title")}",
                mainClass = mainClass,
                bodyClasses = bodyClasses,
                sidebar = sidebarF,
                contentHeader = contentHeader,
-               mainContent = article(mainContent),
+               mainContent = contentBody,
                serviceInfoContent = serviceInfoContent,
                scriptElem = scriptElem
 )
