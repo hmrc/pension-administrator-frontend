@@ -24,6 +24,7 @@
         yesAssoc: Option[String] = None,
         noAssoc: Option[String] = None,
         labelClass: Option[String] = None,
+        legendClass: Option[String] = None,
         noLabelKey: String = "site.no",
         yesLabelKey: String = "site.yes",
         fieldSetClass: String = "inline",
@@ -39,7 +40,7 @@
 <div class="form-group@if(field.hasErrors){ form-field--error}">
     <fieldset class=@fieldSetClass id=@{field.id} @if(field.hasErrors || hint.nonEmpty){aria-describedby="@ariaDescribedBy"}>
 
-        <legend>
+        <legend @if(legendClass.nonEmpty){class="@legendClass"}>
             @if(headingIsLegend){
                 <h1 class="heading-xlarge">@label</h1>
             } else {
