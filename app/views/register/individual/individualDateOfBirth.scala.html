@@ -30,7 +30,7 @@
     title = titleWithErrors(form, messages("individualDateOfBirth.heading"))
 ) {
 
-    @formHelper(action = IndividualDateOfBirthController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = IndividualDateOfBirthController.onSubmit(mode), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @components.back_link()
 

@@ -32,7 +32,7 @@ formHelper: FormWithCSRF
     title = titleWithErrors(form, viewModel.title)
 ) {
 
-    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @components.back_link()
 
@@ -43,6 +43,7 @@ formHelper: FormWithCSRF
         @components.input_text(
             field = form("value"),
             label = messages(viewModel.heading),
+            typeValue = "tel",
             inputClass = Some("form-control-3-4"),
             labelClass = Some("visually-hidden"),
             paragraphText = Some(messages("contact.body", viewModel.entityName)),
