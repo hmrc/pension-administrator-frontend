@@ -24,7 +24,7 @@ import identifiers.JourneyId
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -32,11 +32,12 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.http.{UnauthorizedException, HeaderCarrier}
+import uk.gov.hmrc.domain
+import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec extends SpecBase with MockitoSugar {
 
@@ -385,7 +386,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 object AuthActionSpec {
   private val psaId = "A0000000"
   private val startIVLink = "/start-iv-link"
-  private val nino = "test-nino"
+  private val nino = domain.Nino("AB123456C")
 
   def fakeUserAnswersCacheConnector(dataToBeReturned: JsValue = Json.obj("areYouInUK" -> true)):
   FakeUserAnswersCacheConnector = new FakeUserAnswersCacheConnector {
@@ -397,13 +398,14 @@ object AuthActionSpec {
     }
   }
 
-  def fakeIVConnector(ninoOpt: Option[String] = Some(nino)): IdentityVerificationConnector = new IdentityVerificationConnector {
-    override def startRegisterOrganisationAsIndividual(completionURL: String,
-                                                       failureURL: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[String] = {
+  def fakeIVConnector(ninoOpt: Option[uk.gov.hmrc.domain.Nino] = Some(nino)): IdentityVerificationConnector = new IdentityVerificationConnector {
+    override def startRegisterOrganisationAsIndividual(completionURL: String, failureURL: String)
+                                                      (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[String] = {
       Future.successful(startIVLink)
     }
 
-    override def retrieveNinoFromIV(journeyId: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[String]] = {
+    override def retrieveNinoFromIV(journeyId: String)
+                                   (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[uk.gov.hmrc.domain.Nino]] = {
       Future.successful(ninoOpt)
     }
   }

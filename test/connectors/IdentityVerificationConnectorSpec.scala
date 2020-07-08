@@ -18,6 +18,7 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
 import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
@@ -44,7 +45,7 @@ class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers 
 
         connector.retrieveNinoFromIV(journeyId).map {
           result =>
-            result.value mustBe "AB000003D"
+            result.value mustBe Nino("AB000003D")
         }
       }
 

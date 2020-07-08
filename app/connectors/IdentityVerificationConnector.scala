@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json._
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -28,10 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
 class IdentityVerificationConnectorImpl @Inject()(http: HttpClient, appConfig: FrontendAppConfig) extends IdentityVerificationConnector {
-  def startRegisterOrganisationAsIndividual(completionURL: String,
-                                            failureURL: String)(implicit
-                                                                hc: HeaderCarrier,
-                                                                ec: ExecutionContext): Future[String] = {
+  def startRegisterOrganisationAsIndividual(completionURL: String, failureURL: String)
+                                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
 
     val jsonData = Json.obj(
       "origin" -> "PODS",
@@ -51,7 +50,8 @@ class IdentityVerificationConnectorImpl @Inject()(http: HttpClient, appConfig: F
     }
   }
 
-  override def retrieveNinoFromIV(journeyId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
+  override def retrieveNinoFromIV(journeyId: String)
+                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Nino]] = {
     val url = s"${appConfig.identityVerification}/identity-verification/journey/$journeyId"
 
     implicit val rds: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
@@ -60,7 +60,7 @@ class IdentityVerificationConnectorImpl @Inject()(http: HttpClient, appConfig: F
 
     http.GET(url).flatMap {
       case response if response.status equals Status.OK =>
-        Future.successful((response.json \ "nino").asOpt[String])
+        Future.successful((response.json \ "nino").asOpt[Nino])
       case response =>
         Logger.debug(s"Call to retrieve Nino from IV failed with status ${response.status} and response body ${response.body}")
         Future.successful(None)
@@ -76,10 +76,9 @@ class IdentityVerificationConnectorImpl @Inject()(http: HttpClient, appConfig: F
 
 @ImplementedBy(classOf[IdentityVerificationConnectorImpl])
 trait IdentityVerificationConnector {
-  def startRegisterOrganisationAsIndividual(completionURL: String,
-                                            failureURL: String)(implicit
-                                                                hc: HeaderCarrier,
-                                                                ec: ExecutionContext): Future[String]
+  def startRegisterOrganisationAsIndividual(completionURL: String, failureURL: String)
+                                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String]
 
-  def retrieveNinoFromIV(journeyId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]]
+  def retrieveNinoFromIV(journeyId: String)
+                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Nino]]
 }

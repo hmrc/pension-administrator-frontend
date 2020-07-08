@@ -32,6 +32,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.Helpers._
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
@@ -47,7 +48,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
   private val formProvider = new IndividualDetailsCorrectFormProvider()
   private val form = formProvider()
 
-  private val nino = "test-nino"
+  private val nino = Nino("AB123456C")
   private val sapNumber = "test-sap-number"
 
   private val fakeAuthAction: AuthAction = new AuthAction {
@@ -63,7 +64,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     noIdentifier = false,
     RegistrationCustomerType.UK,
     Some(RegistrationIdType.Nino),
-    Some(nino)
+    Some(nino.nino)
   )
 
   private val individual = TolerantIndividual(
@@ -82,14 +83,14 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
   )
 
   private object FakeRegistrationConnector extends FakeRegistrationConnector {
-    override def registerWithIdIndividual (nino: String)
+    override def registerWithIdIndividual (nino: Nino)
                                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
       Future.successful(IndividualRegistration(IndividualRegisterWithIdResponse(individual, address), registrationInfo))
     }
   }
 
   private object ExceptionThrowingRegistrationConnector extends FakeRegistrationConnector {
-    override def registerWithIdIndividual (nino: String)
+    override def registerWithIdIndividual (nino: Nino)
                                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
       throw new Exception("registerWithIdIndividual should not be called in this test")
     }
@@ -98,7 +99,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, registrationConnector: RegistrationConnector = FakeRegistrationConnector) =
     new IndividualDetailsCorrectController(
       new FakeNavigator(desiredRoute = onwardRoute),
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       fakeAuthAction,
       FakeAllowAccessProvider(),

@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -37,21 +36,19 @@ import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualDetailsCorrectController @Inject()(
-                                                    @Individual navigator: Navigator,
-                                                    appConfig: FrontendAppConfig,
-                                                    dataCacheConnector: UserAnswersCacheConnector,
-                                                    authenticate: AuthAction,
-                                                    allowAccess: AllowAccessActionProvider,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    formProvider: IndividualDetailsCorrectFormProvider,
-                                                    registrationConnector: RegistrationConnector,
-                                                    countryOptions: CountryOptions,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    val view: individualDetailsCorrect
-                                                  )(implicit val executionContext: ExecutionContext
-                                                    ) extends FrontendBaseController with I18nSupport with Retrievals {
+class IndividualDetailsCorrectController @Inject()(@Individual navigator: Navigator,
+                                                   dataCacheConnector: UserAnswersCacheConnector,
+                                                   authenticate: AuthAction,
+                                                   allowAccess: AllowAccessActionProvider,
+                                                   getData: DataRetrievalAction,
+                                                   requireData: DataRequiredAction,
+                                                   formProvider: IndividualDetailsCorrectFormProvider,
+                                                   registrationConnector: RegistrationConnector,
+                                                   countryOptions: CountryOptions,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   val view: individualDetailsCorrect
+                                                  )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 
