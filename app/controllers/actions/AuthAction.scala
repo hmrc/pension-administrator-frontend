@@ -72,7 +72,8 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   def successRedirect[A](affinityGroup: AffinityGroup,
                          cl: ConfidenceLevel,
                          enrolments: Enrolments,
-                         authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
+                         authRequest: AuthenticatedRequest[A],
+                         block: AuthenticatedRequest[A] => Future[Result])
                         (implicit hc: HeaderCarrier): Future[Result] = {
     getData(AreYouInUKId, authRequest.externalId).flatMap {
       case _ if alreadyEnrolledInPODS(enrolments) =>
