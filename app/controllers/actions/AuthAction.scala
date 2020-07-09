@@ -128,14 +128,16 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         )
         block(updatedAuth)
       case _ =>
-        orgManualIV(authRequest.externalId, authRequest, block)
+        userAnswersCacheConnector.remove(authRequest.externalId, JourneyId).flatMap(
+          _ => orgManualIV(authRequest.externalId, authRequest, block)
+        )
     }
   }
 
   private def orgManualIV[A](id: String,
                              authRequest: AuthenticatedRequest[A],
                              block: AuthenticatedRequest[A] => Future[Result])
-                            (implicit hc: HeaderCarrier) = {
+                            (implicit hc: HeaderCarrier): Future[Result] = {
 
     getData(RegisterAsBusinessId, id).flatMap {
       case Some(false) =>

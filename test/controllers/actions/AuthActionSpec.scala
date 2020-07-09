@@ -398,14 +398,14 @@ object AuthActionSpec {
     }
   }
 
-  def fakeIVConnector(ninoOpt: Option[uk.gov.hmrc.domain.Nino] = Some(nino)): IdentityVerificationConnector = new IdentityVerificationConnector {
+  def fakeIVConnector(ninoOpt: Option[domain.Nino] = Some(nino)): IdentityVerificationConnector = new IdentityVerificationConnector {
     override def startRegisterOrganisationAsIndividual(completionURL: String, failureURL: String)
                                                       (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[String] = {
       Future.successful(startIVLink)
     }
 
     override def retrieveNinoFromIV(journeyId: String)
-                                   (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[uk.gov.hmrc.domain.Nino]] = {
+                                   (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Option[domain.Nino]] = {
       Future.successful(ninoOpt)
     }
   }
