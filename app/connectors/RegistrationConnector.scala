@@ -26,6 +26,7 @@ import models.registrationnoid.RegistrationNoIdIndividualRequest
 import play.Logger
 import play.api.http.Status
 import play.api.libs.json._
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -39,7 +40,7 @@ trait RegistrationConnector {
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration]
 
   def registerWithIdIndividual
-  (nino: String)
+  (nino: Nino)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration]
 
   def registerWithNoIdOrganisation
@@ -100,7 +101,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient,
   }
 
   override def registerWithIdIndividual
-  (nino: String)
+  (nino: Nino)
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
 
     val url = config.registerWithIdIndividualUrl
@@ -116,11 +117,11 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient,
       json.validate[IndividualRegisterWithIdResponse] match {
         case JsSuccess(value, _) =>
           val info = registrationInfo(
-            json,
-            RegistrationLegalStatus.Individual,
-            RegistrationCustomerType.fromAddress(value.address),
-            Some(RegistrationIdType.Nino),
-            Some(nino),
+            json = json,
+            legalStatus = RegistrationLegalStatus.Individual,
+            customerType = RegistrationCustomerType.fromAddress(value.address),
+            idType = Some(RegistrationIdType.Nino),
+            idNumber = Some(nino.nino),
             noIdentifier = false
           )
           IndividualRegistration(value, info)
@@ -193,7 +194,8 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient,
                                 customerType: RegistrationCustomerType,
                                 idType: Option[RegistrationIdType],
                                 idNumber: Option[String],
-                                noIdentifier: Boolean): RegistrationInfo = {
+                                noIdentifier: Boolean
+                              ): RegistrationInfo = {
 
     json.validate[String](readsSapNumber) match {
       case JsSuccess(sapNumber, _) =>

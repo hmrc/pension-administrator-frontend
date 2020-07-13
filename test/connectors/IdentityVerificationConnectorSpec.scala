@@ -18,6 +18,8 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
 import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
+import play.api.libs.json.Json
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
@@ -39,44 +41,58 @@ class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers 
         server.stubFor(
           get(urlEqualTo(url)
           ).willReturn(
-            ok(expectedResponse))
+            ok(expectedResponse)
+          )
         )
 
         connector.retrieveNinoFromIV(journeyId).map {
           result =>
-            result.value mustBe "AB000003D"
+            result.value mustBe Nino("AB000003D")
         }
       }
+    }
 
-      "return None (no nino)" when {
-        "no nino returned from IV" in {
-          server.stubFor(
-            get(urlEqualTo(url)
-            ).willReturn(
-              ok(responseWithoutNino)
-            )
+    "return None" when {
+      "no nino returned from IV" in {
+        server.stubFor(
+          get(urlEqualTo(url)
+          ).willReturn(
+            ok(responseWithoutNino)
           )
+        )
 
-          connector.retrieveNinoFromIV(journeyId).map {
-            result =>
-              result mustBe None
+        connector.retrieveNinoFromIV(journeyId).map {
+          result => {
+            result mustBe None
           }
         }
       }
 
-      "return None" when {
-        "no results are found for the requested journey Id" in {
-          server.stubFor(
-            get(urlEqualTo(
-              url
-            )).willReturn(
-              notFound()
-            )
+      "nino is malformed" in {
+        server.stubFor(
+          get(urlEqualTo(url)
+          ).willReturn(
+            ok(responseWithMalformedNino)
           )
-          connector.retrieveNinoFromIV(journeyId).map {
-            result =>
-              result mustBe None
-          }
+        )
+
+        connector.retrieveNinoFromIV(journeyId).map {
+          result =>
+            result mustBe None
+        }
+      }
+
+      "no results are found for the requested journey Id" in {
+        server.stubFor(
+          get(urlEqualTo(url)
+          ).willReturn(
+            notFound()
+          )
+        )
+
+        connector.retrieveNinoFromIV(journeyId).map {
+          result =>
+            result mustBe None
         }
       }
     }
@@ -110,6 +126,34 @@ object IdentityVerificationConnectorSpec {
       |    "evidenceOption" : "financial-accounts"
       |  } ],
       |  "nino": "AB000003D",
+      |  "self": "http://identity-verification.service:80/identity-verification/journey/1234",
+      |  "start": "http://identity-verification.service:80/identity-verification/journey/1234/start"
+      |}""".stripMargin
+
+  private val responseWithMalformedNino =
+    """{
+      |  "journeyId" : "502f90f7-13ab-44c4-a4fa-474da0f0fe03",
+      |  "journeyType" : "OneTimeLogin",
+      |  "progress" : {
+      |    "questions" : [ {
+      |      "questionKey" : "fia-bankaccount",
+      |      "answers" : [ "7890", "4567", "2134", "4564", "8345" ],
+      |      "respondTo" : "http://localhost:38376/identity-verification/journey/502f90f7-13ab-44c4-a4fa-474da0f0fe03/answer",
+      |      "source" : "financial-accounts"
+      |    } ],
+      |    "numAnswered" : 0,
+      |    "result" : "Incomplete"
+      |  },
+      |  "serviceContract": {
+      |    "origin": "tama",
+      |    "completionURL": "/completionURL",
+      |    "failureURL": "/failureURL",
+      |    "confidenceLevel": 100
+      |  },
+      |  "availableEvidenceOptions" : [ {
+      |    "evidenceOption" : "financial-accounts"
+      |  } ],
+      |  "nino": "blah",
       |  "self": "http://identity-verification.service:80/identity-verification/journey/1234",
       |  "start": "http://identity-verification.service:80/identity-verification/journey/1234/start"
       |}""".stripMargin

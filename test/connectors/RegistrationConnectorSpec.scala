@@ -26,7 +26,9 @@ import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsResultException, Json}
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import utils.WireMockHelper
 
@@ -209,7 +211,7 @@ class RegistrationConnectorSpec()
   }
 
   "registerWithIdIndividual" should "return the individual and address given a valid NINO" in {
-    val postRequestBody = Json.obj("nino" -> "test-nino")
+    val postRequestBody = Json.obj("nino" -> "AB123456C")
     server.stubFor(
       post(urlEqualTo(individualPath))
         .withRequestBody(equalToJson(Json.stringify(postRequestBody)))
@@ -263,7 +265,7 @@ class RegistrationConnectorSpec()
       noIdentifier = false,
       RegistrationCustomerType.UK,
       Some(RegistrationIdType.Nino),
-      Some(nino)
+      Some(nino.nino)
     )
 
     server.stubFor(
@@ -291,7 +293,7 @@ class RegistrationConnectorSpec()
       noIdentifier = false,
       RegistrationCustomerType.NonUK,
       Some(RegistrationIdType.Nino),
-      Some(nino)
+      Some(nino.nino)
     )
 
     server.stubFor(
@@ -544,7 +546,7 @@ class RegistrationConnectorSpec()
 
 object RegistrationConnectorSpec extends OptionValues {
   private val utr = "test-utr"
-  private val nino = "test-nino"
+  private val nino = Nino("AB123456C")
   private val sapNumber = "test-sap-number"
 
   private val organizationPath = "/pension-administrator/register-with-id/organisation"

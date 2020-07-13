@@ -33,6 +33,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.domain
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import utils.UserAnswers
@@ -43,8 +44,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
                                    ivConnector: IdentityVerificationConnector,
-                                   val parser: BodyParsers.Default
-                                  )
+                                   val parser: BodyParsers.Default)
                                   (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
@@ -59,31 +59,36 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     ) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) =>
         redirectToInterceptPages(enrolments, affinityGroup).fold {
-          val authRequest = AuthenticatedRequest(request, id, psaUser(cl, affinityGroup, None, enrolments, credentials.providerId))
+          val authRequest = AuthenticatedRequest(request, id, psaUser(affinityGroup, None, enrolments, credentials.providerId))
           successRedirect(affinityGroup, cl, enrolments, authRequest, block)
         } { result => Future.successful(result) }
       case _ =>
-        Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
+        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
 
     } recover handleFailure
   }
 
 
-  def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
-                         enrolments: Enrolments, authRequest: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result])
+  def successRedirect[A](affinityGroup: AffinityGroup,
+                         cl: ConfidenceLevel,
+                         enrolments: Enrolments,
+                         authRequest: AuthenticatedRequest[A],
+                         block: AuthenticatedRequest[A] => Future[Result])
                         (implicit hc: HeaderCarrier): Future[Result] = {
     getData(AreYouInUKId, authRequest.externalId).flatMap {
       case _ if alreadyEnrolledInPODS(enrolments) =>
         savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
       case Some(true) if affinityGroup == Organisation =>
-        doManualIVAndRetrieveNino(authRequest, enrolments, block)
+        doManualIVAndRetrieveNino(authRequest, block)
       case _ =>
         block(authRequest)
     }
   }
 
-  protected def savePsaIdAndReturnAuthRequest[A](enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
-                                                 block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+  protected def savePsaIdAndReturnAuthRequest[A](enrolments: Enrolments,
+                                                 authRequest: AuthenticatedRequest[A],
+                                                 block: AuthenticatedRequest[A] => Future[Result])
+                                                (implicit hc: HeaderCarrier): Future[Result] = {
     if (alreadyEnrolledInPODS(enrolments)) {
       val psaId = getPSAId(enrolments)
       block(AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(
@@ -95,35 +100,45 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   }
 
 
-  private def doManualIVAndRetrieveNino[A](authRequest: AuthenticatedRequest[A], enrolments: Enrolments,
-                                           block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+  private def doManualIVAndRetrieveNino[A](authRequest: AuthenticatedRequest[A],
+                                           block: AuthenticatedRequest[A] => Future[Result])
+                                          (implicit hc: HeaderCarrier): Future[Result] = {
     val journeyId = authRequest.request.getQueryString("journeyId")
     getData(JourneyId, authRequest.externalId).flatMap {
       case Some(journey) =>
-        getNinoAndUpdateAuthRequest(journey, enrolments, block, authRequest)
+        getNinoAndUpdateAuthRequest(journey, block, authRequest)
       case _ if journeyId.nonEmpty =>
         userAnswersCacheConnector.save(authRequest.externalId, JourneyId, journeyId.getOrElse("")).flatMap(_ =>
-          getNinoAndUpdateAuthRequest(journeyId.getOrElse(""), enrolments, block, authRequest)
+          getNinoAndUpdateAuthRequest(journeyId.getOrElse(""), block, authRequest)
         )
       case _ =>
-        orgManualIV(authRequest.externalId, enrolments, authRequest, block)
+        orgManualIV(authRequest.externalId, authRequest, block)
     }
   }
 
-  private def getNinoAndUpdateAuthRequest[A](journeyId: String, enrolments: Enrolments, block: AuthenticatedRequest[A] => Future[Result],
-                                             authRequest: AuthenticatedRequest[A])(implicit hc: HeaderCarrier): Future[Result] = {
+  private def getNinoAndUpdateAuthRequest[A](journeyId: String,
+                                             block: AuthenticatedRequest[A] => Future[Result],
+                                             authRequest: AuthenticatedRequest[A])
+                                            (implicit hc: HeaderCarrier): Future[Result] = {
     ivConnector.retrieveNinoFromIV(journeyId).flatMap {
       case Some(nino) =>
-        val updatedAuth = AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(nino = Some(nino)))
+        val updatedAuth = AuthenticatedRequest(
+          request = authRequest.request,
+          externalId = authRequest.externalId,
+          user = authRequest.user.copy(nino = Some(nino))
+        )
         block(updatedAuth)
       case _ =>
-        orgManualIV(authRequest.externalId, enrolments, authRequest, block)
+        userAnswersCacheConnector.remove(authRequest.externalId, JourneyId).flatMap(
+          _ => orgManualIV(authRequest.externalId, authRequest, block)
+        )
     }
   }
 
   private def orgManualIV[A](id: String,
-                             enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
-                             block: AuthenticatedRequest[A] => Future[Result])(implicit hc: HeaderCarrier) = {
+                             authRequest: AuthenticatedRequest[A],
+                             block: AuthenticatedRequest[A] => Future[Result])
+                            (implicit hc: HeaderCarrier): Future[Result] = {
 
     getData(RegisterAsBusinessId, id).flatMap {
       case Some(false) =>
@@ -191,7 +206,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   protected def alreadyEnrolledInPODS(enrolments: Enrolments): Boolean =
     enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
 
-  protected def userType(affinityGroup: AffinityGroup, cl: ConfidenceLevel): UserType = {
+  protected def userType(affinityGroup: AffinityGroup): UserType = {
     affinityGroup match {
       case Individual =>
         UserType.Individual
@@ -202,10 +217,12 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     }
   }
 
-  protected def psaUser(cl: ConfidenceLevel, affinityGroup: AffinityGroup,
-                        nino: Option[String], enrolments: Enrolments, userId: String): PSAUser = {
+  protected def psaUser(affinityGroup: AffinityGroup,
+                        nino: Option[domain.Nino],
+                        enrolments: Enrolments,
+                        userId: String): PSAUser = {
     val psa = existingPSA(enrolments)
-    PSAUser(userType(affinityGroup, cl), nino, psa.nonEmpty, psa, None, userId)
+    PSAUser(userType(affinityGroup), nino, psa.nonEmpty, psa, None, userId)
   }
 
   protected def getPSAId(enrolments: Enrolments): String =

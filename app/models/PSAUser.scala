@@ -17,9 +17,10 @@
 package models
 
 import models.UserType.UserType
+import uk.gov.hmrc.domain.Nino
 
 case class PSAUser(userType: UserType,
-                   nino: Option[String],
+                   nino: Option[Nino],
                    isExistingPSA: Boolean,
                    existingPSAId: Option[String],
                    alreadyEnrolledPsaId: Option[String] = None,

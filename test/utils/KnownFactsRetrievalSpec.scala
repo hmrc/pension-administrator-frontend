@@ -26,12 +26,13 @@ import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
+import uk.gov.hmrc.domain.Nino
 
 class KnownFactsRetrievalSpec extends SpecBase {
 
   private val psa = "psa-id"
   private val utr = "test-utr"
-  private val nino = "test-nino"
+  private val nino = Nino("AB123456C")
   private val sapNumber = "test-sap-number"
   private val externalId = "test-externalId"
   private val nonUk = "test-non-uk"
@@ -52,7 +53,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
             noIdentifier = false,
             RegistrationCustomerType.UK,
             Some(RegistrationIdType.Nino),
-            Some(nino)
+            Some(nino.nino)
           )
 
           implicit val request: DataRequest[AnyContent] = DataRequest(
@@ -73,7 +74,7 @@ class KnownFactsRetrievalSpec extends SpecBase {
 
           generator.retrieve(psa) mustEqual Some(KnownFacts(
             Set(KnownFact("PSAID", psa)),
-            Set(KnownFact("NINO", nino)
+            Set(KnownFact("NINO", nino.nino)
             )))
 
         }

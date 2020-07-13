@@ -20,6 +20,8 @@ import connectors.RegistrationConnector
 import models._
 import models.RegistrationLegalStatus
 import java.time.LocalDate
+
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +37,7 @@ abstract class FakeRegistrationConnector extends RegistrationConnector {
   (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[RegistrationInfo] =  ???
 
   override def registerWithIdIndividual
-  (nino: String)
+  (nino: Nino)
   (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[IndividualRegistration] = ???
 
   override def registerWithNoIdIndividual
