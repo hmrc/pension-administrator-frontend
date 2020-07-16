@@ -19,8 +19,6 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /assistant-on-gg                             controllers.UnauthorisedAssistantController.onPageLoad()
 
-GET        /no-reg-as-psa                               controllers.InterceptPSAController.onPageLoad()
-
 GET        /psp                                         controllers.PensionSchemePractitionerController.onPageLoad()
 
 GET        /registered-psa-details                      controllers.PsaDetailsController.onPageLoad()
