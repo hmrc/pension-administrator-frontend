@@ -16,6 +16,7 @@
 
 @import config.FrontendAppConfig
 @import viewmodels.Message
+@import models.NormalMode
 
 @this(
     main_template: main_template,
@@ -49,5 +50,5 @@
     <h2>@messages("companyNotFound.utrDoesntMatch")</h2>
     <p>@messages("companyNotFound.utrDoesntMatch.description")</p>
 
-    @components.button_link("site.enterDetailsAgain",controllers.register.company.routes.CompanyUTRController.onPageLoad().url, "enter-details-again-link")
+    @components.button_link("site.enterDetailsAgain",controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode).url, "enter-details-again-link")
 }

@@ -16,6 +16,7 @@
 
 package views.register.company
 
+import models.NormalMode
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
 import views.html.register.company.companyNotFound
@@ -54,7 +55,7 @@ class CompanyNotFoundViewSpec extends ViewBehaviours {
 
     "have link to enter details again" in {
       createView must haveLink(
-        controllers.register.company.routes.CompanyUTRController.onPageLoad().url,
+        controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode).url,
         "enter-details-again-link"
       )
     }
