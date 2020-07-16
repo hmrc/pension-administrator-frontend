@@ -93,7 +93,7 @@ class ConfirmPartnershipDetailsController @Inject()(
             fn(registration)
         } recoverWith {
           case _: NotFoundException =>
-            Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
+            Future.successful(Redirect(controllers.register.partnership.routes.PartnershipCompanyNotFoundController.onPageLoad()))
         }
     }
   }

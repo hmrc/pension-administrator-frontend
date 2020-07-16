@@ -123,7 +123,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.register.partnership.routes.PartnershipCompanyNotFoundController.onPageLoad().url)
     }
 
     "data is saved on page load" in {
