@@ -53,7 +53,7 @@ class PartnerDOBControllerSpec extends ControllerSpecBase {
       cacheConnector = FakeUserAnswersCacheConnector,
       navigator = FakeNavigator,
       authenticate = FakeAuthAction,
-      allowAccess = FakeAllowAccessProvider(),
+      allowAccess = FakeAllowAccessProvider(config = frontendAppConfig),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
       controllerComponents = stubMessagesControllerComponents(),

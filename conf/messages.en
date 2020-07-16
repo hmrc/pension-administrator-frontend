@@ -665,11 +665,6 @@ partnership.sameContactAddress.title = Can HMRC use this address to contact the 
 partnership.sameContactAddress.heading = Can HMRC use this address to contact {0}?
 partnershipSameContactAddress.checkYourAnswersLabel = Is your contact address the same as your registered address?
 
-interceptPSA.title = You have already registered as a pension scheme administrator
-interceptPSA.heading = You have already registered as a pension scheme administrator
-interceptPSA.body = This Government Gateway account has already been used to register as a pension scheme administrator.
-interceptPSA.button = Continue to your pension schemes
-
 alreadyDeleted.director.title = You have already deleted this director
 alreadyDeleted.heading = You have already deleted {0}
 alreadyDeleted.lede = You have already confirmed deletion of {0}.

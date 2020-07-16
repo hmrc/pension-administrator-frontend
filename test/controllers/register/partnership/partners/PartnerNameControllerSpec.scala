@@ -68,7 +68,7 @@ class PartnerNameControllerSpec extends ControllerSpecBase with PersonNameContro
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
-      allowAccess = FakeAllowAccessProvider(),
+      allowAccess = FakeAllowAccessProvider(config = frontendAppConfig),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
       controllerComponents = stubMessagesControllerComponents(),

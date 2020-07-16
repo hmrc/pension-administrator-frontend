@@ -56,7 +56,7 @@ object AddressYearsControllerSpec {
                                  val view: addressYears
                                 )(implicit val executionContext: ExecutionContext) extends AddressYearsController with I18nSupport {
 
-    override val allowAccess = FakeAllowAccessProvider()
+    override val allowAccess = FakeAllowAccessProvider(config = appConfig)
 
     def request(answers: UserAnswers, fakeRequest: Request[AnyContent] = FakeRequest()): DataRequest[AnyContent] =
       DataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers)

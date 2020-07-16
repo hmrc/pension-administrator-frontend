@@ -51,7 +51,7 @@ class CompanyNameControllerSpec extends ControllerSpecBase with BusinessNameCont
       new FakeUserAnswersCacheConnector{},
       new FakeNavigator(onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       new FakeDataRetrievalAction(Some(userAnswers.json)),
       new DataRequiredActionImpl(),
       new BusinessNameFormProvider,

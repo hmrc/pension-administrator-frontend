@@ -76,7 +76,7 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector,
       FakeNavigator,
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dontGetAnyData,
       new DataRequiredActionImpl,
       stubMessagesControllerComponents(),

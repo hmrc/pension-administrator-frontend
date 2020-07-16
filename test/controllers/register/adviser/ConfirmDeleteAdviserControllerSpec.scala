@@ -49,7 +49,7 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
-    new ConfirmDeleteAdviserController(frontendAppConfig, FakeAuthAction, FakeAllowAccessProvider(),
+    new ConfirmDeleteAdviserController(frontendAppConfig, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction, new DataRequiredActionImpl, FakeUserAnswersCacheConnector, formProvider, new FakeNavigator(desiredRoute = onwardRoute),
       stubMessagesControllerComponents(), view)
 

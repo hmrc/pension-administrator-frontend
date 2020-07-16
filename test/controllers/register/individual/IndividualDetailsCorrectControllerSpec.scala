@@ -101,7 +101,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeUserAnswersCacheConnector,
       fakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

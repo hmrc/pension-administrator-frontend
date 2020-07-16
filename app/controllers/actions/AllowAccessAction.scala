@@ -17,19 +17,22 @@
 package controllers.actions
 
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import connectors.MinimalPsaConnector
 import models._
 import models.requests.AuthenticatedRequest
-import play.api.mvc.{ActionFilter, Request, Result}
+import play.api.mvc.Call
+import play.api.mvc.{Request, Result, ActionFilter}
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class AllowAccessAction(
                          mode: Mode,
-                         minimalPsaConnector: MinimalPsaConnector
+                         minimalPsaConnector: MinimalPsaConnector,
+                         config: FrontendAppConfig
                        )(implicit val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
 
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
@@ -48,7 +51,7 @@ class AllowAccessAction(
       case (Some(_), NormalMode) if pagesAfterEnrolment(request) =>
         Future.successful(None)
       case (Some(_), NormalMode | CheckMode) =>
-        Future.successful(Some(Redirect(controllers.routes.InterceptPSAController.onPageLoad())))
+        Future.successful(Some(Redirect( Call("GET", config.schemesOverviewUrl) )))
       case _ =>
         Future.successful(Some(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
     }
@@ -61,10 +64,10 @@ class AllowAccessAction(
   }
 }
 
-class AllowAccessActionProviderImpl @Inject() (minimalPsaConnector: MinimalPsaConnector)(implicit executionContext: ExecutionContext)
+class AllowAccessActionProviderImpl @Inject() (minimalPsaConnector: MinimalPsaConnector, config: FrontendAppConfig)(implicit executionContext: ExecutionContext)
   extends AllowAccessActionProvider {
   def apply(mode: Mode): AllowAccessAction = {
-    new AllowAccessAction(mode, minimalPsaConnector)
+    new AllowAccessAction(mode, minimalPsaConnector, config)
   }
 }
 

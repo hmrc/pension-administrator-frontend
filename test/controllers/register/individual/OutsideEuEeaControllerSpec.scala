@@ -34,7 +34,7 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
     new OutsideEuEeaController(
       frontendAppConfig,
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       countryOptions,

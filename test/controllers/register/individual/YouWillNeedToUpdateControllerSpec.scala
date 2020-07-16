@@ -31,7 +31,7 @@ class YouWillNeedToUpdateControllerSpec extends ControllerSpecBase {
     new YouWillNeedToUpdateController(
       frontendAppConfig,
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       stubMessagesControllerComponents(),

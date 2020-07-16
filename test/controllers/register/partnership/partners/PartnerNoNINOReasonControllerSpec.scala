@@ -37,7 +37,7 @@ class PartnerNoNINOReasonControllerSpec extends ControllerWithCommonBehaviour {
   private val reasonForm = formProvider(partnerName)
   
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerNoNINOReasonController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view
   )

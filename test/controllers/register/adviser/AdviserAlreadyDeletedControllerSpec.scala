@@ -32,7 +32,7 @@ class AdviserAlreadyDeletedControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new AdviserAlreadyDeletedController(
       frontendAppConfig,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
