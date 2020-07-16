@@ -37,7 +37,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
     new AlreadyDeletedController(
       frontendAppConfig,
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       stubMessagesControllerComponents(),

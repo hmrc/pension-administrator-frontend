@@ -39,7 +39,7 @@ class DirectorPhoneControllerSpec extends ControllerWithCommonBehaviour {
   val view: phone = app.injector.instanceOf[phone]
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorPhoneController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view)
 

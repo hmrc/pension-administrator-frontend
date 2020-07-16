@@ -39,7 +39,7 @@ class DirectorNoNINOReasonControllerSpec extends ControllerWithCommonBehaviour {
   val view: reason = app.injector.instanceOf[reason]
   
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorNoNINOReasonController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view)
 

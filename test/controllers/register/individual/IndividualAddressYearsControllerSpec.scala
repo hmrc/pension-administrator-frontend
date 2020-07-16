@@ -54,7 +54,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

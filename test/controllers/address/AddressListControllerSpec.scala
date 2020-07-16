@@ -172,7 +172,7 @@ object AddressListControllerSpec extends SpecBase {
 
     override protected def navigator: Navigator = new FakeNavigator(onwardRoute)
 
-    override val allowAccess = FakeAllowAccessProvider()
+    override val allowAccess = FakeAllowAccessProvider(config = frontendAppConfig)
 
     def onPageLoad(viewModel: AddressListViewModel, form: Form[Int]): Future[Result] = {
 

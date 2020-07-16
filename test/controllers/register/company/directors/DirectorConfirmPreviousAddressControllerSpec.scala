@@ -68,7 +68,7 @@ class DirectorConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       countryOptions,

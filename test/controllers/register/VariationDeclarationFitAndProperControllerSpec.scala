@@ -94,7 +94,7 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
     new VariationDeclarationFitAndProperController(
       appConfig,
       FakeAuthAction(userType),
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,

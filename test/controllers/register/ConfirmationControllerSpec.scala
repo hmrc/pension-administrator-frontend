@@ -85,7 +85,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       messagesApi,
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeUserAnswersCacheConnector,

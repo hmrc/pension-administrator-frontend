@@ -37,7 +37,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new AlreadyDeletedController(
       frontendAppConfig,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
