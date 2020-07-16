@@ -73,7 +73,7 @@ class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBeha
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
-      allowAccess = FakeAllowAccessProvider(config = frontendAppConfig),
+      allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
       stubMessagesControllerComponents(), view

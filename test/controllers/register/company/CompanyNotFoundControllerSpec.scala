@@ -29,7 +29,7 @@ class CompanyNotFoundControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyNotFoundController(frontendAppConfig, FakeAuthAction,
-      FakeAllowAccessProvider(config = frontendAppConfig), dataRetrievalAction, new DataRequiredActionImpl,
+      FakeAllowAccessProvider(), dataRetrievalAction, new DataRequiredActionImpl,
       stubMessagesControllerComponents(), view)
 
   def viewAsString(): String = view()(fakeRequest, messages).toString

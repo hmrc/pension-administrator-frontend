@@ -62,7 +62,7 @@ class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
     new VariationNoLongerFitAndProperController(
       frontendAppConfig,
       FakeAuthAction(UserType.Individual),
-      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeUserAnswersCacheConnector,

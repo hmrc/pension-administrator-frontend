@@ -103,7 +103,7 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   def application: Application = new GuiceApplicationBuilder()
     .overrides(
       bind[AuthAction].to(FakeAuthAction),
-      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider(config = frontendAppConfig)),
+      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(getPartnership),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).to(fakeNavigator),

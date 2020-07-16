@@ -62,7 +62,7 @@ class IncompleteChangesControllerSpec extends ControllerSpecBase {
     new IncompleteChangesController(
       frontendAppConfig,
       FakeAuthAction(UserType.Individual),
-      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeUserAnswersCacheConnector,

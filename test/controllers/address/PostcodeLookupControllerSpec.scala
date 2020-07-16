@@ -67,7 +67,7 @@ object PostcodeLookupControllerSpec extends SpecBase {
                                   val view: postcodeLookup
                                 )(implicit val executionContext: ExecutionContext) extends PostcodeLookupController {
 
-    override val allowAccess = FakeAllowAccessProvider(config = frontendAppConfig)
+    override val allowAccess = FakeAllowAccessProvider()
 
     def onPageLoad(viewmodel: PostcodeLookupViewModel, answers: UserAnswers): Future[Result] =
       get(viewmodel, NormalMode)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers))
