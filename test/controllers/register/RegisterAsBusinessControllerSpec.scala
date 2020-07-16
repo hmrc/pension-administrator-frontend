@@ -107,7 +107,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
       frontendAppConfig,
       messagesApi,
       authAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       cache,
       navigator,

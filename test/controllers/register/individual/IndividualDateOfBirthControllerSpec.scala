@@ -151,7 +151,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

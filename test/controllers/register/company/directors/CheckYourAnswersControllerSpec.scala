@@ -107,7 +107,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new CheckYourAnswersController(
       frontendAppConfig,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

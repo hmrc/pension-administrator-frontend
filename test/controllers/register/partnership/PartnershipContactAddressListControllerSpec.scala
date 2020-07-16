@@ -105,7 +105,7 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
   def application: Application = new GuiceApplicationBuilder()
     .overrides(
       bind[AuthAction].to(FakeAuthAction),
-      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
+      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider(config = frontendAppConfig)),
       bind[DataRetrievalAction].toInstance(retrieval),
       bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)

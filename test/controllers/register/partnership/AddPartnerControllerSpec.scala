@@ -171,7 +171,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
       FakeUserAnswersCacheConnector,
       navigator,
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

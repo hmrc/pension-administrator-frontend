@@ -52,7 +52,7 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       stubMessagesControllerComponents(),

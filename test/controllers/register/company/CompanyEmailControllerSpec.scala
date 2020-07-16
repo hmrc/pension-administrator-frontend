@@ -36,7 +36,7 @@ class CompanyEmailControllerSpec extends ControllerWithCommonBehaviour {
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   val view: email = app.injector.instanceOf[email]
   private def controller(dataRetrievalAction: DataRetrievalAction) = new CompanyEmailController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view)
 

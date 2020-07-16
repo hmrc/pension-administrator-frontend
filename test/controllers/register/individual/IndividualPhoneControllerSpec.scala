@@ -37,7 +37,7 @@ class IndividualPhoneControllerSpec extends ControllerWithCommonBehaviour {
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new IndividualPhoneController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider, stubMessagesControllerComponents(), view)
 
   val view: phone = app.injector.instanceOf[phone]

@@ -60,7 +60,7 @@ class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControl
 
       override def messagesApi: MessagesApi = base.messagesApi
 
-      override val allowAccess = FakeAllowAccessProvider()
+      override val allowAccess = FakeAllowAccessProvider(config = frontendAppConfig)
 
       implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
 

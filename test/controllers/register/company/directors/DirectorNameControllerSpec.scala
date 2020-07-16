@@ -74,7 +74,7 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
-      allowAccess = FakeAllowAccessProvider(),
+      allowAccess = FakeAllowAccessProvider(config = frontendAppConfig),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
       controllerComponents = stubMessagesControllerComponents(),

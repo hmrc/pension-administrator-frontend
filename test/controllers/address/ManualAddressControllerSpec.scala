@@ -73,7 +73,7 @@ object ManualAddressControllerSpec extends SpecBase {
                                   val view: manualAddress
                                 )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
-    override val allowAccess = FakeAllowAccessProvider()
+    override val allowAccess = FakeAllowAccessProvider(config = frontendAppConfig)
 
     def onPageLoad(viewModel: ManualAddressViewModel, answers: UserAnswers): Future[Result] =
       get(viewModel, NormalMode)(DataRequest(FakeRequest(), "cacheId", psaUser, answers))

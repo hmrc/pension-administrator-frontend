@@ -37,7 +37,7 @@ class HasPartnerNINOControllerSpec extends ControllerWithCommonBehaviour {
   private val hasReferenceNumberForm = formProvider("error.required", partnerName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasPartnerNINOController(
-    frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(),
+    frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view
   )

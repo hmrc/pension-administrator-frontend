@@ -120,7 +120,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       FakeNavigator,
       new FakeAuthAction(userType, psaId),
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       fakePsaDataService,
       stubMessagesControllerComponents(),

@@ -66,7 +66,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
       FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

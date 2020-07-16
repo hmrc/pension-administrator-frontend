@@ -235,7 +235,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
     new DeclarationController(
       appConfig,
       FakeAuthAction(userType),
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeAllowDeclarationActionProvider(),

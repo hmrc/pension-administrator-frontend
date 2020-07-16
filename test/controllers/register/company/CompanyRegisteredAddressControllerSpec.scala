@@ -57,7 +57,7 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
       registrationConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
