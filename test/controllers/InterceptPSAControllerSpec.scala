@@ -14,39 +14,28 @@
  * limitations under the License.
  */
 
-package controllers.register
+package controllers
 
-import controllers.ControllerSpecBase
-import controllers.actions._
-import models.NormalMode
 import play.api.test.Helpers._
+import views.html.interceptPSA
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import views.html.register.submissionInvalid
 
-class SubmissionInvalidControllerSpec extends ControllerSpecBase {
+class InterceptPSAControllerSpec extends ControllerSpecBase {
 
-  val view: submissionInvalid = app.injector.instanceOf[submissionInvalid]
+  val interceptPSAview: interceptPSA = app.injector.instanceOf[interceptPSA]
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new SubmissionInvalidController(
-      frontendAppConfig,
-      FakeAuthAction,
-      FakeAllowAccessProvider(),
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      stubMessagesControllerComponents(),
-      view
-    )
+  def controller() = new InterceptPSAController(frontendAppConfig, stubMessagesControllerComponents(), interceptPSAview)
 
-  def viewAsString(): String = view()(fakeRequest, messages).toString
+  def viewAsString(): String = interceptPSAview()(fakeRequest, messages).toString
 
-  "SubmissionInvalidController" must {
+  "InterceptPSA Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller().onPageLoad(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
   }
+
 }

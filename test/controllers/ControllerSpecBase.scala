@@ -17,14 +17,13 @@
 package controllers
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
-import identifiers.register.{RegistrationInfoId, BusinessNameId}
+import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
@@ -100,7 +99,7 @@ trait ControllerSpecBase extends SpecBase {
 
   def modules(dataRetrievalAction: DataRetrievalAction): Seq[GuiceableModule] = Seq(
     bind[AuthAction].toInstance(FakeAuthAction),
-    bind[AllowAccessActionProvider].toInstance(FakeAllowAccessProvider(config = app.injector.instanceOf[FrontendAppConfig])),
+    bind[AllowAccessActionProvider].toInstance(FakeAllowAccessProvider()),
     bind[DataRetrievalAction].toInstance(dataRetrievalAction)
   )
 }

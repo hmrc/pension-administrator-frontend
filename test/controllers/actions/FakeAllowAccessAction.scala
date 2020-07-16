@@ -16,21 +16,20 @@
 
 package controllers.actions
 
-import config.FrontendAppConfig
 import models.requests.AuthenticatedRequest
 import models.{Mode, NormalMode}
 import play.api.mvc.Result
-
 import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.concurrent.Future
 
-private class FakeAllowAccessAction(mode: Mode, config: FrontendAppConfig) extends AllowAccessAction(mode, FakeMinimalPsaConnector(), config) {
+class FakeAllowAccessAction(mode: Mode) extends AllowAccessAction(mode, FakeMinimalPsaConnector()) {
   override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] =
     Future.successful(None)
 }
 
-case class FakeAllowAccessProvider(mode: Mode = NormalMode, config: FrontendAppConfig) extends AllowAccessActionProvider {
+case class FakeAllowAccessProvider(mode: Mode = NormalMode) extends AllowAccessActionProvider {
   override def apply(mode: Mode): AllowAccessAction =
-    new FakeAllowAccessAction(mode, config)
+    new FakeAllowAccessAction(mode)
 }
 

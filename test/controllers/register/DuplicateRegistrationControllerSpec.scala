@@ -28,7 +28,7 @@ class DuplicateRegistrationControllerSpec extends ControllerSpecBase {
   val view: duplicateRegistration = app.injector.instanceOf[duplicateRegistration]
 
   def controller() = new DuplicateRegistrationController(
-    frontendAppConfig, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig), getEmptyData,
+    frontendAppConfig, FakeAuthAction, FakeAllowAccessProvider(), getEmptyData,
     stubMessagesControllerComponents(), view)
 
   private def viewAsString() = view()(fakeRequest, messages).toString

@@ -299,7 +299,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeRegistrationConnector,

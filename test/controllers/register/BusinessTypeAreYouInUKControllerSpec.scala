@@ -44,7 +44,7 @@ class BusinessTypeAreYouInUKControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

@@ -144,7 +144,7 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

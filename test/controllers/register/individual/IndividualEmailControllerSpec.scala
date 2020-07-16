@@ -38,7 +38,7 @@ class IndividualEmailControllerSpec extends ControllerWithCommonBehaviour {
   val view: email = app.injector.instanceOf[email]
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new IndividualEmailController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider, stubMessagesControllerComponents(), view)
 
 

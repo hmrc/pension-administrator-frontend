@@ -123,7 +123,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
     new CheckYourAnswersController(
       frontendAppConfig,
       FakeAuthAction,
-      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       mockDataCompletion,

@@ -39,7 +39,7 @@ class DirectorEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
   val view: enterUTR = app.injector.instanceOf[enterUTR]
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEnterUTRController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view)
 

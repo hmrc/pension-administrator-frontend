@@ -57,7 +57,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
       FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
-      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAllowAccessProvider(),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

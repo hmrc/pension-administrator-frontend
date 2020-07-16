@@ -68,7 +68,7 @@ class PSAVarianceSuccessControllerSpec extends ControllerSpecBase {
     new PSAVarianceSuccessController(
       frontendAppConfig,
       FakeAuthAction(UserType.Individual),
-      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeUserAnswersCacheConnector,

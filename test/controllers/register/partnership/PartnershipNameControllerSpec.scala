@@ -52,7 +52,7 @@ class PartnershipNameControllerSpec extends ControllerSpecBase with BusinessName
       new FakeUserAnswersCacheConnector{},
       new FakeNavigator(onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAllowAccessProvider(),
       new FakeDataRetrievalAction(Some(userAnswers.json)),
       new DataRequiredActionImpl(),
       new BusinessNameFormProvider(),

@@ -93,7 +93,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       appConfig,
       messagesApi,
       FakeAuthAction,
-      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAllowAccessProvider(),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeAllowDeclarationActionProvider(),

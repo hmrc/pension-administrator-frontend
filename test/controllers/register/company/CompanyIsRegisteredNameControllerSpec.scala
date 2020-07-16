@@ -81,7 +81,7 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,
-      allowAccess = FakeAllowAccessProvider(config = frontendAppConfig),
+      allowAccess = FakeAllowAccessProvider(),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
       formProvider = new IsRegisteredNameFormProvider(),

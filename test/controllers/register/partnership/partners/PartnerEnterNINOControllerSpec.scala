@@ -37,7 +37,7 @@ class PartnerEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
   private val ninoForm = formProvider(partnerName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerEnterNINOController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view
   )

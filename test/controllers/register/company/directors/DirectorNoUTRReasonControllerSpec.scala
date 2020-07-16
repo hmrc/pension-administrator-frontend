@@ -37,7 +37,7 @@ class DirectorNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
   private val reasonForm = formProvider(directorName)
   val view: reason = app.injector.instanceOf[reason]
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorNoUTRReasonController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
+    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view)
 

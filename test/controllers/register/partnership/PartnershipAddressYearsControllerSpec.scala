@@ -79,7 +79,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
   def application: Application = new GuiceApplicationBuilder()
     .overrides(
       bind[AuthAction].to(FakeAuthAction),
-      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider(config = frontendAppConfig)),
+      bind[AllowAccessActionProvider].to(FakeAllowAccessProvider()),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
