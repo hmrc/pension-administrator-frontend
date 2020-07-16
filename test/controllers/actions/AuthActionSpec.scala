@@ -58,7 +58,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.InterceptPSAController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(Call("GET", frontendAppConfig.schemesOverviewUrl).url)
       }
     }
 

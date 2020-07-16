@@ -62,7 +62,7 @@ class HasPartnershipVATControllerSpec extends ControllerWithCommonBehaviour {
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

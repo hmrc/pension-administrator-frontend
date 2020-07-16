@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import models._
 import models.requests.AuthenticatedRequest
 import org.scalatest.concurrent.ScalaFutures
+import play.api.mvc.Call
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -107,7 +108,8 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       whenReady(futureResult) { result =>
 
         result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.InterceptPSAController.onPageLoad().url)
+
+        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(Call("GET", frontendAppConfig.schemesOverviewUrl).url)
       }
     }
   }

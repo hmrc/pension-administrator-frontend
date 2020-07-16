@@ -29,7 +29,7 @@ class CompanyUpdateDetailsControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyUpdateDetailsController(frontendAppConfig, FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction, new DataRequiredActionImpl,
       stubMessagesControllerComponents(), view)
 

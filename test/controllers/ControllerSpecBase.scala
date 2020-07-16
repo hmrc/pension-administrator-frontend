@@ -100,7 +100,7 @@ trait ControllerSpecBase extends SpecBase {
 
   def modules(dataRetrievalAction: DataRetrievalAction): Seq[GuiceableModule] = Seq(
     bind[AuthAction].toInstance(FakeAuthAction),
-    bind[AllowAccessActionProvider].toInstance(FakeAllowAccessProvider(frontendAppConfig = app.injector.instanceOf[FrontendAppConfig])),
+    bind[AllowAccessActionProvider].toInstance(FakeAllowAccessProvider(config = app.injector.instanceOf[FrontendAppConfig])),
     bind[DataRetrievalAction].toInstance(dataRetrievalAction)
   )
 }

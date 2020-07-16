@@ -270,7 +270,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeRegistrationConnector,

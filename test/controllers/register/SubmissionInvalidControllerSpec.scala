@@ -31,7 +31,7 @@ class SubmissionInvalidControllerSpec extends ControllerSpecBase {
     new SubmissionInvalidController(
       frontendAppConfig,
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       stubMessagesControllerComponents(),

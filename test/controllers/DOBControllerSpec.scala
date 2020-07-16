@@ -150,7 +150,7 @@ class DOBControllerSpec extends ControllerSpecBase {
 
       override def messagesApi: MessagesApi = base.messagesApi
 
-      override val allowAccess = FakeAllowAccessProvider()
+      override val allowAccess = FakeAllowAccessProvider(config = base.frontendAppConfig)
 
       override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 

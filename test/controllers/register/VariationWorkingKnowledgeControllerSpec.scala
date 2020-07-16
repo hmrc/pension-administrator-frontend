@@ -54,7 +54,7 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction(UserType.Individual),
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

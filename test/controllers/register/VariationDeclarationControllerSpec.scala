@@ -117,7 +117,7 @@ class VariationDeclarationControllerSpec extends ControllerSpecBase {
     new VariationDeclarationController(
       frontendAppConfig,
       FakeAuthAction(userType, psaId),
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeNavigator,

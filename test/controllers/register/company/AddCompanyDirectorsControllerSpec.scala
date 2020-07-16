@@ -170,7 +170,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
       frontendAppConfig,
       navigator,
       FakeAuthAction,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,

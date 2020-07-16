@@ -62,7 +62,7 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
       new FakeNavigator(desiredRoute = onwardRoute),
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
-      FakeAllowAccessProvider(),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
