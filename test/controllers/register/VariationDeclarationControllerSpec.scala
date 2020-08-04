@@ -27,7 +27,7 @@ import models.register.PsaSubscriptionResponse
 import models.{NormalMode, TolerantIndividual, UpdateMode, UserType}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.variationDeclaration
@@ -48,7 +48,7 @@ class VariationDeclarationControllerSpec extends ControllerSpecBase {
     .set(DeclarationFitAndProperId)(true).asOpt.value
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
-
+  private val fakePensionsSchemeConnector: FakePensionsSchemeConnector = new FakePensionsSchemeConnector()
 
   "DeclarationVariationController" when {
 
@@ -102,13 +102,11 @@ class VariationDeclarationControllerSpec extends ControllerSpecBase {
 
     override def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = ???
 
-    override def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
+    override def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
       updateCalledWithData = Some((psaId, answers))
-      Future.successful(())
+      Future.successful(HttpResponse(OK, ""))
     }
   }
-
-  private val fakePensionsSchemeConnector: FakePensionsSchemeConnector = new FakePensionsSchemeConnector()
 
   val view: variationDeclaration = app.injector.instanceOf[variationDeclaration]
 

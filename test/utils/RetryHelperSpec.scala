@@ -25,8 +25,9 @@ import org.scalatest.time.{Seconds, Span}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HttpException, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HttpException, Upstream5xxResponse, UpstreamErrorResponse}
 
+import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -57,6 +58,7 @@ class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with 
     }
 
     "back off exponentially" in {
+      @tailrec
       def getMinimumExpectedDuration(iteration: Int, expectedTime: Long, currentWait: Int): Long = {
         if(iteration >= MAX_ATTEMPTS) {
           expectedTime + currentWait
@@ -66,11 +68,11 @@ class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with 
         }
       }
 
-      val failedFunction = () => Future.failed(new Upstream5xxResponse("Bad Request", 503, 0))
+      val failedFunction = () => Future.failed(UpstreamErrorResponse("Bad Request", 503, 0))
       val startTime = LocalDateTime.now
 
       whenReady(retryHelper.retryOnFailure(failedFunction, frontendAppConfig).failed, timeout(Span(TIMEOUT, Seconds))) {
-        case e: Upstream5xxResponse => e.upstreamResponseCode mustEqual SERVICE_UNAVAILABLE
+        case e: UpstreamErrorResponse => e.statusCode mustEqual SERVICE_UNAVAILABLE
       }
 
       val endTime = LocalDateTime.now
@@ -86,7 +88,7 @@ class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with 
       val failThenSuccessFunc = () => {
         if(counter < NUMBER_OF_RETRIES) {
           counter = counter + 1
-          Future.failed(new Upstream5xxResponse("Bad Request", 503, 0))
+          Future.failed(UpstreamErrorResponse("Bad Request", 503, 0))
         }
         else {
           Future.successful("A successful future")

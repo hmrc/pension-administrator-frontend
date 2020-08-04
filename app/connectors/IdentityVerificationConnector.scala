@@ -19,16 +19,20 @@ package connectors
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import play.api.Logger
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
-class IdentityVerificationConnectorImpl @Inject()(http: HttpClient, appConfig: FrontendAppConfig) extends IdentityVerificationConnector {
+class IdentityVerificationConnectorImpl @Inject()(http: HttpClient, appConfig: FrontendAppConfig)
+  extends IdentityVerificationConnector
+    with HttpResponseHelper {
   def startRegisterOrganisationAsIndividual(completionURL: String, failureURL: String)
                                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
 
@@ -39,11 +43,17 @@ class IdentityVerificationConnectorImpl @Inject()(http: HttpClient, appConfig: F
       "confidenceLevel" -> 200
     )
 
-    http.POST(appConfig.ivRegisterOrganisationAsIndividualUrl, jsonData).map { response =>
-      require(response.status == Status.CREATED)
-      (response.json \ "link").validate[String] match {
-        case JsSuccess(value, _) => value
-        case JsError(errors) => throw JsResultException(errors)
+    val url = appConfig.ivRegisterOrganisationAsIndividualUrl
+
+    http.POST[JsObject, HttpResponse](url, jsonData).map { response =>
+      response.status match {
+        case CREATED =>
+          (response.json \ "link").validate[String] match {
+            case JsSuccess(value, _) => value
+            case JsError(errors) => throw JsResultException(errors)
+          }
+        case _ =>
+          handleErrorResponse("POST", url)(response)
       }
     } andThen {
       logExceptions("Unable to start registration of organisation as individual via IV")
@@ -54,12 +64,8 @@ class IdentityVerificationConnectorImpl @Inject()(http: HttpClient, appConfig: F
                                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Nino]] = {
     val url = s"${appConfig.identityVerification}/identity-verification/journey/$journeyId"
 
-    implicit val rds: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
-      override def read(method: String, url: String, response: HttpResponse): HttpResponse = response
-    }
-
-    http.GET(url).flatMap {
-      case response if response.status equals Status.OK =>
+    http.GET[HttpResponse](url).flatMap {
+      case response if response.status equals OK =>
         Future.successful((response.json \ "nino").asOpt[Nino])
       case response =>
         Logger.debug(s"Call to retrieve Nino from IV failed with status ${response.status} and response body ${response.body}")

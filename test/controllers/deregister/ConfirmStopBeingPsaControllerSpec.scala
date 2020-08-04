@@ -145,27 +145,24 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
   private val postRequestCancel: FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest().withFormUrlEncodedBody(("value", "false"))
 
-  //private def testData = new FakeDataRetrievalAction(Some(Json.obj(PSANameId.toString -> "psaName")))
-
-
   private def fakeTaxEnrolmentsConnector: TaxEnrolmentsConnector = new TaxEnrolmentsConnector {
     override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
-             (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse] = ???
+                      (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse] = ???
 
-    override def deEnrol(groupId: String, psaId: String, userId: String)(
-      implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT))
+    override def deEnrol(groupId: String, psaId: String, userId: String)
+                        (implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT, ""))
   }
 
   private def fakeDeregistrationConnector(canDeregister: Boolean): DeregistrationConnector = new DeregistrationConnector {
     override def stopBeingPSA(psaId: String)(
-      implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT))
+      implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT, ""))
 
     override def canDeRegister(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = Future.successful(canDeregister)
   }
 
   private def fakeMinimalPsaConnector(minimalPsaDetailsIndividual: MinimalPSA): MinimalPsaConnector = new MinimalPsaConnector {
 
-    override  def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = ???
+    override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = ???
 
     override def getMinimalPsaDetails(psaId: String)(
       implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = Future.successful(minimalPsaDetailsIndividual)
@@ -183,6 +180,7 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
       def apply(): AllowAccessForNonSuspendedUsersAction = new AllowAccessForNonSuspendedUsersAction(minimalPsaConnector)
     }
   }
+
   val view = inject[confirmStopBeingPsa]
 
   private def controller(minimalPsaDetails: MinimalPSA = minimalPsaDetailsNone, canDeregister: Boolean = true)(implicit hc: HeaderCarrier) = {

@@ -22,6 +22,7 @@ import models.TolerantAddress
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.Reads
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HttpException, _}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -42,19 +43,17 @@ class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendApp
         response.json.as[Seq[TolerantAddress]]
           .filterNot(a=>a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.addressLine3.isEmpty && a.addressLine4.isEmpty)
       }
-      case response => {
+      case response =>
         val message = s"Address Lookup failed with status ${response.status} Response body :${response.body}"
         Future.failed(new HttpException(message, response.status))
-      }
     } recoverWith logExceptions
   }
 
 
   private def logExceptions: PartialFunction[Throwable, Future[Seq[TolerantAddress]]] = {
-    case (t: Throwable) => {
+    case t: Throwable =>
       Logger.error("Exception in AddressLookup", t)
       Future.failed(t)
-    }
   }
 }
 

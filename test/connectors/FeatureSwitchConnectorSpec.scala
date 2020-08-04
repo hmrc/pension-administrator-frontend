@@ -90,11 +90,11 @@ class FeatureSwitchConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
   "reset " must {
 
     val resetUrl = s"/pensions-scheme/test-only/reset/$featureSwitch"
-    "return OK when backend resets successfully" in {
+    "return NO_CONTENT when backend resets successfully" in {
       server.stubFor(
         get(urlEqualTo(resetUrl))
           .willReturn(
-            ok()
+            noContent()
           )
       )
       connector.reset(featureSwitch).map(response =>

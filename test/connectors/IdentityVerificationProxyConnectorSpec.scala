@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.http.Status
 import play.api.libs.json.{JsResultException, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse, UpstreamErrorResponse}
 import utils.WireMockHelper
 
 class IdentityVerificationProxyConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
@@ -53,7 +53,7 @@ class IdentityVerificationProxyConnectorSpec extends AsyncWordSpec with MustMatc
       }
     }
 
-    "throw a Upstream5xxResponse if bad gateway status returned" in {
+    "throw a UpstreamErrorResponse if bad gateway status returned" in {
       server.stubFor(
         post(urlEqualTo(url))
           .willReturn(
@@ -62,7 +62,7 @@ class IdentityVerificationProxyConnectorSpec extends AsyncWordSpec with MustMatc
           )
       )
 
-      recoverToSucceededIf[Upstream5xxResponse] {
+      recoverToSucceededIf[UpstreamErrorResponse] {
         connector.startRegisterOrganisationAsIndividual(completionURL = completionURL, failureURL = failureURL)
       }
     }

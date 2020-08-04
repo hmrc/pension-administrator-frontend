@@ -16,7 +16,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % "8.8.0-play-26",
     "uk.gov.hmrc" %% "http-caching-client" % "9.0.0-play-26",
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.2.0-play-26",
-    "uk.gov.hmrc" %% "bootstrap-play-26" % "1.3.0",
+    "uk.gov.hmrc" %% "bootstrap-play-26" % "1.14.0",
     "uk.gov.hmrc" %% "play-language" % "4.2.0-play-26",
     "uk.gov.hmrc" %% "domain" % "5.6.0-play-26",
     "uk.gov.hmrc" %% "play-whitelist-filter" % "3.1.0-play-26",
@@ -26,7 +26,7 @@ object AppDependencies {
   val scope: String = "test"
 
   val test: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc" %% "bootstrap-play-26" % "1.3.0" % Test classifier "tests",
+    "uk.gov.hmrc" %% "bootstrap-play-26" % "1.14.0" % Test classifier "tests",
     "uk.gov.hmrc" %% "hmrctest" % "3.9.0-play-26" % scope,
     "org.scalatest" %% "scalatest" % "3.0.8" % scope,
     "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % scope,

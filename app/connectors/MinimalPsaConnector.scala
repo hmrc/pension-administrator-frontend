@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.HttpResponseHelper
-
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import scala.concurrent.{Future, ExecutionContext}
 import scala.util.Failure
 

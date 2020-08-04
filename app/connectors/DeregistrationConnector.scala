@@ -19,13 +19,12 @@ package connectors
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import play.api.Logger
-import play.api.http.Status
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.HttpResponseHelper
-
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
@@ -39,7 +38,7 @@ trait DeregistrationConnector {
 class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends DeregistrationConnector with HttpResponseHelper {
   override def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val deregisterUrl = config.deregisterPsaUrl.format(psaId)
-    http.DELETE(deregisterUrl) map {
+    http.DELETE[HttpResponse](deregisterUrl) map {
       response => response.status match {
         case NO_CONTENT => response
         case _ => handleErrorResponse("DELETE", deregisterUrl)(response)
@@ -53,7 +52,7 @@ class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
 
     val url = config.canDeRegisterPsaUrl(psaId)
 
-    http.GET(url).map { response =>
+    http.GET[HttpResponse](url).map { response =>
       response.status match {
         case OK => response.json.validate[Boolean] match {
           case JsSuccess(value, _) => value

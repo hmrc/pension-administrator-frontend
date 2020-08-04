@@ -25,7 +25,7 @@ import play.api.libs.json.{JsError, JsResultException, JsSuccess, JsValue}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.{HttpResponseHelper, UserAnswers}
-
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
@@ -78,7 +78,7 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
   def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     val url = config.updateSubscriptionDetailsUrl
 
-    http.PUT(url, answers.json) map { response =>
+    http.PUT[JsValue, HttpResponse](url, answers.json) map { response =>
       response.status match {
         case OK => ()
         case BAD_REQUEST if response.body.contains("INVALID_PAYLOAD") => throw InvalidSubscriptionPayloadException()

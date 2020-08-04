@@ -22,7 +22,7 @@ import org.scalatest.{AsyncFlatSpec, Matchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.http.Status._
 import play.api.libs.json.{JsResultException, JsValue, Json}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse, UpstreamErrorResponse}
 import utils.testhelpers.PsaSubscriptionBuilder._
 import utils.{UserAnswers, WireMockHelper}
 
@@ -106,7 +106,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
     }
   }
 
-  it should "throw Upstream5xxResponse for internal server error" in {
+  it should "throw UpstreamErrorResponse for internal server error" in {
     server.stubFor(
       get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
         .willReturn(
@@ -114,7 +114,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
         )
     )
 
-    recoverToExceptionIf[Upstream5xxResponse] {
+    recoverToExceptionIf[UpstreamErrorResponse] {
       connector.getSubscriptionDetails(psaId)
     } map {
       _ =>
@@ -219,7 +219,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
     }
   }
 
-  it should "throw Upstream5xxResponse when internal server error response returned from DES" in {
+  it should "throw UpstreamErrorResponse when internal server error response returned from DES" in {
     server.stubFor(
       put(urlEqualTo(updateSubscriptionDetailsUrl))
         .withRequestBody(equalToJson(Json.stringify(userAnswers.json)))
@@ -230,7 +230,7 @@ class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMoc
         )
     )
 
-    recoverToExceptionIf[Upstream5xxResponse] {
+    recoverToExceptionIf[UpstreamErrorResponse] {
       connector.updateSubscriptionDetails(userAnswers)
     } map {
       _ =>

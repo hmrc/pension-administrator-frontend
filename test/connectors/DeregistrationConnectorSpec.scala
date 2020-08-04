@@ -21,7 +21,7 @@ import org.scalatestplus.scalacheck.Checkers
 import org.scalatest.{AsyncFlatSpec, Matchers}
 import play.api.http.Status
 import play.api.libs.json.{JsBoolean, JsResultException, JsString, Json}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse, UpstreamErrorResponse}
 import utils.WireMockHelper
 
 class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper with Checkers {
@@ -93,7 +93,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     }
   }
 
-  it should "throw a Upstream5xxResponse if service unavailable is returned" in {
+  it should "throw a UpstreamErrorResponse if service unavailable is returned" in {
     server.stubFor(
       get(urlEqualTo(canRegisterUrl))
         .willReturn(
@@ -103,7 +103,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     )
     val connector = injector.instanceOf[DeregistrationConnector]
 
-    recoverToSucceededIf[Upstream5xxResponse] {
+    recoverToSucceededIf[UpstreamErrorResponse] {
       connector.canDeRegister(psaId)
     }
   }
