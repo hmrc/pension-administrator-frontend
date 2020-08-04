@@ -28,7 +28,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse, UpstreamErrorResponse}
 import utils.{UserAnswers, WireMockHelper}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -55,9 +55,7 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
   }
 
   override protected def bindings: Seq[GuiceableModule] =
-    Seq(
-      bind[AuditService].toInstance(fakeAuditService)
-    )
+    Seq(bind[AuditService].toInstance(fakeAuditService))
 
   ".enrol" must {
 
@@ -80,7 +78,6 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
               result.status mustEqual NO_CONTENT
               fakeAuditService.verifySent(expectedAuditEvent) mustBe true
           }
-
         }
       }
     }
@@ -100,7 +97,6 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
           recoverToSucceededIf[BadRequestException] {
             connector.enrol(testPsaId, knownFacts)
           }
-
         }
       }
       "enrolments returns UNAUTHORISED" which {
@@ -115,10 +111,9 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
               )
           )
 
-          recoverToSucceededIf[Upstream4xxResponse] {
+          recoverToSucceededIf[UpstreamErrorResponse] {
             connector.enrol(testPsaId, knownFacts)
           }
-
         }
       }
     }

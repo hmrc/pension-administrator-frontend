@@ -23,19 +23,15 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.register.routes.{DuplicateRegistrationController, SubmissionInvalidController}
-import identifiers.register.company.CompanyEmailId
-import identifiers.register.individual.IndividualEmailId
-import identifiers.register.partnership.PartnershipEmailId
 import identifiers.register.{DeclarationId, _}
 import javax.inject.Inject
-import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
 import models.{ExistingPSA, Mode, NormalMode}
 import play.api.Logger
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, Upstream4xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
@@ -90,7 +86,7 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
         }) recoverWith {
           case _: BadRequestException =>
             Future.successful(Redirect(SubmissionInvalidController.onPageLoad()))
-          case ex: Upstream4xxResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
+          case ex: UpstreamErrorResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
             Future.successful(Redirect(DuplicateRegistrationController.onPageLoad()))
           case _ =>
             Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))

@@ -22,11 +22,11 @@ import identifiers.register.BusinessTypeId
 import models.register.{BusinessType, PsaSubscriptionResponse}
 import org.scalatest.{AsyncFlatSpec, Matchers, OptionValues}
 import play.api.Application
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsResultException, Json}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException, Upstream5xxResponse}
-import utils.{UserAnswers, WireMockHelper}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
+import utils.{UnrecognisedHttpResponseException, UserAnswers, WireMockHelper}
 
 class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
 
@@ -76,7 +76,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
     val connector = injector.instanceOf[PensionsSchemeConnector]
 
-    recoverToSucceededIf[IllegalArgumentException] {
+    recoverToSucceededIf[UnrecognisedHttpResponseException] {
       connector.registerPsa(userAnswers)
     }
 
@@ -124,7 +124,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
       post(urlEqualTo(registerPsaUrl))
         .willReturn(
           aResponse()
-            .withStatus(Status.BAD_REQUEST)
+            .withStatus(BAD_REQUEST)
         )
     )
 
@@ -154,7 +154,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     }
   }
 
-  it should "return BadRequestException where invalid psaid response is received" in {
+  it should "return BAD_REQUEST where invalid psaid response is received" in {
     val psaId = "testpsa"
     server.stubFor(
       post(urlEqualTo(updatePsaUrl(psaId = psaId)))
@@ -167,57 +167,61 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
     val connector = injector.instanceOf[PensionsSchemeConnector]
 
-    recoverToSucceededIf[BadRequestException] {
-      connector.updatePsa(psaId, userAnswers)
+    connector.updatePsa(psaId, userAnswers) map {
+      response =>
+        response.status shouldBe BAD_REQUEST
     }
   }
 
 
-  it should "return BadRequestException where not found response is received" in {
+  it should "return NOT_FOUND where 404 response is received" in {
     val psaId = "testpsa"
     server.stubFor(
       post(urlEqualTo(updatePsaUrl(psaId = psaId)))
         .willReturn(
-          aResponse.withStatus(Status.NOT_FOUND)
+          notFound()
         )
     )
 
     val connector = injector.instanceOf[PensionsSchemeConnector]
 
-    recoverToSucceededIf[NotFoundException] {
-      connector.updatePsa(psaId, userAnswers)
+    connector.updatePsa(psaId, userAnswers) map {
+      response =>
+        response.status shouldBe NOT_FOUND
     }
   }
 
-  it should "return BadRequestException where 400 response is received" in {
+  it should "return BAD_REQUEST where 400 response is received" in {
     val psaId = "testpsa"
     server.stubFor(
       post(urlEqualTo(updatePsaUrl(psaId = psaId)))
         .willReturn(
-          aResponse.withStatus(Status.BAD_REQUEST)
+          badRequest()
         )
     )
 
     val connector = injector.instanceOf[PensionsSchemeConnector]
 
-    recoverToSucceededIf[BadRequestException] {
-      connector.updatePsa(psaId, userAnswers)
+    connector.updatePsa(psaId, userAnswers) map {
+      response =>
+        response.status shouldBe BAD_REQUEST
     }
   }
 
-  it should "return Upstream5xxResponse where 500 response is received" in {
+  it should "return UpstreamErrorResponse where 500 response is received" in {
     val psaId = "testpsa"
     server.stubFor(
       post(urlEqualTo(updatePsaUrl(psaId = psaId)))
         .willReturn(
-          aResponse.withStatus(Status.INTERNAL_SERVER_ERROR)
+          serverError()
         )
     )
 
     val connector = injector.instanceOf[PensionsSchemeConnector]
 
-    recoverToSucceededIf[Upstream5xxResponse] {
-      connector.updatePsa(psaId, userAnswers)
+    connector.updatePsa(psaId, userAnswers) map {
+      response =>
+        response.status shouldBe INTERNAL_SERVER_ERROR
     }
   }
 }
@@ -240,38 +244,6 @@ object PensionsSchemeConnectorSpec extends OptionValues {
         "processingDate" -> "1969-07-20T20:18:00Z",
         "formBundle" -> "test-form-bundle",
         "psaId" -> psaId
-      )
-    )
-
-  private val invalidPayloadResponse =
-    Json.stringify(
-      Json.obj(
-        "code" -> "INVALID_PAYLOAD",
-        "reason" -> "test-reason"
-      )
-    )
-
-  private val invalidCorrelationIdResponse =
-    Json.stringify(
-      Json.obj(
-        "code" -> "INVALID_CORRELATION_ID",
-        "reason" -> "test-reason"
-      )
-    )
-
-  private val invalidBusinessPartnerResponse =
-    Json.stringify(
-      Json.obj(
-        "code" -> "INVALID_BUSINESS_PARTNER",
-        "reason" -> "test-reason"
-      )
-    )
-
-  private val duplicateSubmissionResponse =
-    Json.stringify(
-      Json.obj(
-        "code" -> "DUPLICATE_SUBMISSION",
-        "reason" -> "test-reason"
       )
     )
 

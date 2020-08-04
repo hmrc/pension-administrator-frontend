@@ -16,8 +16,7 @@
 
 package connectors
 
-import audit.DeregisterEvent
-import audit.{AuditService, PSAEnrolmentEvent}
+import audit.{AuditService, DeregisterEvent, PSAEnrolmentEvent}
 import com.google.inject.{ImplementedBy, Singleton}
 import config.FrontendAppConfig
 import javax.inject.Inject
@@ -25,20 +24,21 @@ import models.register.KnownFacts
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{Writes, Json}
-import play.api.mvc.AnyContent
-import play.api.mvc.RequestHeader
+import play.api.libs.json.{Json, Writes}
+import play.api.mvc.{AnyContent, RequestHeader}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.RetryHelper
+import utils.{HttpResponseHelper, RetryHelper}
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
 @ImplementedBy(classOf[TaxEnrolmentsConnectorImpl])
 trait TaxEnrolmentsConnector {
-  def deEnrol(groupId: String, psaId:String, userId: String)
-             (implicit hc: HeaderCarrier, ec: ExecutionContext, rh:RequestHeader): Future[HttpResponse]
+  def deEnrol(groupId: String, psaId: String, userId: String)
+             (implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader): Future[HttpResponse]
+
   def enrol(enrolmentKey: String, knownFacts: KnownFacts)
            (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse]
 
@@ -47,7 +47,10 @@ trait TaxEnrolmentsConnector {
 @Singleton
 class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
                                            config: FrontendAppConfig,
-                                           auditService: AuditService) extends TaxEnrolmentsConnector with RetryHelper{
+                                           auditService: AuditService)
+  extends TaxEnrolmentsConnector
+    with RetryHelper
+    with HttpResponseHelper {
 
   def url: String = config.taxEnrolmentsUrl("HMRC-PODS-ORG")
 
@@ -63,14 +66,17 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
 
   private def enrolmentRequest(enrolmentKey: String, knownFacts: KnownFacts)
                               (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext,
-                               request: DataRequest[AnyContent]):Future[HttpResponse] = {
+                               request: DataRequest[AnyContent]): Future[HttpResponse] = {
 
-    http.PUT(url, knownFacts) flatMap {
-      case response if response.status equals NO_CONTENT =>
-        auditService.sendEvent(PSAEnrolmentEvent(request.externalId, enrolmentKey))
-        Future.successful(response)
-      case response =>
-        Future.failed(new HttpException(response.body, response.status))
+    http.PUT[KnownFacts, HttpResponse](url, knownFacts) flatMap {
+      response =>
+        response.status match {
+          case NO_CONTENT =>
+            auditService.sendEvent(PSAEnrolmentEvent(request.externalId, enrolmentKey))
+            Future.successful(response)
+          case _ =>
+            handleErrorResponse("PUT", url)(response)
+        }
     }
   }
 
@@ -82,19 +88,19 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
   }
 
 
-    def deEnrol(groupId: String, psaId:String, userId: String)
-                        (implicit hc: HeaderCarrier, ec: ExecutionContext, rh:RequestHeader): Future[HttpResponse] = {
+  def deEnrol(groupId: String, psaId: String, userId: String)
+             (implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader): Future[HttpResponse] = {
     retryOnFailure(() => deEnrolmentRequest(groupId, psaId, userId), config)
   } andThen {
     logDeEnrolmentExceptions
   }
 
   private def deEnrolmentRequest(groupId: String, psaId: String, userId: String)
-             (implicit hc: HeaderCarrier, ec: ExecutionContext, rh:RequestHeader): Future[HttpResponse] = {
+                                (implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader): Future[HttpResponse] = {
 
     val enrolmentKey = s"HMRC-PODS-ORG~PSAID~$psaId"
     val deEnrolmentUrl = config.taxDeEnrolmentUrl.format(groupId, enrolmentKey)
-    http.DELETE(deEnrolmentUrl) flatMap {
+    http.DELETE[HttpResponse](deEnrolmentUrl) flatMap {
       case response if response.status equals NO_CONTENT =>
         auditService.sendEvent(DeregisterEvent(userId, psaId))
         Future.successful(response)
@@ -107,6 +113,4 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
     case Failure(t: Throwable) =>
       Logger.error("Unable to connect to Tax Enrolments to de enrol the PSA", t)
   }
-
-
 }

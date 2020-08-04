@@ -20,59 +20,53 @@ import com.google.inject.{ImplementedBy, Inject, Singleton}
 import config.FrontendAppConfig
 import models.register.PsaSubscriptionResponse
 import play.api.Logger
-import play.api.http.Status
-import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream4xxResponse}
+import play.api.http.Status.OK
+import play.api.libs.json._
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import utils.UserAnswers
+import utils.{HttpResponseHelper, UserAnswers}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Try}
 
 @ImplementedBy(classOf[PensionsSchemeConnectorImpl])
 trait PensionsSchemeConnector {
 
-  def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse]
+  def registerPsa(answers: UserAnswers)
+                 (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse]
 
-  def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit]
+  def updatePsa(psaId: String, answers: UserAnswers)
+               (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse]
 }
 
 @Singleton
-class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends PensionsSchemeConnector {
+class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+  extends PensionsSchemeConnector
+    with HttpResponseHelper {
 
-  def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {
+  def registerPsa(answers: UserAnswers)
+                 (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {
     val url = config.registerPsaUrl
 
-    http.POST(url, answers.json).map { response =>
-      require(response.status == Status.OK)
+    http.POST[JsValue, HttpResponse](url, answers.json).map { response =>
 
-      val json = Json.parse(response.body)
-
-      json.validate[PsaSubscriptionResponse] match {
-        case JsSuccess(value, _) => value
-        case JsError(errors) => throw JsResultException(errors)
+      response.status match {
+        case OK =>
+          Json.parse(response.body).validate[PsaSubscriptionResponse] match {
+            case JsSuccess(value, _) => value
+            case JsError(errors) => throw JsResultException(errors)
+          }
+        case _ =>
+          Logger.error("Unable to register PSA")
+          handleErrorResponse("POST", url)(response)
       }
-    } andThen handleExceptions()
+    }
   }
 
-  private def handleExceptions[A](): PartialFunction[Try[A], Throwable] = {
-    case Failure(ex: Upstream4xxResponse) if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
-      Logger.warn("Unable to register PSA", ex)
-      ex
-    case Failure(ex: Throwable) =>
-      Logger.error("Unable to register PSA", ex)
-      ex
-  }
-
-  def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] = {
+  def updatePsa(psaId: String, answers: UserAnswers)
+               (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
     val url = config.updatePsaUrl(psaId)
 
-    http.POST(url, answers.json).map { response =>
-      require(response.status == Status.OK)
-    } andThen {
-      case Failure(ex: Throwable) =>
-        Logger.error("Unable to submit PSA Variations", ex)
-        ex
-    }
+    http.POST[JsValue, HttpResponse](url, answers.json)
   }
 }

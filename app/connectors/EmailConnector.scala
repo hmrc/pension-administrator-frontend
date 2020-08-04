@@ -21,11 +21,12 @@ import config.FrontendAppConfig
 import models.SendEmailRequest
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,7 +66,7 @@ class EmailConnectorImpl @Inject()(
 
     val jsonData = Json.toJson(sendEmailReq)
 
-    http.POST(emailServiceUrl, jsonData).map { response =>
+    http.POST[JsValue, HttpResponse](emailServiceUrl, jsonData).map { response =>
       response.status match {
         case ACCEPTED =>
           EmailSent

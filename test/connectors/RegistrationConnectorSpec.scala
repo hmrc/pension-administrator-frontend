@@ -30,7 +30,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import utils.WireMockHelper
+import utils.{UnrecognisedHttpResponseException, WireMockHelper}
 
 import scala.concurrent.ExecutionContext
 
@@ -141,7 +141,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    recoverToSucceededIf[IllegalArgumentException] {
+    recoverToSucceededIf[UnrecognisedHttpResponseException] {
       connector.registerWithIdOrganisation(utr, organisation, legalStatus)
     }
 
@@ -326,7 +326,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    recoverToSucceededIf[IllegalArgumentException] {
+    recoverToSucceededIf[UnrecognisedHttpResponseException] {
       connector.registerWithIdIndividual(nino)
     }
 
@@ -444,7 +444,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    recoverToSucceededIf[IllegalArgumentException] {
+    recoverToSucceededIf[UnrecognisedHttpResponseException] {
       connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress, legalStatus)
     }
 
@@ -481,8 +481,9 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth).map { registration =>
-      registration.sapNumber shouldBe sapNumber
+    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth).map {
+      registration =>
+        registration.sapNumber shouldBe sapNumber
     }
   }
 
@@ -500,8 +501,9 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth).map { registration =>
-      registration.noIdentifier shouldBe true
+    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth).map {
+      registration =>
+        registration.noIdentifier shouldBe true
     }
   }
 
@@ -518,7 +520,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    recoverToSucceededIf[IllegalArgumentException] {
+    recoverToSucceededIf[UnrecognisedHttpResponseException] {
       connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth)
     }
 

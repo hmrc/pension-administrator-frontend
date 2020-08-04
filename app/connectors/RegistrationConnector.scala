@@ -19,16 +19,18 @@ package connectors
 import java.time.LocalDate
 
 import com.google.inject.{ImplementedBy, Inject}
-import config.{FeatureSwitchManagementService, FrontendAppConfig}
+import config.FrontendAppConfig
 import javax.inject.Singleton
 import models._
 import models.registrationnoid.RegistrationNoIdIndividualRequest
 import play.Logger
-import play.api.http.Status
+import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
@@ -53,10 +55,9 @@ trait RegistrationConnector {
 }
 
 @Singleton
-class RegistrationConnectorImpl @Inject()(http: HttpClient,
-                                          config: FrontendAppConfig,
-                                          fs: FeatureSwitchManagementService
-                                         ) extends RegistrationConnector {
+class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+  extends RegistrationConnector
+    with HttpResponseHelper {
 
   private val readsSapNumber: Reads[String] = (JsPath \ "sapNumber").read[String]
 
@@ -72,23 +73,26 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient,
       "organisationType" -> organisation.organisationType.toString
     )
 
-    http.POST(url, body) map { response =>
-      require(response.status == Status.OK, "The only valid response to registerWithIdOrganisation is 200 OK")
-
-      val json = Json.parse(response.body)
-
-      json.validate[OrganizationRegisterWithIdResponse] match {
-        case JsSuccess(value, _) =>
-          val info = registrationInfo(
-            json,
-            legalStatus,
-            RegistrationCustomerType.fromAddress(value.address),
-            Some(RegistrationIdType.UTR), Some(utr),
-            noIdentifier = false)
-          OrganizationRegistration(value, info
-          )
-        case JsError(errors) => throw JsResultException(errors)
+    http.POST[JsObject, HttpResponse](url, body) map { response =>
+      response.status match {
+        case OK =>
+          val json = Json.parse(response.body)
+          json.validate[OrganizationRegisterWithIdResponse] match {
+            case JsSuccess(value, _) =>
+              val info = registrationInfo(
+                json,
+                legalStatus,
+                RegistrationCustomerType.fromAddress(value.address),
+                Some(RegistrationIdType.UTR), Some(utr),
+                noIdentifier = false)
+              OrganizationRegistration(value, info
+              )
+            case JsError(errors) => throw JsResultException(errors)
+          }
+        case _ =>
+          handleErrorResponse("POST", url)(response)
       }
+
     } andThen {
       case Failure(ex: NotFoundException) =>
         Logger.warn("Organisation not found with registerWithIdOrganisation", ex)
@@ -105,28 +109,28 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient,
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
 
     val url = config.registerWithIdIndividualUrl
-    val postCall = http.POST(url, Json.obj(
-      "nino" -> nino
-    ))
+    http.POST[JsObject, HttpResponse](url, Json.obj("nino" -> nino)) map {
+      response =>
+        response.status match {
+          case OK =>
+            val json = Json.parse(response.body)
 
-    postCall map { response =>
-      require(response.status == Status.OK, "The only valid response to registerWithIdIndividual is 200 OK")
-
-      val json = Json.parse(response.body)
-
-      json.validate[IndividualRegisterWithIdResponse] match {
-        case JsSuccess(value, _) =>
-          val info = registrationInfo(
-            json = json,
-            legalStatus = RegistrationLegalStatus.Individual,
-            customerType = RegistrationCustomerType.fromAddress(value.address),
-            idType = Some(RegistrationIdType.Nino),
-            idNumber = Some(nino.nino),
-            noIdentifier = false
-          )
-          IndividualRegistration(value, info)
-        case JsError(errors) => throw JsResultException(errors)
-      }
+            json.validate[IndividualRegisterWithIdResponse] match {
+              case JsSuccess(value, _) =>
+                val info = registrationInfo(
+                  json = json,
+                  legalStatus = RegistrationLegalStatus.Individual,
+                  customerType = RegistrationCustomerType.fromAddress(value.address),
+                  idType = Some(RegistrationIdType.Nino),
+                  idNumber = Some(nino.nino),
+                  noIdentifier = false
+                )
+                IndividualRegistration(value, info)
+              case JsError(errors) => throw JsResultException(errors)
+            }
+          case _ =>
+            handleErrorResponse("POST", url)(response)
+        }
     } andThen {
       case Failure(ex: NotFoundException) =>
         Logger.warn("Individual not found with registerWithIdIndividual", ex)
@@ -143,19 +147,22 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient,
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = {
 
     val organisationRegistrant = OrganisationRegistrant(OrganisationName(name), address)
-
-    http.POST(config.registerWithNoIdOrganisationUrl, Json.toJson(organisationRegistrant)) map { response =>
-      require(response.status == Status.OK, "The only valid response to registerWithNoIdOrganisation is 200 OK")
-      val jsValue = Json.parse(response.body)
-
-      registrationInfo(
-        jsValue,
-        legalStatus,
-        RegistrationCustomerType.NonUK,
-        None,
-        None,
-        noIdentifier = true
-      )
+    val url = config.registerWithNoIdOrganisationUrl
+    http.POST[JsValue, HttpResponse](url, Json.toJson(organisationRegistrant)) map {
+      response =>
+        response.status match {
+          case OK =>
+            registrationInfo(
+              Json.parse(response.body),
+              legalStatus,
+              RegistrationCustomerType.NonUK,
+              None,
+              None,
+              noIdentifier = true
+            )
+          case _ =>
+            handleErrorResponse("POST", url)(response)
+        }
     } andThen {
       case Failure(ex) =>
         Logger.error("Unable to connect to registerWithNoIdOrganisation", ex)
@@ -168,19 +175,23 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient,
   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = {
 
     val registrant = RegistrationNoIdIndividualRequest(firstName, lastName, dateOfBirth, address)
+    val url = config.registerWithNoIdIndividualUrl
+    http.POST[JsValue, HttpResponse](url, Json.toJson(registrant)) map { response =>
+      response.status match {
+        case OK =>
+          val jsValue = Json.parse(response.body)
 
-    http.POST(config.registerWithNoIdIndividualUrl, Json.toJson(registrant)) map { response =>
-      require(response.status == Status.OK, "The only valid response to registerWithNoIdIndividual is 200 OK")
-      val jsValue = Json.parse(response.body)
-
-      registrationInfo(
-        jsValue,
-        RegistrationLegalStatus.Individual,
-        RegistrationCustomerType.NonUK,
-        None,
-        None,
-        noIdentifier = true
-      )
+          registrationInfo(
+            jsValue,
+            RegistrationLegalStatus.Individual,
+            RegistrationCustomerType.NonUK,
+            None,
+            None,
+            noIdentifier = true
+          )
+        case _ =>
+          handleErrorResponse("POST", url)(response)
+      }
     } andThen {
       case Failure(ex) =>
         Logger.error("Unable to connect to registerWithNoIdIndividual", ex)

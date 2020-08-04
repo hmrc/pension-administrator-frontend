@@ -23,29 +23,29 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationFormProvider
 import identifiers.register.partnership.PartnershipEmailId
-import identifiers.register.{PsaSubscriptionResponseId, RegistrationInfoId, BusinessNameId, _}
+import identifiers.register.{BusinessNameId, PsaSubscriptionResponseId, RegistrationInfoId, _}
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
 import models.UserType.UserType
-import models.register.{KnownFacts, DeclarationWorkingKnowledge, PsaSubscriptionResponse, KnownFact}
+import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse}
 import models.requests.DataRequest
-import models.{UserType, NormalMode, BusinessDetails, RegistrationInfo}
+import models.{BusinessDetails, NormalMode, RegistrationInfo, UserType}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.{JsString, Writes, Json, JsObject}
+import play.api.libs.json.{JsObject, JsString, Json, Writes}
 import play.api.mvc.AnyContent
 import play.api.mvc.RequestHeader
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{HttpResponse, HeaderCarrier, BadRequestException, Upstream4xxResponse, HttpException}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, Upstream4xxResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import utils.{FakeNavigator, UserAnswers, KnownFactsRetrieval}
+import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declaration
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
@@ -149,7 +149,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(
             fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,
-            enrolments = fakeEnrolmentStoreConnector(HttpResponse(BAD_REQUEST))
+            enrolments = fakeEnrolmentStoreConnector(HttpResponse(BAD_REQUEST, ""))
           ).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
@@ -167,7 +167,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
       "redirect to Duplicate Registration if a registration already exists for the organization" in {
         val result = controller(pensionsSchemeConnector = fakePensionsSchemeConnector(
-          Future.failed(Upstream4xxResponse(message = "INVALID_BUSINESS_PARTNER", upstreamResponseCode = FORBIDDEN, reportAs = FORBIDDEN))))
+          Future.failed(UpstreamErrorResponse(message = "INVALID_BUSINESS_PARTNER", statusCode = FORBIDDEN, reportAs = FORBIDDEN))))
           .onSubmit(NormalMode)(validRequest)
 
         status(result) mustBe SEE_OTHER
@@ -191,25 +191,24 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
   private def fakePensionsSchemeConnector(response: Future[PsaSubscriptionResponse] = Future.successful(validPsaResponse)): PensionsSchemeConnector =
     new PensionsSchemeConnector {
 
-      override def registerPsa
-      (answers: UserAnswers)
-      (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {
+      override def registerPsa(answers: UserAnswers)
+                              (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {
         response
       }
 
       override def updatePsa(psaId: String, answers: UserAnswers
-                            )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Unit] =
-        Future.successful(Unit)
+                            )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] =
+        Future.successful(HttpResponse(OK, ""))
     }
 
   private def fakeKnownFactsRetrieval(knownFacts: Option[KnownFacts] = knownFacts) = new KnownFactsRetrieval {
     override def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] = knownFacts
   }
 
-  private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT)): TaxEnrolmentsConnector = {
+  private def fakeEnrolmentStoreConnector(enrolResponse: HttpResponse = HttpResponse(NO_CONTENT, "")): TaxEnrolmentsConnector = {
     new TaxEnrolmentsConnector {
-      override def deEnrol(groupId: String, psaId:String, userId: String)
-                          (implicit hc: HeaderCarrier, ec: ExecutionContext, rh:RequestHeader): Future[HttpResponse] = ???
+      override def deEnrol(groupId: String, psaId: String, userId: String)
+                          (implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader): Future[HttpResponse] = ???
 
       override def enrol(enrolmentKey: String, knownFacts: KnownFacts
                         )(implicit w: Writes[KnownFacts],
@@ -249,8 +248,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
       view
     )
 
-  private def viewAsString(form: Form[_] = form): String =
-    view(workingKnowledge = true
-    )(fakeRequest, messages).toString
+  private def viewAsString(): String =
+    view(workingKnowledge = true)(fakeRequest, messages).toString
 
 }
