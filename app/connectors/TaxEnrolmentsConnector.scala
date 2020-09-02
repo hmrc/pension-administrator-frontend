@@ -75,6 +75,7 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
             auditService.sendEvent(PSAEnrolmentEvent(request.externalId, enrolmentKey))
             Future.successful(response)
           case _ =>
+            if (response.body.contains("INVALID_JSON")) Logger.warn(s"INVALID_JSON returned from call to $url")
             handleErrorResponse("PUT", url)(response)
         }
     }
