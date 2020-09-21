@@ -40,6 +40,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
 
   import AddPartnerControllerSpec._
 
+  override def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "/")
   "AddPartner Controller" must {
 
     "return OK and the correct view for a GET" in {

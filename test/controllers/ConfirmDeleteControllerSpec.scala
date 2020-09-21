@@ -41,6 +41,8 @@ import scala.concurrent.ExecutionContextExecutor
 
 class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
+  override def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "/")
+
   val testIdentifier: TypedIdentifier[PersonName] = new TypedIdentifier[PersonName] {
     override def toString: String = "test"
   }

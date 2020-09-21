@@ -39,6 +39,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
   import AddCompanyDirectorsControllerSpec._
 
+  override def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "/")
   "AddCompanyDirectors Controller" must {
 
     "return OK and the correct view for a GET" in {
