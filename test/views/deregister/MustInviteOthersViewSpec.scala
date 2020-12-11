@@ -18,22 +18,22 @@ package views.deregister
 
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours
-import views.html.deregister.cannotDeregister
+import views.html.deregister.mustInviteOthers
 
-class CannotDeregisterViewSpec extends ViewBehaviours {
+class MustInviteOthersViewSpec extends ViewBehaviours {
 
-  private val messageKeyPrefix = "cannotDeregister"
+  private val messageKeyPrefix = "mustInviteOthers"
 
-  private val view = injector.instanceOf[cannotDeregister]
+  private val view = injector.instanceOf[mustInviteOthers]
 
   def createView: () => HtmlFormat.Appendable = () =>
     view()(fakeRequest, messages)
 
-  "Cannot Deregister page" must {
+  "mustInviteOthers page" must {
     behave like normalPageWithNoPageTitleCheck(
       createView,
       messageKeyPrefix,
-      expectedGuidanceKeys = "p1"
+      expectedGuidanceKeys = "p1", "p2", "p3", "li1", "li2"
     )
 
     "have link to return to your pension schemes" in {

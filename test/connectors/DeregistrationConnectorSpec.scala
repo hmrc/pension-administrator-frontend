@@ -17,11 +17,12 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalatestplus.scalacheck.Checkers
+import models.Deregistration
 import org.scalatest.{AsyncFlatSpec, Matchers}
+import org.scalatestplus.scalacheck.Checkers
 import play.api.http.Status
 import play.api.libs.json.{JsBoolean, JsResultException, JsString, Json}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
 import utils.WireMockHelper
 
 class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper with Checkers {
@@ -63,18 +64,19 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
   }
 
   "canDeRegister" should "return the boolean true/false for a valid response" in {
-
+    val jsonString: String = Json.obj("canDeregister" -> JsBoolean(true),
+      "isOtherPsaAttached" -> JsBoolean(false)).toString()
     server.stubFor(
       get(urlEqualTo(canRegisterUrl))
         .willReturn(
-          ok(Json.stringify(JsBoolean(true)))
+          ok(jsonString)
         )
     )
 
     val connector = injector.instanceOf[DeregistrationConnector]
 
     connector.canDeRegister(psaId).map(response =>
-      response shouldBe true
+      response shouldBe Deregistration(canDeregister = true, isOtherPsaAttached = false)
     )
   }
 
