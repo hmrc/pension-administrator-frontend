@@ -1104,9 +1104,7 @@ incomplete.alert.message.less.partners = There must always be at least 2 partner
 youNeedToRegister.govUkLlink = Exit to GOV.UK
 
 cannotDeregister.title = You must remove yourself from all schemes first
-cannotDeregister.heading = You must remove yourself from all schemes first
 cannotDeregister.p1 = You cannot stop being a pension scheme administrator until you remove yourself from any scheme you are currently an administrator for.
-cannotDeregister.p2 = This includes any schemes that have a status of wound up.
 
 confirmStopBeingPsa.title = Are you sure you want to stop being a pension scheme administrator?
 confirmStopBeingPsa.heading = Are you sure you want to stop being a pension scheme administrator?
@@ -1125,3 +1123,9 @@ unableToStopBeingPsa.heading = You cannot stop being a pension scheme administra
 unableToStopBeingPsa.p1 = You must remove yourself from all of the schemes you are a scheme administrator of.
 unableToStopBeingPsa.continue.link = Continue to your pension schemes
 
+mustInviteOthers.title = You must invite other pension scheme administrators to your schemes first
+mustInviteOthers.p1 = You cannot stop being a pension scheme administrator as you are the only administrator associated with one or more pension schemes.
+mustInviteOthers.p2 = You must:
+mustInviteOthers.p3 = Once you have removed yourself from those schemes, you will be able to stop being a pension scheme administrator.
+mustInviteOthers.li1 = invite other administrators to those schemes
+mustInviteOthers.li2 = remove yourself from those schemes once the other administrators have been associated with them
