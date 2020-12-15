@@ -58,8 +58,8 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
       case Some(psaId) =>
         psaDetailsService.getUserAnswers(psaId, request.externalId).map { ua =>
           retrieveRequiredValues(ua) match {
-            case Some(Tuple2(url, address)) =>
-              Ok(view(address.lines(countryOptions)))
+            case Some(Tuple2(continueUrl, address)) =>
+              Ok(view(address.lines(countryOptions), continueUrl))
             case None => sessionExpired
           }
         }
@@ -72,16 +72,22 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
       regInfo =>
         regInfo.legalStatus match {
           case LimitedCompany => Some(
-            controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url,
-            ua.getOrException(CompanyContactAddressId)
+            Tuple2(
+              controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url,
+              ua.getOrException(CompanyContactAddressId)
+            )
           )
           case Individual => Some(
-            controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url,
-            ua.getOrException(IndividualContactAddressId)
+            Tuple2(
+              controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url,
+              ua.getOrException(IndividualContactAddressId)
+            )
           )
           case Partnership => Some(
-            controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckMode).url,
-            ua.getOrException(PartnershipContactAddressId)
+            Tuple2(
+              controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckMode).url,
+              ua.getOrException(PartnershipContactAddressId)
+            )
           )
           case _ => None
         }

@@ -24,7 +24,7 @@
     main_template: main_template
 )
 
-@(address: Seq[String])(implicit request: Request[_], messages: Messages)
+@(address: Seq[String], continueUrl: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("updateContactAddress.title")
@@ -47,5 +47,5 @@
     <p>@messages("updateContactAddress.p3")</p>
     <p>@messages("updateContactAddress.p4")</p>
 
-    @components.submit_button("site.continue")
+    @components.button_link("site.continue", continueUrl, "continue")
 }
