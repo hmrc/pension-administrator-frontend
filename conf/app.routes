@@ -28,3 +28,5 @@ GET        /cannot-register                             controllers.AgentCannotR
 GET        /cannot-make-changes                         controllers.CannotMakeChangesController.onPageLoad
 
 GET        /use-organisation-account                    controllers.UseOrganisationCredentialsController.onPageLoad
+
+GET        /update-contact-address                      controllers.UpdateContactAddressController.onPageLoad
