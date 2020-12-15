@@ -52,7 +52,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       status(result) mustBe OK
 
       contentAsString(result) mustBe
-        viewAsString(individual, controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url)
+        viewAsString(individual, controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckUpdateMode).url)
     }
 
     "return OK and the correct view for a GET for a company" in {
@@ -63,7 +63,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       status(result) mustBe OK
 
       contentAsString(result) mustBe
-        viewAsString(company, controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url)
+        viewAsString(company, controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckUpdateMode).url)
     }
 
     "return OK and the correct view for a GET for a partnership" in {
@@ -74,7 +74,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       status(result) mustBe OK
 
       contentAsString(result) mustBe
-        viewAsString(company, controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckMode).url)
+        viewAsString(company, controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckUpdateMode).url)
     }
 
     "redirect to Session Expired on a GET when no data exists" in {

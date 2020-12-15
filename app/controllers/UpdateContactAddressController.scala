@@ -27,6 +27,7 @@ import identifiers.register.partnership.PartnershipContactAddressId
 import javax.inject.Inject
 import models.Address
 import models.CheckMode
+import models.CheckUpdateMode
 import models.RegistrationLegalStatus._
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
@@ -73,19 +74,19 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
         regInfo.legalStatus match {
           case LimitedCompany => Some(
             Tuple2(
-              controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url,
+              controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckUpdateMode).url,
               ua.getOrException(CompanyContactAddressId)
             )
           )
           case Individual => Some(
             Tuple2(
-              controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url,
+              controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckUpdateMode).url,
               ua.getOrException(IndividualContactAddressId)
             )
           )
           case Partnership => Some(
             Tuple2(
-              controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckMode).url,
+              controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckUpdateMode).url,
               ua.getOrException(PartnershipContactAddressId)
             )
           )
