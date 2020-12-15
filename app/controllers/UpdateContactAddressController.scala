@@ -20,13 +20,24 @@ import config.FrontendAppConfig
 import controllers.actions.AuthAction
 import controllers.actions.DataRequiredAction
 import controllers.actions.DataRetrievalAction
+import identifiers.register.RegistrationInfoId
+import identifiers.register.company.CompanyContactAddressId
+import identifiers.register.individual.IndividualContactAddressId
+import identifiers.register.partnership.PartnershipContactAddressId
 import javax.inject.Inject
+import models.Address
+import models.CheckMode
+import models.RegistrationLegalStatus._
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.Result
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.UserAnswers
+import utils.countryOptions.CountryOptions
 import views.html.updateContactAddress
 
 import scala.concurrent.ExecutionContext
@@ -38,24 +49,44 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                             requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,
                                             psaDetailsService: PsaDetailsService,
+                                            countryOptions: CountryOptions,
                                             val view: updateContactAddress
                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
-
-    /*
-    CompanyContactAddressId
-    IndividualContactAddressId
-    PartnershipContactAddressId
-     */
-
     request.user.alreadyEnrolledPsaId match {
       case Some(psaId) =>
         psaDetailsService.getUserAnswers(psaId, request.externalId).map { ua =>
-
+          retrieveRequiredValues(ua) match {
+            case Some(Tuple2(url, address)) =>
+              Ok(view(address.lines(countryOptions)))
+            case None => sessionExpired
+          }
         }
-        Future.successful(Ok(view(Seq("test", "test2"))))
-      case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+      case None => Future.successful(sessionExpired)
     }
   }
+
+  private def retrieveRequiredValues(ua: UserAnswers): Option[(String, Address)] = {
+    ua.get(RegistrationInfoId).flatMap {
+      regInfo =>
+        regInfo.legalStatus match {
+          case LimitedCompany => Some(
+            controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckMode).url,
+            ua.getOrException(CompanyContactAddressId)
+          )
+          case Individual => Some(
+            controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckMode).url,
+            ua.getOrException(IndividualContactAddressId)
+          )
+          case Partnership => Some(
+            controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckMode).url,
+            ua.getOrException(PartnershipContactAddressId)
+          )
+          case _ => None
+        }
+    }
+  }
+
+  private def sessionExpired:Result = Redirect(controllers.routes.SessionExpiredController.onPageLoad())
 }

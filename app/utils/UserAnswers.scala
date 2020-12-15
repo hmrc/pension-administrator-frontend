@@ -43,6 +43,9 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       .flatMap(Json.fromJson[A]).asOpt
   }
 
+  def getOrException[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): A =
+    get(id).getOrElse(throw new RuntimeException("Unexpected empty option"))
+
   def getAll[A](path: JsPath)(implicit rds: Reads[A]): Option[Seq[A]] = {
     JsLens
       .fromPath(path)
