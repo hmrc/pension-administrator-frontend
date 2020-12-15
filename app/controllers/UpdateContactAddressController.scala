@@ -25,6 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
+import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.updateContactAddress
 
@@ -36,10 +37,25 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,
+                                            psaDetailsService: PsaDetailsService,
                                             val view: updateContactAddress
                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
-    Future.successful(Ok(view(Seq("test", "test2"))))
+
+    /*
+    CompanyContactAddressId
+    IndividualContactAddressId
+    PartnershipContactAddressId
+     */
+
+    request.user.alreadyEnrolledPsaId match {
+      case Some(psaId) =>
+        psaDetailsService.getUserAnswers(psaId, request.externalId).map { ua =>
+
+        }
+        Future.successful(Ok(view(Seq("test", "test2"))))
+      case None => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+    }
   }
 }

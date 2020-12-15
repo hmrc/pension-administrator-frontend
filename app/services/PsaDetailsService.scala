@@ -46,6 +46,8 @@ trait PsaDetailsService {
                                           executionContext: ExecutionContext,
                                           request: OptionalDataRequest[_],
                                           messages: Messages): Future[PsaViewDetailsViewModel]
+  def getUserAnswers(psaId: String, externalId: String)(implicit hc: HeaderCarrier,
+    executionContext: ExecutionContext): Future[UserAnswers]
 }
 
 class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnector,
@@ -68,21 +70,20 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
                                     )(implicit hc: HeaderCarrier, executionContext: ExecutionContext,
                                       request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
     for {
-      userAnswers <- getUserAnswers(psaId, mode)
+      userAnswers <- getUserAnswers(psaId, request.externalId)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
     } yield {
       getPsaDetailsViewModel(userAnswers)
     }
   }
 
-  private[services] def getUserAnswers(psaId: String, mode: Mode
-                                      )(implicit hc: HeaderCarrier, executionContext: ExecutionContext, request: OptionalDataRequest[_]): Future[UserAnswers] =
-    userAnswersCacheConnector.fetch(request.externalId).flatMap {
+  def getUserAnswers(psaId: String, externalId: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[UserAnswers] =
+    userAnswersCacheConnector.fetch(externalId).flatMap {
       case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap{getUpdatedUserAnswers}
       case Some(data) =>
         (UserAnswers(data).get(IndexId), UserAnswers(data).get(RegistrationInfoId)) match {
           case (Some(_), None) =>
-            userAnswersCacheConnector.removeAll(request.externalId).flatMap { _ =>
+            userAnswersCacheConnector.removeAll(externalId).flatMap { _ =>
               subscriptionConnector.getSubscriptionDetails(psaId).flatMap {getUpdatedUserAnswers}
             }
           case _ =>

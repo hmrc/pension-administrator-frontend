@@ -149,7 +149,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(None))
         when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
-        val result = service(mockUserAnswersConnector).getUserAnswers("123", mode)
+        val result = service(mockUserAnswersConnector).getUserAnswers("123", request.externalId)
         whenReady(result) { userAnswers =>
           Seq(IndividualAddressChangedId,
             IndividualPreviousAddressChangedId,
