@@ -46,7 +46,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
   private val minimalPsa = MinimalPSA(
     email = "a@a.c",
-    isPsaSuspended = true,
+    isPsaSuspended = false,
     organisationName = None,
     individualDetails = None,
     rlsFlag = false
