@@ -6,3 +6,4 @@ POST       /stop-being-scheme-administrator             controllers.deregister.C
 GET        /unable-to-stop-being-scheme-administrator   controllers.deregister.UnableToStopBeingPsaController.onPageLoad
 
 GET        /remove-yourself-from-schemes                controllers.deregister.CannotDeregisterController.onPageLoad
+GET        /invite-others-to-your-schemes               controllers.deregister.MustInviteOthersController.onPageLoad

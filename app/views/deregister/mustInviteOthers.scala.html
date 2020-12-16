@@ -30,11 +30,17 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("cannotDeregister.title")) {
+    title = messages("mustInviteOthers.title")) {
     @components.back_link()
-    @components.heading(messages("cannotDeregister.title"))
+    @components.heading(messages("mustInviteOthers.title"))
 
-    <p>@messages("cannotDeregister.p1")</p>
+    <p>@messages("mustInviteOthers.p1")</p>
+    <p>@messages("mustInviteOthers.p2")</p>
+    <ul class="list list-bullet">
+        <li>@messages("mustInviteOthers.li1")</li>
+        <li>@messages("mustInviteOthers.li2")</li>
+    </ul>
+    <p>@messages("mustInviteOthers.p3")</p>
 
     <p><a id="return-to-schemes" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("schemesOverview.manage.link")</a></p>
 

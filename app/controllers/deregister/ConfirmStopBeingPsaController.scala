@@ -17,27 +17,19 @@
 package controllers.deregister
 
 import config.FrontendAppConfig
-import connectors.MinimalPsaConnector
-import connectors.DeregistrationConnector
-import connectors.TaxEnrolmentsConnector
+import connectors.{DeregistrationConnector, MinimalPsaConnector, TaxEnrolmentsConnector}
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.AllowAccessForNonSuspendedUsersAction
-import controllers.actions.AuthAction
+import controllers.actions.{AllowAccessForNonSuspendedUsersAction, AuthAction}
 import forms.deregister.ConfirmStopBeingPsaFormProvider
 import javax.inject.Inject
 import models.MinimalPSA
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.i18n.MessagesApi
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.Call
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.deregister.confirmStopBeingPsa
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmStopBeingPsaController @Inject()(
                                                appConfig: FrontendAppConfig,
@@ -58,15 +50,17 @@ class ConfirmStopBeingPsaController @Inject()(
     implicit request =>
       request.user.alreadyEnrolledPsaId.map { psaId =>
         deregistrationConnector.canDeRegister(psaId).flatMap {
-          case true =>
+          case deregistration if deregistration.canDeregister =>
             minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalDetails =>
               getPsaName(minimalDetails) match {
                 case Some(psaName) => Ok(view(form, psaName))
                 case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
               }
             }
-          case false =>
+          case deregistration if deregistration.isOtherPsaAttached =>
             Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad()))
+          case _ =>
+            Future.successful(Redirect(controllers.deregister.routes.MustInviteOthersController.onPageLoad()))
         }
       }.getOrElse(
         Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
