@@ -40,7 +40,7 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      view: psa_details
                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData).async {
+  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>
       request.user.alreadyEnrolledPsaId.map { psaId =>
         psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId, mode).map { psaDetails =>
