@@ -35,21 +35,25 @@ class AllowAccessAction(
                          config: FrontendAppConfig
                        )(implicit val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
 
+  protected def redirects(psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
+    minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
+      if (minimalPSA.isPsaSuspended) {
+        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
+      } else if (minimalPSA.rlsFlag) {
+        Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
+      } else {
+        None
+      }
+    }
+  }
+
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     (request.user.alreadyEnrolledPsaId, mode) match {
       case (None, NormalMode | CheckMode) =>
         Future.successful(None)
       case (Some(psaId), UpdateMode | CheckUpdateMode) =>
-        minimalPsaConnector.getMinimalPsaDetails(psaId).map{ minimalPSA =>
-          if(minimalPSA.isPsaSuspended) {
-            Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
-          } else if (minimalPSA.rlsFlag) {
-            Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
-          } else {
-            None
-          }
-        }
+        redirects(psaId)
       case (Some(_), NormalMode) if pagesAfterEnrolment(request) =>
         Future.successful(None)
       case (Some(_), NormalMode | CheckMode) =>
@@ -63,6 +67,30 @@ class AllowAccessAction(
     val confirmationSeq = Seq(controllers.register.routes.ConfirmationController.onPageLoad().url,
       controllers.register.routes.DuplicateRegistrationController.onPageLoad().url)
     confirmationSeq.contains(request.uri)
+  }
+}
+
+class AllowAccessActionNoUpdateContactAddress(
+  mode: Mode,
+  minimalPsaConnector: MinimalPsaConnector,
+  config: FrontendAppConfig
+)(implicit override val executionContext: ExecutionContext) extends AllowAccessAction(mode, minimalPsaConnector, config) {
+  override protected def redirects(psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
+    minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
+      if (minimalPSA.isPsaSuspended) {
+        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
+      } else {
+        None
+      }
+    }
+  }
+}
+
+class AllowAccessActionProviderNoUpdateContactAddressImpl @Inject() (
+  minimalPsaConnector: MinimalPsaConnector, config: FrontendAppConfig)(implicit executionContext: ExecutionContext)
+  extends AllowAccessActionProvider {
+  def apply(mode: Mode): AllowAccessAction = {
+    new AllowAccessActionNoUpdateContactAddress(mode, minimalPsaConnector, config)
   }
 }
 
