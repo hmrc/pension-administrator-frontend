@@ -22,9 +22,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{Future, ExecutionContext}
 
-case class FakeMinimalPsaConnector(isSuspended: Boolean = false) extends MinimalPsaConnector {
-  override def getMinimalPsaDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = ???
+case class FakeMinimalPsaConnector(minimalPSA: MinimalPSA) extends MinimalPsaConnector {
+  override def getMinimalPsaDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = Future.successful(minimalPSA)
   override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Boolean] = {
-    Future.successful(isSuspended)
+    Future.successful(minimalPSA.isPsaSuspended)
   }
 }
+

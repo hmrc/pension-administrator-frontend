@@ -189,6 +189,6 @@ object MinimalPsaConnectorImplSpec extends OptionValues with JsonFileReader {
     }
   private val validMinimalPsaDetailsResponse = readJsonFromFile("/data/validMinimalPsaDetails.json").toString()
   private val email = "test@test.com"
-  private val expectedResponse = MinimalPSA(email,false,None,Some(IndividualDetails("First",Some("Middle"),"Last")))
+  private val expectedResponse = MinimalPSA(email,false,None,Some(IndividualDetails("First",Some("Middle"),"Last")), rlsFlag = false)
 
 }

@@ -44,7 +44,15 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
   import AuthActionSpec._
 
-  def allowAccessActionProviderImpl(config: FrontendAppConfig) = new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(), config)
+  private val minimalPsa = MinimalPSA(
+    email = "a@a.c",
+    isPsaSuspended = true,
+    organisationName = None,
+    individualDetails = None,
+    rlsFlag = false
+  )
+
+  def allowAccessActionProviderImpl(config: FrontendAppConfig) = new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(minimalPsa), config)
 
   "Auth Action" when {
 
@@ -99,7 +107,15 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
           val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig,
             fakeUserAnswersConnector, fakeIVConnector(), app.injector.instanceOf[BodyParsers.Default])
 
-          def controller = new Harness(authAction, new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(isSuspended = true), frontendAppConfig))
+          val minimalPsa = MinimalPSA(
+            email = "a@a.c",
+            isPsaSuspended = true,
+            organisationName = None,
+            individualDetails = None,
+            rlsFlag = false
+          )
+
+          def controller = new Harness(authAction, new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(minimalPsa), frontendAppConfig))
 
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.VariationDeclarationController.onPageLoad().url))
           status(result) mustBe SEE_OTHER

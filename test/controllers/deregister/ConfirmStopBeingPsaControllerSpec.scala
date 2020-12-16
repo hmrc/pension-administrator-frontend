@@ -171,9 +171,9 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
     //  Future.successful(None)
   }
 
-  private val minimalPsaDetailsIndividual = MinimalPSA("test@test.com", isPsaSuspended = false, None, Some(IndividualDetails("John", Some("Doe"), "Doe")))
-  private val minimalPsaDetailsNone = MinimalPSA("test@test.com", isPsaSuspended = false, None, None)
-  private val minimalPsaDetailsNoneSuspended = MinimalPSA("test@test.com", isPsaSuspended = true, None, None)
+  private val minimalPsaDetailsIndividual = MinimalPSA("test@test.com", isPsaSuspended = false, None, Some(IndividualDetails("John", Some("Doe"), "Doe")), rlsFlag = false)
+  private val minimalPsaDetailsNone = MinimalPSA("test@test.com", isPsaSuspended = false, None, None, rlsFlag = false)
+  private val minimalPsaDetailsNoneSuspended = MinimalPSA("test@test.com", isPsaSuspended = true, None, None, rlsFlag = false)
 
   private def fakeAllowAccess(minimalPsaConnector: MinimalPsaConnector): AllowAccessForNonSuspendedUsersAction = {
     new AllowAccessForNonSuspendedUsersAction(minimalPsaConnector) {

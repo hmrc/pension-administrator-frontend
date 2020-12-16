@@ -17,6 +17,7 @@
 package controllers.actions
 
 import config.FrontendAppConfig
+import models.MinimalPSA
 import models.requests.AuthenticatedRequest
 import models.{Mode, NormalMode}
 import play.api.mvc.Result
@@ -24,7 +25,17 @@ import play.api.mvc.Result
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-private class FakeAllowAccessAction(mode: Mode, config: FrontendAppConfig) extends AllowAccessAction(mode, FakeMinimalPsaConnector(), config) {
+private class FakeAllowAccessAction(mode: Mode, config: FrontendAppConfig) extends AllowAccessAction(
+  mode,
+  FakeMinimalPsaConnector(
+    MinimalPSA(
+      email = "a@a.c",
+      isPsaSuspended = true,
+      organisationName = None,
+      individualDetails = None,
+      rlsFlag = false
+    )
+  ), config) {
   override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] =
     Future.successful(None)
 }

@@ -57,12 +57,10 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
     request.user.alreadyEnrolledPsaId match {
       case Some(psaId) =>
-        psaDetailsService.getUserAnswers(psaId, request.externalId).map { ua =>
-          retrieveRequiredValues(ua) match {
-            case Some(Tuple2(continueUrl, address)) =>
-              Ok(view(address.lines(countryOptions), continueUrl))
-            case None => sessionExpired
-          }
+        psaDetailsService.getUserAnswers(psaId, request.externalId).map(retrieveRequiredValues).map{
+          case Some(Tuple2(continueUrl, address)) =>
+            Ok(view(address.lines(countryOptions), continueUrl))
+          case None => sessionExpired
         }
       case None => Future.successful(sessionExpired)
     }

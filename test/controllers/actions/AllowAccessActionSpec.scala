@@ -31,15 +31,23 @@ import scala.concurrent.Future
 
 class AllowAccessActionSpec extends SpecBase with ScalaFutures{
 
-  class TestAllowAccessAction(mode: Mode, isSuspended: Boolean = false, config:FrontendAppConfig) extends
-    AllowAccessAction(mode, FakeMinimalPsaConnector(isSuspended), frontendAppConfig) {
+  private val minimalPsa = MinimalPSA(
+    email = "a@a.c",
+    isPsaSuspended = false,
+    organisationName = None,
+    individualDetails = None,
+    rlsFlag = false
+  )
+
+  class TestAllowAccessAction(mode: Mode, minimalPsa: MinimalPSA, config:FrontendAppConfig) extends
+    AllowAccessAction(mode, FakeMinimalPsaConnector(minimalPsa), frontendAppConfig) {
     override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = super.filter(request)
   }
 
   "AllowAccessAction" must {
 
     "allow access to pages for user with no enrolment and Normal mode" in {
-      val action = new TestAllowAccessAction(NormalMode, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(NormalMode, minimalPsa, config = frontendAppConfig)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, "")))
 
       whenReady(futureResult) { result =>
@@ -49,7 +57,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
     }
 
     "allow access to pages for user with no enrolment and Check mode" in {
-      val action = new TestAllowAccessAction(CheckMode, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(CheckMode, minimalPsa, config = frontendAppConfig)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, "")))
 
       whenReady(futureResult) { result =>
@@ -59,7 +67,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
     }
 
     "allow access to pages for user with enrolment and Normal mode and trying to get pagesAfterEnrolment" in {
-      val action = new TestAllowAccessAction(NormalMode, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(NormalMode, minimalPsa, config = frontendAppConfig)
       val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, Some("id"))))
 
@@ -70,7 +78,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
     }
 
     "redirect to SessionExpiredPage for user with no enrolment and UpdateMode" in {
-      val action = new TestAllowAccessAction(UpdateMode, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, "")))
 
       whenReady(futureResult) { result =>
@@ -81,7 +89,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
     }
 
     "allow access to pages for user with enrolment and UpdateMode" in {
-      val action = new TestAllowAccessAction(UpdateMode, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
@@ -91,7 +99,14 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
     }
 
     "redirect to intercept pages for suspended user with enrolment and UpdateMode" in {
-      val action = new TestAllowAccessAction(UpdateMode, isSuspended = true, config = frontendAppConfig)
+      val minimalPsa = MinimalPSA(
+        email = "a@a.c",
+        isPsaSuspended = true,
+        organisationName = None,
+        individualDetails = None,
+        rlsFlag = false
+      )
+      val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
@@ -102,14 +117,30 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
     }
 
     "redirect to intercept page for user with enrolment and Normal/Check mode" in {
-      val action = new TestAllowAccessAction(NormalMode, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(NormalMode, minimalPsa, config = frontendAppConfig)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
-
         result.map { _.header.status  } mustBe Some(SEE_OTHER)
-
         result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(Call("GET", frontendAppConfig.schemesOverviewUrl).url)
+      }
+    }
+
+    "redirect to update contact address page for user with enrolment where RLS flag is set" in {
+      val minimalPsa = MinimalPSA(
+        email = "a@a.c",
+        isPsaSuspended = false,
+        organisationName = None,
+        individualDetails = None,
+        rlsFlag = true
+      )
+      val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
+      val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
+
+      whenReady(futureResult) { result =>
+        result.map { _.header.status  } mustBe Some(SEE_OTHER)
+        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad().url)
       }
     }
   }

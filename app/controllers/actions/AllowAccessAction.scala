@@ -41,9 +41,11 @@ class AllowAccessAction(
       case (None, NormalMode | CheckMode) =>
         Future.successful(None)
       case (Some(psaId), UpdateMode | CheckUpdateMode) =>
-        minimalPsaConnector.isPsaSuspended(psaId).map{ isSuspended =>
-          if(isSuspended) {
+        minimalPsaConnector.getMinimalPsaDetails(psaId).map{ minimalPSA =>
+          if(minimalPSA.isPsaSuspended) {
             Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
+          } else if (minimalPSA.rlsFlag) {
+            Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
           } else {
             None
           }
