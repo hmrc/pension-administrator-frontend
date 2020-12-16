@@ -37,12 +37,14 @@ class AllowAccessForNonSuspendedUsersAction @Inject()(minimalPsaConnector: Minim
     request.user.alreadyEnrolledPsaId match {
       case None => Future.successful(None)
       case Some(psaId) =>
-        minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalDetails =>
-          if (minimalDetails.isPsaSuspended) {
-            Some(Redirect(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad()))
-          } else {
-            None
-          }
+        minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
+            if(minimalPSA.isPsaSuspended) {
+              Some(Redirect(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad()))
+            } else if (minimalPSA.rlsFlag) {
+              Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
+            } else {
+              None
+            }
         }
     }
   }

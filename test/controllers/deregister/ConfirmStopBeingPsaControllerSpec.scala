@@ -87,6 +87,13 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
       redirectLocation(result) mustBe Some(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad().url)
     }
 
+    "return to update address page if psa RLS flag is set in minimal details" in {
+      val result = controller(minimalPsaDetailsRLS)(hc).onPageLoad()(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad().url)
+    }
+
     "return to session expired if psaName is not present for Post" in {
       val result = controller()(hc).onSubmit()(postRequest)
 
@@ -168,6 +175,7 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
   private val minimalPsaDetailsIndividual = MinimalPSA(
     "test@test.com", isPsaSuspended = false, None, Some(IndividualDetails("John", Some("Doe"), "Doe")), rlsFlag = false)
   private val minimalPsaDetailsNone = MinimalPSA("test@test.com", isPsaSuspended = false, None, None, rlsFlag = false)
+  private val minimalPsaDetailsRLS = MinimalPSA("test@test.com", isPsaSuspended = false, None, None, rlsFlag = true)
   private val minimalPsaDetailsNoneSuspended = MinimalPSA("test@test.com", isPsaSuspended = true, None, None, rlsFlag = false)
 
   private def fakeAllowAccess(minimalPsaConnector: MinimalPsaConnector): AllowAccessForNonSuspendedUsersAction = {
