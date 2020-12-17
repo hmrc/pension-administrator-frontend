@@ -18,7 +18,7 @@ package utils.navigators
 
 import base.SpecBase
 import controllers.register.individual.routes
-import identifiers.Identifier
+import identifiers.{Identifier, RLSFlagId}
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
 import models._
@@ -136,6 +136,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
       (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode)),
       (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges),
+      (IndividualPreviousAddressId, rLSFlag, variationsDeclarationPage),
       (IndividualEmailId, emptyAnswers, anyMoreChanges),
       (IndividualPhoneId, uk, anyMoreChanges),
       (IndividualPhoneId, nonUk, anyMoreChanges)
@@ -150,6 +151,7 @@ object IndividualNavigatorSpec extends OptionValues {
   private def phonePage(mode: Mode): Call = routes.IndividualPhoneController.onPageLoad(mode)
   private lazy val invalidIdForNavigator = AreYouInUKId
 
+  lazy private val variationsDeclarationPage = controllers.register.routes.VariationDeclarationController.onPageLoad()
   lazy private val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
   lazy private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   lazy private val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
@@ -226,6 +228,9 @@ object IndividualNavigatorSpec extends OptionValues {
 
   private val nonUkNoIndividualDetails = UserAnswers(Json.obj())
     .set(AreYouInUKId)(false).asOpt.value
+
+  private val rLSFlag = UserAnswers(Json.obj())
+    .set(RLSFlagId)(true).asOpt.value
 
   private val nonUkEuAddress = UserAnswers().individualAddress(address("AT"))
   private val nonUkButUKAddress = UserAnswers().individualAddress(address("GB"))
