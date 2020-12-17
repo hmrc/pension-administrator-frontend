@@ -20,15 +20,16 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
+import utils.annotations.NoUpdateContactAddress
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -42,7 +43,7 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
                                                                 override val addressLookupConnector: AddressLookupConnector,
                                                                 @RegisterCompany override val navigator: Navigator,
                                                                 authenticate: AuthAction,
-                                                                override val allowAccess: AllowAccessActionProvider,
+                                                                @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
                                                                 getData: DataRetrievalAction,
                                                                 requireData: DataRequiredAction,
                                                                 formProvider: PostCodeLookupFormProvider,

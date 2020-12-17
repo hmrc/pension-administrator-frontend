@@ -18,17 +18,23 @@ package controllers
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
+import controllers.actions.AllowAccessActionProvider
+import controllers.actions.AuthAction
+import controllers.actions.DataRetrievalAction
 import identifiers.register.DeclarationChangedId
 import models._
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.{Navigator, UserAnswers}
+import utils.Navigator
+import utils.UserAnswers
 import views.html.psa_details
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      @utils.annotations.Variations navigator: Navigator,

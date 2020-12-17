@@ -22,14 +22,15 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, AdviserNameId}
+import identifiers.register.adviser.{AdviserAddressListId, AdviserAddressId, AdviserNameId, AdviserAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Address, Mode}
+import models.{Mode, Address}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Adviser
+import utils.annotations.NoUpdateContactAddress
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -40,7 +41,7 @@ import scala.concurrent.ExecutionContext
 class AdviserAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                          override val cacheConnector: UserAnswersCacheConnector,
                                          @Adviser override val navigator: Navigator,
-                                         override val allowAccess: AllowAccessActionProvider,
+                                         @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
                                          authenticate: AuthAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,

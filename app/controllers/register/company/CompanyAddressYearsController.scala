@@ -26,11 +26,12 @@ import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressYearsId
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{AddressYears, Mode}
+import models.{Mode, AddressYears}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
+import utils.annotations.NoUpdateContactAddress
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
@@ -41,7 +42,7 @@ import scala.concurrent.ExecutionContext
 class CompanyAddressYearsController @Inject()(@RegisterCompany override val navigator: Navigator,
                                               override val appConfig: FrontendAppConfig,
                                               override val cacheConnector: UserAnswersCacheConnector,
-                                              override val allowAccess: AllowAccessActionProvider,
+                                              @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
                                               authenticate: AuthAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,

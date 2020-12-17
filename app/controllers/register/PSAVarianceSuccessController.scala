@@ -23,15 +23,16 @@ import controllers.actions._
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.annotations.NoUpdateContactAddress
 import views.html.register.psaVarianceSuccess
 
 import scala.concurrent.ExecutionContext
 
 class PSAVarianceSuccessController @Inject()(appConfig: FrontendAppConfig,
                                              authenticate: AuthAction,
-                                             allowAccess: AllowAccessActionProvider,
+                                             @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              dataCacheConnector: UserAnswersCacheConnector,

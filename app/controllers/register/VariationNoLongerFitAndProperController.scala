@@ -23,7 +23,9 @@ import controllers.actions._
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.register.variationNoLongerFitAndProper
 

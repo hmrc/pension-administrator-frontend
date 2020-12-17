@@ -19,7 +19,8 @@ package controllers.register.adviser
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.{Retrievals, Variations}
+import controllers.Retrievals
+import controllers.Variations
 import forms.register.adviser.ConfirmDeleteAdviserFormProvider
 import identifiers.register.adviser._
 import javax.inject.Inject
@@ -28,13 +29,19 @@ import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.{Navigator, UserAnswers, annotations}
-import viewmodels.{ConfirmDeleteViewModel, Message}
+import utils.Navigator
+import utils.UserAnswers
+import utils.annotations
+import viewmodels.ConfirmDeleteViewModel
+import viewmodels.Message
 import views.html.confirmDelete
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class ConfirmDeleteAdviserController @Inject()(val appConfig: FrontendAppConfig,
                                                authenticate: AuthAction,

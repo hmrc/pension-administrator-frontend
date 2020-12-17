@@ -29,6 +29,7 @@ import models.Address
 import models.CheckMode
 import models.CheckUpdateMode
 import models.RegistrationLegalStatus._
+import models.UpdateMode
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.Action
@@ -78,7 +79,7 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
           )
           case Individual => Some(
             Tuple2(
-              controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(CheckUpdateMode).url,
+              controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url,
               ua.getOrException(IndividualContactAddressId)
             )
           )

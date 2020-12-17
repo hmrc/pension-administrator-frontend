@@ -63,7 +63,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case AreYouInUKId => countryOfRegistrationEditRoutes(ua)
     case IndividualDateOfBirthId => checkYourAnswers
     case IndividualSameContactAddressId => contactAddressRoutes(ua, CheckMode)
-    case IndividualContactAddressPostCodeLookupId => IndividualContactAddressListController.onPageLoad(mode)
+    case IndividualContactAddressPostCodeLookupId => IndividualContactAddressListController.onPageLoad(CheckMode)
     case IndividualContactAddressId => IndividualAddressYearsController.onPageLoad(CheckMode)
     case IndividualAddressYearsId => addressYearsRouteCheckMode(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(CheckMode)

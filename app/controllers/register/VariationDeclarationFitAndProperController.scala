@@ -17,7 +17,6 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors._
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -26,14 +25,18 @@ import identifiers.register._
 import javax.inject.Inject
 import models._
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.i18n.I18nSupport
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.{Navigator, UserAnswers}
+import utils.Navigator
+import utils.UserAnswers
 import utils.annotations.Variations
 import views.html.register.variationDeclarationFitAndProper
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class VariationDeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,
                                                            authenticate: AuthAction,

@@ -27,17 +27,18 @@ import javax.inject.Inject
 import models._
 import models.register.DeclarationWorkingKnowledge
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.annotations.NoUpdateContactAddress
 import utils.annotations.Variations
 import utils.{Navigator, UserAnswers}
 import views.html.register.variationDeclaration
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                                                authenticate: AuthAction,
-                                               allowAccess: AllowAccessActionProvider,
+                                               @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                @Variations navigator: Navigator,

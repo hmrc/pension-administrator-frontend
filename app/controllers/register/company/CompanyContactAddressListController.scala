@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
@@ -29,21 +29,22 @@ import models.{Mode, TolerantAddress}
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Result, AnyContent, Action}
+import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
+import utils.annotations.NoUpdateContactAddress
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class CompanyContactAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                                     override val cacheConnector: UserAnswersCacheConnector,
                                                     @RegisterCompany override val navigator: Navigator,
                                                     authenticate: AuthAction,
-                                                    override val allowAccess: AllowAccessActionProvider,
+                                                    @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressListFormProvider,
