@@ -50,7 +50,6 @@ import scala.concurrent.Future
 class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,
                                             psaDetailsService: PsaDetailsService,
                                             countryOptions: CountryOptions,
@@ -58,15 +57,23 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                             val view: updateContactAddress
                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData).async { implicit request =>
     request.user.alreadyEnrolledPsaId match {
       case Some(psaId) =>
-        psaDetailsService.getUserAnswers(psaId, request.externalId).map(retrieveRequiredValues).flatMap{
-          case Some(Tuple2(continueUrl, address)) =>
-            userAnswersCacheConnector.save(request.externalId, RLSFlagId, true).map { _ =>
-              Ok(view(address.lines(countryOptions), continueUrl))
+//        psaDetailsService.getUserAnswers(psaId, request.externalId).map(retrieveRequiredValues).flatMap{
+        psaDetailsService.getUserAnswers(psaId, request.externalId).flatMap{ userAnswersUpdated =>
+          val hh = retrieveRequiredValues(userAnswersUpdated)
+            val kk = hh match {
+              case Some(Tuple2(continueUrl, address)) =>
+
+                val yy = userAnswersUpdated.setOrException(RLSFlagId)(true)
+                userAnswersCacheConnector.upsert(request.externalId, yy.json).map{ _ =>
+                  Ok(view(address.lines(countryOptions), continueUrl))
+                }
+              case None => Future.successful(sessionExpired)
             }
-          case None => Future.successful(sessionExpired)
+kk
+
         }
       case None => Future.successful(sessionExpired)
     }
