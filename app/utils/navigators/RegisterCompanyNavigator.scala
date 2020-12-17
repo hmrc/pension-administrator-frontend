@@ -19,7 +19,7 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.register.company.routes
-import identifiers.Identifier
+import identifiers.{Identifier, RLSFlagId}
 import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.{AreYouInUKId, BusinessTypeId, _}
 import models.InternationalRegion._
@@ -33,7 +33,7 @@ import utils.{Navigator, UserAnswers}
 class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
                                          appConfig: FrontendAppConfig) extends Navigator {
 
-  //scalastyle:off cyclomatic.complexity
+//  scalastyle:off cyclomatic.complexity
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case BusinessUTRId =>
       routes.CompanyNameController.onPageLoad()
@@ -142,7 +142,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
     case CompanyAddressListId =>
       routes.CompanyPreviousAddressController.onPageLoad(UpdateMode)
     case CompanyPreviousAddressId =>
-      anyMoreChanges
+      rlsNavigation(ua)
     case CompanyEmailId =>
       anyMoreChanges
     case CompanyPhoneId =>
@@ -150,6 +150,15 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
   }
 
   //scalastyle:on cyclomatic.complexity
+
+  private def rlsNavigation(answers: UserAnswers): Call = {
+    answers.get(RLSFlagId) match {
+      case Some(_) => variationsDeclarationPage
+      case _ => anyMoreChanges
+    }
+  }
+
+  private def variationsDeclarationPage: Call = controllers.register.routes.VariationDeclarationController.onPageLoad()
 
   private def checkYourAnswers: Call =
     controllers.register.company.routes.CheckYourAnswersController.onPageLoad()

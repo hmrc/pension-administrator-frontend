@@ -18,7 +18,7 @@ package utils.navigators
 
 import base.SpecBase
 import controllers.register.company.routes
-import identifiers.Identifier
+import identifiers.{Identifier, RLSFlagId}
 import identifiers.register._
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.company.{CompanyPhoneId, _}
@@ -152,6 +152,12 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
       (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(UpdateMode)),
       (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges),
+      (CompanyPreviousAddressId, rLSFlag, variationsDeclarationPage),
+
+      (CompanyConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
+      (CompanyConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges),
+      (CompanyConfirmPreviousAddressId, samePreviousAddressRLSFlag, variationsDeclarationPage),
+      (CompanyConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
 
       (CompanyEmailId, emptyAnswers, anyMoreChanges),
       (CompanyPhoneId, uk, anyMoreChanges),
@@ -171,6 +177,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def confirmPreviousAddressPage = routes.CompanyConfirmPreviousAddressController.onPageLoad()
 
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
+
+  private val rLSFlag = UserAnswers(Json.obj()).set(RLSFlagId)(true).asOpt.value
 
   private def companyNamePage = routes.CompanyNameController.onPageLoad()
   private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad()
@@ -224,6 +232,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def companyUpdate = routes.CompanyUpdateDetailsController.onPageLoad()
 
+  private val variationsDeclarationPage = controllers.register.routes.VariationDeclarationController.onPageLoad()
   private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYear = UserAnswers().set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
@@ -266,5 +275,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
     _.set(ConfirmPartnershipDetailsId)(true)).asOpt.value
   private val confirmAddressTrueUnlimitedCompany = UserAnswers(Json.obj()).set(BusinessTypeId)(BusinessType.UnlimitedCompany).flatMap(
     _.set(ConfirmPartnershipDetailsId)(true)).asOpt.value
+
+
 
 }
