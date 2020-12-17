@@ -78,7 +78,7 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
           )
           case Individual => Some(
             Tuple2(
-              controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckUpdateMode).url,
+              controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(CheckUpdateMode).url,
               ua.getOrException(IndividualContactAddressId)
             )
           )

@@ -70,6 +70,7 @@ class IndividualContactAddressController @Inject()(val appConfig: FrontendAppCon
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
+      println( "\n>>>III")
       post(IndividualContactAddressId, viewmodel(mode), mode)
   }
 }

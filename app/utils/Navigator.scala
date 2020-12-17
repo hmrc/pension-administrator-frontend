@@ -36,11 +36,14 @@ abstract class Navigator {
   def nextPage(id: Identifier, mode: Mode, userAnswers: UserAnswers)
               (implicit ex: IdentifiedRequest, executionContext: ExecutionContext, hc: HeaderCarrier): Call = {
     val navigateTo = {
+      println("\nMBMBMB:" + id + " --- " + this + " --- " + mode)
       mode match {
         case NormalMode => routeMap(userAnswers).lift
         case CheckMode => editRouteMap(userAnswers).lift
         case UpdateMode => updateRouteMap(userAnswers).lift
-        case CheckUpdateMode => editRouteMap(userAnswers, CheckUpdateMode).lift
+        case CheckUpdateMode =>
+        println( "\n>>>>OOOP")
+          editRouteMap(userAnswers, CheckUpdateMode).lift
       }
     }
 

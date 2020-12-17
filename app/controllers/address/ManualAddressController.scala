@@ -67,6 +67,7 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
           saveChangeFlag(mode, id)
             .flatMap {
               _ =>
+                println( "\n>>>OOO")
                 Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(userAnswersJson))))
             }
         }

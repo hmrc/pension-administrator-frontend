@@ -26,12 +26,13 @@ import forms.AddressFormProvider
 import identifiers.register.individual.IndividualPreviousAddressId
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Address, Mode}
+import models.{Mode, Address}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
+import utils.annotations.NoUpdateContactAddress
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -43,7 +44,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                     val cacheConnector: UserAnswersCacheConnector,
                                                     @Individual val navigator: Navigator,
                                                     authenticate: AuthAction,
-                                                    override val allowAccess: AllowAccessActionProvider,
+                                                    @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressFormProvider,

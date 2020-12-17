@@ -28,20 +28,21 @@ import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
+import utils.annotations.NoUpdateContactAddress
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class IndividualContactAddressListController @Inject()(@Individual override val navigator: Navigator,
                                                        override val appConfig: FrontendAppConfig,
                                                        override val cacheConnector: UserAnswersCacheConnector,
                                                        authenticate: AuthAction,
-                                                       override val allowAccess: AllowAccessActionProvider,
+                                                       @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: AddressListFormProvider,
