@@ -20,13 +20,14 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
+import identifiers.RLSFlagId
 import identifiers.register.company.directors
-import identifiers.register.company.directors.{DirectorConfirmPreviousAddressId, DirectorNameId, DirectorPreviousAddressId}
+import identifiers.register.company.directors.{DirectorPreviousAddressId, DirectorNameId, DirectorConfirmPreviousAddressId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Index, Mode}
+import models.{Mode, Index}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.CompanyDirector
 import utils.countryOptions.CountryOptions
@@ -64,7 +65,8 @@ class DirectorConfirmPreviousAddressController @Inject()(val appConfig: Frontend
               hint = None,
               address = address,
               psaName = details.fullName,
-              mode = mode
+              mode = mode,
+              displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
             )
         }
     )

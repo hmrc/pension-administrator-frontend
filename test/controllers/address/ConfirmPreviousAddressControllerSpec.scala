@@ -257,7 +257,8 @@ object ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
     hint = Some("hint"),
     address = testAddress,
     psaName = "Test name",
-    mode = NormalMode
+    mode = NormalMode,
+    displayReturnLink = true
   )
 
   private def errorMessage(implicit messages: Messages): String =

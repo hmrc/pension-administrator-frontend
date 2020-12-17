@@ -55,7 +55,8 @@ class IndividualSameContactAddressControllerSpec extends ControllerSpecBase {
     hint = None,
     address = testAddress,
     psaName = "Test name",
-    mode = NormalMode
+    mode = NormalMode,
+    displayReturnLink = true
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)

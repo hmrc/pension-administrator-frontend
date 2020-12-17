@@ -60,7 +60,8 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
     None,
     address,
     "Test name",
-    NormalMode
+    NormalMode,
+    displayReturnLink = true
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)

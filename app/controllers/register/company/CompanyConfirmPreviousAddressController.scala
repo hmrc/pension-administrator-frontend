@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
+import identifiers.RLSFlagId
 import identifiers.register.BusinessNameId
 import identifiers.register.company._
 import javax.inject.Inject
@@ -64,7 +65,8 @@ class CompanyConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
             hint = None,
             address = address,
             psaName = name,
-            mode = mode
+            mode = mode,
+            displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
           )
       }
   )

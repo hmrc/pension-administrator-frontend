@@ -21,6 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
 import controllers.register.individual.routes._
+import identifiers.RLSFlagId
 import identifiers.register.individual._
 import javax.inject.Inject
 import models.Mode
@@ -65,7 +66,8 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
               hint = None,
               address = address,
               psaName = details.fullName,
-              mode = mode
+              mode = mode,
+              displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
             )
         }
     )

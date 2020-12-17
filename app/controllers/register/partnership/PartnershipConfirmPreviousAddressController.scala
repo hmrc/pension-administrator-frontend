@@ -20,12 +20,13 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
+import identifiers.RLSFlagId
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.{ExistingCurrentAddressId, PartnershipConfirmPreviousAddressId, PartnershipPreviousAddressId}
+import identifiers.register.partnership.{PartnershipConfirmPreviousAddressId, PartnershipPreviousAddressId, ExistingCurrentAddressId}
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Partnership
 import utils.countryOptions.CountryOptions
@@ -64,7 +65,8 @@ class PartnershipConfirmPreviousAddressController @Inject()(val appConfig: Front
               hint = None,
               address = address,
               psaName = name,
-              mode = mode
+              mode = mode,
+              displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
             )
         }
     )

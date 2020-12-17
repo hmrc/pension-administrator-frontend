@@ -19,15 +19,16 @@ package controllers.register.partnership
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
 import controllers.address.SameContactAddressController
 import forms.address.SameContactAddressFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Partnership
 import utils.countryOptions.CountryOptions
@@ -63,7 +64,8 @@ class PartnershipSameContactAddressController @Inject()(
       hint = None,
       address = address,
       psaName = name,
-      mode = mode
+      mode = mode,
+      displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

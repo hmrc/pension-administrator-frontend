@@ -22,12 +22,13 @@ import controllers.actions._
 import controllers.address.SameContactAddressController
 import controllers.register.individual.routes._
 import forms.address.SameContactAddressFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.individual._
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
@@ -69,7 +70,8 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
               hint = None,
               address = address,
               psaName = individual.fullName,
-              mode = mode
+              mode = mode,
+              displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
             )
         }
     )

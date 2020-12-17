@@ -57,7 +57,8 @@ class PartnershipConfirmPreviousAddressControllerSpec extends ControllerSpecBase
     hint = None,
     address = testAddress,
     psaName = psa,
-    mode = UpdateMode
+    mode = UpdateMode,
+    displayReturnLink = true
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
