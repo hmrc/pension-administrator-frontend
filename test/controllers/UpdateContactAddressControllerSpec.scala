@@ -16,7 +16,10 @@
 
 package controllers
 
+import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
+import identifiers.RLSFlagId
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyContactAddressId
 import identifiers.register.individual.IndividualContactAddressId
@@ -24,6 +27,7 @@ import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipContactAddressId
 import models._
 import models.requests.DataRequest
+import org.mockito.Matchers
 import org.scalatest.BeforeAndAfter
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -34,19 +38,29 @@ import utils.UserAnswers
 import utils.countryOptions.CountryOptions
 import views.html.updateContactAddress
 import org.mockito.Matchers._
+import org.mockito.Mockito.reset
 import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterEach
+import play.api.libs.json.JsNull
 
 import scala.concurrent.Future
 
-class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeAndAfter {
+class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 
   import UpdateContactAddressControllerSpec._
+
+  override protected def beforeEach(): Unit = {
+    reset(mockUserAnswersCacheConnector)
+    when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+      .thenReturn(Future.successful(JsNull))
+  }
 
   "UpdateContactAddressController" must {
 
     "return OK and the correct view for a GET for an individual" in {
       when(mockPsaDetailsService.getUserAnswers(any(), any())(any(), any()))
         .thenReturn(Future.successful(individual))
+
       val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
@@ -85,6 +99,8 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
     }
   }
 
+  private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new UpdateContactAddressController(
       frontendAppConfig,
@@ -94,6 +110,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       stubMessagesControllerComponents(),
       mockPsaDetailsService,
       countryOptions,
+      mockUserAnswersCacheConnector,
       view
     )
 }

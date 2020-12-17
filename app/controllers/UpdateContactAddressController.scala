@@ -17,9 +17,11 @@
 package controllers
 
 import config.FrontendAppConfig
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AuthAction
 import controllers.actions.DataRequiredAction
 import controllers.actions.DataRetrievalAction
+import identifiers.RLSFlagId
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.CompanyContactAddressId
 import identifiers.register.individual.IndividualContactAddressId
@@ -52,16 +54,19 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                             val controllerComponents: MessagesControllerComponents,
                                             psaDetailsService: PsaDetailsService,
                                             countryOptions: CountryOptions,
+                                            userAnswersCacheConnector: UserAnswersCacheConnector,
                                             val view: updateContactAddress
                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
     request.user.alreadyEnrolledPsaId match {
       case Some(psaId) =>
-        psaDetailsService.getUserAnswers(psaId, request.externalId).map(retrieveRequiredValues).map{
+        psaDetailsService.getUserAnswers(psaId, request.externalId).map(retrieveRequiredValues).flatMap{
           case Some(Tuple2(continueUrl, address)) =>
-            Ok(view(address.lines(countryOptions), continueUrl))
-          case None => sessionExpired
+            userAnswersCacheConnector.save(request.externalId, RLSFlagId, true).map { _ =>
+              Ok(view(address.lines(countryOptions), continueUrl))
+            }
+          case None => Future.successful(sessionExpired)
         }
       case None => Future.successful(sessionExpired)
     }

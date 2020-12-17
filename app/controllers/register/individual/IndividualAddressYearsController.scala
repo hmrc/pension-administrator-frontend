@@ -70,7 +70,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        viewmodel(mode, request.userAnswers.get(RLSFlagId).isEmpty).retrieve.right.map {
+        viewmodel(mode).retrieve.right.map {
           vm =>
             get(IndividualAddressYearsId, form, vm, mode)
         }
@@ -78,7 +78,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode, request.userAnswers.get(RLSFlagId).isEmpty).retrieve.right.map {
+      viewmodel(mode).retrieve.right.map {
         vm =>
           post(IndividualAddressYearsId, mode, form, vm)
       }
