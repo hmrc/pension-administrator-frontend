@@ -21,7 +21,6 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.RLSFlagId
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -50,7 +49,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
                                                  val view: addressYears
                                                 )(implicit val executionContext: ExecutionContext) extends AddressYearsController with I18nSupport {
 
-  private def viewmodel(mode: Mode, displayReturnLink: Boolean): Retrieval[AddressYearsViewModel] =
+  private def viewmodel(mode: Mode): Retrieval[AddressYearsViewModel] =
     Retrieval(
       implicit request =>
         IndividualDetailsId.retrieve.right.map {
@@ -61,7 +60,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
               title = Message(questionText, details.fullName),
               heading = Message(questionText, details.fullName),
               legend = Message(questionText, details.fullName),
-              psaName = if(displayReturnLink) psaName() else None
+              psaName = psaName()
             )
         }
     )
