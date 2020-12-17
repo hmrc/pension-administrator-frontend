@@ -21,6 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -49,7 +50,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
                                                  val view: addressYears
                                                 )(implicit val executionContext: ExecutionContext) extends AddressYearsController with I18nSupport {
 
-  private def viewmodel(mode: Mode): Retrieval[AddressYearsViewModel] =
+  private def viewmodel(mode: Mode, displayReturnLink: Boolean): Retrieval[AddressYearsViewModel] =
     Retrieval(
       implicit request =>
         IndividualDetailsId.retrieve.right.map {
@@ -60,7 +61,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
               title = Message(questionText, details.fullName),
               heading = Message(questionText, details.fullName),
               legend = Message(questionText, details.fullName),
-              psaName = psaName()
+              psaName = if(displayReturnLink) psaName() else None
             )
         }
     )
@@ -70,7 +71,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        viewmodel(mode).retrieve.right.map {
+        viewmodel(mode, request.userAnswers.get(RLSFlagId).contains(true)).retrieve.right.map {
           vm =>
             get(IndividualAddressYearsId, form, vm, mode)
         }
@@ -78,7 +79,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map {
+      viewmodel(mode, request.userAnswers.get(RLSFlagId).contains(true)).retrieve.right.map {
         vm =>
           post(IndividualAddressYearsId, mode, form, vm)
       }

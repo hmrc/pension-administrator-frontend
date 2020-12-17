@@ -20,6 +20,7 @@ import base.SpecBase
 import config.FrontendAppConfig
 import connectors.IdentityVerificationConnector
 import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import controllers.routes
 import identifiers.JourneyId
 import models._
@@ -52,7 +53,9 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
     rlsFlag = false
   )
 
-  def allowAccessActionProviderImpl(config: FrontendAppConfig) = new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(minimalPsa), config)
+  val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
+  def allowAccessActionProviderImpl(config: FrontendAppConfig) = new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(minimalPsa), config, mockUserAnswersCacheConnector)
 
   "Auth Action" when {
 
@@ -115,7 +118,9 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
             rlsFlag = false
           )
 
-          def controller = new Harness(authAction, new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(minimalPsa), frontendAppConfig))
+
+
+          def controller = new Harness(authAction, new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(minimalPsa), frontendAppConfig, mockUserAnswersCacheConnector))
 
           val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.register.routes.VariationDeclarationController.onPageLoad().url))
           status(result) mustBe SEE_OTHER

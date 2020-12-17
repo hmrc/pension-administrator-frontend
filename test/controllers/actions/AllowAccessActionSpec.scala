@@ -18,9 +18,15 @@ package controllers.actions
 
 import base.SpecBase
 import config.FrontendAppConfig
+import connectors.cache.UserAnswersCacheConnector
+import identifiers.RLSFlagId
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 import models._
 import models.requests.AuthenticatedRequest
+import org.mockito.Matchers
 import org.scalatest.concurrent.ScalaFutures
+import play.api.libs.json.JsNull
 import play.api.mvc.Call
 import play.api.mvc.Result
 import play.api.test.FakeRequest
@@ -39,8 +45,10 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
     rlsFlag = false
   )
 
+  val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+
   class TestAllowAccessAction(mode: Mode, minimalPsa: MinimalPSA, config:FrontendAppConfig) extends
-    AllowAccessAction(mode, FakeMinimalPsaConnector(minimalPsa), frontendAppConfig) {
+    AllowAccessAction(mode, FakeMinimalPsaConnector(minimalPsa), frontendAppConfig, mockUserAnswersCacheConnector) {
     override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = super.filter(request)
   }
 
@@ -126,7 +134,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       }
     }
 
-    "redirect to update contact address page for user with enrolment where RLS flag is set" in {
+    "redirect to update contact address page for user with enrolment where RLS flag is set and update Mongo cache with RLS flag" in {
       val minimalPsa = MinimalPSA(
         email = "a@a.c",
         isPsaSuspended = false,
@@ -134,6 +142,10 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
         individualDetails = None,
         rlsFlag = true
       )
+
+      when(mockUserAnswersCacheConnector.save(any(), Matchers.eq(RLSFlagId), Matchers.eq(true))(any(), any(), any()))
+        .thenReturn(Future.successful(JsNull))
+
       val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
       val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))

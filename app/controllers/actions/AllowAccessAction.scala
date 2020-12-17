@@ -19,30 +19,38 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.MinimalPsaConnector
+import connectors.cache.UserAnswersCacheConnector
+import identifiers.RLSFlagId
 import models._
 import models.requests.AuthenticatedRequest
 import play.api.mvc.Call
-import play.api.mvc.{Request, Result, ActionFilter}
+import play.api.mvc.ActionFilter
+import play.api.mvc.Request
+import play.api.mvc.Result
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 
 class AllowAccessAction(
                          mode: Mode,
                          minimalPsaConnector: MinimalPsaConnector,
-                         config: FrontendAppConfig
+                         config: FrontendAppConfig,
+                         userAnswersCacheConnector: UserAnswersCacheConnector
                        )(implicit val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
 
-  protected def redirects(psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
-    minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
+  protected def redirects(externalId: String, psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
+    minimalPsaConnector.getMinimalPsaDetails(psaId).flatMap { minimalPSA =>
       if (minimalPSA.isPsaSuspended) {
-        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
+        Future.successful(Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad())))
       } else if (minimalPSA.rlsFlag) {
-        Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
+        userAnswersCacheConnector.save(externalId, RLSFlagId, true).map { _ =>
+          Option(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
+        }
       } else {
-        None
+        Future.successful(None)
       }
     }
   }
@@ -53,7 +61,7 @@ class AllowAccessAction(
       case (None, NormalMode | CheckMode) =>
         Future.successful(None)
       case (Some(psaId), UpdateMode | CheckUpdateMode) =>
-        redirects(psaId)
+        redirects(request.externalId, psaId)
       case (Some(_), NormalMode) if pagesAfterEnrolment(request) =>
         Future.successful(None)
       case (Some(_), NormalMode | CheckMode) =>
@@ -73,9 +81,10 @@ class AllowAccessAction(
 class AllowAccessActionNoUpdateContactAddress(
   mode: Mode,
   minimalPsaConnector: MinimalPsaConnector,
-  config: FrontendAppConfig
-)(implicit override val executionContext: ExecutionContext) extends AllowAccessAction(mode, minimalPsaConnector, config) {
-  override protected def redirects(psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
+  config: FrontendAppConfig,
+  userAnswersCacheConnector: UserAnswersCacheConnector
+)(implicit override val executionContext: ExecutionContext) extends AllowAccessAction(mode, minimalPsaConnector, config, userAnswersCacheConnector) {
+  override protected def redirects(externalId: String, psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
     minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
       if (minimalPSA.isPsaSuspended) {
         Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
@@ -87,17 +96,19 @@ class AllowAccessActionNoUpdateContactAddress(
 }
 
 class AllowAccessActionProviderNoUpdateContactAddressImpl @Inject() (
-  minimalPsaConnector: MinimalPsaConnector, config: FrontendAppConfig)(implicit executionContext: ExecutionContext)
+  minimalPsaConnector: MinimalPsaConnector, config: FrontendAppConfig,
+  userAnswersCacheConnector: UserAnswersCacheConnector)(implicit executionContext: ExecutionContext)
   extends AllowAccessActionProvider {
   def apply(mode: Mode): AllowAccessAction = {
-    new AllowAccessActionNoUpdateContactAddress(mode, minimalPsaConnector, config)
+    new AllowAccessActionNoUpdateContactAddress(mode, minimalPsaConnector, config, userAnswersCacheConnector)
   }
 }
 
-class AllowAccessActionProviderImpl @Inject() (minimalPsaConnector: MinimalPsaConnector, config: FrontendAppConfig)(implicit executionContext: ExecutionContext)
+class AllowAccessActionProviderImpl @Inject() (minimalPsaConnector: MinimalPsaConnector,
+  config: FrontendAppConfig, userAnswersCacheConnector: UserAnswersCacheConnector)(implicit executionContext: ExecutionContext)
   extends AllowAccessActionProvider {
   def apply(mode: Mode): AllowAccessAction = {
-    new AllowAccessAction(mode, minimalPsaConnector, config)
+    new AllowAccessAction(mode, minimalPsaConnector, config, userAnswersCacheConnector)
   }
 }
 
