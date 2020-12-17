@@ -133,6 +133,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage),
       (IndividualConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (IndividualConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges),
+      (IndividualConfirmPreviousAddressId, samePreviousAddressRLSFlag, variationsDeclarationPage),
       (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
       (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode)),
       (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges),
@@ -240,6 +241,10 @@ object IndividualNavigatorSpec extends OptionValues {
 
   private def samePreviousAddress = UserAnswers(Json.obj())
     .set(IndividualConfirmPreviousAddressId)(true).asOpt.value
+
+  private def samePreviousAddressRLSFlag = UserAnswers(Json.obj())
+    .set(IndividualConfirmPreviousAddressId)(true).asOpt.value
+    .set(RLSFlagId)(true).asOpt.value
 
   private def notSamePreviousAddress = UserAnswers(Json.obj())
     .set(IndividualConfirmPreviousAddressId)(false).asOpt.value

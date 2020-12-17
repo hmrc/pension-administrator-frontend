@@ -136,9 +136,10 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     }
 
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call =
-    answers.get(IndividualConfirmPreviousAddressId) match {
-      case Some(true) => anyMoreChanges
-      case Some(false) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
+    (answers.get(IndividualConfirmPreviousAddressId), answers.get(RLSFlagId)) match {
+      case (Some(true),None) => anyMoreChanges
+      case (Some(true), Some(_)) => variationsDeclarationPage
+      case (Some(false), _) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
       case _ => SessionExpiredController.onPageLoad()
     }
 
