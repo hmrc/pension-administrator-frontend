@@ -52,7 +52,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       status(result) mustBe OK
 
       contentAsString(result) mustBe
-        viewAsString(individual, controllers.register.individual.routes.IndividualContactAddressController.onPageLoad(CheckUpdateMode).url)
+        viewAsString(individual, controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)
     }
 
     "return OK and the correct view for a GET for a company" in {

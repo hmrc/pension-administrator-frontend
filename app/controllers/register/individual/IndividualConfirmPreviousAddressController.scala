@@ -72,7 +72,6 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      println( "\n>>>>>DSDSDS")
       viewmodel(mode).retrieve.right.map { vm =>
         get(IndividualConfirmPreviousAddressId, vm)
       }
