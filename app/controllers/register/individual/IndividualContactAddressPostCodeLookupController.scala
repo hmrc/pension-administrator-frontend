@@ -23,6 +23,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.Mode
 import models.requests.DataRequest
@@ -53,7 +54,7 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
                                                                 )(implicit val executionContext: ExecutionContext
                                                                 ) extends PostcodeLookupController {
 
-  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
+  def viewModel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
     routes.IndividualContactAddressPostCodeLookupController.onSubmit(mode),
     routes.IndividualContactAddressController.onPageLoad(mode),
     Message("individual.postcode.lookup.heading"),
@@ -61,7 +62,7 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
     Message("manual.entry.text"),
     Some(Message("manual.entry.link")),
     Message("postcode.lookup.form.label"),
-    psaName = psaName(),
+    psaName = if(displayReturnLink) psaName() else None,
     findAddressMessageKey = "site.save_and_continue"
   )
 
@@ -69,12 +70,12 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewModel(mode), mode)
+      get(viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualContactAddressPostCodeLookupId, viewModel(mode), mode)
+      post(IndividualContactAddressPostCodeLookupId, viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
   }
 }
 

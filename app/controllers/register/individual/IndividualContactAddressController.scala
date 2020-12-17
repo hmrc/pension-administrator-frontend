@@ -21,13 +21,17 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.individual.IndividualContactAddressId
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Mode, Address}
+import models.Address
+import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import utils.Navigator
 import utils.annotations.Individual
 import utils.annotations.NoUpdateContactAddress
@@ -55,21 +59,21 @@ class IndividualContactAddressController @Inject()(val appConfig: FrontendAppCon
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
+  private def viewmodel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
     countryOptions.options,
     title = Message("individual.enter.address.heading"),
     heading = Message("individual.enter.address.heading"),
-    psaName = psaName()
+    psaName = if(displayReturnLink) psaName() else None
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewmodel(mode), mode)
+      get(viewmodel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualContactAddressId, viewmodel(mode), mode)
+      post(IndividualContactAddressId, viewmodel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
   }
 }

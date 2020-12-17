@@ -23,6 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import controllers.register.individual.routes._
 import forms.AddressFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.individual.IndividualPreviousAddressId
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -57,22 +58,22 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
+  private def viewmodel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
     countryOptions.options,
     title = Message("individual.enter.previous.address.heading"),
     heading = Message("individual.enter.previous.address.heading"),
-    psaName = psaName()
+    psaName = if(displayReturnLink) psaName() else None
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewmodel(mode), mode)
+      get(viewmodel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualPreviousAddressId, viewmodel(mode), mode)
+      post(IndividualPreviousAddressId, viewmodel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
   }
 
 }

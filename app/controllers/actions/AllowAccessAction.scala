@@ -46,6 +46,7 @@ class AllowAccessAction(
       if (minimalPSA.isPsaSuspended) {
         Future.successful(Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad())))
       } else if (minimalPSA.rlsFlag) {
+        println("\n>>>>TRTRTR")
         userAnswersCacheConnector.save(externalId, RLSFlagId, true).map { _ =>
           Option(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
         }

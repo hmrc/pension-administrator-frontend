@@ -22,6 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -56,18 +57,19 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map{vm =>
+      viewmodel(mode, request.userAnswers.get(RLSFlagId).isEmpty).right.map{vm =>
         get(vm, mode, form(vm.addresses))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressPostCodeLookupId, mode, form(vm.addresses)))
+      viewmodel(mode, request.userAnswers.get(RLSFlagId).isEmpty)
+        .right.map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressPostCodeLookupId, mode, form(vm.addresses)))
   }
 
 
-  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+  private def viewmodel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
     IndividualContactAddressPostCodeLookupId.retrieve.right.map {
       addresses =>
         AddressListViewModel(
@@ -78,7 +80,7 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
           Message("individual.select.address.heading"),
           Message("select.address.hint.text"),
           Message("manual.entry.link"),
-          psaName = psaName(),
+          psaName = if(displayReturnLink) psaName() else None,
           selectAddressPostLink = Some(Message("individual.selectAddressPostLink.text"))
         )
     }.left.map(_ => Future.successful(Redirect(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))))
