@@ -18,10 +18,12 @@ package utils.navigators
 
 import base.SpecBase
 import controllers.register.company.routes
-import identifiers.{Identifier, RLSFlagId}
+import identifiers.Identifier
+import identifiers.RLSFlagId
 import identifiers.register._
 import identifiers.register.company.directors.DirectorNameId
-import identifiers.register.company.{CompanyPhoneId, _}
+import identifiers.register.company.CompanyPhoneId
+import identifiers.register.company._
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
 import models._
 import models.register.BusinessType
@@ -29,7 +31,9 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.Navigator
+import utils.NavigatorBehaviour
+import utils.UserAnswers
 
 class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -37,7 +41,9 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   val navigator: Navigator = injector.instanceOf[RegisterCompanyNavigator]
 
+
   "RegisterCompanyNavigator in NormalMode" must {
+    // scalastyle:off method.length
     def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
       ("Id", "User Answers", "Next Page"),
       (BusinessUTRId, emptyAnswers, companyNamePage),
@@ -152,11 +158,11 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
       (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(UpdateMode)),
       (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges),
-      (CompanyPreviousAddressId, rLSFlag, variationsDeclarationPage),
+      (CompanyPreviousAddressId, rLSFlag, stillUsePage),
 
       (CompanyConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (CompanyConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges),
-      (CompanyConfirmPreviousAddressId, samePreviousAddressRLSFlag, variationsDeclarationPage),
+      (CompanyConfirmPreviousAddressId, samePreviousAddressRLSFlag, stillUsePage),
       (CompanyConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
 
       (CompanyEmailId, emptyAnswers, anyMoreChanges),
@@ -169,6 +175,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 }
 
+// scalastyle:off number.of.methods
 object RegisterCompanyNavigatorSpec extends OptionValues {
   private def emailPage(mode: Mode): Call = routes.CompanyEmailController.onPageLoad(mode)
   private def phonePage(mode: Mode): Call = routes.CompanyPhoneController.onPageLoad(mode)
@@ -216,6 +223,17 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def sameContactAddress(mode: Mode) = routes.CompanySameContactAddressController.onPageLoad(mode)
 
+  private def samePreviousAddress = UserAnswers(Json.obj())
+    .set(CompanyConfirmPreviousAddressId)(true).asOpt.value
+
+  private def samePreviousAddressRLSFlag = UserAnswers(Json.obj())
+    .set(CompanyConfirmPreviousAddressId)(true).asOpt.value
+    .set(RLSFlagId)(true).asOpt.value
+
+
+  private def notSamePreviousAddress = UserAnswers(Json.obj())
+    .set(CompanyConfirmPreviousAddressId)(false).asOpt.value
+
   private def contactAddressPostCode(mode: Mode) = routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode)
 
   private def contactAddressList(mode: Mode) = routes.CompanyContactAddressListController.onPageLoad(mode)
@@ -232,7 +250,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def companyUpdate = routes.CompanyUpdateDetailsController.onPageLoad()
 
-  private val variationsDeclarationPage = controllers.register.routes.VariationDeclarationController.onPageLoad()
+  private val stillUsePage = controllers.register.routes.StillUseAdviserController.onPageLoad()
+
   private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
   private val addressYearsUnderAYear = UserAnswers().set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
@@ -276,6 +295,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val confirmAddressTrueUnlimitedCompany = UserAnswers(Json.obj()).set(BusinessTypeId)(BusinessType.UnlimitedCompany).flatMap(
     _.set(ConfirmPartnershipDetailsId)(true)).asOpt.value
 
-
+  private def previousPostCodeLookupPage(mode: Mode) = routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode)
 
 }

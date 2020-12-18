@@ -21,15 +21,16 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
-import identifiers.register.adviser.{AdviserNameId, AdviserPhoneId}
+import identifiers.register.adviser.{AdviserPhoneId, AdviserNameId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Adviser
-import viewmodels.{CommonFormWithHintViewModel, Message}
+import utils.annotations.NoUpdateContactAddress
+import viewmodels.{Message, CommonFormWithHintViewModel}
 import views.html.phone
 
 import scala.concurrent.ExecutionContext
@@ -38,7 +39,7 @@ class AdviserPhoneController @Inject()(@Adviser val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
-                                       val allowAccess: AllowAccessActionProvider,
+                                       @NoUpdateContactAddress val allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: PhoneFormProvider,

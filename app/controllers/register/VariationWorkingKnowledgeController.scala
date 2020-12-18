@@ -40,7 +40,7 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
                                                     override val cacheConnector: UserAnswersCacheConnector,
                                                     @annotations.Variations navigator: Navigator,
                                                     authenticate: AuthAction,
-                                                    allowAccess: AllowAccessActionProvider,
+                                                    @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: VariationWorkingKnowledgeFormProvider,

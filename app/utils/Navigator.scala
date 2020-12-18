@@ -35,15 +35,16 @@ abstract class Navigator {
 
   def nextPage(id: Identifier, mode: Mode, userAnswers: UserAnswers)
               (implicit ex: IdentifiedRequest, executionContext: ExecutionContext, hc: HeaderCarrier): Call = {
-    val navigateTo = {
+    val navigateTo =
       mode match {
         case NormalMode => routeMap(userAnswers).lift
         case CheckMode => editRouteMap(userAnswers).lift
-        case UpdateMode => updateRouteMap(userAnswers).lift
+        case UpdateMode =>
+          updateRouteMap(userAnswers).lift
         case CheckUpdateMode =>
           editRouteMap(userAnswers, CheckUpdateMode).lift
       }
-    }
+
 
     navigateTo(id).getOrElse(defaultPage(id, mode))
   }

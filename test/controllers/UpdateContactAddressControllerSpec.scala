@@ -16,10 +16,8 @@
 
 package controllers
 
-import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import identifiers.RLSFlagId
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyContactAddressId
 import identifiers.register.individual.IndividualContactAddressId
@@ -27,8 +25,6 @@ import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipContactAddressId
 import models._
 import models.requests.DataRequest
-import org.mockito.Matchers
-import org.scalatest.BeforeAndAfter
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import services.PsaDetailsService
@@ -51,7 +47,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
 
   override protected def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
-    when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+    when(mockUserAnswersCacheConnector.upsert(any(), any())(any(), any()))
       .thenReturn(Future.successful(JsNull))
   }
 
@@ -77,7 +73,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       status(result) mustBe OK
 
       contentAsString(result) mustBe
-        viewAsString(company, controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckUpdateMode).url)
+        viewAsString(company, controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)
     }
 
     "return OK and the correct view for a GET for a partnership" in {
@@ -88,14 +84,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       status(result) mustBe OK
 
       contentAsString(result) mustBe
-        viewAsString(company, controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckUpdateMode).url)
-    }
-
-    "redirect to Session Expired on a GET when no data exists" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        viewAsString(company, controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)
     }
   }
 
@@ -106,7 +95,6 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       frontendAppConfig,
       FakeAuthAction(UserType.Individual),
       dataRetrievalAction,
-      new DataRequiredActionImpl,
       stubMessagesControllerComponents(),
       mockPsaDetailsService,
       countryOptions,

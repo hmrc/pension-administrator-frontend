@@ -19,7 +19,6 @@ package controllers
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AuthAction
-import controllers.actions.DataRequiredAction
 import controllers.actions.DataRetrievalAction
 import identifiers.RLSFlagId
 import identifiers.register.RegistrationInfoId
@@ -28,12 +27,9 @@ import identifiers.register.individual.IndividualContactAddressId
 import identifiers.register.partnership.PartnershipContactAddressId
 import javax.inject.Inject
 import models.Address
-import models.CheckMode
-import models.CheckUpdateMode
 import models.RegistrationLegalStatus._
 import models.UpdateMode
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
 import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
@@ -80,7 +76,7 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
         regInfo.legalStatus match {
           case LimitedCompany => Some(
             Tuple2(
-              controllers.register.company.routes.CompanyContactAddressController.onPageLoad(CheckUpdateMode).url,
+              controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url,
               ua.getOrException(CompanyContactAddressId)
             )
           )
@@ -92,7 +88,7 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
           )
           case Partnership => Some(
             Tuple2(
-              controllers.register.partnership.routes.PartnershipContactAddressController.onPageLoad(CheckUpdateMode).url,
+              controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url,
               ua.getOrException(PartnershipContactAddressId)
             )
           )

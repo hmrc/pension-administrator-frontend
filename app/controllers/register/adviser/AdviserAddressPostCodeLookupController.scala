@@ -22,14 +22,15 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.adviser.{AdviserAddressPostCodeLookupId, AdviserNameId}
+import identifiers.register.adviser.{AdviserNameId, AdviserAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Adviser
+import utils.annotations.NoUpdateContactAddress
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -41,7 +42,7 @@ class AdviserAddressPostCodeLookupController @Inject()(
                                                         override val cacheConnector: UserAnswersCacheConnector,
                                                         override val addressLookupConnector: AddressLookupConnector,
                                                         @Adviser override val navigator: Navigator,
-                                                        override val allowAccess: AllowAccessActionProvider,
+                                                        @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
                                                         authenticate: AuthAction,
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,

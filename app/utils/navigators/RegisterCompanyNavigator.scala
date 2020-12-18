@@ -34,6 +34,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
                                          appConfig: FrontendAppConfig) extends Navigator {
 
 //  scalastyle:off cyclomatic.complexity
+// scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case BusinessUTRId =>
       routes.CompanyNameController.onPageLoad()
@@ -149,16 +150,14 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
       anyMoreChanges
   }
 
-  //scalastyle:on cyclomatic.complexity
-
   private def rlsNavigation(answers: UserAnswers): Call = {
     answers.get(RLSFlagId) match {
-      case Some(_) => variationsDeclarationPage
+      case Some(_) => stillUsePage
       case _ => anyMoreChanges
     }
   }
 
-  private def variationsDeclarationPage: Call = controllers.register.routes.VariationDeclarationController.onPageLoad()
+  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
   private def checkYourAnswers: Call =
     controllers.register.company.routes.CheckYourAnswersController.onPageLoad()
@@ -249,7 +248,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call = {
     answers.get(CompanyConfirmPreviousAddressId) match {
       case Some(false) => routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
-      case Some(true) => anyMoreChanges
+      case Some(true) => rlsNavigation(answers)
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
