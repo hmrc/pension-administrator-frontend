@@ -140,21 +140,21 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
       (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage),
-      (PartnershipConfirmPreviousAddressId, samePreviousAddressRLSFlag, stillUsePage),
+      (PartnershipConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, stillUsePage),
       (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousPostCodePage(UpdateMode))
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
   }
-  
+
 }
 
 object PartnershipNavigatorSpec extends OptionValues {
 
-  private lazy val rLSFlag = UserAnswers(Json.obj()).set(RLSFlagId)(true).asOpt.value
+  private lazy val rLSFlag = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value
 
-  private def samePreviousAddressRLSFlag = UserAnswers(Json.obj())
+  private def samePreviousAddressUpdateContactAddress = UserAnswers(Json.obj())
     .set(PartnershipConfirmPreviousAddressId)(true).asOpt.value
-    .set(RLSFlagId)(true).asOpt.value
+    .set(UpdateContactAddressId)(true).asOpt.value
 
   private val stillUsePage = controllers.register.routes.StillUseAdviserController.onPageLoad()
 

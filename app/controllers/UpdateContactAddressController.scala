@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AuthAction
 import controllers.actions.DataRetrievalAction
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.CompanyContactAddressId
 import identifiers.register.individual.IndividualContactAddressId
@@ -61,10 +61,9 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
         psaDetailsService.getUserAnswers(psaId, request.externalId).flatMap{ userAnswersUpdated =>
           getAddress(userAnswersUpdated) match {
               case Some(address) =>
-                val ua = userAnswersUpdated.setOrException(RLSFlagId)(true)
-                userAnswersCacheConnector.upsert(request.externalId, ua.json).map { _ =>
-                  Ok(view(address.lines(countryOptions), navigator.nextPage(RLSFlagId, UpdateMode, ua).url))
-                }
+                val ua = userAnswersUpdated.setOrException(UpdateContactAddressId)(true)
+                userAnswersCacheConnector.upsert(request.externalId, ua.json)
+                  .map(_=>Ok(view(address.lines(countryOptions), navigator.nextPage(UpdateContactAddressId, UpdateMode, ua).url)))
               case None => Future.successful(sessionExpired)
             }
         }

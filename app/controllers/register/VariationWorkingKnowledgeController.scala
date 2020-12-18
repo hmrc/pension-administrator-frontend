@@ -21,7 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.VariationWorkingKnowledgeFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.{PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
@@ -55,7 +55,7 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       val preparedForm = request.userAnswers.get(VariationWorkingKnowledgeId) match {
         case None => form
         case Some(value) => form.fill(value)
@@ -69,7 +69,7 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(

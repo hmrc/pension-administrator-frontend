@@ -23,7 +23,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import controllers.register.individual.routes._
 import forms.AddressFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.individual.IndividualPreviousAddressId
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -68,12 +68,12 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewmodel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
+      get(viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualPreviousAddressId, viewmodel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
+      post(IndividualPreviousAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
 }

@@ -18,7 +18,7 @@ package utils.navigators
 
 import base.SpecBase
 import identifiers.Identifier
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register._
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.adviser.ConfirmDeleteAdviserId
@@ -71,9 +71,9 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (DeclarationChangedId, declarationNotChangedWithAdviser, variationStillWorkingKnowledgePage),
       (DeclarationChangedId, completeIndividualDetails, variationWorkingKnowledgePage(CheckUpdateMode)),
 
-      (RLSFlagId, individualWithRLSFlag, individualContactAddressPostCodeLookupPage),
-      (RLSFlagId, companyWithRLSFlag, companyContactAddressPostCodeLookupPage),
-      (RLSFlagId, partnershipWithRLSFlag, partnershipContactAddressPostCodeLookupPage),
+      (UpdateContactAddressId, individualWithUpdateContactAddress, individualContactAddressPostCodeLookupPage),
+      (UpdateContactAddressId, companyWithUpdateContactAddress, companyContactAddressPostCodeLookupPage),
+      (UpdateContactAddressId, partnershipWithUpdateContactAddress, partnershipContactAddressPostCodeLookupPage),
 
       (DeclarationId, emptyAnswers, variationSuccessPage)
     )
@@ -109,23 +109,23 @@ object VariationsNavigatorSpec extends OptionValues {
   private val partnershipContactAddressPostCodeLookupPage =
     controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode)
 
-  private val individualWithRLSFlag = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
+  private val individualWithUpdateContactAddress = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
     RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
     .setOrException(IndividualContactAddressId)(address)
-    .setOrException(RLSFlagId)(true)
+    .setOrException(UpdateContactAddressId)(true)
 
-  private val companyWithRLSFlag = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
+  private val companyWithUpdateContactAddress = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
     RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
     .setOrException(BusinessNameId)("Big company")
     .setOrException(CompanyContactAddressId)(address)
-    .setOrException(RLSFlagId)(true)
+    .setOrException(UpdateContactAddressId)(true)
 
-  private val partnershipWithRLSFlag = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
+  private val partnershipWithUpdateContactAddress = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
     RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
     .setOrException(BusinessNameId)("Big company")
     .setOrException(PartnershipContactAddressId)(address)
-    .setOrException(RLSFlagId)(true)
+    .setOrException(UpdateContactAddressId)(true)
 
   private val declarationChangedWithIncompleteIndividual = UserAnswers(Json.obj()).registrationInfo(
     RegistrationInfo(

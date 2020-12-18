@@ -16,6 +16,6 @@
 
 package identifiers
 
-object RLSFlagId extends TypedIdentifier[Boolean] {
-  override def toString: String = "rlsFlag"
+object UpdateContactAddressId extends TypedIdentifier[Boolean] {
+  override def toString: String = "updateContactAddress"
 }

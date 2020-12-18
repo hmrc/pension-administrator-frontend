@@ -23,7 +23,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.Mode
 import models.requests.DataRequest
@@ -70,12 +70,12 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
+      get(viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualContactAddressPostCodeLookupId, viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
+      post(IndividualContactAddressPostCodeLookupId, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 }
 

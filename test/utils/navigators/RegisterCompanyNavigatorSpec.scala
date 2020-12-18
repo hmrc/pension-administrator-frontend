@@ -19,7 +19,7 @@ package utils.navigators
 import base.SpecBase
 import controllers.register.company.routes
 import identifiers.Identifier
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register._
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.company.CompanyPhoneId
@@ -162,7 +162,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
       (CompanyConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (CompanyConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges),
-      (CompanyConfirmPreviousAddressId, samePreviousAddressRLSFlag, stillUsePage),
+      (CompanyConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, stillUsePage),
       (CompanyConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
 
       (CompanyEmailId, emptyAnswers, anyMoreChanges),
@@ -185,7 +185,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
 
-  private val rLSFlag = UserAnswers(Json.obj()).set(RLSFlagId)(true).asOpt.value
+  private val rLSFlag = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value
 
   private def companyNamePage = routes.CompanyNameController.onPageLoad()
   private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad()
@@ -226,9 +226,9 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def samePreviousAddress = UserAnswers(Json.obj())
     .set(CompanyConfirmPreviousAddressId)(true).asOpt.value
 
-  private def samePreviousAddressRLSFlag = UserAnswers(Json.obj())
+  private def samePreviousAddressUpdateContactAddress = UserAnswers(Json.obj())
     .set(CompanyConfirmPreviousAddressId)(true).asOpt.value
-    .set(RLSFlagId)(true).asOpt.value
+    .set(UpdateContactAddressId)(true).asOpt.value
 
 
   private def notSamePreviousAddress = UserAnswers(Json.obj())

@@ -28,7 +28,7 @@ import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import controllers.routes.SessionExpiredController
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 
 @Singleton
 class IndividualNavigator @Inject()(config: FrontendAppConfig,
@@ -92,7 +92,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
   private def anyMoreChanges: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
   private def rlsNavigation(answers: UserAnswers): Call = {
-    answers.get(RLSFlagId) match {
+    answers.get(UpdateContactAddressId) match {
       case Some(_) => stillUsePage
       case _ => anyMoreChanges
     }
@@ -138,7 +138,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     }
 
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call =
-    (answers.get(IndividualConfirmPreviousAddressId), answers.get(RLSFlagId)) match {
+    (answers.get(IndividualConfirmPreviousAddressId), answers.get(UpdateContactAddressId)) match {
       case (Some(true),None) => anyMoreChanges
       case (Some(true), Some(_)) => stillUsePage
       case (Some(false), _) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)

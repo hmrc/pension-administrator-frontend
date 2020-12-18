@@ -22,7 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{DataRequiredAction, AuthAction, DataRetrievalAction}
 import forms.register.adviser.AdviserNameFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.AdviserNameId
 import models.Mode
 import play.api.data.Form
@@ -56,7 +56,7 @@ class AdviserNameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
 
       Future.successful(Ok(view(
         preparedForm,
@@ -68,7 +68,7 @@ class AdviserNameController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requiredData).async {
     implicit request =>
 
-      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>

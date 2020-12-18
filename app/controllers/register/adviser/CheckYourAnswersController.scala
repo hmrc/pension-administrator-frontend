@@ -19,7 +19,7 @@ package controllers.register.adviser
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser._
 import javax.inject.Inject
 import models.Mode
@@ -74,7 +74,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
     val sections = Seq(AnswerSection(None, adviserName ++ address ++ details))
 
-    val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+    val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
 
     Ok(view(sections, routes.CheckYourAnswersController.onSubmit(mode),
       if (displayReturnLink) psaName() else None, mode, dataCompletion.isAdviserComplete(request.userAnswers, mode)))

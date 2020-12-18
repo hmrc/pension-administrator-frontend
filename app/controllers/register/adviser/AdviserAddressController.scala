@@ -22,7 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.{AdviserAddressListId, AdviserAddressId, AdviserNameId, AdviserAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -68,12 +68,12 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(addressViewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
+      get(addressViewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdviserAddressId, addressViewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
+      post(AdviserAddressId, addressViewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
 }

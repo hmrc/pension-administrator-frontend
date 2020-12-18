@@ -18,7 +18,7 @@ package utils.navigators
 
 import base.SpecBase
 import controllers.register.individual.routes
-import identifiers.{Identifier, RLSFlagId}
+import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
 import models._
@@ -133,7 +133,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage),
       (IndividualConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (IndividualConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges),
-      (IndividualConfirmPreviousAddressId, samePreviousAddressRLSFlag, stillUsePage),
+      (IndividualConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, stillUsePage),
       (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
       (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode)),
       (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges),
@@ -232,7 +232,7 @@ object IndividualNavigatorSpec extends OptionValues {
     .set(AreYouInUKId)(false).asOpt.value
 
   private val rLSFlag = UserAnswers(Json.obj())
-    .set(RLSFlagId)(true).asOpt.value
+    .set(UpdateContactAddressId)(true).asOpt.value
 
   private val nonUkEuAddress = UserAnswers().individualAddress(address("AT"))
   private val nonUkButUKAddress = UserAnswers().individualAddress(address("GB"))
@@ -243,9 +243,9 @@ object IndividualNavigatorSpec extends OptionValues {
   private def samePreviousAddress = UserAnswers(Json.obj())
     .set(IndividualConfirmPreviousAddressId)(true).asOpt.value
 
-  private def samePreviousAddressRLSFlag = UserAnswers(Json.obj())
+  private def samePreviousAddressUpdateContactAddress = UserAnswers(Json.obj())
     .set(IndividualConfirmPreviousAddressId)(true).asOpt.value
-    .set(RLSFlagId)(true).asOpt.value
+    .set(UpdateContactAddressId)(true).asOpt.value
 
   private def notSamePreviousAddress = UserAnswers(Json.obj())
     .set(IndividualConfirmPreviousAddressId)(false).asOpt.value

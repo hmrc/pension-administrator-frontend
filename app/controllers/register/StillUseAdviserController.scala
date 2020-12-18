@@ -21,7 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.StillUseAdviserFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.VariationStillDeclarationWorkingKnowledgeId
 import identifiers.register.adviser.AdviserNameId
 import javax.inject.Inject
@@ -58,7 +58,7 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       Ok(view(form,
         mode,
         if(displayReturnLink) psaName() else None,
@@ -67,7 +67,7 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors,

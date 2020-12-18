@@ -22,7 +22,7 @@ import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionPro
 import controllers.address.SameContactAddressController
 import controllers.register.company.routes.CompanySameContactAddressController
 import forms.address.SameContactAddressFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.company._
 import javax.inject.{Inject, Singleton}
@@ -74,7 +74,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
               address = address,
               psaName = name,
               mode = mode,
-              displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+              displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
             )
         }
     )

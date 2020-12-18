@@ -22,7 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
 import forms.address.SameContactAddressFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
 import models.requests.DataRequest
@@ -65,7 +65,7 @@ class PartnershipSameContactAddressController @Inject()(
       address = address,
       psaName = name,
       mode = mode,
-      displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+      displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

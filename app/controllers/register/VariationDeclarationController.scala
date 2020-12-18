@@ -22,7 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.register.routes.VariationDeclarationController
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register._
 import javax.inject.Inject
 import models._
@@ -52,7 +52,7 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
       Future.successful(Ok(view(
         if(displayReturnLink) psaName() else None,

@@ -21,7 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.{AdviserPhoneId, AdviserNameId}
 import javax.inject.Inject
 import models.Mode
@@ -53,12 +53,12 @@ class AdviserPhoneController @Inject()(@Adviser val navigator: Navigator,
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(AdviserPhoneId, form, viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty))
+        get(AdviserPhoneId, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdviserPhoneId, mode, form, viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty))
+      post(AdviserPhoneId, mode, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty))
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =

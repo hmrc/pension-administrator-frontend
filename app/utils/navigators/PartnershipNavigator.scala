@@ -22,7 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.register.partnership.routes.{AddPartnerController, _}
 import controllers.register.routes._
 import controllers.routes._
-import identifiers.{Identifier, RLSFlagId}
+import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register.partnership._
 import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessUTRId, EnterVATId, IsRegisteredNameId, _}
 import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
@@ -157,7 +157,7 @@ class PartnershipNavigator @Inject()(
   }
 
   private def rlsNavigation(answers: UserAnswers): Call = {
-    answers.get(RLSFlagId) match {
+    answers.get(UpdateContactAddressId) match {
       case Some(_) => stillUsePage
       case _ => AnyMoreChangesController.onPageLoad()
     }

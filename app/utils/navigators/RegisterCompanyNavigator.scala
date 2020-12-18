@@ -19,7 +19,7 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.register.company.routes
-import identifiers.{Identifier, RLSFlagId}
+import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.{AreYouInUKId, BusinessTypeId, _}
 import models.InternationalRegion._
@@ -151,7 +151,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
   }
 
   private def rlsNavigation(answers: UserAnswers): Call = {
-    answers.get(RLSFlagId) match {
+    answers.get(UpdateContactAddressId) match {
       case Some(_) => stillUsePage
       case _ => anyMoreChanges
     }

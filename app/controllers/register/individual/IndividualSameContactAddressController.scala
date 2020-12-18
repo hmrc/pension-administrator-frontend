@@ -22,7 +22,7 @@ import controllers.actions._
 import controllers.address.SameContactAddressController
 import controllers.register.individual.routes._
 import forms.address.SameContactAddressFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.individual._
 import javax.inject.Inject
 import models.Mode
@@ -71,7 +71,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
               address = address,
               psaName = individual.fullName,
               mode = mode,
-              displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+              displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
             )
         }
     )

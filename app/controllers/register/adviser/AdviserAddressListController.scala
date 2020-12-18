@@ -22,7 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser._
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -55,14 +55,14 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty).right.map { vm =>
+      viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty).right.map { vm =>
         get(vm, mode, form(vm.addresses, entityName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty).right
+      viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty).right
         .map(vm => post(vm, AdviserAddressId, AdviserAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
   }
 

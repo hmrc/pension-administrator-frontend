@@ -21,7 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.VariationDeclarationFitAndProperFormProvider
-import identifiers.RLSFlagId
+import identifiers.UpdateContactAddressId
 import identifiers.register._
 import javax.inject.Inject
 import models._
@@ -57,7 +57,7 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       val preparedForm = request.userAnswers.get(DeclarationFitAndProperId) match {
         case None => form
         case Some(value) => form.fill(value)
@@ -70,7 +70,7 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       form.bindFromRequest().fold(
         errors => Future.successful(BadRequest(view(
           errors,
