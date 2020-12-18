@@ -16,34 +16,23 @@
 
 package controllers
 
-import controllers.actions.AuthAction
-import controllers.actions.DataRetrievalAction
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.PSAUser
-import models.UpdateMode
-import models.UserType
+import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
-import play.api.mvc.AnyContent
-import play.api.mvc.BodyParser
-import play.api.mvc.Request
-import play.api.mvc.Result
-import play.api.test.Helpers.contentAsString
-import play.api.test.Helpers.status
-import play.api.test.Helpers._
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContent, BodyParser, Request, Result}
+import play.api.test.Helpers.{contentAsString, status, _}
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import utils.testhelpers.ViewPsaDetailsBuilder._
-import viewmodels.AnswerRow
-import viewmodels.AnswerSection
-import viewmodels.PsaViewDetailsViewModel
-import viewmodels.SuperSection
+import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
 import views.html.psa_details
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDetailsControllerSpec extends ControllerSpecBase {
 
@@ -131,6 +120,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       FakeNavigator,
       new FakeAuthAction(userType, psaId),
+      FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       fakePsaDataService,
       stubMessagesControllerComponents(),

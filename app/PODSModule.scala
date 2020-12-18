@@ -76,6 +76,10 @@ class PODSModule extends AbstractModule {
       .annotatedWith(classOf[NoUpdateContactAddress])
       .to(classOf[AllowAccessActionProviderNoUpdateContactAddressImpl])
 
+    bind(classOf[AllowAccessActionProvider])
+      .annotatedWith(classOf[Suspended])
+      .to(classOf[AllowAccessActionProviderSuspendedImpl])
+
     bind(classOf[AllowDeclarationActionProvider])
       .to(classOf[AllowDeclarationActionProviderImpl])
 
