@@ -36,6 +36,7 @@ import play.api.mvc.MessagesControllerComponents
 import play.api.mvc.Result
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.Navigator
 import utils.UserAnswers
 import utils.countryOptions.CountryOptions
 import views.html.updateContactAddress
@@ -50,6 +51,7 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                             psaDetailsService: PsaDetailsService,
                                             countryOptions: CountryOptions,
                                             userAnswersCacheConnector: UserAnswersCacheConnector,
+                                            @utils.annotations.Variations val navigator: Navigator,
                                             val view: updateContactAddress
                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
@@ -57,11 +59,11 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
     request.user.alreadyEnrolledPsaId match {
       case Some(psaId) =>
         psaDetailsService.getUserAnswers(psaId, request.externalId).flatMap{ userAnswersUpdated =>
-          retrieveRequiredValues(userAnswersUpdated) match {
-              case Some(Tuple2(continueUrl, address)) =>
-                userAnswersCacheConnector.upsert(request.externalId, userAnswersUpdated.setOrException(RLSFlagId)(true).json)
-                  .map { _ =>
-                  Ok(view(address.lines(countryOptions), continueUrl))
+          getAddress(userAnswersUpdated) match {
+              case Some(address) =>
+                val ua = userAnswersUpdated.setOrException(RLSFlagId)(true)
+                userAnswersCacheConnector.upsert(request.externalId, ua.json).map { _ =>
+                  Ok(view(address.lines(countryOptions), navigator.nextPage(RLSFlagId, UpdateMode, ua).url))
                 }
               case None => Future.successful(sessionExpired)
             }
@@ -70,29 +72,13 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
     }
   }
 
-  private def retrieveRequiredValues(ua: UserAnswers): Option[(String, Address)] = {
-    ua.get(RegistrationInfoId).flatMap {
+  private def getAddress(ua: UserAnswers): Option[Address] = {
+    ua.get(RegistrationInfoId).map {
       regInfo =>
         regInfo.legalStatus match {
-          case LimitedCompany => Some(
-            Tuple2(
-              controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url,
-              ua.getOrException(CompanyContactAddressId)
-            )
-          )
-          case Individual => Some(
-            Tuple2(
-              controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url,
-              ua.getOrException(IndividualContactAddressId)
-            )
-          )
-          case Partnership => Some(
-            Tuple2(
-              controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url,
-              ua.getOrException(PartnershipContactAddressId)
-            )
-          )
-          case _ => None
+          case LimitedCompany => ua.getOrException(CompanyContactAddressId)
+          case Individual => ua.getOrException(IndividualContactAddressId)
+          case Partnership => ua.getOrException(PartnershipContactAddressId)
         }
     }
   }

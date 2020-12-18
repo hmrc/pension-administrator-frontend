@@ -47,7 +47,10 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     get(id).getOrElse(throw new RuntimeException("Unexpected empty option"))
 
   def setOrException[I <: TypedIdentifier.PathDependent](id: I)(value: id.Data)(implicit writes: Writes[id.Data]): UserAnswers =
-    set(id)(value).getOrElse(throw new RuntimeException("Unexpected empty option"))
+    set(id)(value) match {
+      case JsSuccess(v, _) => v
+      case JsError(errors) => throw new RuntimeException("Unable to set value in user answers:" + errors)
+    }
 
   def getAll[A](path: JsPath)(implicit rds: Reads[A]): Option[Seq[A]] = {
     JsLens

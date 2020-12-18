@@ -18,11 +18,8 @@ package controllers
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import identifiers.register.BusinessNameId
-import identifiers.register.company.CompanyContactAddressId
 import identifiers.register.individual.IndividualContactAddressId
 import identifiers.register.individual.IndividualDetailsId
-import identifiers.register.partnership.PartnershipContactAddressId
 import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
@@ -38,6 +35,8 @@ import org.mockito.Mockito.reset
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.JsNull
+import play.api.mvc.Call
+import utils.FakeNavigator
 
 import scala.concurrent.Future
 
@@ -52,8 +51,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
   }
 
   "UpdateContactAddressController" must {
-
-    "return OK and the correct view for a GET for an individual" in {
+    "return OK and the correct view for a GET" in {
       when(mockPsaDetailsService.getUserAnswers(any(), any())(any(), any()))
         .thenReturn(Future.successful(individual))
 
@@ -62,29 +60,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       status(result) mustBe OK
 
       contentAsString(result) mustBe
-        viewAsString(individual, controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)
-    }
-
-    "return OK and the correct view for a GET for a company" in {
-      when(mockPsaDetailsService.getUserAnswers(any(), any())(any(), any()))
-        .thenReturn(Future.successful(company))
-      val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
-
-      status(result) mustBe OK
-
-      contentAsString(result) mustBe
-        viewAsString(company, controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)
-    }
-
-    "return OK and the correct view for a GET for a partnership" in {
-      when(mockPsaDetailsService.getUserAnswers(any(), any())(any(), any()))
-        .thenReturn(Future.successful(partnership))
-      val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)
-
-      status(result) mustBe OK
-
-      contentAsString(result) mustBe
-        viewAsString(company, controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)
+        viewAsString(individual, onwardRoute)
     }
   }
 
@@ -99,11 +75,15 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       mockPsaDetailsService,
       countryOptions,
       mockUserAnswersCacheConnector,
+      navigator,
       view
     )
 }
 
 object UpdateContactAddressControllerSpec extends ControllerSpecBase {
+
+  private val onwardRoute = "/url"
+  private val navigator = new FakeNavigator(Call("GET", onwardRoute))
 
   private val psaUser = PSAUser(UserType.Individual, None, false, None, None, "")
   private val address = Address("value 1", "value 2", None, None, Some("AB1 1AB"), "GB")
@@ -111,16 +91,6 @@ object UpdateContactAddressControllerSpec extends ControllerSpecBase {
     RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
     .setOrException(IndividualContactAddressId)(address)
-
-  private val company = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
-    RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
-    .setOrException(BusinessNameId)("Big company")
-    .setOrException(CompanyContactAddressId)(address)
-
-  private val partnership = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
-    RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
-    .setOrException(BusinessNameId)("Big company")
-    .setOrException(PartnershipContactAddressId)(address)
 
   private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 

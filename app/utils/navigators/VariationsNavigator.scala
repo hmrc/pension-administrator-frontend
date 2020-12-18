@@ -19,12 +19,19 @@ package utils.navigators
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import identifiers.Identifier
+import identifiers.RLSFlagId
 import identifiers.register._
-import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
-import models.{CheckUpdateMode, Mode, UpdateMode}
+import identifiers.register.adviser.{ConfirmDeleteAdviserId, AdviserNameId}
+import identifiers.register.company.CompanyContactAddressId
+import identifiers.register.individual.IndividualContactAddressId
+import identifiers.register.partnership.PartnershipContactAddressId
+import models.RegistrationLegalStatus.Individual
+import models.RegistrationLegalStatus.LimitedCompany
+import models.RegistrationLegalStatus.Partnership
+import models.{Mode, CheckUpdateMode, UpdateMode}
 import play.api.mvc.Call
 import utils.dataCompletion.DataCompletion
-import utils.{Enumerable, Navigator, UserAnswers}
+import utils.{Navigator, UserAnswers, Enumerable}
 
 class VariationsNavigator @Inject()(config: FrontendAppConfig,
                                     dataCompletion: DataCompletion) extends Navigator with Enumerable.Implicits {
@@ -52,6 +59,21 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig,
     case DeclarationChangedId => declarationChange(ua)
 
     case DeclarationId => controllers.register.routes.PSAVarianceSuccessController.onPageLoad()
+
+    case RLSFlagId => updateContactAddress(ua)
+  }
+
+  private def updateContactAddress(ua:UserAnswers): Call = {
+    ua.get(RegistrationInfoId) match {
+      case Some(regInfo) =>
+        regInfo.legalStatus match {
+          case LimitedCompany => controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode)
+          case Individual => controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode)
+          case Partnership => controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode)
+        }
+      case _ =>
+        controllers.routes.SessionExpiredController.onPageLoad()
+    }
   }
 
   private def deleteAdviserRoute(ua: UserAnswers): Call = ua.get(ConfirmDeleteAdviserId) match {
