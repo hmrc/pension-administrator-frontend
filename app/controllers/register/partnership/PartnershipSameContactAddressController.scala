@@ -19,7 +19,7 @@ package controllers.register.partnership
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
 import forms.address.SameContactAddressFormProvider
 import identifiers.RLSFlagId
@@ -28,9 +28,9 @@ import identifiers.register.partnership._
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.Partnership
+import utils.annotations.{NoUpdateContactAddress, Partnership}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -44,7 +44,7 @@ class PartnershipSameContactAddressController @Inject()(
                                                          val appConfig: FrontendAppConfig,
                                                          val dataCacheConnector: UserAnswersCacheConnector,
                                                          authenticate: AuthAction,
-                                                         allowAccess: AllowAccessActionProvider,
+                                                         @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
                                                          formProvider: SameContactAddressFormProvider,

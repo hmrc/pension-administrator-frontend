@@ -136,9 +136,11 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (PartnershipPhoneId, emptyAnswers, anyMoreChangesPage),
 
       (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(UpdateMode)),
-      (PartnershipPreviousAddressId, emptyAnswers, anyMoreChangesPage),
+      (PartnershipPreviousAddressId, rLSFlag, stillUsePage),
+
       (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage),
+      (PartnershipConfirmPreviousAddressId, samePreviousAddressRLSFlag, stillUsePage),
       (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousPostCodePage(UpdateMode))
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
@@ -147,6 +149,14 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 }
 
 object PartnershipNavigatorSpec extends OptionValues {
+
+  private lazy val rLSFlag = UserAnswers(Json.obj()).set(RLSFlagId)(true).asOpt.value
+
+  private def samePreviousAddressRLSFlag = UserAnswers(Json.obj())
+    .set(PartnershipConfirmPreviousAddressId)(true).asOpt.value
+    .set(RLSFlagId)(true).asOpt.value
+
+  private val stillUsePage = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
   private lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
 

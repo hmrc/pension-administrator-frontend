@@ -22,7 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.register.partnership.routes.{AddPartnerController, _}
 import controllers.register.routes._
 import controllers.routes._
-import identifiers.Identifier
+import identifiers.{Identifier, RLSFlagId}
 import identifiers.register.partnership._
 import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessUTRId, EnterVATId, IsRegisteredNameId, _}
 import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
@@ -127,7 +127,7 @@ class PartnershipNavigator @Inject()(
     case PartnershipPreviousAddressPostCodeLookupId =>
       PartnershipPreviousAddressListController.onPageLoad(UpdateMode)
     case PartnershipPreviousAddressId =>
-      AnyMoreChangesController.onPageLoad()
+      rlsNavigation(ua)
     case PartnershipConfirmPreviousAddressId =>
       variationManualPreviousAddressRoutes(ua, UpdateMode)
     case PartnershipPhoneId =>
@@ -155,6 +155,15 @@ class PartnershipNavigator @Inject()(
         SessionExpiredController.onPageLoad()
     }
   }
+
+  private def rlsNavigation(answers: UserAnswers): Call = {
+    answers.get(RLSFlagId) match {
+      case Some(_) => stillUsePage
+      case _ => AnyMoreChangesController.onPageLoad()
+    }
+  }
+
+  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
   private def hasPaye(ua: UserAnswers): Boolean = ua.get(HasPAYEId).getOrElse(false)
 
@@ -220,7 +229,7 @@ class PartnershipNavigator @Inject()(
   private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode: Mode): Call = {
     answers.get(PartnershipConfirmPreviousAddressId) match {
       case Some(false) => PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode)
-      case Some(true) => AnyMoreChangesController.onPageLoad()
+      case Some(true) => rlsNavigation(answers)
       case _ => SessionExpiredController.onPageLoad()
     }
   }
