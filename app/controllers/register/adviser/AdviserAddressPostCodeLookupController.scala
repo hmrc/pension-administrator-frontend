@@ -22,6 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.adviser.{AdviserNameId, AdviserAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.Mode
@@ -53,7 +54,7 @@ class AdviserAddressPostCodeLookupController @Inject()(
 
   override protected def form: Form[String] = formProvider()
 
-  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel = PostcodeLookupViewModel(
+  def viewModel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel = PostcodeLookupViewModel(
     controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onSubmit(mode),
     controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode),
     Message("postcode.lookup.heading", Message("theAdviser")),
@@ -61,7 +62,7 @@ class AdviserAddressPostCodeLookupController @Inject()(
     Message("manual.entry.text"),
     Some(Message("manual.entry.link")),
     Message("postcode.lookup.form.label"),
-    psaName = psaName()
+    psaName = if(displayReturnLink) psaName() else None
   )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
@@ -69,12 +70,12 @@ class AdviserAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewModel(mode), mode)
+      get(viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdviserAddressPostCodeLookupId, viewModel(mode), mode)
+      post(AdviserAddressPostCodeLookupId, viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
   }
 }
 

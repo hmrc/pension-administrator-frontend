@@ -22,6 +22,7 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.adviser._
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -54,17 +55,18 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).right.map { vm =>
+      viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty).right.map { vm =>
         get(vm, mode, form(vm.addresses, entityName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).right.map(vm => post(vm, AdviserAddressId, AdviserAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
+      viewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty).right
+        .map(vm => post(vm, AdviserAddressId, AdviserAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
   }
 
-  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+  def viewModel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
     AdviserAddressPostCodeLookupId.retrieve.right.map {
       addresses =>
         AddressListViewModel(
@@ -75,7 +77,7 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
           Message("select.address.heading", entityName),
           Message("select.address.hint.text"),
           Message("manual.entry.link"),
-          psaName = psaName()
+          psaName = if (displayReturnLink) psaName() else None
         )
     }.left.map(_ => Future.successful(Redirect(routes.AdviserAddressPostCodeLookupController.onPageLoad(mode))))
   }
