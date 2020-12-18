@@ -93,10 +93,12 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
 
   private def rlsNavigation(answers: UserAnswers): Call = {
     answers.get(RLSFlagId) match {
-      case Some(_) => variationsDeclarationPage
+      case Some(_) => stillUsePage
       case _ => anyMoreChanges
     }
   }
+
+  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
   private def variationsDeclarationPage: Call = controllers.register.routes.VariationDeclarationController.onPageLoad()
 
@@ -138,7 +140,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call =
     (answers.get(IndividualConfirmPreviousAddressId), answers.get(RLSFlagId)) match {
       case (Some(true),None) => anyMoreChanges
-      case (Some(true), Some(_)) => variationsDeclarationPage
+      case (Some(true), Some(_)) => stillUsePage
       case (Some(false), _) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
       case _ => SessionExpiredController.onPageLoad()
     }
