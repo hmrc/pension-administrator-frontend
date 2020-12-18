@@ -30,7 +30,7 @@ import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -42,7 +42,7 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
                                              override val cacheConnector: UserAnswersCacheConnector,
                                              @RegisterCompany override val navigator: Navigator,
                                              authenticate: AuthAction,
-                                             @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
+                                             @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: AddressListFormProvider,

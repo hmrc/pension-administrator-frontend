@@ -25,14 +25,14 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Enumerable
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import views.html.alreadyDeletedAdviser
 
 import scala.concurrent.{Future, ExecutionContext}
 
 class AdviserAlreadyDeletedController @Inject()(
                                           appConfig: FrontendAppConfig,
-                                          @NoUpdateContactAddress val allowAccess: AllowAccessActionProvider,
+                                          @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,

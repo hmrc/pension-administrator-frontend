@@ -26,7 +26,7 @@ import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import utils.annotations.Register
 import utils.{Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
@@ -36,7 +36,7 @@ import scala.concurrent.{Future, ExecutionContext}
 class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,
                                                   override val messagesApi: MessagesApi,
                                                   authenticate: AuthAction,
-                                                  @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
+                                                  @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   allowDeclaration: AllowDeclarationActionProvider,

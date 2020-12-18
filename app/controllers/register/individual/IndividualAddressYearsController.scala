@@ -30,7 +30,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -41,7 +41,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
                                                  override val appConfig: FrontendAppConfig,
                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                  authenticate: AuthAction,
-                                                 @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
+                                                 @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  formProvider: AddressYearsFormProvider,

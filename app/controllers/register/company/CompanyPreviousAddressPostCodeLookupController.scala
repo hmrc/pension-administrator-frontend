@@ -29,7 +29,7 @@ import models.Mode
 import play.api.data.Form
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import utils.annotations.RegisterCompany
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -43,7 +43,7 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
                                                                 override val addressLookupConnector: AddressLookupConnector,
                                                                 @RegisterCompany override val navigator: Navigator,
                                                                 authenticate: AuthAction,
-                                                                @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
+                                                                @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                                 getData: DataRetrievalAction,
                                                                 requireData: DataRequiredAction,
                                                                 formProvider: PostCodeLookupFormProvider,

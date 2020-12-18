@@ -26,22 +26,22 @@ import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.{PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{CheckUpdateMode, Mode}
+import models.{Mode, CheckUpdateMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.NoUpdateContactAddress
-import utils.{Enumerable, Navigator, UserAnswers, annotations}
+import utils.annotations.NoRLSCheck
+import utils.{Navigator, annotations, UserAnswers, Enumerable}
 import views.html.register.variationWorkingKnowledge
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig,
                                                     override val cacheConnector: UserAnswersCacheConnector,
                                                     @annotations.Variations navigator: Navigator,
                                                     authenticate: AuthAction,
-                                                    @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
+                                                    @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: VariationWorkingKnowledgeFormProvider,

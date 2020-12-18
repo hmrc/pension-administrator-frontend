@@ -36,7 +36,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.UserAnswers
 import utils.annotations
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import viewmodels.ConfirmDeleteViewModel
 import viewmodels.Message
 import views.html.confirmDelete
@@ -46,7 +46,7 @@ import scala.concurrent.Future
 
 class ConfirmDeleteAdviserController @Inject()(val appConfig: FrontendAppConfig,
                                                authenticate: AuthAction,
-                                               @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
+                                               @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                val cacheConnector: UserAnswersCacheConnector,

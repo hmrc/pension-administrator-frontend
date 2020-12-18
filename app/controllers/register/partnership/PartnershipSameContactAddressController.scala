@@ -30,7 +30,7 @@ import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.{NoUpdateContactAddress, Partnership}
+import utils.annotations.{NoRLSCheck, Partnership}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -44,7 +44,7 @@ class PartnershipSameContactAddressController @Inject()(
                                                          val appConfig: FrontendAppConfig,
                                                          val dataCacheConnector: UserAnswersCacheConnector,
                                                          authenticate: AuthAction,
-                                                         @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
+                                                         @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,
                                                          formProvider: SameContactAddressFormProvider,

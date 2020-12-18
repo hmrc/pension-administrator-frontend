@@ -29,7 +29,7 @@ import models.requests.DataRequest
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Adviser
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import viewmodels.{Message, CommonFormWithHintViewModel}
 import views.html.email
 
@@ -39,7 +39,7 @@ class AdviserEmailController @Inject()(@Adviser val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
-                                       @NoUpdateContactAddress val allowAccess: AllowAccessActionProvider,
+                                       @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: EmailFormProvider,

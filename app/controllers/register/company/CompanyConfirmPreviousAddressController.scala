@@ -28,7 +28,7 @@ import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -41,7 +41,7 @@ class CompanyConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
                                                         val dataCacheConnector: UserAnswersCacheConnector,
                                                         @RegisterCompany val navigator: Navigator,
                                                         authenticate: AuthAction,
-                                                        @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
+                                                        @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,
                                                         val countryOptions: CountryOptions,

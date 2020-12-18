@@ -34,7 +34,7 @@ import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
 import utils.Navigator
 import utils.annotations.Individual
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -46,7 +46,7 @@ class IndividualContactAddressController @Inject()(val appConfig: FrontendAppCon
                                                    val cacheConnector: UserAnswersCacheConnector,
                                                    @Individual val navigator: Navigator,
                                                    authenticate: AuthAction,
-                                                   @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
+                                                   @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
                                                    formProvider: AddressFormProvider,

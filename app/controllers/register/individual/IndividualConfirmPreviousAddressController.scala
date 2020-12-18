@@ -29,7 +29,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -41,7 +41,7 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
                                                            val dataCacheConnector: UserAnswersCacheConnector,
                                                            @Individual val navigator: Navigator,
                                                            authenticate: AuthAction,
-                                                           @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
+                                                           @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                            getData: DataRetrievalAction,
                                                            requireData: DataRequiredAction,
                                                            val countryOptions: CountryOptions,

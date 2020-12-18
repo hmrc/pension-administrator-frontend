@@ -31,8 +31,8 @@ import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.UserAnswers
-import utils.annotations.NoUpdateContactAddress
-import utils.annotations.Suspended
+import utils.annotations.NoRLSCheck
+import utils.annotations.NoSuspendedCheck
 import views.html.psa_details
 
 import scala.concurrent.ExecutionContext
@@ -41,7 +41,7 @@ import scala.concurrent.Future
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      @utils.annotations.Variations navigator: Navigator,
                                      authenticate: AuthAction,
-                                     @Suspended allowAccess: AllowAccessActionProvider,
+                                     @NoSuspendedCheck allowAccess: AllowAccessActionProvider,
                                      getData: DataRetrievalAction,
                                      psaDetailsService: PsaDetailsService,
                                      val controllerComponents: MessagesControllerComponents,

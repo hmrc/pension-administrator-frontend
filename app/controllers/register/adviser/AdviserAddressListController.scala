@@ -31,7 +31,7 @@ import play.api.data.Form
 import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Adviser
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -41,7 +41,7 @@ import scala.concurrent.{Future, ExecutionContext}
 class AdviserAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                              override val cacheConnector: UserAnswersCacheConnector,
                                              @Adviser override val navigator: Navigator,
-                                             @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
+                                             @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                              authenticate: AuthAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,

@@ -70,7 +70,7 @@ class AllowAccessAction(
   }
 }
 
-class AllowAccessActionNoUpdateContactAddress(
+class AllowAccessActionNoRLSCheck(
   mode: Mode,
   minimalPsaConnector: MinimalPsaConnector,
   config: FrontendAppConfig
@@ -86,7 +86,7 @@ class AllowAccessActionNoUpdateContactAddress(
   }
 }
 
-class AllowAccessActionSuspended(
+class AllowAccessActionNoSuspendedCheck(
   mode: Mode,
   minimalPsaConnector: MinimalPsaConnector,
   config: FrontendAppConfig
@@ -102,19 +102,19 @@ class AllowAccessActionSuspended(
   }
 }
 
-class AllowAccessActionProviderNoUpdateContactAddressImpl @Inject() (
+class AllowAccessActionProviderNoRLSCheckImpl @Inject() (
   minimalPsaConnector: MinimalPsaConnector, config: FrontendAppConfig)(implicit executionContext: ExecutionContext)
   extends AllowAccessActionProvider {
   def apply(mode: Mode): AllowAccessAction = {
-    new AllowAccessActionNoUpdateContactAddress(mode, minimalPsaConnector, config)
+    new AllowAccessActionNoRLSCheck(mode, minimalPsaConnector, config)
   }
 }
 
-class AllowAccessActionProviderSuspendedImpl @Inject() (
+class AllowAccessActionProviderNoSuspendedCheckImpl @Inject() (
   minimalPsaConnector: MinimalPsaConnector, config: FrontendAppConfig)(implicit executionContext: ExecutionContext)
   extends AllowAccessActionProvider {
   def apply(mode: Mode): AllowAccessAction = {
-    new AllowAccessActionSuspended(mode, minimalPsaConnector, config)
+    new AllowAccessActionNoSuspendedCheck(mode, minimalPsaConnector, config)
   }
 }
 

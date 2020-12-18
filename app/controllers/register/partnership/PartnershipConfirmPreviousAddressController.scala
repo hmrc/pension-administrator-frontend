@@ -28,7 +28,7 @@ import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.{NoUpdateContactAddress, Partnership}
+import utils.annotations.{NoRLSCheck, Partnership}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -40,7 +40,7 @@ class PartnershipConfirmPreviousAddressController @Inject()(val appConfig: Front
                                                             val dataCacheConnector: UserAnswersCacheConnector,
                                                             @Partnership val navigator: Navigator,
                                                             authenticate: AuthAction,
-                                                            @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
+                                                            @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                             getData: DataRetrievalAction,
                                                             requireData: DataRequiredAction,
                                                             val countryOptions: CountryOptions,

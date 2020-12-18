@@ -28,7 +28,7 @@ import models.requests.DataRequest
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import viewmodels.{Message, CommonFormWithHintViewModel}
 import views.html.phone
 
@@ -38,7 +38,7 @@ class IndividualPhoneController @Inject()(@Individual val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
-                                       @NoUpdateContactAddress val allowAccess: AllowAccessActionProvider,
+                                       @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: PhoneFormProvider,

@@ -29,7 +29,7 @@ import models.{Mode, Address}
 import play.api.data.Form
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -42,7 +42,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                  @RegisterCompany override val navigator: Navigator,
                                                  authenticate: AuthAction,
-                                                 @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
+                                                 @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  formProvider: AddressFormProvider,

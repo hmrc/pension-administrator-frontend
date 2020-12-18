@@ -33,7 +33,7 @@ import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.UserAnswers
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import utils.annotations.Variations
 import views.html.register.variationDeclarationFitAndProper
 
@@ -42,7 +42,7 @@ import scala.concurrent.Future
 
 class VariationDeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,
                                                            authenticate: AuthAction,
-                                                           @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
+                                                           @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                            getData: DataRetrievalAction,
                                                            requireData: DataRequiredAction,
                                                            @Variations navigator: Navigator,

@@ -25,14 +25,14 @@ import models.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import views.html.register.psaVarianceSuccess
 
 import scala.concurrent.ExecutionContext
 
 class PSAVarianceSuccessController @Inject()(appConfig: FrontendAppConfig,
                                              authenticate: AuthAction,
-                                             @NoUpdateContactAddress allowAccess: AllowAccessActionProvider,
+                                             @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              dataCacheConnector: UserAnswersCacheConnector,

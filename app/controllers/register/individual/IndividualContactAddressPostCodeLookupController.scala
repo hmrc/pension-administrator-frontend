@@ -31,7 +31,7 @@ import play.api.data.Form
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
-import utils.annotations.NoUpdateContactAddress
+import utils.annotations.NoRLSCheck
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -45,7 +45,7 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
                                                                   override val cacheConnector: UserAnswersCacheConnector,
                                                                   override val addressLookupConnector: AddressLookupConnector,
                                                                   authenticate: AuthAction,
-                                                                  @NoUpdateContactAddress override val allowAccess: AllowAccessActionProvider,
+                                                                  @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                                   getData: DataRetrievalAction,
                                                                   requireData: DataRequiredAction,
                                                                   formProvider: PostCodeLookupFormProvider,
