@@ -22,6 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.adviser.{AdviserAddressListId, AdviserAddressId, AdviserNameId, AdviserAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.requests.DataRequest
@@ -54,12 +55,12 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
 
   protected val form: Form[Address] = formProvider()
 
-  private def addressViewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
+  private def addressViewModel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.AdviserAddressController.onSubmit(mode),
     countryOptions.options,
     Message("enter.address.heading", Message("theAdviser")),
     Message("enter.address.heading", entityName),
-    psaName = psaName()
+    psaName = if (displayReturnLink) psaName() else None
   )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
@@ -67,12 +68,12 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(addressViewModel(mode), mode)
+      get(addressViewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdviserAddressId, addressViewModel(mode), mode)
+      post(AdviserAddressId, addressViewModel(mode, request.userAnswers.get(RLSFlagId).isEmpty), mode)
   }
 
 }
