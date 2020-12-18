@@ -21,6 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.VariationDeclarationFitAndProperFormProvider
+import identifiers.RLSFlagId
 import identifiers.register._
 import javax.inject.Inject
 import models._
@@ -56,17 +57,25 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
+      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
       val preparedForm = request.userAnswers.get(DeclarationFitAndProperId) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Future.successful(Ok(view(preparedForm, psaName())))
+      Future.successful(Ok(view(
+        preparedForm,
+        if(displayReturnLink) psaName() else None
+      )))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
+      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
       form.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(view(errors, psaName()))),
+        errors => Future.successful(BadRequest(view(
+          errors,
+          if(displayReturnLink) psaName() else None
+        ))),
         success => {
           dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).map { json =>
             Redirect(navigator.nextPage(DeclarationFitAndProperId, mode, UserAnswers(json)))

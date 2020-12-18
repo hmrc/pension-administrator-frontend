@@ -21,20 +21,21 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.VariationWorkingKnowledgeFormProvider
+import identifiers.RLSFlagId
 import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.{PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Mode, CheckUpdateMode}
+import models.{CheckUpdateMode, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.NoUpdateContactAddress
-import utils.{Navigator, annotations, UserAnswers, Enumerable}
+import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.register.variationWorkingKnowledge
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig,
                                                     override val cacheConnector: UserAnswersCacheConnector,
@@ -54,18 +55,28 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
+      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
       val preparedForm = request.userAnswers.get(VariationWorkingKnowledgeId) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, psaName(), mode))
+      Ok(view(
+        preparedForm,
+        if(displayReturnLink) psaName() else None,
+        mode
+      ))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
+      val displayReturnLink = request.userAnswers.get(RLSFlagId).isEmpty
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, psaName(), mode))),
+          Future.successful(BadRequest(view(
+            formWithErrors,
+            if(displayReturnLink) psaName() else None,
+            mode
+          ))),
         value => {
           val resultOfSaveDeclarationFlag = mode match {
             case CheckUpdateMode =>
