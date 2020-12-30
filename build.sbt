@@ -21,6 +21,7 @@ lazy val appName: String = "pension-administrator-frontend"
     .settings(SbtDistributablesPlugin.publishingSettings: _*)
     .settings(inConfig(Test)(testSettings): _*)
     .settings(majorVersion := 0)
+    .settings(scalaVersion := "2.12.11")
     .settings(RoutesKeys.routesImport ++= Seq("models.Mode", "models.CheckMode", "models.NormalMode", "models.UpdateMode", "models.Index"),
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
