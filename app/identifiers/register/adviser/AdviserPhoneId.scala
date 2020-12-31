@@ -18,7 +18,6 @@ package identifiers.register.adviser
 
 import identifiers._
 import play.api.i18n.Messages
-import play.api.libs.json.JsPath
 import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersAdviser, StringCYA}
 import viewmodels.{AnswerRow, Link, Message}

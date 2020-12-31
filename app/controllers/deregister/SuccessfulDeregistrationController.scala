@@ -19,9 +19,9 @@ package controllers.deregister
 import config.FrontendAppConfig
 import controllers.Retrievals
 import javax.inject.Inject
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.{FrontendBaseController, FrontendController}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.deregister.successful_deregistration
 
 import scala.concurrent.{ExecutionContext, Future}

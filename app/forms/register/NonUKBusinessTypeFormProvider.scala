@@ -16,10 +16,9 @@
 
 package forms.register
 
-import javax.inject.Inject
-
 import forms.FormErrorHelper
 import forms.mappings.Mappings
+import javax.inject.Inject
 import models.register.NonUKBusinessType
 import play.api.data.Form
 

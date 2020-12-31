@@ -105,7 +105,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
     DirectorsOrPartnersChangedId
   )
 
-  private def getUpdatedUserAnswers(response: JsValue)(implicit executionContext: ExecutionContext): Future[UserAnswers] = {
+  private def getUpdatedUserAnswers(response: JsValue): Future[UserAnswers] = {
     val answers = UserAnswers(response)
     val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
     Future.successful(

@@ -37,7 +37,7 @@ import uk.gov.hmrc.domain
 import uk.gov.hmrc.http.{UnauthorizedException, HeaderCarrier}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
-import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.concurrent.{Future, ExecutionContext}
 
 class AuthActionSpec extends SpecBase with MockitoSugar {

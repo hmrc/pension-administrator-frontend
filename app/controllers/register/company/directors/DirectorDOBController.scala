@@ -23,7 +23,6 @@ import controllers.{DOBController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorDOBId, DirectorNameId}
 import javax.inject.Inject
-import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
@@ -47,7 +46,7 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
   private[directors] def viewModel(mode: Mode,
                                    index: Index,
                                    psaName: String,
-                                   directorName: String)(implicit request: DataRequest[AnyContent]) =
+                                   directorName: String) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorDOBController.onSubmit(mode, index),
       title = Message("dob.heading", Message("theDirector")),

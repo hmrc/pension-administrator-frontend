@@ -87,8 +87,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
   protected def savePsaIdAndReturnAuthRequest[A](enrolments: Enrolments,
                                                  authRequest: AuthenticatedRequest[A],
-                                                 block: AuthenticatedRequest[A] => Future[Result])
-                                                (implicit hc: HeaderCarrier): Future[Result] = {
+                                                 block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     if (alreadyEnrolledInPODS(enrolments)) {
       val psaId = getPSAId(enrolments)
       block(AuthenticatedRequest(authRequest.request, authRequest.externalId, authRequest.user.copy(

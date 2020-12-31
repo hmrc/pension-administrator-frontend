@@ -42,8 +42,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
 
   lazy val contactHost = baseUrl("contact-frontend")
 
-  private val contactFormServiceIdentifier = "pensionadministratorfrontend"
-
   lazy val timeout = loadConfig("session._timeoutSeconds")
   lazy val countdown = loadConfig("session._CountdownInSeconds")
 

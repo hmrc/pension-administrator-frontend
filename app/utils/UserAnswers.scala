@@ -24,14 +24,12 @@ import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerNameId
-import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import play.api.libs.json._
 import utils.dataCompletion.DataCompletion
 import viewmodels.Person
 
 import scala.annotation.tailrec
-import scala.language.implicitConversions
 
 case class UserAnswers(json: JsValue = Json.obj()) {
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] = {

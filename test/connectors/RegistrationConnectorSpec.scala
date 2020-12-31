@@ -29,7 +29,7 @@ import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+
 import utils.{UnrecognisedHttpResponseException, WireMockHelper}
 
 import scala.concurrent.ExecutionContext

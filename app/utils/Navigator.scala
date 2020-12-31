@@ -18,12 +18,8 @@ package utils
 
 import identifiers.Identifier
 import models._
-import models.requests.IdentifiedRequest
 import play.api.Logger
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HeaderCarrier
-
-import scala.concurrent.ExecutionContext
 
 abstract class Navigator {
 
@@ -33,8 +29,7 @@ abstract class Navigator {
 
   protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call]
 
-  def nextPage(id: Identifier, mode: Mode, userAnswers: UserAnswers)
-              (implicit ex: IdentifiedRequest, executionContext: ExecutionContext, hc: HeaderCarrier): Call = {
+  def nextPage(id: Identifier, mode: Mode, userAnswers: UserAnswers): Call = {
     val navigateTo = {
       mode match {
         case NormalMode => routeMap(userAnswers).lift

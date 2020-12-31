@@ -25,7 +25,7 @@ import org.scalatest.{MustMatchers, WordSpec}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
+
 
 class NavigatorSpec extends WordSpec with MustMatchers {
 

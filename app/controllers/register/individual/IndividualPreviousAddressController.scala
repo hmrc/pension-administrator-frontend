@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import audit.AuditService
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._

@@ -24,7 +24,6 @@ import controllers.register.OrganisationNameController
 import forms.BusinessNameFormProvider
 import identifiers.register.BusinessNameId
 import models.Mode
-import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership

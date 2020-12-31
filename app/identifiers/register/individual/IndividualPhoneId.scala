@@ -17,7 +17,6 @@
 package identifiers.register.individual
 
 import identifiers.TypedIdentifier
-import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, StringCYA}
@@ -29,7 +28,7 @@ case object IndividualPhoneId extends TypedIdentifier[String] {
 
   override def toString: String = "phone"
 
-  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
+  implicit def cya: CheckYourAnswers[self.type] =
     new CheckYourAnswers[self.type] {
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
         StringCYA[self.type](Some("individual.phone.title"), Some("individualPhone.visuallyHidden.text"))().row(id)(changeUrl, userAnswers)

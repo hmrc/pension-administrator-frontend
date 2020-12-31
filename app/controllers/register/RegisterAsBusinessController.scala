@@ -20,9 +20,9 @@ import audit.{AuditService, PSAStartEvent}
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
-import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
+import identifiers.register.RegisterAsBusinessId
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

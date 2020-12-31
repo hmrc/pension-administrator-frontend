@@ -25,7 +25,7 @@ import forms.register.adviser.AdviserNameFormProvider
 import identifiers.register.adviser.AdviserNameId
 import models.Mode
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Adviser

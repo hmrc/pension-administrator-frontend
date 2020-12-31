@@ -18,9 +18,9 @@ package controllers.register
 
 import play.api.data.Form
 import play.api.mvc.Result
+import play.api.mvc.Results._
 
 import scala.concurrent.Future
-import play.api.mvc.Results._
 
 trait NameCleansing {
   private val nameCleanseRegex = """[^a-zA-Z0-9 '&\/]+"""

@@ -65,7 +65,7 @@ class DirectorNoNINOReasonController @Inject()(@CompanyDirector val navigator: N
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
+  private def viewModel(mode: Mode, index: Index, directorName: String) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorNoNINOReasonController.onSubmit(mode, index),
       title = Message("whyNoNINO.heading", Message("theDirector")),

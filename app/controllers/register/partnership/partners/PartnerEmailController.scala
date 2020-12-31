@@ -61,7 +61,7 @@ class PartnerEmailController @Inject()(@PartnershipPartner val navigator: Naviga
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
-  private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
+  private def viewModel(mode: Mode, index: Index, partnerName: String) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerEmailController.onSubmit(mode, index),
       title = Message("email.title", Message("thePartner")),

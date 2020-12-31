@@ -21,7 +21,6 @@ import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.individual.routes._
-import identifiers.register.RegistrationInfoId
 import identifiers.register.individual._
 import models.Mode
 import models.Mode.checkMode

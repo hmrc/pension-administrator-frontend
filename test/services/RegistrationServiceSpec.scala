@@ -25,7 +25,7 @@ import models._
 import org.scalatest.{AsyncFlatSpec, Matchers, OptionValues}
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 

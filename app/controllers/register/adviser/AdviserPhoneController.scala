@@ -25,7 +25,6 @@ import identifiers.register.adviser.{AdviserNameId, AdviserPhoneId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Adviser

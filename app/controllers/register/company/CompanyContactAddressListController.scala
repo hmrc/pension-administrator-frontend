@@ -25,11 +25,9 @@ import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company._
-import models.{Mode, TolerantAddress}
 import models.requests.DataRequest
+import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.RegisterCompany

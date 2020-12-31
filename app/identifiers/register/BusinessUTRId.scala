@@ -40,7 +40,7 @@ case object BusinessUTRId extends TypedIdentifier[String] {
       }
     }
 
-  private def label(userAnswers: UserAnswers)(implicit messages: Messages): Message =
+  private def label(userAnswers: UserAnswers): Message =
     userAnswers.get(BusinessTypeId).map(businessType => Message("utr.heading",
       Message(s"businessType.${businessType.toString}.lc"))).getOrElse(
       Message("utr.heading", Message("theCompany")))

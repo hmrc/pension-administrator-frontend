@@ -18,17 +18,15 @@ package identifiers.register.individual
 
 import identifiers.TypedIdentifier
 import models.TolerantIndividual
-import play.api.i18n.Messages
 import utils.UserAnswers
-import utils.checkyouranswers.CheckYourAnswers
-import utils.checkyouranswers.TolerantIndividualCYA
+import utils.checkyouranswers.{CheckYourAnswers, TolerantIndividualCYA}
 import viewmodels.{AnswerRow, Link}
 
 case object IndividualDetailsId extends TypedIdentifier[TolerantIndividual] {
   self =>
   override def toString: String = "individualDetails"
 
-  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] = new CheckYourAnswers[self.type] {
+  implicit def cya: CheckYourAnswers[self.type] = new CheckYourAnswers[self.type] {
     override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
       TolerantIndividualCYA[self.type](Some("individualDetailsCorrect.name"), None)().
         row(id)(changeUrl, userAnswers)

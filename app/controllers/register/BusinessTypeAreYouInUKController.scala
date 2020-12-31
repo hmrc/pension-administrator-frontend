@@ -22,8 +22,6 @@ import controllers.actions._
 import forms.register.AreYouInUKFormProvider
 import javax.inject.Inject
 import models.Mode
-import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.api.mvc.MessagesControllerComponents
 import utils.Navigator
 import utils.annotations.{AuthWithNoIV, Register}

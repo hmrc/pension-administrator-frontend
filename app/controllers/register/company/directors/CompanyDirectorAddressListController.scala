@@ -23,7 +23,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
-import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId, DirectorNameId}
+import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorAddressId, DirectorNameId}
 import models.requests.DataRequest
 import models.{Index, Mode, TolerantAddress}
 import play.api.data.Form

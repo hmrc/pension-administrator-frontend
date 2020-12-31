@@ -103,7 +103,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case CheckYourAnswersId => AddPartnerController.onPageLoad(mode)
   }
 
-  private def checkYourAnswersPage(index: Int, mode: Mode = NormalMode) = CheckYourAnswersController.onPageLoad(index, mode)
+  private def checkYourAnswersPage(index: Int, mode: Mode): Call = CheckYourAnswersController.onPageLoad(index, mode)
 
   private def anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 

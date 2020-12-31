@@ -66,7 +66,7 @@ class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Na
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]) =
+  private def viewModel(mode: Mode, index: Index, directorName: String) =
     CommonFormWithHintViewModel(
       postCall = DirectorNoUTRReasonController.onSubmit(mode, index),
       title = Message("whyNoUTR.heading", Message("theDirector")),

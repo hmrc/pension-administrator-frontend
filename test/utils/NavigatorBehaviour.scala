@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
+
 
 trait NavigatorBehaviour extends ScalaCheckPropertyChecks with OptionValues {
   this: WordSpec with MustMatchers =>

@@ -25,8 +25,8 @@ import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
 import javax.inject.Inject
-import models.{Mode, TolerantAddress}
 import models.requests.DataRequest
+import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator

@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.NormalMode
 import models.register.BusinessType
 import models.requests.DataRequest
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership

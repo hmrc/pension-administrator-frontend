@@ -22,14 +22,14 @@ import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, BodyParser, Request, Result}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 object FakeUnAuthorisedAction {
   def apply(): AuthAction = {
     new AuthAction {
 
       val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
-      implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+      implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
       override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))

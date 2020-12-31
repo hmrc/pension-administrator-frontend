@@ -24,13 +24,10 @@ import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership.partners.PartnerNameId
 import models._
-import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import utils.countryOptions.CountryOptions
 import utils.{DateHelper, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
-
-import scala.language.implicitConversions
 
 trait CheckYourAnswers[I <: TypedIdentifier.PathDependent] {
   def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow]
@@ -42,36 +39,36 @@ trait CheckYourAnswersBusiness[I <: TypedIdentifier.PathDependent] extends Check
 }
 
 trait CheckYourAnswersPartnership[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua: UserAnswers, messageKey: String)(implicit messages: Messages): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String): Message =
     ua.get(BusinessNameId).map(name => Message(messageKey, name)).getOrElse(Message(messageKey, Message("thePartnership")))
 }
 
 trait CheckYourAnswersPartner[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua: UserAnswers, messageKey: String, index: Index)(implicit messages: Messages): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String, index: Index): Message =
     ua.get(PartnerNameId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("thePartner")))
 }
 
 trait CheckYourAnswersDirector[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua: UserAnswers, messageKey: String, index: Index)(implicit messages: Messages): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String, index: Index): Message =
     ua.get(DirectorNameId(index)).map(name => Message(messageKey, name.fullName)).getOrElse(Message(messageKey, Message("theDirector")))
 }
 
 trait CheckYourAnswersAdviser[I <: TypedIdentifier.PathDependent] extends CheckYourAnswers[I] {
-  protected def dynamicMessage(ua: UserAnswers, messageKey: String)(implicit messages: Messages): Message =
+  protected def dynamicMessage(ua: UserAnswers, messageKey: String): Message =
     ua.get(AdviserNameId).map(name => Message(messageKey, name)).getOrElse(Message(messageKey, Message("theAdviser")))
 }
 
 object CheckYourAnswers {
 
   implicit def reference[I <: TypedIdentifier[ReferenceValue]]
-  (implicit rds: Reads[ReferenceValue], messages: Messages): CheckYourAnswers[I] = ReferenceValueCYA()()
+  (implicit rds: Reads[ReferenceValue]): CheckYourAnswers[I] = ReferenceValueCYA()()
 
-  implicit def personName[I <: TypedIdentifier[PersonName]](implicit rds: Reads[PersonName], messages: Messages): CheckYourAnswers[I] = PersonNameCYA()()
+  implicit def personName[I <: TypedIdentifier[PersonName]](implicit rds: Reads[PersonName]): CheckYourAnswers[I] = PersonNameCYA()()
 
-  implicit def date[I <: TypedIdentifier[LocalDate]](implicit rds: Reads[LocalDate], messages: Messages): CheckYourAnswers[I] = DateCYA()()
+  implicit def date[I <: TypedIdentifier[LocalDate]](implicit rds: Reads[LocalDate]): CheckYourAnswers[I] = DateCYA()()
 
   implicit def tolerantIndividual[I <: TypedIdentifier[TolerantIndividual]]
-  (implicit rds: Reads[TolerantIndividual], messages: Messages): CheckYourAnswers[I] = TolerantIndividualCYA()()
+  (implicit rds: Reads[TolerantIndividual]): CheckYourAnswers[I] = TolerantIndividualCYA()()
 
 }
 

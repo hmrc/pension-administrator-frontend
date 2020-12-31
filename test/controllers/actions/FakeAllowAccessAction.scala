@@ -20,7 +20,6 @@ import config.FrontendAppConfig
 import models.requests.AuthenticatedRequest
 import models.{Mode, NormalMode}
 import play.api.mvc.Result
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

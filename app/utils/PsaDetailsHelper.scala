@@ -17,11 +17,10 @@
 package utils
 
 import models.PsaSubscription.{CorrespondenceAddress, DirectorOrPartner, PsaSubscription}
-import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection, SuperSection}
 
-class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptions)(implicit messages: Messages) {
+class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptions) {
 
   import PsaDetailsHelper._
 

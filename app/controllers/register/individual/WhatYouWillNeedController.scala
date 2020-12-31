@@ -21,7 +21,7 @@ import controllers.actions._
 import identifiers.register.individual.WhatYouWillNeedId
 import javax.inject.Inject
 import models.{Mode, NormalMode}
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator

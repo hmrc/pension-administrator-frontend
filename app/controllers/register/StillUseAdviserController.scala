@@ -48,7 +48,7 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
                                           )(implicit val executionContext: ExecutionContext
                                           ) extends FrontendBaseController with Enumerable.Implicits  with I18nSupport with Variations with Retrievals {
 
-  private def form()(implicit request: DataRequest[AnyContent]): Form[Boolean] =
+  private def form(): Form[Boolean] =
     formProvider()
 
   private def adviserName()(implicit request: DataRequest[AnyContent]) =

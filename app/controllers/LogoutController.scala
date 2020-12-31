@@ -28,7 +28,6 @@ class LogoutController @Inject()(
                                 ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action {
-    implicit request =>
       Redirect(appConfig.serviceSignOut).withNewSession
   }
 }

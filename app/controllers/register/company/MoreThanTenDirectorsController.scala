@@ -28,7 +28,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
-import viewmodels.{Message, MoreThanTenViewModel}
+import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
 import scala.concurrent.ExecutionContext

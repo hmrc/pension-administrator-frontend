@@ -55,7 +55,7 @@ class PartnershipSameContactAddressController @Inject()(
 
   def form(name: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
 
-  private def viewmodel(mode: Mode, address: TolerantAddress, name: String)(implicit request: DataRequest[AnyContent]) =
+  private def viewmodel(mode: Mode, address: TolerantAddress, name: String) =
     SameContactAddressViewModel(
       postCall = routes.PartnershipSameContactAddressController.onSubmit(mode),
       title = Message("partnership.sameContactAddress.title"),

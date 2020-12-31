@@ -23,7 +23,6 @@ import controllers.{DOBController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.partners.{PartnerDOBId, PartnerNameId}
 import javax.inject.Inject
-import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
@@ -47,7 +46,7 @@ class PartnerDOBController @Inject()(val appConfig: FrontendAppConfig,
   private[partners] def viewModel(mode: Mode,
                                   index: Index,
                                   psaName: String,
-                                  partnerName: String)(implicit request: DataRequest[AnyContent]) =
+                                  partnerName: String) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerDOBController.onSubmit(mode, index),
       title = "partnerDob.title",

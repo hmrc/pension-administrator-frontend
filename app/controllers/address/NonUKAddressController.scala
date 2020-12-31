@@ -105,7 +105,7 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
   def redirectUkAddress(extId: String,
                         address: Address,
                         id: TypedIdentifier[TolerantAddress]
-                       )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] =
+                       )(implicit hc: HeaderCarrier): Future[Result] =
     for {
       cacheMap <- dataCacheConnector.save(extId, id, address.toTolerantAddress)
     } yield {

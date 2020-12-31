@@ -52,7 +52,6 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
   protected def view: postcodeLookup
 
   private val invalidPostcode: Message = "error.postcode.failed"
-  private val dynamicNoResults: Message = "error.postcode.noResults"
 
   protected def get(viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
 

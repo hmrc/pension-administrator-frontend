@@ -19,9 +19,9 @@ package identifiers.register.partnership
 import identifiers.TypedIdentifier
 import models.Address
 import play.api.i18n.Messages
-import utils.{UserAnswers, checkyouranswers}
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersBusiness}
 import utils.countryOptions.CountryOptions
+import utils.{UserAnswers, checkyouranswers}
 import viewmodels.{AnswerRow, Link, Message}
 
 case object PartnershipContactAddressId extends TypedIdentifier[Address] {

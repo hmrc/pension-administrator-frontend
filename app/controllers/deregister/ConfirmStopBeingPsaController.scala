@@ -17,8 +17,8 @@
 package controllers.deregister
 
 import config.FrontendAppConfig
-import connectors.{DeregistrationConnector, MinimalPsaConnector, TaxEnrolmentsConnector}
 import connectors.cache.UserAnswersCacheConnector
+import connectors.{DeregistrationConnector, MinimalPsaConnector, TaxEnrolmentsConnector}
 import controllers.actions.{AllowAccessForNonSuspendedUsersAction, AuthAction}
 import forms.deregister.ConfirmStopBeingPsaFormProvider
 import javax.inject.Inject

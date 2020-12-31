@@ -57,7 +57,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   protected def form()(implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(Message("same.contact.address.error").withArgs(Message("common.you")))
 
-  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
+  private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
         (IndividualDetailsId and IndividualAddressId).retrieve.right.map {

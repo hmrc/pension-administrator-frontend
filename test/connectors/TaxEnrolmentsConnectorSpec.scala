@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse, UpstreamErrorResponse}
 import utils.{UserAnswers, WireMockHelper}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+
 
 class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 

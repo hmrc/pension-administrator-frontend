@@ -26,7 +26,6 @@ import identifiers.register.company.CompanyRegistrationNumberId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany

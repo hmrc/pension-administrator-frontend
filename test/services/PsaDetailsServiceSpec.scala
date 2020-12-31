@@ -30,13 +30,12 @@ import models.requests.OptionalDataRequest
 import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results.Ok
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion

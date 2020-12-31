@@ -17,7 +17,6 @@
 package identifiers.register
 
 import identifiers._
-import play.api.libs.json.JsPath
 
 case object DirectorsOrPartnersChangedId extends TypedIdentifier[Boolean] {
  override def toString: String = "areDirectorsOrPartnersChanged"

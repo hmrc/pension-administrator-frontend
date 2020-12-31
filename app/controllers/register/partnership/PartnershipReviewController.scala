@@ -23,7 +23,7 @@ import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipReviewId
 import javax.inject.Inject
 import models.{Mode, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator

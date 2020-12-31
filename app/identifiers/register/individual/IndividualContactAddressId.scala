@@ -18,17 +18,16 @@ package identifiers.register.individual
 
 import identifiers.TypedIdentifier
 import models.Address
-import play.api.i18n.Messages
 import utils.checkyouranswers.CheckYourAnswers
-import utils.{UserAnswers, checkyouranswers}
 import utils.countryOptions.CountryOptions
+import utils.{UserAnswers, checkyouranswers}
 import viewmodels.{AnswerRow, Link}
 
 case object IndividualContactAddressId extends TypedIdentifier[Address] {
   self =>
   override def toString: String = "individualContactAddress"
 
-  implicit def cya(implicit messages: Messages, countryOptions: CountryOptions): CheckYourAnswers[self.type] =
+  implicit def cya(implicit countryOptions: CountryOptions): CheckYourAnswers[self.type] =
     new CheckYourAnswers[self.type] {
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
         userAnswers.get(id) match {

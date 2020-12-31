@@ -26,8 +26,6 @@ import play.api.mvc.Results._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class ICacheConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues with RecoverMethods {
 
   private object FakeIdentifier extends TypedIdentifier[String] {

@@ -30,7 +30,7 @@ import models._
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.NotFoundException

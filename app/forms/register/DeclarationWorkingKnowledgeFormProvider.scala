@@ -18,7 +18,6 @@ package forms.register
 
 import com.google.inject.Inject
 import forms.mappings.Mappings
-import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 
 class DeclarationWorkingKnowledgeFormProvider @Inject() extends Mappings {

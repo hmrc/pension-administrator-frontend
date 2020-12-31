@@ -34,7 +34,6 @@ class LoginController @Inject()(appConfig: FrontendAppConfig,
                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate {
-    implicit request =>
       Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
   }
 }

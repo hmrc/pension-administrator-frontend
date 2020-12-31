@@ -27,7 +27,7 @@ import utils.UserAnswers
 import utils.dataCompletion.DataCompletion
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
-import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.concurrent.Future
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 

@@ -20,9 +20,9 @@ import identifiers._
 import models.{Address, Index}
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
-import utils.{UserAnswers, checkyouranswers}
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersPartner}
 import utils.countryOptions.CountryOptions
+import utils.{UserAnswers, checkyouranswers}
 import viewmodels.{AnswerRow, Link, Message}
 
 case class PartnerAddressId(index: Int) extends TypedIdentifier[Address] {
