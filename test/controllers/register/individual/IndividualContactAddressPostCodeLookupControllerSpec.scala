@@ -25,6 +25,7 @@ import models.{Mode, NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject._
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.Helpers._
 import play.api.test._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,7 +36,6 @@ import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 

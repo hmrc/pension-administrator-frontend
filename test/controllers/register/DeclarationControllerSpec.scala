@@ -21,7 +21,7 @@ import connectors._
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.DeclarationFormProvider
+import controllers.routes._
 import identifiers.register.partnership.PartnershipEmailId
 import identifiers.register.{BusinessNameId, PsaSubscriptionResponseId, RegistrationInfoId, _}
 import models.RegistrationCustomerType.UK
@@ -34,13 +34,11 @@ import models.{BusinessDetails, NormalMode, RegistrationInfo, UserType}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.data.Form
 import play.api.libs.json.{JsObject, JsString, Json, Writes}
-import play.api.mvc.AnyContent
-import play.api.mvc.RequestHeader
+import play.api.mvc.{AnyContent, RequestHeader}
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, Upstream4xxResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declaration
@@ -49,9 +47,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute = IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-  private val form: Form[_] = new DeclarationFormProvider()()
   private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val businessDetails: BusinessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val email = "test@test.com"
@@ -89,7 +86,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
     }
 
     "calling onSubmit" must {
@@ -132,7 +129,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
           val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
         }
 
         "known facts cannot be retrieved" in {
@@ -142,7 +139,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
             knownFactsRetrieval = fakeKnownFactsRetrieval(None)).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
         }
 
         "enrolment is not successful" in {
@@ -153,7 +150,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
           ).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
         }
       }
 
@@ -171,7 +168,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
           .onSubmit(NormalMode)(validRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.register.routes.DuplicateRegistrationController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.DuplicateRegistrationController.onPageLoad().url)
       }
 
       "redirect to Submission Invalid" when {
@@ -181,7 +178,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
             .onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.register.routes.SubmissionInvalidController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(routes.SubmissionInvalidController.onPageLoad().url)
         }
       }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import identifiers._
 import models.{Address, Index}
 import play.api.i18n.Messages
 import play.api.libs.json.JsPath
-import utils.{UserAnswers, checkyouranswers}
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersDirector}
 import utils.countryOptions.CountryOptions
+import utils.{UserAnswers, checkyouranswers}
 import viewmodels.{AnswerRow, Link, Message}
 
 case class DirectorAddressId(index: Int) extends TypedIdentifier[Address] {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package identifiers.register.individual
 
 import identifiers._
 import models.AddressYears
-import play.api.i18n.Messages
 import play.api.libs.json.JsResult
 import utils.UserAnswers
 import utils.checkyouranswers.{AddressYearsCYA, CheckYourAnswers}
@@ -28,7 +27,7 @@ case object IndividualAddressYearsId extends TypedIdentifier[AddressYears] {
   self =>
   override def toString: String = "individualAddressYears"
 
-  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] = {
+  implicit def cya: CheckYourAnswers[self.type] = {
     new CheckYourAnswers[self.type] {
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
         userAnswers.get(IndividualContactAddressId) match {

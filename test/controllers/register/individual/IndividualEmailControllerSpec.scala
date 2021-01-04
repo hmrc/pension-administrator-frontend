@@ -25,10 +25,10 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 class IndividualEmailControllerSpec extends ControllerWithCommonBehaviour {
   import IndividualEmailControllerSpec._
@@ -43,7 +43,7 @@ class IndividualEmailControllerSpec extends ControllerWithCommonBehaviour {
 
 
 
-  private def emailView(form: Form[_] = emailForm): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
+  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "IndividualEmail Controller" must {
 

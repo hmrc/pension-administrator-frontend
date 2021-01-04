@@ -25,19 +25,15 @@ import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.Call
-import play.api.mvc.Result
+import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
-import viewmodels.AnswerRow
-import viewmodels.AnswerSection
-import viewmodels.Link
-import viewmodels.Message
-import views.html.check_your_answers
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
+import viewmodels.{AnswerRow, AnswerSection, Link, Message}
+import views.html.check_your_answers
 
 import scala.concurrent.Future
 

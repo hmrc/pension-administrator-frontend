@@ -28,7 +28,6 @@ import viewmodels.{AnswerRow, Link, Message}
 
 class DirectorEnterUTRIdSpec extends SpecBase {
 
-  private val personDetails = PersonName("test first", "test last")
   private val onwardUrl = "onwardUrl"
 
   "Cleanup" when {

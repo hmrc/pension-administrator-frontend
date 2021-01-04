@@ -53,7 +53,7 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
       stubMessagesControllerComponents(), view).onSubmit(NormalMode)
   }
 
-  private def viewAsString(form: Form[_] = form) = view(form, NormalMode, None)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_]) = view(form, NormalMode, None)(fakeRequest, messages).toString
 
 
   behave like controllerWithOnPageLoadMethod(onPageLoadAction, getEmptyData, userAnswer.dataRetrievalAction, form, form.fill("test"), viewAsString)

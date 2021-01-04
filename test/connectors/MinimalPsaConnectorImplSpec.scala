@@ -18,20 +18,14 @@ package connectors
 
 import base.JsonFileReader
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.IndividualDetails
-import models.MinimalPSA
-import org.scalatest.AsyncFlatSpec
-import org.scalatest.Matchers
-import org.scalatest.OptionValues
+import models.{IndividualDetails, MinimalPSA}
+import org.scalatest.{AsyncFlatSpec, Matchers, OptionValues}
 import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.JsResultException
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.BadRequestException
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.NotFoundException
-import utils.WireMockHelper
 import play.api.http.Status
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.{JsResultException, Json}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException}
+import utils.WireMockHelper
 
 class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
 

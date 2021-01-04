@@ -16,7 +16,6 @@
 
 package views.behaviours
 
-import org.jsoup.nodes.Document
 import play.twirl.api.HtmlFormat
 import viewmodels._
 import views.ViewSpecBase

@@ -39,7 +39,7 @@ import utils.FakeNavigator
 import utils.countryOptions.CountryOptions
 import views.html.register.individual.individualDetailsCorrect
 
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with MockitoSugar {
 
@@ -53,7 +53,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
   private val fakeAuthAction: AuthAction = new AuthAction {
     val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
-    implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+    implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), isExistingPSA = false, None, None, "")))
   }

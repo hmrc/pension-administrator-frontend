@@ -27,7 +27,6 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
-import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 

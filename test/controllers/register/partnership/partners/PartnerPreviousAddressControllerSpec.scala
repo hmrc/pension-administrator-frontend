@@ -20,11 +20,9 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.partnership.partners.{PartnerNameId, PartnerPreviousAddressId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
@@ -41,24 +39,6 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form = formProvider()
   private val index = Index(0)
-  private val partnerName = "test first name test middle name test last name"
-  private val address = Address("test address line 1", "test address line 2", None, None, None, "GB")
-
-  private val validData = Json.obj(
-    "partners" -> Json.arr(
-      Json.obj(
-        PartnerNameId.toString ->
-          PersonName("test first name", "test last name"),
-        PartnerPreviousAddressId.toString ->
-          address
-
-      ),
-      Json.obj(
-        PartnerNameId.toString ->
-          PersonName("test", "test")
-      )
-    )
-  )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new PartnerPreviousAddressController(

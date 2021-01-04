@@ -18,16 +18,13 @@ package controllers.address
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.FakeUserAnswersCacheConnector
 import connectors.RegistrationConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.RegistrationInfoId
 import models._
 import models.requests.DataRequest
-import org.scalatest.MustMatchers
-import org.scalatest.OptionValues
-import org.scalatest.WordSpec
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form

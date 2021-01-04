@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter
 
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
-import org.scalacheck.{Arbitrary, Gen, Shrink}
+import org.scalacheck.{Gen, Shrink}
 
 import scala.util.Random
 

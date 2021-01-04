@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,12 @@ import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerNameId
-import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import play.api.libs.json._
 import utils.dataCompletion.DataCompletion
 import viewmodels.Person
 
 import scala.annotation.tailrec
-import scala.language.implicitConversions
 
 case class UserAnswers(json: JsValue = Json.obj()) {
   def get[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): Option[A] = {

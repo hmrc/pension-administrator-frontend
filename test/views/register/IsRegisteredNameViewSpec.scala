@@ -16,14 +16,13 @@
 
 package views.register
 
-import controllers.register.routes
-import forms.register.{AreYouInUKFormProvider, IsRegisteredNameFormProvider}
+import forms.register.IsRegisteredNameFormProvider
 import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewmodels.{AreYouInUKViewModel, CommonFormViewModel, Message}
+import viewmodels.{CommonFormViewModel, Message}
 import views.behaviours.{ViewBehaviours, YesNoViewBehaviours}
-import views.html.register.{areYouInUK, isRegisteredName}
+import views.html.register.isRegisteredName
 
 class IsRegisteredNameViewSpec extends ViewBehaviours with YesNoViewBehaviours {
 

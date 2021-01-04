@@ -21,8 +21,7 @@ import config.FrontendAppConfig
 import models._
 import models.requests.AuthenticatedRequest
 import org.scalatest.concurrent.ScalaFutures
-import play.api.mvc.Call
-import play.api.mvc.Result
+import play.api.mvc.{Call, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 

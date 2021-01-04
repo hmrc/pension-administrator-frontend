@@ -26,10 +26,10 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.dataCompletion.DataCompletion
+import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
-import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 import scala.concurrent.Future
 

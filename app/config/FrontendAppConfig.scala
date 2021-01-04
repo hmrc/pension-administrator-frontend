@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,8 +41,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   private def getConfigString(key: String) = servicesConfig.getConfString(key, throw new Exception(s"Could not find config '$key'"))
 
   lazy val contactHost = baseUrl("contact-frontend")
-
-  private val contactFormServiceIdentifier = "pensionadministratorfrontend"
 
   lazy val timeout = loadConfig("session._timeoutSeconds")
   lazy val countdown = loadConfig("session._CountdownInSeconds")

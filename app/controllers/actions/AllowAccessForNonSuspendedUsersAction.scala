@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,12 @@ package controllers.actions
 import com.google.inject.Inject
 import connectors.MinimalPsaConnector
 import models.requests.AuthenticatedRequest
+import play.api.mvc.{ActionFilter, Result}
 import play.api.mvc.Results._
-import play.api.mvc.ActionFilter
-import play.api.mvc.Result
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AllowAccessForNonSuspendedUsersAction @Inject()(minimalPsaConnector: MinimalPsaConnector)
                                                      (implicit val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {

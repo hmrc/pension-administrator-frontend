@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import forms.register.VariationWorkingKnowledgeFormProvider
 import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.{PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
-import models.requests.DataRequest
 import models.{CheckUpdateMode, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -49,7 +48,7 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
                                                      extends FrontendBaseController with I18nSupport
                                                      with Enumerable.Implicits with Variations with Retrievals {
 
-  private def form()(implicit request: DataRequest[AnyContent]) = formProvider()
+  private def form(): Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>

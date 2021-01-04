@@ -120,7 +120,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private def call(mode: Mode): Call = CheckYourAnswersController.onSubmit(index, mode)
 
   private def answerRow(label: String, answer: Seq[String], answerIsMessageKey: Boolean = false,
-                        changeUrl: Option[Link] = None, visuallyHiddenLabel: Option[Message] = None): AnswerRow = {
+                        changeUrl: Option[Link], visuallyHiddenLabel: Option[Message]): AnswerRow = {
     AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
 
@@ -142,7 +142,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
     )
 
   private def testRenderedView(sections: Seq[AnswerSection], dataRetrievalAction: DataRetrievalAction,
-                               mode: Mode = NormalMode, isComplete: Boolean = true): Unit = {
+                               mode: Mode, isComplete: Boolean = true): Unit = {
     val result = controller(dataRetrievalAction).onPageLoad(index, mode)(fakeRequest)
     val expectedResult = view(sections,
       call(mode),

@@ -16,13 +16,12 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProvider}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, BodyParser, Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
 import services.PsaDetailsService
@@ -135,7 +134,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
       block(AuthenticatedRequest(request, externalId, PSAUser(userType, None, isExistingPSA = false, None, psaId)))
   }
 
-  private def viewAsString(superSections: Seq[SuperSection] = Seq.empty, name: String = "",
+  private def viewAsString(superSections: Seq[SuperSection], name: String,
                            isUserAnswerUpdated: Boolean = false,
                            userAnswersIncompleteMessage: Option[String] = Some("incomplete.alert.message")): String = {
     val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, userAnswersIncompleteMessage)

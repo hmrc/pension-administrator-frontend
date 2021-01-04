@@ -16,8 +16,7 @@
 
 package utils
 
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import identifiers.{Identifier, TypedIdentifier}
 import models._
 import models.requests.IdentifiedRequest
@@ -25,7 +24,7 @@ import org.scalatest.{MustMatchers, WordSpec}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
+
 
 class NavigatorSpec extends WordSpec with MustMatchers {
 

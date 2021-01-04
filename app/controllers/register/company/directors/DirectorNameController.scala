@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,8 @@ import controllers.{PersonNameController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.DirectorNameId
 import javax.inject.Inject
-import models.requests.DataRequest
 import models.{Index, Mode}
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.CompanyDirector
@@ -45,8 +44,7 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
                                        val view: personName
                                       )(implicit val executionContext: ExecutionContext) extends PersonNameController with Retrievals with I18nSupport {
 
-  private[directors] def viewModel(mode: Mode, index: Index, name: String)
-                                  (implicit request: DataRequest[AnyContent]) =
+  private[directors] def viewModel(mode: Mode, index: Index, name: String) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorNameController.onSubmit(mode, index),
       title = "directorName.heading",

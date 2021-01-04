@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@ package controllers.register
 
 import config.FrontendAppConfig
 import controllers.actions.AuthAction
+import controllers.register.routes._
 import javax.inject.Inject
 import models.{Mode, NormalMode}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import views.html.register.whatYouWillNeed
-import controllers.register.routes._
 
 import scala.concurrent.ExecutionContext
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import controllers.address.ConfirmPreviousAddressController
 import identifiers.register.company.directors
 import identifiers.register.company.directors.{DirectorConfirmPreviousAddressId, DirectorNameId, DirectorPreviousAddressId}
 import javax.inject.Inject
-import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -52,7 +51,7 @@ class DirectorConfirmPreviousAddressController @Inject()(val appConfig: Frontend
   private[controllers] val title: Message = "confirmPreviousAddress.title"
   private[controllers] val heading: Message = "confirmPreviousAddress.heading"
 
-  private def viewmodel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]) =
+  private def viewmodel(mode: Mode, index: Index): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
         (DirectorNameId(index) and directors.ExistingCurrentAddressId(index)).retrieve.right.map {

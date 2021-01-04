@@ -16,10 +16,8 @@
 
 package views.behaviours
 
-import models.UpdateMode
 import viewmodels.Person
 import views.ViewSpecBase
-import views.register.company.AddCompanyDirectorsViewSpec.johnDoe
 
 trait PeopleListBehaviours {
   this: ViewSpecBase =>

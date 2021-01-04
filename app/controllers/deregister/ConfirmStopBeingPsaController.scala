@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package controllers.deregister
 
 import config.FrontendAppConfig
-import connectors.{DeregistrationConnector, MinimalPsaConnector, TaxEnrolmentsConnector}
 import connectors.cache.UserAnswersCacheConnector
+import connectors.{DeregistrationConnector, MinimalPsaConnector, TaxEnrolmentsConnector}
 import controllers.actions.{AllowAccessForNonSuspendedUsersAction, AuthAction}
 import forms.deregister.ConfirmStopBeingPsaFormProvider
 import javax.inject.Inject

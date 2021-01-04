@@ -61,7 +61,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   private val sapNumber = "test-sap-number"
 
   val partnershipName = "MyPartnership"
-  val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.Partnership)
+  val organisation: Organisation = Organisation("MyOrganisation", OrganisationTypeEnum.Partnership)
 
   private val data = Json.obj(
     BusinessTypeId.toString -> BusinessPartnership.toString,
@@ -77,7 +77,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
-  val regInfo = RegistrationInfo(
+  val regInfo: RegistrationInfo = RegistrationInfo(
     RegistrationLegalStatus.Partnership,
     sapNumber,
     noIdentifier = false,
@@ -262,7 +262,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   }
 
   private def controller(
-    dataRetrievalAction: DataRetrievalAction = getEmptyData,
+    dataRetrievalAction: DataRetrievalAction,
     dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   ) =
     new ConfirmPartnershipDetailsController(

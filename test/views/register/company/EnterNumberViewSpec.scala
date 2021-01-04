@@ -20,7 +20,7 @@ import controllers.register.company.routes._
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.behaviours.StringViewBehaviours
 import views.html.register.company.enterNumber
