@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.http.Status
 import play.api.libs.json.{JsResultException, Json}
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import utils.WireMockHelper
 
 class IdentityVerificationProxyConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {

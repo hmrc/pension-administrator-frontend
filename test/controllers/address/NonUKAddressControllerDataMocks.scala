@@ -28,8 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.FakeCountryOptions
 import utils.countryOptions.CountryOptions
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait NonUKAddressControllerDataMocks extends ControllerSpecBase {
 

@@ -17,8 +17,7 @@
 package controllers
 
 import base.SpecBase
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.register.IsRegisteredNameController
 import forms.register.IsRegisteredNameFormProvider
 import identifiers.TypedIdentifier

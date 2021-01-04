@@ -26,10 +26,10 @@ import models.requests.DataRequest
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.mvc.Results._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UserAnswers
@@ -182,7 +182,6 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
     val email = "test@test.com"
     "retrieve PSA email for a company" in {
 
-      val companyName = "test company"
       val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
         RegistrationLegalStatus.LimitedCompany, "", noIdentifier = false, RegistrationCustomerType.UK, None, None)).
         businessName().companyEmail(email)

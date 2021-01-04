@@ -26,7 +26,6 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
-import models.Mode.journeyMode
 
 class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -100,11 +99,7 @@ class AdviserNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 object AdviserNavigatorSpec extends OptionValues {
   private val invalidIdForNavigator = AreYouInUKId
-  private val address = Address("line 1", "line 2", Some("line 3"), Some("line 4"), None, "UK")
   private val adviserUpdated = UserAnswers(Json.obj()).set(IsNewAdviserId)(value = true).asOpt.get
-  private val adviserUpdatedWithAddressOnly = UserAnswers(Json.obj())
-    .set(IsNewAdviserId)(value = true).asOpt.get
-    .set(AdviserAddressId)(address).asOpt.get
 
   private val declarationPensionAdvisorTrue = UserAnswers(Json.obj()).set(PAInDeclarationJourneyId)(true).asOpt.get
 
@@ -112,7 +107,6 @@ object AdviserNavigatorSpec extends OptionValues {
   private def adviserEmailPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserEmailController.onPageLoad(mode)
   private def adviserPhonePage(mode: Mode): Call = controllers.register.adviser.routes.AdviserPhoneController.onPageLoad(mode)
   private def adviserAddressListPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressListController.onPageLoad(mode)
-  private def adviserAddressPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressController.onPageLoad(mode)
   private def checkYourAnswersPage(mode: Mode): Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
   private val variationDeclarationFitAndProperPage: Call = controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
   private val defaultPage: Call = controllers.routes.IndexController.onPageLoad()

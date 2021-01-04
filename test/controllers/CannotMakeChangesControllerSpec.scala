@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.actions._
-import controllers.deregister.ConfirmStopBeingPsaControllerSpec.viewAsString
 import identifiers.register.individual.IndividualDetailsId
 import models._
 import models.requests.DataRequest
@@ -55,7 +54,7 @@ class CannotMakeChangesControllerSpec extends ControllerSpecBase {
     }
   }
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
     new CannotMakeChangesController(
       frontendAppConfig,
       FakeAuthAction(UserType.Individual),

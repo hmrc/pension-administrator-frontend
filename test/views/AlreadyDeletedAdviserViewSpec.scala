@@ -16,7 +16,6 @@
 
 package views
 
-import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import viewmodels.Message
 import views.behaviours.ViewBehaviours

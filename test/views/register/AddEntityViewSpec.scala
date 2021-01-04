@@ -19,7 +19,6 @@ package views.register
 import forms.register.AddEntityFormProvider
 import models._
 import models.requests.DataRequest
-import org.jsoup.select.Elements
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.api.libs.json.Json

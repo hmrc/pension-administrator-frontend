@@ -22,7 +22,7 @@ import org.scalatest.{AsyncFlatSpec, Matchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.http.Status._
 import play.api.libs.json.{JsResultException, JsValue, Json}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
 import utils.testhelpers.PsaSubscriptionBuilder._
 import utils.{UserAnswers, WireMockHelper}
 

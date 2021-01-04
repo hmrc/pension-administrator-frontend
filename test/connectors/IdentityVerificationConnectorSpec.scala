@@ -18,7 +18,6 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
 import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
-import play.api.libs.json.Json
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper

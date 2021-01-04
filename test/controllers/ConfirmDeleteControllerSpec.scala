@@ -37,7 +37,7 @@ import utils.{FakeNavigator, UserAnswers}
 import viewmodels.ConfirmDeleteViewModel
 import views.html.confirmDelete
 
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.ExecutionContext
 
 class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
@@ -120,7 +120,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
       override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 
-      implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+      implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
     }
 
   private val confirmDeleteView = app.injector.instanceOf[confirmDelete]

@@ -21,12 +21,11 @@ import controllers.register.partnership.partners.routes
 import identifiers.Identifier
 import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
-import models.Mode._
 import models._
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
+import org.scalatest.prop.TableFor3
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatest.prop.{TableFor3, TableFor4}
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}

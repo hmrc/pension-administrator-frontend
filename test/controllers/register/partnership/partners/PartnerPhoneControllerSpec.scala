@@ -22,7 +22,6 @@ import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -44,7 +43,7 @@ class PartnerPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: phone = app.injector.instanceOf[phone]
 
-  private def phoneView(form: Form[_] = phoneForm): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "PartnerPhoneController" must {
 
@@ -67,7 +66,7 @@ object PartnerPhoneControllerSpec {
   private val partnerName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "12345"))
 
-  private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
+  private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerPhoneController.onSubmit(mode, index),
       title = Message("phone.title", Message("thePartner")),

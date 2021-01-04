@@ -24,7 +24,7 @@ import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
-import identifiers.register.{RegistrationInfoId, BusinessNameId}
+import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}

@@ -16,11 +16,10 @@
 
 package controllers.actions
 
-import connectors.RegistrationConnector
-import models._
-import models.RegistrationLegalStatus
 import java.time.LocalDate
 
+import connectors.RegistrationConnector
+import models.{RegistrationLegalStatus, _}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 

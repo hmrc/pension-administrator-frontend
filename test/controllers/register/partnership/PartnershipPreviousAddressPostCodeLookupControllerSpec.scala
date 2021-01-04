@@ -27,6 +27,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.AnyContent
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,12 +38,11 @@ import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None), UserAnswers())
   implicit val request: DataRequest[AnyContent] =
     DataRequest(fakeRequest, "", PSAUser(UserType.Individual, None, isExistingPSA = false, None, None), UserAnswers())
   private val formProvider = new PostCodeLookupFormProvider()
@@ -110,7 +110,7 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     ).build()
 
-  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
+  def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
     Message("previous.postcode.lookup.heading", Message("thePartnership")),

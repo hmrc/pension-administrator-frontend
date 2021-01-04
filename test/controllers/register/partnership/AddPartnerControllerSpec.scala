@@ -31,10 +31,10 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{EntityViewModel, Message, Person}
 import views.html.register.addEntity
-import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 class AddPartnerControllerSpec extends ControllerSpecBase {
 
@@ -208,10 +208,6 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private def editLink(index: Int) = controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(index, NormalMode).url
 
   // scalastyle:off magic.number
-  private def johnDoePerson(index: Int) = Person(index, "John Doe", deleteLink(index), editLink(index), isDeleted = false, isComplete = true)
-
-  private val joeBloggsPerson = Person(1, "Joe Bloggs", deleteLink(1), editLink(1), isDeleted = false, isComplete = true)
-
   private val maxPartners = frontendAppConfig.maxPartners
 
   private def dataRetrievalAction(partners: PersonName*): FakeDataRetrievalAction = {

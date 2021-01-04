@@ -17,8 +17,7 @@
 package controllers.register.individual
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.NonUKAddressFormProvider
@@ -27,10 +26,9 @@ import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId
 import models._
 import org.mockito.Matchers
 import org.mockito.Matchers._
-import org.mockito.Mockito.{atLeastOnce, never, verify, when}
+import org.mockito.Mockito.{atLeastOnce, verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar._
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -42,8 +40,7 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration.Duration
+import scala.concurrent.Future
 
 class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures with BeforeAndAfter{
 

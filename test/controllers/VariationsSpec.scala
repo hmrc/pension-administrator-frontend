@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.UserAnswers
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContextExecutor}
+import scala.concurrent.{Await, ExecutionContext}
 
 class VariationsSpec extends ControllerSpecBase {
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
@@ -55,7 +55,7 @@ class VariationsSpec extends ControllerSpecBase {
 
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
 
-    implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+    implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
     override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }
@@ -67,7 +67,7 @@ class VariationsSpec extends ControllerSpecBase {
 
     override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
 
-    implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+    implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
     override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
   }

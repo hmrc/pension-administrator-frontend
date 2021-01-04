@@ -18,8 +18,7 @@ package controllers.register.company
 
 import java.time.LocalDate
 
-import connectors.cache.FakeUserAnswersCacheConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
@@ -28,7 +27,6 @@ import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, Regi
 import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -291,7 +289,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
 
   private def controller(
-    dataRetrievalAction: DataRetrievalAction = getEmptyData,
+    dataRetrievalAction: DataRetrievalAction,
     dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   ) =
     new ConfirmCompanyDetailsController(

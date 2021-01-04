@@ -17,8 +17,8 @@
 package controllers
 
 import play.api.test.Helpers._
-import views.html.session_expired
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import views.html.session_expired
 
 class SessionExpiredControllerSpec extends ControllerSpecBase {
 

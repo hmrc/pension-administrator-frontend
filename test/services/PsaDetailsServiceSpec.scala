@@ -45,7 +45,6 @@ import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSecti
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import scala.language.postfixOps
 
 class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 

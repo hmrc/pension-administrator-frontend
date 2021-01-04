@@ -38,7 +38,7 @@ import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContextExecutor, Future}
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
 
@@ -168,7 +168,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
 
       override protected def view: moreThanTen = moreThanTenView
 
-      implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+      implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
       override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
     }

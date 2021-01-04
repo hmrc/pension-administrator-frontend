@@ -24,7 +24,7 @@ import utils.PsaDetailsHelperSpec.actualSeqAnswerRow
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.PsaSubscriptionBuilder
 import utils.testhelpers.PsaSubscriptionBuilder.{psaSubscriptionPartnership, _}
-import viewmodels.{AnswerRow, Message, SuperSection}
+import viewmodels.{AnswerRow, SuperSection}
 
 class PsaDetailsHelperSpec extends WordSpec with MustMatchers {
 

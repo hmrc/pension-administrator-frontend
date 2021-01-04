@@ -196,8 +196,6 @@ object DirectorNavigatorSpec extends OptionValues {
 
   private def paAddressListPage(mode: Mode): Call = routes.DirectorPreviousAddressListController.onPageLoad(mode, index)
 
-  private def previousAddressPage(mode: Mode): Call = routes.DirectorPreviousAddressController.onPageLoad(mode, index)
-
   private def addressPostCodePage(mode: Mode): Call = routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode, index)
 
   private def addressListPage(mode: Mode): Call = routes.CompanyDirectorAddressListController.onPageLoad(mode, index)
@@ -216,8 +214,6 @@ object DirectorNavigatorSpec extends OptionValues {
       DirectorNameId.toString -> director(index)
     )).toArray
   }
-
-  private val emptyAnswers = UserAnswers(Json.obj())
   private val defaultAnswers = UserAnswers(Json.obj())
     .set(DirectorNameId(index))(director(index).copy(isNew = true)).asOpt.value
 

@@ -17,8 +17,6 @@
 package identifiers.register
 
 
-import java.time.LocalDate
-
 import identifiers.register.company._
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership._

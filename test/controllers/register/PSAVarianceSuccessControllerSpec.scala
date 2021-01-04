@@ -64,7 +64,7 @@ class PSAVarianceSuccessControllerSpec extends ControllerSpecBase {
     }
   }
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
     new PSAVarianceSuccessController(
       frontendAppConfig,
       FakeAuthAction(UserType.Individual),

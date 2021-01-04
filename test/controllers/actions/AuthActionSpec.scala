@@ -25,20 +25,19 @@ import identifiers.JourneyId
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Credentials
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.domain
-import uk.gov.hmrc.http.{UnauthorizedException, HeaderCarrier}
+import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
-
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec extends SpecBase with MockitoSugar {
 
@@ -416,7 +415,7 @@ object AuthActionSpec {
   private def fakeAuthConnector(stubbedRetrievalResult: Future[_]) = new AuthConnector {
 
     def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[A] = {
-      stubbedRetrievalResult.map(_.asInstanceOf[A])
+      stubbedRetrievalResult.map(_.asInstanceOf[A])(executionContext)
     }
   }
 

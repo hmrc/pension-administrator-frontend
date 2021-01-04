@@ -17,13 +17,11 @@
 package utils
 
 import identifiers.Identifier
-import models.CheckMode
 import models.requests.IdentifiedRequest
-import models.{Mode, NormalMode}
+import models.{CheckMode, Mode, NormalMode}
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
-import org.scalatest.prop.TableFor3
-import org.scalatest.prop.TableFor4
-import org.scalatest.{OptionValues, MustMatchers, WordSpec}
+import org.scalatest.prop.{TableFor3, TableFor4}
+import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.mvc.Call

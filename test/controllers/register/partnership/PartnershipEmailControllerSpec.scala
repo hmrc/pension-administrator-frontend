@@ -22,7 +22,6 @@ import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -46,7 +45,7 @@ class PartnershipEmailControllerSpec extends ControllerWithCommonBehaviour {
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view)
 
-  private def emailView(form: Form[_] = emailForm): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
+  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "PartnershipEmail Controller" must {
 
@@ -60,7 +59,7 @@ class PartnershipEmailControllerSpec extends ControllerWithCommonBehaviour {
     )
   }
 
-  private def viewModel(mode: Mode)(implicit messages: Messages) =
+  private def viewModel(mode: Mode) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnershipEmailController.onSubmit(mode),
       title = Message("email.title", Message("thePartnership")),

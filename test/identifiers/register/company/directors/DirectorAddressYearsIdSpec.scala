@@ -29,10 +29,10 @@ import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
 
 class DirectorAddressYearsIdSpec extends SpecBase {
-  private val personDetails = models.PersonName("test first", "test last")
+
   private val onwardUrl = "onwardUrl"
   implicit val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val addressYears = AddressYears.OverAYear
+
   "Cleanup" when {
 
     val answersWithPreviousAddress = UserAnswers(Json.obj())

@@ -52,6 +52,4 @@ object PsaDeRegistrationNavigatorSpec extends OptionValues {
   lazy val confirmNo: UserAnswers = UserAnswers(Json.obj()).set(ConfirmStopBeingPsaId)(value = false).asOpt.value
   lazy val successfulDeregistrationPage: Call = controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad()
 
-  private def dataDescriber(answers: UserAnswers): String = answers.toString
-
 }

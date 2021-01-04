@@ -22,7 +22,6 @@ import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -42,7 +41,7 @@ class DirectorEmailControllerSpec extends ControllerWithCommonBehaviour {
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view)
 
-  private def emailView(form: Form[_] = emailForm): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "DirectorEmail Controller" must {
 
@@ -64,7 +63,7 @@ object DirectorEmailControllerSpec {
   private val directorName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
-  private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
+  private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorEmailController.onSubmit(mode, index),
       title = Message("email.title", Message("theDirector")),

@@ -28,7 +28,6 @@ import viewmodels.{AnswerRow, Link, Message}
 
 class DirectorEnterNINOIdSpec extends SpecBase {
 
-  private val personDetails = models.PersonName("test first", "test last")
   private val onwardUrl = "onwardUrl"
 
   "Cleanup" when {

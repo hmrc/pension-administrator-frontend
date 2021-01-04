@@ -23,8 +23,8 @@ import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.UserAnswers
-import viewmodels.{AnswerRow, Link, Message}
 import utils.checkyouranswers.Ops._
+import viewmodels.{AnswerRow, Link, Message}
 
 class HasPartnerUTRIdSpec extends SpecBase {
 

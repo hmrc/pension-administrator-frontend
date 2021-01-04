@@ -27,10 +27,8 @@ import viewmodels.{AnswerRow, Link, Message}
 
 class CheckYourAnswersHelperSpec extends SpecBase {
 
-  private val reason = "don't have one"
   private val localDate = LocalDate.parse("28/06/2019", DateTimeFormatter.ofPattern("dd/MM/yyyy"))
   private val displayDate = "28 June 2019"
-  private val countryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   case class TestScenario(userAnswersJson: JsObject, expectedResult: Seq[AnswerRow], name: Option[String] = None) {
     def describe(descr: String): String = name.map(x => descr + s" ($x)").getOrElse(descr)
@@ -68,12 +66,14 @@ class CheckYourAnswersHelperSpec extends SpecBase {
       Seq(
         TestScenario(
           Json.obj(MoreThanTenDirectorsId.toString -> true),
-          Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq("site.yes"), true, Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
+          Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq("site.yes"), true,
+            Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
           Some("user answered yes")
         ),
         TestScenario(
           Json.obj(MoreThanTenDirectorsId.toString -> false),
-          Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq("site.no"), true, Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
+          Seq(AnswerRow("moreThanTenDirectors.checkYourAnswersLabel", Seq("site.no"), true,
+            Some(Link("/register-as-pension-scheme-administrator/register/company/change/other-directors")))),
           Some("user answered no")
         )
       )

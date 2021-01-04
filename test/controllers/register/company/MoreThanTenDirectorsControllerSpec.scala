@@ -28,7 +28,7 @@ import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
-import viewmodels.{Message, MoreThanTenViewModel}
+import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
 class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {

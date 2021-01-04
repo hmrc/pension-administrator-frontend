@@ -19,15 +19,12 @@ package controllers.register
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.company.CompanyEmailId
-import identifiers.register.individual.{IndividualDetailsId, IndividualEmailId}
-import identifiers.register.{BusinessNameId, PsaNameId, PsaSubscriptionResponseId, RegistrationInfoId}
+import identifiers.register.PsaSubscriptionResponseId
+import models._
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
-import models._
 import org.mockito.Matchers._
 import org.mockito.Mockito._
-import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents

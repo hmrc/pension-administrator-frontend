@@ -22,7 +22,6 @@ import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.HasReferenceNumberFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -44,7 +43,7 @@ class HasPartnershipVATControllerSpec extends ControllerWithCommonBehaviour {
 
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))
 
-  private def viewModel(mode: Mode)(implicit messages: Messages) =
+  private def viewModel(mode: Mode) =
     CommonFormWithHintViewModel(
       postCall = routes.HasPartnershipVATController.onSubmit(mode),
       title = Message("hasVAT.heading", Message("thePartnership")),
@@ -54,10 +53,10 @@ class HasPartnershipVATControllerSpec extends ControllerWithCommonBehaviour {
       entityName = partnershipName
     )
 
-  private def hasReferenceNumberView(form: Form[_] = hasReferenceNumberForm): String =
+  private def hasReferenceNumberView(form: Form[_]): String =
     view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
     new HasPartnershipVATController(frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),

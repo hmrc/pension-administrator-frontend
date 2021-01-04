@@ -16,13 +16,11 @@
 
 package controllers.register.partnership.partners
 
-import audit.testdoubles.StubSuccessfulAuditService
-import audit.{AddressAction, AddressEvent}
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.partnership.partners.{PartnerAddressId, PartnerNameId}
+import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -31,7 +29,7 @@ import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
@@ -43,10 +41,6 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
 
   private val jonathanDoe = PersonName("Jonathan", "Doe")
   private val joeBloggs = PersonName("Joe", "Bloggs")
-
-  private val doeResidence = Address("address line 1", "address line 2", Some("test town"), Some("test county"), Some("test post code"), "GB")
-  private val bloggsResidence = Address("address line 1", "address line 2", Some("test town 2"), Some("test county 2"), Some("test post code 2"), "GB")
-
   private val partners = Json.obj(
     "partners" -> Json.arr(
       Json.obj(
@@ -59,20 +53,7 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
   )
 
   private val data = new FakeDataRetrievalAction(Some(partners))
-  private val partnersWithAddresses = Json.obj(
-    "partners" -> Json.arr(
-      Json.obj(
-        PartnerNameId.toString -> jonathanDoe,
-        PartnerAddressId.toString -> doeResidence
-      ),
-      Json.obj(
-        PartnerNameId.toString -> joeBloggs,
-        PartnerAddressId.toString -> bloggsResidence
-      )
-    )
-  )
 
-  private val dataWithAddresses = new FakeDataRetrievalAction(Some(partnersWithAddresses))
   val view: manualAddress = app.injector.instanceOf[manualAddress]
   private val viewModel = ManualAddressViewModel(
     routes.PartnerAddressController.onSubmit(NormalMode, firstIndex),
@@ -138,7 +119,7 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
 
   private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
     new PartnerAddressController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,

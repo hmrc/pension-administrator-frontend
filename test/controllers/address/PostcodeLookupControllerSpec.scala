@@ -16,7 +16,6 @@
 
 package controllers.address
 
-import akka.stream.Materializer
 import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
@@ -30,8 +29,8 @@ import models.{NormalMode, TolerantAddress, _}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._

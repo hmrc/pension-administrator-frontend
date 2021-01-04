@@ -22,7 +22,6 @@ import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EnterUTRFormProvider
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -43,7 +42,7 @@ class DirectorEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view)
 
-  private def enterUTRView(form: Form[_] = utrForm): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def enterUTRView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "DirectorEnterUTRController" must {
 
@@ -65,7 +64,7 @@ object DirectorEnterUTRControllerSpec {
   private val directorName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "1111111111"))
 
-  private def viewModel(mode: Mode, index: Index)(implicit messages: Messages) =
+  private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorEnterUTRController.onSubmit(mode, index),
       title = Message("enterUTR.heading", Message("theDirector")),

@@ -35,7 +35,7 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.dob
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 class DOBControllerSpec extends ControllerSpecBase {
   val dobView: dob = app.injector.instanceOf[dob]
@@ -154,7 +154,7 @@ class DOBControllerSpec extends ControllerSpecBase {
 
       override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 
-      implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+      implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
       val view: dob = dobView
     }

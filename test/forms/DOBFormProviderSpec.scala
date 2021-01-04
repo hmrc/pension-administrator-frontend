@@ -22,7 +22,6 @@ import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
 import org.scalatest.Matchers
 import play.api.data.FormError
-import wolfendale.scalacheck.regexp.RegexpGen
 
 class DOBFormProviderSpec extends StringFieldBehaviours with Constraints with Matchers {
 

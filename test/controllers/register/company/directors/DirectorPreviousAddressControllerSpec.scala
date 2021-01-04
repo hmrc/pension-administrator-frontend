@@ -22,11 +22,9 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressId}
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.countryOptions.CountryOptions
@@ -44,23 +42,6 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
   private val form = formProvider()
   private val index = Index(0)
   private val directorName = "test first name test last name"
-  private val address = Address("test address line 1", "test address line 2", None, None, None, "GB")
-
-  private val validData = Json.obj(
-    "directors" -> Json.arr(
-      Json.obj(
-        DirectorNameId.toString ->
-          PersonName("test first name", "test last name"),
-        DirectorPreviousAddressId.toString ->
-          address
-
-      ),
-      Json.obj(
-        DirectorNameId.toString ->
-          PersonName("test", "test")
-      )
-    )
-  )
 
   private val auditService = new StubSuccessfulAuditService()
 

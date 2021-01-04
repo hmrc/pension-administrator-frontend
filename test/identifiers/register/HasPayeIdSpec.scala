@@ -17,7 +17,6 @@
 package identifiers.register
 
 import base.SpecBase
-import models.register.BusinessType
 import models.requests.DataRequest
 import models.{PSAUser, UserType}
 import play.api.mvc.AnyContent
