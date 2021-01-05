@@ -8,8 +8,8 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 
 lazy val appName: String = "pension-administrator-frontend"
 
-
   lazy val root =  (project in file("."))
+    .disablePlugins(JUnitXmlReportPlugin)
     .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
     .settings(scalaSettings: _*)
     .settings(defaultSettings(): _*)
