@@ -66,7 +66,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
 
   private val data = new FakeDataRetrievalAction(Some(validData))
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
     new PartnerPreviousAddressListController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,20 @@ package controllers
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import identifiers.register.individual.IndividualContactAddressId
-import identifiers.register.individual.IndividualDetailsId
+import identifiers.register.individual.{IndividualContactAddressId, IndividualDetailsId}
 import models._
 import models.requests.DataRequest
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
-import utils.FakeCountryOptions
-import utils.UserAnswers
 import utils.countryOptions.CountryOptions
 import views.html.updateContactAddress
 import org.mockito.Matchers._
-import org.mockito.Mockito.reset
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.JsNull
+import play.api.libs.json.{Json, JsNull}
 import play.api.mvc.Call
-import utils.FakeNavigator
+import utils.{FakeCountryOptions, UserAnswers, FakeNavigator}
 
 import scala.concurrent.Future
 
@@ -66,7 +61,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
     new UpdateContactAddressController(
       frontendAppConfig,
       FakeAuthAction(UserType.Individual),

@@ -16,19 +16,15 @@
 
 package controllers.register.individual
 
-import audit.testdoubles.StubSuccessfulAuditService
-import audit.{AddressAction, AddressEvent}
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.individual.IndividualPreviousAddressId
-import models.{Address, NormalMode, TolerantAddress}
+import models.{Address, NormalMode}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents

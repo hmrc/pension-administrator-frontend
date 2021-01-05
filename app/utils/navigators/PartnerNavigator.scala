@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     case CheckYourAnswersId => AddPartnerController.onPageLoad(mode)
   }
 
-  private def checkYourAnswersPage(index: Int, mode: Mode = NormalMode) = CheckYourAnswersController.onPageLoad(index, mode)
+  private def checkYourAnswersPage(index: Int, mode: Mode): Call = CheckYourAnswersController.onPageLoad(index, mode)
 
   private def anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 

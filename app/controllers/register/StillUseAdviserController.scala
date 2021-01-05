@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
                                           )(implicit val executionContext: ExecutionContext
                                           ) extends FrontendBaseController with Enumerable.Implicits  with I18nSupport with Variations with Retrievals {
 
-  private def form()(implicit request: DataRequest[AnyContent]): Form[Boolean] =
+  private def form(): Form[Boolean] =
     formProvider()
 
   private def adviserName()(implicit request: DataRequest[AnyContent]) =

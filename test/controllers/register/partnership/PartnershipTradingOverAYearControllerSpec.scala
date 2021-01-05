@@ -43,7 +43,7 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerWithCommonBeha
 
   private val hasReferenceNumberForm = formProvider("error.required", partnershipName)
 
-  private def hasReferenceNumberView(form: Form[_] = hasReferenceNumberForm): String =
+  private def hasReferenceNumberView(form: Form[_]): String =
     view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   private def viewModel(mode: Mode): CommonFormWithHintViewModel =
@@ -58,7 +58,7 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerWithCommonBeha
 
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
     new PartnershipTradingOverAYearController(frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import controllers.{DOBController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.partners.{PartnerDOBId, PartnerNameId}
 import javax.inject.Inject
-import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
@@ -47,7 +46,7 @@ class PartnerDOBController @Inject()(val appConfig: FrontendAppConfig,
   private[partners] def viewModel(mode: Mode,
                                   index: Index,
                                   psaName: String,
-                                  partnerName: String)(implicit request: DataRequest[AnyContent]) =
+                                  partnerName: String) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerDOBController.onSubmit(mode, index),
       title = "partnerDob.title",

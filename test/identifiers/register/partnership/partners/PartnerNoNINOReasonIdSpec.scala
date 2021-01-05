@@ -16,16 +16,14 @@
 
 package identifiers.register.partnership.partners
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models._
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.UserAnswers
-import viewmodels.{AnswerRow, Link, Message}
 import utils.checkyouranswers.Ops._
+import viewmodels.{AnswerRow, Link, Message}
 
 class PartnerNoNINOReasonIdSpec extends SpecBase {
 

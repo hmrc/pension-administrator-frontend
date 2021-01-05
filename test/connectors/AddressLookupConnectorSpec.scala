@@ -24,8 +24,6 @@ import play.api.test.Helpers.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
   private def url = s"/v2/uk/addresses?postcode=ZZ1%201ZZ"

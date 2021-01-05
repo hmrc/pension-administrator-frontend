@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,6 @@
 package identifiers.register
 
 import identifiers._
-import identifiers.register.adviser._
-import identifiers.register.company._
-import identifiers.register.company.directors.DirectorId
-import identifiers.register.individual._
-import identifiers.register.partnership._
-import identifiers.register.partnership.partners.PartnerId
-import play.api.libs.json.JsResult
-import utils.UserAnswers
 
 case object IsRegisteredNameId extends TypedIdentifier[Boolean] {
   override def toString: String = "isRegisteredName"

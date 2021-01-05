@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package controllers
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
-import models.{Mode, ReferenceValue}
 import models.requests.DataRequest
+import models.{Mode, ReferenceValue}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}

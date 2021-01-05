@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,13 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
-import identifiers.register.individual.{IndividualPhoneId, IndividualDetailsId}
+import identifiers.register.individual.IndividualPhoneId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.Individual
-import utils.annotations.NoRLSCheck
+import utils.annotations.{Individual, NoRLSCheck}
 import viewmodels.{Message, CommonFormWithHintViewModel}
 import views.html.phone
 

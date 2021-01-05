@@ -19,12 +19,10 @@ package controllers.register.individual
 import connectors.AddressLookupConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
 import models.{NormalMode, TolerantAddress}
-import play.api.Application
 import play.api.inject.bind
-import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
+import play.api.inject.guice.GuiceableModule
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

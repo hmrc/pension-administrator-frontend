@@ -18,18 +18,14 @@ package connectors
 
 import base.JsonFileReader
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.IndividualDetails
-import models.MinimalPSA
-import org.scalatest.AsyncFlatSpec
-import org.scalatest.Matchers
-import org.scalatest.OptionValues
+import models.{MinimalPSA, IndividualDetails}
+import org.scalatest.{OptionValues, Matchers, AsyncFlatSpec}
 import play.api.Application
+import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.BadRequestException
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import utils.WireMockHelper
-import play.api.http.Status
 
 class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
 
@@ -111,19 +107,7 @@ object MinimalPsaConnectorImplSpec extends OptionValues with JsonFileReader {
 
   private val psaId = "test-psa-id"
 
-  private val validResponse =
-    Json.stringify(
-      Json.obj(
-        "isPsaSuspended" -> true
-      )
-    )
 
-  private val invalidPayloadResponse =
-    Json.stringify(
-      Json.obj(
-        "isPsaSuspended" -> "reason"
-      )
-    )
     def errorResponse(code: String): String = {
       Json.stringify(
         Json.obj(

@@ -17,14 +17,11 @@
 package utils.navigators
 
 import base.SpecBase
-import identifiers.Identifier
-import identifiers.UpdateContactAddressId
+import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register._
-import identifiers.register.adviser.AdviserNameId
-import identifiers.register.adviser.ConfirmDeleteAdviserId
+import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import identifiers.register.company.CompanyContactAddressId
-import identifiers.register.individual.IndividualContactAddressId
-import identifiers.register.individual.IndividualDetailsId
+import identifiers.register.individual.{IndividualContactAddressId, IndividualDetailsId}
 import identifiers.register.partnership.PartnershipContactAddressId
 import models._
 import models.requests.IdentifiedRequest
@@ -32,9 +29,7 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.Navigator
-import utils.NavigatorBehaviour
-import utils.UserAnswers
+import utils.{NavigatorBehaviour, Navigator, UserAnswers}
 
 class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 

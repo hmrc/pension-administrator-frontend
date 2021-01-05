@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,6 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
   protected def view: postcodeLookup
 
   private val invalidPostcode: Message = "error.postcode.failed"
-  private val dynamicNoResults: Message = "error.postcode.noResults"
 
   protected def get(viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
 

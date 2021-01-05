@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ case object BusinessUTRId extends TypedIdentifier[String] {
       }
     }
 
-  private def label(userAnswers: UserAnswers)(implicit messages: Messages): Message =
+  private def label(userAnswers: UserAnswers): Message =
     userAnswers.get(BusinessTypeId).map(businessType => Message("utr.heading",
       Message(s"businessType.${businessType.toString}.lc"))).getOrElse(
       Message("utr.heading", Message("theCompany")))

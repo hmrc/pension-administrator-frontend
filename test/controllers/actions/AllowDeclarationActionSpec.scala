@@ -18,18 +18,18 @@ package controllers.actions
 
 import base.SpecBase
 import models._
-import models.requests.{AuthenticatedRequest, OptionalDataRequest}
+import models.requests.OptionalDataRequest
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.Result
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.UserAnswers
 import utils.dataCompletion.DataCompletion
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 class AllowDeclarationActionSpec extends SpecBase with ScalaFutures {
 
@@ -40,7 +40,7 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures {
   }
 
   private def optionalRequest(ua: UserAnswers) =
-    OptionalDataRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), Some(ua))
+    OptionalDataRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None), Some(ua))
 
   "AllowDeclarationAction" must {
 

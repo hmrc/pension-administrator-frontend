@@ -22,7 +22,6 @@ import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EnterPAYEFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
@@ -44,7 +43,7 @@ class PartnershipEnterPAYEControllerSpec extends ControllerWithCommonBehaviour {
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     stubMessagesControllerComponents(), view)
 
-  private def enterPAYEView(form: Form[_] = payeForm): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
+  private def enterPAYEView(form: Form[_]): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "PartnershipEnterPAYEController" must {
 
@@ -65,7 +64,7 @@ object PartnershipEnterPAYEControllerSpec {
   private val payeNumber = "123AB456"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", payeNumber))
 
-  private def viewModel(mode: Mode)(implicit messages: Messages) =
+  private def viewModel(mode: Mode) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnershipEnterPAYEController.onSubmit(mode),
       title = Message("enterPAYE.heading", Message("thePartnership")),

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package viewmodels
 
-import scala.language.implicitConversions
-
 case class Person(index: Int,
                   name: String,
                   deleteLink: String,
@@ -27,10 +25,10 @@ case class Person(index: Int,
                   isNew: Boolean = false
                  ) {
 
-  def id = s"person-$index"
+  def id: String = s"person-$index"
 
-  def deleteLinkId = s"$id-delete"
+  def deleteLinkId: String = s"$id-delete"
 
-  def editLinkId = s"$id-edit"
+  def editLinkId: String = s"$id-edit"
 }
 

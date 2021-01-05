@@ -16,9 +16,9 @@
 
 package utils.dataCompletion
 
-import identifiers.register.{EnterVATId, HasVATId}
 import identifiers.register.company._
 import identifiers.register.company.directors.{DirectorEnterNINOId, DirectorNoNINOReasonId, HasDirectorNINOId}
+import identifiers.register.{EnterVATId, HasVATId}
 import models._
 import models.register.DeclarationWorkingKnowledge
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.PartnershipPartner
@@ -66,7 +66,7 @@ class PartnerEnterNINOController @Inject()(@PartnershipPartner val navigator: Na
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
-  private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
+  private def viewModel(mode: Mode, index: Index, partnerName: String) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerEnterNINOController.onSubmit(mode, index),
       title = Message("enterNINO.heading", Message("thePartner")),

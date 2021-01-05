@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package identifiers.register.individual
 
 import identifiers.TypedIdentifier
-import play.api.i18n.Messages
 import play.api.libs.json.JsPath
 import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, StringCYA}
@@ -29,7 +28,7 @@ case object IndividualEmailId extends TypedIdentifier[String] {
 
   override def toString: String = "email"
 
-  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
+  implicit def cya: CheckYourAnswers[self.type] =
     new CheckYourAnswers[self.type] {
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
         StringCYA[self.type](Some("individual.email.title"), Some("individualEmail.visuallyHidden.text"))().row(id)(changeUrl, userAnswers)

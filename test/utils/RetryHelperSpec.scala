@@ -25,7 +25,7 @@ import org.scalatest.time.{Seconds, Span}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HttpException, Upstream5xxResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HttpException, UpstreamErrorResponse}
 
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext.Implicits.global

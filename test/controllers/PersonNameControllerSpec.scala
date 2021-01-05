@@ -28,7 +28,7 @@ import utils.Navigator
 import viewmodels.CommonFormWithHintViewModel
 import views.html.personName
 
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.ExecutionContext
 
 class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControllerBehaviour {
 
@@ -62,7 +62,7 @@ class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControl
 
       override val allowAccess = FakeAllowAccessProvider(config = frontendAppConfig)
 
-      implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+      implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
       override val controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
 

@@ -18,7 +18,7 @@ package identifiers.register.company
 
 import base.SpecBase
 import models.requests.DataRequest
-import models.{AddressYears, PSAUser, UserType}
+import models.{PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.UserAnswers

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
@@ -47,8 +47,7 @@ class HasPartnershipVATController @Inject()(override val appConfig: FrontendAppC
                                             val view: hasReferenceNumber
                                            )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController with I18nSupport {
 
-  private def viewModel(mode: Mode, entityName: String)
-                       (implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.HasPartnershipVATController.onSubmit(mode),
       title = Message("hasVAT.heading", Message("thePartnership")),

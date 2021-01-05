@@ -15,9 +15,6 @@
  */
 
 package controllers.register.partnership
-import play.api.test.CSRFTokenHelper.addCSRFToken
-
-import akka.stream.Materializer
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -26,6 +23,7 @@ import identifiers.register.partnership.PartnershipPreviousAddressPostCodeLookup
 import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
 import play.api.libs.json.Json
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership

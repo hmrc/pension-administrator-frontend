@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
     DirectorsOrPartnersChangedId
   )
 
-  private def getUpdatedUserAnswers(response: JsValue)(implicit executionContext: ExecutionContext): Future[UserAnswers] = {
+  private def getUpdatedUserAnswers(response: JsValue): Future[UserAnswers] = {
     val answers = UserAnswers(response)
     val legalStatus = answers.get(RegistrationInfoId) map (_.legalStatus)
     Future.successful(

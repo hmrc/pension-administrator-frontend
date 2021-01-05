@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   protected def form()(implicit request: DataRequest[AnyContent]): Form[Boolean] =
     formProvider(Message("same.contact.address.error").withArgs(Message("common.you")))
 
-  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
+  private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
         (IndividualDetailsId and IndividualAddressId).retrieve.right.map {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.register.individual.routes._
-import identifiers.Identifier
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
 import models.InternationalRegion._
@@ -28,7 +27,7 @@ import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import controllers.routes.SessionExpiredController
-import identifiers.UpdateContactAddressId
+import identifiers.{Identifier, UpdateContactAddressId}
 
 @Singleton
 class IndividualNavigator @Inject()(config: FrontendAppConfig,
@@ -99,9 +98,6 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
   }
 
   private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
-
-  private def variationsDeclarationPage: Call = controllers.register.routes.VariationDeclarationController.onPageLoad()
-
 
   def detailsCorrect(answers: UserAnswers): Call = {
     answers.get(IndividualDetailsCorrectId) match {

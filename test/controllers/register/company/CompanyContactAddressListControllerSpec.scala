@@ -18,15 +18,13 @@ package controllers.register.company
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction}
-import forms.PhoneFormProvider
+import controllers.actions.DataRetrievalAction
 import forms.address.AddressListFormProvider
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.{AnyContentAsFormUrlEncoded, Call}
-import play.api.test.CSRFTokenHelper.addCSRFToken
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany

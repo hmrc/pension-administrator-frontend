@@ -22,26 +22,21 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.deregister.ConfirmStopBeingPsaFormProvider
-import models.{Deregistration, IndividualDetails, MinimalPSA}
 import models.register.KnownFacts
 import models.requests.DataRequest
+import models.{MinimalPSA, IndividualDetails, Deregistration}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
-import play.api.libs.json.Json
-import play.api.libs.json.Writes
-import play.api.mvc.AnyContent
-import play.api.mvc.AnyContentAsFormUrlEncoded
-import play.api.mvc.RequestHeader
+import play.api.libs.json.{Writes, Json}
+import play.api.mvc.{RequestHeader, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HttpResponse, HeaderCarrier}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.deregister.confirmStopBeingPsa
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import scala.concurrent.{Future, ExecutionContext}
 
 class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFutures {
 
@@ -50,21 +45,21 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
   "ConfirmStopBeingPsaController" must {
 
     "return to session expired if psaName is not present" in {
-      val result = controller()(hc).onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
     }
 
     "redirect to CannotDeregister page if Psa can't be deregistered and no other PSAs are attached to Open schemes" in {
-      val result = controller(canDeregister = Deregistration(canDeregister = false, isOtherPsaAttached = false))(hc).onPageLoad()(fakeRequest)
+      val result = controller(canDeregister = Deregistration(canDeregister = false, isOtherPsaAttached = false)).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.deregister.routes.MustInviteOthersController.onPageLoad().url)
     }
 
     "redirect to CannotDeregister page if Psa can't be deregistered and other PSAs are attached to Open schemes" in {
-      val result = controller(canDeregister = Deregistration(canDeregister = false, isOtherPsaAttached = true))(hc).onPageLoad()(fakeRequest)
+      val result = controller(canDeregister = Deregistration(canDeregister = false, isOtherPsaAttached = true)).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.deregister.routes.CannotDeregisterController.onPageLoad().url)
@@ -79,7 +74,7 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
         "psaId" -> psa)
       )
 
-      val result = controller(minimalPsaDetailsIndividual)(hc).onPageLoad()(request)
+      val result = controller(minimalPsaDetailsIndividual).onPageLoad()(request)
 
       status(result) mustBe OK
 
@@ -87,21 +82,21 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
     }
 
     "return to you cannot stop being a psa page if psa suspended flag is set in minimal details" in {
-      val result = controller(minimalPsaDetailsNoneSuspended)(hc).onPageLoad()(fakeRequest)
+      val result = controller(minimalPsaDetailsNoneSuspended).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad().url)
     }
 
     "return to update address page if psa RLS flag is set in minimal details" in {
-      val result = controller(minimalPsaDetailsRLS)(hc).onPageLoad()(fakeRequest)
+      val result = controller(minimalPsaDetailsRLS).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad().url)
     }
 
     "return to session expired if psaName is not present for Post" in {
-      val result = controller()(hc).onSubmit()(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
@@ -109,14 +104,14 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
 
     "should display the errors if no selection made" in {
 
-      val result = controller(minimalPsaDetailsIndividual)(hc).onSubmit()(fakeRequest)
+      val result = controller(minimalPsaDetailsIndividual).onSubmit()(fakeRequest)
 
       status(result) mustBe BAD_REQUEST
     }
 
     "redirect to the next page on a successful POST when selected true" in {
 
-      val result = controller(minimalPsaDetailsIndividual)(hc).onSubmit()(postRequest)
+      val result = controller(minimalPsaDetailsIndividual).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad().url)
@@ -124,7 +119,7 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
 
     "redirect to the next page and clear the user cache on a successful POST when selected true" in {
 
-      val result = controller(minimalPsaDetailsIndividual)(hc).onSubmit()(postRequest)
+      val result = controller(minimalPsaDetailsIndividual).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       FakeUserAnswersCacheConnector.verifyAllDataRemoved()
@@ -132,7 +127,7 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
 
     "redirect to the next page on a successful POST when selected false" in {
 
-      val result = controller(minimalPsaDetailsIndividual)(hc).onSubmit()(postRequestCancel)
+      val result = controller(minimalPsaDetailsIndividual).onSubmit()(postRequestCancel)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(overviewPage)
@@ -160,10 +155,15 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
 
   private def fakeTaxEnrolmentsConnector: TaxEnrolmentsConnector = new TaxEnrolmentsConnector {
     override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
-                      (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext, request: DataRequest[AnyContent]): Future[HttpResponse] = ???
+                      (implicit w: Writes[KnownFacts],
+                       hc: HeaderCarrier,
+                       executionContext: ExecutionContext,
+                       request: DataRequest[AnyContent]): Future[HttpResponse] = ???
 
     override def deEnrol(groupId: String, psaId: String, userId: String)
-                        (implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT, ""))
+                        (implicit hc: HeaderCarrier,
+                         ec: ExecutionContext,
+                         rh: RequestHeader): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT, ""))
   }
 
   private def fakeDeregistrationConnector(deregistration: Deregistration): DeregistrationConnector = new DeregistrationConnector {
@@ -184,15 +184,13 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
   private val minimalPsaDetailsRLS = MinimalPSA("test@test.com", isPsaSuspended = false, None, None, rlsFlag = true)
   private val minimalPsaDetailsNoneSuspended = MinimalPSA("test@test.com", isPsaSuspended = true, None, None, rlsFlag = false)
 
-  private def fakeAllowAccess(minimalPsaConnector: MinimalPsaConnector): AllowAccessForNonSuspendedUsersAction = {
-    new AllowAccessForNonSuspendedUsersAction(minimalPsaConnector) {
-      def apply(): AllowAccessForNonSuspendedUsersAction = new AllowAccessForNonSuspendedUsersAction(minimalPsaConnector)
-    }
-  }
+  private def fakeAllowAccess(minimalPsaConnector: MinimalPsaConnector): AllowAccessForNonSuspendedUsersAction =
+    new AllowAccessForNonSuspendedUsersAction(minimalPsaConnector)
 
-  val view = inject[confirmStopBeingPsa]
+  val view: confirmStopBeingPsa = inject[confirmStopBeingPsa]
 
-  private def controller(minimalPsaDetails: MinimalPSA = minimalPsaDetailsNone, canDeregister: Deregistration = Deregistration(true, false))(implicit hc: HeaderCarrier) = {
+  private def controller(minimalPsaDetails: MinimalPSA = minimalPsaDetailsNone,
+                         canDeregister: Deregistration = Deregistration(canDeregister = true, isOtherPsaAttached = false)) = {
     val minimalDetailsConnector = fakeMinimalPsaConnector(minimalPsaDetails)
     new ConfirmStopBeingPsaController(
       frontendAppConfig,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
   def redirectUkAddress(extId: String,
                         address: Address,
                         id: TypedIdentifier[TolerantAddress]
-                       )(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[Result] =
+                       )(implicit hc: HeaderCarrier): Future[Result] =
     for {
       cacheMap <- dataCacheConnector.save(extId, id, address.toTolerantAddress)
     } yield {

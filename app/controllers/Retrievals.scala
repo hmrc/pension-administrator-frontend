@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -99,7 +99,7 @@ trait Retrievals {
       }
   }
 
-  implicit def fromId[A](id: TypedIdentifier[A])(implicit request: DataRequest[AnyContent], reads: Reads[A]): Retrieval[A] =
+  implicit def fromId[A](id: TypedIdentifier[A])(implicit reads: Reads[A]): Retrieval[A] =
     Retrieval {
       implicit request =>
         request.userAnswers.get(id) match {

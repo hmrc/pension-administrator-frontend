@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,12 @@ import config.FrontendAppConfig
 import connectors.MinimalPsaConnector
 import models._
 import models.requests.AuthenticatedRequest
-import play.api.mvc.Call
-import play.api.mvc.{Request, Result, ActionFilter}
 import play.api.mvc.Results._
+import play.api.mvc.{ActionFilter, Call, Request, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class AllowAccessAction(
                          mode: Mode,

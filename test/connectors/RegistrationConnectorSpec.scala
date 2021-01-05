@@ -16,10 +16,10 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
-import models._
 import java.time.LocalDate
 
+import com.github.tomakehurst.wiremock.client.WireMock._
+import models._
 import models.registrationnoid.RegistrationNoIdIndividualRequest
 import org.scalatest._
 import play.api.Application
@@ -28,8 +28,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import utils.{UnrecognisedHttpResponseException, WireMockHelper}
 
 import scala.concurrent.ExecutionContext
@@ -51,6 +49,7 @@ class RegistrationConnectorSpec()
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
+  implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
 
 
   "registerWithIdOrganisation" should "return the address given a valid UTR" in {

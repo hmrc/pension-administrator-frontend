@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,15 +23,14 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.UpdateContactAddressId
-import identifiers.register.adviser.{AdviserAddressListId, AdviserAddressId, AdviserNameId, AdviserAddressPostCodeLookupId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, Address}
 import play.api.data.Form
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.Adviser
-import utils.annotations.NoRLSCheck
+import utils.annotations.{Adviser, NoRLSCheck}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel

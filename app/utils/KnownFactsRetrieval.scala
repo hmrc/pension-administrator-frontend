@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,6 @@ class KnownFactsRetrieval {
   private val ninoKey = "NINO"
   private val ctUtrKey = "CTUTR"
   private val saUtrKey = "SAUTR"
-  private val postalKey = "NonUKPostalCode"
   private val countryKey = "CountryCode"
 
   def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] =

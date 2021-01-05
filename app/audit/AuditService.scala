@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
+import scala.util.{Failure, Success}
 
 @ImplementedBy(classOf[AuditServiceImpl])
 trait AuditService {
@@ -65,13 +66,11 @@ class AuditServiceImpl @Inject()(
       )
     )
 
-    result.onSuccess {
-      case _ =>
+    result onComplete  {
+      case Success(_) =>
         Logger.debug(s"[AuditService][sendEvent] successfully sent ${event.auditType}")
-    }
 
-    result.onFailure {
-      case e =>
+      case Failure(e) =>
         Logger.error(s"[AuditService][sendEvent] failed to send event ${event.auditType}", e)
     }
 

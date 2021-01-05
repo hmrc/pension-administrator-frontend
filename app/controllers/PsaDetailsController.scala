@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,18 @@ package controllers
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import controllers.actions.AllowAccessActionProvider
-import controllers.actions.AuthAction
-import controllers.actions.DataRetrievalAction
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import identifiers.register.DeclarationChangedId
 import models._
 import play.api.i18n.I18nSupport
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.Navigator
-import utils.UserAnswers
-import utils.annotations.NoRLSCheck
+import utils.{Navigator, UserAnswers}
 import utils.annotations.NoSuspendedCheck
 import views.html.psa_details
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      @utils.annotations.Variations navigator: Navigator,

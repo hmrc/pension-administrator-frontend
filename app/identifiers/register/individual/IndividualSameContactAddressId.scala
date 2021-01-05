@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package identifiers.register.individual
 
 import identifiers.TypedIdentifier
-import play.api.i18n.Messages
 import play.api.libs.json.JsResult
 import utils.UserAnswers
 import utils.checkyouranswers.{BooleanCYA, CheckYourAnswers}
@@ -27,7 +26,7 @@ case object IndividualSameContactAddressId extends TypedIdentifier[Boolean] {
   self =>
   override def toString: String = "individualSameContactAddress"
 
-  implicit def cya(implicit messages: Messages): CheckYourAnswers[self.type] =
+  implicit def cya: CheckYourAnswers[self.type] =
     new CheckYourAnswers[self.type] {
       override def row(id: self.type)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] =
         BooleanCYA[self.type](Some("cya.label.individual.same.contact.address"),

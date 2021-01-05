@@ -17,7 +17,6 @@
 package views.register.partnership
 
 import forms.BusinessNameFormProvider
-import models.BusinessDetails
 import play.api.data.Form
 import play.api.mvc.Call
 import play.twirl.api.Html

@@ -24,11 +24,11 @@ import forms.address.AddressListFormProvider
 import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
-import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import play.api.mvc.Call
+import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Individual
@@ -36,7 +36,6 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
-import play.api.test.CSRFTokenHelper.addCSRFToken
 
 class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
 

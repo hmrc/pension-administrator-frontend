@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package identifiers.register
 
 import identifiers._
-import play.api.libs.json.JsPath
 
 case object DirectorsOrPartnersChangedId extends TypedIdentifier[Boolean] {
  override def toString: String = "areDirectorsOrPartnersChanged"

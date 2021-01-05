@@ -23,11 +23,10 @@ import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
 import models._
 import org.scalatest.OptionValues
-import org.scalatest.prop.{TableFor3, TableFor4}
+import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, Navigator, NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -150,10 +149,8 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 object IndividualNavigatorSpec extends OptionValues {
   private def emailPage(mode: Mode): Call = routes.IndividualEmailController.onPageLoad(mode)
   private def phonePage(mode: Mode): Call = routes.IndividualPhoneController.onPageLoad(mode)
-  private lazy val invalidIdForNavigator = AreYouInUKId
 
   private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
-  lazy private val variationsDeclarationPage = controllers.register.routes.VariationDeclarationController.onPageLoad()
   lazy private val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
   lazy private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   lazy private val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
@@ -183,7 +180,7 @@ object IndividualNavigatorSpec extends OptionValues {
 
   private def previousAddressPage(mode: Mode) = routes.IndividualPreviousAddressController.onPageLoad(mode)
 
-  val emptyAnswers = UserAnswers(Json.obj())
+  val emptyAnswers: UserAnswers = UserAnswers(Json.obj())
   private val detailsCorrect = UserAnswers(Json.obj()).set(
     IndividualDetailsCorrectId)(true).asOpt.value
   private val detailsIncorrect = UserAnswers(Json.obj()).set(
