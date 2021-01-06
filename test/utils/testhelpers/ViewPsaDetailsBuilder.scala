@@ -66,6 +66,23 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("phone.label", Seq("0044-09876542312"), false,
       Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(UpdateMode).url))))
 
+  def individualContactOnlySeqAnswers(noPrevAddr: Boolean = false) = Seq(
+    AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None),
+    AnswerRow("common.nino", Seq("AA999999A"), false, None),
+    AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+      Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
+    if(noPrevAddr) {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), false,
+        Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
+    } else {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+        None)
+    },
+    AnswerRow("email.label", Seq("aaa@aa.com"), false,
+      Some(Link(controllers.register.individual.routes.IndividualEmailController.onPageLoad(UpdateMode).url))),
+    AnswerRow("phone.label", Seq("0044-09876542312"), false,
+      Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(UpdateMode).url))))
+
   def companySeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("vat.label", Seq("12345678"), false,
       None),

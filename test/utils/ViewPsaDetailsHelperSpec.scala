@@ -60,6 +60,12 @@ class ViewPsaDetailsHelperSpec extends SpecBase with MustMatchers {
 
     behave like validSection(testName = "individual details", headingKey = None, result = individualResult, expectedAnswerRows = individualSeqAnswers())
 
+    behave like validSection(testName = "individual contact details only",
+      headingKey = None,
+      result = individualContactOnlyResult,
+      expectedAnswerRows = individualContactOnlySeqAnswers()
+    )
+
     behave like validSection(testName = "individual details with add link",
       headingKey = None, result = individualResultWithAddLink, expectedAnswerRows = individualSeqAnswers(noPrevAddr = true))
 
@@ -236,6 +242,7 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   val previousAddress = Address("London1", "London2", Some("London3"), Some("London4"), Some("LN12 4DC"), "GB")
 
   private val individualResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(individualUserAnswers)).individualSections
+  private val individualContactOnlyResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(individualUserAnswers)).individualContactOnlySections
   private val individualResultWithAddLink: Seq[SuperSection] = psaDetailsHelper(UserAnswers(individualUserAnswersWithoutPrevAddr)).individualSections
   private val companyResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswers)).companySections
   private val companyResultIncomplete: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswersIncomplete)).companySections

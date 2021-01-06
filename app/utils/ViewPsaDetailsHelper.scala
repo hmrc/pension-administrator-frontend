@@ -494,6 +494,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
+  val individualContactOnlySections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
   val companySections: Seq[SuperSection] = Seq(companyDetailsSection, directorsSuperSection) ++ pensionAdviserSection.toSeq
   val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection, partnersSuperSection) ++ pensionAdviserSection.toSeq
 
