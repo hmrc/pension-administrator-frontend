@@ -30,3 +30,5 @@ GET        /cannot-make-changes                         controllers.CannotMakeCh
 GET        /use-organisation-account                    controllers.UseOrganisationCredentialsController.onPageLoad
 
 GET        /update-contact-address                      controllers.UpdateContactAddressController.onPageLoad
+
+GET        /check-your-answers                          controllers.UpdateContactAddressCYAController.onPageLoad()

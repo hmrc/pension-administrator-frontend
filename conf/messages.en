@@ -1136,3 +1136,6 @@ mustInviteOthers.p2 = You must:
 mustInviteOthers.p3 = Once you have removed yourself from those schemes, you will be able to stop being a pension scheme administrator.
 mustInviteOthers.li1 = invite other administrators to those schemes
 mustInviteOthers.li2 = remove yourself from those schemes once the other administrators have been associated with them
+
+updateContactAddressCYA.title = Company details
+updateContactAddressCYA.heading = {0}’s details
