@@ -52,6 +52,23 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   )
 
+  private val individualDetailsContactOnlySection = SuperSection(
+    None,
+    Seq(AnswerSection(
+      None,
+      Seq(
+        // TODO: Add PSA ID Here
+        individualDateOfBirth,
+        individualNino,
+        individualAddress,
+        individualPreviousAddress,
+        individualEmailAddress,
+        individualPhoneNumber
+      ).flatten
+    )
+    )
+  )
+
   private def companyDetailsSection: SuperSection = {
     SuperSection(
       None,
@@ -136,6 +153,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
 
   //Individual PSA
+
   private def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(IndividualDateOfBirthId) map { x =>
     AnswerRow("cya.label.dob", Seq(DateHelper.formatDateWithSlash(x)), answerIsMessageKey = false,
       None)
@@ -494,7 +512,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
-  val individualContactOnlySections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
+  val individualContactOnlySections: Seq[SuperSection] = Seq(individualDetailsContactOnlySection)
   val companySections: Seq[SuperSection] = Seq(companyDetailsSection, directorsSuperSection) ++ pensionAdviserSection.toSeq
   val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection, partnersSuperSection) ++ pensionAdviserSection.toSeq
 

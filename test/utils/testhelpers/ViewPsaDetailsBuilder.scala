@@ -67,6 +67,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.individual.routes.IndividualPhoneController.onPageLoad(UpdateMode).url))))
 
   def individualContactOnlySeqAnswers(noPrevAddr: Boolean = false) = Seq(
+    AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None),
     AnswerRow("common.nino", Seq("AA999999A"), false, None),
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
