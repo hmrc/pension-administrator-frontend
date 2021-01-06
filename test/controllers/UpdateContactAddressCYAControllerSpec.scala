@@ -92,7 +92,7 @@ class UpdateContactAddressCYAControllerSpec extends ControllerSpecBase {
 
   "Update contact address CYA Controller" must {
     "return 200 and  correct view for a GET for PSA company" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
+      when(fakePsaDataService.retrievePsaDataAndGenerateContactDetailsOnlyViewModel(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
           isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"))))
 
@@ -103,7 +103,7 @@ class UpdateContactAddressCYAControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to session expired if psa id not present" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
+      when(fakePsaDataService.retrievePsaDataAndGenerateContactDetailsOnlyViewModel(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
           isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"))))
 
