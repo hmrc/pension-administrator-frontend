@@ -31,4 +31,4 @@ GET        /use-organisation-account                    controllers.UseOrganisat
 
 GET        /update-contact-address                      controllers.UpdateContactAddressController.onPageLoad
 
-GET        /check-your-answers                          controllers.UpdateContactAddressCYAController.onPageLoad()
+GET        /update-contact-address/check-your-answers   controllers.UpdateContactAddressCYAController.onPageLoad()

@@ -16,12 +16,11 @@
 
 package views
 
-import models.UpdateMode
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
-import viewmodels.{AnswerSection, PsaViewDetailsViewModel, SuperSection, AnswerRow}
+import viewmodels.{PsaViewDetailsViewModel, SuperSection}
 import views.PsaDetailsViewSpec._
 import views.behaviours.{ViewBehaviours, CheckYourAnswersBehaviours}
 import views.html.updateContactAddressCYA
@@ -32,36 +31,36 @@ class UpdateContactAddressCYAViewSpec extends CheckYourAnswersBehaviours with Vi
 
   private def emptyAnswerSections: Seq[SuperSection] = Nil
 
-  private def secondaryHeader: String = "test-secondaryHeader"
+  private val psaName: String = "test-psa-name"
 
-  val fakeCall = Call("method", "url")
+  private val fakeCall = Call("method", "url")
 
-  val view: updateContactAddressCYA = app.injector.instanceOf[updateContactAddressCYA]
+  private val view: updateContactAddressCYA = app.injector.instanceOf[updateContactAddressCYA]
 
-  def createView(isUserAnswerUpdated: Boolean = false,
+  private def createView(isUserAnswerUpdated: Boolean = false,
                  userAnswersInCompleteAlert: Option[String] = Some("incomplete.alert.message")): () => HtmlFormat.Appendable = () =>
     view(
-      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated, userAnswersInCompleteAlert),
-      controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
+      PsaViewDetailsViewModel(emptyAnswerSections, psaName, isUserAnswerUpdated, userAnswersInCompleteAlert),
+      fakeCall
     )(fakeRequest, messages)
 
-  def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
+  private def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     view(
-      PsaViewDetailsViewModel(sections, secondaryHeader, isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message")),
-      controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
+      PsaViewDetailsViewModel(sections, psaName, isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message")),
+      fakeCall
     )(fakeRequest, messages)
 
   "UpdateContactAddressCYAView page" must {
     "display the correct heading" in {
       val doc = asDocument(createView()())
-      assertPageTitleEqualsMessage(doc, messages(s"$messageKeyPrefix.heading", "a"))
+      assertPageTitleEqualsMessage(doc, messages(s"$messageKeyPrefix.heading", psaName))
     }
 
     "display the declaration button when user answer is updated" in {
       val doc = Jsoup.parse(createView(isUserAnswerUpdated = true).apply().toString())
       doc must haveLinkWithUrlAndContent(
         "declaration-link",
-        controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url,
+        fakeCall.url,
         messages("psaDetails.declaration.link.text")
       )
     }
@@ -82,22 +81,4 @@ class UpdateContactAddressCYAViewSpec extends CheckYourAnswersBehaviours with Vi
       assertNotRenderedById(doc, "supersection-2-heading")
     }
   }
-
-}
-
-object UpdateContactAddressCYAViewSpec {
-  val answer1 = "test-answer-1"
-  val answer2 = "test-answer-2"
-  val superSectionHeading = "Main Heading"
-  val subSectionHeading = "Pension scheme administrator details"
-  val headingKey = "Director Name"
-
-  val answerRow = AnswerRow("test-label", Seq(answer1, answer2), answerIsMessageKey = false, None)
-
-  val answerSection = AnswerSection(Some(headingKey), rows = Seq(answerRow))
-
-  val superSection = SuperSection(Some(superSectionHeading), Seq(answerSection))
-  val superSection2 = SuperSection(Some(superSectionHeading), Seq(answerSection))
-
-  val seqSuperSection: Seq[SuperSection] = Seq(superSection, superSection2)
 }

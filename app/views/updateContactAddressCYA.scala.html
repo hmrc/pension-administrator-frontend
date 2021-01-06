@@ -39,7 +39,7 @@
         }
 
         @components.heading(
-            headingKey=messages("updateContactAddressCYA.heading", "a")
+            headingKey=messages("updateContactAddressCYA.heading", psaDetails.header)
         )
 
         @for((section, i) <- psaDetails.superSections.zipWithIndex){
