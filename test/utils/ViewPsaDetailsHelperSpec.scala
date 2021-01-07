@@ -83,6 +83,12 @@ class ViewPsaDetailsHelperSpec extends SpecBase with MustMatchers {
     behave like validSection(testName = "partnership details", headingKey = None,
       result = partnershipResult, expectedAnswerRows = partnershipSeqAnswers())
 
+    behave like validSection(testName = "partnership contact details only",
+      headingKey = None,
+      result = partnershipContactOnlyResult,
+      expectedAnswerRows = partnershipContactOnlySeqAnswers()
+    )
+
     behave like validSection(testName = "partnership details with add link", headingKey = None,
       result = partnershipResultWithAddLinks, expectedAnswerRows = partnershipSeqAnswers(noPrevAddr = true))
 
@@ -259,6 +265,8 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
   private val companyResultWithTenDirectors: Seq[SuperSection] = psaDetailsHelper(companyUserAnswersWithTenDirectors).companySections
   private val companyResultWithAddLinks: Seq[SuperSection] = psaDetailsHelper(UserAnswers(companyUserAnswersWithAddLinks)).companySections
   private val partnershipResult: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswers)).partnershipSections
+  private val partnershipContactOnlyResult: Seq[SuperSection] =
+    psaDetailsHelper(UserAnswers(partnershipUserAnswers)).partnershipContactOnlySections("A2100005")
   private val partnershipResultIncomplete: Seq[SuperSection] = psaDetailsHelper(UserAnswers(partnershipUserAnswersIncomplete)).partnershipSections
   private val partnershipResultWithTwoPartners: Seq[SuperSection] = psaDetailsHelper(partnershipUserAnswersWithTwoPartners).partnershipSections
   private val partnershipResultWithThreePartners: Seq[SuperSection] = psaDetailsHelper(partnershipUserAnswersWithThreePartners).partnershipSections

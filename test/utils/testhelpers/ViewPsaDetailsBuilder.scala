@@ -164,6 +164,25 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("partnership.phone.label", Seq("0044-09876542312"), false,
       Some(Link(controllers.register.partnership.routes.PartnershipPhoneController.onPageLoad(UpdateMode).url))))
 
+  def partnershipContactOnlySeqAnswers(noPrevAddr: Boolean = false) = Seq(
+    AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
+    AnswerRow("utr.label", Seq("121414151"), false,
+      None),
+    AnswerRow("partnership.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+      Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
+    if(noPrevAddr) {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
+        Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
+    } else {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+        None)
+    },
+    AnswerRow("partnership.email.label", Seq("aaa@aa.com"), false,
+      Some(Link(controllers.register.partnership.routes.PartnershipEmailController.onPageLoad(UpdateMode).url))),
+    AnswerRow("partnership.phone.label", Seq("0044-09876542312"), false,
+      Some(Link(controllers.register.partnership.routes.PartnershipPhoneController.onPageLoad(UpdateMode).url))))
+
+
   val partnersSeqAnswers = Seq(
     AnswerRow("cya.label.dob", Seq("1950-03-29"), false,
       None),

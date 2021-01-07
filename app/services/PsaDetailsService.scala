@@ -171,7 +171,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
         userAnswers.get(BusinessNameId).getOrElse(""))
 
       case Some(Partnership) => (
-        viewPsaDetailsHelper.partnershipSections,
+        viewPsaDetailsHelper.partnershipContactOnlySections(psaId),
         userAnswers.get(BusinessNameId).getOrElse(""))
 
       case unknownStatus =>

@@ -130,6 +130,25 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   }
 
+  private def partnershipDetailsContactOnlySection(psaId:String): SuperSection = {
+    SuperSection(
+      None,
+      Seq(
+        AnswerSection(
+          None,
+          Seq(
+            psaIdAnswerRow(psaId),
+            partnershipUtr,
+            partnershipAddress,
+            partnershipPreviousAddress,
+            partnershipEmailAddress,
+            partnershipPhoneNumber
+          ).flatten
+        )
+      )
+    )
+  }
+
   private def toOptionSeq[A](seq: Seq[A]): Option[Seq[A]] =
     if (seq.nonEmpty) {
       Some(seq)
@@ -542,6 +561,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   val companySections: Seq[SuperSection] = Seq(companyDetailsSection, directorsSuperSection) ++ pensionAdviserSection.toSeq
   def companyContactOnlySections(psaId:String): Seq[SuperSection] = Seq(companyDetailsContactOnlySection(psaId))
   val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection, partnersSuperSection) ++ pensionAdviserSection.toSeq
+  def partnershipContactOnlySections(psaId:String): Seq[SuperSection] = Seq(partnershipDetailsContactOnlySection(psaId))
 
   def addressYearsAnswer(userAnswers: UserAnswers, id: TypedIdentifier[AddressYears]): String = {
     userAnswers.get(id) match {
