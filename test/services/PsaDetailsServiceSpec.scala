@@ -171,16 +171,9 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       }
   }
 
-
-
-
-
-
   "retrievePsaDataAndGenerateContactDetailsOnlyViewModel" must {
 
-    "return the correct PSA individual view model with correct can de register flag and existing current address id and page title" in {
-      val expectedAddress = UserAnswers(individualUserAnswers).get(IndividualContactAddressId).get.toTolerantAddress
-
+    "return the correct PSA individual view model and page title" in {
       when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
         .thenReturn(Future.successful(individualUserAnswers))
 
@@ -189,14 +182,9 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         _ mustBe PsaViewDetailsViewModel(individualContactOnlyWithChangeLinks, "Stephen Wood", isUserAnswerUpdated = false,
           userAnswersIncompleteMessage = None, title = titlePsaDataContactOnlyIndividual)
       }
-      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(ExistingCurrentAddressId).value mustBe expectedAddress
-      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
     }
 
-    "return the correct PSA company view model, also verify the correct existing current address ids and flags, and adviser Add links and page title" in {
-      val companyExpectedAddress = UserAnswers(companyUserAnswers).get(CompanyContactAddressId).get.toTolerantAddress
-      val directorExpectedAddress = UserAnswers(companyUserAnswers).get(DirectorAddressId(0)).get.toTolerantAddress
-
+    "return the correct PSA company view model and page title" in {
       when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
         .thenReturn(Future.successful(companyUserAnswers))
 
@@ -205,16 +193,9 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         _ mustBe PsaViewDetailsViewModel(companyContactOnlyWithChangeLinks, "Test company name", isUserAnswerUpdated = false,
           userAnswersIncompleteMessage = None, title = titlePsaDataContactOnlyCompany)
       }
-
-      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe companyExpectedAddress
-      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(DirectorsExistingCurrentAddressId(0)).value mustBe directorExpectedAddress
-      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
     }
 
-    "return the correct PSA partnership view model, also correct existing current address ids and flags and page title" in {
-      val partnershipExpectedAddress = UserAnswers(partnershipUserAnswers).get(PartnershipContactAddressId).get.toTolerantAddress
-      val partnerExpectedAddress = UserAnswers(partnershipUserAnswers).get(PartnerAddressId(0)).get.toTolerantAddress
-
+    "return the correct PSA partnership view model and page title" in {
       when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
         .thenReturn(Future.successful(partnershipUserAnswers))
       when(mockDataCompletion.psaUpdateDetailsInCompleteAlert(any())).thenReturn(Some("incomplete.alert.message"))
@@ -225,9 +206,6 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
           isUserAnswerUpdated = false, userAnswersIncompleteMessage = None,
           title = titlePsaDataContactOnlyPartnership)
       }
-      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe partnershipExpectedAddress
-      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(PartnersExistingCurrentAddressId(0)).value mustBe partnerExpectedAddress
-      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
     }
 
     "call psa subscription details to fetch data if no data is available in user answers" in {

@@ -16,74 +16,24 @@
 
 package controllers
 
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProvider}
+import controllers.actions.{FakeAllowAccessProvider, AuthAction, DataRetrievalAction}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{PSAUser, UpdateMode, UserType}
+import models.{UserType, PSAUser, UpdateMode}
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
-import play.api.mvc.{AnyContent, BodyParser, Request, Result}
-import play.api.test.Helpers.{contentAsString, status, _}
+import play.api.mvc.{Request, Result, AnyContent, BodyParser}
+import play.api.test.Helpers.{status, contentAsString, _}
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import utils.testhelpers.ViewPsaDetailsBuilder._
-import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
+import viewmodels.{PsaViewDetailsViewModel, SuperSection}
 import views.html.psa_details
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class PsaDetailsControllerSpec extends ControllerSpecBase {
-
-  val organisationSuperSections: Seq[SuperSection] = Seq(
-    SuperSection(
-      None,
-      Seq(
-        AnswerSection(
-          None,
-          Seq(
-            AnswerRow("vat.label", Seq("12345678"), answerIsMessageKey = false, None),
-            AnswerRow("paye.label", Seq("9876543210"), answerIsMessageKey = false, None),
-            AnswerRow("crn.label", Seq("1234567890"), answerIsMessageKey = false, None),
-            AnswerRow("utr.label", Seq("121414151"), answerIsMessageKey = false, None),
-            AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), answerIsMessageKey = false, None),
-            AnswerRow("Has Test company name been at their address for more than 12 months?", Seq("No"), answerIsMessageKey = false, None),
-            AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), answerIsMessageKey = false, None),
-            AnswerRow("company.email.label", Seq("aaa@aa.com"), answerIsMessageKey = false, None),
-            AnswerRow("company.phone.label", Seq("0044-09876542312"), answerIsMessageKey = false, None))))),
-    SuperSection(
-      Some("director.supersection.header"),
-      Seq(
-        AnswerSection(
-          Some("abcdef dfgdsfff dfgfdgfdg"),
-          Seq(
-            AnswerRow("cya.label.dob", Seq("1950-03-29"), answerIsMessageKey = false, None),
-            AnswerRow("common.nino", Seq("AA999999A"), answerIsMessageKey = false, None),
-            AnswerRow("utr.label", Seq("1234567892"), answerIsMessageKey = false, None),
-            AnswerRow("cya.label.address", Seq("addressline1,", "addressline2,", "addressline3,", "addressline4,", "B5 9EX,", "Country of GB"), answerIsMessageKey = false, None),
-            AnswerRow("common.previousAddress.checkyouranswers", Seq("line1,", "line2,", "line3,", "line4,", "567253,", "Country of AD"), answerIsMessageKey = false, None),
-            AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), answerIsMessageKey = false, None),
-            AnswerRow("phone.label", Seq("0044-09876542312"), answerIsMessageKey = false, None))),
-        AnswerSection(
-          Some("sdfdff sdfdsfsdf dfdsfsf"),
-          Seq(
-            AnswerRow("cya.label.dob", Seq("1950-07-29"), answerIsMessageKey = false, None),
-            AnswerRow("common.nino", Seq("AA999999A"), answerIsMessageKey = false, None),
-            AnswerRow("utr.label", Seq("7897700000"), answerIsMessageKey = false, None),
-            AnswerRow("cya.label.address", Seq("fgfdgdfgfd,", "dfgfdgdfg,", "fdrtetegfdgdg,", "dfgfdgdfg,", "56546,", "Country of AD"), answerIsMessageKey = false, None),
-            AnswerRow("common.previousAddress.checkyouranswers", Seq("werrertqe,", "ereretfdg,", "asafafg,", "fgdgdasdf,", "23424,", "Country of AD"), answerIsMessageKey = false, None),
-            AnswerRow("email.label", Seq("aaa@gmail.com"), answerIsMessageKey = false, None),
-            AnswerRow("phone.label", Seq("0044-09876542334"), answerIsMessageKey = false, None))))),
-    SuperSection(
-      Some("pensionAdvisor.section.header"),
-      Seq(
-        AnswerSection(
-          None,
-          Seq(
-            AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), answerIsMessageKey = false, None),
-            AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), answerIsMessageKey = false, None),
-            AnswerRow("cya.label.address", Seq("addline1,", "addline2,",
-              "addline3,", "addline4 ,", "56765,", "Country of AD"), answerIsMessageKey = false, None))))))
 
   private val externalId = "test-external-id"
 
