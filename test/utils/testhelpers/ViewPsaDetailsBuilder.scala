@@ -281,6 +281,15 @@ object ViewPsaDetailsBuilder extends SpecBase {
     pensionAdviserSuperSection
   )
 
+  val individualContactOnlyWithChangeLinks: Seq[SuperSection] = Seq(
+    SuperSection(
+      None,
+      Seq(
+        AnswerSection(
+          None,
+          individualContactOnlySeqAnswers())))
+  )
+
   val companyWithChangeLinks =
     Seq(
       SuperSection(
@@ -292,6 +301,15 @@ object ViewPsaDetailsBuilder extends SpecBase {
       directorsSuperSection,
       pensionAdviserSuperSectionWithAddLinks)
 
+  val companyContactOnlyWithChangeLinks =
+    Seq(
+      SuperSection(
+        None,
+        Seq(
+          AnswerSection(
+            None,
+            companyContactOnlySeqAnswers()))))
+
   val partnershipWithChangeLinks =
     Seq(
       SuperSection(
@@ -302,4 +320,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
             partnershipSeqAnswers()))),
       partnersSuperSection,
       pensionAdviserSuperSection)
+
+  val partnershipContactOnlyWithChangeLinks =
+    Seq(
+      SuperSection(
+        None,
+        Seq(
+          AnswerSection(
+            None,
+            partnershipContactOnlySeqAnswers()))))
 }
