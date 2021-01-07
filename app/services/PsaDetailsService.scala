@@ -167,7 +167,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
           userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""))
 
       case Some(LimitedCompany) => (
-        viewPsaDetailsHelper.companySections,
+        viewPsaDetailsHelper.companyContactOnlySections(psaId),
         userAnswers.get(BusinessNameId).getOrElse(""))
 
       case Some(Partnership) => (

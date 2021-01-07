@@ -90,6 +90,25 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   }
 
+  private def companyDetailsContactOnlySection(psaId:String): SuperSection = {
+    SuperSection(
+      None,
+      Seq(
+        AnswerSection(
+          None,
+          Seq(
+            psaIdAnswerRow(psaId),
+            companyUtr,
+            companyAddress,
+            companyPreviousAddress,
+            companyEmailAddress,
+            companyPhoneNumber
+          ).flatten
+        )
+      )
+    )
+  }
+
   private def partnershipDetailsSection: SuperSection = {
     SuperSection(
       None,
@@ -151,12 +170,10 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
+  private def psaIdAnswerRow(psaId:String): Option[AnswerRow] =
+    Some(AnswerRow("cya.label.adminId", Seq(psaId), answerIsMessageKey = false, None))
 
   //Individual PSA
-
-  private def psaIdAnswerRow(psaId:String): Option[AnswerRow] = userAnswers.get(IndividualDateOfBirthId) map { x =>
-    AnswerRow("cya.label.adminId", Seq(psaId), answerIsMessageKey = false, None)
-  }
 
   private def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(IndividualDateOfBirthId) map { x =>
     AnswerRow("cya.label.dob", Seq(DateHelper.formatDateWithSlash(x)), answerIsMessageKey = false,
@@ -523,6 +540,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
   def individualContactOnlySections(psaId:String): Seq[SuperSection] = Seq(individualDetailsContactOnlySection(psaId))
   val companySections: Seq[SuperSection] = Seq(companyDetailsSection, directorsSuperSection) ++ pensionAdviserSection.toSeq
+  def companyContactOnlySections(psaId:String): Seq[SuperSection] = Seq(companyDetailsContactOnlySection(psaId))
   val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection, partnersSuperSection) ++ pensionAdviserSection.toSeq
 
   def addressYearsAnswer(userAnswers: UserAnswers, id: TypedIdentifier[AddressYears]): String = {

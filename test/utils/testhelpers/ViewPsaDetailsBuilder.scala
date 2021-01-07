@@ -107,6 +107,24 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("company.phone.label", Seq("0044-09876542312"), false,
       Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(UpdateMode).url))))
 
+  def companyContactOnlySeqAnswers(noPrevAddr: Boolean = false) = Seq(
+    AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
+    AnswerRow("utr.label", Seq("1234567890"), false,
+      None),
+    AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+      Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
+    if(noPrevAddr) {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
+        Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
+    } else {
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+        None)
+    },
+    AnswerRow("company.email.label", Seq("aaa@aa.com"), false,
+      Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(UpdateMode).url))),
+    AnswerRow("company.phone.label", Seq("0044-09876542312"), false,
+      Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(UpdateMode).url))))
+
   val directorsSeqAnswers = Seq(
     AnswerRow("cya.label.dob", Seq("1950-03-29"), false,
       None),
