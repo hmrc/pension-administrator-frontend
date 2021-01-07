@@ -52,6 +52,8 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig,
 
     case AnyMoreChangesId => anyMoreChangesRoute(ua)
 
+    case UpdateContactAddressCYAId => controllers.register.routes.StillUseAdviserController.onPageLoad()
+
     case VariationWorkingKnowledgeId => variationWorkingKnowledgeRoute(ua)
 
     case VariationStillDeclarationWorkingKnowledgeId => variationStillWorkingKnowledgeRoute(ua)

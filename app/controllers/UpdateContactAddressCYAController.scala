@@ -19,14 +19,14 @@ package controllers
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.actions.{AuthAction, AllowAccessActionProvider, DataRetrievalAction}
-import identifiers.register.DeclarationChangedId
+import identifiers.register.UpdateContactAddressCYAId
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
-import utils.annotations.NoSuspendedCheck
+import utils.annotations.NoRLSCheck
 import views.html.updateContactAddressCYA
 
 import scala.concurrent.{Future, ExecutionContext}
@@ -34,7 +34,7 @@ import scala.concurrent.{Future, ExecutionContext}
 class UpdateContactAddressCYAController @Inject()(appConfig: FrontendAppConfig,
                                      @utils.annotations.Variations navigator: Navigator,
                                      authenticate: AuthAction,
-                                     @NoSuspendedCheck allowAccess: AllowAccessActionProvider,
+                                     @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                      getData: DataRetrievalAction,
                                      psaDetailsService: PsaDetailsService,
                                      val controllerComponents: MessagesControllerComponents,
@@ -45,7 +45,7 @@ class UpdateContactAddressCYAController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
       request.user.alreadyEnrolledPsaId.map { psaId =>
         psaDetailsService.retrievePsaDataAndGenerateContactDetailsOnlyViewModel(psaId, mode).map { psaDetails =>
-          val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
+          val nextPage = navigator.nextPage(UpdateContactAddressCYAId, mode, request.userAnswers.getOrElse(UserAnswers()))
           Ok(view(psaDetails, nextPage))
         }
       }.getOrElse(

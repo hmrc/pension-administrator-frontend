@@ -99,6 +99,8 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
 
   private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
+  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+
   def detailsCorrect(answers: UserAnswers): Call = {
     answers.get(IndividualDetailsCorrectId) match {
       case Some(true) => IndividualDateOfBirthController.onPageLoad(NormalMode)
@@ -136,7 +138,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call =
     (answers.get(IndividualConfirmPreviousAddressId), answers.get(UpdateContactAddressId)) match {
       case (Some(true),None) => anyMoreChanges
-      case (Some(true), Some(_)) => stillUsePage
+      case (Some(true), Some(_)) => updateContactAddressCYAPage()
       case (Some(false), _) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
       case _ => SessionExpiredController.onPageLoad()
     }

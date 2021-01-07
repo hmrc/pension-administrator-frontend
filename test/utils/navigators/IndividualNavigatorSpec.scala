@@ -18,7 +18,7 @@ package utils.navigators
 
 import base.SpecBase
 import controllers.register.individual.routes
-import identifiers.{Identifier, UpdateContactAddressId}
+import identifiers.{UpdateContactAddressId, Identifier}
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
 import models._
@@ -26,7 +26,7 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.{NavigatorBehaviour, Navigator, UserAnswers}
 
 class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -132,7 +132,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage),
       (IndividualConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (IndividualConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges),
-      (IndividualConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, stillUsePage),
+      (IndividualConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, updateContactAddressCYAPage()),
       (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
       (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode)),
       (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges),
@@ -151,6 +151,7 @@ object IndividualNavigatorSpec extends OptionValues {
   private def phonePage(mode: Mode): Call = routes.IndividualPhoneController.onPageLoad(mode)
 
   private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
+  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   lazy private val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
   lazy private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   lazy private val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
