@@ -75,7 +75,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
       executionContext: ExecutionContext,
       request: OptionalDataRequest[_],
       messages: Messages): Future[PsaViewDetailsViewModel] =
-    retrievePsaDataFromUserAnswers(psaId, mode, getPsaContactDetailsOnlyViewModel)
+    retrievePsaDataFromUserAnswers(psaId, mode, getPsaContactDetailsOnlyViewModel(psaId))
 
   def retrievePsaDataFromUserAnswers(
     psaId: String,
@@ -156,14 +156,14 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
     PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, incompleteMessage)
   }
 
-  private val getPsaContactDetailsOnlyViewModel: (UserAnswers, Messages) => PsaViewDetailsViewModel = (userAnswers, messages) => {
+  private def getPsaContactDetailsOnlyViewModel(psaId:String): (UserAnswers, Messages) => PsaViewDetailsViewModel = (userAnswers, messages) => {
     val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
     val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)(messages)
 
     val (superSections, name): (Seq[SuperSection], String) = legalStatus match {
       case Some(Individual) =>
-        (viewPsaDetailsHelper.individualSections,
+        (viewPsaDetailsHelper.individualContactOnlySections(psaId),
           userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""))
 
       case Some(LimitedCompany) => (

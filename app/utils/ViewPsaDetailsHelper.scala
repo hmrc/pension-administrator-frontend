@@ -52,15 +52,15 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   )
 
-  private val individualDetailsContactOnlySection = SuperSection(
+  private def individualDetailsContactOnlySection(psaId:String) = SuperSection(
     None,
     Seq(AnswerSection(
       None,
       Seq(
-        // TODO: Add PSA ID Here
+        psaIdAnswerRow(psaId),
         individualDateOfBirth,
         individualNino,
-        individualAddress,
+        individualContactAddress,
         individualPreviousAddress,
         individualEmailAddress,
         individualPhoneNumber
@@ -154,6 +154,10 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   //Individual PSA
 
+  private def psaIdAnswerRow(psaId:String): Option[AnswerRow] = userAnswers.get(IndividualDateOfBirthId) map { x =>
+    AnswerRow("cya.label.adminId", Seq(psaId), answerIsMessageKey = false, None)
+  }
+
   private def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(IndividualDateOfBirthId) map { x =>
     AnswerRow("cya.label.dob", Seq(DateHelper.formatDateWithSlash(x)), answerIsMessageKey = false,
       None)
@@ -165,6 +169,11 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def individualAddress: Option[AnswerRow] = userAnswers.get(IndividualContactAddressId) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+      Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
+  }
+
+  private def individualContactAddress: Option[AnswerRow] = userAnswers.get(IndividualContactAddressId) map { address =>
+    AnswerRow("cya.label.contactAddress", addressAnswer(address, countryOptions), answerIsMessageKey = false,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
@@ -512,7 +521,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
-  val individualContactOnlySections: Seq[SuperSection] = Seq(individualDetailsContactOnlySection)
+  def individualContactOnlySections(psaId:String): Seq[SuperSection] = Seq(individualDetailsContactOnlySection(psaId))
   val companySections: Seq[SuperSection] = Seq(companyDetailsSection, directorsSuperSection) ++ pensionAdviserSection.toSeq
   val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection, partnersSuperSection) ++ pensionAdviserSection.toSeq
 

@@ -70,7 +70,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None),
     AnswerRow("common.nino", Seq("AA999999A"), false, None),
-    AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+    AnswerRow("cya.label.contactAddress", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if(noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), false,

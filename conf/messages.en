@@ -168,6 +168,7 @@ unauthorised.assistant.continue = Create a new Government Gateway account
 
 cya.label.name = Name
 cya.label.address = Address
+cya.label.contactAddress = Contact address
 cya.label.dob = Date of birth
 cya.label.adminId = Administrator ID
 cya.label.address.years = Address years
