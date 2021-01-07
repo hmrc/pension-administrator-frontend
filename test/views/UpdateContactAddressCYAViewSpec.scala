@@ -37,16 +37,19 @@ class UpdateContactAddressCYAViewSpec extends CheckYourAnswersBehaviours with Vi
 
   private val view: updateContactAddressCYA = app.injector.instanceOf[updateContactAddressCYA]
 
+  private val title = "test-title"
+
   private def createView(isUserAnswerUpdated: Boolean = false,
                  userAnswersInCompleteAlert: Option[String] = Some("incomplete.alert.message")): () => HtmlFormat.Appendable = () =>
     view(
-      PsaViewDetailsViewModel(emptyAnswerSections, psaName, isUserAnswerUpdated, userAnswersInCompleteAlert),
+      PsaViewDetailsViewModel(emptyAnswerSections, psaName, isUserAnswerUpdated, userAnswersInCompleteAlert, title = title),
       fakeCall
     )(fakeRequest, messages)
 
   private def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     view(
-      PsaViewDetailsViewModel(sections, psaName, isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message")),
+      PsaViewDetailsViewModel(sections, psaName, isUserAnswerUpdated = false,
+        userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title),
       fakeCall
     )(fakeRequest, messages)
 

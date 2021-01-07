@@ -1138,5 +1138,7 @@ mustInviteOthers.p3 = Once you have removed yourself from those schemes, you wil
 mustInviteOthers.li1 = invite other administrators to those schemes
 mustInviteOthers.li2 = remove yourself from those schemes once the other administrators have been associated with them
 
-updateContactAddressCYA.title = Company details
+updateContactAddressCYA.individual.title = Your details
+updateContactAddressCYA.company.title = Company details
+updateContactAddressCYA.partnership.title = Partnership details
 updateContactAddressCYA.heading = {0}’s details

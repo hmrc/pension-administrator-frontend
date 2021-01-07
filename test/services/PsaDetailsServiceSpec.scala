@@ -61,6 +61,8 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
   private val mode = UpdateMode
 
+  private val title = "psaDetails.title"
+
     "retrievePsaDataAndGenerateViewModel" must {
 
       "return the correct PSA individual view model with correct can de register flag and existing current address id" in {
@@ -72,7 +74,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
         whenReady(result) {
           _ mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", isUserAnswerUpdated = false,
-            userAnswersIncompleteMessage = None)
+            userAnswersIncompleteMessage = None, title = title)
         }
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(ExistingCurrentAddressId).value mustBe expectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
@@ -88,7 +90,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
         whenReady(result) {
           _ mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false,
-            userAnswersIncompleteMessage = None)
+            userAnswersIncompleteMessage = None, title = title)
         }
 
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe companyExpectedAddress
@@ -107,7 +109,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
         whenReady(result) {
           _ mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name",
-            isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"))
+            isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)
         }
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe partnershipExpectedAddress
         UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(PartnersExistingCurrentAddressId(0)).value mustBe partnerExpectedAddress

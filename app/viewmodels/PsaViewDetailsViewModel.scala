@@ -20,5 +20,6 @@ case class PsaViewDetailsViewModel(
   superSections: Seq[SuperSection],
   header: String,
   isUserAnswerUpdated: Boolean,
-  userAnswersIncompleteMessage: Option[String] = None
+  userAnswersIncompleteMessage: Option[String] = None,
+  title: String
 )

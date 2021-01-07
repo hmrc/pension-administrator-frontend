@@ -82,7 +82,8 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
           Seq(
             AnswerRow("pensions.advisor.label", Seq("Pension Advisor"), answerIsMessageKey = false, None),
             AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), answerIsMessageKey = false, None),
-            AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4 ,", "56765,", "Country of AD"), answerIsMessageKey = false, None))))))
+            AnswerRow("cya.label.address", Seq("addline1,", "addline2,",
+              "addline3,", "addline4 ,", "56765,", "Country of AD"), answerIsMessageKey = false, None))))))
 
   private val externalId = "test-external-id"
 
@@ -90,11 +91,13 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   val view: psa_details = app.injector.instanceOf[psa_details]
 
+  private val title = "test-title"
+
   "Psa details Controller" must {
     "return 200 and  correct view for a GET for PSA company" in {
       when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
-          isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"))))
+          isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)))
 
       val result = controller(userType = UserType.Organisation, psaId = Some("test Psa id")).onPageLoad(UpdateMode)(fakeRequest)
 
@@ -105,7 +108,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
     "redirect to session expired if psa id not present" in {
       when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
-          isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"))))
+          isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)))
 
       val result = controller(userType = UserType.Organisation, psaId = None).onPageLoad(UpdateMode)(fakeRequest)
 
@@ -137,7 +140,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
   private def viewAsString(superSections: Seq[SuperSection], name: String,
                            isUserAnswerUpdated: Boolean = false,
                            userAnswersIncompleteMessage: Option[String] = Some("incomplete.alert.message")): String = {
-    val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, userAnswersIncompleteMessage)
+    val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, userAnswersIncompleteMessage, title = title)
     view(model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))(fakeRequest, messages).toString
   }
 }

@@ -38,16 +38,19 @@ class PsaDetailsViewSpec extends CheckYourAnswersBehaviours with ViewBehaviours 
 
   val view: psa_details = app.injector.instanceOf[psa_details]
 
+  private val title = "Registered PSA details"
+
   def createView(isUserAnswerUpdated: Boolean = false,
                  userAnswersInCompleteAlert: Option[String] = Some("incomplete.alert.message")): () => HtmlFormat.Appendable = () =>
     view(
-      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated, userAnswersInCompleteAlert),
+      PsaViewDetailsViewModel(emptyAnswerSections, secondaryHeader, isUserAnswerUpdated, userAnswersInCompleteAlert, title = title),
       controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     )(fakeRequest, messages)
 
   def createViewWithData: Seq[SuperSection] => HtmlFormat.Appendable = sections =>
     view(
-      PsaViewDetailsViewModel(sections, secondaryHeader, isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message")),
+      PsaViewDetailsViewModel(sections, secondaryHeader, isUserAnswerUpdated = false,
+        userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title),
       controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     )(fakeRequest, messages)
 

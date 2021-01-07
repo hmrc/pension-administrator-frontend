@@ -29,7 +29,7 @@
 @(psaDetails: viewmodels.PsaViewDetailsViewModel, nextPage:Call)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("psaDetails.title")
+    title = messages(psaDetails.title)
     ) {
 
         @components.back_link()

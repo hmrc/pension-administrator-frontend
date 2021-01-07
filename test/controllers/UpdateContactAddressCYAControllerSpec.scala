@@ -90,11 +90,13 @@ class UpdateContactAddressCYAControllerSpec extends ControllerSpecBase {
 
   val view: updateContactAddressCYA = app.injector.instanceOf[updateContactAddressCYA]
 
+  private val title = "test-title"
+
   "Update contact address CYA Controller" must {
     "return 200 and  correct view for a GET for PSA company" in {
       when(fakePsaDataService.retrievePsaDataAndGenerateContactDetailsOnlyViewModel(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
-          isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"))))
+          isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)))
 
       val result = controller(userType = UserType.Organisation, psaId = Some("test Psa id")).onPageLoad(UpdateMode)(fakeRequest)
 
@@ -105,7 +107,7 @@ class UpdateContactAddressCYAControllerSpec extends ControllerSpecBase {
     "redirect to session expired if psa id not present" in {
       when(fakePsaDataService.retrievePsaDataAndGenerateContactDetailsOnlyViewModel(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
-          isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"))))
+          isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)))
 
       val result = controller(userType = UserType.Organisation, psaId = None).onPageLoad(UpdateMode)(fakeRequest)
 
@@ -137,7 +139,7 @@ class UpdateContactAddressCYAControllerSpec extends ControllerSpecBase {
   private def viewAsString(superSections: Seq[SuperSection], name: String,
                            isUserAnswerUpdated: Boolean = false,
                            userAnswersIncompleteMessage: Option[String] = Some("incomplete.alert.message")): String = {
-    val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, userAnswersIncompleteMessage)
+    val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, userAnswersIncompleteMessage, title = title)
     view(model, FakeNavigator.desiredRoute)(fakeRequest, messages).toString
   }
 }

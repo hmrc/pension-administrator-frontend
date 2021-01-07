@@ -153,7 +153,13 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
         throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")
     }
 
-    PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, incompleteMessage)
+    PsaViewDetailsViewModel(
+      superSections = superSections,
+      header = name,
+      isUserAnswerUpdated = isUserAnswerUpdated,
+      userAnswersIncompleteMessage = incompleteMessage,
+      title = "psaDetails.title"
+    )
   }
 
   private def getPsaContactDetailsOnlyViewModel(psaId:String): (UserAnswers, Messages) => PsaViewDetailsViewModel = (userAnswers, messages) => {
@@ -161,24 +167,38 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
     val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)(messages)
 
-    val (superSections, name): (Seq[SuperSection], String) = legalStatus match {
+    val (superSections, name, title): (Seq[SuperSection], String, String) = legalStatus match {
       case Some(Individual) =>
-        (viewPsaDetailsHelper.individualContactOnlySections(psaId),
-          userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""))
+        (
+          viewPsaDetailsHelper.individualContactOnlySections(psaId),
+          userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""),
+          "updateContactAddressCYA.individual.title"
+        )
 
       case Some(LimitedCompany) => (
         viewPsaDetailsHelper.companyContactOnlySections(psaId),
-        userAnswers.get(BusinessNameId).getOrElse(""))
+        userAnswers.get(BusinessNameId).getOrElse(""),
+        "updateContactAddressCYA.company.title"
+      )
 
       case Some(Partnership) => (
         viewPsaDetailsHelper.partnershipContactOnlySections(psaId),
-        userAnswers.get(BusinessNameId).getOrElse(""))
+        userAnswers.get(BusinessNameId).getOrElse(""),
+        "updateContactAddressCYA.partnership.title"
+      )
 
       case unknownStatus =>
         throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")
     }
 
-    PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, None)
+    PsaViewDetailsViewModel(
+      superSections = superSections,
+      header = name,
+      isUserAnswerUpdated = isUserAnswerUpdated,
+      userAnswersIncompleteMessage = None,
+      title = title
+    )
+
   }
 
   private def setAddressIdsToUserAnswers(userAnswers: UserAnswers,
