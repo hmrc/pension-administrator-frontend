@@ -26,10 +26,10 @@ import identifiers.register.company.CompanyPhoneId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.RegisterCompany
-import viewmodels.{CommonFormWithHintViewModel, Message}
+import utils.annotations.{RegisterCompany, NoRLSCheck}
+import viewmodels.{Message, CommonFormWithHintViewModel}
 import views.html.phone
 
 import scala.concurrent.ExecutionContext
@@ -38,7 +38,7 @@ class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator
                                        val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
-                                       val allowAccess: AllowAccessActionProvider,
+                                       @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: PhoneFormProvider,

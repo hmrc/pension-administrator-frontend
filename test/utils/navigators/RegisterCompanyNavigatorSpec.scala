@@ -18,12 +18,10 @@ package utils.navigators
 
 import base.SpecBase
 import controllers.register.company.routes
-import identifiers.Identifier
-import identifiers.UpdateContactAddressId
+import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register._
 import identifiers.register.company.directors.DirectorNameId
-import identifiers.register.company.CompanyPhoneId
-import identifiers.register.company._
+import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
 import models._
 import models.register.BusinessType
@@ -31,9 +29,7 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.Navigator
-import utils.NavigatorBehaviour
-import utils.UserAnswers
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -157,16 +153,17 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
       (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(UpdateMode)),
       (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges),
-      (CompanyPreviousAddressId, rLSFlag, updateContactAddressCYAPage()),
+      (CompanyPreviousAddressId, updatingContactAddressForRLS, updateContactAddressCYAPage),
 
       (CompanyConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (CompanyConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges),
-      (CompanyConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, updateContactAddressCYAPage()),
+      (CompanyConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, updateContactAddressCYAPage),
       (CompanyConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
 
       (CompanyEmailId, emptyAnswers, anyMoreChanges),
-      (CompanyPhoneId, uk, anyMoreChanges),
-      (CompanyPhoneId, nonUk, anyMoreChanges)
+      (CompanyEmailId, updatingContactAddressForRLS, updateContactAddressCYAPage),
+      (CompanyPhoneId, emptyAnswers, anyMoreChanges),
+      (CompanyPhoneId, updatingContactAddressForRLS, updateContactAddressCYAPage)
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
   }
@@ -181,10 +178,10 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private def anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private def confirmPreviousAddressPage = routes.CompanyConfirmPreviousAddressController.onPageLoad()
-  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+  private lazy val updateContactAddressCYAPage:Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
 
-  private val rLSFlag = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value
+  private val updatingContactAddressForRLS = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value
 
   private def companyNamePage = routes.CompanyNameController.onPageLoad()
   private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad()
@@ -246,8 +243,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
 
   private def companyUpdate = routes.CompanyUpdateDetailsController.onPageLoad()
-
-  private val stillUsePage = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
   private val addressYearsOverAYear = UserAnswers(Json.obj())
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value

@@ -127,20 +127,18 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(UpdateMode)),
       (PartnershipAddressYearsId, emptyAnswers, sessionExpiredPage),
 
-      (PartnershipEmailId, uk, anyMoreChangesPage),
-      (PartnershipEmailId, nonUk, anyMoreChangesPage),
       (PartnershipEmailId, emptyAnswers, anyMoreChangesPage),
+      (PartnershipEmailId, updatingContactAddressForRLS, updateContactAddressCYAPage),
 
-      (PartnershipPhoneId, uk, anyMoreChangesPage),
-      (PartnershipPhoneId, nonUk, anyMoreChangesPage),
       (PartnershipPhoneId, emptyAnswers, anyMoreChangesPage),
+      (PartnershipPhoneId, updatingContactAddressForRLS, updateContactAddressCYAPage),
 
       (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(UpdateMode)),
-      (PartnershipPreviousAddressId, rLSFlag, updateContactAddressCYAPage()),
+      (PartnershipPreviousAddressId, updatingContactAddressForRLS, updateContactAddressCYAPage),
 
       (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage),
-      (PartnershipConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, updateContactAddressCYAPage()),
+      (PartnershipConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, updateContactAddressCYAPage),
       (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousPostCodePage(UpdateMode))
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
@@ -150,14 +148,13 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 object PartnershipNavigatorSpec extends OptionValues {
 
-  private lazy val rLSFlag = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value
+  private lazy val updatingContactAddressForRLS = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value
 
   private def samePreviousAddressUpdateContactAddress = UserAnswers(Json.obj())
     .set(PartnershipConfirmPreviousAddressId)(true).asOpt.value
     .set(UpdateContactAddressId)(true).asOpt.value
 
-  private val stillUsePage = controllers.register.routes.StillUseAdviserController.onPageLoad()
-  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+  private lazy val updateContactAddressCYAPage:Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
 
   private lazy val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
