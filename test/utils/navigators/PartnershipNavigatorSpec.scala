@@ -21,13 +21,13 @@ import controllers.register.partnership.routes
 import identifiers._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerNameId
-import identifiers.register.{BusinessNameId, BusinessUTRId, EnterVATId, HasVATId, IsRegisteredNameId, _}
+import identifiers.register.{BusinessNameId, HasVATId, BusinessUTRId, IsRegisteredNameId, EnterVATId, _}
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.{NavigatorBehaviour, Navigator, UserAnswers}
 
 class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -140,7 +140,7 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
       (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage),
-      (PartnershipConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, stillUsePage),
+      (PartnershipConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, updateContactAddressCYAPage()),
       (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressNo, contactPreviousPostCodePage(UpdateMode))
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
@@ -157,7 +157,7 @@ object PartnershipNavigatorSpec extends OptionValues {
     .set(UpdateContactAddressId)(true).asOpt.value
 
   private val stillUsePage = controllers.register.routes.StillUseAdviserController.onPageLoad()
-
+  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
 
   private lazy val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()

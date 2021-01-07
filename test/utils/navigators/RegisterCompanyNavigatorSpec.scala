@@ -41,7 +41,6 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   val navigator: Navigator = injector.instanceOf[RegisterCompanyNavigator]
 
-
   "RegisterCompanyNavigator in NormalMode" must {
     // scalastyle:off method.length
     def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
@@ -162,7 +161,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
       (CompanyConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (CompanyConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges),
-      (CompanyConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, stillUsePage),
+      (CompanyConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, updateContactAddressCYAPage()),
       (CompanyConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
 
       (CompanyEmailId, emptyAnswers, anyMoreChanges),
@@ -182,7 +181,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   private def anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private def confirmPreviousAddressPage = routes.CompanyConfirmPreviousAddressController.onPageLoad()
-
+  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
 
   private val rLSFlag = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value

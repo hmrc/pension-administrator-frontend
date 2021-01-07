@@ -158,7 +158,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
   }
 
   private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
-
+  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private def checkYourAnswers: Call =
     controllers.register.company.routes.CheckYourAnswersController.onPageLoad()
 
@@ -246,6 +246,14 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
   }
 
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call = {
+
+    def rlsNavigation(answers: UserAnswers): Call = {
+      answers.get(UpdateContactAddressId) match {
+        case Some(_) => updateContactAddressCYAPage()
+        case _ => anyMoreChanges
+      }
+    }
+
     answers.get(CompanyConfirmPreviousAddressId) match {
       case Some(false) => routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
       case Some(true) => rlsNavigation(answers)
