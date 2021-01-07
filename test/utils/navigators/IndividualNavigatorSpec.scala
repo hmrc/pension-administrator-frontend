@@ -136,7 +136,7 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
       (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode)),
       (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges),
-      (IndividualPreviousAddressId, rLSFlag, stillUsePage),
+      (IndividualPreviousAddressId, rLSFlag, updateContactAddressCYAPage()),
       (IndividualEmailId, emptyAnswers, anyMoreChanges),
       (IndividualPhoneId, uk, anyMoreChanges),
       (IndividualPhoneId, nonUk, anyMoreChanges)
@@ -150,7 +150,6 @@ object IndividualNavigatorSpec extends OptionValues {
   private def emailPage(mode: Mode): Call = routes.IndividualEmailController.onPageLoad(mode)
   private def phonePage(mode: Mode): Call = routes.IndividualPhoneController.onPageLoad(mode)
 
-  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
   private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   lazy private val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
   lazy private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()

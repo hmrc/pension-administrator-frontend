@@ -92,7 +92,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
 
   private def rlsNavigation(answers: UserAnswers): Call = {
     answers.get(UpdateContactAddressId) match {
-      case Some(_) => stillUsePage
+      case Some(_) => updateContactAddressCYAPage()
       case _ => anyMoreChanges
     }
   }

@@ -157,7 +157,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
       (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(UpdateMode)),
       (CompanyPreviousAddressId, emptyAnswers, anyMoreChanges),
-      (CompanyPreviousAddressId, rLSFlag, stillUsePage),
+      (CompanyPreviousAddressId, rLSFlag, updateContactAddressCYAPage()),
 
       (CompanyConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (CompanyConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges),

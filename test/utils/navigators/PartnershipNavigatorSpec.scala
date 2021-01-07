@@ -136,7 +136,7 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (PartnershipPhoneId, emptyAnswers, anyMoreChangesPage),
 
       (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(UpdateMode)),
-      (PartnershipPreviousAddressId, rLSFlag, stillUsePage),
+      (PartnershipPreviousAddressId, rLSFlag, updateContactAddressCYAPage()),
 
       (PartnershipConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (PartnershipConfirmPreviousAddressId, varianceConfirmPreviousAddressYes, anyMoreChangesPage),

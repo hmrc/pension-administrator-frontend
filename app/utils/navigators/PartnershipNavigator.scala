@@ -158,12 +158,11 @@ class PartnershipNavigator @Inject()(
 
   private def rlsNavigation(answers: UserAnswers): Call = {
     answers.get(UpdateContactAddressId) match {
-      case Some(_) => stillUsePage
+      case Some(_) => updateContactAddressCYAPage()
       case _ => AnyMoreChangesController.onPageLoad()
     }
   }
 
-  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
   private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private def hasPaye(ua: UserAnswers): Boolean = ua.get(HasPAYEId).getOrElse(false)
 
@@ -227,13 +226,6 @@ class PartnershipNavigator @Inject()(
   }
 
   private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode: Mode): Call = {
-    def rlsNavigation(answers: UserAnswers): Call = {
-      answers.get(UpdateContactAddressId) match {
-        case Some(_) => updateContactAddressCYAPage()
-        case _ => AnyMoreChangesController.onPageLoad()
-      }
-    }
-
     answers.get(PartnershipConfirmPreviousAddressId) match {
       case Some(false) => PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode)
       case Some(true) => rlsNavigation(answers)
