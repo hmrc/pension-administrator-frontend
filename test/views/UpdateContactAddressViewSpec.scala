@@ -37,7 +37,7 @@ class UpdateContactAddressViewSpec extends ViewBehaviours {
     "display continue button" in {
       createView must haveLink(
         "/url",
-        "continue"
+        "submit"
       )
     }
   }
