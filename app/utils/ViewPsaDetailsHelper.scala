@@ -209,7 +209,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   private def individualContactAddress: Option[AnswerRow] = userAnswers.get(IndividualContactAddressId) map { address =>
-    AnswerRow("cya.label.contactAddress", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+    AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
