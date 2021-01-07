@@ -46,6 +46,7 @@ class UpdateContactAddressCYAController @Inject()(appConfig: FrontendAppConfig,
       request.user.alreadyEnrolledPsaId.map { psaId =>
         psaDetailsService.retrievePsaDataAndGenerateContactDetailsOnlyViewModel(psaId, mode).map { psaDetails =>
           val nextPage = navigator.nextPage(UpdateContactAddressCYAId, mode, request.userAnswers.getOrElse(UserAnswers()))
+
           Ok(view(psaDetails, nextPage))
         }
       }.getOrElse(

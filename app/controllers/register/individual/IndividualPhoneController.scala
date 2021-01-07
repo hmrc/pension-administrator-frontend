@@ -21,13 +21,14 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.individual.IndividualPhoneId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.{Individual, NoRLSCheck}
+import utils.annotations.{NoRLSCheck, Individual}
 import viewmodels.{Message, CommonFormWithHintViewModel}
 import views.html.phone
 
@@ -64,6 +65,7 @@ class IndividualPhoneController @Inject()(@Individual val navigator: Navigator,
       title = Message("individual.phone.title"),
       heading = Message("individual.phone.title"),
       mode = mode,
-      entityName = Message("common.you")
+      entityName = Message("common.you"),
+      displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
     )
 }

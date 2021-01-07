@@ -21,6 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipEmailId
 import javax.inject.Inject
@@ -28,7 +29,7 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.{Partnership, NoRLSCheck}
+import utils.annotations.{NoRLSCheck, Partnership}
 import viewmodels.{Message, CommonFormWithHintViewModel}
 import views.html.email
 
@@ -68,6 +69,7 @@ class PartnershipEmailController @Inject()(@Partnership val navigator: Navigator
       title = Message("email.title", Message("thePartnership")),
       heading = Message("email.title", entityName),
       mode = mode,
-      entityName = entityName
+      entityName = entityName,
+      displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
     )
 }
