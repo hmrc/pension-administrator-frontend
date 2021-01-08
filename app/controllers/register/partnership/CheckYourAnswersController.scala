@@ -16,12 +16,10 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register._
 import identifiers.register.partnership.{CheckYourAnswersId, _}
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.I18nSupport
@@ -35,11 +33,11 @@ import utils.{Navigator, UserAnswers}
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 
 class CheckYourAnswersController @Inject()(
-                                            appConfig: FrontendAppConfig,
                                             authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,

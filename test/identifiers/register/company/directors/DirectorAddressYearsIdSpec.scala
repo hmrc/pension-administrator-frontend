@@ -112,31 +112,55 @@ class DirectorAddressYearsIdSpec extends SpecBase {
     "in normal mode" must {
 
       "return answers rows with change links when have value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorAddressYears(0, AddressYears.OverAYear).
-            directorName(0, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorAddressYears(0, AddressYears.OverAYear)
+            .directorName(0, PersonName("first", "last"))
+        )
 
-        DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("addressYears.heading"),
-            answer = Seq("common.addressYears.over_a_year"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl)), Some(Message("addressYears.visuallyHidden.text", "first last")))))
+        DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("addressYears.heading", "first last"),
+            answer = Seq("common.addressYears.over_a_year"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl)),
+            visuallyHiddenText = Some(Message("addressYears.visuallyHidden.text", "first last"))
+          ))
+        )
       }
 
       "return answers rows with add links when there is address but no address years" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
-          UserAnswers().directorAddress(0, address).
-            directorName(0, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorAddress(0, address)
+            .directorName(0, PersonName("first", "last"))
+        )
 
-        DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("addressYears.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("addressYears.visuallyHidden.text", "first last")))))
+        DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("addressYears.heading", "first last"),
+            answer = Seq("site.not_entered"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")),
+            visuallyHiddenText = Some(Message("addressYears.visuallyHidden.text", "first last"))
+          ))
+        )
       }
 
       "return no answers rows when there is no address and address years" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
-            directorName(0, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorName(0, PersonName("first", "last"))
+        )
 
         DirectorAddressYearsId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }

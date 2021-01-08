@@ -47,31 +47,55 @@ class DirectorEnterUTRIdSpec extends SpecBase {
     "in normal mode" must {
 
       "return answers rows with change links when have value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorEnterUTR(0, ReferenceValue("test-utr")).
-            directorName(0, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorEnterUTR(0, ReferenceValue("test-utr"))
+            .directorName(0, PersonName("first", "last"))
+        )
 
-        DirectorEnterUTRId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("enterUTR.heading"),
+        DirectorEnterUTRId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("enterUTR.heading", "first last"),
             answer = Seq("test-utr"), answerIsMessageKey = false,
-            changeUrl = Some(Link(onwardUrl)), Some(Message("enterUTR.visuallyHidden.text", "first last")))))
+            changeUrl = Some(Link(onwardUrl)),
+            visuallyHiddenText = Some(Message("enterUTR.visuallyHidden.text", "first last"))
+          ))
+        )
       }
 
       "return answers rows with add links when has utr is true but no utr" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
-          UserAnswers().directorHasUTR(0, flag = true).
-            directorName(0, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorHasUTR(0, flag = true)
+            .directorName(0, PersonName("first", "last"))
+        )
 
-        DirectorEnterUTRId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("enterUTR.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("enterUTR.visuallyHidden.text", "first last")))))
+        DirectorEnterUTRId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("enterUTR.heading", "first last"),
+            answer = Seq("site.not_entered"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")),
+            visuallyHiddenText = Some(Message("enterUTR.visuallyHidden.text", "first last"))
+          ))
+        )
       }
 
       "return no answers rows when has utr is false" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorHasUTR(0, flag = false)
-            directorName(0, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorHasUTR(0, flag = false)
+            .directorName(0, PersonName("first", "last"))
+        )
 
         DirectorEnterUTRId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }

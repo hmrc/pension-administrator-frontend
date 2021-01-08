@@ -47,31 +47,55 @@ class DirectorEnterNINOIdSpec extends SpecBase {
     "in normal mode" must {
 
       "return answers rows with change links when have value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorEnterNINO(0, ReferenceValue("test-nino")).
-            directorName(0, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorEnterNINO(0, ReferenceValue("test-nino"))
+            .directorName(0, PersonName("first", "last"))
+        )
 
-        DirectorEnterNINOId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("enterNINO.heading"),
-            answer = Seq("test-nino"), answerIsMessageKey = false,
-            changeUrl = Some(Link(onwardUrl)), Some(Message("enterNINO.visuallyHidden.text", "first last")))))
+        DirectorEnterNINOId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("enterNINO.heading", "first last"),
+            answer = Seq("test-nino"),
+            answerIsMessageKey = false,
+            changeUrl = Some(Link(onwardUrl)),
+            visuallyHiddenText = Some(Message("enterNINO.visuallyHidden.text", "first last"))
+          ))
+        )
       }
 
       "return answers rows with add links when has nino is true but no nino" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
-          UserAnswers().directorHasNINO(0, flag = true).
-            directorName(0, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers().directorHasNINO(0, flag = true)
+            .directorName(0, PersonName("first", "last"))
+        )
 
-        DirectorEnterNINOId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("enterNINO.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("enterNINO.visuallyHidden.text", "first last")))))
+        DirectorEnterNINOId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("enterNINO.heading", "first last"),
+            answer = Seq("site.not_entered"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")),
+            visuallyHiddenText = Some(Message("enterNINO.visuallyHidden.text", "first last"))
+          ))
+        )
       }
 
       "return no answers rows when has nino is false" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorHasNINO(0, flag = false)
-            directorName(0, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorHasNINO(0, flag = false)
+            .directorName(0, PersonName("first", "last"))
+        )
 
         DirectorEnterNINOId(0).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }

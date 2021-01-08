@@ -35,28 +35,30 @@ import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
 
-class PartnershipContactAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
+class PartnershipContactAddressControllerSpec
+  extends ControllerSpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with OptionValues {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+  private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  val view: manualAddress = app.injector.instanceOf[manualAddress]
+  private val view: manualAddress = app.injector.instanceOf[manualAddress]
 
-  val messagePrefix = "enter.address"
-  val partnershipName = "Test Partnership Name"
+  private val messagePrefix = "enter.address"
+  private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
+  private val form: Form[Address] = formProvider("error.country.invalid")
 
-  val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
-  val form: Form[Address] = formProvider("error.country.invalid")
-
-  val viewmodel = ManualAddressViewModel(
+  private val viewModel = ManualAddressViewModel(
     postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
-    title = Message(s"$messagePrefix.heading"),
-    heading = Message(s"$messagePrefix.heading").withArgs(partnershipName)
+    title = Message(s"$messagePrefix.heading").withArgs("the partnership"),
+    heading = Message(s"$messagePrefix.heading").withArgs("Test Partnership Name")
   )
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipContactAddressController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
@@ -71,7 +73,8 @@ class PartnershipContactAddressControllerSpec extends ControllerSpecBase with Mo
       view
     )
 
-  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[_] = form): String =
+    view(form, viewModel, NormalMode)(fakeRequest, messages).toString
 
   "PartnershipContactAddress Controller" must {
 
