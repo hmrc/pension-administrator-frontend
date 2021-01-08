@@ -26,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
+import utils.annotations.NoSuspendedCheck
 import views.html.psa_details
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,14 +34,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      @utils.annotations.Variations navigator: Navigator,
                                      authenticate: AuthAction,
-                                     allowAccess: AllowAccessActionProvider,
+                                     @NoSuspendedCheck allowAccess: AllowAccessActionProvider,
                                      getData: DataRetrievalAction,
                                      psaDetailsService: PsaDetailsService,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: psa_details
                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen getData).async {
+  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>
       request.user.alreadyEnrolledPsaId.map { psaId =>
         psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId, mode).map { psaDetails =>

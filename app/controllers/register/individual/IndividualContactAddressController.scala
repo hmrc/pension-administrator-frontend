@@ -21,15 +21,20 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.individual.IndividualContactAddressId
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Address, Mode}
+import models.Address
+import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import utils.Navigator
 import utils.annotations.Individual
+import utils.annotations.NoRLSCheck
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -41,7 +46,7 @@ class IndividualContactAddressController @Inject()(val appConfig: FrontendAppCon
                                                    val cacheConnector: UserAnswersCacheConnector,
                                                    @Individual val navigator: Navigator,
                                                    authenticate: AuthAction,
-                                                   override val allowAccess: AllowAccessActionProvider,
+                                                   @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
                                                    formProvider: AddressFormProvider,
@@ -54,21 +59,21 @@ class IndividualContactAddressController @Inject()(val appConfig: FrontendAppCon
 
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
+  private def viewmodel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
     countryOptions.options,
     title = Message("individual.enter.address.heading"),
     heading = Message("individual.enter.address.heading"),
-    psaName = psaName()
+    psaName = if(displayReturnLink) psaName() else None
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewmodel(mode), mode)
+      get(viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualContactAddressId, viewmodel(mode), mode)
+      post(IndividualContactAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 }

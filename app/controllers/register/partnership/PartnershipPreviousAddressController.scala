@@ -26,11 +26,12 @@ import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipPreviousAddressId
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Address, Mode}
+import models.{Mode, Address}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
+import utils.annotations.NoRLSCheck
 import utils.annotations.Partnership
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -42,7 +43,7 @@ import scala.concurrent.ExecutionContext
 class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                      val cacheConnector: UserAnswersCacheConnector,
                                                      @Partnership val navigator: Navigator,
-                                                     override val allowAccess: AllowAccessActionProvider,
+                                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,

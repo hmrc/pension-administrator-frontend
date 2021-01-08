@@ -22,26 +22,28 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressPostCodeLookupId}
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
+import utils.annotations.NoRLSCheck
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class IndividualContactAddressListController @Inject()(@Individual override val navigator: Navigator,
                                                        override val appConfig: FrontendAppConfig,
                                                        override val cacheConnector: UserAnswersCacheConnector,
                                                        authenticate: AuthAction,
-                                                       override val allowAccess: AllowAccessActionProvider,
+                                                       @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
                                                        formProvider: AddressListFormProvider,
@@ -55,18 +57,19 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map{vm =>
+      viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty).right.map{vm =>
         get(vm, mode, form(vm.addresses))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressPostCodeLookupId, mode, form(vm.addresses)))
+      viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty)
+        .right.map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressPostCodeLookupId, mode, form(vm.addresses)))
   }
 
 
-  private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+  private def viewmodel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
     IndividualContactAddressPostCodeLookupId.retrieve.right.map {
       addresses =>
         AddressListViewModel(
@@ -77,7 +80,7 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
           Message("individual.select.address.heading"),
           Message("select.address.hint.text"),
           Message("manual.entry.link"),
-          psaName = psaName(),
+          psaName = if(displayReturnLink) psaName() else None,
           selectAddressPostLink = Some(Message("individual.selectAddressPostLink.text"))
         )
     }.left.map(_ => Future.successful(Redirect(routes.IndividualContactAddressPostCodeLookupController.onPageLoad(mode))))

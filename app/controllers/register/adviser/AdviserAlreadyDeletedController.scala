@@ -22,16 +22,17 @@ import controllers.actions._
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Enumerable
+import utils.annotations.NoRLSCheck
 import views.html.alreadyDeletedAdviser
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class AdviserAlreadyDeletedController @Inject()(
                                           appConfig: FrontendAppConfig,
-                                          val allowAccess: AllowAccessActionProvider,
+                                          @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,

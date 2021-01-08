@@ -1123,6 +1123,13 @@ unableToStopBeingPsa.heading = You cannot stop being a pension scheme administra
 unableToStopBeingPsa.p1 = You must remove yourself from all of the schemes you are a scheme administrator of.
 unableToStopBeingPsa.continue.link = Continue to your pension schemes
 
+updateContactAddress.title = You must update your contact address
+updateContactAddress.heading = You must update your contact address
+updateContactAddress.p1 = A letter we sent to your current contact address:
+updateContactAddress.p2 = was returned to HMRC as “undelivered” by Royal Mail.
+updateContactAddress.p3 = We need your correct address in order to send you important notifications, certificates and penalty notices.
+updateContactAddress.p4 = You must update your contact address before you can view or manage your pension schemes online.
+
 mustInviteOthers.title = You must invite other pension scheme administrators to your schemes first
 mustInviteOthers.p1 = You cannot stop being a pension scheme administrator as you are the only administrator associated with one or more pension schemes.
 mustInviteOthers.p2 = You must:

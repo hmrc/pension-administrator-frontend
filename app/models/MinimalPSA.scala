@@ -35,7 +35,8 @@ case class MinimalPSA(
                        email: String,
                        isPsaSuspended: Boolean,
                        organisationName: Option[String],
-                       individualDetails: Option[IndividualDetails]
+                       individualDetails: Option[IndividualDetails],
+                       rlsFlag: Boolean
                      )
 
 object MinimalPSA {

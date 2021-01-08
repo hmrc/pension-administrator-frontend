@@ -19,19 +19,19 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipAddressYearsId
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{AddressYears, Mode}
+import models.{Mode, AddressYears}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.Partnership
+import utils.annotations.{NoRLSCheck, Partnership}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -41,7 +41,7 @@ import scala.concurrent.ExecutionContext
 class PartnershipAddressYearsController @Inject()(val appConfig: FrontendAppConfig,
                                                   val cacheConnector: UserAnswersCacheConnector,
                                                   @Partnership val navigator: Navigator,
-                                                  override val allowAccess: AllowAccessActionProvider,
+                                                  @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                   authenticate: AuthAction,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,

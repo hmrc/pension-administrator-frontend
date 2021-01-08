@@ -101,7 +101,8 @@ class SameContactAddressControllerSpec extends WordSpec with MustMatchers with O
     hint = Some("hint"),
     address = testAddress(line2),
     psaName = "Test name",
-    mode = NormalMode
+    mode = NormalMode,
+    displayReturnLink = true
   )
 
   "get" must {

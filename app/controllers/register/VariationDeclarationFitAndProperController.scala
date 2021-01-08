@@ -21,14 +21,15 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.VariationDeclarationFitAndProperFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register._
 import javax.inject.Inject
 import models._
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.Variations
+import utils.annotations.{NoRLSCheck, Variations}
 import utils.{Navigator, UserAnswers}
 import views.html.register.variationDeclarationFitAndProper
 
@@ -36,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class VariationDeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,
                                                            authenticate: AuthAction,
-                                                           allowAccess: AllowAccessActionProvider,
+                                                           @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                            getData: DataRetrievalAction,
                                                            requireData: DataRequiredAction,
                                                            @Variations navigator: Navigator,
@@ -51,17 +52,25 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       val preparedForm = request.userAnswers.get(DeclarationFitAndProperId) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Future.successful(Ok(view(preparedForm, psaName())))
+      Future.successful(Ok(view(
+        preparedForm,
+        if(displayReturnLink) psaName() else None
+      )))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       form.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(view(errors, psaName()))),
+        errors => Future.successful(BadRequest(view(
+          errors,
+          if(displayReturnLink) psaName() else None
+        ))),
         success => {
           dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).map { json =>
             Redirect(navigator.nextPage(DeclarationFitAndProperId, mode, UserAnswers(json)))

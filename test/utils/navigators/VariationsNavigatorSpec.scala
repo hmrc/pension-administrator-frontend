@@ -17,16 +17,19 @@
 package utils.navigators
 
 import base.SpecBase
-import identifiers.Identifier
+import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register._
 import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
+import identifiers.register.company.CompanyContactAddressId
+import identifiers.register.individual.{IndividualContactAddressId, IndividualDetailsId}
+import identifiers.register.partnership.PartnershipContactAddressId
 import models._
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.{NavigatorBehaviour, Navigator, UserAnswers}
 
 class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -63,6 +66,10 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (DeclarationChangedId, declarationNotChangedWithAdviser, variationStillWorkingKnowledgePage),
       (DeclarationChangedId, completeIndividualDetails, variationWorkingKnowledgePage(CheckUpdateMode)),
 
+      (UpdateContactAddressId, individualWithUpdateContactAddress, individualContactAddressPostCodeLookupPage),
+      (UpdateContactAddressId, companyWithUpdateContactAddress, companyContactAddressPostCodeLookupPage),
+      (UpdateContactAddressId, partnershipWithUpdateContactAddress, partnershipContactAddressPostCodeLookupPage),
+
       (DeclarationId, emptyAnswers, variationSuccessPage)
     )
 
@@ -85,6 +92,35 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 object VariationsNavigatorSpec extends OptionValues {
 
   import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
+
+  private val address = Address("value 1", "value 2", None, None, Some("AB1 1AB"), "GB")
+
+  private val individualContactAddressPostCodeLookupPage =
+    controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode)
+
+  private val companyContactAddressPostCodeLookupPage =
+    controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode)
+
+  private val partnershipContactAddressPostCodeLookupPage =
+    controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode)
+
+  private val individualWithUpdateContactAddress = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
+    RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+    .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
+    .setOrException(IndividualContactAddressId)(address)
+    .setOrException(UpdateContactAddressId)(true)
+
+  private val companyWithUpdateContactAddress = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
+    RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
+    .setOrException(BusinessNameId)("Big company")
+    .setOrException(CompanyContactAddressId)(address)
+    .setOrException(UpdateContactAddressId)(true)
+
+  private val partnershipWithUpdateContactAddress = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
+    RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
+    .setOrException(BusinessNameId)("Big company")
+    .setOrException(PartnershipContactAddressId)(address)
+    .setOrException(UpdateContactAddressId)(true)
 
   private val declarationChangedWithIncompleteIndividual = UserAnswers(Json.obj()).registrationInfo(
     RegistrationInfo(

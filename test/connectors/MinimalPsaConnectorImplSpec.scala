@@ -18,13 +18,13 @@ package connectors
 
 import base.JsonFileReader
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.{IndividualDetails, MinimalPSA}
-import org.scalatest.{AsyncFlatSpec, Matchers, OptionValues}
+import models.{MinimalPSA, IndividualDetails}
+import org.scalatest.{OptionValues, Matchers, AsyncFlatSpec}
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsResultException, Json}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import utils.WireMockHelper
 
 class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
@@ -41,59 +41,6 @@ class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireM
       .build()
 
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
-
-  "isPsaSuspended" should "return suspended flag the PSA subscription for a valid request" in {
-
-    server.stubFor(
-      get(urlEqualTo(minimalPsaDetailsUrl))
-        .willReturn(
-          ok(validResponse)
-            .withHeader("Content-Type", "application/json")
-        )
-    )
-
-    val connector = injector.instanceOf[MinimalPsaConnectorImpl]
-
-    connector.isPsaSuspended(psaId).map(isSuspended =>
-      isSuspended shouldBe true
-    )
-
-  }
-
-  it should "throw JsResultException if the response status is not 200 OK" in {
-
-    server.stubFor(
-      get(urlEqualTo(minimalPsaDetailsUrl))
-        .willReturn(
-          ok(invalidPayloadResponse)
-            .withHeader("Content-Type", "application/json")
-        )
-    )
-
-    val connector = injector.instanceOf[MinimalPsaConnectorImpl]
-
-    recoverToSucceededIf[JsResultException] {
-      connector.isPsaSuspended(psaId)
-    }
-
-  }
-
-  it should "throw NotFoundException" in {
-
-    server.stubFor(
-      get(urlEqualTo(minimalPsaDetailsUrl))
-        .willReturn(
-          notFound()
-        )
-    )
-
-    val connector = injector.instanceOf[MinimalPsaConnectorImpl]
-
-    recoverToSucceededIf[NotFoundException] {
-      connector.isPsaSuspended(psaId)
-    }
-
-  }
 
   "getMinimalPsaDetails" should "return the MinimalPsa for a valid request/response" in {
 
@@ -160,19 +107,7 @@ object MinimalPsaConnectorImplSpec extends OptionValues with JsonFileReader {
 
   private val psaId = "test-psa-id"
 
-  private val validResponse =
-    Json.stringify(
-      Json.obj(
-        "isPsaSuspended" -> true
-      )
-    )
 
-  private val invalidPayloadResponse =
-    Json.stringify(
-      Json.obj(
-        "isPsaSuspended" -> "reason"
-      )
-    )
     def errorResponse(code: String): String = {
       Json.stringify(
         Json.obj(
@@ -183,6 +118,6 @@ object MinimalPsaConnectorImplSpec extends OptionValues with JsonFileReader {
     }
   private val validMinimalPsaDetailsResponse = readJsonFromFile("/data/validMinimalPsaDetails.json").toString()
   private val email = "test@test.com"
-  private val expectedResponse = MinimalPSA(email,false,None,Some(IndividualDetails("First",Some("Middle"),"Last")))
+  private val expectedResponse = MinimalPSA(email,isPsaSuspended = false,None,Some(IndividualDetails("First",Some("Middle"),"Last")), rlsFlag = false)
 
 }

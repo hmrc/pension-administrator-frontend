@@ -21,14 +21,16 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.{AdviserEmailId, AdviserNameId}
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Adviser
-import viewmodels.{CommonFormWithHintViewModel, Message}
+import utils.annotations.NoRLSCheck
+import viewmodels.{Message, CommonFormWithHintViewModel}
 import views.html.email
 
 import scala.concurrent.ExecutionContext
@@ -37,7 +39,7 @@ class AdviserEmailController @Inject()(@Adviser val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
-                                       val allowAccess: AllowAccessActionProvider,
+                                       @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: EmailFormProvider,
@@ -50,23 +52,24 @@ class AdviserEmailController @Inject()(@Adviser val navigator: Navigator,
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(AdviserEmailId, form, viewModel(mode))
+        get(AdviserEmailId, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdviserEmailId, mode, form, viewModel(mode))
+      post(AdviserEmailId, mode, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty))
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(AdviserNameId).getOrElse(Message("theAdviser"))
 
-  private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
+  private def viewModel(mode: Mode, displayReturnLink:Boolean)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.AdviserEmailController.onSubmit(mode),
       title = Message("email.title", Message("theAdviser")),
       heading = Message("email.title", entityName),
       mode = mode,
-      entityName = entityName
+      entityName = entityName,
+      displayReturnLink = displayReturnLink
     )
 }

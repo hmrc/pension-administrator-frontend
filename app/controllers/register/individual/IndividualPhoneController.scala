@@ -25,10 +25,10 @@ import identifiers.register.individual.IndividualPhoneId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.Individual
-import viewmodels.{CommonFormWithHintViewModel, Message}
+import utils.annotations.{Individual, NoRLSCheck}
+import viewmodels.{Message, CommonFormWithHintViewModel}
 import views.html.phone
 
 import scala.concurrent.ExecutionContext
@@ -37,7 +37,7 @@ class IndividualPhoneController @Inject()(@Individual val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
-                                       val allowAccess: AllowAccessActionProvider,
+                                       @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: PhoneFormProvider,

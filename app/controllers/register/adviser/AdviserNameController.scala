@@ -20,19 +20,20 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRequiredAction, AuthAction, DataRetrievalAction}
 import forms.register.adviser.AdviserNameFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.AdviserNameId
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Adviser
 import utils.{Navigator, UserAnswers}
 import views.html.register.adviser.adviserName
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class AdviserNameController @Inject()(
                                        appConfig: FrontendAppConfig,
@@ -55,15 +56,27 @@ class AdviserNameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Future.successful(Ok(view(preparedForm, mode, psaName())))
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
+
+      Future.successful(Ok(view(
+        preparedForm,
+        mode,
+        if (displayReturnLink) psaName() else None
+      )))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requiredData).async {
     implicit request =>
 
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
+
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, psaName()))),
+          Future.successful(BadRequest(view(
+            formWithErrors,
+            mode,
+            if (displayReturnLink) psaName() else None
+          ))),
         value => {
           dataCacheConnector.save(request.externalId, AdviserNameId, value).map(
             cacheMap =>

@@ -19,7 +19,7 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.register.company.routes
-import identifiers.Identifier
+import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.{AreYouInUKId, BusinessTypeId, _}
 import models.InternationalRegion._
@@ -33,7 +33,8 @@ import utils.{Navigator, UserAnswers}
 class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
                                          appConfig: FrontendAppConfig) extends Navigator {
 
-  //scalastyle:off cyclomatic.complexity
+//  scalastyle:off cyclomatic.complexity
+// scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case BusinessUTRId =>
       routes.CompanyNameController.onPageLoad()
@@ -142,14 +143,21 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
     case CompanyAddressListId =>
       routes.CompanyPreviousAddressController.onPageLoad(UpdateMode)
     case CompanyPreviousAddressId =>
-      anyMoreChanges
+      rlsNavigation(ua)
     case CompanyEmailId =>
       anyMoreChanges
     case CompanyPhoneId =>
       anyMoreChanges
   }
 
-  //scalastyle:on cyclomatic.complexity
+  private def rlsNavigation(answers: UserAnswers): Call = {
+    answers.get(UpdateContactAddressId) match {
+      case Some(_) => stillUsePage
+      case _ => anyMoreChanges
+    }
+  }
+
+  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
   private def checkYourAnswers: Call =
     controllers.register.company.routes.CheckYourAnswersController.onPageLoad()
@@ -240,7 +248,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call = {
     answers.get(CompanyConfirmPreviousAddressId) match {
       case Some(false) => routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
-      case Some(true) => anyMoreChanges
+      case Some(true) => rlsNavigation(answers)
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }

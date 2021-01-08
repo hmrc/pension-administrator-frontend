@@ -26,12 +26,12 @@ import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressYearsId
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{AddressYears, Mode}
+import models.{Mode, AddressYears}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.{NoRLSCheck, RegisterCompany}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -41,7 +41,7 @@ import scala.concurrent.ExecutionContext
 class CompanyAddressYearsController @Inject()(@RegisterCompany override val navigator: Navigator,
                                               override val appConfig: FrontendAppConfig,
                                               override val cacheConnector: UserAnswersCacheConnector,
-                                              override val allowAccess: AllowAccessActionProvider,
+                                              @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                               authenticate: AuthAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,

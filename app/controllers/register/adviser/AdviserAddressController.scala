@@ -22,14 +22,15 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.{AdviserAddressId, AdviserNameId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Address, Mode}
+import models.{Mode, Address}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.Adviser
+import utils.annotations.{Adviser, NoRLSCheck}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -40,7 +41,7 @@ import scala.concurrent.ExecutionContext
 class AdviserAddressController @Inject()(override val appConfig: FrontendAppConfig,
                                          override val cacheConnector: UserAnswersCacheConnector,
                                          @Adviser override val navigator: Navigator,
-                                         override val allowAccess: AllowAccessActionProvider,
+                                         @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                          authenticate: AuthAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
@@ -53,12 +54,12 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
 
   protected val form: Form[Address] = formProvider()
 
-  private def addressViewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
+  private def addressViewModel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.AdviserAddressController.onSubmit(mode),
     countryOptions.options,
     Message("enter.address.heading", Message("theAdviser")),
     Message("enter.address.heading", entityName),
-    psaName = psaName()
+    psaName = if (displayReturnLink) psaName() else None
   )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
@@ -66,12 +67,12 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(addressViewModel(mode), mode)
+      get(addressViewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdviserAddressId, addressViewModel(mode), mode)
+      post(AdviserAddressId, addressViewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
 }

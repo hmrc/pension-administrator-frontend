@@ -52,7 +52,8 @@ class SameContactAddressViewSpec extends YesNoViewBehaviours {
     hint = Some(Message("individual.same.contact.address.hint")),
     address = testAddress,
     psaName = "Test name",
-    mode = mode
+    mode = mode,
+    displayReturnLink = true
   )
 
   val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]

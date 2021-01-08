@@ -20,16 +20,18 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.individual.IndividualContactAddressPostCodeLookupId
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
+import utils.annotations.NoRLSCheck
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -43,7 +45,7 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
                                                                   override val cacheConnector: UserAnswersCacheConnector,
                                                                   override val addressLookupConnector: AddressLookupConnector,
                                                                   authenticate: AuthAction,
-                                                                  override val allowAccess: AllowAccessActionProvider,
+                                                                  @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                                   getData: DataRetrievalAction,
                                                                   requireData: DataRequiredAction,
                                                                   formProvider: PostCodeLookupFormProvider,
@@ -52,7 +54,7 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
                                                                 )(implicit val executionContext: ExecutionContext
                                                                 ) extends PostcodeLookupController {
 
-  def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
+  def viewModel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = PostcodeLookupViewModel(
     routes.IndividualContactAddressPostCodeLookupController.onSubmit(mode),
     routes.IndividualContactAddressController.onPageLoad(mode),
     Message("individual.postcode.lookup.heading"),
@@ -60,7 +62,7 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
     Message("manual.entry.text"),
     Some(Message("manual.entry.link")),
     Message("postcode.lookup.form.label"),
-    psaName = psaName(),
+    psaName = if(displayReturnLink) psaName() else None,
     findAddressMessageKey = "site.save_and_continue"
   )
 
@@ -68,12 +70,12 @@ class IndividualContactAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewModel(mode), mode)
+      get(viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualContactAddressPostCodeLookupId, viewModel(mode), mode)
+      post(IndividualContactAddressPostCodeLookupId, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 }
 

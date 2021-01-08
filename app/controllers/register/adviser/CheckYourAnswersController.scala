@@ -19,13 +19,14 @@ package controllers.register.adviser
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser._
 import javax.inject.Inject
 import models.Mode
 import models.Mode._
 import models.requests.DataRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.Adviser
@@ -35,7 +36,7 @@ import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            @Adviser navigator: Navigator,
@@ -73,7 +74,9 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
     val sections = Seq(AnswerSection(None, adviserName ++ address ++ details))
 
+    val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
+
     Ok(view(sections, routes.CheckYourAnswersController.onSubmit(mode),
-      psaName(), mode, dataCompletion.isAdviserComplete(request.userAnswers, mode)))
+      if (displayReturnLink) psaName() else None, mode, dataCompletion.isAdviserComplete(request.userAnswers, mode)))
   }
 }

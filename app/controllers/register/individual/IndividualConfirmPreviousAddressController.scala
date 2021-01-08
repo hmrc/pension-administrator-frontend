@@ -21,13 +21,15 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
 import controllers.register.individual.routes._
+import identifiers.UpdateContactAddressId
 import identifiers.register.individual._
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
+import utils.annotations.NoRLSCheck
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -39,7 +41,7 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
                                                            val dataCacheConnector: UserAnswersCacheConnector,
                                                            @Individual val navigator: Navigator,
                                                            authenticate: AuthAction,
-                                                           allowAccess: AllowAccessActionProvider,
+                                                           @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                            getData: DataRetrievalAction,
                                                            requireData: DataRequiredAction,
                                                            val countryOptions: CountryOptions,
@@ -64,7 +66,8 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
               hint = None,
               address = address,
               psaName = details.fullName,
-              mode = mode
+              mode = mode,
+              displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
             )
         }
     )

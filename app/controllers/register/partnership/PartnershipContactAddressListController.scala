@@ -19,7 +19,7 @@ package controllers.register.partnership
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
@@ -28,8 +28,9 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
+import utils.annotations.NoRLSCheck
 import utils.annotations.Partnership
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -41,7 +42,7 @@ class PartnershipContactAddressListController @Inject()(
                                                          val cacheConnector: UserAnswersCacheConnector,
                                                          @Partnership val navigator: Navigator,
                                                          val appConfig: FrontendAppConfig,
-                                                         override val allowAccess: AllowAccessActionProvider,
+                                                         @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                          authenticate: AuthAction,
                                                          getData: DataRetrievalAction,
                                                          requireData: DataRequiredAction,

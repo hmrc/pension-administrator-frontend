@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package utils.annotations;
 
-import connectors.MinimalPsaConnector
-import models.MinimalPSA
-import uk.gov.hmrc.http.HeaderCarrier
+import com.google.inject.BindingAnnotation;
 
-import scala.concurrent.{Future, ExecutionContext}
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-case class FakeMinimalPsaConnector(minimalPSA: MinimalPSA) extends MinimalPsaConnector {
-  override def getMinimalPsaDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = Future.successful(minimalPSA)
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface NoRLSCheck {
 }
-

@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
+import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{ExistingCurrentAddressId, PartnershipConfirmPreviousAddressId, PartnershipPreviousAddressId}
 import javax.inject.Inject
@@ -27,7 +28,7 @@ import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.Partnership
+import utils.annotations.{NoRLSCheck, Partnership}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -39,7 +40,7 @@ class PartnershipConfirmPreviousAddressController @Inject()(val appConfig: Front
                                                             val dataCacheConnector: UserAnswersCacheConnector,
                                                             @Partnership val navigator: Navigator,
                                                             authenticate: AuthAction,
-                                                            allowAccess: AllowAccessActionProvider,
+                                                            @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                             getData: DataRetrievalAction,
                                                             requireData: DataRequiredAction,
                                                             val countryOptions: CountryOptions,
@@ -64,7 +65,8 @@ class PartnershipConfirmPreviousAddressController @Inject()(val appConfig: Front
               hint = None,
               address = address,
               psaName = name,
-              mode = mode
+              mode = mode,
+              displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
             )
         }
     )

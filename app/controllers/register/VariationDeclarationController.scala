@@ -22,22 +22,24 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.register.routes.VariationDeclarationController
+import identifiers.UpdateContactAddressId
 import identifiers.register._
 import javax.inject.Inject
 import models._
 import models.register.DeclarationWorkingKnowledge
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.annotations.NoRLSCheck
 import utils.annotations.Variations
 import utils.{Navigator, UserAnswers}
 import views.html.register.variationDeclaration
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
                                                authenticate: AuthAction,
-                                               allowAccess: AllowAccessActionProvider,
+                                               @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                @Variations navigator: Navigator,
@@ -50,8 +52,13 @@ class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
-      Future.successful(Ok(view(psaName(), workingKnowledge, VariationDeclarationController.onClickAgree())))
+      Future.successful(Ok(view(
+        if(displayReturnLink) psaName() else None,
+        workingKnowledge,
+        VariationDeclarationController.onClickAgree()
+      )))
   }
 
   def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

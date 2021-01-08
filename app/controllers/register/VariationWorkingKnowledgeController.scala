@@ -21,24 +21,26 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.VariationWorkingKnowledgeFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.{PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
 import javax.inject.Inject
-import models.{CheckUpdateMode, Mode}
+import models.{Mode, CheckUpdateMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.{Enumerable, Navigator, UserAnswers, annotations}
+import utils.annotations.NoRLSCheck
+import utils.{Navigator, annotations, UserAnswers, Enumerable}
 import views.html.register.variationWorkingKnowledge
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig,
                                                     override val cacheConnector: UserAnswersCacheConnector,
                                                     @annotations.Variations navigator: Navigator,
                                                     authenticate: AuthAction,
-                                                    allowAccess: AllowAccessActionProvider,
+                                                    @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: VariationWorkingKnowledgeFormProvider,
@@ -52,18 +54,28 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       val preparedForm = request.userAnswers.get(VariationWorkingKnowledgeId) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, psaName(), mode))
+      Ok(view(
+        preparedForm,
+        if(displayReturnLink) psaName() else None,
+        mode
+      ))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, psaName(), mode))),
+          Future.successful(BadRequest(view(
+            formWithErrors,
+            if(displayReturnLink) psaName() else None,
+            mode
+          ))),
         value => {
           val resultOfSaveDeclarationFlag = mode match {
             case CheckUpdateMode =>

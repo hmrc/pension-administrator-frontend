@@ -21,6 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import forms.register.StillUseAdviserFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.VariationStillDeclarationWorkingKnowledgeId
 import identifiers.register.adviser.AdviserNameId
 import javax.inject.Inject
@@ -28,18 +29,19 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.{Enumerable, Navigator, UserAnswers, annotations}
+import utils.annotations.NoRLSCheck
+import utils.{Navigator, annotations, UserAnswers, Enumerable}
 import views.html.register.stillUseAdviser
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
                                           override val cacheConnector: UserAnswersCacheConnector,
                                           @annotations.Variations navigator: Navigator,
                                           authenticate: AuthAction,
-                                          allowAccess: AllowAccessActionProvider,
+                                          @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: StillUseAdviserFormProvider,
@@ -56,14 +58,22 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(form, mode, psaName(), adviserName()))
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
+      Ok(view(form,
+        mode,
+        if(displayReturnLink) psaName() else None,
+        adviserName()))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
+      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, psaName(), adviserName()))),
+          Future.successful(BadRequest(view(formWithErrors,
+            mode,
+            if(displayReturnLink) psaName() else None,
+            adviserName()))),
         value => {
           cacheConnector.save(request.externalId, VariationStillDeclarationWorkingKnowledgeId, value).map(cacheMap =>
             Redirect(navigator.nextPage(VariationStillDeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))

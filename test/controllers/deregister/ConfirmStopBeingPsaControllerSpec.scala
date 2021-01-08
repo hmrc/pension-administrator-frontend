@@ -24,19 +24,19 @@ import controllers.actions._
 import forms.deregister.ConfirmStopBeingPsaFormProvider
 import models.register.KnownFacts
 import models.requests.DataRequest
-import models.{Deregistration, IndividualDetails, MinimalPSA}
+import models.{MinimalPSA, IndividualDetails, Deregistration}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
-import play.api.libs.json.{Json, Writes}
-import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded, RequestHeader}
+import play.api.libs.json.{Writes, Json}
+import play.api.mvc.{RequestHeader, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HttpResponse, HeaderCarrier}
 import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.html.deregister.confirmStopBeingPsa
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFutures {
 
@@ -86,6 +86,13 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad().url)
+    }
+
+    "return to update address page if psa RLS flag is set in minimal details" in {
+      val result = controller(minimalPsaDetailsRLS).onPageLoad()(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad().url)
     }
 
     "return to session expired if psaName is not present for Post" in {
@@ -167,19 +174,15 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
   }
 
   private def fakeMinimalPsaConnector(minimalPsaDetailsIndividual: MinimalPSA): MinimalPsaConnector = new MinimalPsaConnector {
-
-    override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = ???
-
     override def getMinimalPsaDetails(psaId: String)(
       implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = Future.successful(minimalPsaDetailsIndividual)
-
-    //override def getPsaNameFromPsaID(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] =
-    //  Future.successful(None)
   }
 
-  private val minimalPsaDetailsIndividual = MinimalPSA("test@test.com", isPsaSuspended = false, None, Some(IndividualDetails("John", Some("Doe"), "Doe")))
-  private val minimalPsaDetailsNone = MinimalPSA("test@test.com", isPsaSuspended = false, None, None)
-  private val minimalPsaDetailsNoneSuspended = MinimalPSA("test@test.com", isPsaSuspended = true, None, None)
+  private val minimalPsaDetailsIndividual = MinimalPSA(
+    "test@test.com", isPsaSuspended = false, None, Some(IndividualDetails("John", Some("Doe"), "Doe")), rlsFlag = false)
+  private val minimalPsaDetailsNone = MinimalPSA("test@test.com", isPsaSuspended = false, None, None, rlsFlag = false)
+  private val minimalPsaDetailsRLS = MinimalPSA("test@test.com", isPsaSuspended = false, None, None, rlsFlag = true)
+  private val minimalPsaDetailsNoneSuspended = MinimalPSA("test@test.com", isPsaSuspended = true, None, None, rlsFlag = false)
 
   private def fakeAllowAccess(minimalPsaConnector: MinimalPsaConnector): AllowAccessForNonSuspendedUsersAction =
     new AllowAccessForNonSuspendedUsersAction(minimalPsaConnector)

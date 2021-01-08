@@ -24,12 +24,13 @@ import forms.address.AddressYearsFormProvider
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{AddressYears, Mode}
+import models.{Mode, AddressYears}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
 import utils.annotations.Individual
+import utils.annotations.NoRLSCheck
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -40,7 +41,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
                                                  override val appConfig: FrontendAppConfig,
                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                  authenticate: AuthAction,
-                                                 override val allowAccess: AllowAccessActionProvider,
+                                                 @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  formProvider: AddressYearsFormProvider,

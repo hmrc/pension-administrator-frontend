@@ -23,15 +23,18 @@ import controllers.actions._
 import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.Action
+import play.api.mvc.AnyContent
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.annotations.NoRLSCheck
 import views.html.register.variationNoLongerFitAndProper
 
 import scala.concurrent.ExecutionContext
 
 class VariationNoLongerFitAndProperController @Inject()(appConfig: FrontendAppConfig,
                                                         authenticate: AuthAction,
-                                                        allowAccess: AllowAccessActionProvider,
+                                                        @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,
                                                         dataCacheConnector: UserAnswersCacheConnector,

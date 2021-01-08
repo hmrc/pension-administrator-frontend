@@ -27,7 +27,8 @@ case class SameContactAddressViewModel(
                                         hint: Option[Message] = None,
                                         address: TolerantAddress,
                                         psaName: String,
-                                        mode: Mode
+                                        mode: Mode,
+                                        displayReturnLink: Boolean
                                       ) {
 
 }

@@ -19,7 +19,6 @@ package utils.navigators
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.register.individual.routes._
-import identifiers.Identifier
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
 import models.InternationalRegion._
@@ -28,6 +27,7 @@ import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import controllers.routes.SessionExpiredController
+import identifiers.{Identifier, UpdateContactAddressId}
 
 @Singleton
 class IndividualNavigator @Inject()(config: FrontendAppConfig,
@@ -80,7 +80,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualAddressYearsId => addressYearsRoutesUpdateMode(ua)
     case IndividualConfirmPreviousAddressId => confirmPreviousAddressRoutes(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(UpdateMode)
-    case IndividualPreviousAddressId => anyMoreChanges
+    case IndividualPreviousAddressId => rlsNavigation(ua)
     case IndividualEmailId => anyMoreChanges
     case IndividualPhoneId => anyMoreChanges
     case _ => controllers.routes.SessionExpiredController.onPageLoad()
@@ -90,6 +90,14 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
 
   private def anyMoreChanges: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
+  private def rlsNavigation(answers: UserAnswers): Call = {
+    answers.get(UpdateContactAddressId) match {
+      case Some(_) => stillUsePage
+      case _ => anyMoreChanges
+    }
+  }
+
+  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
 
   def detailsCorrect(answers: UserAnswers): Call = {
     answers.get(IndividualDetailsCorrectId) match {
@@ -126,9 +134,10 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     }
 
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call =
-    answers.get(IndividualConfirmPreviousAddressId) match {
-      case Some(true) => anyMoreChanges
-      case Some(false) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
+    (answers.get(IndividualConfirmPreviousAddressId), answers.get(UpdateContactAddressId)) match {
+      case (Some(true),None) => anyMoreChanges
+      case (Some(true), Some(_)) => stillUsePage
+      case (Some(false), _) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
       case _ => SessionExpiredController.onPageLoad()
     }
 

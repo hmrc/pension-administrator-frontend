@@ -19,16 +19,16 @@ package controllers.register.company
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company._
-import models.{Address, Mode}
+import models.{Mode, Address}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.{NoRLSCheck, RegisterCompany}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -40,7 +40,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
                                                 override val cacheConnector: UserAnswersCacheConnector,
                                                 @RegisterCompany override val navigator: Navigator,
                                                 authenticate: AuthAction,
-                                                override val allowAccess: AllowAccessActionProvider,
+                                                @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: AddressFormProvider,
@@ -72,8 +72,10 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      addressViewModel(mode).retrieve.right.map(vm =>
-        post(CompanyContactAddressId, vm, mode))
+      addressViewModel(mode).retrieve.right.map(vm => {
+        post(CompanyContactAddressId, vm, mode)
+      }
+        )
   }
 
 }

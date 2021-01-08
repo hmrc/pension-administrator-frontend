@@ -72,6 +72,14 @@ class PODSModule extends AbstractModule {
     bind(classOf[AllowAccessActionProvider])
       .to(classOf[AllowAccessActionProviderImpl])
 
+    bind(classOf[AllowAccessActionProvider])
+      .annotatedWith(classOf[NoRLSCheck])
+      .to(classOf[AllowAccessActionProviderNoRLSCheckImpl])
+
+    bind(classOf[AllowAccessActionProvider])
+      .annotatedWith(classOf[NoSuspendedCheck])
+      .to(classOf[AllowAccessActionProviderNoSuspendedCheckImpl])
+
     bind(classOf[AllowDeclarationActionProvider])
       .to(classOf[AllowDeclarationActionProviderImpl])
 

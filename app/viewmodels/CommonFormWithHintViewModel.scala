@@ -26,5 +26,6 @@ case class CommonFormWithHintViewModel(
                                         hint: Option[Message] = None,
                                         formFieldName: Option[String] = None,
                                         mode: Mode,
-                                        entityName: String
+                                        entityName: String,
+                                        displayReturnLink:Boolean = true
                                       )

@@ -36,8 +36,6 @@ import scala.util.Failure
 @ImplementedBy(classOf[MinimalPsaConnectorImpl])
 trait MinimalPsaConnector {
   def getMinimalPsaDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA]
-
-  def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean]
 }
 
 class MinimalPsaConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends MinimalPsaConnector with HttpResponseHelper {
@@ -59,18 +57,4 @@ class MinimalPsaConnectorImpl @Inject()(http: HttpClient, config: FrontendAppCon
       case Failure(t: Throwable) => Logger.warn("Unable to invite PSA to administer scheme", t)
     }
   }
-  override def isPsaSuspended(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-    val psaHc = hc.withExtraHeaders("psaId" -> psaId)
-
-    http.GET[HttpResponse](config.minimalPsaDetailsUrl)(implicitly, psaHc, implicitly) map { response =>
-      response.status match {
-        case OK =>
-          (response.json \ "isPsaSuspended").as[Boolean]
-        case _ => handleErrorResponse("GET", config.minimalPsaDetailsUrl)(response)
-      }
-    } andThen {
-      case Failure(t: Throwable) => Logger.warn("Unable to get PSA minimal details", t)
-    }
-  }
-
 }

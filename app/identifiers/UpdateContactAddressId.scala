@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package identifiers
 
-import connectors.MinimalPsaConnector
-import models.MinimalPSA
-import uk.gov.hmrc.http.HeaderCarrier
-
-import scala.concurrent.{Future, ExecutionContext}
-
-case class FakeMinimalPsaConnector(minimalPSA: MinimalPSA) extends MinimalPsaConnector {
-  override def getMinimalPsaDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = Future.successful(minimalPSA)
+object UpdateContactAddressId extends TypedIdentifier[Boolean] {
+  override def toString: String = "updateContactAddress"
 }
-
