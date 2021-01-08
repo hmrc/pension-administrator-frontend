@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package viewmodels
+package identifiers.register
 
-case class PsaViewDetailsViewModel(
-  superSections: Seq[SuperSection],
-  header: String,
-  isUserAnswerUpdated: Boolean,
-  userAnswersIncompleteMessage: Option[String] = None,
-  title: String
-)
+import identifiers._
+
+case object UpdateContactAddressCYAId extends Identifier {
+ override def toString: String = "updateContactAddressCYA"
+}

@@ -46,6 +46,13 @@ trait PsaDetailsService {
                                           executionContext: ExecutionContext,
                                           request: OptionalDataRequest[_],
                                           messages: Messages): Future[PsaViewDetailsViewModel]
+
+  def retrievePsaDataAndGenerateContactDetailsOnlyViewModel(psaId: String, mode: Mode)
+    (implicit hc: HeaderCarrier,
+      executionContext: ExecutionContext,
+      request: OptionalDataRequest[_],
+      messages: Messages): Future[PsaViewDetailsViewModel]
+
   def getUserAnswers(psaId: String, externalId: String)(implicit hc: HeaderCarrier,
     executionContext: ExecutionContext): Future[UserAnswers]
 }
@@ -60,20 +67,27 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
                                                   (implicit hc: HeaderCarrier,
                                                    executionContext: ExecutionContext,
                                                    request: OptionalDataRequest[_],
-                                                   messages: Messages): Future[PsaViewDetailsViewModel] = {
+                                                   messages: Messages): Future[PsaViewDetailsViewModel] =
+    retrievePsaDataFromUserAnswers(psaId, mode, getPsaDetailsViewModel)
 
-    retrievePsaDataFromUserAnswers(psaId, mode)
+  override def retrievePsaDataAndGenerateContactDetailsOnlyViewModel(psaId: String, mode: Mode)
+    (implicit hc: HeaderCarrier,
+      executionContext: ExecutionContext,
+      request: OptionalDataRequest[_],
+      messages: Messages): Future[PsaViewDetailsViewModel] =
+    retrievePsaDataFromUserAnswers(psaId, mode, getPsaContactDetailsOnlyViewModel(psaId))
 
-  }
-
-  def retrievePsaDataFromUserAnswers(psaId: String, mode: Mode
-                                    )(implicit hc: HeaderCarrier, executionContext: ExecutionContext,
-                                      request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
+  def retrievePsaDataFromUserAnswers(
+    psaId: String,
+    mode: Mode,
+    getViewModel: (UserAnswers, Messages) => PsaViewDetailsViewModel)(implicit hc: HeaderCarrier,
+    executionContext: ExecutionContext,
+    request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
     for {
       userAnswers <- getUserAnswers(psaId, request.externalId)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
     } yield {
-      getPsaDetailsViewModel(userAnswers)
+      getViewModel(userAnswers, implicitly)
     }
   }
 
@@ -116,11 +130,11 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
     )
   }
 
-  private def getPsaDetailsViewModel(userAnswers: UserAnswers)(implicit messages: Messages): PsaViewDetailsViewModel = {
+  private val getPsaDetailsViewModel: (UserAnswers, Messages) => PsaViewDetailsViewModel = (userAnswers, messages) => {
     val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated
     val incompleteMessage = dataCompletion.psaUpdateDetailsInCompleteAlert(userAnswers)
     val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
-    val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)
+    val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)(messages)
 
     val (superSections, name): (Seq[SuperSection], String) = legalStatus match {
       case Some(Individual) =>
@@ -139,7 +153,52 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
         throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")
     }
 
-    PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, incompleteMessage)
+    PsaViewDetailsViewModel(
+      superSections = superSections,
+      header = name,
+      isUserAnswerUpdated = isUserAnswerUpdated,
+      userAnswersIncompleteMessage = incompleteMessage,
+      title = "psaDetails.title"
+    )
+  }
+
+  private def getPsaContactDetailsOnlyViewModel(psaId:String): (UserAnswers, Messages) => PsaViewDetailsViewModel = (userAnswers, messages) => {
+    val isUserAnswerUpdated = userAnswers.isUserAnswerUpdated
+    val legalStatus = userAnswers.get(RegistrationInfoId) map (_.legalStatus)
+    val viewPsaDetailsHelper = new ViewPsaDetailsHelper(userAnswers, countryOptions)(messages)
+
+    val (superSections, name, title): (Seq[SuperSection], String, String) = legalStatus match {
+      case Some(Individual) =>
+        (
+          viewPsaDetailsHelper.individualContactOnlySections(psaId),
+          userAnswers.get(IndividualDetailsId).map(_.fullName).getOrElse(""),
+          "updateContactAddressCYA.individual.title"
+        )
+
+      case Some(LimitedCompany) => (
+        viewPsaDetailsHelper.companyContactOnlySections(psaId),
+        userAnswers.get(BusinessNameId).getOrElse(""),
+        "updateContactAddressCYA.company.title"
+      )
+
+      case Some(Partnership) => (
+        viewPsaDetailsHelper.partnershipContactOnlySections(psaId),
+        userAnswers.get(BusinessNameId).getOrElse(""),
+        "updateContactAddressCYA.partnership.title"
+      )
+
+      case unknownStatus =>
+        throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")
+    }
+
+    PsaViewDetailsViewModel(
+      superSections = superSections,
+      header = name,
+      isUserAnswerUpdated = isUserAnswerUpdated,
+      userAnswersIncompleteMessage = None,
+      title = title
+    )
+
   }
 
   private def setAddressIdsToUserAnswers(userAnswers: UserAnswers,

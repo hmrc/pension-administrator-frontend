@@ -21,6 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.individual.IndividualEmailId
 import javax.inject.Inject
 import models.Mode
@@ -65,6 +66,7 @@ class IndividualEmailController @Inject()(@Individual val navigator: Navigator,
       title = Message("individual.email.title"),
       heading = Message("individual.email.title"),
       mode = mode,
-      entityName = Message("common.you")
+      entityName = Message("common.you"),
+      displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
     )
 }

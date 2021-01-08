@@ -169,6 +169,7 @@ unauthorised.assistant.continue = Create a new Government Gateway account
 cya.label.name = Name
 cya.label.address = Address
 cya.label.dob = Date of birth
+cya.label.adminId = Administrator ID
 cya.label.address.years = Address years
 cya.label.companyName = Company name
 cya.label.partnershipName = Partnership name
@@ -1136,3 +1137,8 @@ mustInviteOthers.p2 = You must:
 mustInviteOthers.p3 = Once you have removed yourself from those schemes, you will be able to stop being a pension scheme administrator.
 mustInviteOthers.li1 = invite other administrators to those schemes
 mustInviteOthers.li2 = remove yourself from those schemes once the other administrators have been associated with them
+
+updateContactAddressCYA.individual.title = Your details
+updateContactAddressCYA.company.title = Company details
+updateContactAddressCYA.partnership.title = Partnership details
+updateContactAddressCYA.heading = {0}’s details

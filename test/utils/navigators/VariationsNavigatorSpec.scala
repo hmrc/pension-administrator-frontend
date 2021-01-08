@@ -17,9 +17,9 @@
 package utils.navigators
 
 import base.SpecBase
-import identifiers.{Identifier, UpdateContactAddressId}
+import identifiers.{UpdateContactAddressId, Identifier}
 import identifiers.register._
-import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
+import identifiers.register.adviser.{ConfirmDeleteAdviserId, AdviserNameId}
 import identifiers.register.company.CompanyContactAddressId
 import identifiers.register.individual.{IndividualContactAddressId, IndividualDetailsId}
 import identifiers.register.partnership.PartnershipContactAddressId
@@ -52,6 +52,8 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (VariationWorkingKnowledgeId, haveWorkingKnowledge, anyMoreChangesPage),
       (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage),
       (VariationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage),
+
+      (UpdateContactAddressCYAId, emptyAnswers, variationStillWorkingKnowledgePage),
 
       (VariationStillDeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage),
       (VariationStillDeclarationWorkingKnowledgeId, stillHaveWorkingKnowledge, variationDeclarationFitAndProperPage),

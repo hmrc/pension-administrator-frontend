@@ -21,15 +21,16 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
+import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipPhoneId
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
 import utils.Navigator
-import utils.annotations.Partnership
-import viewmodels.{CommonFormWithHintViewModel, Message}
+import utils.annotations.{NoRLSCheck, Partnership}
+import viewmodels.{Message, CommonFormWithHintViewModel}
 import views.html.phone
 
 import scala.concurrent.ExecutionContext
@@ -38,7 +39,7 @@ class PartnershipPhoneController @Inject()(@Partnership val navigator: Navigator
                                            val appConfig: FrontendAppConfig,
                                            val cacheConnector: UserAnswersCacheConnector,
                                            authenticate: AuthAction,
-                                           val allowAccess: AllowAccessActionProvider,
+                                           @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            formProvider: PhoneFormProvider,
@@ -68,6 +69,7 @@ class PartnershipPhoneController @Inject()(@Partnership val navigator: Navigator
       title = Message("phone.title", Message("thePartnership")),
       heading = Message("phone.title", entityName),
       mode = mode,
-      entityName = entityName
+      entityName = entityName,
+      displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
     )
 }

@@ -18,7 +18,7 @@ package utils.navigators
 
 import base.SpecBase
 import controllers.register.individual.routes
-import identifiers.{Identifier, UpdateContactAddressId}
+import identifiers.{UpdateContactAddressId, Identifier}
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
 import models._
@@ -26,7 +26,7 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.{NavigatorBehaviour, Navigator, UserAnswers}
 
 class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -132,14 +132,15 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage),
       (IndividualConfirmPreviousAddressId, emptyAnswers, sessionExpiredPage),
       (IndividualConfirmPreviousAddressId, samePreviousAddress, anyMoreChanges),
-      (IndividualConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, stillUsePage),
+      (IndividualConfirmPreviousAddressId, samePreviousAddressUpdateContactAddress, updateContactAddressCYAPage),
       (IndividualConfirmPreviousAddressId, notSamePreviousAddress, previousPostCodeLookupPage(UpdateMode)),
       (IndividualPreviousAddressPostCodeLookupId, emptyAnswers, previousAddressListPage(UpdateMode)),
       (IndividualPreviousAddressId, emptyAnswers, anyMoreChanges),
-      (IndividualPreviousAddressId, rLSFlag, stillUsePage),
+      (IndividualPreviousAddressId, updatingContactAddressForRLS, updateContactAddressCYAPage),
       (IndividualEmailId, emptyAnswers, anyMoreChanges),
-      (IndividualPhoneId, uk, anyMoreChanges),
-      (IndividualPhoneId, nonUk, anyMoreChanges)
+      (IndividualEmailId, updatingContactAddressForRLS, updateContactAddressCYAPage),
+      (IndividualPhoneId, emptyAnswers, anyMoreChanges),
+      (IndividualPhoneId, updatingContactAddressForRLS, updateContactAddressCYAPage)
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
   }
@@ -150,7 +151,7 @@ object IndividualNavigatorSpec extends OptionValues {
   private def emailPage(mode: Mode): Call = routes.IndividualEmailController.onPageLoad(mode)
   private def phonePage(mode: Mode): Call = routes.IndividualPhoneController.onPageLoad(mode)
 
-  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
+  private lazy val updateContactAddressCYAPage:Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   lazy private val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
   lazy private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
   lazy private val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
@@ -228,7 +229,7 @@ object IndividualNavigatorSpec extends OptionValues {
   private val nonUkNoIndividualDetails = UserAnswers(Json.obj())
     .set(AreYouInUKId)(false).asOpt.value
 
-  private val rLSFlag = UserAnswers(Json.obj())
+  private val updatingContactAddressForRLS = UserAnswers(Json.obj())
     .set(UpdateContactAddressId)(true).asOpt.value
 
   private val nonUkEuAddress = UserAnswers().individualAddress(address("AT"))

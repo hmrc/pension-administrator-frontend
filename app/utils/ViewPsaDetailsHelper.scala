@@ -52,6 +52,23 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   )
 
+  private def individualDetailsContactOnlySection(psaId:String) = SuperSection(
+    None,
+    Seq(AnswerSection(
+      None,
+      Seq(
+        psaIdAnswerRow(psaId),
+        individualDateOfBirth,
+        individualNino,
+        individualContactAddress,
+        individualPreviousAddress,
+        individualEmailAddress,
+        individualPhoneNumber
+      ).flatten
+    )
+    )
+  )
+
   private def companyDetailsSection: SuperSection = {
     SuperSection(
       None,
@@ -73,6 +90,25 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   }
 
+  private def companyDetailsContactOnlySection(psaId:String): SuperSection = {
+    SuperSection(
+      None,
+      Seq(
+        AnswerSection(
+          None,
+          Seq(
+            psaIdAnswerRow(psaId),
+            companyUtr,
+            companyAddress,
+            companyPreviousAddress,
+            companyEmailAddress,
+            companyPhoneNumber
+          ).flatten
+        )
+      )
+    )
+  }
+
   private def partnershipDetailsSection: SuperSection = {
     SuperSection(
       None,
@@ -83,6 +119,25 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
             partnershipVatNumber,
             partnershipPayeNumber,
             crn,
+            partnershipUtr,
+            partnershipAddress,
+            partnershipPreviousAddress,
+            partnershipEmailAddress,
+            partnershipPhoneNumber
+          ).flatten
+        )
+      )
+    )
+  }
+
+  private def partnershipDetailsContactOnlySection(psaId:String): SuperSection = {
+    SuperSection(
+      None,
+      Seq(
+        AnswerSection(
+          None,
+          Seq(
+            psaIdAnswerRow(psaId),
             partnershipUtr,
             partnershipAddress,
             partnershipPreviousAddress,
@@ -134,8 +189,11 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
+  private def psaIdAnswerRow(psaId:String): Option[AnswerRow] =
+    Some(AnswerRow("cya.label.adminId", Seq(psaId), answerIsMessageKey = false, None))
 
   //Individual PSA
+
   private def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(IndividualDateOfBirthId) map { x =>
     AnswerRow("cya.label.dob", Seq(DateHelper.formatDateWithSlash(x)), answerIsMessageKey = false,
       None)
@@ -146,6 +204,11 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   private def individualAddress: Option[AnswerRow] = userAnswers.get(IndividualContactAddressId) map { address =>
+    AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
+      Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
+  }
+
+  private def individualContactAddress: Option[AnswerRow] = userAnswers.get(IndividualContactAddressId) map { address =>
     AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
@@ -494,8 +557,11 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
+  def individualContactOnlySections(psaId:String): Seq[SuperSection] = Seq(individualDetailsContactOnlySection(psaId))
   val companySections: Seq[SuperSection] = Seq(companyDetailsSection, directorsSuperSection) ++ pensionAdviserSection.toSeq
+  def companyContactOnlySections(psaId:String): Seq[SuperSection] = Seq(companyDetailsContactOnlySection(psaId))
   val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection, partnersSuperSection) ++ pensionAdviserSection.toSeq
+  def partnershipContactOnlySections(psaId:String): Seq[SuperSection] = Seq(partnershipDetailsContactOnlySection(psaId))
 
   def addressYearsAnswer(userAnswers: UserAnswers, id: TypedIdentifier[AddressYears]): String = {
     userAnswers.get(id) match {

@@ -39,10 +39,8 @@
         }
 
         @components.heading(
-            headingKey=psaDetails.header
+            headingKey=messages("updateContactAddressCYA.heading", psaDetails.header)
         )
-
-        <h2 id="psadetails-header" class="heading-large">@messages("psaDetails.header")</h2>
 
         @for((section, i) <- psaDetails.superSections.zipWithIndex){
             @{
@@ -50,10 +48,5 @@
             }
         }
 
-        @if(psaDetails.isUserAnswerUpdated){
-            @components.button_link("psaDetails.declaration.link.text", nextPage.url, "declaration-link")
-        }
-
-        <p><a id="return-to-overview" href="@appConfig.schemesOverviewUrl">@messages("site.return_to", psaDetails.header)</a></p>
-
+        @components.button_link("psaDetails.declaration.link.text", nextPage.url, "declaration-link")
     }

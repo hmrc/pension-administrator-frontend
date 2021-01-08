@@ -80,9 +80,9 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualAddressYearsId => addressYearsRoutesUpdateMode(ua)
     case IndividualConfirmPreviousAddressId => confirmPreviousAddressRoutes(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(UpdateMode)
-    case IndividualPreviousAddressId => rlsNavigation(ua)
-    case IndividualEmailId => anyMoreChanges
-    case IndividualPhoneId => anyMoreChanges
+    case IndividualPreviousAddressId => finishAmendmentNavigation(ua)
+    case IndividualEmailId => finishAmendmentNavigation(ua)
+    case IndividualPhoneId => finishAmendmentNavigation(ua)
     case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
@@ -90,14 +90,14 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
 
   private def anyMoreChanges: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
-  private def rlsNavigation(answers: UserAnswers): Call = {
+  private def finishAmendmentNavigation(answers: UserAnswers): Call = {
     answers.get(UpdateContactAddressId) match {
-      case Some(_) => stillUsePage
+      case Some(_) => updateContactAddressCYAPage()
       case _ => anyMoreChanges
     }
   }
 
-  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
+  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
 
   def detailsCorrect(answers: UserAnswers): Call = {
     answers.get(IndividualDetailsCorrectId) match {
@@ -136,7 +136,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call =
     (answers.get(IndividualConfirmPreviousAddressId), answers.get(UpdateContactAddressId)) match {
       case (Some(true),None) => anyMoreChanges
-      case (Some(true), Some(_)) => stillUsePage
+      case (Some(true), Some(_)) => updateContactAddressCYAPage()
       case (Some(false), _) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
       case _ => SessionExpiredController.onPageLoad()
     }

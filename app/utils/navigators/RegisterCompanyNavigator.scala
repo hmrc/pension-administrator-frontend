@@ -142,23 +142,19 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
       routes.CompanyAddressListController.onPageLoad(UpdateMode)
     case CompanyAddressListId =>
       routes.CompanyPreviousAddressController.onPageLoad(UpdateMode)
-    case CompanyPreviousAddressId =>
-      rlsNavigation(ua)
-    case CompanyEmailId =>
-      anyMoreChanges
-    case CompanyPhoneId =>
-      anyMoreChanges
+    case CompanyPreviousAddressId => finishAmendmentNavigation(ua)
+    case CompanyEmailId => finishAmendmentNavigation(ua)
+    case CompanyPhoneId => finishAmendmentNavigation(ua)
   }
 
-  private def rlsNavigation(answers: UserAnswers): Call = {
+  private def finishAmendmentNavigation(answers: UserAnswers): Call = {
     answers.get(UpdateContactAddressId) match {
-      case Some(_) => stillUsePage
+      case Some(_) => updateContactAddressCYAPage()
       case _ => anyMoreChanges
     }
   }
 
-  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
-
+  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private def checkYourAnswers: Call =
     controllers.register.company.routes.CheckYourAnswersController.onPageLoad()
 
@@ -248,7 +244,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call = {
     answers.get(CompanyConfirmPreviousAddressId) match {
       case Some(false) => routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
-      case Some(true) => rlsNavigation(answers)
+      case Some(true) => finishAmendmentNavigation(answers)
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }

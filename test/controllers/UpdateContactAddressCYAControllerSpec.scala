@@ -29,23 +29,23 @@ import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.FakeNavigator
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels.{PsaViewDetailsViewModel, SuperSection}
-import views.html.psa_details
+import views.html.updateContactAddressCYA
 
 import scala.concurrent.{Future, ExecutionContext}
 
-class PsaDetailsControllerSpec extends ControllerSpecBase {
+class UpdateContactAddressCYAControllerSpec extends ControllerSpecBase {
 
   private val externalId = "test-external-id"
 
   val fakePsaDataService: PsaDetailsService = mock[PsaDetailsService]
 
-  val view: psa_details = app.injector.instanceOf[psa_details]
+  val view: updateContactAddressCYA = app.injector.instanceOf[updateContactAddressCYA]
 
   private val title = "test-title"
 
-  "Psa details Controller" must {
+  "Update contact address CYA Controller" must {
     "return 200 and  correct view for a GET for PSA company" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
+      when(fakePsaDataService.retrievePsaDataAndGenerateContactDetailsOnlyViewModel(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
           isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)))
 
@@ -56,7 +56,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to session expired if psa id not present" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
+      when(fakePsaDataService.retrievePsaDataAndGenerateContactDetailsOnlyViewModel(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
           isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)))
 
@@ -68,7 +68,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
   }
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType, psaId : Option[String]) =
-    new PsaDetailsController(
+    new UpdateContactAddressCYAController(
       frontendAppConfig,
       FakeNavigator,
       new FakeAuthAction(userType, psaId),
@@ -91,6 +91,6 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
                            isUserAnswerUpdated: Boolean = false,
                            userAnswersIncompleteMessage: Option[String] = Some("incomplete.alert.message")): String = {
     val model = PsaViewDetailsViewModel(superSections, name, isUserAnswerUpdated, userAnswersIncompleteMessage, title = title)
-    view(model, controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode))(fakeRequest, messages).toString
+    view(model, FakeNavigator.desiredRoute)(fakeRequest, messages).toString
   }
 }

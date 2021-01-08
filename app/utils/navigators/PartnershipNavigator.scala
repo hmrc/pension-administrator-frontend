@@ -126,14 +126,11 @@ class PartnershipNavigator @Inject()(
       tradingOverAYearRoutes(ua, UpdateMode)
     case PartnershipPreviousAddressPostCodeLookupId =>
       PartnershipPreviousAddressListController.onPageLoad(UpdateMode)
-    case PartnershipPreviousAddressId =>
-      rlsNavigation(ua)
+    case PartnershipPreviousAddressId => finishAmendmentNavigation(ua)
     case PartnershipConfirmPreviousAddressId =>
       variationManualPreviousAddressRoutes(ua, UpdateMode)
-    case PartnershipPhoneId =>
-      controllers.register.routes.AnyMoreChangesController.onPageLoad()
-    case PartnershipEmailId =>
-      controllers.register.routes.AnyMoreChangesController.onPageLoad()
+    case PartnershipPhoneId => finishAmendmentNavigation(ua)
+    case PartnershipEmailId => finishAmendmentNavigation(ua)
     }
 
   private def addressYearsRoutes(answers: UserAnswers, mode: Mode): Call = {
@@ -156,15 +153,13 @@ class PartnershipNavigator @Inject()(
     }
   }
 
-  private def rlsNavigation(answers: UserAnswers): Call = {
+  private def finishAmendmentNavigation(answers: UserAnswers): Call =
     answers.get(UpdateContactAddressId) match {
-      case Some(_) => stillUsePage
+      case Some(_) => updateContactAddressCYAPage()
       case _ => AnyMoreChangesController.onPageLoad()
     }
-  }
 
-  private def stillUsePage: Call = controllers.register.routes.StillUseAdviserController.onPageLoad()
-
+  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private def hasPaye(ua: UserAnswers): Boolean = ua.get(HasPAYEId).getOrElse(false)
 
   private def tradingOverAYearRoutes(answers: UserAnswers, mode: Mode): Call = {
@@ -229,7 +224,7 @@ class PartnershipNavigator @Inject()(
   private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode: Mode): Call = {
     answers.get(PartnershipConfirmPreviousAddressId) match {
       case Some(false) => PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode)
-      case Some(true) => rlsNavigation(answers)
+      case Some(true) => finishAmendmentNavigation(answers)
       case _ => SessionExpiredController.onPageLoad()
     }
   }
