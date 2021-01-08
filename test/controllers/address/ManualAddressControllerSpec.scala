@@ -35,7 +35,7 @@ import play.api.inject._
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.address.ManualAddressViewModel
@@ -83,7 +83,7 @@ object ManualAddressControllerSpec extends SpecBase {
 
     override protected val form: Form[Address] = formProvider()
 
-    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+    override protected def controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
   }
 
 }

@@ -16,8 +16,7 @@
 
 package controllers
 
-import java.time.LocalDate
-
+import base.SpecBase
 import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.FakeAllowAccessProvider
@@ -30,11 +29,11 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, redirectLocation, status, _}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.dob
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class DOBControllerSpec extends ControllerSpecBase {
@@ -152,7 +151,7 @@ class DOBControllerSpec extends ControllerSpecBase {
 
       override val allowAccess = FakeAllowAccessProvider(config = base.frontendAppConfig)
 
-      override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+      override protected def controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
 
       implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 

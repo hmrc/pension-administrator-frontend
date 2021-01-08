@@ -32,7 +32,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
@@ -303,7 +303,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       fakeRegistrationConnector,
       formProvider,
       countryOptions,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

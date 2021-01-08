@@ -22,7 +22,7 @@ import controllers.actions._
 import forms.register.AnyMoreChangesFormProvider
 import play.api.data.Form
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import views.html.register.anyMoreChanges
 
@@ -44,7 +44,7 @@ class AnyMoreChangesControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

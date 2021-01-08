@@ -24,7 +24,7 @@ import models.{NormalMode, PersonName}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import views.html.register.company.companyReview
 
@@ -55,7 +55,7 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

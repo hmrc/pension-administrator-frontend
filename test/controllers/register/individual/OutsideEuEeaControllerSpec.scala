@@ -22,7 +22,7 @@ import identifiers.register.individual.IndividualAddressId
 import models.{Address, NormalMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.countryOptions.CountryOptions
 import views.html.register.individual.outsideEuEea
 
@@ -38,7 +38,7 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       countryOptions,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

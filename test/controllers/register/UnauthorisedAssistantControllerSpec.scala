@@ -19,7 +19,7 @@ package controllers.register
 import controllers.actions._
 import controllers.{ControllerSpecBase, UnauthorisedAssistantController}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.unauthorisedAssistant
 
 class UnauthorisedAssistantControllerSpec extends ControllerSpecBase {
@@ -29,7 +29,7 @@ class UnauthorisedAssistantControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new UnauthorisedAssistantController(
       frontendAppConfig,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

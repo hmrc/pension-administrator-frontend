@@ -26,7 +26,7 @@ import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -59,7 +59,7 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
       formProvider,
       new FakeCountryOptions(environment, frontendAppConfig),
       auditService,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

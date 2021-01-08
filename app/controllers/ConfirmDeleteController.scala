@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Call, Result}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.ConfirmDeleteViewModel
 import views.html.confirmDelete
 

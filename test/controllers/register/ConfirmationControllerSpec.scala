@@ -27,7 +27,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import play.api.mvc.Results._
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.UserAnswers
 import views.html.register.confirmation
 
@@ -86,7 +86,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       fakeUserAnswersCacheConnector,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

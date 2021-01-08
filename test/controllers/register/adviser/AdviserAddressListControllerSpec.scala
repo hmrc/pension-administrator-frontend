@@ -30,7 +30,7 @@ import play.api.mvc.MessagesControllerComponents
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -181,7 +181,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
     .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrievalAction),
-      bind[MessagesControllerComponents].to(stubMessagesControllerComponents()),
+      bind[MessagesControllerComponents].to(controllerComponents),
       bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     ).build()

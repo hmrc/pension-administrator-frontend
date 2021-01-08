@@ -30,8 +30,8 @@ import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
 import utils.UserAnswers
 
 import scala.concurrent.Future
@@ -45,7 +45,7 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
                                   val controllerComponents: MessagesControllerComponents
                                 ) extends FrontendBaseController with Retrievals
 
-  val controller = new TestController(stubMessagesControllerComponents())
+  val controller = new TestController(controllerComponents)
 
   val success: String => Future[Result] = { _: String =>
     Future.successful(Ok("Success"))

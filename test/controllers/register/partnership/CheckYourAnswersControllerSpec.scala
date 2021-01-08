@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
@@ -130,7 +130,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       mockDataCompletion,
       new FakeNavigator(desiredRoute = onwardRoute),
       new FakeCountryOptions(environment, frontendAppConfig),
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

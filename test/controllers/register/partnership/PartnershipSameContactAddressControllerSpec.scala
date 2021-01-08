@@ -24,7 +24,7 @@ import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -79,7 +79,7 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

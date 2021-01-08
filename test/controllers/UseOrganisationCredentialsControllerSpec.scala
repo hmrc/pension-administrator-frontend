@@ -17,7 +17,7 @@
 package controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.useOrganisationCredentials
 
 class UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
@@ -40,7 +40,7 @@ class UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
   def testController: UseOrganisationCredentialsController =
     new UseOrganisationCredentialsController(
       frontendAppConfig,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

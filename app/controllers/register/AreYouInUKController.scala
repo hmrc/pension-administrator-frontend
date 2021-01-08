@@ -25,7 +25,7 @@ import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.AreYouInUKViewModel
 import views.html.register.areYouInUK

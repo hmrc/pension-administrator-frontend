@@ -25,7 +25,7 @@ import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import views.html.register.company.companyReview

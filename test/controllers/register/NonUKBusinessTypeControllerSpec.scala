@@ -26,7 +26,7 @@ import models.register.NonUKBusinessType
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import views.html.register.nonUKBusinessType
 
@@ -51,7 +51,7 @@ class NonUKBusinessTypeControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

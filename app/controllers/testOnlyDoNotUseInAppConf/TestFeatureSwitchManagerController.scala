@@ -21,7 +21,7 @@ import config.FeatureSwitchManagementService
 import connectors.{PensionAdministratorFeatureSwitchConnectorImpl, PensionsSchemeFeatureSwitchConnectorImpl}
 import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.testOnlyDoNotUseInAppConf.testFeatureSwitchManagerSuccess
 
 import scala.concurrent.ExecutionContext

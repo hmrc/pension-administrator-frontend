@@ -33,7 +33,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HttpResponse, HeaderCarrier}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.deregister.confirmStopBeingPsa
 
 import scala.concurrent.{Future, ExecutionContext}
@@ -201,7 +201,7 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
       fakeTaxEnrolmentsConnector,
       fakeAllowAccess(minimalDetailsConnector),
       FakeUserAnswersCacheConnector,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
   }

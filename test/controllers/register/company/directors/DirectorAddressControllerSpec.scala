@@ -27,7 +27,7 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
@@ -72,7 +72,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

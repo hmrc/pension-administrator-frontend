@@ -30,7 +30,7 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
@@ -137,7 +137,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       FakeNavigator,
       countryOptions,
       FakeUserAnswersCacheConnector,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

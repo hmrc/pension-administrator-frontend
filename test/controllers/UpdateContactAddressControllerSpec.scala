@@ -23,7 +23,7 @@ import models._
 import models.requests.DataRequest
 import play.api.test.Helpers._
 import services.PsaDetailsService
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.countryOptions.CountryOptions
 import views.html.updateContactAddress
 import org.mockito.Matchers._
@@ -66,7 +66,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
       frontendAppConfig,
       FakeAuthAction(UserType.Individual),
       dataRetrievalAction,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       mockPsaDetailsService,
       countryOptions,
       mockUserAnswersCacheConnector,

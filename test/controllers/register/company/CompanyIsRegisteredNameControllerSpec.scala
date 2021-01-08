@@ -25,7 +25,7 @@ import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
 import views.html.register.isRegisteredName
@@ -85,7 +85,7 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
       formProvider = new IsRegisteredNameFormProvider(),
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

@@ -21,7 +21,7 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAll
 import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import views.html.register.company.whatYouWillNeed
 
@@ -39,7 +39,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

@@ -25,7 +25,7 @@ import org.mockito.Mockito.when
 import play.api.mvc.{Request, Result, AnyContent, BodyParser}
 import play.api.test.Helpers.{status, contentAsString, _}
 import services.PsaDetailsService
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels.{PsaViewDetailsViewModel, SuperSection}
@@ -75,12 +75,12 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       fakePsaDataService,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 
   class FakeAuthAction(userType: UserType, psaId : Option[String]) extends AuthAction {
-    val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+    val parser: BodyParser[AnyContent] = controllerComponents.parsers.defaultBodyParser
     implicit val executionContext: ExecutionContext = inject[ExecutionContext]
     override def invokeBlock[A](request: Request[A],
                                 block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =

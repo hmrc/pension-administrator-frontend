@@ -32,7 +32,7 @@ import play.api.inject.bind
 import play.api.mvc.{Call, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -200,7 +200,7 @@ object AddressListControllerSpec extends SpecBase {
 
     }
 
-    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+    override protected def controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
 
   }
 

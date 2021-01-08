@@ -29,7 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -162,7 +162,7 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
     new AdviserAddressController(frontendAppConfig, FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute), FakeAllowAccessProvider(config = frontendAppConfig),
       FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-      countryOptions, fakeAuditService, stubMessagesControllerComponents(), view)
+      countryOptions, fakeAuditService, controllerComponents, view)
 
   def viewAsString(form: Form[_] = form): String = view(form, addressViewModel, NormalMode)(fakeRequest, messages).toString
 }

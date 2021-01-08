@@ -22,7 +22,7 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAll
 import controllers.routes._
 import models.NormalMode
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import views.html.dob
 
@@ -56,7 +56,7 @@ class PartnerDOBControllerSpec extends ControllerSpecBase {
       allowAccess = FakeAllowAccessProvider(config = frontendAppConfig),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
-      controllerComponents = stubMessagesControllerComponents(),
+      controllerComponents = controllerComponents,
       view = app.injector.instanceOf[dob]
     )
 }

@@ -32,7 +32,7 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -61,7 +61,7 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

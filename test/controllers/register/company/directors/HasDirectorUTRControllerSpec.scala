@@ -24,7 +24,7 @@ import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -40,7 +40,7 @@ class HasDirectorUTRControllerSpec extends ControllerWithCommonBehaviour {
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasDirectorUTRController(
     frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    stubMessagesControllerComponents(), view)
+    controllerComponents, view)
 
   private def hasReferenceNumberView(form: Form[_]): String =
     view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString

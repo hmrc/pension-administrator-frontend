@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions.FakeDataRetrievalAction
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.agentCannotRegister
 
 class AgentCannotRegisterControllerSpec extends ControllerSpecBase {
@@ -26,7 +26,7 @@ class AgentCannotRegisterControllerSpec extends ControllerSpecBase {
   val view: agentCannotRegister = app.injector.instanceOf[agentCannotRegister]
 
   def controller(dataRetrievalAction: FakeDataRetrievalAction = getEmptyData) =
-    new AgentCannotRegisterController(frontendAppConfig, stubMessagesControllerComponents(), view)
+    new AgentCannotRegisterController(frontendAppConfig, controllerComponents, view)
 
   private def viewAsString() = view()(fakeRequest, messages).toString
 

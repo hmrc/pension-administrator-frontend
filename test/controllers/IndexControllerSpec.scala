@@ -19,7 +19,7 @@ package controllers
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.FakeAuthAction
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.index
 
 class IndexControllerSpec extends ControllerSpecBase {
@@ -29,13 +29,13 @@ class IndexControllerSpec extends ControllerSpecBase {
   "Index Controller" must {
     "return 200 for a GET" in {
       val result =
-        new IndexController(frontendAppConfig, FakeAuthAction, FakeUserAnswersCacheConnector, stubMessagesControllerComponents(), indexView).onPageLoad()(fakeRequest)
+        new IndexController(frontendAppConfig, FakeAuthAction, FakeUserAnswersCacheConnector, controllerComponents, indexView).onPageLoad()(fakeRequest)
       status(result) mustBe OK
     }
 
     "return the correct view for a GET" in {
       val result =
-        new IndexController(frontendAppConfig, FakeAuthAction, FakeUserAnswersCacheConnector, stubMessagesControllerComponents(), indexView).onPageLoad()(fakeRequest)
+        new IndexController(frontendAppConfig, FakeAuthAction, FakeUserAnswersCacheConnector, controllerComponents, indexView).onPageLoad()(fakeRequest)
       contentAsString(result) mustBe indexView()(fakeRequest, messages).toString
     }
   }

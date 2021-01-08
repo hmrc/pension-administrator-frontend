@@ -33,7 +33,7 @@ import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import services.RegistrationService
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{DateHelper, FakeNavigator}
 import views.html.register.individual.individualDateOfBirth
 
@@ -156,7 +156,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
       new DataRequiredActionImpl,
       formProvider,
       registrationService,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

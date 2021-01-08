@@ -16,6 +16,7 @@
 
 package controllers
 
+import base.SpecBase
 import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.ConfirmDeleteFormProvider
@@ -32,7 +33,6 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.ConfirmDeleteViewModel
 import views.html.confirmDelete
@@ -118,7 +118,7 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
 
       override val view: confirmDelete = confirmDeleteView
 
-      override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+      override protected def controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
 
       implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
     }
@@ -126,47 +126,6 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val confirmDeleteView = app.injector.instanceOf[confirmDelete]
 
   private def viewAsString() = confirmDeleteView(formProvider(name), viewModel, NormalMode)(fakeRequest, messagesApi.preferred(fakeRequest)).toString
-
-  private def controllerWithPost(descr: String, request: DataRequest[AnyContent], requestNoValue: DataRequest[AnyContent], id: TypedIdentifier[PersonName]): Unit = {
-    s"redirect to already deleted view for a GET if the $descr was already deleted" in {
-
-      val result = controller().get(viewModel, isDeleted = true, FakeNavigator.desiredRoute, NormalMode)(request)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
-
-    }
-
-    s"redirect to ${descr}s list on removal of $descr" in {
-
-      val result = controller().post(viewModel, id, FakeNavigator.desiredRoute, NormalMode)(request)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
-    }
-
-    s"set the isDelete flag to true for the selected $descr on submission of POST request" in {
-
-      val result = controller().post(viewModel, id, FakeNavigator.desiredRoute, NormalMode)(request)
-
-      status(result) mustBe SEE_OTHER
-      FakeUserAnswersCacheConnector.verify(id, person.copy(isDeleted = true))
-    }
-
-    s"bad request for the selected $descr on submission of POST request where invalid submission (no value)" in {
-
-      val result = controller().post(viewModel, id, FakeNavigator.desiredRoute, NormalMode)(requestNoValue)
-
-      status(result) mustBe BAD_REQUEST
-    }
-
-    s"set the morethanten change flag to true where the morethanten flag was already true and a $descr is deleted" in {
-      val result = controller().post(viewModel, id, FakeNavigator.desiredRoute, UpdateMode)(request)
-      status(result) mustBe SEE_OTHER
-      FakeUserAnswersCacheConnector.verify(testChange1FlagIdentifier, value = true)
-      FakeUserAnswersCacheConnector.verify(testChange2FlagIdentifier, value = true)
-    }
-  }
 
   "ConfirmDelete Controller" must {
 
@@ -178,9 +137,44 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
       contentAsString(result) mustBe viewAsString()
     }
 
-    behave like controllerWithPost("director", requestDirectors, requestDirectorsNoValue, DirectorNameId(0))
+    "redirect to already deleted view for a GET if the director was already deleted" in {
 
+      val result = controller().get(viewModel, isDeleted = true, FakeNavigator.desiredRoute, NormalMode)(requestDirectors)
 
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
+
+    }
+
+    "redirect to directors list on removal of director" in {
+
+      val result = controller().post(viewModel, DirectorNameId(0), FakeNavigator.desiredRoute, NormalMode)(requestDirectors)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
+    }
+
+    "set the isDelete flag to true for the selected director on submission of POST request" in {
+
+      val result = controller().post(viewModel, DirectorNameId(0), FakeNavigator.desiredRoute, NormalMode)(requestDirectors)
+
+      status(result) mustBe SEE_OTHER
+      FakeUserAnswersCacheConnector.verify(DirectorNameId(0), person.copy(isDeleted = true))
+    }
+
+    "bad request for the selected director on submission of POST request where invalid submission (no value)" in {
+
+      val result = controller().post(viewModel, DirectorNameId(0), FakeNavigator.desiredRoute, NormalMode)(requestDirectorsNoValue)
+
+      status(result) mustBe BAD_REQUEST
+    }
+
+    "set the morethanten change flag to true where the morethanten flag was already true and a director is deleted" in {
+      val result = controller().post(viewModel, DirectorNameId(0), FakeNavigator.desiredRoute, UpdateMode)(requestDirectors)
+      status(result) mustBe SEE_OTHER
+      FakeUserAnswersCacheConnector.verify(testChange1FlagIdentifier, value = true)
+      FakeUserAnswersCacheConnector.verify(testChange2FlagIdentifier, value = true)
+    }
   }
 
 }

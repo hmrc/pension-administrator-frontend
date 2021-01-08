@@ -26,7 +26,7 @@ import models.register.BusinessType
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, Call}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import views.html.register.businessName

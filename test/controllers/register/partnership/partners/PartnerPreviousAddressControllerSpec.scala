@@ -24,7 +24,7 @@ import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
@@ -51,7 +51,7 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
       new DataRequiredActionImpl,
       formProvider,
       new FakeCountryOptions(environment, frontendAppConfig),
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

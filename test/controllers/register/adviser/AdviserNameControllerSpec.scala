@@ -24,7 +24,7 @@ import identifiers.register.adviser.AdviserNameId
 import models.NormalMode
 import play.api.data.Form
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.adviser.adviserName
 
@@ -41,7 +41,7 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
     new AdviserNameController(
       frontendAppConfig, fakeAuth, new FakeNavigator(onwardRoute), dataRetrievalAction,
       requiredDataAction, formProvider, FakeUserAnswersCacheConnector,
-      stubMessagesControllerComponents(), view).onPageLoad(NormalMode)
+      controllerComponents, view).onPageLoad(NormalMode)
   }
 
 
@@ -50,7 +50,7 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
     new AdviserNameController(
       frontendAppConfig, fakeAuth, navigator, dataRetrievalAction,
       requiredDataAction, formProvider, FakeUserAnswersCacheConnector,
-      stubMessagesControllerComponents(), view).onSubmit(NormalMode)
+      controllerComponents, view).onSubmit(NormalMode)
   }
 
   private def viewAsString(form: Form[_]) = view(form, NormalMode, None)(fakeRequest, messages).toString

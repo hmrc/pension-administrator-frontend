@@ -23,7 +23,7 @@ import forms.register.EnterVATFormProvider
 import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import views.html.enterVAT
 
@@ -45,7 +45,7 @@ class PartnershipEnterVATControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

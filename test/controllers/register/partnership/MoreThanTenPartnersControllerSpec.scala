@@ -24,7 +24,7 @@ import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
@@ -79,7 +79,7 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(config = frontendAppConfig),
       dontGetAnyData,
       new DataRequiredActionImpl,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 }

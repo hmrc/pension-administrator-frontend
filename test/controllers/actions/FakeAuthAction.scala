@@ -16,16 +16,16 @@
 
 package controllers.actions
 
+import base.SpecBase.controllerComponents
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
 import play.api.mvc.{AnyContent, BodyParser, Request, Result}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 import scala.concurrent.{ExecutionContext, Future}
 
 case class FakeAuthAction(userType: UserType, psaId:String = "test psa id") extends AuthAction {
-  val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+  val parser: BodyParser[AnyContent] = controllerComponents.parsers.defaultBodyParser
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
   block(AuthenticatedRequest(request, "id", PSAUser(userType, None, isExistingPSA = false, None, Some(psaId))))
@@ -36,14 +36,14 @@ object FakeAuthAction extends AuthAction {
   private val defaultPsaId: String = "A0000000"
   def apply(): AuthAction = {
     new AuthAction {
-      val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+      val parser: BodyParser[AnyContent] = controllerComponents.parsers.defaultBodyParser
       implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
       override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
         block(AuthenticatedRequest(request, externalId, PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some(defaultPsaId))))
     }
   }
 
-  val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+  val parser: BodyParser[AnyContent] = controllerComponents.parsers.defaultBodyParser
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
     block(AuthenticatedRequest(request, externalId, PSAUser(UserType.Organisation, None, isExistingPSA = false, Some("test Psa id"))))

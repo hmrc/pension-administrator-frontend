@@ -32,7 +32,6 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
@@ -170,13 +169,11 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
 
       implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-      override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+      override protected def controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
     }
 
     TestFixture(controller, connector)
   }
-
-
 
   def viewModel(id: TypedIdentifier[Boolean] = testId): MoreThanTenViewModel =
     MoreThanTenViewModel(

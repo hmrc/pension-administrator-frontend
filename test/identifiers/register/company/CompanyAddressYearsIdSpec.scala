@@ -82,28 +82,53 @@ class CompanyAddressYearsIdSpec extends SpecBase {
     "in normal mode" must {
 
       "return answers rows with change links when have value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().companyAddressYears(AddressYears.OverAYear)
-        .companyContactAddress(address).businessName())
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .companyAddressYears(AddressYears.OverAYear)
+            .companyContactAddress(address).businessName()
+        )
 
-        CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("addressYears.heading"), answer = Seq("common.addressYears.over_a_year"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl)), Some(Message("addressYears.visuallyHidden.text", "test company")))))
+        CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("addressYears.heading", "test company"),
+            answer = Seq("common.addressYears.over_a_year"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl)),
+            visuallyHiddenText = Some(Message("addressYears.visuallyHidden.text", "test company"))
+          ))
+        )
       }
 
       "return answers rows with add links when mandatory and have contact address" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers()
-            .companyContactAddress(address).businessName())
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .companyContactAddress(address).businessName()
+        )
 
-        CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("addressYears.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("addressYears.visuallyHidden.text", "test company")))))
+        CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("addressYears.heading", "test company"),
+            answer = Seq("site.not_entered"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")),
+            visuallyHiddenText = Some(Message("addressYears.visuallyHidden.text", "test company"))
+          ))
+        )
       }
 
       "return no answers rows when not mandatory and not have contact address" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+        )
 
         CompanyAddressYearsId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }

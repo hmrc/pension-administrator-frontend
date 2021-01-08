@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.deregister.mustInviteOthers
 
 class MustInviteOthersControllerSpec extends ControllerSpecBase with ScalaFutures {
@@ -40,7 +40,7 @@ class MustInviteOthersControllerSpec extends ControllerSpecBase with ScalaFuture
   private def controller =
     new MustInviteOthersController(
       FakeAuthAction(),
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

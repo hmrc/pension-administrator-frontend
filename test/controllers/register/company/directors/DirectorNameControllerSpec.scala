@@ -24,7 +24,7 @@ import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.personName
 
@@ -77,7 +77,7 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
       allowAccess = FakeAllowAccessProvider(config = frontendAppConfig),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
-      controllerComponents = stubMessagesControllerComponents(),
+      controllerComponents = controllerComponents,
       view = view
     )
   }

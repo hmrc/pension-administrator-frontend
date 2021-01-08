@@ -24,7 +24,7 @@ import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -38,7 +38,7 @@ class HasPartnerNINOControllerSpec extends ControllerWithCommonBehaviour {
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasPartnerNINOController(
     frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    stubMessagesControllerComponents(), view
+    controllerComponents, view
   )
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
