@@ -16,12 +16,10 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register._
 import identifiers.register.company.{CompanyPhoneId, _}
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.I18nSupport
@@ -35,24 +33,25 @@ import utils.{Enumerable, Navigator, UserAnswers}
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                           authenticate: AuthAction,
-                                           allowAccess: AllowAccessActionProvider,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           dataCompletion: DataCompletion,
-                                           @RegisterCompany navigator: Navigator,
-                                           implicit val countryOptions: CountryOptions,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val view: check_your_answers
+class CheckYourAnswersController @Inject()(
+                                            authenticate: AuthAction,
+                                            allowAccess: AllowAccessActionProvider,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            dataCompletion: DataCompletion,
+                                            @RegisterCompany navigator: Navigator,
+                                            implicit val countryOptions: CountryOptions,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: check_your_answers
                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals
   with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      if(isMandatoryDataPresent(request.userAnswers)) {
+      if (isMandatoryDataPresent(request.userAnswers)) {
         loadCyaPage(mode)
       } else {
         Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
@@ -69,9 +68,9 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  private def isMandatoryDataPresent(userAnswers: UserAnswers): Boolean ={
+  private def isMandatoryDataPresent(userAnswers: UserAnswers): Boolean = {
     val isRegInfoComplete = userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(RegistrationInfoId).nonEmpty
-    if(userAnswers.get(AreYouInUKId).contains(false)){
+    if (userAnswers.get(AreYouInUKId).contains(false)) {
       isRegInfoComplete && userAnswers.get(CompanyAddressId).nonEmpty
     } else {
       isRegInfoComplete && userAnswers.get(BusinessUTRId).nonEmpty

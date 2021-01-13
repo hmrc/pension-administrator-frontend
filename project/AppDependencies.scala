@@ -21,7 +21,6 @@ object AppDependencies {
   )
 
   val test: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"             %% "bootstrap-frontend-play-26" % "3.2.0" % Test classifier "tests",
     "uk.gov.hmrc"             %% "hmrctest"                   % "3.9.0-play-26",
     "org.scalatest"           %% "scalatest"                  % "3.0.8",
     "org.scalatestplus.play"  %% "scalatestplus-play"         % "3.1.2",
