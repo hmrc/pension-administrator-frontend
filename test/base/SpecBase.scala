@@ -24,15 +24,19 @@ import org.scalatestplus.play.guice._
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.AnyContent
+import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.{FakeRequest, Injecting}
 import play.api.{Application, Environment}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with BeforeAndAfterAll with MockitoSugar {
+trait SpecBase
+  extends PlaySpec
+    with GuiceOneAppPerSuite
+    with Injecting
+    with BeforeAndAfterAll
+    with MockitoSugar {
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
-    .build()
+  override lazy val app: Application =
+    new GuiceApplicationBuilder().build()
 
   def injector: Injector = app.injector
 
@@ -42,9 +46,13 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting with Bef
 
   def messagesApi: MessagesApi = inject[MessagesApi]
 
+  def controllerComponents: MessagesControllerComponents = inject[MessagesControllerComponents]
+
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
-  implicit def messages: Messages = stubMessagesControllerComponents().messagesApi.preferred(fakeRequest)
+  implicit def messages: Messages = controllerComponents.messagesApi.preferred(fakeRequest)
 
   def appRunning(): Unit = app
 }
+
+object SpecBase extends SpecBase

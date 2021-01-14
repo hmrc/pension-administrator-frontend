@@ -27,7 +27,7 @@ import models.Mode.checkMode
 import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.Individual
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions

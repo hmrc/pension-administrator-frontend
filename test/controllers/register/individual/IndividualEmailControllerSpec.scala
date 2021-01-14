@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
@@ -39,7 +39,7 @@ class IndividualEmailControllerSpec extends ControllerWithCommonBehaviour {
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new IndividualEmailController(
     new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider, stubMessagesControllerComponents(), view)
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider, controllerComponents, view)
 
 
 

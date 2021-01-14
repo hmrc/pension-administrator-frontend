@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.register.individual.youWillNeedToUpdate
 
 class YouWillNeedToUpdateControllerSpec extends ControllerSpecBase {
@@ -34,7 +34,7 @@ class YouWillNeedToUpdateControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

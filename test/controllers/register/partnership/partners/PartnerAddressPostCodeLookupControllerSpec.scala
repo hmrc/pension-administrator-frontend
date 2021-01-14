@@ -30,7 +30,7 @@ import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -52,7 +52,7 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
     dataRetrievalAction,
     new DataRequiredActionImpl,
     formProvider,
-    stubMessagesControllerComponents(),
+    controllerComponents,
     view
   )
 

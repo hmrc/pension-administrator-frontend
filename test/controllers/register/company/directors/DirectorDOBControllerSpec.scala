@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.NormalMode
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, Navigator}
 import views.html.dob
 
@@ -65,7 +65,7 @@ class DirectorDOBControllerSpec extends ControllerSpecBase {
       allowAccess = FakeAllowAccessProvider(config = frontendAppConfig),
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
-      controllerComponents = stubMessagesControllerComponents(),
+      controllerComponents = controllerComponents,
       view = view
     )
 

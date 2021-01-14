@@ -16,6 +16,7 @@
 
 package controllers
 
+import base.SpecBase
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.FakeAllowAccessProvider
@@ -23,7 +24,6 @@ import identifiers.TypedIdentifier
 import models.{NormalMode, PersonName}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Call, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import utils.Navigator
 import viewmodels.CommonFormWithHintViewModel
 import views.html.personName
@@ -32,9 +32,9 @@ import scala.concurrent.ExecutionContext
 
 class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControllerBehaviour {
 
-  val psaName = "test name"
+  private val psaName = "test name"
 
-  lazy val viewModel =
+  private lazy val viewModel =
     CommonFormWithHintViewModel(
       postCall = Call("POST", "http://www.test.com"),
       title = "directorName.heading",
@@ -50,6 +50,8 @@ class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControl
     behave like personNameController(viewModel, testId, createController(this))
   }
 
+
+
   def createController(base: ControllerSpecBase)(connector: UserAnswersCacheConnector, nav: Navigator): PersonNameController = {
     new PersonNameController {
       override def appConfig: FrontendAppConfig = base.frontendAppConfig
@@ -64,7 +66,7 @@ class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControl
 
       implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
-      override val controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+      override val controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
 
       val view: personName = app.injector.instanceOf[personName]
     }

@@ -34,7 +34,7 @@ import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import utils.countryOptions.CountryOptions
 import views.html.register.individual.individualDetailsCorrect
@@ -52,7 +52,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
   private val sapNumber = "test-sap-number"
 
   private val fakeAuthAction: AuthAction = new AuthAction {
-    val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+    val parser: BodyParser[AnyContent] = controllerComponents.parsers.defaultBodyParser
     implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), isExistingPSA = false, None, None, "")))
@@ -107,7 +107,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       formProvider,
       registrationConnector,
       new CountryOptions(environment, frontendAppConfig),
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

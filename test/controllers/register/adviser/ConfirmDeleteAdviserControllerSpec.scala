@@ -26,7 +26,7 @@ import models.{NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
@@ -51,7 +51,7 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
     new ConfirmDeleteAdviserController(frontendAppConfig, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction, new DataRequiredActionImpl, FakeUserAnswersCacheConnector, formProvider, new FakeNavigator(desiredRoute = onwardRoute),
-      stubMessagesControllerComponents(), view)
+      controllerComponents, view)
 
   def viewAsString(form: Form[_] = form): String = view(form, viewModel(adviserName), NormalMode)(fakeRequest, messages).toString
 

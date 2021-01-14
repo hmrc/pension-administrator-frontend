@@ -21,7 +21,7 @@ import controllers.actions.{DataRetrievalAction, FakeAuthAction}
 import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import views.html.register.whatYouWillNeed
 
@@ -36,7 +36,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       frontendAppConfig,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

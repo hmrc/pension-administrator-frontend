@@ -16,11 +16,11 @@
 
 package controllers.actions
 
+import base.SpecBase.controllerComponents
 import controllers.routes
 import models.requests.AuthenticatedRequest
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, BodyParser, Request, Result}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -28,7 +28,7 @@ object FakeUnAuthorisedAction {
   def apply(): AuthAction = {
     new AuthAction {
 
-      val parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.defaultBodyParser
+      val parser: BodyParser[AnyContent] = controllerComponents.parsers.defaultBodyParser
       implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
       override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =

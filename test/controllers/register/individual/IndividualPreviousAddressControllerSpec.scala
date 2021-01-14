@@ -27,7 +27,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -65,7 +65,7 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
       new DataRequiredActionImpl,
       formProvider,
       countryOptions,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

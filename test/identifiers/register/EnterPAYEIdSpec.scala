@@ -32,27 +32,50 @@ class EnterPAYEIdSpec extends SpecBase {
     "in normal mode" must {
 
       "return answers rows with change links when enter paye has a value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
-          UserAnswers().businessName().enterPaye("test-paye"))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers().businessName().enterPaye("test-paye")
+        )
 
-        EnterPAYEId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("enterPAYE.heading"), answer = Seq("test-paye"), answerIsMessageKey = false,
-            changeUrl = Some(Link(onwardUrl)), Some(Message("enterPAYE.visuallyHidden.text", "test company")))))
+        EnterPAYEId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("enterPAYE.heading", "test company"),
+            answer = Seq("test-paye"),
+            answerIsMessageKey = false,
+            changeUrl = Some(Link(onwardUrl)),
+            Some(Message("enterPAYE.visuallyHidden.text", "test company"))
+          ))
+        )
       }
 
       "return answers rows with add links when has paye is true but enter paye has no value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().businessName().hasPaye(flag = true))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers().businessName().hasPaye(flag = true)
+        )
 
-        EnterPAYEId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("enterPAYE.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("enterPAYE.visuallyHidden.text", "test company")))))
+        EnterPAYEId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("enterPAYE.heading", "test company"),
+            answer = Seq("site.not_entered"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")),
+            Some(Message("enterPAYE.visuallyHidden.text", "test company"))
+          ))
+        )
       }
 
       "return no answers rows has paye is false but enter paye has no value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().businessName().hasPaye(flag = false))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers().businessName().hasPaye(flag = false)
+        )
 
         EnterPAYEId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }

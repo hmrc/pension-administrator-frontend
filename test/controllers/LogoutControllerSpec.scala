@@ -17,11 +17,11 @@
 package controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 
 class LogoutControllerSpec extends ControllerSpecBase {
 
-  def logoutController = new LogoutController(frontendAppConfig, stubMessagesControllerComponents())
+  def logoutController = new LogoutController(frontendAppConfig, controllerComponents)
 
   "Logout Controller" must {
 

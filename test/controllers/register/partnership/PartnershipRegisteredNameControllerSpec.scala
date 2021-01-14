@@ -26,7 +26,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import viewmodels.OrganisationNameViewModel
 import views.html.organisationName
@@ -60,7 +60,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       FakeUserAnswersCacheConnector,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

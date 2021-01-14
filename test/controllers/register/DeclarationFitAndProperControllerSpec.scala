@@ -25,7 +25,7 @@ import models._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import views.html.register.declarationFitAndProper
 
@@ -99,7 +99,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
       FakeAllowDeclarationActionProvider(),
       fakeNavigator,
       fakeUserAnswersCacheConnector,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

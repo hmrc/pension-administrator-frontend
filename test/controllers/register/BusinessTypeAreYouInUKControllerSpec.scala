@@ -25,7 +25,7 @@ import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
@@ -49,7 +49,7 @@ class BusinessTypeAreYouInUKControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

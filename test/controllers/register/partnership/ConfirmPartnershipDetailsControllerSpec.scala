@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
@@ -276,7 +276,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       fakeRegistrationConnector,
       formProvider,
       countryOptions,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

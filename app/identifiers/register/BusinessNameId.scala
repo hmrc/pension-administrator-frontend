@@ -36,11 +36,12 @@ case object BusinessNameId extends TypedIdentifier[String] {
 
   private def label(userAnswers: UserAnswers)(implicit messages: Messages): String =
     (userAnswers.get(BusinessTypeId), userAnswers.get(NonUKBusinessTypeId)) match {
-    case (Some(businessType), _) => Message("businessName.heading",
-      Message(s"businessType.${businessType.toString}.lc"))
-    case (_, Some(nonUKBusinessType)) => Message("businessName.heading",
-      Message(s"nonUKBusinessType.${nonUKBusinessType.toString}.lc"))
-    case _ => Message("businessName.heading", Message("theCompany"))
+    case (Some(businessType), _) =>
+      Message("businessName.heading", Message(s"businessType.${businessType.toString}.lc"))
+    case (_, Some(nonUKBusinessType)) =>
+      Message("businessName.heading", Message(s"nonUKBusinessType.${nonUKBusinessType.toString}.lc"))
+    case _ =>
+      Message("businessName.heading", Message("theCompany"))
   }
 
 }

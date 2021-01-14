@@ -27,7 +27,7 @@ import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import views.html.register.stillUseAdviser
 
@@ -111,7 +111,7 @@ class StillUseAdviserControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

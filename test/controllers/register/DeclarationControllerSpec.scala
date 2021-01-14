@@ -39,7 +39,7 @@ import play.api.mvc.{AnyContent, RequestHeader}
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, KnownFactsRetrieval, UserAnswers}
 import views.html.register.declaration
 
@@ -241,7 +241,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
       knownFactsRetrieval,
       enrolments,
       mockEmailConnector,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

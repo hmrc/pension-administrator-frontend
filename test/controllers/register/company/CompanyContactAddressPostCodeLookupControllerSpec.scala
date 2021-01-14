@@ -32,7 +32,7 @@ import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
@@ -115,7 +115,7 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-      bind[MessagesControllerComponents].to(stubMessagesControllerComponents())
+      bind[MessagesControllerComponents].to(controllerComponents)
     ).build()
 }
 

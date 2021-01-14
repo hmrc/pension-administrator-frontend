@@ -38,7 +38,7 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
@@ -77,7 +77,7 @@ object SameContactAddressControllerSpec extends SpecBase {
     }
 
     val form: Form[Boolean] = formProvider("error.required")
-    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+    override protected def controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
   }
 
 }

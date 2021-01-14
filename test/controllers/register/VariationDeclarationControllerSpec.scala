@@ -28,7 +28,7 @@ import models.{NormalMode, TolerantIndividual, UpdateMode, UserType}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.variationDeclaration
 
@@ -121,7 +121,7 @@ class VariationDeclarationControllerSpec extends ControllerSpecBase {
       fakeNavigator,
       FakeUserAnswersCacheConnector,
       fakePensionsSchemeConnector,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

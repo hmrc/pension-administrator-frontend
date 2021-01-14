@@ -28,7 +28,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import views.html.register.variationDeclarationFitAndProper
 
@@ -100,7 +100,7 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
       fakeNavigator,
       new VariationDeclarationFitAndProperFormProvider(),
       fakeUserAnswersCacheConnector,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

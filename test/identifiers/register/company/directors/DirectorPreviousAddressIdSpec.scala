@@ -17,6 +17,7 @@
 package identifiers.register.company.directors
 
 import base.SpecBase
+import controllers.register.company.directors._
 import models._
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
@@ -30,36 +31,62 @@ class DirectorPreviousAddressIdSpec extends SpecBase {
   private val address = Address("line1", "line2", None, None, None, "country")
   implicit val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val index = 0
-  private val onwardUrl = controllers.register.company.directors.routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index).url
+  private val onwardUrl = routes.DirectorPreviousAddressController.onPageLoad(NormalMode, index).url
 
   "cya" when {
     "in normal mode" must {
 
       "return answers rows with change links when have value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().directorPreviousAddress(index, address).
-            directorName(index, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorPreviousAddress(index, address)
+            .directorName(index, PersonName("first", "last"))
+        )
 
-        DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("previousAddress.checkYourAnswersLabel"),
-            answer = address.lines(countryOptions), answerIsMessageKey = false,
-            changeUrl = Some(Link(onwardUrl)), Some(Message("previousAddress.visuallyHidden.text", "first last")))))
+        DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("previousAddress.checkYourAnswersLabel", "first last"),
+            answer = address.lines(countryOptions),
+            answerIsMessageKey = false,
+            changeUrl = Some(Link(onwardUrl)),
+            visuallyHiddenText = Some(Message("previousAddress.visuallyHidden.text", "first last"))
+          ))
+        )
       }
 
       "return answers rows with add links when address years is under a year, and no previous address" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers()
-            .directorAddressYears(index, AddressYears.UnderAYear).directorName(index, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorAddressYears(index, AddressYears.UnderAYear)
+            .directorName(index, PersonName("first", "last"))
+        )
 
-        DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("previousAddress.checkYourAnswersLabel"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("previousAddress.visuallyHidden.text", "first last")))))
+        DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("previousAddress.checkYourAnswersLabel", "first last"),
+            answer = Seq("site.not_entered"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")),
+            visuallyHiddenText = Some(Message("previousAddress.visuallyHidden.text", "first last"))
+          ))
+        )
       }
 
       "return no answers rows when not mandatory and not have previous address" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers()
-            .directorAddressYears(index, AddressYears.OverAYear).directorName(index, PersonName("first", "last")))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .directorAddressYears(index, AddressYears.OverAYear)
+            .directorName(index, PersonName("first", "last"))
+        )
 
         DirectorPreviousAddressId(index).row(Some(Link(onwardUrl)))(request, implicitly) must equal(Nil)
       }

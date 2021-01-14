@@ -30,7 +30,7 @@ import play.api.mvc.MessagesControllerComponents
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
@@ -90,7 +90,7 @@ object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSp
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-      bind[MessagesControllerComponents].to(stubMessagesControllerComponents())
+      bind[MessagesControllerComponents].to(controllerComponents)
     ).build()
 
 }

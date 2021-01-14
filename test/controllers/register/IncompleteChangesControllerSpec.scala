@@ -24,7 +24,7 @@ import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.UserAnswers
 import views.html.register.incompleteChanges
 
@@ -65,7 +65,7 @@ class IncompleteChangesControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeUserAnswersCacheConnector,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

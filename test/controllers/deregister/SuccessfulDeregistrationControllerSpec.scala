@@ -19,7 +19,7 @@ package controllers.deregister
 import controllers.ControllerSpecBase
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.deregister.successful_deregistration
 
 
@@ -43,7 +43,7 @@ object SuccessfulDeregistrationControllerSpec extends ControllerSpecBase with Mo
   private def controller =
     new SuccessfulDeregistrationController(
       frontendAppConfig,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

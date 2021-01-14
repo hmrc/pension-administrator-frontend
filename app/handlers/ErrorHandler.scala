@@ -16,17 +16,16 @@
 
 package handlers
 
-import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Request
 import play.twirl.api.Html
-import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import views.html.error_template
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ErrorHandler @Inject()(
-                              appConfig: FrontendAppConfig,
                               val messagesApi: MessagesApi,
                               view: error_template
                             ) extends FrontendErrorHandler with I18nSupport {

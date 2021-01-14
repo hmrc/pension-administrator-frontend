@@ -29,7 +29,7 @@ import models.{Mode, CheckUpdateMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.NoRLSCheck
 import utils.{Navigator, annotations, UserAnswers, Enumerable}
 import views.html.register.variationWorkingKnowledge

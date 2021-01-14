@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.deregister.cannotDeregister
 
 class CannotDeregisterControllerSpec extends ControllerSpecBase with ScalaFutures {
@@ -41,7 +41,7 @@ class CannotDeregisterControllerSpec extends ControllerSpecBase with ScalaFuture
     new CannotDeregisterController(
       frontendAppConfig,
       FakeAuthAction(),
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

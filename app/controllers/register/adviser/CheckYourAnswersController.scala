@@ -27,7 +27,7 @@ import models.Mode._
 import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.Adviser
 import utils.checkyouranswers.Ops._

@@ -22,7 +22,7 @@ import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.UserAnswers
 import views.html.cannotMakeChanges
 
@@ -60,7 +60,7 @@ class CannotMakeChangesControllerSpec extends ControllerSpecBase {
       FakeAuthAction(UserType.Individual),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      stubMessagesControllerComponents(),
+      controllerComponents,
       view
     )
 

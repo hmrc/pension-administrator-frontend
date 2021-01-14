@@ -34,7 +34,7 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.domain
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -454,7 +454,7 @@ object AuthActionSpec {
     extends BaseController {
     def onPageLoad(mode: Mode = NormalMode): Action[AnyContent] = (authAction andThen allowAccess(mode)) { _ => Ok }
 
-    override protected def controllerComponents: ControllerComponents = stubMessagesControllerComponents()
+    override protected def controllerComponents: ControllerComponents = SpecBase.controllerComponents
   }
 
 }

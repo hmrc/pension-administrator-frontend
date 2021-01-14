@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.register.duplicateRegistration
 
 class DuplicateRegistrationControllerSpec extends ControllerSpecBase {
@@ -29,7 +29,7 @@ class DuplicateRegistrationControllerSpec extends ControllerSpecBase {
 
   def controller() = new DuplicateRegistrationController(
     frontendAppConfig, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig), getEmptyData,
-    stubMessagesControllerComponents(), view)
+    controllerComponents, view)
 
   private def viewAsString() = view()(fakeRequest, messages).toString
 

@@ -24,7 +24,7 @@ import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterPAYE
@@ -41,7 +41,7 @@ class PartnershipEnterPAYEControllerSpec extends ControllerWithCommonBehaviour {
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnershipEnterPAYEController(
     frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    stubMessagesControllerComponents(), view)
+    controllerComponents, view)
 
   private def enterPAYEView(form: Form[_]): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 

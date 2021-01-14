@@ -32,30 +32,54 @@ class HasVATIdSpec extends SpecBase {
   "cya" when {
     "in normal mode" must {
       "return no rows when non uk" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().areYouInUk(false))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers().areYouInUk(false)
+        )
 
         HasVATId.row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(Nil)
       }
 
       "return answers rows with change links when uk and have value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
-            areYouInUk(true).businessName().hasVat(true))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers().
+            areYouInUk(true).businessName().hasVat(true)
+        )
 
-        HasVATId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("hasVAT.heading"), answer = Seq("site.yes"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl)), Some(Message("hasVAT.visuallyHidden.text", "test company")))))
+        HasVATId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("hasVAT.heading", "test company"),
+            answer = Seq("site.yes"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl)),
+            Option(Message("hasVAT.visuallyHidden.text", "test company"))
+          ))
+        )
       }
 
       "return answers rows with add links when uk and have no value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
-            areYouInUk(true).businessType(BusinessType.UnlimitedCompany).businessName())
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers().
+            areYouInUk(true).businessType(BusinessType.UnlimitedCompany).businessName()
+        )
 
-        HasVATId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("hasVAT.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl, "site.add")), Some(Message("hasVAT.visuallyHidden.text", "test company")))))
+        HasVATId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("hasVAT.heading", "test company"),
+            answer = Seq("site.not_entered"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")),
+            Option(Message("hasVAT.visuallyHidden.text", "test company"))
+          ))
+        )
       }
     }
   }

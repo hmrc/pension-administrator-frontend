@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
@@ -38,7 +38,7 @@ class IndividualPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new IndividualPhoneController(
     new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider, stubMessagesControllerComponents(), view)
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider, controllerComponents, view)
 
   val view: phone = app.injector.instanceOf[phone]
 

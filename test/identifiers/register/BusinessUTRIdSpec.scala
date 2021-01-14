@@ -32,30 +32,58 @@ class BusinessUTRIdSpec extends SpecBase {
   "cya" when {
     "in normal mode" must {
       "return no rows when non uk" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().areYouInUk(false))
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers().areYouInUk(false)
+        )
 
         BusinessUTRId.row(Some(Link("site.change", onwardUrl)))(request, implicitly) must equal(Nil)
       }
 
       "return answers rows with change links when uk and have value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
-            areYouInUk(true).businessName().businessUtr())
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .areYouInUk(true)
+            .businessName()
+            .businessUtr()
+        )
 
-        BusinessUTRId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("utr.heading"), answer = Seq("1111111111"), answerIsMessageKey = false,
-            changeUrl = Some(Link(onwardUrl)), None)))
+        BusinessUTRId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("utr.heading", "the company"),
+            answer = Seq("1111111111"),
+            answerIsMessageKey = false,
+            changeUrl = Some(Link(onwardUrl)),
+            visuallyHiddenText = None
+          ))
+        )
       }
 
       "return answers rows with add links when uk and have no value" in {
-        val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "id",
-          PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers().
-            areYouInUk(true).businessType(BusinessType.UnlimitedCompany).businessName())
+        val request: DataRequest[AnyContent] = DataRequest(
+          request = FakeRequest(),
+          externalId = "id",
+          user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
+          userAnswers = UserAnswers()
+            .areYouInUk(true)
+            .businessType(BusinessType.UnlimitedCompany)
+            .businessName()
+        )
 
-        BusinessUTRId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(Seq(
-          AnswerRow(label = Message("utr.heading"), answer = Seq("site.not_entered"), answerIsMessageKey = true,
-            changeUrl = Some(Link(onwardUrl, "site.add")), None)))
+        BusinessUTRId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(
+          Seq(AnswerRow(
+            label = Message("utr.heading", "unlimited company"),
+            answer = Seq("site.not_entered"),
+            answerIsMessageKey = true,
+            changeUrl = Some(Link(onwardUrl, "site.add")),
+            visuallyHiddenText = None
+          ))
+        )
       }
     }
   }

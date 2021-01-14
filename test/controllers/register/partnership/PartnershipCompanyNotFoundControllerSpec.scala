@@ -20,7 +20,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.register.company.companyNotFound
 
 class PartnershipCompanyNotFoundControllerSpec extends ControllerSpecBase {
@@ -30,7 +30,7 @@ class PartnershipCompanyNotFoundControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PartnershipCompanyNotFoundController(frontendAppConfig, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction, new DataRequiredActionImpl,
-      stubMessagesControllerComponents(), view)
+      controllerComponents, view)
 
   def viewAsString(): String = view()(fakeRequest, messages).toString
 

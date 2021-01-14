@@ -24,7 +24,7 @@ import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
@@ -36,7 +36,7 @@ class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
   val view: email = app.injector.instanceOf[email]
   private def controller(dataRetrievalAction: DataRetrievalAction) = new AdviserEmailController(
     new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider, stubMessagesControllerComponents(), view)
+    dataRetrievalAction, new DataRequiredActionImpl, formProvider, controllerComponents, view)
 
   private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 

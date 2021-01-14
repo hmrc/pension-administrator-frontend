@@ -39,7 +39,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -79,7 +79,7 @@ object PostcodeLookupControllerSpec extends SpecBase {
 
     override protected def form: Form[String] = formProvider()
 
-    override protected def controllerComponents: MessagesControllerComponents = stubMessagesControllerComponents()
+    override protected def controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
   }
 
 }

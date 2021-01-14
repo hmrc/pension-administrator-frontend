@@ -63,9 +63,11 @@ object CheckYourAnswers {
   implicit def reference[I <: TypedIdentifier[ReferenceValue]]
   (implicit rds: Reads[ReferenceValue]): CheckYourAnswers[I] = ReferenceValueCYA()()
 
-  implicit def personName[I <: TypedIdentifier[PersonName]](implicit rds: Reads[PersonName]): CheckYourAnswers[I] = PersonNameCYA()()
+  implicit def personName[I <: TypedIdentifier[PersonName]]
+  (implicit rds: Reads[PersonName]): CheckYourAnswers[I] = PersonNameCYA()()
 
-  implicit def date[I <: TypedIdentifier[LocalDate]](implicit rds: Reads[LocalDate]): CheckYourAnswers[I] = DateCYA()()
+  implicit def date[I <: TypedIdentifier[LocalDate]]
+  (implicit rds: Reads[LocalDate]): CheckYourAnswers[I] = DateCYA()()
 
   implicit def tolerantIndividual[I <: TypedIdentifier[TolerantIndividual]]
   (implicit rds: Reads[TolerantIndividual]): CheckYourAnswers[I] = TolerantIndividualCYA()()

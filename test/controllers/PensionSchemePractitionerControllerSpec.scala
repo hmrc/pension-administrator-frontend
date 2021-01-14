@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 import views.html.pensionSchemePractitioner
 
 class PensionSchemePractitionerControllerSpec extends SpecBase {
@@ -41,7 +41,7 @@ class PensionSchemePractitionerControllerSpec extends SpecBase {
 
 
   def testController: PensionSchemePractitionerController =
-    new PensionSchemePractitionerController(frontendAppConfig, stubMessagesControllerComponents(), view)
+    new PensionSchemePractitionerController(frontendAppConfig, controllerComponents, view)
 
   def viewAsString: String =
     view()(fakeRequest, messages).toString()

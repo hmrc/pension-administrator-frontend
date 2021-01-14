@@ -19,11 +19,11 @@ package controllers
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.FakeAuthAction
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
+
 
 class LoginControllerSpec extends ControllerSpecBase {
 
-  private def loginController = new LoginController(frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, stubMessagesControllerComponents())
+  private def loginController = new LoginController(frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, controllerComponents)
 
   "Login Controller" must {
 
