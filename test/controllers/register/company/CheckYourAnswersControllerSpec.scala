@@ -44,7 +44,7 @@ class CheckYourAnswersControllerSpec
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val mockDataCompletion = mock[DataCompletion]
-  private val defaultCompany = Message("theBusiness")
+  private val defaultCompany = "test company"
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val crn = "test-crn"
   private val vat = "test-vat"
@@ -55,7 +55,7 @@ class CheckYourAnswersControllerSpec
   private val address = Address("Telford1", "Telford2", None, None, Some("TF3 4ER"), "Country of GB")
   private val view: check_your_answers = app.injector.instanceOf[check_your_answers]
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
     new CheckYourAnswersController(
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
@@ -95,16 +95,17 @@ class CheckYourAnswersControllerSpec
     )(fakeRequest, messages).toString()
 
     status(result) mustBe OK
+
     contentAsString(result) mustBe expectedResult
   }
 
   private val answerRows = Seq(
     answerRow(
-      label = Message("businessName.heading", Message("businessType.limitedCompany.lc")),
+      label = Message("businessName.heading", Message("businessType.limitedCompany.lc").resolve),
       answer = Seq("test company")
     ),
     answerRow(
-      label = Message("utr.heading", Message("businessType.limitedCompany")),
+      label = Message("utr.heading", Message("businessType.limitedCompany.lc")),
       answer = Seq("1111111111")
     ),
     answerRow(
@@ -158,11 +159,11 @@ class CheckYourAnswersControllerSpec
       visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultCompany))
     ),
     answerRow(
-      label = Message("addressYears.heading", Message("theBusiness")),
+      label = Message("addressYears.heading", defaultCompany),
       answer = Seq(s"common.addressYears.${addressYears.toString}"),
       answerIsMessageKey = true,
       changeUrl = Some(Link(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("theBusiness")))
+      visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", defaultCompany))
     ),
     answerRow(
       label = Message("previousAddress.checkYourAnswersLabel", defaultCompany),
@@ -206,11 +207,11 @@ class CheckYourAnswersControllerSpec
       visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultCompany))
     ),
     answerRow(
-      label = Message("addressYears.heading", Message("theBusiness")),
+      label = Message("addressYears.heading", defaultCompany),
       answer = Seq(s"common.addressYears.${addressYears.toString}"),
       answerIsMessageKey = true,
       changeUrl = Some(Link(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", Message("theBusiness")))
+      visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", defaultCompany))
     ),
     answerRow(
       label = Message("previousAddress.checkYourAnswersLabel", defaultCompany),
@@ -284,7 +285,8 @@ class CheckYourAnswersControllerSpec
 
     "on a POST" must {
       "redirect to the next page when data is complete" in {
-        val result = controller().onSubmit(NormalMode)(fakeRequest)
+        val retrievalAction = UserAnswers().completeCompanyDetailsUK.dataRetrievalAction
+        val result = controller(retrievalAction).onSubmit(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(onwardRoute.url)

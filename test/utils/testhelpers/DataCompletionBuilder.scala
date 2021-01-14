@@ -123,6 +123,7 @@ object DataCompletionBuilder {
     def completeCompanyDetailsUK: UserAnswers =
       answers
         .areYouInUk(answer = true)
+        .businessType(BusinessType.LimitedCompany)
         .regInfo(RegistrationLegalStatus.LimitedCompany)
         .hasVat(true)
         .enterVat("test-vat")
@@ -138,11 +139,11 @@ object DataCompletionBuilder {
         .companyEmail(email)
         .companyPhone(phone)
         .businessName()
-        .businessType(BusinessType.LimitedCompany)
 
     def completePartnershipDetailsUK: UserAnswers =
       answers
         .areYouInUk(answer = true)
+        .businessType(BusinessType.LimitedPartnership)
         .regInfo(RegistrationLegalStatus.Partnership)
         .businessUtr()
         .hasVat(answer = true)
@@ -155,12 +156,12 @@ object DataCompletionBuilder {
         .partnershipPreviousAddress(address)
         .partnershipEmail(email)
         .partnershipPhone(phone)
-        .businessName()
-        .businessType(BusinessType.LimitedPartnership)
+        .businessName("limited partnership")
 
     def completeCompanyDetailsNonUK: UserAnswers =
       answers
         .areYouInUk(answer = false)
+        .businessType(BusinessType.LimitedCompany)
         .regInfo(RegistrationLegalStatus.LimitedCompany)
         .businessName()
         .nonUkCompanyAddress(address)
@@ -172,9 +173,10 @@ object DataCompletionBuilder {
         .companyPhone(phone)
 
     def completePartnershipDetailsNonUK: UserAnswers =
-      answers.areYouInUk(answer = false)
-        .businessName()
+      answers
+        .areYouInUk(answer = false)
         .businessType(BusinessType.LimitedPartnership)
+        .businessName("limited partnership")
         .regInfo(RegistrationLegalStatus.Partnership)
         .nonUkPartnershipAddress(address)
         .partnershipContactAddress(address)
@@ -188,7 +190,8 @@ object DataCompletionBuilder {
       answers
         .registrationInfo(
           RegistrationInfo(
-            legalStatus, "test-sap",
+            legalStatus = legalStatus,
+            sapNumber = "test-sap",
             noIdentifier = false,
             customerType = RegistrationCustomerType.UK,
             idType = None,
