@@ -6,15 +6,15 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"       %% "simple-reactivemongo"           % "7.30.0-play-26",
-    "uk.gov.hmrc"       %% "logback-json-logger"            % "4.8.0",
-    "uk.gov.hmrc"       %% "govuk-template"                 % "5.36.0-play-26",
-    "uk.gov.hmrc"       %% "play-health"                    % "3.14.0-play-26",
-    "uk.gov.hmrc"       %% "play-ui"                        % "8.12.0-play-26",
+    "uk.gov.hmrc"       %% "simple-reactivemongo"           % "7.31.0-play-26",
+    "uk.gov.hmrc"       %% "logback-json-logger"            % "4.9.0",
+    "uk.gov.hmrc"       %% "govuk-template"                 % "5.61.0-play-26",
+    "uk.gov.hmrc"       %% "play-health"                    % "3.16.0-play-26",
+    "uk.gov.hmrc"       %% "play-ui"                        % "8.20.0-play-26",
     "uk.gov.hmrc"       %% "http-caching-client"            % "9.1.0-play-26",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.3.0-play-26",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-26"     % "3.2.0",
-    "uk.gov.hmrc"       %% "play-language"                  % "4.3.0-play-26",
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.5.0-play-26",
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-26"     % "3.3.0",
+    "uk.gov.hmrc"       %% "play-language"                  % "4.7.0-play-26",
     "uk.gov.hmrc"       %% "domain"                         % "5.10.0-play-26",
     "uk.gov.hmrc"       %% "play-whitelist-filter"          % "3.4.0-play-26",
     "com.typesafe.play" %% "play-json-joda"                 % "2.6.10"
