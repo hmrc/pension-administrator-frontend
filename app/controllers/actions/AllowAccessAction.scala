@@ -96,6 +96,8 @@ class AllowAccessActionNoSuspendedCheck(
     minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
       if (minimalPSA.rlsFlag) {
         Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
+      } else if (minimalPSA.deceasedFlag) {
+        Some(Redirect(config.youMustContactHMRCUrl))
       } else {
         None
       }
