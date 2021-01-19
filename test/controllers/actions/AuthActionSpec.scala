@@ -48,7 +48,8 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
     isPsaSuspended = false,
     organisationName = None,
     individualDetails = None,
-    rlsFlag = false
+    rlsFlag = false,
+    deceasedFlag = false
   )
 
   def allowAccessActionProviderImpl(config: FrontendAppConfig) = new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(minimalPsa), config)
@@ -111,7 +112,8 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
             isPsaSuspended = true,
             organisationName = None,
             individualDetails = None,
-            rlsFlag = false
+            rlsFlag = false,
+            deceasedFlag = false
           )
 
           def controller = new Harness(authAction, new AllowAccessActionProviderImpl(FakeMinimalPsaConnector(minimalPsa), frontendAppConfig))

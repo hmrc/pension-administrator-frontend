@@ -17,6 +17,7 @@
 package controllers.deregister
 
 import audit.testdoubles.StubSuccessfulAuditService
+import config.FrontendAppConfig
 import connectors._
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
@@ -33,7 +34,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HttpResponse, HeaderCarrier}
-
 import views.html.deregister.confirmStopBeingPsa
 
 import scala.concurrent.{Future, ExecutionContext}
@@ -179,13 +179,17 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
   }
 
   private val minimalPsaDetailsIndividual = MinimalPSA(
-    "test@test.com", isPsaSuspended = false, None, Some(IndividualDetails("John", Some("Doe"), "Doe")), rlsFlag = false)
-  private val minimalPsaDetailsNone = MinimalPSA("test@test.com", isPsaSuspended = false, None, None, rlsFlag = false)
-  private val minimalPsaDetailsRLS = MinimalPSA("test@test.com", isPsaSuspended = false, None, None, rlsFlag = true)
-  private val minimalPsaDetailsNoneSuspended = MinimalPSA("test@test.com", isPsaSuspended = true, None, None, rlsFlag = false)
+    "test@test.com", isPsaSuspended = false, None, Some(IndividualDetails("John", Some("Doe"), "Doe")),
+    rlsFlag = false, deceasedFlag = false)
+  private val minimalPsaDetailsNone = MinimalPSA("test@test.com", isPsaSuspended = false, None, None,
+    rlsFlag = false, deceasedFlag = false)
+  private val minimalPsaDetailsRLS = MinimalPSA("test@test.com", isPsaSuspended = false, None, None,
+    rlsFlag = true, deceasedFlag = false)
+  private val minimalPsaDetailsNoneSuspended = MinimalPSA("test@test.com", isPsaSuspended = true, None, None,
+    rlsFlag = false, deceasedFlag = false)
 
-  private def fakeAllowAccess(minimalPsaConnector: MinimalPsaConnector): AllowAccessForNonSuspendedUsersAction =
-    new AllowAccessForNonSuspendedUsersAction(minimalPsaConnector)
+  private def fakeAllowAccess(minimalPsaConnector: MinimalPsaConnector,config: FrontendAppConfig): AllowAccessForNonSuspendedUsersAction =
+    new AllowAccessForNonSuspendedUsersAction(minimalPsaConnector, config)
 
   val view: confirmStopBeingPsa = inject[confirmStopBeingPsa]
 
@@ -199,7 +203,7 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
       minimalDetailsConnector,
       fakeDeregistrationConnector(canDeregister),
       fakeTaxEnrolmentsConnector,
-      fakeAllowAccess(minimalDetailsConnector),
+      fakeAllowAccess(minimalDetailsConnector, frontendAppConfig),
       FakeUserAnswersCacheConnector,
       controllerComponents,
       view

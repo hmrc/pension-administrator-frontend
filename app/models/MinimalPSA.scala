@@ -36,7 +36,8 @@ case class MinimalPSA(
                        isPsaSuspended: Boolean,
                        organisationName: Option[String],
                        individualDetails: Option[IndividualDetails],
-                       rlsFlag: Boolean
+                       rlsFlag: Boolean,
+                       deceasedFlag: Boolean
                      )
 
 object MinimalPSA {

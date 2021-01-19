@@ -22,11 +22,11 @@ import connectors.MinimalPsaConnector
 import models._
 import models.requests.AuthenticatedRequest
 import play.api.mvc.Results._
-import play.api.mvc.{ActionFilter, Call, Request, Result}
+import play.api.mvc.{Call, Request, Result, ActionFilter}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
 class AllowAccessAction(
                          mode: Mode,
@@ -40,6 +40,8 @@ class AllowAccessAction(
         Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
       } else if (minimalPSA.rlsFlag) {
         Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
+      } else if (minimalPSA.deceasedFlag) {
+        Some(Redirect(config.youMustContactHMRCUrl))
       } else {
         None
       }
