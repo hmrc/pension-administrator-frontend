@@ -17,16 +17,17 @@
 package controllers.actions
 
 import com.google.inject.Inject
+import config.FrontendAppConfig
 import connectors.MinimalPsaConnector
 import models.requests.AuthenticatedRequest
-import play.api.mvc.{ActionFilter, Result}
+import play.api.mvc.{Result, ActionFilter}
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Future, ExecutionContext}
 
-class AllowAccessForNonSuspendedUsersAction @Inject()(minimalPsaConnector: MinimalPsaConnector)
+class AllowAccessForNonSuspendedUsersAction @Inject()(minimalPsaConnector: MinimalPsaConnector, config: FrontendAppConfig)
                                                      (implicit val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
 
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
@@ -40,6 +41,8 @@ class AllowAccessForNonSuspendedUsersAction @Inject()(minimalPsaConnector: Minim
               Some(Redirect(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad()))
             } else if (minimalPSA.rlsFlag) {
               Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
+            } else if (minimalPSA.deceasedFlag) {
+              Some(Redirect(config.youMustContactHMRCUrl))
             } else {
               None
             }

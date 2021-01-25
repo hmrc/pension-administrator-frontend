@@ -35,7 +35,8 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
     isPsaSuspended = false,
     organisationName = None,
     individualDetails = None,
-    rlsFlag = false
+    rlsFlag = false,
+    deceasedFlag = false
   )
 
   class TestAllowAccessAction(mode: Mode, minimalPsa: MinimalPSA, config:FrontendAppConfig) extends
@@ -103,7 +104,8 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
         isPsaSuspended = true,
         organisationName = None,
         individualDetails = None,
-        rlsFlag = false
+        rlsFlag = false,
+        deceasedFlag = false
       )
       val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
@@ -131,7 +133,8 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
         isPsaSuspended = false,
         organisationName = None,
         individualDetails = None,
-        rlsFlag = true
+        rlsFlag = true,
+        deceasedFlag = false
       )
       val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
       val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
@@ -140,6 +143,25 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       whenReady(futureResult) { result =>
         result.map { _.header.status  } mustBe Some(SEE_OTHER)
         result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad().url)
+      }
+    }
+
+    "redirect to contact HMRC page for user with enrolment where deceased flag is set" in {
+      val minimalPsa = MinimalPSA(
+        email = "a@a.c",
+        isPsaSuspended = false,
+        organisationName = None,
+        individualDetails = None,
+        rlsFlag = false,
+        deceasedFlag = true
+      )
+      val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
+      val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
+      val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
+
+      whenReady(futureResult) { result =>
+        result.map { _.header.status  } mustBe Some(SEE_OTHER)
+        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(Call("GET", frontendAppConfig.youMustContactHMRCUrl).url)
       }
     }
   }

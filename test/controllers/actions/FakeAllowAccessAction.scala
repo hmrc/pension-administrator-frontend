@@ -33,7 +33,8 @@ private class FakeAllowAccessAction(mode: Mode, config: FrontendAppConfig) exten
       isPsaSuspended = true,
       organisationName = None,
       individualDetails = None,
-      rlsFlag = false
+      rlsFlag = false,
+      deceasedFlag = false
     )
   ), config) {
   override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] =
