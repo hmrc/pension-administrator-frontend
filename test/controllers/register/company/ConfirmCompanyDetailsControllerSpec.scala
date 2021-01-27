@@ -293,7 +293,6 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
     dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   ) =
     new ConfirmCompanyDetailsController(
-      frontendAppConfig,
       dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

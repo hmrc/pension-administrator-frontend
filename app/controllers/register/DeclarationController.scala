@@ -22,9 +22,7 @@ import connectors._
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import controllers.register.routes.{DuplicateRegistrationController, SubmissionInvalidController}
 import identifiers.register.{DeclarationId, _}
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{ExistingPSA, Mode, NormalMode}
 import play.api.Logger
@@ -37,24 +35,31 @@ import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declaration
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DeclarationController @Inject()(appConfig: FrontendAppConfig,
-                                      authenticate: AuthAction,
-                                      allowAccess: AllowAccessActionProvider,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction,
-                                      allowDeclaration: AllowDeclarationActionProvider,
-                                      @Register navigator: Navigator,
-                                      dataCacheConnector: UserAnswersCacheConnector,
-                                      pensionsSchemeConnector: PensionsSchemeConnector,
-                                      knownFactsRetrieval: KnownFactsRetrieval,
-                                      enrolments: TaxEnrolmentsConnector,
-                                      emailConnector: EmailConnector,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      val view: declaration
-                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+class DeclarationController @Inject()(
+                                       appConfig: FrontendAppConfig,
+                                       authenticate: AuthAction,
+                                       allowAccess: AllowAccessActionProvider,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       allowDeclaration: AllowDeclarationActionProvider,
+                                       @Register navigator: Navigator,
+                                       dataCacheConnector: UserAnswersCacheConnector,
+                                       pensionsSchemeConnector: PensionsSchemeConnector,
+                                       knownFactsRetrieval: KnownFactsRetrieval,
+                                       enrolments: TaxEnrolmentsConnector,
+                                       emailConnector: EmailConnector,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       val view: declaration
+                                     )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals {
+
+  private val logger = Logger(classOf[DeclarationController])
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen
     getData andThen allowDeclaration(mode) andThen requireData).async {
@@ -80,37 +85,37 @@ class DeclarationController @Inject()(appConfig: FrontendAppConfig,
           psaResponse <- pensionsSchemeConnector.registerPsa(answers)
           cacheMap <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
           _ <- enrol(psaResponse.psaId)
-          _ <- sendEmail(answers, psaResponse.psaId)
+          _ <- sendEmail(psaResponse.psaId)
         } yield {
           Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
         }) recoverWith {
           case _: BadRequestException =>
-            Future.successful(Redirect(SubmissionInvalidController.onPageLoad()))
+            Future.successful(Redirect(controllers.register.routes.SubmissionInvalidController.onPageLoad()))
           case ex: UpstreamErrorResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
-            Future.successful(Redirect(DuplicateRegistrationController.onPageLoad()))
+            Future.successful(Redirect(controllers.register.routes.DuplicateRegistrationController.onPageLoad()))
           case _ =>
             Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
         }
       }
   }
 
-  private def sendEmail(answers: UserAnswers, psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[EmailStatus] = {
+  private def sendEmail(psaId: String)
+                       (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[EmailStatus] =
     (psaEmail, psaName) match {
       case (Some(email), Some(name)) =>
         val templateParams = Map("psaName" -> name)
         emailConnector.sendEmail(email, appConfig.emailTemplateId, templateParams, PsaId(psaId))
       case _ => Future.successful(EmailNotSent)
     }
-  }
 
-  private def enrol(psaId: String)(implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] = {
+  private def enrol(psaId: String)
+                   (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] =
     knownFactsRetrieval.retrieve(psaId) map { knownFacts =>
       enrolments.enrol(psaId, knownFacts)
     } getOrElse Future.failed(KnownFactsRetrievalException())
-  }
 
   case class KnownFactsRetrievalException() extends Exception {
-    def apply(): Unit = Logger.error("Could not retrieve Known Facts")
+    def apply(): Unit = logger.error("Could not retrieve Known Facts")
   }
 
   case class PSANameNotFoundException() extends Exception("Could not retrieve PSA Name")

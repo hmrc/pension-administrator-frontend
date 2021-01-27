@@ -266,7 +266,6 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   ) =
     new ConfirmPartnershipDetailsController(
-      frontendAppConfig,
       dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

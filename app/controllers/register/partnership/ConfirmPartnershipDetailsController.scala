@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -25,7 +24,6 @@ import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipRegisteredAddressId}
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
-import javax.inject.Inject
 import models._
 import models.requests.DataRequest
 import play.api.Logger
@@ -40,10 +38,10 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmPartnershipDetailsController @Inject()(
-                                                     appConfig: FrontendAppConfig,
                                                      dataCacheConnector: UserAnswersCacheConnector,
                                                      @Partnership navigator: Navigator,
                                                      authenticate: AuthAction,
@@ -56,30 +54,35 @@ class ConfirmPartnershipDetailsController @Inject()(
                                                      val controllerComponents: MessagesControllerComponents,
                                                      val view: confirmPartnershipDetails
                                                    )(implicit val executionContext: ExecutionContext)
-                                                     extends FrontendBaseController with I18nSupport with Retrievals {
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals {
+
+  private val logger = Logger(classOf[ConfirmPartnershipDetailsController])
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
-    implicit request =>
-      getPartnershipDetails { registration =>
-        upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
-          upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
-            upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
-              dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+      implicit request =>
+        getPartnershipDetails { registration =>
+          upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
+            upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
+              upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
+                dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
 
-                Ok(view(
-                  form,
-                  registration.response.organisation.organisationName,
-                  registration.response.address,
-                  countryOptions)
-                )
+                  Ok(view(
+                    form,
+                    registration.response.organisation.organisationName,
+                    registration.response.address,
+                    countryOptions)
+                  )
+                }
               }
             }
           }
         }
-      }
-  }
+    }
 
   private def getPartnershipDetails(fn: OrganizationRegistration => Future[Result])
                                    (implicit request: DataRequest[AnyContent]): Either[Future[Result], Future[Result]] = {
@@ -98,45 +101,44 @@ class ConfirmPartnershipDetailsController @Inject()(
     }
   }
 
-  private def upsert[I <: TypedIdentifier.PathDependent](userAnswers: UserAnswers, id: I)(value: id.Data)
+  private def upsert[I <: TypedIdentifier.PathDependent](userAnswers: UserAnswers, id: I)
+                                                        (value: id.Data)
                                                         (fn: UserAnswers => Future[Result])
-                                                        (implicit writes: Writes[id.Data]) = {
-
+                                                        (implicit writes: Writes[id.Data]): Future[Result] =
     userAnswers
       .set(id)(value)
       .fold(
         errors => {
-          Logger.error("Unable to set user answer", JsResultException(errors))
+          logger.error("Unable to set user answer", JsResultException(errors))
           Future.successful(InternalServerError)
         },
         userAnswers => fn(userAnswers)
       )
-  }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            (BusinessNameId and PartnershipRegisteredAddressId).retrieve.right.map {
-              case name ~ address =>
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          (BusinessNameId and PartnershipRegisteredAddressId).retrieve.right.map {
+            case name ~ address =>
               Future.successful(BadRequest(view(
                 formWithErrors,
                 name,
                 address,
                 countryOptions
               )))
-            },
-          {
-            case true =>
-              Future.successful(Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, request.userAnswers)))
-            case false =>
-              val updatedAnswers = request.userAnswers.removeAllOf(List(
-                PartnershipRegisteredAddressId, RegistrationInfoId
-              )).asOpt.getOrElse(request.userAnswers)
-              dataCacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
-                Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
-              }
-          }
-        )
+          },
+        {
+          case true =>
+            Future.successful(Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, request.userAnswers)))
+          case false =>
+            val updatedAnswers = request.userAnswers.removeAllOf(List(
+              PartnershipRegisteredAddressId, RegistrationInfoId
+            )).asOpt.getOrElse(request.userAnswers)
+            dataCacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
+              Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
+            }
+        }
+      )
   }
 }

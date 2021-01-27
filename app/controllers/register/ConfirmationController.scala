@@ -16,12 +16,10 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.PsaSubscriptionResponseId
-import javax.inject.Inject
 import models.Mode
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,18 +27,24 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.confirmation
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
-                                       authenticate: AuthAction,
-                                       allowAccess: AllowAccessActionProvider,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       dataCacheConnector: UserAnswersCacheConnector,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val view: confirmation
-                                      )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+class ConfirmationController @Inject()(
+                                        override val messagesApi: MessagesApi,
+                                        authenticate: AuthAction,
+                                        allowAccess: AllowAccessActionProvider,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        dataCacheConnector: UserAnswersCacheConnector,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        val view: confirmation
+                                      )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals {
+
+  private val logger = Logger(classOf[ConfirmationController])
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -50,7 +54,7 @@ class ConfirmationController @Inject()(appConfig: FrontendAppConfig,
             case (Some(name), Some(email)) =>
               Future.successful(Ok(view(response.psaId, name, email)))
             case (noPsaName, noEmail) =>
-              Logger.warn(s"No Psa Name $noPsaName Or Email $noEmail Found")
+              logger.warn(s"No Psa Name $noPsaName Or Email $noEmail Found")
               Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
           }
         }

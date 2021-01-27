@@ -24,9 +24,8 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,6 +47,8 @@ class EmailConnectorImpl @Inject()(
                                     http: HttpClient,
                                     crypto: ApplicationCrypto
                                   ) extends EmailConnector {
+
+  private val logger = Logger(classOf[EmailConnectorImpl])
 
   private def callBackUrl(psaId: PsaId): String = {
     val encryptedPsaId = crypto.QueryParameterCrypto.encrypt(PlainText(psaId.value)).value
@@ -71,7 +72,7 @@ class EmailConnectorImpl @Inject()(
         case ACCEPTED =>
           EmailSent
         case status =>
-          Logger.warn(s"Sending Email failed with response status $status")
+          logger.warn(s"Sending Email failed with response status $status")
           EmailNotSent
       }
     } recoverWith logExceptions
@@ -79,7 +80,7 @@ class EmailConnectorImpl @Inject()(
 
   private def logExceptions: PartialFunction[Throwable, Future[EmailStatus]] = {
     case t: Throwable =>
-      Logger.warn("Unable to connect to Email Service", t)
+      logger.warn("Unable to connect to Email Service", t)
       Future.successful(EmailNotSent)
   }
 }

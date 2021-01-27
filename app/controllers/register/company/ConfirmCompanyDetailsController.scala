@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -25,7 +24,6 @@ import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.company.ConfirmCompanyAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
-import javax.inject.Inject
 import models._
 import models.requests.DataRequest
 import play.api.Logger
@@ -40,62 +38,69 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
-                                                dataCacheConnector: UserAnswersCacheConnector,
-                                                @RegisterCompany navigator: Navigator,
-                                                authenticate: AuthAction,
-                                                allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                registrationConnector: RegistrationConnector,
-                                                formProvider: CompanyAddressFormProvider,
-                                                countryOptions: CountryOptions,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                val view: confirmCompanyDetails
+class ConfirmCompanyDetailsController @Inject()(
+                                                 dataCacheConnector: UserAnswersCacheConnector,
+                                                 @RegisterCompany navigator: Navigator,
+                                                 authenticate: AuthAction,
+                                                 allowAccess: AllowAccessActionProvider,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 registrationConnector: RegistrationConnector,
+                                                 formProvider: CompanyAddressFormProvider,
+                                                 countryOptions: CountryOptions,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 val view: confirmCompanyDetails
                                                )(implicit val executionContext: ExecutionContext)
-                                                extends FrontendBaseController with I18nSupport with Retrievals {
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals {
+
+  private val logger = Logger(classOf[ConfirmCompanyDetailsController])
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
-    implicit request =>
-      getCompanyDetails { registration =>
-        upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
-          upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
-            upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
-              dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+      implicit request =>
+        getCompanyDetails { registration =>
+          upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
+            upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
+              upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
+                dataCacheConnector.upsert(request.externalId, userAnswers.json).flatMap { _ =>
 
-                Future.successful(Ok(view(
-                  form, registration.response.address, registration.response.organisation.organisationName, countryOptions
-                )))
+                  Future.successful(Ok(view(
+                    form, registration.response.address, registration.response.organisation.organisationName, countryOptions
+                  )))
+                }
               }
             }
           }
         }
-      }
-  }
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          (BusinessNameId and ConfirmCompanyAddressId).retrieve.right.map {
-            case name ~ address =>
-              Future.successful(BadRequest(view(formWithErrors, address, name, countryOptions)))
-          },
-        {
-          case true =>
-            Future.successful(Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, request.userAnswers)))
-          case false =>
-            val updatedAnswers = request.userAnswers.removeAllOf(List(ConfirmCompanyAddressId, RegistrationInfoId)).asOpt.getOrElse(request.userAnswers)
-            dataCacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
-              Future.successful(Redirect(routes.CompanyUpdateDetailsController.onPageLoad()))
-            }
-        }
-      )
-  }
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        form.bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            (BusinessNameId and ConfirmCompanyAddressId).retrieve.right.map {
+              case name ~ address =>
+                Future.successful(BadRequest(view(formWithErrors, address, name, countryOptions)))
+            },
+          {
+            case true =>
+              Future.successful(Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, request.userAnswers)))
+            case false =>
+              val updatedAnswers = request.userAnswers.removeAllOf(List(ConfirmCompanyAddressId, RegistrationInfoId)).asOpt.getOrElse(request.userAnswers)
+              dataCacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
+                Future.successful(Redirect(routes.CompanyUpdateDetailsController.onPageLoad()))
+              }
+          }
+        )
+    }
 
   private def getCompanyDetails(fn: OrganizationRegistration => Future[Result])
                                (implicit request: DataRequest[AnyContent]): Either[Future[Result], Future[Result]] = {
@@ -113,19 +118,18 @@ class ConfirmCompanyDetailsController @Inject()(appConfig: FrontendAppConfig,
     }
   }
 
-  private def upsert[I <: TypedIdentifier.PathDependent](userAnswers: UserAnswers, id: I)(value: id.Data)
+  private def upsert[I <: TypedIdentifier.PathDependent](userAnswers: UserAnswers, id: I)
+                                                        (value: id.Data)
                                                         (fn: UserAnswers => Future[Result])
-                                                        (implicit writes: Writes[id.Data]): Future[Result] = {
-
+                                                        (implicit writes: Writes[id.Data]): Future[Result] =
     userAnswers
       .set(id)(value)
       .fold(
         errors => {
-          Logger.error("Unable to set user answer", JsResultException(errors))
+          logger.error("Unable to set user answer", JsResultException(errors))
           Future.successful(InternalServerError)
         },
         userAnswers => fn(userAnswers)
       )
-  }
 
 }

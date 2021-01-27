@@ -23,14 +23,17 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HttpException, _}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HttpClient, HttpException, _}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends AddressLookupConnector {
+class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+  extends AddressLookupConnector {
 
-  override def addressLookupByPostCode(postcode: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
+  private val logger = Logger(classOf[AddressLookupConnectorImpl])
+
+  override def addressLookupByPostCode(postcode: String)
+                                      (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
     val schemeHc = hc.withExtraHeaders("X-Hmrc-Origin" -> "PODS")
 
     val addressLookupUrl = s"${config.addressLookUp}/v2/uk/addresses?postcode=$postcode"
@@ -38,9 +41,9 @@ class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendApp
     implicit val reads: Reads[Seq[TolerantAddress]] = TolerantAddress.postCodeLookupReads
 
     http.GET[HttpResponse](addressLookupUrl)(implicitly, schemeHc, implicitly) flatMap {
-      case response if response.status equals OK => Future.successful{
+      case response if response.status equals OK => Future.successful {
         response.json.as[Seq[TolerantAddress]]
-          .filterNot(a=>a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.addressLine3.isEmpty && a.addressLine4.isEmpty)
+          .filterNot(a => a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.addressLine3.isEmpty && a.addressLine4.isEmpty)
       }
       case response =>
         val message = s"Address Lookup failed with status ${response.status} Response body :${response.body}"
@@ -51,7 +54,7 @@ class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendApp
 
   private def logExceptions: PartialFunction[Throwable, Future[Seq[TolerantAddress]]] = {
     case t: Throwable =>
-      Logger.error("Exception in AddressLookup", t)
+      logger.error("Exception in AddressLookup", t)
       Future.failed(t)
   }
 }
