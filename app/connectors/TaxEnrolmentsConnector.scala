@@ -45,12 +45,16 @@ trait TaxEnrolmentsConnector {
 }
 
 @Singleton
-class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
-                                           config: FrontendAppConfig,
-                                           auditService: AuditService)
+class TaxEnrolmentsConnectorImpl @Inject()(
+                                            val http: HttpClient,
+                                            config: FrontendAppConfig,
+                                            auditService: AuditService
+                                          )
   extends TaxEnrolmentsConnector
     with RetryHelper
     with HttpResponseHelper {
+
+  private val logger = Logger(classOf[TaxEnrolmentsConnectorImpl])
 
   def url: String = config.taxEnrolmentsUrl("HMRC-PODS-ORG")
 
@@ -75,7 +79,7 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
             auditService.sendEvent(PSAEnrolmentEvent(request.externalId, enrolmentKey))
             Future.successful(response)
           case _ =>
-            if (response.body.contains("INVALID_JSON")) Logger.warn(s"INVALID_JSON returned from call to $url")
+            if (response.body.contains("INVALID_JSON")) logger.warn(s"INVALID_JSON returned from call to $url")
             handleErrorResponse("PUT", url)(response)
         }
     }
@@ -84,8 +88,8 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
 
   private def logExceptions(knownFacts: KnownFacts): PartialFunction[Try[HttpResponse], Unit] = {
     case Failure(t: Throwable) =>
-      Logger.error("Unable to connect to Tax Enrolments", t)
-      Logger.debug(s"Known Facts: ${Json.toJson(knownFacts)}")
+      logger.error("Unable to connect to Tax Enrolments", t)
+      logger.debug(s"Known Facts: ${Json.toJson(knownFacts)}")
   }
 
 
@@ -112,6 +116,6 @@ class TaxEnrolmentsConnectorImpl @Inject()(val http: HttpClient,
 
   private def logDeEnrolmentExceptions: PartialFunction[Try[HttpResponse], Unit] = {
     case Failure(t: Throwable) =>
-      Logger.error("Unable to connect to Tax Enrolments to de enrol the PSA", t)
+      logger.error("Unable to connect to Tax Enrolments to de enrol the PSA", t)
   }
 }

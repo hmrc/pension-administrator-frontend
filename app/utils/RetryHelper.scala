@@ -16,23 +16,24 @@
 
 package utils
 
-import java.util.concurrent.Callable
-
 import akka.actor.ActorSystem
 import akka.pattern.Patterns.after
 import config.FrontendAppConfig
 import play.api.Logger
 import uk.gov.hmrc.http.Upstream5xxResponse
 
+import java.util.concurrent.Callable
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
 trait RetryHelper  {
 
+  private val logger = Logger(classOf[RetryHelper])
 
   val as: ActorSystem = ActorSystem()
 
-  def retryOnFailure[T](f: () => Future[T], config: FrontendAppConfig)(implicit executionContext: ExecutionContext): Future[T] = {
+  def retryOnFailure[T](f: () => Future[T], config: FrontendAppConfig)
+                       (implicit executionContext: ExecutionContext): Future[T] = {
     retryWithBackOff(1, config.retryWaitMs, f, config)
   }
 
@@ -47,7 +48,7 @@ trait RetryHelper  {
           val call: Callable[Future[Int]] = new Callable[Future[Int]](){
             def call(): Future[Int] = Future.successful(1)
           }
-          Logger.warn(s"Failure, retrying after $wait ms, attempt $currentAttempt")
+          logger.warn(s"Failure, retrying after $wait ms, attempt $currentAttempt")
           after(wait.milliseconds, as.scheduler, executionContext, call).flatMap { _ =>
             retryWithBackOff(currentAttempt + 1, wait.toInt, f, config)
           }

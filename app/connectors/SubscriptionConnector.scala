@@ -30,28 +30,40 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
 abstract class SubscriptionException extends Exception
+
 class PsaIdInvalidSubscriptionException extends SubscriptionException
+
 class CorrelationIdInvalidSubscriptionException extends SubscriptionException
+
 class PsaIdNotFoundSubscriptionException extends SubscriptionException
+
 case class InvalidSubscriptionPayloadException() extends SubscriptionException
 
 @ImplementedBy(classOf[SubscriptionConnectorImpl])
 trait SubscriptionConnector {
 
-  def getSubscriptionDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue]
+  def getSubscriptionDetails(psaId: String)
+                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue]
 
-  def getSubscriptionModel(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription]
+  def getSubscriptionModel(psaId: String)
+                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription]
 
-  def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
+  def updateSubscriptionDetails(answers: UserAnswers)
+                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
 }
 
-class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends SubscriptionConnector with HttpResponseHelper{
+class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+  extends SubscriptionConnector
+    with HttpResponseHelper {
 
-  override def getSubscriptionDetails(psaId:String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
+  private val logger = Logger(classOf[SubscriptionConnectorImpl])
 
-    val psaIdHC = hc.withExtraHeaders("psaId"-> psaId)
+  override def getSubscriptionDetails(psaId: String)
+                                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
 
-    val url  = config.subscriptionDetailsUrl
+    val psaIdHC = hc.withExtraHeaders("psaId" -> psaId)
+
+    val url = config.subscriptionDetailsUrl
 
     http.GET[HttpResponse](url)(implicitly, psaIdHC, implicitly) map { response =>
 
@@ -63,19 +75,21 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
         case _ => handleErrorResponse("GET", config.subscriptionDetailsUrl)(response)
       }
     } andThen {
-      case Failure(t: Throwable) => Logger.warn("Unable to get PSA subscription details", t)
+      case Failure(t: Throwable) => logger.warn("Unable to get PSA subscription details", t)
     }
 
   }
 
-  override def getSubscriptionModel(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription] = {
+  override def getSubscriptionModel(psaId: String)
+                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription] = {
     getSubscriptionDetails(psaId).map(_.validate[PsaSubscription] match {
       case JsSuccess(value, _) => value
       case JsError(errors) => throw JsResultException(errors)
     })
   }
 
-  def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  def updateSubscriptionDetails(answers: UserAnswers)
+                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     val url = config.updateSubscriptionDetailsUrl
 
     http.PUT[JsValue, HttpResponse](url, answers.json) map { response =>
@@ -85,7 +99,7 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
         case _ => handleErrorResponse("PUT", config.updateSubscriptionDetailsUrl)(response)
       }
     } andThen {
-      case Failure(t: Throwable) => Logger.warn("Unable to update PSA subscription details", t)
+      case Failure(t: Throwable) => logger.warn("Unable to update PSA subscription details", t)
     }
   }
 }

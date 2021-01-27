@@ -34,9 +34,14 @@ import views.html.register.addEntity
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AddEntityController extends FrontendBaseController with Retrievals {
+trait AddEntityController
+  extends FrontendBaseController
+    with Retrievals {
+
+  private val logger = Logger(classOf[AddEntityController])
 
   implicit protected def executionContext: ExecutionContext
+
   protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
@@ -64,7 +69,7 @@ trait AddEntityController extends FrontendBaseController with Retrievals {
         value => {
           request.userAnswers.set(id)(value).fold(
             errors => {
-              Logger.error("Unable to set user answer", JsResultException(errors))
+              logger.error("Unable to set user answer", JsResultException(errors))
               Future.successful(InternalServerError)
             },
             userAnswers => Future.successful(Redirect(navigator.nextPage(id, mode, userAnswers)))

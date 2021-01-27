@@ -35,11 +35,18 @@ import scala.util.Failure
 
 @ImplementedBy(classOf[MinimalPsaConnectorImpl])
 trait MinimalPsaConnector {
-  def getMinimalPsaDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA]
+  def getMinimalPsaDetails(psaId: String)
+                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA]
 }
 
-class MinimalPsaConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends MinimalPsaConnector with HttpResponseHelper {
-  override def getMinimalPsaDetails(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = {
+class MinimalPsaConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+  extends MinimalPsaConnector
+    with HttpResponseHelper {
+
+  private val logger = Logger(classOf[MinimalPsaConnectorImpl])
+
+  override def getMinimalPsaDetails(psaId: String)
+                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = {
     val psaHc = hc.withExtraHeaders("psaId" -> psaId)
 
     http.GET[HttpResponse](config.minimalPsaDetailsUrl)(implicitly, psaHc, implicitly) map { response =>
@@ -54,7 +61,7 @@ class MinimalPsaConnectorImpl @Inject()(http: HttpClient, config: FrontendAppCon
         case _ => handleErrorResponse("GET", config.minimalPsaDetailsUrl)(response)
       }
     } andThen {
-      case Failure(t: Throwable) => Logger.warn("Unable to invite PSA to administer scheme", t)
+      case Failure(t: Throwable) => logger.warn("Unable to invite PSA to administer scheme", t)
     }
   }
 }

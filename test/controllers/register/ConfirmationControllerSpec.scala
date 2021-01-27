@@ -79,7 +79,6 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new ConfirmationController(
-      frontendAppConfig,
       messagesApi,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),

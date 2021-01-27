@@ -23,8 +23,7 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,22 +31,27 @@ import scala.util.Failure
 
 @ImplementedBy(classOf[DeregistrationConnectorImpl])
 trait DeregistrationConnector {
-  def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext) : Future[HttpResponse]
+  def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 
   def canDeRegister(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration]
 }
 
-class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig) extends DeregistrationConnector with HttpResponseHelper {
+class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+  extends DeregistrationConnector
+    with HttpResponseHelper {
+
+  private val logger = Logger(classOf[DeregistrationConnectorImpl])
 
   override def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val deregisterUrl = config.deregisterPsaUrl.format(psaId)
     http.DELETE[HttpResponse](deregisterUrl) map {
-      response => response.status match {
-        case NO_CONTENT => response
-        case _ => handleErrorResponse("DELETE", deregisterUrl)(response)
-      }
+      response =>
+        response.status match {
+          case NO_CONTENT => response
+          case _ => handleErrorResponse("DELETE", deregisterUrl)(response)
+        }
     } andThen {
-      case Failure(t: Throwable) => Logger.warn("Unable to deregister PSA", t)
+      case Failure(t: Throwable) => logger.warn("Unable to deregister PSA", t)
     }
   }
 
@@ -64,7 +68,7 @@ class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
         case _ => handleErrorResponse("GET", url)(response)
       }
     } andThen {
-      case Failure(t: Throwable) => Logger.warn("Unable to get the response from can de register api", t)
+      case Failure(t: Throwable) => logger.warn("Unable to get the response from can de register api", t)
     }
   }
 }

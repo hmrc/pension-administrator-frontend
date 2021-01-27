@@ -44,6 +44,8 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
   extends PensionsSchemeConnector
     with HttpResponseHelper {
 
+  private val logger = Logger(classOf[PensionsSchemeConnectorImpl])
+
   def registerPsa(answers: UserAnswers)
                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {
     val url = config.registerPsaUrl
@@ -57,7 +59,7 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
             case JsError(errors) => throw JsResultException(errors)
           }
         case _ =>
-          Logger.error("Unable to register PSA")
+          logger.error("Unable to register PSA")
           handleErrorResponse("POST", url)(response)
       }
     }
