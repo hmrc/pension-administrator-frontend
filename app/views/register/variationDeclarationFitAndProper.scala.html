@@ -71,7 +71,7 @@
     </div>
         @components.submit_button("site.agreeAndContinue")
 
-        if(displayReturnLink){
+        @if(displayReturnLink){
             @psaNameOpt.map{ psaName =>
                 @components.return_link(psaName, UpdateMode)
             }
