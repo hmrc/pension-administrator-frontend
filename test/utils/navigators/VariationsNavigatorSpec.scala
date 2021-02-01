@@ -53,7 +53,10 @@ class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (VariationWorkingKnowledgeId, noWorkingKnowledge, adviserNamePage),
       (VariationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage),
 
-      (UpdateContactAddressCYAId, emptyAnswers, variationStillWorkingKnowledgePage),
+      (UpdateContactAddressCYAId, declarationChangedWithIncompleteIndividual, incompleteChangesPage),
+      (UpdateContactAddressCYAId, declarationChangedWithCompleteIndividual, variationDeclarationFitAndProperPage),
+      (UpdateContactAddressCYAId, declarationNotChangedWithAdviser, variationStillWorkingKnowledgePage),
+      (UpdateContactAddressCYAId, completeIndividualDetails, variationWorkingKnowledgePage(CheckUpdateMode)),
 
       (VariationStillDeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage),
       (VariationStillDeclarationWorkingKnowledgeId, stillHaveWorkingKnowledge, variationDeclarationFitAndProperPage),
@@ -107,26 +110,26 @@ object VariationsNavigatorSpec extends OptionValues {
     controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode)
 
   private val individualWithUpdateContactAddress = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
-    RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+    RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None))
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
     .setOrException(IndividualContactAddressId)(address)
     .setOrException(UpdateContactAddressId)(true)
 
   private val companyWithUpdateContactAddress = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
-    RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
+    RegistrationLegalStatus.LimitedCompany, "", noIdentifier = false, RegistrationCustomerType.UK, None, None))
     .setOrException(BusinessNameId)("Big company")
     .setOrException(CompanyContactAddressId)(address)
     .setOrException(UpdateContactAddressId)(true)
 
   private val partnershipWithUpdateContactAddress = UserAnswers(Json.obj()).registrationInfo(RegistrationInfo(
-    RegistrationLegalStatus.Partnership, "", false, RegistrationCustomerType.UK, None, None))
+    RegistrationLegalStatus.Partnership, "", noIdentifier = false, RegistrationCustomerType.UK, None, None))
     .setOrException(BusinessNameId)("Big company")
     .setOrException(PartnershipContactAddressId)(address)
     .setOrException(UpdateContactAddressId)(true)
 
   private val declarationChangedWithIncompleteIndividual = UserAnswers(Json.obj()).registrationInfo(
     RegistrationInfo(
-      RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None)
+      RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None)
   ).individualAddressYears(AddressYears.OverAYear)
 
   private val completeIndividualDetails = UserAnswers().completeIndividualVariations.variationWorkingKnowledge(true)

@@ -59,7 +59,8 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
       }
       Future.successful(Ok(view(
         preparedForm,
-        if(displayReturnLink) psaName() else None
+        psaName(),
+        displayReturnLink
       )))
   }
 
@@ -69,7 +70,8 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
       form.bindFromRequest().fold(
         errors => Future.successful(BadRequest(view(
           errors,
-          if(displayReturnLink) psaName() else None
+          psaName(),
+          displayReturnLink
         ))),
         success => {
           dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).map { json =>

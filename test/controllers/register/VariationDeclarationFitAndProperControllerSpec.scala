@@ -107,7 +107,8 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
   private def viewAsString(psaName: String, form: Form[_]) =
     view(
       form,
-      Some(psaName)
+      Some(psaName),
+      displayReturnLink = true
     )(fakeRequest, messages).toString
 
 }
