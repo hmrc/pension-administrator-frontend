@@ -24,7 +24,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], psaNameOpt: Option[String], displayReturnLink: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = titleWithErrors(form, messages("declarationFitAndProper.variations.title"))
@@ -71,8 +71,10 @@
     </div>
         @components.submit_button("site.agreeAndContinue")
 
-    @psaNameOpt.map{ psaName =>
-        @components.return_link(psaName, UpdateMode)
-    }
+        @if(displayReturnLink){
+            @psaNameOpt.map{ psaName =>
+                @components.return_link(psaName, UpdateMode)
+            }
+        }
     }
 }

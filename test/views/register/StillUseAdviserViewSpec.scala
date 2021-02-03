@@ -38,6 +38,7 @@ class StillUseAdviserViewSpec extends ViewBehaviours {
       form,
       UpdateMode,
       Some(psaName),
+      displayReturnLink = true,
       personWithWorkingKnowledgeName
     )(fakeRequest, messages)
 

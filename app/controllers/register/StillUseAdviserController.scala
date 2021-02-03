@@ -61,7 +61,8 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
       val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       Ok(view(form,
         mode,
-        if(displayReturnLink) psaName() else None,
+        psaName(),
+        displayReturnLink,
         adviserName()))
   }
 
@@ -72,7 +73,8 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors,
             mode,
-            if(displayReturnLink) psaName() else None,
+            psaName(),
+            displayReturnLink,
             adviserName()))),
         value => {
           cacheConnector.save(request.externalId, VariationStillDeclarationWorkingKnowledgeId, value).map(cacheMap =>

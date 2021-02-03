@@ -21,13 +21,12 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.StillUseAdviserFormProvider
 import identifiers.register.adviser.AdviserNameId
-import identifiers.register.{BusinessNameId, VariationStillDeclarationWorkingKnowledgeId}
-import models.UpdateMode
+import identifiers.register.{BusinessNameId, RegistrationInfoId, VariationStillDeclarationWorkingKnowledgeId}
 import models.register.DeclarationWorkingKnowledge
+import models.{RegistrationCustomerType, RegistrationInfo, RegistrationLegalStatus, UpdateMode}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import views.html.register.stillUseAdviser
 
@@ -38,7 +37,10 @@ class StillUseAdviserControllerSpec extends ControllerSpecBase {
 
   private val jsObjectAdviserAndBusinessDetails: JsObject = Json.obj(
     AdviserNameId.toString -> personWithWorkingKnowledgeName,
-    BusinessNameId.toString ->psaName
+    BusinessNameId.toString ->psaName,
+    RegistrationInfoId.toString -> RegistrationInfo(
+      RegistrationLegalStatus.LimitedCompany, "", noIdentifier = false, RegistrationCustomerType.UK, None, None),
+
   )
 
   private val dataRetrievalActionWithAdviserAndBusinessDetails =
@@ -116,5 +118,5 @@ class StillUseAdviserControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(form: Form[_] = form) = view(
-    form, UpdateMode, None, personWithWorkingKnowledgeName)(fakeRequest, messages).toString
+    form, UpdateMode, Some(psaName), displayReturnLink = true, personWithWorkingKnowledgeName)(fakeRequest, messages).toString
 }
