@@ -38,11 +38,19 @@ $(document).ready(function() {
 
     if(document.querySelectorAll('select').length > 0){
 
-        openregisterLocationPicker({
-            defaultValue: '',
-            selectElement: document.querySelector('select'),
-            url: '/register-as-pension-scheme-administrator/assets/javascripts/autocomplete/location-autocomplete-graph.json'
-        })
+       if (document.querySelector('select') != null) {
+           accessibleAutocomplete({
+               element: document.querySelector('select'),
+               id: 'country',
+               source: '/register-as-pension-scheme-administrator/assets/javascripts/autocomplete/location-autocomplete-graph.json'
+           })
+
+           accessibleAutocomplete.enhanceSelectElement({
+               defaultValue: '',
+               selectElement: document.querySelector('select')
+           })
+       }
+
 
           // temporary fix for IE not registering clicks on the text of the results list for the country autocomplete
           $('body').on('mouseup', ".autocomplete__option > strong", function(e){
