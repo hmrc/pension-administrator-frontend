@@ -146,13 +146,13 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       }
     }
 
-    "redirect to contact HMRC page for user with enrolment where deceased flag is set" in {
+    "redirect to contact HMRC page for user with enrolment where both deceased and rls flags are set" in {
       val minimalPsa = MinimalPSA(
         email = "a@a.c",
         isPsaSuspended = false,
         organisationName = None,
         individualDetails = None,
-        rlsFlag = false,
+        rlsFlag = true,
         deceasedFlag = true
       )
       val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
