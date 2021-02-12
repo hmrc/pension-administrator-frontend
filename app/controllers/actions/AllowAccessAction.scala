@@ -38,10 +38,10 @@ class AllowAccessAction(
     minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
       if (minimalPSA.isPsaSuspended) {
         Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
-      } else if (minimalPSA.rlsFlag) {
-        Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
       } else if (minimalPSA.deceasedFlag) {
         Some(Redirect(config.youMustContactHMRCUrl))
+      } else if (minimalPSA.rlsFlag) {
+        Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
       } else {
         None
       }
@@ -94,10 +94,10 @@ class AllowAccessActionNoSuspendedCheck(
 )(implicit override val executionContext: ExecutionContext) extends AllowAccessAction(mode, minimalPsaConnector, config) {
   override protected def redirects(psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
     minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
-      if (minimalPSA.rlsFlag) {
-        Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
-      } else if (minimalPSA.deceasedFlag) {
+      if (minimalPSA.deceasedFlag) {
         Some(Redirect(config.youMustContactHMRCUrl))
+      } else if (minimalPSA.rlsFlag) {
+        Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
       } else {
         None
       }
