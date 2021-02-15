@@ -269,9 +269,11 @@ class DataCompletion {
 
     incompleteEntityDetails match {
       case Some(_) =>
-        logger.debug(s"Administrator details incomplete. User answers JSON is: ${ua.json}")
+        logger.warn(s"Administrator details incomplete. User answers JSON is: ${ua.json}")
         incompleteEntityDetails
-      case None if !isAdviserComplete(ua, UpdateMode) => defaultIncompleteMessage
+      case None if !isAdviserComplete(ua, UpdateMode) =>
+        logger.warn(s"Administrator details (advisor) incomplete. User answers JSON is: ${ua.json}")
+        defaultIncompleteMessage
       case _ => None
     }
   }
