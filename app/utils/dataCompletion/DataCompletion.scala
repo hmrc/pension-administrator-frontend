@@ -16,7 +16,6 @@
 
 package utils.dataCompletion
 
-import connectors.AddressLookupConnectorImpl
 import identifiers._
 import identifiers.register._
 import identifiers.register.adviser.{AdviserPhoneId, AdviserEmailId, AdviserAddressId, AdviserNameId}
