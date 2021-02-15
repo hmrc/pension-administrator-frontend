@@ -34,7 +34,7 @@ import utils.UserAnswers
 
 class DataCompletion {
 
-  private val logger = Logger(classOf[AddressLookupConnectorImpl])
+  private val logger = Logger(classOf[DataCompletion])
 
   def isComplete(list: Seq[Option[Boolean]]): Option[Boolean] =
     if (list.flatten.isEmpty) {
