@@ -80,9 +80,7 @@ class DataCompletion {
                                           previousAddressId: TypedIdentifier[Address],
                                           tradingTime: Option[TypedIdentifier[Boolean]]): Option[Boolean] = {
     (userAnswers.get(previousAddressId), tradingTime) match {
-      case (Some(_), Some(tradingTimeId)) if userAnswers.get(tradingTimeId).contains(true) =>
-        Some(true)
-      case (Some(_), None) =>
+      case (Some(_), _) =>
         Some(true)
       case (_, Some(tradingTimeId)) if userAnswers.get(tradingTimeId).contains(false) =>
         Some(true)
