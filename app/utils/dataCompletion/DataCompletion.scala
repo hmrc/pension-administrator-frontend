@@ -27,13 +27,10 @@ import identifiers.register.partnership.partners._
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import models.register.DeclarationWorkingKnowledge
-import play.api.Logger
 import play.api.libs.json.Reads
 import utils.UserAnswers
 
 class DataCompletion {
-
-  private val logger = Logger(classOf[DataCompletion])
 
   def isComplete(list: Seq[Option[Boolean]]): Option[Boolean] =
     if (list.flatten.isEmpty) {
@@ -267,10 +264,8 @@ class DataCompletion {
 
     incompleteEntityDetails match {
       case Some(_) =>
-        logger.warn(s"Administrator details incomplete. User answers JSON is: ${ua.json}")
         incompleteEntityDetails
       case None if !isAdviserComplete(ua, UpdateMode) =>
-        logger.warn(s"Administrator details (advisor) incomplete. User answers JSON is: ${ua.json}")
         defaultIncompleteMessage
       case _ => None
     }
