@@ -78,6 +78,8 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues {
             CompanyConfirmPreviousAddressId).value mustBe false
         }
 
+
+
         "when current address is present, address years is under a year, trading over a years is yes but no previous address present" in {
           DataCompletion.isAddressComplete(userAnswers.companyAddressYears(AddressYears.UnderAYear).companyTradingOverAYear(flag = true),
             CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
@@ -99,6 +101,16 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues {
           DataCompletion.isAddressComplete(ua, CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
             Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value mustBe false
         }
+
+        "when current address is present, address years is under a year, trading time is present and true but no previous address present" in {
+          val ua = userAnswers.companyAddressYears(AddressYears.UnderAYear).
+            companyContactAddress(address).
+            companyTradingOverAYear(true)
+          DataCompletion.isAddressComplete(ua.companyAddressYears(AddressYears.UnderAYear),
+            CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
+            CompanyConfirmPreviousAddressId).value mustBe false
+        }
+
       }
 
       "return true" when {
@@ -136,6 +148,24 @@ class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues {
 
           DataCompletion.isAddressComplete(ua, CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
             Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value mustBe true
+        }
+
+      "when current address is present, address years is under a year but a previous address present" in {
+            val ua = userAnswers.companyAddressYears(AddressYears.UnderAYear).
+              companyContactAddress(address).
+              companyPreviousAddress(address)
+          DataCompletion.isAddressComplete(ua.companyAddressYears(AddressYears.UnderAYear),
+          CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
+          CompanyConfirmPreviousAddressId).value mustBe true
+      }
+
+        "when current address is present, address years is under a year, trading time is present and false but no previous address present" in {
+          val ua = userAnswers.companyAddressYears(AddressYears.UnderAYear).
+            companyContactAddress(address).
+            companyTradingOverAYear(false)
+          DataCompletion.isAddressComplete(ua.companyAddressYears(AddressYears.UnderAYear),
+            CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
+            CompanyConfirmPreviousAddressId).value mustBe true
         }
       }
     }
