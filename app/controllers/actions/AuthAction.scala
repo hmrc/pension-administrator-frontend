@@ -51,15 +51,17 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     authorised(User).retrieve(
-      Retrievals.externalId and
+        Retrievals.externalId and
         Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
         Retrievals.allEnrolments and
-        Retrievals.credentials
+        Retrievals.credentials and
+        Retrievals.groupIdentifier
     ) {
-      case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) =>
+      case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) =>
         redirectToInterceptPages(enrolments, affinityGroup).fold {
-          val authRequest = AuthenticatedRequest(request, id, psaUser(affinityGroup, None, enrolments, credentials.providerId))
+          val authRequest = AuthenticatedRequest(request, id, psaUser(affinityGroup, None, enrolments, credentials.providerId, groupIdentifier))
+          println( "\n>>>AUT REQ:" + authRequest)
           successRedirect(affinityGroup, cl, enrolments, authRequest, block)
         } { result => Future.successful(result) }
       case _ =>
@@ -219,9 +221,11 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   protected def psaUser(affinityGroup: AffinityGroup,
                         nino: Option[domain.Nino],
                         enrolments: Enrolments,
-                        userId: String): PSAUser = {
+                        userId: String,
+                        groupIdentifier: String
+  ): PSAUser = {
     val psa = existingPSA(enrolments)
-    PSAUser(userType(affinityGroup), nino, psa.nonEmpty, psa, None, userId)
+    PSAUser(userType(affinityGroup), nino, psa.nonEmpty, psa, None, userId, groupIdentifier)
   }
 
   protected def getPSAId(enrolments: Enrolments): String =
