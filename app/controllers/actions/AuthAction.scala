@@ -61,7 +61,6 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
       case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) =>
         redirectToInterceptPages(enrolments, affinityGroup).fold {
           val authRequest = AuthenticatedRequest(request, id, psaUser(affinityGroup, None, enrolments, credentials.providerId, groupIdentifier))
-          println( "\n>>>AUT REQ:" + authRequest)
           successRedirect(affinityGroup, cl, enrolments, authRequest, block)
         } { result => Future.successful(result) }
       case _ =>
