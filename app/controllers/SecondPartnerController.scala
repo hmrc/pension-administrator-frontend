@@ -46,7 +46,7 @@ class SecondPartnerController @Inject()(@utils.annotations.Variations navigator:
                                         view: secondPartner
                                                  )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  protected val form: Form[Boolean] = formProvider()
+  protected val form: Form[Boolean] = formProvider("secondPartner.error")
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen allowAccess(UpdateMode) andThen getData).async {
     implicit request =>

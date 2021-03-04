@@ -1147,3 +1147,4 @@ secondPartner.heading = Second partner details
 secondPartner.p1 = Our records show that you have only given us the details of one partner {0}. Ideally, as a partnership administrator, you should provide the details of a second partner. You can do this now or at a later date.
 secondPartner.p1.noName = Our records show that you have only given us the details of one partner. Ideally, as a partnership administrator, you should provide the details of a second partner. You can do this now or at a later date.
 secondPartner.label = Do you want to provide details of a second partner now?
+secondPartner.error = Select yes if you want to provide details of a second partner now

@@ -39,7 +39,7 @@ class SecondPartnerControllerSpec extends ControllerSpecBase with MockitoSugar w
   private val partnerName = "test partner"
   val view: secondPartner = app.injector.instanceOf[secondPartner]
   val formProvider = new YesNoFormProvider()
-  val form: Form[Boolean] = formProvider()
+  val form: Form[Boolean] = formProvider("secondPartner.error")
   private val validData = UserAnswers().partnerName(0, PersonName("test", "partner"))
   private val mockPsaDetailsService = mock[PsaDetailsService]
 
