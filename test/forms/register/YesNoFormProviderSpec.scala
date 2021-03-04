@@ -16,15 +16,30 @@
 
 package forms.register
 
-import forms.FormErrorHelper
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class AreYouInUKFormProvider @Inject() extends FormErrorHelper with Mappings {
+class YesNoFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(requiredError: String = "common.radio.error.required"): Form[Boolean] =
-    Form(
-      "value" -> boolean(requiredKey = requiredError)
+  val requiredKey = "common.radio.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new  YesNoFormProvider()()
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

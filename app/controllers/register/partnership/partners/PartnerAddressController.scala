@@ -29,7 +29,7 @@ import models.{Address, Index, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -41,7 +41,7 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
                                          override val cacheConnector: UserAnswersCacheConnector,
                                          @PartnershipPartner override val navigator: Navigator,
                                          authenticate: AuthAction,
-                                         override val allowAccess: AllowAccessActionProvider,
+                                         @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: AddressFormProvider,

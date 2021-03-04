@@ -30,7 +30,7 @@ import models.{Index, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -43,7 +43,7 @@ class PartnerAddressPostCodeLookupController @Inject()(
                                                         override val addressLookupConnector: AddressLookupConnector,
                                                         @PartnershipPartner override val navigator: Navigator,
                                                         authenticate: AuthAction,
-                                                        override val allowAccess: AllowAccessActionProvider,
+                                                        @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,
                                                         formProvider: PostCodeLookupFormProvider,

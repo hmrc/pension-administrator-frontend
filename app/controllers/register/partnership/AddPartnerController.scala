@@ -23,6 +23,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.register.AddEntityController
 import forms.register.AddEntityFormProvider
 import identifiers.register.partnership.AddPartnersId
+
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -30,7 +31,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{EntityViewModel, Message, Person}
 import views.html.register.addEntity
 
@@ -41,7 +42,7 @@ class AddPartnerController @Inject()(
                                       override val cacheConnector: UserAnswersCacheConnector,
                                       @PartnershipPartner override val navigator: Navigator,
                                       authenticate: AuthAction,
-                                      allowAccess: AllowAccessActionProvider,
+                                      @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       formProvider: AddEntityFormProvider,

@@ -18,8 +18,7 @@ package utils.navigators
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import identifiers.Identifier
-import identifiers.UpdateContactAddressId
+import identifiers.{Identifier, SecondPartnerId, UpdateContactAddressId}
 import identifiers.register._
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.adviser.ConfirmDeleteAdviserId
@@ -52,7 +51,7 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig,
 
     case AnyMoreChangesId => anyMoreChangesRoute(ua)
 
-    case UpdateContactAddressCYAId => declarationChange(ua)
+    case UpdateContactAddressCYAId => updateContactAddressDeclaration(ua)
 
     case VariationWorkingKnowledgeId => variationWorkingKnowledgeRoute(ua)
 
@@ -61,6 +60,8 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig,
     case DeclarationFitAndProperId => declarationFitAndProperRoute(ua)
 
     case DeclarationChangedId => declarationChange(ua)
+
+    case SecondPartnerId => secondPartnerRoute(ua)
 
     case DeclarationId => controllers.register.routes.PSAVarianceSuccessController.onPageLoad()
 
@@ -117,7 +118,7 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig,
     case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
-  private def declarationChange(ua: UserAnswers): Call = {
+  private def declarationChange(ua: UserAnswers): Call =
     if (dataCompletion.psaUpdateDetailsInCompleteAlert(ua).nonEmpty) {
       controllers.register.routes.IncompleteChangesController.onPageLoad()
     } else {
@@ -131,5 +132,24 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig,
           }
       }
     }
+
+  private def updateContactAddressDeclaration(ua: UserAnswers): Call =
+    dataCompletion.psaUpdateDetailsInCompleteAlert(ua) match {
+      case Some("incomplete.alert.message.less.partners") => controllers.routes.SecondPartnerController.onPageLoad()
+      case _ => declarationChange(ua)
+    }
+
+  private def secondPartnerRoute(ua: UserAnswers): Call =
+    ua.get(SecondPartnerId) match {
+      case Some(true) => controllers.register.partnership.routes.AddPartnerController.onPageLoad(UpdateMode)
+      case _ => ua.get(DeclarationChangedId) match {
+        case Some(true) => controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
+        case _ =>
+          if (ua.get(AdviserNameId).isDefined) {
+            controllers.register.routes.StillUseAdviserController.onPageLoad()
+          } else {
+            controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode)
+          }
+      }
   }
 }

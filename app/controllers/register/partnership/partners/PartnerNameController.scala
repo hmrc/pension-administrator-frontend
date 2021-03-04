@@ -22,12 +22,13 @@ import controllers.actions._
 import controllers.{PersonNameController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.partners.PartnerNameId
+
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.personName
 
@@ -36,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PartnerNameController @Inject()(val appConfig: FrontendAppConfig,
                                       val cacheConnector: UserAnswersCacheConnector,
                                       @PartnershipPartner val navigator: Navigator,
-                                      override val allowAccess: AllowAccessActionProvider,
+                                      @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                       authenticate: AuthAction,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,

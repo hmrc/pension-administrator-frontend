@@ -32,3 +32,6 @@ GET        /use-organisation-account                    controllers.UseOrganisat
 GET        /update-contact-address                      controllers.UpdateContactAddressController.onPageLoad
 
 GET        /update-contact-address/check-your-answers   controllers.UpdateContactAddressCYAController.onPageLoad()
+
+GET        /update-contact-address/second-partner-details   controllers.SecondPartnerController.onPageLoad()
+POST       /update-contact-address/second-partner-details   controllers.SecondPartnerController.onSubmit()

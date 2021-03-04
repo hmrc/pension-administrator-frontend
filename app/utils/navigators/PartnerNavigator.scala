@@ -22,7 +22,9 @@ import controllers.register.partnership.partners.routes._
 import controllers.register.partnership.routes.TellUsAboutAnotherPartnerController
 import controllers.register.partnership.routes.{AddPartnerController, MoreThanTenPartnersController, PartnershipReviewController}
 import controllers.routes.SessionExpiredController
-import identifiers.Identifier
+import identifiers.register.DeclarationChangedId
+import identifiers.register.adviser.AdviserNameId
+import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId, TellUsAboutAnotherPartnerId}
 import models.Mode.journeyMode
@@ -203,7 +205,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
       case Some(false) if mode == NormalMode && answers.countPartnersAfterDelete < 2 =>
         TellUsAboutAnotherPartnerController.onPageLoad(NormalMode)
       case Some(false) if mode == NormalMode => PartnershipReviewController.onPageLoad()
-      case Some(false) if mode == UpdateMode => anyMoreChangesPage
+      case Some(false) if mode == UpdateMode => finishAmendmentNavigation(answers)
       case _ =>
         val index = answers.allPartnersAfterDelete(mode).length
         if (index >= config.maxPartners) {
@@ -214,6 +216,12 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     }
   }
 
+  private def finishAmendmentNavigation(answers: UserAnswers): Call =
+    answers.get(UpdateContactAddressId) match {
+      case Some(_) => secondPartnerRoute(answers)
+      case _ => anyMoreChangesPage
+    }
+
   private def partnerAddressYearsCheckRoutes(index: Int, answers: UserAnswers, mode: Mode): Call = {
     answers.get(PartnerAddressYearsId(index)) match {
       case Some(AddressYears.UnderAYear) =>
@@ -223,4 +231,15 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
       case None => sessionExpired
     }
   }
+
+  private def secondPartnerRoute(ua: UserAnswers): Call =
+    ua.get(DeclarationChangedId) match {
+      case Some(true) => controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
+      case _ =>
+        if (ua.get(AdviserNameId).isDefined) {
+          controllers.register.routes.StillUseAdviserController.onPageLoad()
+        } else {
+          controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode)
+        }
+    }
 }

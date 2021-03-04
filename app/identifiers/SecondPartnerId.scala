@@ -14,32 +14,8 @@
  * limitations under the License.
  */
 
-package forms.register
+package identifiers
 
-import forms.behaviours.BooleanFieldBehaviours
-import play.api.data.FormError
-
-class AreYouInUKFormProviderSpec extends BooleanFieldBehaviours {
-
-  val requiredKey = "common.radio.error.required"
-  val invalidKey = "error.boolean"
-
-  val form = new  AreYouInUKFormProvider()()
-
-  ".value" must {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
+case object SecondPartnerId extends TypedIdentifier[Boolean] {
+ override def toString: String = "secondPartner"
 }

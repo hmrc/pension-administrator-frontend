@@ -19,7 +19,7 @@ package controllers.register
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import forms.register.AreYouInUKFormProvider
+import forms.register.YesNoFormProvider
 import identifiers.register.AreYouInUKId
 import models.Mode
 import play.api.data.Form
@@ -41,7 +41,7 @@ trait AreYouInUKController extends FrontendBaseController with I18nSupport {
   protected val allowAccess: AllowAccessActionProvider
   protected val getData: DataRetrievalAction
   protected val requireData: DataRequiredAction
-  protected val formProvider: AreYouInUKFormProvider
+  protected val formProvider: YesNoFormProvider
   protected def view: areYouInUK
 
   protected val form: Form[Boolean] = formProvider()

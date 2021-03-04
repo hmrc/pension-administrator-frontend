@@ -19,7 +19,7 @@ package controllers.register
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.AreYouInUKFormProvider
+import forms.register.YesNoFormProvider
 import identifiers.register.AreYouInUKId
 import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
@@ -34,7 +34,7 @@ class BusinessTypeAreYouInUKControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new AreYouInUKFormProvider()
+  private val formProvider = new YesNoFormProvider()
   private val form = formProvider()
 
   val view: areYouInUK = app.injector.instanceOf[areYouInUK]

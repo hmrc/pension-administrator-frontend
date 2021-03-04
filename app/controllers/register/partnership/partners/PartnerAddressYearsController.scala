@@ -23,6 +23,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.partnership.partners.{PartnerAddressYearsId, PartnerNameId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
@@ -30,7 +31,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -41,7 +42,7 @@ class PartnerAddressYearsController @Inject()(val appConfig: FrontendAppConfig,
                                               val cacheConnector: UserAnswersCacheConnector,
                                               @PartnershipPartner val navigator: Navigator,
                                               authenticate: AuthAction,
-                                              override val allowAccess: AllowAccessActionProvider,
+                                              @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               formProvider: AddressYearsFormProvider,

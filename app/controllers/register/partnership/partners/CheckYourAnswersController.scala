@@ -21,6 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import identifiers.register.partnership.partners._
+
 import javax.inject.Inject
 import models.Mode.checkMode
 import models._
@@ -29,7 +30,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
@@ -40,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            authenticate: AuthAction,
-                                           allowAccess: AllowAccessActionProvider,
+                                           @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            dataCompletion: DataCompletion,
