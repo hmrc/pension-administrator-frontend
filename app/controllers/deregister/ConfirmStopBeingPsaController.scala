@@ -70,7 +70,6 @@ class ConfirmStopBeingPsaController @Inject()(
   def onSubmit: Action[AnyContent] = auth.async {
     implicit request =>
       request.user.alreadyEnrolledPsaId.map { psaId =>
-        val userId = request.user.userId
         minimalPsaConnector.getMinimalPsaDetails(psaId).flatMap {
           minimalDetails =>
             getPsaName(minimalDetails) match {
@@ -82,7 +81,7 @@ class ConfirmStopBeingPsaController @Inject()(
                     if (value) {
                       for {
                         _ <- deregistrationConnector.stopBeingPSA(psaId)
-                        _ <- enrolments.deEnrol(userId, psaId, request.externalId)
+                        _ <- enrolments.deEnrol(request.user.groupIdentifier, psaId, request.externalId)
                         _ <- dataCacheConnector.removeAll(request.externalId)
                       } yield {
                         Redirect(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad())
