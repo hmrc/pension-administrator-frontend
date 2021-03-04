@@ -442,13 +442,16 @@ object AuthActionSpec {
                              enrolments: Enrolments = Enrolments(Set()),
                              creds:Option[Credentials] = Option(Credentials(
                                providerId = "test provider", providerType = ""
-                             ))
+                             )),
+                            groupId: Option[String] = Some("test-group-id")
                             ) = Future.successful(
-    new ~(new ~(new ~(new ~(
-      Some("id"), confidenceLevel),
-      affinityGroup),
-      enrolments),
-      creds
+    new ~(new ~(new ~(new ~(new ~(
+        Some("id"), confidenceLevel),
+        affinityGroup),
+        enrolments),
+        creds
+      ),
+      groupId
     )
   )
 
