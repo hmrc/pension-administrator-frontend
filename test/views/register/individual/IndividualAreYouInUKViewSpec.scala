@@ -16,7 +16,7 @@
 
 package views.register.individual
 
-import forms.register.AreYouInUKFormProvider
+import forms.register.YesNoFormProvider
 import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
 import play.twirl.api.Html
@@ -39,7 +39,7 @@ class IndividualAreYouInUKViewSpec extends ViewBehaviours with YesNoViewBehaviou
     )
 
 
-  val formProvider = new AreYouInUKFormProvider
+  val formProvider = new YesNoFormProvider
 
   val form: Form[Boolean] = formProvider()
 

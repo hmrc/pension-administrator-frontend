@@ -22,11 +22,12 @@ import controllers.actions._
 import controllers.{DOBController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.partners.{PartnerDOBId, PartnerNameId}
+
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.dob
 
@@ -35,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PartnerDOBController @Inject()(val appConfig: FrontendAppConfig,
                                      val cacheConnector: UserAnswersCacheConnector,
                                      @PartnershipPartner val navigator: Navigator,
-                                     override val allowAccess: AllowAccessActionProvider,
+                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                      authenticate: AuthAction,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,

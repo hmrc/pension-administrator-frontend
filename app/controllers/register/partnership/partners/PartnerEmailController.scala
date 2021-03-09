@@ -22,12 +22,13 @@ import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.register.partnership.partners.{PartnerEmailId, PartnerNameId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
@@ -37,7 +38,7 @@ class PartnerEmailController @Inject()(@PartnershipPartner val navigator: Naviga
                                        val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
-                                       val allowAccess: AllowAccessActionProvider,
+                                       @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: EmailFormProvider,

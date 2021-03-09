@@ -23,13 +23,14 @@ import controllers.actions._
 import controllers.register.partnership.partners.routes.PartnerNoUTRReasonController
 import forms.ReasonFormProvider
 import identifiers.register.partnership.partners.{PartnerNameId, PartnerNoUTRReasonId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
 
@@ -39,7 +40,7 @@ class PartnerNoUTRReasonController @Inject()(@PartnershipPartner val navigator: 
                                              val appConfig: FrontendAppConfig,
                                              val dataCacheConnector: UserAnswersCacheConnector,
                                              authenticate: AuthAction,
-                                             val allowAccess: AllowAccessActionProvider,
+                                             @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: ReasonFormProvider,

@@ -22,6 +22,7 @@ import controllers.actions._
 import controllers.register.NINOController
 import forms.register.NINOFormProvider
 import identifiers.register.partnership.partners.{PartnerEnterNINOId, PartnerNameId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
@@ -29,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterNINO
 
@@ -39,7 +40,7 @@ class PartnerEnterNINOController @Inject()(@PartnershipPartner val navigator: Na
                                            val appConfig: FrontendAppConfig,
                                            val cacheConnector: UserAnswersCacheConnector,
                                            authenticate: AuthAction,
-                                           val allowAccess: AllowAccessActionProvider,
+                                           @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            formProvider: NINOFormProvider,

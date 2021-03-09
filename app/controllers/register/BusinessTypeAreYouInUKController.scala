@@ -19,7 +19,7 @@ package controllers.register
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import forms.register.AreYouInUKFormProvider
+import forms.register.YesNoFormProvider
 import javax.inject.Inject
 import models.Mode
 import play.api.mvc.MessagesControllerComponents
@@ -37,7 +37,7 @@ class BusinessTypeAreYouInUKController @Inject()(override val appConfig: Fronten
                                                  @AuthWithNoIV override val authenticate: AuthAction,
                                                  override val getData: DataRetrievalAction,
                                                  override val requireData: DataRequiredAction,
-                                                 override val formProvider: AreYouInUKFormProvider,
+                                                 override val formProvider: YesNoFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  val view: areYouInUK
                                                 )(implicit val executionContext: ExecutionContext) extends AreYouInUKController {

@@ -19,7 +19,7 @@ package controllers.register.individual
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.register.AreYouInUKFormProvider
+import forms.register.YesNoFormProvider
 import identifiers.register.AreYouInUKId
 import models.{Mode, NormalMode}
 import play.api.data.Form
@@ -35,7 +35,7 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private val formProvider = new AreYouInUKFormProvider()
+  private val formProvider = new YesNoFormProvider()
   private val form = formProvider()
 
   def viewmodel(mode: Mode) =

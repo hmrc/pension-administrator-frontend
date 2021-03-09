@@ -23,13 +23,14 @@ import controllers.actions._
 import controllers.register.partnership.partners.routes.HasPartnerUTRController
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.partnership.partners.{HasPartnerUTRId, PartnerNameId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
@@ -39,7 +40,7 @@ class HasPartnerUTRController @Inject()(override val appConfig: FrontendAppConfi
                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                         @PartnershipPartner override val navigator: Navigator,
                                         authenticate: AuthAction,
-                                        allowAccess: AllowAccessActionProvider,
+                                        @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: HasReferenceNumberFormProvider,

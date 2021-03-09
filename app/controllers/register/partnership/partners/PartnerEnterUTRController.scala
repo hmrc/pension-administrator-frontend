@@ -23,6 +23,7 @@ import controllers.actions._
 import controllers.register.partnership.partners.routes.PartnerEnterUTRController
 import forms.EnterUTRFormProvider
 import identifiers.register.partnership.partners.{PartnerEnterUTRId, PartnerNameId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
@@ -30,7 +31,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterUTR
 
@@ -40,7 +41,7 @@ class PartnerEnterUTRController @Inject()(@PartnershipPartner val navigator: Nav
                                           val appConfig: FrontendAppConfig,
                                           val cacheConnector: UserAnswersCacheConnector,
                                           authenticate: AuthAction,
-                                          val allowAccess: AllowAccessActionProvider,
+                                          @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           formProvider: EnterUTRFormProvider,

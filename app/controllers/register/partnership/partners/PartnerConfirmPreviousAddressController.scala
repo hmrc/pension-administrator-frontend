@@ -22,12 +22,13 @@ import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
 import identifiers.UpdateContactAddressId
 import identifiers.register.partnership.partners._
+
 import javax.inject.Inject
-import models.{Mode, Index}
+import models.{Index, Mode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -39,7 +40,7 @@ class PartnerConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
                                                         val dataCacheConnector: UserAnswersCacheConnector,
                                                         @PartnershipPartner val navigator: Navigator,
                                                         authenticate: AuthAction,
-                                                        allowAccess: AllowAccessActionProvider,
+                                                        @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,
                                                         val countryOptions: CountryOptions,

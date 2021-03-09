@@ -29,7 +29,7 @@ import models.{Index, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -40,7 +40,7 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
                                                      override val cacheConnector: UserAnswersCacheConnector,
                                                      @PartnershipPartner override val navigator: Navigator,
                                                      authenticate: AuthAction,
-                                                     override val allowAccess: AllowAccessActionProvider,
+                                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: AddressListFormProvider,

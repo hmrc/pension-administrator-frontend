@@ -22,6 +22,7 @@ import controllers.ReasonController
 import controllers.actions._
 import forms.ReasonFormProvider
 import identifiers.register.partnership.partners.{PartnerNameId, PartnerNoNINOReasonId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -29,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
 
@@ -39,7 +40,7 @@ class PartnerNoNINOReasonController @Inject()(@PartnershipPartner val navigator:
                                               val appConfig: FrontendAppConfig,
                                               val dataCacheConnector: UserAnswersCacheConnector,
                                               authenticate: AuthAction,
-                                              val allowAccess: AllowAccessActionProvider,
+                                              @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               formProvider: ReasonFormProvider,
