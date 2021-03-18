@@ -18,6 +18,7 @@ package config
 
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
+import models.ReportTechnicalIssue
 import play.api.Mode
 import play.api.i18n.Lang
 import play.api.mvc.Call
@@ -52,7 +53,7 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   val reportAProblemNonJSUrl = getConfigString("contact-frontend.report-problem-url.non-js")
   val betaFeedbackUrl = getConfigString("contact-frontend.beta-feedback-url.authenticated")
   val betaFeedbackUnauthenticatedUrl = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
-
+  val reportTechnicalIssues = ReportTechnicalIssue(serviceId = "PODS", baseUrl = Some(contactHost))
   lazy val manualIvUrl: String = loadConfig("urls.manualIvUrl")
 
   lazy val govUkUrl: String = loadConfig("urls.gov-uk")
