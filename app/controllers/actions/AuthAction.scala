@@ -18,10 +18,10 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.IdentityVerificationConnector
+import connectors.{IdentityVerificationConnector, SessionDataCacheConnector}
 import connectors.cache.UserAnswersCacheConnector
 import controllers.routes
-import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
+import identifiers.register.{RegisterAsBusinessId, AreYouInUKId}
 import identifiers.{JourneyId, TypedIdentifier}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
@@ -34,7 +34,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.domain
-import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.http.{UnauthorizedException, HeaderCarrier}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import utils.UserAnswers
 
@@ -44,6 +44,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
                                    ivConnector: IdentityVerificationConnector,
+                                   sessionDataCacheConnector: SessionDataCacheConnector,
                                    val parser: BodyParsers.Default)
                                   (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
@@ -238,9 +239,10 @@ class AuthenticationWithNoIV @Inject()(override val authConnector: AuthConnector
                                        config: FrontendAppConfig,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        identityVerificationConnector: IdentityVerificationConnector,
+                                       sessionDataCacheConnector: SessionDataCacheConnector,
                                        parser: BodyParsers.Default
                                       )(implicit executionContext: ExecutionContext) extends
-  FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector, parser)
+  FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector, sessionDataCacheConnector, parser)
 
   with AuthorisedFunctions {
 
