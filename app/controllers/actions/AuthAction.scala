@@ -18,11 +18,12 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.IdentityVerificationConnector
+import connectors.{SessionDataCacheConnector, IdentityVerificationConnector}
 import connectors.cache.UserAnswersCacheConnector
 import controllers.routes
-import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
-import identifiers.{JourneyId, TypedIdentifier}
+import identifiers.register.{RegisterAsBusinessId, AreYouInUKId}
+import identifiers.{JourneyId, AdministratorOrPractitionerId, TypedIdentifier}
+import models.AdministratorOrPractitioner.Practitioner
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
@@ -34,7 +35,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.domain
-import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.http.{UnauthorizedException, HeaderCarrier}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import utils.UserAnswers
 
@@ -44,6 +45,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
                                    ivConnector: IdentityVerificationConnector,
+                                   sessionDataCacheConnector: SessionDataCacheConnector,
                                    val parser: BodyParsers.Default)
                                   (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
@@ -59,10 +61,14 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         Retrievals.groupIdentifier
     ) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) =>
-        redirectToInterceptPages(enrolments, affinityGroup).fold {
-          val authRequest = AuthenticatedRequest(request, id, psaUser(affinityGroup, None, enrolments, credentials.providerId, groupIdentifier))
-          successRedirect(affinityGroup, cl, enrolments, authRequest, block)
-        } { result => Future.successful(result) }
+        checkForBothEnrolments(id, request, enrolments).flatMap {
+          case None => redirectToInterceptPages(enrolments, affinityGroup).fold {
+              val authRequest = AuthenticatedRequest(request, id,
+                psaUser(affinityGroup, None, enrolments, credentials.providerId, groupIdentifier))
+              successRedirect(affinityGroup, cl, enrolments, authRequest, block)
+            } { result => Future.successful(result) }
+          case Some(redirect) => Future.successful(redirect)
+        }
       case _ =>
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
 
@@ -83,6 +89,23 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         doManualIVAndRetrieveNino(authRequest, block)
       case _ =>
         block(authRequest)
+    }
+  }
+
+  private def checkForBothEnrolments[A](id: String, request: Request[A], enrolments:Enrolments): Future[Option[Result]] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    (enrolments.getEnrolment("HMRC-PODS-ORG"), enrolments.getEnrolment("HMRC-PODSPP-ORG")) match {
+      case (Some(_), Some(_)) =>
+        sessionDataCacheConnector.fetch(id).flatMap { optionJsValue =>
+          optionJsValue.map(UserAnswers).flatMap(_.get(AdministratorOrPractitionerId)) match {
+            case None => Future.successful(Some(Redirect(config.administratorOrPractitionerUrl)))
+            case Some(Practitioner) =>
+              Future.successful(Some(Redirect(Call("GET",
+                config.cannotAccessPageAsPractitionerUrl(config.localFriendlyUrl(request.uri))))))
+            case _ => Future.successful(None)
+          }
+        }
+      case _ => Future.successful(None)
     }
   }
 
@@ -238,9 +261,10 @@ class AuthenticationWithNoIV @Inject()(override val authConnector: AuthConnector
                                        config: FrontendAppConfig,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
                                        identityVerificationConnector: IdentityVerificationConnector,
+                                       sessionDataCacheConnector: SessionDataCacheConnector,
                                        parser: BodyParsers.Default
                                       )(implicit executionContext: ExecutionContext) extends
-  FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector, parser)
+  FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector, sessionDataCacheConnector, parser)
 
   with AuthorisedFunctions {
 
