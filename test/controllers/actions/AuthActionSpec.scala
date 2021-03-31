@@ -89,71 +89,36 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         status(result) mustBe OK
       }
 
-      //"have access to PSP page when he has chosen to act as a PSP" in {
-      //  val optionUAJson = UserAnswers()
-      //    .set(AdministratorOrPractitionerId)(AdministratorOrPractitioner.Practitioner).asOpt.map(_.json)
-      //  when(mockSessionDataCacheConnector.fetch(any())(any(), any())).thenReturn(Future.successful(optionUAJson))
-      //  val authAction = new AuthActionImpl(
-      //    authConnector = fakeAuthConnector(authRetrievals(bothEnrolments)),
-      //    config = frontendAppConfig,
-      //    mockSessionDataCacheConnector,
-      //    parser = app.injector.instanceOf[BodyParsers.Default]
-      //  )
-      //  val controller = new Harness(authAction, authEntity = Some(PSP))
-      //
-      //  val result = controller.onPageLoad()(fakeRequest)
-      //  status(result) mustBe OK
-      //}
-      //
-      //"redirect to cannot access as administrator when trying to access PSP page when chosen to act as a PSA" in {
-      //  val optionUAJson = UserAnswers()
-      //    .set(AdministratorOrPractitionerId)(AdministratorOrPractitioner.Administrator).asOpt.map(_.json)
-      //  when(mockSessionDataCacheConnector.fetch(any())(any(), any())).thenReturn(Future.successful(optionUAJson))
-      //  val authAction = new AuthActionImpl(
-      //    authConnector = fakeAuthConnector(authRetrievals(bothEnrolments)),
-      //    config = frontendAppConfig,
-      //    mockSessionDataCacheConnector,
-      //    parser = app.injector.instanceOf[BodyParsers.Default]
-      //  )
-      //  val controller = new Harness(authAction, authEntity = Some(PSP))
-      //
-      //  val result = controller.onPageLoad()(fakeRequest)
-      //  status(result) mustBe SEE_OTHER
-      //  redirectLocation(result) mustBe Some(frontendAppConfig.cannotAccessPageAsAdministratorUrl(frontendAppConfig.localFriendlyUrl(fakeRequest.uri)))
-      //}
-      //
-      //"redirect to cannot access as practitioner when trying to access PSA page when chosen to act as a PSP" in {
-      //  val optionUAJson = UserAnswers()
-      //    .set(AdministratorOrPractitionerId)(AdministratorOrPractitioner.Practitioner).asOpt.map(_.json)
-      //  when(mockSessionDataCacheConnector.fetch(any())(any(), any())).thenReturn(Future.successful(optionUAJson))
-      //  val authAction = new AuthActionImpl(
-      //    authConnector = fakeAuthConnector(authRetrievals(bothEnrolments)),
-      //    config = frontendAppConfig,
-      //    mockSessionDataCacheConnector,
-      //    parser = app.injector.instanceOf[BodyParsers.Default]
-      //  )
-      //  val controller = new Harness(authAction, authEntity = Some(PSA))
-      //
-      //  val result = controller.onPageLoad()(fakeRequest)
-      //  status(result) mustBe SEE_OTHER
-      //  redirectLocation(result) mustBe Some(frontendAppConfig.cannotAccessPageAsPractitionerUrl(frontendAppConfig.localFriendlyUrl(fakeRequest.uri)))
-      //}
-      //
-      //"redirect to administrator or practitioner page when trying to access PSA page when not chosen a role" in {
-      //  val optionUAJson = Some(Json.obj())
-      //  when(mockSessionDataCacheConnector.fetch(any())(any(), any())).thenReturn(Future.successful(optionUAJson))
-      //  val authAction = new AuthActionImpl(
-      //    authConnector = fakeAuthConnector(authRetrievals(bothEnrolments)),
-      //    config = frontendAppConfig,
-      //    mockSessionDataCacheConnector,
-      //    parser = app.injector.instanceOf[BodyParsers.Default]
-      //  )
-      //  val controller = new Harness(authAction, authEntity = Some(PSA))
-      //
-      //  val result = controller.onPageLoad()(fakeRequest)
-      //  status(result) mustBe SEE_OTHER
-      //  redirectLocation(result) mustBe Some(frontendAppConfig.administratorOrPractitionerUrl)
-      //}
+      "redirect to cannot access as practitioner when trying to access PSA page when chosen to act as a PSP" in {
+        val optionUAJson = UserAnswers()
+          .set(AdministratorOrPractitionerId)(AdministratorOrPractitioner.Practitioner).asOpt.map(_.json)
+        when(mockSessionDataCacheConnector.fetch(any())(any(), any())).thenReturn(Future.successful(optionUAJson))
+        val retrievalResult = authRetrievals(enrolments = bothEnrolments)
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig,
+          fakeUserAnswersCacheConnector(), fakeIVConnector(), mockSessionDataCacheConnector,
+          app.injector.instanceOf[BodyParsers.Default])
+
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(frontendAppConfig.cannotAccessPageAsPractitionerUrl(frontendAppConfig.localFriendlyUrl(fakeRequest.uri)))
+      }
+
+      "redirect to administrator or practitioner page when trying to access PSA page when not chosen a role" in {
+        val optionUAJson = Some(Json.obj())
+        when(mockSessionDataCacheConnector.fetch(any())(any(), any())).thenReturn(Future.successful(optionUAJson))
+        val retrievalResult = authRetrievals(enrolments = bothEnrolments)
+        val authAction = new FullAuthentication(fakeAuthConnector(retrievalResult), frontendAppConfig,
+          fakeUserAnswersCacheConnector(), fakeIVConnector(), mockSessionDataCacheConnector,
+          app.injector.instanceOf[BodyParsers.Default])
+
+        val controller = new Harness(authAction)
+
+        val result = controller.onPageLoad()(fakeRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(frontendAppConfig.administratorOrPractitionerUrl)
+      }
     }
 
     "called for already enrolled User" must {

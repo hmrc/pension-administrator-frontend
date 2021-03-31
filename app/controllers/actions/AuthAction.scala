@@ -18,11 +18,12 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{IdentityVerificationConnector, SessionDataCacheConnector}
+import connectors.{SessionDataCacheConnector, IdentityVerificationConnector}
 import connectors.cache.UserAnswersCacheConnector
 import controllers.routes
 import identifiers.register.{RegisterAsBusinessId, AreYouInUKId}
-import identifiers.{JourneyId, TypedIdentifier}
+import identifiers.{JourneyId, AdministratorOrPractitionerId, TypedIdentifier}
+import models.AdministratorOrPractitioner.Practitioner
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
@@ -60,10 +61,19 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         Retrievals.groupIdentifier
     ) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) =>
-        redirectToInterceptPages(enrolments, affinityGroup).fold {
-          val authRequest = AuthenticatedRequest(request, id, psaUser(affinityGroup, None, enrolments, credentials.providerId, groupIdentifier))
-          successRedirect(affinityGroup, cl, enrolments, authRequest, block)
-        } { result => Future.successful(result) }
+        val redirectForBothEnrolments =
+          (enrolments.getEnrolment("HMRC-PODS-ORG"), enrolments.getEnrolment("HMRC-PODSPP-ORG")) match {
+          case (Some(_), Some(_)) => getRedirectForBothEnrolments(id, request)
+          case _ => Future.successful(None)
+        }
+        redirectForBothEnrolments.flatMap {
+          case None => redirectToInterceptPages(enrolments, affinityGroup).fold {
+              val authRequest = AuthenticatedRequest(request, id,
+                psaUser(affinityGroup, None, enrolments, credentials.providerId, groupIdentifier))
+              successRedirect(affinityGroup, cl, enrolments, authRequest, block)
+            } { result => Future.successful(result) }
+          case Some(redirect) => Future.successful(redirect)
+        }
       case _ =>
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
 
@@ -84,6 +94,23 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         doManualIVAndRetrieveNino(authRequest, block)
       case _ =>
         block(authRequest)
+    }
+  }
+
+  private def getRedirectForBothEnrolments[A](id: String, request: Request[A]): Future[Option[Result]] = {
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    sessionDataCacheConnector.fetch(id).flatMap { optionJsValue =>
+      optionJsValue.map(UserAnswers).flatMap(_.get(AdministratorOrPractitionerId)) match {
+        case None => Future.successful(Some(Redirect(config.administratorOrPractitionerUrl)))
+        case Some(aop) =>
+          aop match {
+            case Practitioner =>
+              Future.successful(
+                Some(Redirect(Call("GET", config.cannotAccessPageAsPractitionerUrl(config.localFriendlyUrl(request.uri)))))
+              )
+            case _ => Future.successful(None)
+          }
+      }
     }
   }
 
