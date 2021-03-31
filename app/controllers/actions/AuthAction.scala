@@ -61,12 +61,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
         Retrievals.groupIdentifier
     ) {
       case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) =>
-        val redirectForBothEnrolments =
-          (enrolments.getEnrolment("HMRC-PODS-ORG"), enrolments.getEnrolment("HMRC-PODSPP-ORG")) match {
-          case (Some(_), Some(_)) => getRedirectForBothEnrolments(id, request)
-          case _ => Future.successful(None)
-        }
-        redirectForBothEnrolments.flatMap {
+        checkForBothEnrolments(id, request, enrolments).flatMap {
           case None => redirectToInterceptPages(enrolments, affinityGroup).fold {
               val authRequest = AuthenticatedRequest(request, id,
                 psaUser(affinityGroup, None, enrolments, credentials.providerId, groupIdentifier))
@@ -97,20 +92,20 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     }
   }
 
-  private def getRedirectForBothEnrolments[A](id: String, request: Request[A]): Future[Option[Result]] = {
+  private def checkForBothEnrolments[A](id: String, request: Request[A], enrolments:Enrolments): Future[Option[Result]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-    sessionDataCacheConnector.fetch(id).flatMap { optionJsValue =>
-      optionJsValue.map(UserAnswers).flatMap(_.get(AdministratorOrPractitionerId)) match {
-        case None => Future.successful(Some(Redirect(config.administratorOrPractitionerUrl)))
-        case Some(aop) =>
-          aop match {
-            case Practitioner =>
-              Future.successful(
-                Some(Redirect(Call("GET", config.cannotAccessPageAsPractitionerUrl(config.localFriendlyUrl(request.uri)))))
-              )
+    (enrolments.getEnrolment("HMRC-PODS-ORG"), enrolments.getEnrolment("HMRC-PODSPP-ORG")) match {
+      case (Some(_), Some(_)) =>
+        sessionDataCacheConnector.fetch(id).flatMap { optionJsValue =>
+          optionJsValue.map(UserAnswers).flatMap(_.get(AdministratorOrPractitionerId)) match {
+            case None => Future.successful(Some(Redirect(config.administratorOrPractitionerUrl)))
+            case Some(Practitioner) =>
+              Future.successful(Some(Redirect(Call("GET",
+                config.cannotAccessPageAsPractitionerUrl(config.localFriendlyUrl(request.uri))))))
             case _ => Future.successful(None)
           }
-      }
+        }
+      case _ => Future.successful(None)
     }
   }
 
