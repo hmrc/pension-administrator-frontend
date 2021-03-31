@@ -133,7 +133,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         def controller = new Harness(authAction)
 
         "coming from registered psa details" in {
-          val result = controller.onPageLoad(UpdateMode)(FakeRequest("GET", controllers.routes.PsaDetailsController.onPageLoad().url))
+          val result = controller.onPageLoad()(FakeRequest("GET", controllers.routes.PsaDetailsController.onPageLoad().url))
           status(result) mustBe OK
         }
       }
@@ -147,7 +147,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
           def controller = new Harness(authAction)
 
-          val res = controller.onPageLoad(NormalMode)(FakeRequest("GET", controllers.routes.IndexController.onPageLoad().url))
+          val res = controller.onPageLoad()(FakeRequest("GET", controllers.routes.IndexController.onPageLoad().url))
 
           ScalaFutures.whenReady(res.failed) { e =>
             e mustBe a[RuntimeException]
@@ -506,7 +506,7 @@ object AuthActionSpec extends SpecBase with BeforeAndAfterEach  {
 
   class Harness(authAction: AuthAction)
     extends BaseController {
-    def onPageLoad(mode: Mode = NormalMode): Action[AnyContent] = authAction { _ => Ok }
+    def onPageLoad: Action[AnyContent] = authAction { _ => Ok }
 
     override protected def controllerComponents: ControllerComponents = SpecBase.controllerComponents
   }
