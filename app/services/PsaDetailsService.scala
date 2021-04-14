@@ -16,7 +16,7 @@
 
 package services
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.{Inject, ImplementedBy}
 import connectors.SubscriptionConnector
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.register._
@@ -25,10 +25,11 @@ import identifiers.register.company.{ExistingCurrentAddressId => CompanyExisting
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{ExistingCurrentAddressId => PartnershipExistingCurrentAddressId, _}
-import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
-import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
+import identifiers.{UpdateModeId, IndexId, TypedIdentifier}
+import models.RegistrationLegalStatus.{LimitedCompany, Partnership, Individual}
 import models._
 import models.requests.OptionalDataRequest
+import play.api.Logger
 import play.api.i18n.Messages
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -62,6 +63,8 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
                                      userAnswersCacheConnector: UserAnswersCacheConnector,
                                      dataCompletion: DataCompletion
                                     ) extends PsaDetailsService {
+
+  private val logger = Logger(classOf[PsaDetailServiceImpl])
 
   override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
                                                   (implicit hc: HeaderCarrier,
@@ -151,6 +154,10 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
 
       case unknownStatus =>
         throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")
+    }
+
+    incompleteMessage.foreach { _ =>
+      logger.debug(s"Incomplete psa details. User answers data: ${userAnswers.json}")
     }
 
     PsaViewDetailsViewModel(
