@@ -18,14 +18,15 @@ package controllers
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, DataRetrievalAction, AuthAction}
 import identifiers.register.DeclarationChangedId
 import models._
+import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Navigator, UserAnswers}
+import utils.{UserAnswers, Navigator}
 import utils.annotations.NoSuspendedCheck
 import views.html.psa_details
 
@@ -41,10 +42,14 @@ class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
                                      view: psa_details
                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[PsaDetailsController])
+
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>
+      logger.debug("PsaDetailsController onPageLoad")
       request.user.alreadyEnrolledPsaId.map { psaId =>
         psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId, mode).map { psaDetails =>
+          logger.debug("psaDetails=" + psaDetails)
           val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
           Ok(view(psaDetails, nextPage))
         }
