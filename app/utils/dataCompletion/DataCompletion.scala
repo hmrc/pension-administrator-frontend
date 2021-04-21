@@ -18,19 +18,22 @@ package utils.dataCompletion
 
 import identifiers._
 import identifiers.register._
-import identifiers.register.adviser.{AdviserPhoneId, AdviserEmailId, AdviserAddressId, AdviserNameId}
+import identifiers.register.adviser.{AdviserNameId, AdviserPhoneId, AdviserAddressId, AdviserEmailId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
 import identifiers.register.individual._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners._
-import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
+import models.RegistrationLegalStatus.{LimitedCompany, Partnership, Individual}
 import models._
 import models.register.DeclarationWorkingKnowledge
+import play.api.Logger
 import play.api.libs.json.Reads
 import utils.UserAnswers
 
 class DataCompletion {
+
+  private val logger = Logger(classOf[DataCompletion])
 
   def isComplete(list: Seq[Option[Boolean]]): Option[Boolean] =
     if (list.flatten.isEmpty) {
@@ -147,6 +150,7 @@ class DataCompletion {
         )
       }
       )
+    logger.debug(s"User answers company details complete: $allAnswers")
     isComplete(allAnswers).getOrElse(false)
   }
 
@@ -170,6 +174,7 @@ class DataCompletion {
         )
       }
       )
+    logger.debug(s"User answers partnership details complete: $allAnswers")
     isComplete(allAnswers).getOrElse(false)
   }
 
