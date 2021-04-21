@@ -156,9 +156,6 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
         throw new IllegalArgumentException(s"Unknown Legal Status : $unknownStatus")
     }
 
-    logger.debug(s"PsaDetailsService: Constructed view model for PSA: ${userAnswers.json}")
-    logger.warn(s"PsaDetailsService: Constructed view model for PSA: ${userAnswers.json}")
-
     PsaViewDetailsViewModel(
       superSections = superSections,
       header = name,
