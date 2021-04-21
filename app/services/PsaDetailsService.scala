@@ -29,7 +29,6 @@ import identifiers.{UpdateModeId, IndexId, TypedIdentifier}
 import models.RegistrationLegalStatus.{LimitedCompany, Partnership, Individual}
 import models._
 import models.requests.OptionalDataRequest
-import play.api.Logger
 import play.api.i18n.Messages
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -63,8 +62,6 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
                                      userAnswersCacheConnector: UserAnswersCacheConnector,
                                      dataCompletion: DataCompletion
                                     ) extends PsaDetailsService {
-
-  private val logger = Logger(classOf[PsaDetailServiceImpl])
 
   override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
                                                   (implicit hc: HeaderCarrier,
