@@ -157,7 +157,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
     }
 
     incompleteMessage.foreach { _ =>
-      logger.debug(s"Incomplete psa details. User answers data: ${userAnswers.json}")
+      logger.warn(s"Incomplete psa details. User answers data: ${userAnswers.json}")
     }
 
     PsaViewDetailsViewModel(
