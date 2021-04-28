@@ -48,8 +48,7 @@ lazy val appName: String = "pension-administrator-frontend"
       evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
     )
     .settings(resolvers ++= Seq(
-      Resolver.jcenterRepo,
-      Resolver.bintrayRepo("wolfendale", "maven")
+      Resolver.jcenterRepo
     )
     )
     .settings(
