@@ -10,7 +10,7 @@ lazy val appName: String = "pension-administrator-frontend"
 
   lazy val root =  (project in file("."))
     .disablePlugins(JUnitXmlReportPlugin)
-    .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory)
+    .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
     .settings(scalaSettings: _*)
     .settings(defaultSettings(): _*)
     .settings(publishingSettings: _*)
