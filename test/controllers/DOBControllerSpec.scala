@@ -37,25 +37,26 @@ import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class DOBControllerSpec extends ControllerSpecBase {
-  val dobView: dob = app.injector.instanceOf[dob]
+  private val dobView: dob = app.injector.instanceOf[dob]
 
-  def viewAsString(base: ControllerSpecBase, form: Form[_] = form): String = dobView(
-    form,
-    viewModel
-  )(base.fakeRequest, messagesApi.preferred(fakeRequest)).toString
+  private def viewAsString(form: Form[_] = form): String =
+    dobView(
+      form,
+      viewModel
+    )(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
-  val form = new DOBFormProvider()()
-  val date: LocalDate = LocalDate.now
-  val postCall = Call("POST", "http://www.test.com")
-  lazy val viewModel =
+  private val form = new DOBFormProvider()()
+  private val date: LocalDate = LocalDate.now
+  private val postCall: Call = Call("POST", "http://www.test.com")
+  private lazy val viewModel: CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall,
+      postCall = postCall,
       title = Message("directorDob.title"),
       heading = Message("dob.heading"),
-      None,
-      None,
-      NormalMode,
-      "psa-name"
+      hint = None,
+      formFieldName = None,
+      mode = NormalMode,
+      entityName = "psa-name"
     )
 
   val id: TypedIdentifier[LocalDate] = new TypedIdentifier[LocalDate] {}
@@ -69,7 +70,7 @@ class DOBControllerSpec extends ControllerSpecBase {
       val result = Future(controller(this).get(id, viewModel)(testRequest()))
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(this)
+      contentAsString(result) mustBe viewAsString()
     }
 
     "populate the view correctly for a GET request with existing data" in {
@@ -79,7 +80,7 @@ class DOBControllerSpec extends ControllerSpecBase {
       val result = Future(controller(this).get(id, viewModel)(request))
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(this, form.fill(LocalDate.now))
+      contentAsString(result) mustBe viewAsString(form.fill(LocalDate.now))
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -105,16 +106,22 @@ class DOBControllerSpec extends ControllerSpecBase {
         user = PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""),
         userAnswers = userAnswers
       )
-      val formWithErrors = form.bindFromRequest()(dataRequest)
+
+      val formWithErrors = form.bind(
+        Map(
+          "value.day" -> "30",
+          "value.month" -> "2",
+          "value.year" -> "2019"
+        )
+      )
 
       val result = controller(this).post(id, viewModel)(dataRequest)
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(this, formWithErrors)
+      contentAsString(result) mustBe viewAsString(formWithErrors)
     }
 
   }
-
 
 
   def testRequest(answers: UserAnswers = userAnswers, date: Option[LocalDate] = None): DataRequest[AnyContent] = {

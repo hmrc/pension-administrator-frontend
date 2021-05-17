@@ -18,6 +18,7 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import connectors.cache.CacheConnector
 import play.api.libs.json._
 import uk.gov.hmrc.http._
 import play.api.http.Status._
@@ -27,17 +28,17 @@ import play.api.mvc.Result
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SessionDataCacheConnector  @Inject()(
-  config: FrontendAppConfig,
-  http: WSClient
-) {
-  private def url(cacheId:String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/session-data/$cacheId"
+class SessionDataCacheConnector @Inject()(
+                                           config: FrontendAppConfig,
+                                           http: WSClient
+                                         ) {
+  private def url(cacheId: String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/session-data/$cacheId"
 
-  def fetch(id: String)(implicit ec: ExecutionContext,
-    hc: HeaderCarrier): Future[Option[JsValue]] = {
+  def fetch(id: String)
+           (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] = {
     http
       .url(url(id))
-      .withHttpHeaders(hc.headers: _*)
+      .withHttpHeaders(CacheConnector.headers(hc): _*)
       .get()
       .flatMap { response =>
         response.status match {
@@ -51,11 +52,12 @@ class SessionDataCacheConnector  @Inject()(
       }
   }
 
-  def removeAll(id: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
+  def removeAll(id: String)
+               (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     http
       .url(url(id))
-      .withHttpHeaders(hc.headers: _*)
+      .withHttpHeaders(CacheConnector.headers(hc): _*)
       .delete()
-      .map(_=>Ok)
+      .map(_ => Ok)
   }
 }

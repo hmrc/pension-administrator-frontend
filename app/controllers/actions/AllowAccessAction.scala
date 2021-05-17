@@ -24,7 +24,7 @@ import models.requests.AuthenticatedRequest
 import play.api.mvc.Results._
 import play.api.mvc.{Call, Request, Result, ActionFilter}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{Future, ExecutionContext}
 
@@ -49,7 +49,7 @@ class AllowAccessAction(
   }
 
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     (request.user.alreadyEnrolledPsaId, mode) match {
       case (None, NormalMode | CheckMode) =>
         Future.successful(None)

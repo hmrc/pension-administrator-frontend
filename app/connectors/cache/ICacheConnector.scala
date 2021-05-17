@@ -31,9 +31,9 @@ import utils.UserAnswers
 import scala.concurrent.{ExecutionContext, Future}
 
 class ICacheConnector @Inject()(
-                                            config: FrontendAppConfig,
-                                            http: WSClient
-                                          ) extends UserAnswersCacheConnector {
+                                 config: FrontendAppConfig,
+                                 http: WSClient
+                               ) extends UserAnswersCacheConnector {
 
   protected def url(id: String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/psa/$id"
 
@@ -68,7 +68,7 @@ class ICacheConnector @Inject()(
         modification(UserAnswers(json.getOrElse(Json.obj()))) match {
           case JsSuccess(UserAnswers(updatedJson), _) =>
             http.url(url(cacheId))
-              .withHttpHeaders(hc.withExtraHeaders(("content-type", "application/json")).headers: _*)
+              .withHttpHeaders(CacheConnector.headers(hc): _*)
               .post(PlainText(Json.stringify(updatedJson)).value).flatMap {
               response =>
                 response.status match {
@@ -90,7 +90,7 @@ class ICacheConnector @Inject()(
   ): Future[Option[JsValue]] = {
 
     http.url(url(id))
-      .withHttpHeaders(hc.headers: _*)
+      .withHttpHeaders(CacheConnector.headers(hc): _*)
       .get()
       .flatMap {
         response =>
@@ -107,7 +107,7 @@ class ICacheConnector @Inject()(
 
   override def removeAll(id: String)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
     http.url(url(id))
-      .withHttpHeaders(hc.headers: _*)
+      .withHttpHeaders(CacheConnector.headers(hc): _*)
       .delete().map(_ => Ok)
   }
 }

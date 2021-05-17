@@ -29,8 +29,7 @@ class DOBFormProvider @Inject() extends Mappings with Transforms {
       .verifying(firstError(
         nonFutureDate("common.error.dateOfBirth.future"),
         notBeforeYear("common.error.dateOfBirth.past", DOBFormProvider.startYear)
-      )
-      )
+      ))
   )
 
 }
