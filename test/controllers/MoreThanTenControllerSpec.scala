@@ -91,12 +91,12 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
 
     "return a Bad Request and errors when invalid data is submitted" in {
       val fixture = testFixture(this)
-      val request = testRequest(moreThanTen = Some(""))
+      val request = testRequest(moreThanTen = Some("invalid"))
 
       val result = fixture.controller.post(viewModel(), NormalMode)(request)
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(this, form.bindFromRequest()(request))
+      contentAsString(result) mustBe viewAsString(this, form.bind(Map("value" -> "invalid")))
     }
 
     "save the user answer and update the change flag if gone from no to yes" in {

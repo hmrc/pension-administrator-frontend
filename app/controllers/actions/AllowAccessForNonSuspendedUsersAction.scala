@@ -23,7 +23,7 @@ import models.requests.AuthenticatedRequest
 import play.api.mvc.{Result, ActionFilter}
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{Future, ExecutionContext}
 
@@ -31,7 +31,7 @@ class AllowAccessForNonSuspendedUsersAction @Inject()(minimalPsaConnector: Minim
                                                      (implicit val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
 
   override protected def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     request.user.alreadyEnrolledPsaId match {
       case None => Future.successful(None)

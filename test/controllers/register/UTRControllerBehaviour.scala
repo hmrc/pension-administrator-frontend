@@ -78,7 +78,7 @@ trait UTRControllerBehaviour extends ControllerSpecBase {
     "return Bad Request and errors when invalid data is submitted" in {
       val fixture = testFixture(createController)
       val request = testRequest(utr = Some(invalidUTR))
-      val formWithErrors = testForm().bindFromRequest()(request)
+      val formWithErrors = testForm().bind(Map("value" -> invalidUTR))
 
       val result = fixture.controller.post(id, entity, onwardRoute, NormalMode)(request)
 

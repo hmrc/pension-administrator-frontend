@@ -14,28 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package connectors.cache
 
-import java.time.LocalDate
+import uk.gov.hmrc.http.HeaderCarrier
 
-import forms.mappings.{Mappings, Transforms}
-import javax.inject.Inject
-import play.api.data.Form
+object CacheConnector {
+  val names: HeaderCarrier => Seq[String] =
+    hc =>
+      Seq(hc.names.authorisation, hc.names.xRequestId, hc.names.xSessionId)
 
-class DOBFormProvider @Inject() extends Mappings with Transforms {
-
-  def apply(): Form[LocalDate] = Form(
-    "value" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
-      .verifying(firstError(
-        nonFutureDate("common.error.dateOfBirth.future"),
-        notBeforeYear("common.error.dateOfBirth.past", DOBFormProvider.startYear)
-      ))
-  )
-
+  val headers: HeaderCarrier => Seq[(String, String)] =
+    hc => hc.headers(names(hc)) ++ hc.withExtraHeaders(
+      ("content-type", "application/json")
+    ).extraHeaders
 }
-
-object DOBFormProvider {
-  val startYear: Int = 1900
-}
-
-

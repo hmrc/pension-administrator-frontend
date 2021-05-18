@@ -66,8 +66,8 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
-        val postRequest = testRequest(name = Some("test ** invalid"))
-        val boundForm = form.bindFromRequest()(postRequest)
+        val postRequest = testRequest(name = Some(""))
+        val boundForm = form.bind(Map("value" -> ""))
 
         val result = createController(answers).onSubmit()(postRequest)
 

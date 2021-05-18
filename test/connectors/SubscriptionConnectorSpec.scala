@@ -26,7 +26,11 @@ import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorRespon
 import utils.testhelpers.PsaSubscriptionBuilder._
 import utils.{UserAnswers, WireMockHelper}
 
-class SubscriptionConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper with ScalaCheckPropertyChecks {
+class SubscriptionConnectorSpec
+  extends AsyncFlatSpec
+    with Matchers
+    with WireMockHelper
+    with ScalaCheckPropertyChecks {
 
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 

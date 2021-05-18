@@ -36,7 +36,7 @@ import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.domain
 import uk.gov.hmrc.http.{UnauthorizedException, HeaderCarrier}
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,7 +50,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                   (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised(User).retrieve(
         Retrievals.externalId and
@@ -93,7 +93,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   }
 
   private def checkForBothEnrolments[A](id: String, request: Request[A], enrolments:Enrolments): Future[Option[Result]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     (enrolments.getEnrolment("HMRC-PODS-ORG"), enrolments.getEnrolment("HMRC-PODSPP-ORG")) match {
       case (Some(_), Some(_)) =>
         sessionDataCacheConnector.fetch(id).flatMap { optionJsValue =>

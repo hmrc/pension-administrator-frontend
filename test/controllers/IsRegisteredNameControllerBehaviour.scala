@@ -78,7 +78,7 @@ trait IsRegisteredNameControllerBehaviour {
     "return Bad Request and errors when invalid data is submitted" in {
       val fixture = testFixture(createController)
       val request = testRequest(booleanValue = "invalid")
-      val formWithErrors = testForm().bindFromRequest()(request)
+      val formWithErrors = testForm().bind(Map("value" -> "invalid"))
 
       val result = fixture.controller.post(viewModel)(request)
 

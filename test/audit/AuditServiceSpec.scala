@@ -24,7 +24,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.config.AuditingConfig
-import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
+import uk.gov.hmrc.play.audit.http.connector._
 import uk.gov.hmrc.play.audit.model.DataEvent
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -93,7 +93,7 @@ object FakeAuditConnector extends AuditConnector {
 
   private var sentEvent: DataEvent = _
 
-  override def auditingConfig: AuditingConfig = AuditingConfig(None, false, "test audit source")
+  override def auditingConfig: AuditingConfig = AuditingConfig(None, false, "test audit source", false)
 
   override def sendEvent(event: DataEvent)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[AuditResult] = {
     sentEvent = event
@@ -102,9 +102,13 @@ object FakeAuditConnector extends AuditConnector {
 
   def lastSentEvent: DataEvent = sentEvent
 
-  override def materializer: Materializer = ???
+  def materializer: Materializer = ???
 
-  override def lifecycle: ApplicationLifecycle = ???
+  def lifecycle: ApplicationLifecycle = ???
+
+  def auditChannel: AuditChannel = ???
+
+  def auditCounter: AuditCounter = ???
 }
 
 case class TestAuditEvent(payload: String) extends AuditEvent {
