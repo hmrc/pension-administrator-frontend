@@ -42,7 +42,6 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DeclarationWorkingKnowledgeController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

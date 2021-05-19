@@ -50,23 +50,41 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
   private val onwardRoute = IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-  val businessDetails: BusinessDetails = BusinessDetails("MyCompany", Some("1234567890"))
+  val businessDetails: BusinessDetails =
+    BusinessDetails(
+      companyName = "MyCompany",
+      uniqueTaxReferenceNumber = Some("1234567890")
+    )
   val email = "test@test.com"
   val businessName = "MyCompany"
-  val registrationInfo: RegistrationInfo = RegistrationInfo(Partnership, "", noIdentifier = false, UK, Some(UTR), Some(""))
-  private val data = Json.obj(RegistrationInfoId.toString -> registrationInfo,
+  val registrationInfo: RegistrationInfo =
+    RegistrationInfo(
+      legalStatus = Partnership,
+      sapNumber = "",
+      noIdentifier = false,
+      customerType = UK,
+      idType = Some(UTR),
+      idNumber = Some("")
+    )
+
+  private val data = Json.obj(
+    RegistrationInfoId.toString -> registrationInfo,
     BusinessNameId.toString -> businessName
   )
 
   val view: declaration = app.injector.instanceOf[declaration]
 
   private val validPsaResponse = PsaSubscriptionResponse("A0123456")
-  private val knownFacts = Some(KnownFacts(
-    Set(KnownFact("PSAID", "test-psa")),
-    Set(KnownFact("NINO", "test-nino")
-    )))
+  private val knownFacts =
+    Some(KnownFacts(
+      Set(KnownFact("PSAID", "test-psa")),
+      Set(KnownFact("NINO", "test-nino"))
+    ))
 
-  val validData: JsObject = Json.obj(DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString))
+  val validData: JsObject =
+    Json.obj(
+      DeclarationWorkingKnowledgeId.toString -> JsString(DeclarationWorkingKnowledge.values.head.toString)
+    )
   val dataRetrieval = new FakeDataRetrievalAction(Some(validData))
 
   private val mockUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
@@ -100,9 +118,15 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
             )
           )
 
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(validData))
-          when(mockEmailConnector.sendEmail(eqTo(email), any(), eqTo(Map("psaName" -> businessName)),
-            eqTo(PsaId("A0123456")))(any(), any())).thenReturn(Future.successful(EmailSent))
+          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+            .thenReturn(Future.successful(validData))
+          when(mockEmailConnector.sendEmail(
+            eqTo(email),
+            any(),
+            eqTo(Map("psaName" -> businessName)),
+            eqTo(PsaId("A0123456"))
+          )(any(), any()))
+            .thenReturn(Future.successful(EmailSent))
           val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(validData)),
             fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
 
@@ -136,7 +160,8 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any())).thenReturn(Future.successful(data))
           val result = controller(
             fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector,
-            knownFactsRetrieval = fakeKnownFactsRetrieval(None)).onSubmit(NormalMode)(validRequest)
+            knownFactsRetrieval = fakeKnownFactsRetrieval(None)
+          ).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
@@ -150,7 +175,7 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
           ).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(YourActionWasNotProcessedController.onPageLoad().url)
         }
       }
 
@@ -207,11 +232,11 @@ class DeclarationControllerSpec extends ControllerSpecBase with MockitoSugar {
       override def deEnrol(groupId: String, psaId: String, userId: String)
                           (implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader): Future[HttpResponse] = ???
 
-      override def enrol(enrolmentKey: String, knownFacts: KnownFacts
-                        )(implicit w: Writes[KnownFacts],
-                          hc: HeaderCarrier,
-                          executionContext: ExecutionContext,
-                          request: DataRequest[AnyContent]): Future[HttpResponse] =
+      override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
+                        (implicit w: Writes[KnownFacts],
+                         hc: HeaderCarrier,
+                         executionContext: ExecutionContext,
+                         request: DataRequest[AnyContent]): Future[HttpResponse] =
         enrolResponse.status match {
           case NO_CONTENT => Future.successful(enrolResponse)
           case ex => Future.failed(new HttpException("Fail", ex))

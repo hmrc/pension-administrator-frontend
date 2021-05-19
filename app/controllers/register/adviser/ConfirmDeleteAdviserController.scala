@@ -16,92 +16,110 @@
 
 package controllers.register.adviser
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.Retrievals
-import controllers.Variations
+import controllers.register.adviser.routes._
+import controllers.routes._
+import controllers.{Retrievals, Variations}
 import forms.register.adviser.ConfirmDeleteAdviserFormProvider
 import identifiers.register.adviser._
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsValue
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Navigator
-import utils.UserAnswers
-import utils.annotations
 import utils.annotations.NoRLSCheck
-import viewmodels.ConfirmDeleteViewModel
-import viewmodels.Message
+import utils.{Navigator, UserAnswers, annotations}
+import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmDeleteAdviserController @Inject()(val appConfig: FrontendAppConfig,
-                                               authenticate: AuthAction,
-                                               @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               val cacheConnector: UserAnswersCacheConnector,
-                                               formProvider: ConfirmDeleteAdviserFormProvider,
-                                               @annotations.Variations navigator: Navigator,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val view: confirmDelete
+class ConfirmDeleteAdviserController @Inject()(
+                                                authenticate: AuthAction,
+                                                @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                val cacheConnector: UserAnswersCacheConnector,
+                                                formProvider: ConfirmDeleteAdviserFormProvider,
+                                                @annotations.Variations navigator: Navigator,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: confirmDelete
                                               )(implicit val executionContext: ExecutionContext)
-                                                extends FrontendBaseController with I18nSupport with Retrievals with Variations {
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals
+    with Variations {
 
-  private def viewModel(name: String)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
-    routes.ConfirmDeleteAdviserController.onSubmit(),
-    controllers.routes.PsaDetailsController.onPageLoad(),
-    Message("confirmDelete.adviser.title"),
-    "confirmDelete.adviser.heading",
-    name,
-    psaName = psaName()
-  )
+  private def viewModel(name: String)
+                       (implicit request: DataRequest[AnyContent]) =
+    ConfirmDeleteViewModel(
+      postUrl = ConfirmDeleteAdviserController.onSubmit(),
+      cancelUrl = PsaDetailsController.onPageLoad(),
+      title = Message("confirmDelete.adviser.title"),
+      heading = "confirmDelete.adviser.heading",
+      name = name,
+      psaName = psaName()
+    )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
-    implicit request =>
-      request.userAnswers.get(AdviserNameId) match {
-        case Some(name) => Future.successful(Ok(view(formProvider(name), viewModel(name), mode)))
-        case _ => Future.successful(Redirect(controllers.register.adviser.routes.AdviserAlreadyDeletedController.onPageLoad()))
-      }
-  }
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+      implicit request =>
+        request.userAnswers.get(AdviserNameId) match {
+          case Some(name) =>
+            Future.successful(Ok(view(formProvider(name), viewModel(name), mode)))
+          case _ =>
+            Future.successful(Redirect(AdviserAlreadyDeletedController.onPageLoad()))
+        }
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      AdviserNameId.retrieve.right.map { name =>
-        val form = formProvider(name)
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(view(formWithErrors, viewModel(name), mode))),
-          value => {
-            cacheConnector.save(request.externalId, ConfirmDeleteAdviserId, value).flatMap { cacheMap =>
-              deleteAdviserAndSetChangeFlag(value, UserAnswers(cacheMap), mode).map { updatedCacheMap =>
-                Redirect(navigator.nextPage(ConfirmDeleteAdviserId, mode, UserAnswers(updatedCacheMap)))
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        AdviserNameId.retrieve.right.map { name =>
+          val form = formProvider(name)
+          form.bindFromRequest().fold(
+            (formWithErrors: Form[_]) =>
+              Future.successful(BadRequest(view(formWithErrors, viewModel(name), mode))),
+            value => {
+              cacheConnector.save(request.externalId, ConfirmDeleteAdviserId, value) flatMap {
+                cacheMap =>
+                  deleteAdviserAndSetChangeFlag(value, UserAnswers(cacheMap), mode) map {
+                    updatedCacheMap =>
+                      Redirect(navigator.nextPage(ConfirmDeleteAdviserId, mode, UserAnswers(updatedCacheMap)))
+                  }
               }
             }
-          }
-        )
-      }
-  }
+          )
+        }
+    }
 
   private def deleteAdviserAndSetChangeFlag(value: Boolean, userAnswers: UserAnswers, mode: Mode)
-                                           (implicit request: DataRequest[AnyContent]): Future[JsValue] = {
+                                           (implicit request: DataRequest[AnyContent]): Future[JsValue] =
     if (value) {
-      val updatedAnswers = userAnswers.removeAllOf(List(AdviserNameId, AdviserEmailId, AdviserPhoneId, AdviserAddressId,
-        AdviserAddressListId, AdviserAddressPostCodeLookupId)).asOpt.getOrElse(userAnswers)
-      cacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
-        saveChangeFlag(mode, ConfirmDeleteAdviserId)
+      val updatedAnswers =
+        userAnswers
+          .removeAllOf(
+            List(
+              AdviserNameId,
+              AdviserEmailId,
+              AdviserPhoneId,
+              AdviserAddressId,
+              AdviserAddressListId,
+              AdviserAddressPostCodeLookupId
+            )
+          )
+          .asOpt
+          .getOrElse(userAnswers)
+
+      cacheConnector.upsert(request.externalId, updatedAnswers.json) flatMap {
+        _ =>
+          saveChangeFlag(mode, ConfirmDeleteAdviserId)
       }
     } else {
       Future.successful(userAnswers.json)
     }
-  }
 }

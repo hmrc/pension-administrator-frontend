@@ -69,7 +69,6 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType, psaId : Option[String]) =
     new PsaDetailsController(
-      frontendAppConfig,
       FakeNavigator,
       new FakeAuthAction(userType, psaId),
       FakeAllowAccessProvider(config = frontendAppConfig),

@@ -1,37 +1,40 @@
 # microservice specific routes
-->         /register                                    register.Routes
-->          /                                           remove.Routes
+->          /register                                             register.Routes
+->          /                                                     remove.Routes
 
-GET        /                                            controllers.LoginController.onPageLoad
+GET         /                                                     controllers.LoginController.onPageLoad
 
-GET        /index                                       controllers.IndexController.onPageLoad
+GET         /index                                                controllers.IndexController.onPageLoad
 
-GET        /login                                       controllers.LoginController.onPageLoad
-GET        /logout                                      controllers.LogoutController.onPageLoad
+GET         /login                                                controllers.LoginController.onPageLoad
+GET         /logout                                               controllers.LogoutController.onPageLoad
 
-GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                         controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                                       controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
+GET         /this-service-has-been-reset                          controllers.SessionExpiredController.onPageLoad
 
-GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+GET         /your-action-was-not-processed                        controllers.YourActionWasNotProcessedController.onPageLoad()
 
-GET        /assistant-on-gg                             controllers.UnauthorisedAssistantController.onPageLoad()
+GET         /unauthorised                                         controllers.UnauthorisedController.onPageLoad
 
-GET        /psp                                         controllers.PensionSchemePractitionerController.onPageLoad()
+GET         /assistant-on-gg                                      controllers.UnauthorisedAssistantController.onPageLoad()
 
-GET        /registered-psa-details                      controllers.PsaDetailsController.onPageLoad()
+GET         /psp                                                  controllers.PensionSchemePractitionerController.onPageLoad()
 
-GET        /cannot-register                             controllers.AgentCannotRegisterController.onPageLoad
+GET         /registered-psa-details                               controllers.PsaDetailsController.onPageLoad()
 
-GET        /cannot-make-changes                         controllers.CannotMakeChangesController.onPageLoad
+GET         /cannot-register                                      controllers.AgentCannotRegisterController.onPageLoad
 
-GET        /use-organisation-account                    controllers.UseOrganisationCredentialsController.onPageLoad
+GET         /cannot-make-changes                                  controllers.CannotMakeChangesController.onPageLoad
 
-GET        /update-contact-address                      controllers.UpdateContactAddressController.onPageLoad
+GET         /use-organisation-account                             controllers.UseOrganisationCredentialsController.onPageLoad
 
-GET        /update-contact-address/check-your-answers   controllers.UpdateContactAddressCYAController.onPageLoad()
+GET         /update-contact-address                               controllers.UpdateContactAddressController.onPageLoad
 
-GET        /update-contact-address/second-partner-details   controllers.SecondPartnerController.onPageLoad()
-POST       /update-contact-address/second-partner-details   controllers.SecondPartnerController.onSubmit()
+GET         /update-contact-address/check-your-answers            controllers.UpdateContactAddressCYAController.onPageLoad()
+
+GET         /update-contact-address/second-partner-details        controllers.SecondPartnerController.onPageLoad()
+
+POST        /update-contact-address/second-partner-details        controllers.SecondPartnerController.onSubmit()

@@ -50,18 +50,21 @@ class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {
     val url = config.registerPsaUrl
 
-    http.POST[JsValue, HttpResponse](url, answers.json).map { response =>
+    http.POST[JsValue, HttpResponse](url, answers.json).map {
+      response =>
 
-      response.status match {
-        case OK =>
-          Json.parse(response.body).validate[PsaSubscriptionResponse] match {
-            case JsSuccess(value, _) => value
-            case JsError(errors) => throw JsResultException(errors)
-          }
-        case _ =>
-          logger.error("Unable to register PSA")
-          handleErrorResponse("POST", url)(response)
-      }
+        response.status match {
+          case OK =>
+            Json.parse(response.body).validate[PsaSubscriptionResponse] match {
+              case JsSuccess(value, _) =>
+                value
+              case JsError(errors) =>
+                throw JsResultException(errors)
+            }
+          case _ =>
+            logger.error("Unable to register PSA")
+            handleErrorResponse("POST", url)(response)
+        }
     }
   }
 

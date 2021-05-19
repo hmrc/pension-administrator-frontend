@@ -1148,3 +1148,9 @@ secondPartner.p1 = Our records show that you have only given us the details of o
 secondPartner.p1.noName = Our records show that you have only given us the details of one partner. Ideally, as a partnership administrator, you should provide the details of a second partner. You can do this now or at a later date.
 secondPartner.label = Do you want to provide details of a second partner now?
 secondPartner.error = Select yes if you want to provide details of a second partner now
+
+yourActionWasNotProcessed.title = Sorry, your action was not processed
+yourActionWasNotProcessed.heading = Sorry, your action was not processed
+yourActionWasNotProcessed.guidance.p1 = Try again later.
+yourActionWasNotProcessed.guidance.p2 = Any information entered will have been saved from the last ‘save and continue’. 
+yourActionWasNotProcessed.guidance.p3 = If the problem persists you can tell us about it using the link below.

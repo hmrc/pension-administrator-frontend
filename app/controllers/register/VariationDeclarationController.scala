@@ -16,69 +16,113 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors._
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import controllers.register.routes.VariationDeclarationController
+import controllers.register.routes._
+import controllers.routes._
 import identifiers.UpdateContactAddressId
 import identifiers.register._
-import javax.inject.Inject
 import models._
 import models.register.DeclarationWorkingKnowledge
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.BadRequestException
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.NoRLSCheck
-import utils.annotations.Variations
+import utils.annotations.{NoRLSCheck, Variations}
 import utils.{Navigator, UserAnswers}
 import views.html.register.variationDeclaration
 
-import scala.concurrent.{Future, ExecutionContext}
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class VariationDeclarationController @Inject()(val appConfig: FrontendAppConfig,
-                                               authenticate: AuthAction,
-                                               @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               @Variations navigator: Navigator,
-                                               dataCacheConnector: UserAnswersCacheConnector,
-                                               pensionsSchemeConnector: PensionsSchemeConnector,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val view: variationDeclaration
+class VariationDeclarationController @Inject()(
+                                                authenticate: AuthAction,
+                                                @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                @Variations navigator: Navigator,
+                                                dataCacheConnector: UserAnswersCacheConnector,
+                                                pensionsSchemeConnector: PensionsSchemeConnector,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: variationDeclaration
                                               )(implicit val executionContext: ExecutionContext)
-                                                extends FrontendBaseController with I18nSupport with Retrievals {
+  extends FrontendBaseController
+    with I18nSupport
+    with Retrievals {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
-    implicit request =>
-      val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
-      val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
-      Future.successful(Ok(view(
-        if(displayReturnLink) psaName() else None,
-        workingKnowledge,
-        VariationDeclarationController.onClickAgree()
-      )))
-  }
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+      implicit request =>
+        val displayReturnLink =
+          request
+            .userAnswers
+            .get(UpdateContactAddressId)
+            .isEmpty
 
-  def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
+        val workingKnowledge =
+          request
+            .userAnswers
+            .get(VariationWorkingKnowledgeId)
+            .getOrElse(false)
 
-      val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
-      dataCacheConnector.save(request.externalId, DeclarationId, value = true).flatMap { json =>
+        Future.successful(Ok(view(
+          psaNameOpt = if (displayReturnLink) psaName() else None,
+          isWorkingKnowldge = workingKnowledge,
+          href = VariationDeclarationController.onClickAgree()
+        )))
+    }
 
-        val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-        val answers = UserAnswers(json).set(ExistingPSAId)(ExistingPSA(
-          request.user.isExistingPSA,
-          request.user.existingPSAId
-        )).asOpt.getOrElse(UserAnswers(json))
-          .set(DeclarationWorkingKnowledgeId)(
-            DeclarationWorkingKnowledge.declarationWorkingKnowledge(workingKnowledge))
-          .asOpt.getOrElse(UserAnswers(json))
+  def onClickAgree(mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        val workingKnowledge =
+          request
+            .userAnswers
+            .get(VariationWorkingKnowledgeId)
+            .getOrElse(false)
 
-        pensionsSchemeConnector.updatePsa(psaId, answers).map(_ =>
-          Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))
-        )
-      }
-  }
+        val psaId =
+          request
+            .user
+            .alreadyEnrolledPsaId
+            .getOrElse(throw new RuntimeException("PSA ID not found"))
+
+        dataCacheConnector.save(
+          cacheId = request.externalId,
+          id      = DeclarationId,
+          value   = true
+        ) flatMap { json =>
+          val answers =
+            UserAnswers(json)
+              .set(ExistingPSAId)(
+                ExistingPSA(
+                  isExistingPSA = request.user.isExistingPSA,
+                  existingPSAId = request.user.existingPSAId
+                )
+              )
+              .asOpt
+              .getOrElse(UserAnswers(json))
+              .set(DeclarationWorkingKnowledgeId)(
+                DeclarationWorkingKnowledge.declarationWorkingKnowledge(workingKnowledge)
+              )
+              .asOpt
+              .getOrElse(UserAnswers(json))
+
+          (for {
+            psaResponse <- pensionsSchemeConnector.updatePsa(psaId, answers)
+          } yield {
+            if (psaResponse.status == 200)
+              Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))
+            else
+              Redirect(YourActionWasNotProcessedController.onPageLoad())
+          }) recoverWith {
+            case _: BadRequestException =>
+              Future.successful(Redirect(SubmissionInvalidController.onPageLoad()))
+            case _ =>
+              Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
+          }
+        }
+    }
 }

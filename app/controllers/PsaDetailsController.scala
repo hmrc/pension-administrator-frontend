@@ -17,39 +17,39 @@
 package controllers
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
-import controllers.actions.{AllowAccessActionProvider, DataRetrievalAction, AuthAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import identifiers.register.DeclarationChangedId
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{UserAnswers, Navigator}
 import utils.annotations.NoSuspendedCheck
+import utils.{Navigator, UserAnswers}
 import views.html.psa_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PsaDetailsController @Inject()(appConfig: FrontendAppConfig,
-                                     @utils.annotations.Variations navigator: Navigator,
-                                     authenticate: AuthAction,
-                                     @NoSuspendedCheck allowAccess: AllowAccessActionProvider,
-                                     getData: DataRetrievalAction,
-                                     psaDetailsService: PsaDetailsService,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     view: psa_details
+class PsaDetailsController @Inject()(
+                                      @utils.annotations.Variations navigator: Navigator,
+                                      authenticate: AuthAction,
+                                      @NoSuspendedCheck allowAccess: AllowAccessActionProvider,
+                                      getData: DataRetrievalAction,
+                                      psaDetailsService: PsaDetailsService,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      view: psa_details
                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
-    implicit request =>
-      request.user.alreadyEnrolledPsaId.map { psaId =>
-        psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId, mode).map { psaDetails =>
-          val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
-          Ok(view(psaDetails, nextPage))
-        }
-      }.getOrElse(
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-      )
-  }
+  def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] =
+    (authenticate andThen allowAccess(mode) andThen getData).async {
+      implicit request =>
+        request.user.alreadyEnrolledPsaId.map { psaId =>
+          psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId, mode).map { psaDetails =>
+            val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
+            Ok(view(psaDetails, nextPage))
+          }
+        }.getOrElse(
+          Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        )
+    }
 }
