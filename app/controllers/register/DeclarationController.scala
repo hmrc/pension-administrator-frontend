@@ -70,7 +70,6 @@ class DeclarationController @Inject()(
           workingKnowledge =>
             Future.successful(Ok(view(workingKnowledge.hasWorkingKnowledge)))
         }
-
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
