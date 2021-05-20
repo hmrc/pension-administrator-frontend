@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import connectors.PensionsSchemeConnector
+import connectors.PensionAdministratorConnector
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -51,7 +51,7 @@ class VariationDeclarationControllerSpec
     .set(DeclarationFitAndProperId)(true).asOpt.value
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
-  private val mockConnector: PensionsSchemeConnector = mock[PensionsSchemeConnector]
+  private val mockConnector: PensionAdministratorConnector = mock[PensionAdministratorConnector]
 
   val view: variationDeclaration = app.injector.instanceOf[variationDeclaration]
 
@@ -66,7 +66,7 @@ class VariationDeclarationControllerSpec
       requireData             = new DataRequiredActionImpl,
       navigator               = fakeNavigator,
       dataCacheConnector      = FakeUserAnswersCacheConnector,
-      pensionsSchemeConnector = mockConnector,
+      pensionAdministratorConnector = mockConnector,
       controllerComponents    = controllerComponents,
       view                    = view
     )

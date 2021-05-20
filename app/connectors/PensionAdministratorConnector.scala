@@ -29,8 +29,8 @@ import utils.{HttpResponseHelper, UserAnswers}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[PensionsSchemeConnectorImpl])
-trait PensionsSchemeConnector {
+@ImplementedBy(classOf[PensionAdministratorConnectorImpl])
+trait PensionAdministratorConnector {
 
   def registerPsa(answers: UserAnswers)
                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse]
@@ -40,11 +40,11 @@ trait PensionsSchemeConnector {
 }
 
 @Singleton
-class PensionsSchemeConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
-  extends PensionsSchemeConnector
+class PensionAdministratorConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+  extends PensionAdministratorConnector
     with HttpResponseHelper {
 
-  private val logger = Logger(classOf[PensionsSchemeConnectorImpl])
+  private val logger = Logger(classOf[PensionAdministratorConnectorImpl])
 
   def registerPsa(answers: UserAnswers)
                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {

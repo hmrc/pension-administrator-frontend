@@ -44,7 +44,7 @@ class VariationDeclarationController @Inject()(
                                                 requireData: DataRequiredAction,
                                                 @Variations navigator: Navigator,
                                                 dataCacheConnector: UserAnswersCacheConnector,
-                                                pensionsSchemeConnector: PensionsSchemeConnector,
+                                                pensionAdministratorConnector: PensionAdministratorConnector,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 val view: variationDeclaration
                                               )(implicit val executionContext: ExecutionContext)
@@ -111,7 +111,7 @@ class VariationDeclarationController @Inject()(
               .getOrElse(UserAnswers(json))
 
           (for {
-            psaResponse <- pensionsSchemeConnector.updatePsa(psaId, answers)
+            psaResponse <- pensionAdministratorConnector.updatePsa(psaId, answers)
           } yield {
             if (psaResponse.status == 200)
               Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))

@@ -28,9 +28,9 @@ import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import utils.{UnrecognisedHttpResponseException, UserAnswers, WireMockHelper}
 
-class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
+class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
 
-  import PensionsSchemeConnectorSpec._
+  import PensionAdministratorConnectorSpec._
 
   override protected lazy val app: Application =
     new GuiceApplicationBuilder()
@@ -55,7 +55,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         )
     )
 
-    val connector = injector.instanceOf[PensionsSchemeConnector]
+    val connector = injector.instanceOf[PensionAdministratorConnector]
 
     connector.registerPsa(userAnswers).map(subscription =>
       subscription shouldBe psaSubscriptionResponse
@@ -74,7 +74,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         )
     )
 
-    val connector = injector.instanceOf[PensionsSchemeConnector]
+    val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[UnrecognisedHttpResponseException] {
       connector.registerPsa(userAnswers)
@@ -92,7 +92,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         )
     )
 
-    val connector = injector.instanceOf[PensionsSchemeConnector]
+    val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[JsonParseException] {
       connector.registerPsa(userAnswers)
@@ -110,7 +110,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         )
     )
 
-    val connector = injector.instanceOf[PensionsSchemeConnector]
+    val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[JsResultException] {
       connector.registerPsa(userAnswers)
@@ -128,7 +128,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         )
     )
 
-    val connector = injector.instanceOf[PensionsSchemeConnector]
+    val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[BadRequestException] {
       connector.registerPsa(userAnswers)
@@ -147,7 +147,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         )
     )
 
-    val connector = injector.instanceOf[PensionsSchemeConnector]
+    val connector = injector.instanceOf[PensionAdministratorConnector]
 
     noException shouldBe thrownBy {
       connector.updatePsa(psaId, userAnswers)
@@ -165,7 +165,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         )
     )
 
-    val connector = injector.instanceOf[PensionsSchemeConnector]
+    val connector = injector.instanceOf[PensionAdministratorConnector]
 
     connector.updatePsa(psaId, userAnswers) map {
       response =>
@@ -183,7 +183,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         )
     )
 
-    val connector = injector.instanceOf[PensionsSchemeConnector]
+    val connector = injector.instanceOf[PensionAdministratorConnector]
 
     connector.updatePsa(psaId, userAnswers) map {
       response =>
@@ -200,7 +200,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         )
     )
 
-    val connector = injector.instanceOf[PensionsSchemeConnector]
+    val connector = injector.instanceOf[PensionAdministratorConnector]
 
     connector.updatePsa(psaId, userAnswers) map {
       response =>
@@ -217,7 +217,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
         )
     )
 
-    val connector = injector.instanceOf[PensionsSchemeConnector]
+    val connector = injector.instanceOf[PensionAdministratorConnector]
 
     connector.updatePsa(psaId, userAnswers) map {
       response =>
@@ -226,7 +226,7 @@ class PensionsSchemeConnectorSpec extends AsyncFlatSpec with Matchers with WireM
   }
 }
 
-object PensionsSchemeConnectorSpec extends OptionValues {
+object PensionAdministratorConnectorSpec extends OptionValues {
 
   private val registerPsaUrl = "/pension-administrator/register-psa"
 

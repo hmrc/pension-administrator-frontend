@@ -50,7 +50,7 @@ class DeclarationController @Inject()(
                                        allowDeclaration: AllowDeclarationActionProvider,
                                        @Register navigator: Navigator,
                                        dataCacheConnector: UserAnswersCacheConnector,
-                                       pensionsSchemeConnector: PensionsSchemeConnector,
+                                       pensionAdministratorConnector: PensionAdministratorConnector,
                                        knownFactsRetrieval: KnownFactsRetrieval,
                                        enrolments: TaxEnrolmentsConnector,
                                        emailConnector: EmailConnector,
@@ -92,9 +92,9 @@ class DeclarationController @Inject()(
               .getOrElse(UserAnswers(cacheMap))
 
           (for {
-            psaResponse <- pensionsSchemeConnector.registerPsa(answers)
-            _           <- enrol(psaResponse.psaId)
+            psaResponse <- pensionAdministratorConnector.registerPsa(answers)
             cacheMap    <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
+            _           <- enrol(psaResponse.psaId)
             _           <- sendEmail(psaResponse.psaId)
           } yield {
               Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
