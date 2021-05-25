@@ -74,7 +74,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(individualUserAnswers))
 
-        val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
+        val result = service().retrievePsaDataAndGenerateViewModel("123")
         whenReady(result) {
           _ mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", isUserAnswerUpdated = false,
             userAnswersIncompleteMessage = None, title = titlePsaDataFull)
@@ -90,7 +90,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
           .thenReturn(Future.successful(companyUserAnswers))
 
-        val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
+        val result = service().retrievePsaDataAndGenerateViewModel("123")
         whenReady(result) {
           _ mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false,
             userAnswersIncompleteMessage = None, title = titlePsaDataFull)
@@ -109,7 +109,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
           .thenReturn(Future.successful(partnershipUserAnswers))
         when(mockDataCompletion.psaUpdateDetailsInCompleteAlert(any())).thenReturn(Some("incomplete.alert.message"))
 
-        val result = service().retrievePsaDataAndGenerateViewModel("123", mode)
+        val result = service().retrievePsaDataAndGenerateViewModel("123")
         whenReady(result) {
           _ mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name",
             isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = titlePsaDataFull)
@@ -125,7 +125,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
         when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
-        val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel("123", mode)
+        val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel("123")
         whenReady(result) { _ =>
           verify(mockUserAnswersConnector, never()).removeAll(any())(any(), any())
           verify(mockSubscriptionConnector, times(1)).getSubscriptionDetails(any())(any(), any())
@@ -139,7 +139,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         when(mockUserAnswersConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(Ok))
         when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
-        val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel("123", mode)
+        val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel("123")
         whenReady(result) { _ =>
           verify(mockUserAnswersConnector, times(1)).removeAll(any())(any(), any())
           verify(mockSubscriptionConnector, times(1)).getSubscriptionDetails(any())(any(), any())

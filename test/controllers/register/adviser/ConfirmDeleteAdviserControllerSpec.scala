@@ -40,18 +40,26 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
   private val validData = UserAnswers().adviserName(adviserName).dataRetrievalAction
 
   private def viewModel(name: String) = ConfirmDeleteViewModel(
-    routes.ConfirmDeleteAdviserController.onSubmit(),
-    controllers.routes.PsaDetailsController.onPageLoad(),
-    Message("confirmDelete.adviser.title"),
-    "confirmDelete.adviser.heading",
-    name,
-    None
+    postUrl = routes.ConfirmDeleteAdviserController.onSubmit(),
+    cancelUrl = controllers.routes.PsaDetailsController.onPageLoad(),
+    title = Message("confirmDelete.adviser.title"),
+    heading = "confirmDelete.adviser.heading",
+    name = name,
+    secondaryHeader = None
   )
 
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
-    new ConfirmDeleteAdviserController(frontendAppConfig, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-      dataRetrievalAction, new DataRequiredActionImpl, FakeUserAnswersCacheConnector, formProvider, new FakeNavigator(desiredRoute = onwardRoute),
-      controllerComponents, view)
+    new ConfirmDeleteAdviserController(
+      authenticate = FakeAuthAction,
+      allowAccess = FakeAllowAccessProvider(config = frontendAppConfig),
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
+      cacheConnector = FakeUserAnswersCacheConnector,
+      formProvider = formProvider,
+      navigator = new FakeNavigator(desiredRoute = onwardRoute),
+      controllerComponents = controllerComponents,
+      view = view
+    )
 
   def viewAsString(form: Form[_] = form): String = view(form, viewModel(adviserName), NormalMode)(fakeRequest, messages).toString
 

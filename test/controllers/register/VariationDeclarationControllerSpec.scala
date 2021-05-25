@@ -16,39 +16,71 @@
 
 package controllers.register
 
-import connectors.PensionsSchemeConnector
+import connectors.PensionAdministratorConnector
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
+import controllers.register.routes._
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.{DeclarationFitAndProperId, DeclarationId, VariationWorkingKnowledgeId}
 import models.UserType.UserType
-import models.register.PsaSubscriptionResponse
 import models.{NormalMode, TolerantIndividual, UpdateMode, UserType}
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, times, verify, when}
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-
+import uk.gov.hmrc.http.HttpResponse
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.variationDeclaration
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class VariationDeclarationControllerSpec extends ControllerSpecBase {
+class VariationDeclarationControllerSpec
+  extends ControllerSpecBase
+    with MockitoSugar
+    with BeforeAndAfterEach {
 
   private val psaId = "test psa ID"
-
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-  private val href = controllers.register.routes.VariationDeclarationController.onClickAgree()
-
   private val individual = UserAnswers(Json.obj())
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
     .set(VariationWorkingKnowledgeId)(true).asOpt.value
     .set(DeclarationFitAndProperId)(true).asOpt.value
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
-  private val fakePensionsSchemeConnector: FakePensionsSchemeConnector = new FakePensionsSchemeConnector()
+  private val mockConnector: PensionAdministratorConnector = mock[PensionAdministratorConnector]
+
+  val view: variationDeclaration = app.injector.instanceOf[variationDeclaration]
+
+  private def controller(
+                          dataRetrievalAction: DataRetrievalAction = dataRetrievalAction,
+                          userType: UserType                       = UserType.Organisation
+                        ) =
+    new VariationDeclarationController(
+      authenticate            = FakeAuthAction(userType, psaId),
+      allowAccess             = FakeAllowAccessProvider(config = frontendAppConfig),
+      getData                 = dataRetrievalAction,
+      requireData             = new DataRequiredActionImpl,
+      navigator               = fakeNavigator,
+      dataCacheConnector      = FakeUserAnswersCacheConnector,
+      pensionAdministratorConnector = mockConnector,
+      controllerComponents    = controllerComponents,
+      view                    = view
+    )
+
+  private def viewAsString(): String =
+    view(
+      psaNameOpt        = None,
+      isWorkingKnowldge = true,
+      href              = VariationDeclarationController.onClickAgree()
+    )(fakeRequest, messages).toString
+
+  override def beforeEach(): Unit = {
+    reset(mockConnector)
+  }
 
   "DeclarationVariationController" when {
 
@@ -65,6 +97,7 @@ class VariationDeclarationControllerSpec extends ControllerSpecBase {
         val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
+
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
     }
@@ -72,62 +105,60 @@ class VariationDeclarationControllerSpec extends ControllerSpecBase {
     "calling onAgreeAndContinue" must {
 
       "save the answer and redirect to the next page" in {
+        when(mockConnector.updatePsa(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(200, "")))
+
         val result = controller().onClickAgree(UpdateMode)(fakeRequest)
+
         status(result) mustBe SEE_OTHER
+
         redirectLocation(result) mustBe Some(onwardRoute.url)
+
         FakeUserAnswersCacheConnector.verify(DeclarationId, true)
       }
 
       "call the update psa method on the pensions connector with correct psa ID and user answers data" in {
-        fakePensionsSchemeConnector.reset()
+        when(mockConnector.updatePsa(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(200, "")))
+
         val result = controller().onClickAgree(NormalMode)(fakeRequest)
+
+        val answers =
+          UserAnswers(Json.parse(
+            """{
+              | "declaration": true,
+              | "existingPSA": {
+              |   "isExistingPSA": false
+              | },
+              | "declarationWorkingKnowledge": "workingKnowledge"
+              |}""".stripMargin
+          ))
+
         status(result) mustBe SEE_OTHER
-        fakePensionsSchemeConnector.updateCalledWithData mustBe Some((psaId, UserAnswers(Json
-          .parse("""{"declaration":true,"existingPSA":{"isExistingPSA":false},"declarationWorkingKnowledge":"workingKnowledge"}"""))))
+
+        verify(mockConnector, times(1)).updatePsa(eqTo(psaId), eqTo(answers))(any(), any())
+      }
+
+      "redirect to Your Action Was Not Processed if ETMP call fails" in {
+        when(mockConnector.updatePsa(any(), any())(any(), any()))
+          .thenReturn(Future.failed(new Exception))
+
+        val result = controller().onClickAgree(NormalMode)(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(controllers.routes.YourActionWasNotProcessedController.onPageLoad().url)
       }
 
       "redirect to Session Expired if no cached data is found" in {
         val result = controller(dontGetAnyData).onClickAgree(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
+
         redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
       }
     }
   }
-
-  class FakePensionsSchemeConnector extends PensionsSchemeConnector {
-    def reset(): Unit = updateCalledWithData = None
-
-    var updateCalledWithData: Option[(String, UserAnswers)] = None
-
-    override def registerPsa(answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = ???
-
-    override def updatePsa(psaId: String, answers: UserAnswers)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
-      updateCalledWithData = Some((psaId, answers))
-      Future.successful(HttpResponse(OK, ""))
-    }
-  }
-
-  val view: variationDeclaration = app.injector.instanceOf[variationDeclaration]
-
-  private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction,
-                         userType: UserType = UserType.Organisation) =
-    new VariationDeclarationController(
-      frontendAppConfig,
-      FakeAuthAction(userType, psaId),
-      FakeAllowAccessProvider(config = frontendAppConfig),
-      dataRetrievalAction,
-      new DataRequiredActionImpl,
-      fakeNavigator,
-      FakeUserAnswersCacheConnector,
-      fakePensionsSchemeConnector,
-      controllerComponents,
-      view
-    )
-
-  private def viewAsString(): String =
-    view(None, true, href)(fakeRequest, messages).toString
-
 }
 
 

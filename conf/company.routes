@@ -1,134 +1,134 @@
-->          /directors                                     directors.Routes
+->          /directors                                    directors.Routes
 
-GET         /company-number                                controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode = NormalMode)
-POST        /company-number                                controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/company-number                          controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode)
-POST        /:mode/company-number                          controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode)
+GET         /company-number                               controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode = NormalMode)
+POST        /company-number                               controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/company-number                         controllers.register.company.CompanyRegistrationNumberController.onPageLoad(mode: Mode)
+POST        /:mode/company-number                         controllers.register.company.CompanyRegistrationNumberController.onSubmit(mode: Mode)
 
-GET         /enter-previous-contact-address              controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /enter-previous-contact-address              controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/enter-previous-contact-address        controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode)
-POST        /:mode/enter-previous-contact-address        controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode)
+GET         /enter-previous-contact-address               controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /enter-previous-contact-address               controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/enter-previous-contact-address         controllers.register.company.CompanyPreviousAddressController.onPageLoad(mode: Mode)
+POST        /:mode/enter-previous-contact-address         controllers.register.company.CompanyPreviousAddressController.onSubmit(mode: Mode)
 
-GET         /contact-address-1-year                        controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode = NormalMode)
-POST        /contact-address-1-year                        controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/contact-address-1-year                  controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode)
-POST        /:mode/contact-address-1-year                  controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode)
+GET         /contact-address-1-year                       controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode = NormalMode)
+POST        /contact-address-1-year                       controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/contact-address-1-year                 controllers.register.company.CompanyAddressYearsController.onPageLoad(mode: Mode)
+POST        /:mode/contact-address-1-year                 controllers.register.company.CompanyAddressYearsController.onSubmit(mode: Mode)
 
-GET         /previous-postcode                      controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
-POST        /previous-postcode                      controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/previous-postcode                controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
-POST        /:mode/previous-postcode                controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
+GET         /previous-postcode                            controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST        /previous-postcode                            controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/previous-postcode                      controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode)
+POST        /:mode/previous-postcode                      controllers.register.company.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode: Mode)
 
-GET         /select-previous-contact-address               controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode = NormalMode)
-POST        /select-previous-contact-address               controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/select-previous-contact-address         controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode)
-POST        /:mode/select-previous-contact-address         controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode)
+GET         /select-previous-contact-address              controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode = NormalMode)
+POST        /select-previous-contact-address              controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/select-previous-contact-address        controllers.register.company.CompanyAddressListController.onPageLoad(mode: Mode)
+POST        /:mode/select-previous-contact-address        controllers.register.company.CompanyAddressListController.onSubmit(mode: Mode)
 
-GET         /check-your-answers                            controllers.register.company.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
-POST        /check-your-answers                            controllers.register.company.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
+GET         /check-your-answers                           controllers.register.company.CheckYourAnswersController.onPageLoad(mode: Mode = NormalMode)
+POST        /check-your-answers                           controllers.register.company.CheckYourAnswersController.onSubmit(mode: Mode = NormalMode)
 
-GET         /add-directors                                 controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = NormalMode)
-POST        /add-directors                                 controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/add-directors                           controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode)
-POST        /:mode/add-directors                           controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode)
+GET         /add-directors                                controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode = NormalMode)
+POST        /add-directors                                controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/add-directors                          controllers.register.company.AddCompanyDirectorsController.onPageLoad(mode: Mode)
+POST        /:mode/add-directors                          controllers.register.company.AddCompanyDirectorsController.onSubmit(mode: Mode)
 
-GET         /other-directors                               controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = NormalMode)
-POST        /other-directors                               controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/other-directors                         controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode)
-POST        /:mode/other-directors                         controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode)
+GET         /other-directors                              controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode = NormalMode)
+POST        /other-directors                              controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/other-directors                        controllers.register.company.MoreThanTenDirectorsController.onPageLoad(mode: Mode)
+POST        /:mode/other-directors                        controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode)
 
-GET         /confirm-address                               controllers.register.company.ConfirmCompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST        /confirm-address                               controllers.register.company.ConfirmCompanyDetailsController.onSubmit(mode: Mode = NormalMode)
+GET         /confirm-address                              controllers.register.company.ConfirmCompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
+POST        /confirm-address                              controllers.register.company.ConfirmCompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 
-GET         /postcode                         controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
-POST        /postcode                         controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/postcode                   controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode)
-POST        /:mode/postcode                   controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode)
+GET         /postcode                                     controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
+POST        /postcode                                     controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/postcode                               controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode)
+POST        /:mode/postcode                               controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode)
 
-GET         /review                                        controllers.register.company.CompanyReviewController.onPageLoad(mode: Mode = NormalMode)
-POST        /review                                        controllers.register.company.CompanyReviewController.onSubmit(mode: Mode = NormalMode)
+GET         /review                                       controllers.register.company.CompanyReviewController.onPageLoad(mode: Mode = NormalMode)
+POST        /review                                       controllers.register.company.CompanyReviewController.onSubmit(mode: Mode = NormalMode)
 
-GET         /update-company-details                        controllers.register.company.CompanyUpdateDetailsController.onPageLoad(mode: Mode = NormalMode)
+GET         /update-company-details                       controllers.register.company.CompanyUpdateDetailsController.onPageLoad(mode: Mode = NormalMode)
 
-GET         /company-not-found                             controllers.register.company.CompanyNotFoundController.onPageLoad(mode: Mode = NormalMode)
+GET         /company-not-found                            controllers.register.company.CompanyNotFoundController.onPageLoad(mode: Mode = NormalMode)
 
-GET         /what-you-will-need                            controllers.register.company.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
-POST        /what-you-will-need                            controllers.register.company.WhatYouWillNeedController.onSubmit(mode: Mode = NormalMode)
+GET         /what-you-will-need                           controllers.register.company.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
+POST        /what-you-will-need                           controllers.register.company.WhatYouWillNeedController.onSubmit(mode: Mode = NormalMode)
 
-GET         /use-as-contact-address                        controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /use-as-contact-address                        controllers.register.company.CompanySameContactAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/use-as-contact-address                  controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode)
-POST        /:mode/use-as-contact-address                  controllers.register.company.CompanySameContactAddressController.onSubmit(mode: Mode)
+GET         /use-as-contact-address                       controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /use-as-contact-address                       controllers.register.company.CompanySameContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/use-as-contact-address                 controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode)
+POST        /:mode/use-as-contact-address                 controllers.register.company.CompanySameContactAddressController.onSubmit(mode: Mode)
 
-GET         /enter-contact-address                       controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /enter-contact-address                       controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/enter-contact-address                 controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode)
-POST        /:mode/enter-contact-address                 controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode)
+GET         /enter-contact-address                        controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /enter-contact-address                        controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/enter-contact-address                  controllers.register.company.CompanyContactAddressController.onPageLoad(mode: Mode)
+POST        /:mode/enter-contact-address                  controllers.register.company.CompanyContactAddressController.onSubmit(mode: Mode)
 
-GET         /select-contact-address                        controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode = NormalMode)
-POST        /select-contact-address                        controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/select-contact-address                  controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode)
-POST        /:mode/select-contact-address                  controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode)
+GET         /select-contact-address                       controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode = NormalMode)
+POST        /select-contact-address                       controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/select-contact-address                 controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode)
+POST        /:mode/select-contact-address                 controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode)
 
-GET         /non-uk-company-name                           controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /non-uk-company-name                           controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/non-uk-company-name                     controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode)
-POST        /:mode/non-uk-company-name                     controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode)
+GET         /non-uk-company-name                          controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
+POST        /non-uk-company-name                          controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/non-uk-company-name                    controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode)
+POST        /:mode/non-uk-company-name                    controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode)
 
-GET         /enter-registered-address                      controllers.register.company.CompanyRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /enter-registered-address                      controllers.register.company.CompanyRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
+GET         /enter-registered-address                     controllers.register.company.CompanyRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /enter-registered-address                     controllers.register.company.CompanyRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
 
-GET         /outside-eu-eea                                controllers.register.company.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
+GET         /outside-eu-eea                               controllers.register.company.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
 
-GET         /is-this-previous-address                      controllers.register.company.CompanyConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
-POST        /is-this-previous-address                      controllers.register.company.CompanyConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
+GET         /is-this-previous-address                     controllers.register.company.CompanyConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST        /is-this-previous-address                     controllers.register.company.CompanyConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
 
-GET         /have-company-number                           controllers.register.company.HasCompanyCRNController.onPageLoad(mode: Mode = NormalMode)
-POST        /have-company-number                           controllers.register.company.HasCompanyCRNController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/have-company-number                     controllers.register.company.HasCompanyCRNController.onPageLoad(mode: Mode)
-POST        /:mode/have-company-number                     controllers.register.company.HasCompanyCRNController.onSubmit(mode: Mode)
+GET         /have-company-number                          controllers.register.company.HasCompanyCRNController.onPageLoad(mode: Mode = NormalMode)
+POST        /have-company-number                          controllers.register.company.HasCompanyCRNController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/have-company-number                    controllers.register.company.HasCompanyCRNController.onPageLoad(mode: Mode)
+POST        /:mode/have-company-number                    controllers.register.company.HasCompanyCRNController.onSubmit(mode: Mode)
 
-GET         /is-vat-registered                             controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode = NormalMode)
-POST        /is-vat-registered                             controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode)
-POST        /:mode/is-vat-registered                       controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode)
+GET         /is-vat-registered                            controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /is-vat-registered                            controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/is-vat-registered                      controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode)
+POST        /:mode/is-vat-registered                      controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode)
 
-GET         /company-name                                  controllers.register.company.CompanyNameController.onPageLoad
-POST        /company-name                                  controllers.register.company.CompanyNameController.onSubmit
+GET         /company-name                                 controllers.register.company.CompanyNameController.onPageLoad
+POST        /company-name                                 controllers.register.company.CompanyNameController.onSubmit
 
-GET         /unique-taxpayer-reference                     controllers.register.company.CompanyUTRController.onPageLoad
-POST        /unique-taxpayer-reference                     controllers.register.company.CompanyUTRController.onSubmit
+GET         /unique-taxpayer-reference                    controllers.register.company.CompanyUTRController.onPageLoad
+POST        /unique-taxpayer-reference                    controllers.register.company.CompanyUTRController.onSubmit
 
-GET         /vat-registration-number                       controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode = NormalMode)
-POST        /vat-registration-number                       controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/vat-registration-number                 controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode)
-POST        /:mode/vat-registration-number                 controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode)
+GET         /vat-registration-number                      controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode = NormalMode)
+POST        /vat-registration-number                      controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/vat-registration-number                controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode)
+POST        /:mode/vat-registration-number                controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode)
 
-GET         /have-paye-reference                           controllers.register.company.HasCompanyPAYEController.onPageLoad(mode: Mode = NormalMode)
-POST        /have-paye-reference                           controllers.register.company.HasCompanyPAYEController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/have-paye-reference                     controllers.register.company.HasCompanyPAYEController.onPageLoad(mode: Mode)
-POST        /:mode/have-paye-reference                     controllers.register.company.HasCompanyPAYEController.onSubmit(mode: Mode)
+GET         /have-paye-reference                          controllers.register.company.HasCompanyPAYEController.onPageLoad(mode: Mode = NormalMode)
+POST        /have-paye-reference                          controllers.register.company.HasCompanyPAYEController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/have-paye-reference                    controllers.register.company.HasCompanyPAYEController.onPageLoad(mode: Mode)
+POST        /:mode/have-paye-reference                    controllers.register.company.HasCompanyPAYEController.onSubmit(mode: Mode)
 
-GET         /paye-reference                                controllers.register.company.CompanyEnterPAYEController.onPageLoad(mode: Mode = NormalMode)
-POST        /paye-reference                                controllers.register.company.CompanyEnterPAYEController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/paye-reference                          controllers.register.company.CompanyEnterPAYEController.onPageLoad(mode: Mode)
-POST        /:mode/paye-reference                          controllers.register.company.CompanyEnterPAYEController.onSubmit(mode: Mode)
+GET         /paye-reference                               controllers.register.company.CompanyEnterPAYEController.onPageLoad(mode: Mode = NormalMode)
+POST        /paye-reference                               controllers.register.company.CompanyEnterPAYEController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/paye-reference                         controllers.register.company.CompanyEnterPAYEController.onPageLoad(mode: Mode)
+POST        /:mode/paye-reference                         controllers.register.company.CompanyEnterPAYEController.onSubmit(mode: Mode)
 
-GET         /confirm-name                                  controllers.register.company.CompanyIsRegisteredNameController.onPageLoad
-POST        /confirm-name                                  controllers.register.company.CompanyIsRegisteredNameController.onSubmit
+GET         /confirm-name                                 controllers.register.company.CompanyIsRegisteredNameController.onPageLoad
+POST        /confirm-name                                 controllers.register.company.CompanyIsRegisteredNameController.onSubmit
 
-GET         /contact-email-address                         controllers.register.company.CompanyEmailController.onPageLoad(mode: Mode = NormalMode)
-POST        /contact-email-address                         controllers.register.company.CompanyEmailController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/contact-email-address                   controllers.register.company.CompanyEmailController.onPageLoad(mode: Mode)
-POST        /:mode/contact-email-address                   controllers.register.company.CompanyEmailController.onSubmit(mode: Mode)
+GET         /contact-email-address                        controllers.register.company.CompanyEmailController.onPageLoad(mode: Mode = NormalMode)
+POST        /contact-email-address                        controllers.register.company.CompanyEmailController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/contact-email-address                  controllers.register.company.CompanyEmailController.onPageLoad(mode: Mode)
+POST        /:mode/contact-email-address                  controllers.register.company.CompanyEmailController.onSubmit(mode: Mode)
 
-GET         /contact-phone-number                          controllers.register.company.CompanyPhoneController.onPageLoad(mode: Mode = NormalMode)
-POST        /contact-phone-number                          controllers.register.company.CompanyPhoneController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/contact-phone-number                    controllers.register.company.CompanyPhoneController.onPageLoad(mode: Mode)
-POST        /:mode/contact-phone-number                    controllers.register.company.CompanyPhoneController.onSubmit(mode: Mode)
+GET         /contact-phone-number                         controllers.register.company.CompanyPhoneController.onPageLoad(mode: Mode = NormalMode)
+POST        /contact-phone-number                         controllers.register.company.CompanyPhoneController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/contact-phone-number                   controllers.register.company.CompanyPhoneController.onPageLoad(mode: Mode)
+POST        /:mode/contact-phone-number                   controllers.register.company.CompanyPhoneController.onSubmit(mode: Mode)
 
-GET         /trading-time                                  controllers.register.company.CompanyTradingOverAYearController.onPageLoad(mode: Mode = NormalMode)
-POST        /trading-time                                  controllers.register.company.CompanyTradingOverAYearController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/trading-time                            controllers.register.company.CompanyTradingOverAYearController.onPageLoad(mode: Mode)
-POST        /:mode/trading-time                            controllers.register.company.CompanyTradingOverAYearController.onSubmit(mode: Mode)
+GET         /trading-time                                 controllers.register.company.CompanyTradingOverAYearController.onPageLoad(mode: Mode = NormalMode)
+POST        /trading-time                                 controllers.register.company.CompanyTradingOverAYearController.onSubmit(mode: Mode = NormalMode)
+GET         /:mode/trading-time                           controllers.register.company.CompanyTradingOverAYearController.onPageLoad(mode: Mode)
+POST        /:mode/trading-time                           controllers.register.company.CompanyTradingOverAYearController.onSubmit(mode: Mode)

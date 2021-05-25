@@ -31,9 +31,11 @@ import scala.util.Failure
 
 @ImplementedBy(classOf[DeregistrationConnectorImpl])
 trait DeregistrationConnector {
-  def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
+  def stopBeingPSA(psaId: String)
+                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 
-  def canDeRegister(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration]
+  def canDeRegister(psaId: String)
+                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration]
 }
 
 class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
@@ -42,33 +44,45 @@ class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
 
   private val logger = Logger(classOf[DeregistrationConnectorImpl])
 
-  override def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  override def stopBeingPSA(psaId: String)
+                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+
     val deregisterUrl = config.deregisterPsaUrl.format(psaId)
+
     http.DELETE[HttpResponse](deregisterUrl) map {
       response =>
         response.status match {
-          case NO_CONTENT => response
-          case _ => handleErrorResponse("DELETE", deregisterUrl)(response)
+          case NO_CONTENT =>
+            response
+          case _ =>
+            handleErrorResponse("DELETE", deregisterUrl)(response)
         }
     } andThen {
-      case Failure(t: Throwable) => logger.warn("Unable to deregister PSA", t)
+      case Failure(t: Throwable) =>
+        logger.warn("Unable to deregister PSA", t)
     }
   }
 
-  override def canDeRegister(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = {
+  override def canDeRegister(psaId: String)
+                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = {
 
     val url = config.canDeRegisterPsaUrl(psaId)
 
-    http.GET[HttpResponse](url).map { response =>
-      response.status match {
-        case OK => response.json.validate[Deregistration] match {
-          case JsSuccess(value, _) => value
-          case JsError(errors) => throw JsResultException(errors)
+    http.GET[HttpResponse](url).map {
+      response =>
+        response.status match {
+          case OK => response.json.validate[Deregistration] match {
+            case JsSuccess(value, _) =>
+              value
+            case JsError(errors) =>
+              throw JsResultException(errors)
+          }
+          case _ =>
+            handleErrorResponse("GET", url)(response)
         }
-        case _ => handleErrorResponse("GET", url)(response)
-      }
     } andThen {
-      case Failure(t: Throwable) => logger.warn("Unable to get the response from can de register api", t)
+      case Failure(t: Throwable) =>
+        logger.warn("Unable to get the response from can de register api", t)
     }
   }
 }

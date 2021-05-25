@@ -34,30 +34,38 @@ class KnownFactsRetrieval {
   private val saUtrKey = "SAUTR"
   private val countryKey = "CountryCode"
 
-  def retrieve(psaId: String)(implicit request: DataRequest[AnyContent]): Option[KnownFacts] =
-    request.userAnswers.get(RegistrationInfoId) flatMap { registrationInfo =>
+  def retrieve(psaId: String)
+              (implicit request: DataRequest[AnyContent]): Option[KnownFacts] =
+    request.userAnswers.get(RegistrationInfoId) flatMap {
+      registrationInfo =>
 
-    (registrationInfo.legalStatus, registrationInfo.idNumber, registrationInfo.customerType) match {
-      case (Individual, Some(idNumber), UK) =>
-        Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, idNumber))))
-      case (LimitedCompany, Some(idNumber), UK) =>
-        Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, idNumber))))
-      case (Partnership, Some(idNumber), UK) =>
-        Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, idNumber))))
-      case (legalStatus, _, NonUK) =>
-        for {
-          address <- legalStatus match {
-            case LimitedCompany => request.userAnswers.get(CompanyAddressId)
-            case Partnership => request.userAnswers.get(PartnershipRegisteredAddressId)
-            case Individual => request.userAnswers.get(IndividualAddressId)
-          }
-          country <- address.country
-        } yield {
-          KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
+        (
+          registrationInfo.legalStatus,
+          registrationInfo.idNumber,
+          registrationInfo.customerType
+        ) match {
+          case (Individual, Some(idNumber), UK) =>
+            Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ninoKey, idNumber))))
+          case (LimitedCompany, Some(idNumber), UK) =>
+            Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(ctUtrKey, idNumber))))
+          case (Partnership, Some(idNumber), UK) =>
+            Some(KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(saUtrKey, idNumber))))
+          case (legalStatus, _, NonUK) =>
+            for {
+              address <- legalStatus match {
+                case LimitedCompany =>
+                  request.userAnswers.get(CompanyAddressId)
+                case Partnership =>
+                  request.userAnswers.get(PartnershipRegisteredAddressId)
+                case Individual =>
+                  request.userAnswers.get(IndividualAddressId)
+              }
+              country <- address.country
+            } yield {
+              KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
+            }
+          case _ =>
+            None
         }
-      case _ => None
     }
-
-  }
-
 }

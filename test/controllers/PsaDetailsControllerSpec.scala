@@ -45,7 +45,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   "Psa details Controller" must {
     "return 200 and  correct view for a GET for PSA company" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
+      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
           isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)))
 
@@ -56,7 +56,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to session expired if psa id not present" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any())(any(), any(), any(), any()))
+      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
           isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)))
 
@@ -69,7 +69,6 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType, psaId : Option[String]) =
     new PsaDetailsController(
-      frontendAppConfig,
       FakeNavigator,
       new FakeAuthAction(userType, psaId),
       FakeAllowAccessProvider(config = frontendAppConfig),

@@ -35,21 +35,40 @@ import scala.util.Failure
 
 @ImplementedBy(classOf[RegistrationConnectorImpl])
 trait RegistrationConnector {
-  def registerWithIdOrganisation
-  (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration]
+  def registerWithIdOrganisation(
+                                  utr: String,
+                                  organisation: Organisation,
+                                  legalStatus: RegistrationLegalStatus
+                                )(
+                                  implicit hc: HeaderCarrier,
+                                  ec: ExecutionContext
+                                ): Future[OrganizationRegistration]
 
-  def registerWithIdIndividual
-  (nino: Nino)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration]
+  def registerWithIdIndividual(
+                                nino: Nino
+                              )(
+                                implicit hc: HeaderCarrier,
+                                ec: ExecutionContext
+                              ): Future[IndividualRegistration]
 
-  def registerWithNoIdOrganisation
-  (name: String, address: Address, legalStatus: RegistrationLegalStatus)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo]
+  def registerWithNoIdOrganisation(
+                                    name: String,
+                                    address: Address,
+                                    legalStatus: RegistrationLegalStatus
+                                  )(
+                                    implicit hc: HeaderCarrier,
+                                    ec: ExecutionContext
+                                  ): Future[RegistrationInfo]
 
-  def registerWithNoIdIndividual
-  (firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo]
+  def registerWithNoIdIndividual(
+                                  firstName: String,
+                                  lastName: String,
+                                  address: Address,
+                                  dateOfBirth: LocalDate
+                                )(
+                                  implicit hc: HeaderCarrier,
+                                  ec: ExecutionContext
+                                ): Future[RegistrationInfo]
 }
 
 @Singleton
@@ -61,9 +80,14 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
   private val readsSapNumber: Reads[String] = (JsPath \ "sapNumber").read[String]
 
-  override def registerWithIdOrganisation
-  (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
+  override def registerWithIdOrganisation(
+                                           utr: String,
+                                           organisation: Organisation,
+                                           legalStatus: RegistrationLegalStatus
+                                         )(
+                                           implicit hc: HeaderCarrier,
+                                           ec: ExecutionContext
+                                         ): Future[OrganizationRegistration] = {
 
     val url = config.registerWithIdOrganisationUrl
 
@@ -79,15 +103,18 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
           val json = Json.parse(response.body)
           json.validate[OrganizationRegisterWithIdResponse] match {
             case JsSuccess(value, _) =>
-              val info = registrationInfo(
-                json,
-                legalStatus,
-                RegistrationCustomerType.fromAddress(value.address),
-                Some(RegistrationIdType.UTR), Some(utr),
-                noIdentifier = false)
-              OrganizationRegistration(value, info
+              OrganizationRegistration(
+                response = value,
+                info = registrationInfo(
+                  json = json,
+                  legalStatus = legalStatus,
+                  customerType = RegistrationCustomerType.fromAddress(value.address),
+                  idType = Some(RegistrationIdType.UTR), idNumber = Some(utr),
+                  noIdentifier = false
+                )
               )
-            case JsError(errors) => throw JsResultException(errors)
+            case JsError(errors) =>
+              throw JsResultException(errors)
           }
         case _ =>
           handleErrorResponse("POST", url)(response)
@@ -101,12 +128,14 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
         logger.error("Unable to connect to registerWithIdOrganisation", ex)
         ex
     }
-
   }
 
-  override def registerWithIdIndividual
-  (nino: Nino)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
+  override def registerWithIdIndividual(
+                                         nino: Nino
+                                       )(
+                                         implicit hc: HeaderCarrier,
+                                         ec: ExecutionContext
+                                       ): Future[IndividualRegistration] = {
 
     val url = config.registerWithIdIndividualUrl
     http.POST[JsObject, HttpResponse](url, Json.obj("nino" -> nino)) map {
@@ -117,16 +146,19 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
             json.validate[IndividualRegisterWithIdResponse] match {
               case JsSuccess(value, _) =>
-                val info = registrationInfo(
-                  json = json,
-                  legalStatus = RegistrationLegalStatus.Individual,
-                  customerType = RegistrationCustomerType.fromAddress(value.address),
-                  idType = Some(RegistrationIdType.Nino),
-                  idNumber = Some(nino.nino),
-                  noIdentifier = false
+                IndividualRegistration(
+                  response = value,
+                  info = registrationInfo(
+                    json = json,
+                    legalStatus = RegistrationLegalStatus.Individual,
+                    customerType = RegistrationCustomerType.fromAddress(value.address),
+                    idType = Some(RegistrationIdType.Nino),
+                    idNumber = Some(nino.nino),
+                    noIdentifier = false
+                  )
                 )
-                IndividualRegistration(value, info)
-              case JsError(errors) => throw JsResultException(errors)
+              case JsError(errors) =>
+                throw JsResultException(errors)
             }
           case _ =>
             handleErrorResponse("POST", url)(response)
@@ -142,9 +174,14 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
   }
 
-  override def registerWithNoIdOrganisation
-  (name: String, address: Address, legalStatus: RegistrationLegalStatus)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = {
+  def registerWithNoIdOrganisation(
+                                    name: String,
+                                    address: Address,
+                                    legalStatus: RegistrationLegalStatus
+                                  )(
+                                    implicit hc: HeaderCarrier,
+                                    ec: ExecutionContext
+                                  ): Future[RegistrationInfo] = {
 
     val organisationRegistrant = OrganisationRegistrant(OrganisationName(name), address)
     val url = config.registerWithNoIdOrganisationUrl
@@ -153,11 +190,11 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
         response.status match {
           case OK =>
             registrationInfo(
-              Json.parse(response.body),
-              legalStatus,
-              RegistrationCustomerType.NonUK,
-              None,
-              None,
+              json = Json.parse(response.body),
+              legalStatus = legalStatus,
+              customerType = RegistrationCustomerType.NonUK,
+              idType = None,
+              idNumber = None,
               noIdentifier = true
             )
           case _ =>
@@ -170,23 +207,27 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
     }
   }
 
-  override def registerWithNoIdIndividual
-  (firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate)
-  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] = {
+  def registerWithNoIdIndividual(
+                                  firstName: String,
+                                  lastName: String,
+                                  address: Address,
+                                  dateOfBirth: LocalDate
+                                )(
+                                  implicit hc: HeaderCarrier,
+                                  ec: ExecutionContext
+                                ): Future[RegistrationInfo] = {
 
     val registrant = RegistrationNoIdIndividualRequest(firstName, lastName, dateOfBirth, address)
     val url = config.registerWithNoIdIndividualUrl
     http.POST[JsValue, HttpResponse](url, Json.toJson(registrant)) map { response =>
       response.status match {
         case OK =>
-          val jsValue = Json.parse(response.body)
-
           registrationInfo(
-            jsValue,
-            RegistrationLegalStatus.Individual,
-            RegistrationCustomerType.NonUK,
-            None,
-            None,
+            json = Json.parse(response.body),
+            legalStatus = RegistrationLegalStatus.Individual,
+            customerType = RegistrationCustomerType.NonUK,
+            idType = None,
+            idNumber = None,
             noIdentifier = true
           )
         case _ =>
@@ -210,8 +251,16 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
     json.validate[String](readsSapNumber) match {
       case JsSuccess(sapNumber, _) =>
-        RegistrationInfo(legalStatus, sapNumber, noIdentifier = noIdentifier, customerType, idType, idNumber)
-      case JsError(errors) => throw JsResultException(errors)
+        RegistrationInfo(
+          legalStatus = legalStatus,
+          sapNumber = sapNumber,
+          noIdentifier = noIdentifier,
+          customerType = customerType,
+          idType = idType,
+          idNumber = idNumber
+        )
+      case JsError(errors) =>
+        throw JsResultException(errors)
     }
   }
 }

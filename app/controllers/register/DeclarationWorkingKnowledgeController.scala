@@ -16,12 +16,10 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
-import javax.inject.Inject
 import models.Mode
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
@@ -32,10 +30,10 @@ import utils.annotations.Register
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.declarationWorkingKnowledge
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationWorkingKnowledgeController @Inject()(
-                                                       appConfig: FrontendAppConfig,
                                                        dataCacheConnector: UserAnswersCacheConnector,
                                                        @Register navigator: Navigator,
                                                        authenticate: AuthAction,
@@ -45,7 +43,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
                                                        val controllerComponents: MessagesControllerComponents,
                                                        val view: declarationWorkingKnowledge
                                                      )(implicit val executionContext: ExecutionContext)
-                                                       extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+  extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
