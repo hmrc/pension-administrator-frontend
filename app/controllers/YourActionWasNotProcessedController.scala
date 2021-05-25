@@ -16,24 +16,38 @@
 
 package controllers
 
-import controllers.actions.AuthAction
+import controllers.actions.{AuthAction, DataRetrievalAction}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.yourActionWasNotProcessed
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class YourActionWasNotProcessedController @Inject()(
                                                      override val messagesApi: MessagesApi,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      authenticate: AuthAction,
-                                                     view: yourActionWasNotProcessed
+                                                     getData: DataRetrievalAction,
+                                                     view: yourActionWasNotProcessed,
+                                                     psaDetailsService: PsaDetailsService
                                                    )(implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController with I18nSupport {
-  def onPageLoad: Action[AnyContent] = authenticate {
-    implicit request =>
-      Ok(view())
-  }
+  extends FrontendBaseController
+    with I18nSupport {
+
+  def onPageLoad: Action[AnyContent] =
+    (authenticate andThen getData).async {
+      implicit request =>
+        request.user.alreadyEnrolledPsaId.map {
+          psaId =>
+            psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId).map {
+              psaDetails =>
+                Ok(view(psaDetails))
+            }
+        }.getOrElse(
+          Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        )
+    }
 }

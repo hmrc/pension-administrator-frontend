@@ -41,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[PsaDetailServiceImpl])
 trait PsaDetailsService {
-  def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
+  def retrievePsaDataAndGenerateViewModel(psaId: String)
                                          (implicit hc: HeaderCarrier,
                                           executionContext: ExecutionContext,
                                           request: OptionalDataRequest[_],
@@ -63,23 +63,22 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
                                      dataCompletion: DataCompletion
                                     ) extends PsaDetailsService {
 
-  override def retrievePsaDataAndGenerateViewModel(psaId: String, mode: Mode)
+  override def retrievePsaDataAndGenerateViewModel(psaId: String)
                                                   (implicit hc: HeaderCarrier,
                                                    executionContext: ExecutionContext,
                                                    request: OptionalDataRequest[_],
                                                    messages: Messages): Future[PsaViewDetailsViewModel] =
-    retrievePsaDataFromUserAnswers(psaId, mode, getPsaDetailsViewModel)
+    retrievePsaDataFromUserAnswers(psaId, getPsaDetailsViewModel)
 
   override def retrievePsaDataAndGenerateContactDetailsOnlyViewModel(psaId: String, mode: Mode)
     (implicit hc: HeaderCarrier,
       executionContext: ExecutionContext,
       request: OptionalDataRequest[_],
       messages: Messages): Future[PsaViewDetailsViewModel] =
-    retrievePsaDataFromUserAnswers(psaId, mode, getPsaContactDetailsOnlyViewModel(psaId))
+    retrievePsaDataFromUserAnswers(psaId, getPsaContactDetailsOnlyViewModel(psaId))
 
   def retrievePsaDataFromUserAnswers(
     psaId: String,
-    mode: Mode,
     getViewModel: (UserAnswers, Messages) => PsaViewDetailsViewModel)(implicit hc: HeaderCarrier,
     executionContext: ExecutionContext,
     request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {

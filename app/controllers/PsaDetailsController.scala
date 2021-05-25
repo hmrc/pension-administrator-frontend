@@ -44,7 +44,7 @@ class PsaDetailsController @Inject()(
     (authenticate andThen allowAccess(mode) andThen getData).async {
       implicit request =>
         request.user.alreadyEnrolledPsaId.map { psaId =>
-          psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId, mode).map { psaDetails =>
+          psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId).map { psaDetails =>
             val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
             Ok(view(psaDetails, nextPage))
           }
