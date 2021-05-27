@@ -33,19 +33,8 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
 
   private def loadConfig(key: String) = runModeConfiguration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private def baseUrl(serviceName: String) = {
-    val protocol = runModeConfiguration.getOptional[String](s"microservice.services.$serviceName.protocol").getOrElse("http")
-    val host = runModeConfiguration.get[String](s"microservice.services.$serviceName.host")
-    val port = runModeConfiguration.get[String](s"microservice.services.$serviceName.port")
-    s"$protocol://$host:$port"
-  }
-
-  private def getConfigString(key: String) = servicesConfig.getConfString(key, throw new Exception(s"Could not find config '$key'"))
-
-  lazy val contactHost = baseUrl("contact-frontend")
-
-  lazy val timeout = loadConfig("session._timeoutSeconds")
-  lazy val countdown = loadConfig("session._CountdownInSeconds")
+  lazy val timeout: String = loadConfig("session._timeoutSeconds")
+  lazy val countdown: String = loadConfig("session._CountdownInSeconds")
 
   lazy val googleTagManagerIdAvailable: Boolean = runModeConfiguration.underlying.getBoolean(s"google-tag-manager.id-available")
   lazy val googleTagManagerId: String = loadConfig(s"google-tag-manager.id")
@@ -54,13 +43,14 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   def cannotAccessPageAsPractitionerUrl(continueUrl:String): String =
     loadConfig("urls.manage-pensions-frontend.cannotAccessPageAsPractitioner").format(continueUrl)
 
-  val reportAProblemPartialUrl = getConfigString("contact-frontend.report-problem-url.with-js")
-  val reportAProblemNonJSUrl = getConfigString("contact-frontend.report-problem-url.non-js")
-  val betaFeedbackUrl = getConfigString("contact-frontend.beta-feedback-url.authenticated")
-  val betaFeedbackUnauthenticatedUrl = getConfigString("contact-frontend.beta-feedback-url.unauthenticated")
-  val reportTechnicalIssues = ReportTechnicalIssue(serviceId = "PODS", baseUrl = Some(contactHost))
-  lazy val manualIvUrl: String = loadConfig("urls.manualIvUrl")
+  val reportAProblemNonJSUrl: String =
+    loadConfig("microservice.services.contact-frontend.report-problem-url.non-js")
+  val betaFeedbackUnauthenticatedUrl: String =
+    loadConfig("microservice.services.contact-frontend.beta-feedback-url.unauthenticated")
+  val reportTechnicalIssues: ReportTechnicalIssue =
+    ReportTechnicalIssue(serviceId = "PODS", baseUrl = Some(reportAProblemNonJSUrl))
 
+  lazy val manualIvUrl: String = loadConfig("urls.manualIvUrl")
   lazy val govUkUrl: String = loadConfig("urls.gov-uk")
   lazy val governmentGatewayUrl: String = loadConfig("urls.government-gateway")
   lazy val pensionsSchemeUrl: String = s"${servicesConfig.baseUrl("pensions-scheme")}"
