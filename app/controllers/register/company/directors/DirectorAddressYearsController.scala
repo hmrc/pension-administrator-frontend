@@ -48,7 +48,7 @@ class DirectorAddressYearsController @Inject()(@CompanyDirector override val nav
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: addressYears
                                               )(implicit val executionContext: ExecutionContext)
-                                                extends AddressYearsController with Retrievals with I18nSupport {
+  extends AddressYearsController with Retrievals with I18nSupport {
 
   private def form(directorName: String)
                   (implicit request: DataRequest[AnyContent]): Form[AddressYears] = formProvider(directorName)
@@ -60,16 +60,19 @@ class DirectorAddressYearsController @Inject()(@CompanyDirector override val nav
         get(DirectorAddressYearsId(index), form(directorName), viewModel(mode, index, directorName), mode)
     }
 
-  def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      val directorName = entityName(index)
-      post(DirectorAddressYearsId(index), mode, form(directorName), viewModel(mode, index, directorName))
-  }
+  def onSubmit(mode: Mode, index: Index): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        val directorName = entityName(index)
+        post(DirectorAddressYearsId(index), mode, form(directorName), viewModel(mode, index, directorName))
+    }
 
-  private def entityName(index: Int)(implicit request: DataRequest[AnyContent]): String =
+  private def entityName(index: Int)
+                        (implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
+  private def viewModel(mode: Mode, index: Index, directorName: String)
+                       (implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
     AddressYearsViewModel(
       postCall = routes.DirectorAddressYearsController.onSubmit(mode, index),
       title = Message("addressYears.heading", Message("theDirector")),

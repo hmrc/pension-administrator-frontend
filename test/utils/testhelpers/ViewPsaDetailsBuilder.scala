@@ -17,8 +17,8 @@
 package utils.testhelpers
 
 import java.time.LocalDate
-
 import base.SpecBase
+import controllers.register.company.directors.routes._
 import models.UpdateMode
 import viewmodels.{AnswerRow, AnswerSection, SuperSection, _}
 
@@ -126,20 +126,48 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(UpdateMode).url))))
 
   val directorsSeqAnswers = Seq(
-    AnswerRow("cya.label.dob", Seq("1950-03-29"), false,
-      None),
-    AnswerRow("common.nino", Seq("AA999999A"), false,
-      None),
-    AnswerRow("utr.label", Seq("1234567892"), false,
-      None),
-    AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
-      Some(Link(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url))),
-    AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      None),
-    AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorEmailController.onPageLoad(UpdateMode, 0).url))),
-    AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorPhoneController.onPageLoad(UpdateMode, 0).url)))
+    AnswerRow(
+      label = "cya.label.dob",
+      answer = Seq("1950-03-29"),
+      answerIsMessageKey = false,
+      changeUrl = None
+    ),
+    AnswerRow(
+      label = "common.nino.optional",
+      answer = Seq("AA999999A"),
+      answerIsMessageKey = false,
+      changeUrl = None
+    ),
+    AnswerRow(
+      label = "utr.label.optional",
+      answer = Seq("1234567892"),
+      answerIsMessageKey = false,
+      changeUrl = None
+    ),
+    AnswerRow(
+      label = "cya.label.address",
+      answer = Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url))
+    ),
+    AnswerRow(
+      label = "common.previousAddress.checkyouranswers",
+      answer = Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"),
+      answerIsMessageKey = false,
+      changeUrl = None
+    ),
+    AnswerRow(
+      label = "email.label",
+      answer = Seq("abc@hmrc.gsi.gov.uk"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(DirectorEmailController.onPageLoad(UpdateMode, 0).url))
+    ),
+    AnswerRow(
+      label = "phone.label",
+      answer = Seq("0044-09876542312"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(DirectorPhoneController.onPageLoad(UpdateMode, 0).url))
+    )
   )
 
 
@@ -204,11 +232,11 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("cya.label.dob", Seq("2019-10-23"), false,
       None),
     AnswerRow("common.nino.optional", Seq(""), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, 0).url, "site.add"))),
+      Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("utr.label.optional", Seq(""), false,
-      Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, 0).url, "site.add"))),
+      Some(Link(DirectorEnterUTRController.onPageLoad(UpdateMode, 0).url, "site.add"))),
     AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-      Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url, "site.add")))
+      Some(Link(DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url, "site.add")))
   )
 
   val partnersSeqAnswersWithAddLinks = Seq(

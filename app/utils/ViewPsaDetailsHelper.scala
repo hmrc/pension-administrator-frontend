@@ -16,6 +16,8 @@
 
 package utils
 
+import controllers.register.company.directors.routes._
+import controllers.register.company.routes._
 import controllers.register.partnership.partners.{routes => partnerRoutes}
 import identifiers.TypedIdentifier
 import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
@@ -52,7 +54,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   )
 
-  private def individualDetailsContactOnlySection(psaId:String) = SuperSection(
+  private def individualDetailsContactOnlySection(psaId: String) = SuperSection(
     None,
     Seq(AnswerSection(
       None,
@@ -90,7 +92,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   }
 
-  private def companyDetailsContactOnlySection(psaId:String): SuperSection = {
+  private def companyDetailsContactOnlySection(psaId: String): SuperSection = {
     SuperSection(
       None,
       Seq(
@@ -130,7 +132,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     )
   }
 
-  private def partnershipDetailsContactOnlySection(psaId:String): SuperSection = {
+  private def partnershipDetailsContactOnlySection(psaId: String): SuperSection = {
     SuperSection(
       None,
       Seq(
@@ -189,7 +191,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     }
   }
 
-  private def psaIdAnswerRow(psaId:String): Option[AnswerRow] =
+  private def psaIdAnswerRow(psaId: String): Option[AnswerRow] =
     Some(AnswerRow("cya.label.adminId", Seq(psaId), answerIsMessageKey = false, None))
 
   //Individual PSA
@@ -253,14 +255,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def companyAddress: Option[AnswerRow] = userAnswers.get(CompanyContactAddressId) map { address =>
     AnswerRow("company.address.label", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
+      Some(Link(CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyPreviousAddress: Option[AnswerRow] = {
     (userAnswers.get(CompanyConfirmPreviousAddressId), userAnswers.get(CompanyPreviousAddressId)) match {
       case (Some(false), None) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))))
+          Some(Link(CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add"))))
       case (_, Some(address)) =>
         Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
           None))
@@ -270,12 +272,12 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   private def companyEmailAddress: Option[AnswerRow] = userAnswers.get(CompanyEmailId) map { email =>
     AnswerRow("company.email.label", Seq(email), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(UpdateMode).url)))
+      Some(Link(CompanyEmailController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyPhoneNumber: Option[AnswerRow] = userAnswers.get(CompanyPhoneId) map { phone =>
     AnswerRow("company.phone.label", Seq(phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(UpdateMode).url)))
+      Some(Link(CompanyPhoneController.onPageLoad(UpdateMode).url)))
   }
 
   private def companyUtr: Option[AnswerRow] = userAnswers.get(BusinessUTRId) map { utr =>
@@ -284,67 +286,164 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   //Directors
   private def directorDob(index: Int): Option[AnswerRow] =
-      userAnswers.get(DirectorDOBId(index)) map { dob =>
-      AnswerRow("cya.label.dob", Seq(dob.toString), answerIsMessageKey = false,
-        None)
+    userAnswers.get(DirectorDOBId(index)) map {
+      dob =>
+        AnswerRow(
+          label = "cya.label.dob",
+          answer = Seq(dob.toString),
+          answerIsMessageKey = false,
+          changeUrl = None
+        )
     }
 
-  private def directorNino(index: Int): Option[AnswerRow] = userAnswers.get(DirectorEnterNINOId(index)) match {
-    case Some(ReferenceValue(nino, false)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
-      None))
-
-    case Some(ReferenceValue(nino, true)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, index).url))))
-
-    case None => Some(AnswerRow("common.nino.optional", Seq(""), answerIsMessageKey = true,
-      Some(Link(controllers.register.company.directors.routes.DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")), None))
-  }
-
-  private def directorUtr(index: Int): Option[AnswerRow] = userAnswers.get(DirectorEnterUTRId(index)) match {
-    case Some(ReferenceValue(utr, false)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
-      None))
-
-    case Some(ReferenceValue(utr, true)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, index).url)), None))
-
-    case None => Some(AnswerRow("utr.label.optional", Seq(""), answerIsMessageKey = true,
-      Some(Link(controllers.register.company.directors.routes.DirectorEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")), None))
-  }
-
-  private def directorAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(DirectorAddressId(index)) map { address =>
-    AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url)))
-  }
-
-  private def directorPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = {
-    (userAnswers.get(DirectorConfirmPreviousAddressId(index)), userAnswers.get(DirectorPreviousAddressId(index))) match {
+  private def directorNino(index: Int): Option[AnswerRow] =
+    (
+      userAnswers.get(HasDirectorNINOId(index)),
+      userAnswers.get(DirectorEnterNINOId(index))
+    ) match {
+      case (Some(true), Some(ReferenceValue(nino, false))) =>
+        Some(AnswerRow(
+          label = "common.nino",
+          answer = Seq(nino),
+          answerIsMessageKey = false,
+          changeUrl = None
+        ))
+      case (Some(true), Some(ReferenceValue(nino, true))) =>
+        Some(AnswerRow(
+          label = "common.nino",
+          answer = Seq(nino),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url))
+        ))
       case (Some(false), None) =>
-        Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(controllers.register.company.directors.routes.DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url,
-            "site.add"))))
-      case (_, Some(address)) =>
-        Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-          None))
-      case _ => None
+        Some(AnswerRow(
+          label = "common.nino.optional",
+          answer = Seq(""),
+          answerIsMessageKey = true,
+          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        ))
+      case (Some(true), None) =>
+        Some(AnswerRow(
+          label = "common.nino",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = true,
+          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        ))
+      case _ =>
+        Some(AnswerRow(
+          label = "common.nino.optional",
+          answer = Seq(""),
+          answerIsMessageKey = true,
+          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        ))
     }
-  }
 
-  private def directorPhone(index: Int): Option[AnswerRow] = userAnswers.get(DirectorPhoneId(index)) map { phone =>
-    AnswerRow("phone.label", Seq(phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorPhoneController.onPageLoad(UpdateMode, index).url)))
-  }
+  private def directorUtr(index: Int): Option[AnswerRow] =
+    (
+      userAnswers.get(HasDirectorUTRId(index)),
+      userAnswers.get(DirectorEnterUTRId(index))
+    ) match {
+      case (Some(true), Some(ReferenceValue(utr, false))) =>
+        Some(AnswerRow(
+          label = "utr.label",
+          answer = Seq(utr),
+          answerIsMessageKey = false,
+          changeUrl = None
+        ))
+      case (Some(true), Some(ReferenceValue(utr, true))) =>
+        Some(AnswerRow(
+          label = "utr.label",
+          answer = Seq(utr),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorEnterUTRController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        ))
+      case (Some(true), None) =>
+        Some(AnswerRow(
+          label = "utr.label",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = true,
+          changeUrl = Some(Link(DirectorEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        ))
+      case _ =>
+        Some(AnswerRow(
+          label = "utr.label.optional",
+          answer = Seq(""),
+          answerIsMessageKey = true,
+          changeUrl = Some(Link(DirectorEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        ))
+    }
 
-  private def directorEmail(index: Int): Option[AnswerRow] = userAnswers.get(DirectorEmailId(index)) map { email =>
-    AnswerRow("email.label", Seq(email), answerIsMessageKey = false,
-      Some(Link(controllers.register.company.directors.routes.DirectorEmailController.onPageLoad(UpdateMode, index).url)))
-  }
+  private def directorAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
+    Some(userAnswers.get(DirectorAddressId(index)) match {
+      case Some(address) =>
+        AnswerRow(
+          label = "cya.label.address",
+          answer = addressAnswer(address, countryOptions),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url))
+        )
+      case _ =>
+        AnswerRow(
+          label = "cya.label.address",
+          answer = Seq("site.not_entered"),
+          answerIsMessageKey = true,
+          changeUrl = Some(Link(CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+    })
+
+  private def directorPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
+    (
+      userAnswers.get(DirectorAddressYearsId(index)),
+      userAnswers.get(DirectorPreviousAddressId(index))
+    ) match {
+      case (Some(AddressYears.UnderAYear), None) =>
+        Some(AnswerRow(
+          label = "common.previousAddress.checkyouranswers",
+          answer = Seq("site.not_entered"),
+          answerIsMessageKey = true,
+          changeUrl = Some(Link(DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add"))
+        ))
+      case (_, Some(address)) =>
+        Some(AnswerRow(
+          label = "common.previousAddress.checkyouranswers",
+          answer = addressAnswer(address, countryOptions),
+          answerIsMessageKey = false,
+          changeUrl = None
+        ))
+      case _ =>
+        None
+    }
+
+  private def directorPhone(index: Int): Option[AnswerRow] =
+    Some(AnswerRow(
+      label = "phone.label",
+      answer = Seq(s"${userAnswers.get(DirectorPhoneId(index)).getOrElse(messages("site.not_entered"))}"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(DirectorPhoneController.onPageLoad(UpdateMode, index).url))
+    ))
+
+  private def directorEmail(index: Int): Option[AnswerRow] =
+    Some(AnswerRow(
+      label = "email.label",
+      answer = Seq(s"${userAnswers.get(DirectorEmailId(index)).getOrElse(messages("site.not_entered"))}"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(DirectorEmailController.onPageLoad(UpdateMode, index).url))
+    ))
 
 
   private def directorSection(person: Person, countryOptions: CountryOptions): AnswerSection = {
     val i = person.index
     AnswerSection(
-      Some(person.name),
-      Seq(directorDob(i),
+      headingKey = Some(person.name),
+      rows = Seq(
+        directorDob(i),
         directorNino(i),
         directorUtr(i),
         directorAddress(i, countryOptions),
@@ -356,20 +455,28 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   private def directorsSuperSection: SuperSection = {
-    val (linkText, additionalText) = userAnswers.allDirectorsAfterDelete(NormalMode).size match {
-      case _ if ifAnyDirectorIncomplete => ("director-add-link-incomplete", None)
-      case noOfDirectors if noOfDirectors == 1 => ("director-add-link-onlyOne", Some("director-add-link-onlyOne-additionalText"))
-      case noOfDirectors if noOfDirectors == 10 => ("director-add-link-Ten", Some("director-add-link-Ten-additionalText"))
-      case _ => ("director-add-link-lessThanTen", None)
-    }
+    val (linkText, additionalText) =
+      userAnswers.allDirectorsAfterDelete(NormalMode).size match {
+        case _ if ifAnyDirectorIncomplete =>
+          ("director-add-link-incomplete", None)
+        case noOfDirectors if noOfDirectors == 1 =>
+          ("director-add-link-onlyOne", Some("director-add-link-onlyOne-additionalText"))
+        case noOfDirectors if noOfDirectors == 10 =>
+          ("director-add-link-Ten", Some("director-add-link-Ten-additionalText"))
+        case _ =>
+          ("director-add-link-lessThanTen", None)
+      }
     SuperSection(
-      Some("director.supersection.header"),
-      for (person <- userAnswers.allDirectorsAfterDelete(NormalMode)) yield directorSection(person, countryOptions),
-      Some(AddLink(Link(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(UpdateMode).url, linkText), additionalText))
+      headingKey = Some("director.supersection.header"),
+      sections = for {
+        person <- userAnswers.allDirectorsAfterDelete(NormalMode)
+      } yield directorSection(person, countryOptions),
+      addLink = Some(AddLink(Link(AddCompanyDirectorsController.onPageLoad(UpdateMode).url, linkText), additionalText))
     )
   }
 
-  private def ifAnyDirectorIncomplete = userAnswers.allDirectorsAfterDelete(NormalMode).exists(!_.isComplete)
+  private def ifAnyDirectorIncomplete: Boolean =
+    userAnswers.allDirectorsAfterDelete(NormalMode).exists(!_.isComplete)
 
   //Partnership PSA
   private def partnershipVatNumber: Option[AnswerRow] = userAnswers.get(EnterVATId) match {
@@ -491,7 +598,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     val (linkText, additionalText) = userAnswers.allPartnersAfterDelete(UpdateMode).size match {
       case _ if ifAnyPartnerIncomplete => ("partner-add-link-incomplete", None)
       case noOfPartners if noOfPartners <= 2 => ("partner-add-link-lessThanTwo",
-        if(noOfPartners == 1) Some("partner-add-link-onlyOne-additionalText") else Some("partner-add-link-onlyTwo-additionalText"))
+        if (noOfPartners == 1) Some("partner-add-link-onlyOne-additionalText") else Some("partner-add-link-onlyTwo-additionalText"))
       case noOfPartners if noOfPartners == 10 => ("partner-add-link-Ten", Some("partner-add-link-Ten-additionalText"))
       case _ => ("partner-add-link-lessThanTen", None)
     }
@@ -557,11 +664,16 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   }
 
   val individualSections: Seq[SuperSection] = Seq(individualDetailsSection) ++ pensionAdviserSection.toSeq
-  def individualContactOnlySections(psaId:String): Seq[SuperSection] = Seq(individualDetailsContactOnlySection(psaId))
+
+  def individualContactOnlySections(psaId: String): Seq[SuperSection] = Seq(individualDetailsContactOnlySection(psaId))
+
   val companySections: Seq[SuperSection] = Seq(companyDetailsSection, directorsSuperSection) ++ pensionAdviserSection.toSeq
-  def companyContactOnlySections(psaId:String): Seq[SuperSection] = Seq(companyDetailsContactOnlySection(psaId))
+
+  def companyContactOnlySections(psaId: String): Seq[SuperSection] = Seq(companyDetailsContactOnlySection(psaId))
+
   val partnershipSections: Seq[SuperSection] = Seq(partnershipDetailsSection, partnersSuperSection) ++ pensionAdviserSection.toSeq
-  def partnershipContactOnlySections(psaId:String): Seq[SuperSection] = Seq(partnershipDetailsContactOnlySection(psaId))
+
+  def partnershipContactOnlySections(psaId: String): Seq[SuperSection] = Seq(partnershipDetailsContactOnlySection(psaId))
 
   def addressYearsAnswer(userAnswers: UserAnswers, id: TypedIdentifier[AddressYears]): String = {
     userAnswers.get(id) match {
