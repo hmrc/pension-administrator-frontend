@@ -296,19 +296,70 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
         )
     }
 
+  private def directorHasNino(index: Index): Option[AnswerRow] =
+    Some((
+      userAnswers.get(HasDirectorNINOId(index)),
+      userAnswers.get(DirectorEnterNINOId(index))
+    ) match {
+      case (Some(answer), _) =>
+        AnswerRow(
+          label = "directorNino.checkYourAnswersLabel",
+          answer = Seq(s"${if (answer) "Yes" else "No"}"),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasDirectorNINOController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case (_, Some(_)) =>
+        AnswerRow(
+          label = "directorNino.checkYourAnswersLabel",
+          answer = Seq("Yes"),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasDirectorNINOController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case _ =>
+        AnswerRow(
+          label = "directorNino.checkYourAnswersLabel",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasDirectorNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        )
+    })
+
+  private def directorNoNinoReason(index: Index): Option[AnswerRow] =
+    Some(userAnswers.get(DirectorNoNINOReasonId(index)) match {
+      case Some(reason) =>
+        AnswerRow(
+          label = "directorNino.checkYourAnswersLabel.reason",
+          answer = Seq(reason),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case _ =>
+        AnswerRow(
+          label = "directorNino.checkYourAnswersLabel.reason",
+          answer = Seq("site.not_entered"),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        )
+    })
+
   private def directorNino(index: Int): Option[AnswerRow] =
     (
       userAnswers.get(HasDirectorNINOId(index)),
       userAnswers.get(DirectorEnterNINOId(index))
     ) match {
-      case (Some(true), Some(ReferenceValue(nino, false))) =>
+      case (_, Some(ReferenceValue(nino, false))) =>
         Some(AnswerRow(
           label = "common.nino",
           answer = Seq(nino),
           answerIsMessageKey = false,
           changeUrl = None
         ))
-      case (Some(true), Some(ReferenceValue(nino, true))) =>
+      case (_, Some(ReferenceValue(nino, true))) =>
         Some(AnswerRow(
           label = "common.nino",
           answer = Seq(nino),
@@ -316,44 +367,75 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
           changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url))
         ))
       case (Some(false), None) =>
-        Some(AnswerRow(
-          label = "common.nino.optional",
-          answer = Seq(""),
-          answerIsMessageKey = true,
-          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
-          visuallyHiddenText = None
-        ))
-      case (Some(true), None) =>
-        Some(AnswerRow(
-          label = "common.nino",
-          answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = true,
-          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
-          visuallyHiddenText = None
-        ))
+        directorNoNinoReason(index)
       case _ =>
-        Some(AnswerRow(
-          label = "common.nino.optional",
-          answer = Seq(""),
-          answerIsMessageKey = true,
-          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
-          visuallyHiddenText = None
-        ))
+        None
     }
+
+  private def directorHasUtr(index: Index): Option[AnswerRow] =
+    Some((
+      userAnswers.get(HasDirectorUTRId(index)),
+      userAnswers.get(DirectorEnterUTRId(index))
+    ) match {
+      case (Some(answer), _) =>
+        AnswerRow(
+          label = "directorUniqueTaxReference.checkYourAnswersLabel",
+          answer = Seq(s"${if (answer) "Yes" else "No"}"),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasDirectorUTRController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case (_, Some(_)) =>
+        AnswerRow(
+          label = "directorUniqueTaxReference.checkYourAnswersLabel",
+          answer = Seq("Yes"),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasDirectorUTRController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case _ =>
+        AnswerRow(
+          label = "directorUniqueTaxReference.checkYourAnswersLabel",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasDirectorUTRController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        )
+    })
+
+  private def directorNoUtrReason(index: Index): Option[AnswerRow] =
+    Some(userAnswers.get(DirectorNoUTRReasonId(index)) match {
+      case Some(reason) =>
+        AnswerRow(
+          label = "directorUniqueTaxReference.checkYourAnswersLabel.reason",
+          answer = Seq(reason),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorNoUTRReasonController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case _ =>
+        AnswerRow(
+          label = "directorUniqueTaxReference.checkYourAnswersLabel.reason",
+          answer = Seq("site.not_entered"),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorNoUTRReasonController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        )
+    })
 
   private def directorUtr(index: Int): Option[AnswerRow] =
     (
       userAnswers.get(HasDirectorUTRId(index)),
       userAnswers.get(DirectorEnterUTRId(index))
     ) match {
-      case (Some(true), Some(ReferenceValue(utr, false))) =>
+      case (_, Some(ReferenceValue(utr, false))) =>
         Some(AnswerRow(
           label = "utr.label",
           answer = Seq(utr),
           answerIsMessageKey = false,
           changeUrl = None
         ))
-      case (Some(true), Some(ReferenceValue(utr, true))) =>
+      case (_, Some(ReferenceValue(utr, true))) =>
         Some(AnswerRow(
           label = "utr.label",
           answer = Seq(utr),
@@ -361,22 +443,10 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
           changeUrl = Some(Link(DirectorEnterUTRController.onPageLoad(UpdateMode, index).url)),
           visuallyHiddenText = None
         ))
-      case (Some(true), None) =>
-        Some(AnswerRow(
-          label = "utr.label",
-          answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = true,
-          changeUrl = Some(Link(DirectorEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")),
-          visuallyHiddenText = None
-        ))
+      case (Some(false), _) =>
+        directorNoUtrReason(index)
       case _ =>
-        Some(AnswerRow(
-          label = "utr.label.optional",
-          answer = Seq(""),
-          answerIsMessageKey = true,
-          changeUrl = Some(Link(DirectorEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")),
-          visuallyHiddenText = None
-        ))
+        None
     }
 
   private def directorAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
@@ -391,9 +461,9 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       case _ =>
         AnswerRow(
           label = "cya.label.address",
-          answer = Seq("site.not_entered"),
+          answer = Seq(messages("site.not_entered")),
           answerIsMessageKey = true,
-          changeUrl = Some(Link(CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url)),
+          changeUrl = Some(Link(CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add")),
           visuallyHiddenText = None
         )
     })
@@ -406,7 +476,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       case (Some(AddressYears.UnderAYear), None) =>
         Some(AnswerRow(
           label = "common.previousAddress.checkyouranswers",
-          answer = Seq("site.not_entered"),
+          answer = Seq(messages("site.not_entered")),
           answerIsMessageKey = true,
           changeUrl = Some(Link(DirectorPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add"))
         ))
@@ -421,22 +491,43 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
         None
     }
 
-  private def directorPhone(index: Int): Option[AnswerRow] =
-    Some(AnswerRow(
-      label = "phone.label",
-      answer = Seq(s"${userAnswers.get(DirectorPhoneId(index)).getOrElse(messages("site.not_entered"))}"),
-      answerIsMessageKey = false,
-      changeUrl = Some(Link(DirectorPhoneController.onPageLoad(UpdateMode, index).url))
-    ))
+  private def directorPhone(index: Int): Option[AnswerRow] = {
+    Some(userAnswers.get(DirectorPhoneId(index)) match {
+      case Some(phone) =>
+        AnswerRow(
+          label = "phone.label",
+          answer = Seq(phone),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorPhoneController.onPageLoad(UpdateMode, index).url))
+        )
+      case _ =>
+        AnswerRow(
+          label = "phone.label",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorPhoneController.onPageLoad(UpdateMode, index).url, "site.add"))
+        )
+    })
+  }
 
-  private def directorEmail(index: Int): Option[AnswerRow] =
-    Some(AnswerRow(
-      label = "email.label",
-      answer = Seq(s"${userAnswers.get(DirectorEmailId(index)).getOrElse(messages("site.not_entered"))}"),
-      answerIsMessageKey = false,
-      changeUrl = Some(Link(DirectorEmailController.onPageLoad(UpdateMode, index).url))
-    ))
-
+  private def directorEmail(index: Int): Option[AnswerRow] = {
+    Some(userAnswers.get(DirectorEmailId(index)) match {
+      case Some(email) =>
+        AnswerRow(
+          label = "email.label",
+          answer = Seq(email),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorEmailController.onPageLoad(UpdateMode, index).url))
+        )
+      case _ =>
+        AnswerRow(
+          label = "email.label",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorEmailController.onPageLoad(UpdateMode, index).url, "site.add"))
+        )
+    })
+  }
 
   private def directorSection(person: Person, countryOptions: CountryOptions): AnswerSection = {
     val i = person.index
@@ -444,7 +535,9 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       headingKey = Some(person.name),
       rows = Seq(
         directorDob(i),
+        directorHasNino(i),
         directorNino(i),
+        directorHasUtr(i),
         directorUtr(i),
         directorAddress(i, countryOptions),
         directorPrevAddress(i, countryOptions),

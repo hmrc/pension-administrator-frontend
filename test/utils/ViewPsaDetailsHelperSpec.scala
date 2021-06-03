@@ -276,6 +276,7 @@ object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
     )
   ))
   private val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
+
   private val partnershipUserAnswersIncomplete = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] - "partners" +
     ("partners" -> Json.arr(
       Json.obj(PartnerNameId.toString -> PersonName("John", "One"))
