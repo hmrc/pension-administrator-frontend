@@ -304,7 +304,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       case (Some(answer), _) =>
         AnswerRow(
           label = "directorNino.checkYourAnswersLabel",
-          answer = Seq(s"${if (answer) "Yes" else "No"}"),
+          answer = Seq(messages(s"${if (answer) "site.yes" else "site.no"}")),
           answerIsMessageKey = false,
           changeUrl = Some(Link(HasDirectorNINOController.onPageLoad(UpdateMode, index).url)),
           visuallyHiddenText = None
@@ -312,7 +312,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       case (_, Some(_)) =>
         AnswerRow(
           label = "directorNino.checkYourAnswersLabel",
-          answer = Seq("Yes"),
+          answer = Seq(messages("site.yes")),
           answerIsMessageKey = false,
           changeUrl = Some(Link(HasDirectorNINOController.onPageLoad(UpdateMode, index).url)),
           visuallyHiddenText = None
@@ -340,7 +340,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       case _ =>
         AnswerRow(
           label = "directorNino.checkYourAnswersLabel.reason",
-          answer = Seq("site.not_entered"),
+          answer = Seq(messages("site.not_entered")),
           answerIsMessageKey = false,
           changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, index).url, "site.add")),
           visuallyHiddenText = None
@@ -368,6 +368,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
         ))
       case (Some(false), None) =>
         directorNoNinoReason(index)
+      case (Some(true), None) =>
+        Some(AnswerRow(
+          label = "common.nino",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        ))
       case _ =>
         None
     }
@@ -380,7 +388,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       case (Some(answer), _) =>
         AnswerRow(
           label = "directorUniqueTaxReference.checkYourAnswersLabel",
-          answer = Seq(s"${if (answer) "Yes" else "No"}"),
+          answer = Seq(messages(s"${if (answer) "site.yes" else "site.no"}")),
           answerIsMessageKey = false,
           changeUrl = Some(Link(HasDirectorUTRController.onPageLoad(UpdateMode, index).url)),
           visuallyHiddenText = None
@@ -388,7 +396,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       case (_, Some(_)) =>
         AnswerRow(
           label = "directorUniqueTaxReference.checkYourAnswersLabel",
-          answer = Seq("Yes"),
+          answer = Seq(messages("site.yes")),
           answerIsMessageKey = false,
           changeUrl = Some(Link(HasDirectorUTRController.onPageLoad(UpdateMode, index).url)),
           visuallyHiddenText = None
@@ -416,7 +424,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       case _ =>
         AnswerRow(
           label = "directorUniqueTaxReference.checkYourAnswersLabel.reason",
-          answer = Seq("site.not_entered"),
+          answer = Seq(messages("site.not_entered")),
           answerIsMessageKey = false,
           changeUrl = Some(Link(DirectorNoUTRReasonController.onPageLoad(UpdateMode, index).url, "site.add")),
           visuallyHiddenText = None
@@ -445,6 +453,14 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
         ))
       case (Some(false), _) =>
         directorNoUtrReason(index)
+      case (Some(true), None) =>
+        Some(AnswerRow(
+          label = "utr.label",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        ))
       case _ =>
         None
     }
