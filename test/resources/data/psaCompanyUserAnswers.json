@@ -3,7 +3,7 @@
   "areYouInUK": true,
   "businessType": "limitedCompany",
   "businessName": "Test company name",
-   "utr": "1234567890",
+  "utr": "1234567890",
   "companyAddressId": {
     "addressLine1": "100 SuttonStreet",
     "addressLine2": "Wokingham",
@@ -55,7 +55,7 @@
     "phone": "0044-09876542312"
   },
   "vat": "12345678",
-  "paye":  "9876543210",
+  "paye": "9876543210",
   "companyRegistrationNumber": "121414151",
   "directors": [
     {
