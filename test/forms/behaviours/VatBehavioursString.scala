@@ -45,12 +45,12 @@ trait VatBehavioursString extends FormSpec with StringFieldBehaviours with Const
         requiredError = FormError(fieldName, keyVatRequired)
       )
 
-      behave like fieldWithMaxLength(
-        form,
-        fieldName,
-        maxLength = VatMappingString.maxVatLength,
-        lengthError = FormError(fieldName, keyVatLength, Seq(VatMappingString.maxVatLength))
-      )
+      Seq("GB HA12 345 6 78 9 0", "GB 12 345 HA6 78 9").foreach{ vat =>
+        s"fail to bind when VAT $vat is longer than expected" in {
+          val result = form.bind(Map(fieldName -> vat))
+          result.errors shouldEqual Seq(FormError(fieldName, keyVatLength, Seq(VatMappingString.maxVatLength)))
+        }
+      }
 
       behave like fieldWithRegex(
         form,
@@ -61,7 +61,7 @@ trait VatBehavioursString extends FormSpec with StringFieldBehaviours with Const
 
       behave like formWithTransform(
         form,
-        Map(fieldName -> "GB123456789"),
+        Map(fieldName -> "GB123456789", fieldName -> "GBGD123456789", fieldName -> "GBHA123456789"),
         "123456789"
       )
     }
