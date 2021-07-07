@@ -23,7 +23,7 @@
 )
 
 @(
-        psaDetails: viewmodels.PsaViewDetailsViewModel
+        psaDetails: Option[viewmodels.PsaViewDetailsViewModel]
 )(
         implicit request: Request[_],
         messages: Messages
@@ -43,9 +43,13 @@
 
     <p>@messages("yourActionWasNotProcessed.guidance.p3")</p>
 
-    @components.button_link(
-        messages("site.return_to", psaDetails.header),
-        appConfig.schemesOverviewUrl,
-        "return"
+    @psaDetails.map(
+        details => {
+            components.button_link(
+                messageKey = messages("site.return_to", details.header),
+                href = appConfig.schemesOverviewUrl,
+                id = "return"
+            )
+        }
     )
 }
