@@ -40,14 +40,14 @@ class YourActionWasNotProcessedController @Inject()(
   def onPageLoad: Action[AnyContent] =
     (authenticate andThen getData).async {
       implicit request =>
-        request.user.alreadyEnrolledPsaId.map {
-          psaId =>
+        request.user.alreadyEnrolledPsaId match {
+          case Some(psaId) =>
             psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId).map {
               psaDetails =>
-                Ok(view(psaDetails))
+                Ok(view(Some(psaDetails)))
             }
-        }.getOrElse(
-          Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
-        )
+          case _ =>
+            Future.successful(Ok(view(None)))
+        }
     }
 }
