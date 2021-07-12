@@ -31,7 +31,7 @@ trait VatMappingString extends Mappings with Transforms {
   }
 
   protected def vatRegistrationNumberTransform(value: String): String = {
-    strip(value).replaceAll("^[gG][bB]", "")
+    strip(value).replaceAll("^[gG][bB]", "").replaceAll("^[A-Za-z]{2}", "")
   }
 
 }

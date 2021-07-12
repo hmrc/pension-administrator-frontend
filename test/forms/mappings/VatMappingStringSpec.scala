@@ -50,13 +50,14 @@ class VatMappingStringSpec extends VatBehavioursString {
       actual shouldBe "123456789"
     }
 
-    "remove leading GB" in {
+    "remove leading GB and 2 alpha characters" in {
       val gb = Table(
         "vat",
         "GB123456789",
         "Gb123456789",
         "gB123456789",
-        "gb123456789"
+        "gb123456789",
+        "GBHA123456789"
       )
 
       forAll(gb) { vat =>
