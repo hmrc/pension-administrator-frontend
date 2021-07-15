@@ -87,6 +87,18 @@ class ConstraintsSpec extends FormSpec with Matchers with Constraints with Regex
     }
   }
 
+  "maxMinLength value" must {
+    "return Valid for a number within the range" in {
+      val result = maxMinLength(10 to 14, "error.invalid")("1234567890123")
+      result shouldEqual Valid
+    }
+
+    "return invalid for a number outside of range" in {
+      val result = maxMinLength(10 to 14, "error.invalid")("k12345678901234567")
+      result shouldEqual Invalid("error.invalid", 10 to 14)
+    }
+  }
+
   "regexp" must {
 
     "return Valid for an input that matches the expression" in {

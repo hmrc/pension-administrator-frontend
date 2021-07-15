@@ -16,6 +16,7 @@
 
 package forms.mappings
 
+import forms.mappings.UtrMapping.utrMaxLengthRange
 import play.api.data.Mapping
 
 trait UtrMapping extends Mappings with Transforms {
@@ -26,13 +27,14 @@ trait UtrMapping extends Mappings with Transforms {
     text(requiredKey)
     .transform(strip, noTransform)
     .verifying(
+      firstError(maxMinLength(utrMaxLengthRange, lengthKey),
       uniqueTaxReference(lengthKey)
-    )
+    ))
   }
 
 }
 
 object UtrMapping {
-  val utrMaxLength: Int = 10
+  val utrMaxLengthRange = 10 to 14
   val reasonMaxLength: Int = 160
 }

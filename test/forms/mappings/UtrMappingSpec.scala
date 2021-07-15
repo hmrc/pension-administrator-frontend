@@ -29,7 +29,7 @@ class UtrMappingSpec extends UtrBehaviours {
     behave like formWithUtr(
       testForm,
       keyUtrRequired = "common.error.utr.required",
-      keyUtrLength = "common.error.utr.length"
+      keyUtrLength = "common.error.utr.invalid"
     )
   }
 
