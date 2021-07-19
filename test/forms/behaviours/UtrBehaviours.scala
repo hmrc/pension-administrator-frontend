@@ -25,7 +25,7 @@ class UtrBehaviours extends FormSpec with UtrMapping with RegexBehaviourSpec {
   def formWithUtr(
                    testForm: Form[String],
                    keyUtrRequired: String,
-                   keyUtrLength: String
+                   keyUtrInvalid: String
                  ): Unit = {
 
     "fail to bind when form is empty" in {

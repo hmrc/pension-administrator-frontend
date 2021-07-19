@@ -117,14 +117,6 @@ trait Constraints {
         Invalid(errorKey, maximum)
     }
 
-  protected def maxMinLength(maxMin: Range, errorKey: String): Constraint[String] =
-    Constraint {
-      case str if maxMin.contains(str.length) =>
-        Valid
-      case _ =>
-        Invalid(errorKey, maxMin)
-    }
-
   protected def exactLength(exact: Int, errorKey: String): Constraint[String] =
     Constraint {
       case str if str.length == exact =>

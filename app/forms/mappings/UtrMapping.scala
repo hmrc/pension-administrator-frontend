@@ -16,25 +16,20 @@
 
 package forms.mappings
 
-import forms.mappings.UtrMapping.utrMaxLengthRange
 import play.api.data.Mapping
 
 trait UtrMapping extends Mappings with Transforms {
 
   def utrMapping(requiredKey: String = "common.error.utr.required",
-                 lengthKey: String = "common.error.utr.invalid"
+                 invalidKey: String = "common.error.utr.invalid"
                 ): Mapping[String] = {
     text(requiredKey)
     .transform(strip, noTransform)
-    .verifying(
-      firstError(maxMinLength(utrMaxLengthRange, lengthKey),
-      uniqueTaxReference(lengthKey)
-    ))
+    .verifying(uniqueTaxReference(invalidKey)
+    )
   }
 
 }
 
 object UtrMapping {
-  val utrMaxLengthRange = 10 to 14
-  val reasonMaxLength: Int = 160
 }
