@@ -52,7 +52,7 @@ class UTRViewSpec extends QuestionViewBehaviours[String] {
 
     "display the correct guidance" in {
       val doc = asDocument(createView())
-      for (key <- Seq("p1", "p2", "p3")) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
+      for (key <- Seq("p1", "p2")) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
     }
 
     "show an error summary when rendered with an error" in {
