@@ -149,9 +149,9 @@ common.error.paye.length = The PAYE number cannot be more than 16 characters
 common.error.paye.invalid = Enter a valid PAYE number
 common.error.paye.required = Enter the PAYE employer reference number
 common.utr.text = Unique Taxpayer Reference number
-common.utr.hint = A Unique Taxpayer Reference number is 10 numbers. You will find it on any letters you have from HMRC.
-common.error.utr.required = Enter a UTR
-common.error.utr.invalid = Enter a UTR in the correct format
+common.utr.hint = A Unique Taxpayer Reference number is made up of 10 or 13 numbers. It may also start or end with the letter ‘k’.
+common.error.utr.required = Enter the Unique Taxpayer Reference (UTR)
+common.error.utr.invalid = Enter the Unique Taxpayer Reference (UTR) in the correct format
 common.error.utr.reason.length = The reason cannot be more than 160 characters
 common.error.utr.length = The utr cannot be more than 10 characters
 common.error.utr.exactLength = Unique Taxpayer Reference (UTR) must be 10 numbers
@@ -548,7 +548,7 @@ companyNotFound.businessNameChanged = Your business name has changed
 companyNotFound.businessNameChanged.company = If you are a company or a limited liability partnership that is registered with Companies House, you need to inform both {0}Companies House{1} and {2}HMRC{1}.
 companyNotFound.businessNameChanged.individual = If you are an individual or a partnership and your details are not correct, {0}you only need to contact the Tax helpline{1}.
 companyNotFound.utrDoesntMatch = Your Unique Taxpayer Reference (UTR) does not match
-companyNotFound.utrDoesntMatch.description = Your Unique Taxpayer Reference is made up of 10 or 13 numbers. If it is 13, only enter the last 10.
+companyNotFound.utrDoesntMatch.description = Your Unique Taxpayer Reference is made up of 10 or 13 numbers. It may also start or end with the letter ‘k’.
 
 declarationWorkingKnowledge.title = Do you have working knowledge of pensions and pensions tax legislation?
 declarationWorkingKnowledge.heading = Do you have working knowledge of pensions and pensions tax legislation?
@@ -711,7 +711,7 @@ partnershipBusinessDetails.error.partnershipName.invalid = Enter a valid registe
 
 partnershipBusinessDetails.error.utr.required = Enter the Partnership Self Assessment Unique Taxpayer Reference number
 partnershipBusinessDetails.error.utr.invalid = Enter a valid Partnership Self Assessment Unique Taxpayer
-partnershipBusinessDetails.error.utr.length = The Partnership Self Assessment Unique Taxpayer Reference number cannot be more than 10 characters
+partnershipBusinessDetails.error.utr.length = The Partnership Self Assessment Unique Taxpayer Reference number cannot be more than 10 or 13 numbers. It may also start or end with the letter ‘k’.
 
 partnershipPaye.title = Does the partnership have a PAYE employer reference number?
 partnershipPaye.heading = Does the partnership have a PAYE employer reference number?
@@ -1031,9 +1031,9 @@ partnershipName.error.length = Partnership name must be 105 characters or fewer
 
 utr.title = What is the Unique Taxpayer Reference (UTR) of the {0} you want to register?
 utr.heading = What is the Unique Taxpayer Reference (UTR) of the {0} you want to register?
-utr.p1 = This is a 10-digit or 13-digit number. You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
-utr.p2 = If the UTR is 13 numbers, only enter the last 10.
-utr.p3 = If there is a letter ‘K’ at the end of the number, do not enter it.
+utr.p1 = This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.
+utr.p2 = You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
+
 
 isRegisteredName.company.error = Select yes if this is the registered name of the company
 isRegisteredName.company.title = Is this the registered name of the company?
@@ -1152,5 +1152,5 @@ secondPartner.error = Select yes if you want to provide details of a second part
 yourActionWasNotProcessed.title = Sorry, your action was not processed
 yourActionWasNotProcessed.heading = Sorry, your action was not processed
 yourActionWasNotProcessed.guidance.p1 = Try again later.
-yourActionWasNotProcessed.guidance.p2 = Any information entered will have been saved from the last ‘save and continue’. 
+yourActionWasNotProcessed.guidance.p2 = Any information entered will have been saved from the last ‘save and continue’.
 yourActionWasNotProcessed.guidance.p3 = If the problem persists you can tell us about it using the link below.

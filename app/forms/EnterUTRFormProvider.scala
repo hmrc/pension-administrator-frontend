@@ -29,7 +29,7 @@ class EnterUTRFormProvider @Inject() extends FormErrorHelper with UtrMapping {
     Form(
       mapping("value" ->
         utrMapping(
-          lengthKey = Message("enterUTR.error.invalid").withArgs(name)
+          invalidKey = Message("enterUTR.error.invalid").withArgs(name)
         )
       )(ReferenceValue.applyEditable)(ReferenceValue.unapplyEditable)
     )

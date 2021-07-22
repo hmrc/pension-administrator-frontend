@@ -25,7 +25,7 @@ class UtrBehaviours extends FormSpec with UtrMapping with RegexBehaviourSpec {
   def formWithUtr(
                    testForm: Form[String],
                    keyUtrRequired: String,
-                   keyUtrLength: String
+                   keyUtrInvalid: String
                  ): Unit = {
 
     "fail to bind when form is empty" in {
@@ -40,14 +40,14 @@ class UtrBehaviours extends FormSpec with UtrMapping with RegexBehaviourSpec {
 
     val invalid = Table(
       "data",
-      Map("utr" -> "123456789"),
-      Map("utr" -> "12345678901"),
+      Map("utr" -> "1234567"),
+      Map("utr" -> "k12345678901234"),
       Map("utr" -> "A234567890")
     )
 
     "remove spaces" in {
       val actual = testForm.bind(Map(
-        "utr" -> "  123 456 7890 "))
+        "utr" -> "k  123 456 7890 "))
       actual.errors shouldBe empty
     }
 

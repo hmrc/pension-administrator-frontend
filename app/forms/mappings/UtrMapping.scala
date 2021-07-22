@@ -21,18 +21,15 @@ import play.api.data.Mapping
 trait UtrMapping extends Mappings with Transforms {
 
   def utrMapping(requiredKey: String = "common.error.utr.required",
-                 lengthKey: String = "common.error.utr.invalid"
+                 invalidKey: String = "common.error.utr.invalid"
                 ): Mapping[String] = {
     text(requiredKey)
     .transform(strip, noTransform)
-    .verifying(
-      uniqueTaxReference(lengthKey)
+    .verifying(uniqueTaxReference(invalidKey)
     )
   }
 
 }
 
 object UtrMapping {
-  val utrMaxLength: Int = 10
-  val reasonMaxLength: Int = 160
 }
