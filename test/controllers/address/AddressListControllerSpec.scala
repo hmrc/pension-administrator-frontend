@@ -29,10 +29,10 @@ import org.scalatest.{Matchers, WordSpec}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.{Call, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -87,7 +87,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
       )) { app =>
         val controller = app.injector.instanceOf[TestController]
         val form = app.injector.instanceOf[AddressListFormProvider]
-        val result = controller.onSubmit(addressListViewModel(), 0, form(addresses, "error.required"))
+        val result = controller.onSubmit(addressListViewModel(), 0, form(addresses, "error.required"), addresses)
 
         status(result) shouldBe SEE_OTHER
       }
@@ -101,24 +101,37 @@ class AddressListControllerSpec extends WordSpec with Matchers {
       )) { app =>
         val controller = app.injector.instanceOf[TestController]
         val form = app.injector.instanceOf[AddressListFormProvider]
-        val result = controller.onSubmit(addressListViewModel(), 0, form(addresses, "error.required"))
+        val result = controller.onSubmit(addressListViewModel(), 0, form(addresses, "error.required"), addresses)
 
         redirectLocation(result) shouldBe Some(onwardRoute.url)
       }
 
     }
 
-    "save the user answer on submission of valid data" in {
+    "save the user answer on submission of valid data when address is incomplete and redirect to manualInput page" in {
 
-      running(_.overrides(
-        bind[Navigator].toInstance(FakeNavigator)
-      )) { app =>
-        val viewModel = addressListViewModel()
+      running(_.overrides()) { app =>
+        val viewModel = addressListViewModel(incompleteAddresses)
         val controller = app.injector.instanceOf[TestController]
         val form = app.injector.instanceOf[AddressListFormProvider]
-        val result = controller.onSubmit(viewModel, 0, form(addresses, "error.required"))
+        val result = controller.onSubmit(viewModel, 0, form(incompleteAddresses, "error.required"), incompleteAddresses)
 
-        status(result) shouldBe SEE_OTHER
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(manualInputCall.url)
+      }
+
+    }
+
+    "shuffle the address lines and save fixed address when address is incomplete but fixable" in {
+
+      running(_.overrides()) { app =>
+        val viewModel = addressListViewModel(fixableAddress)
+        val controller = app.injector.instanceOf[TestController]
+        val form = app.injector.instanceOf[AddressListFormProvider]
+        val result = controller.onSubmit(viewModel, 0, form(fixableAddress, "error.required"), fixableAddress)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(postCall.url)
       }
 
     }
@@ -131,7 +144,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val viewModel = addressListViewModel()
         val controller = app.injector.instanceOf[TestController]
         val form = app.injector.instanceOf[AddressListFormProvider]
-        val result = controller.onSubmit(viewModel, 0, form(addresses, "error.required"))
+        val result = controller.onSubmit(viewModel, 0, form(addresses, "error.required"), addresses)
 
         status(result) shouldBe SEE_OTHER
       }
@@ -146,7 +159,7 @@ class AddressListControllerSpec extends WordSpec with Matchers {
         val viewModel = addressListViewModel()
         val controller = app.injector.instanceOf[TestController]
         val form = app.injector.instanceOf[AddressListFormProvider]
-        val result = controller.onSubmit(viewModel, -1, form(addresses, "error.required"))
+        val result = controller.onSubmit(viewModel, -1, form(addresses, "error.required"), addresses)
 
         status(result) shouldBe BAD_REQUEST
         contentAsString(result) shouldBe viewAsString(viewModel, Some(-1))
@@ -184,19 +197,23 @@ object AddressListControllerSpec extends SpecBase {
 
     }
 
-    def onSubmit(viewModel: AddressListViewModel, value: Int, form: Form[Int]): Future[Result] = {
+    def onSubmit(viewModel: AddressListViewModel, value: Int, form: Form[Int], addressSeq: Seq[TolerantAddress] = addresses): Future[Result] = {
 
       val request = FakeRequest().withFormUrlEncodedBody("value" -> value.toString)
       val fakeSeqTolerantAddressId: TypedIdentifier[Seq[TolerantAddress]] = new TypedIdentifier[Seq[TolerantAddress]] {
         override def toString = "abc"
       }
+      val json = Json.obj(
+        fakeSeqTolerantAddressId.toString -> addressSeq
+      )
       post(
         viewModel,
         fakeAddressId,
+        fakeAddressListId,
         fakeSeqTolerantAddressId,
         NormalMode,
         form
-      )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers()))
+      )(DataRequest(request, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers(json)))
 
     }
 
@@ -228,6 +245,25 @@ object AddressListControllerSpec extends SpecBase {
       Some("Address 2 Line 4"),
       Some("123"),
       Some("FR")
+    )
+  )
+
+  private val incompleteAddresses = Seq(
+    TolerantAddress(
+      Some("Address 1 Line 1"),
+      None, None, None,
+      Some("A1 1PC"),
+      Some("GB")
+    ))
+
+  private val fixableAddress = Seq(
+    TolerantAddress(
+      Some("Address 2 Line 1"),
+      None,
+      None,
+      Some("Address 2 Line 4"),
+      Some("123"),
+      Some("GB")
     )
   )
 

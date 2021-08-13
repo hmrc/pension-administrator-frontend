@@ -60,7 +60,7 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
       "we have a country code" in {
         val result = payload.as[TolerantAddress](TolerantAddress.postCodeLookupAddressReads)
 
-        result.country mustBe tolerantAddressSample.country
+        result.countryOpt mustBe tolerantAddressSample.countryOpt
       }
 
       "We have more than 4 lines in the array containing address lines" in {
@@ -241,7 +241,7 @@ class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionVal
 
         val result = addresses.as[Seq[TolerantAddress]](TolerantAddress.postCodeLookupReads)
 
-        result.head.country mustBe tolerantAddressSample.country
+        result.head.countryOpt mustBe tolerantAddressSample.countryOpt
       }
     }
 
