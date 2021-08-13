@@ -407,7 +407,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress, legalStatus).map { registration =>
+    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress.get, legalStatus).map { registration =>
       registration.sapNumber shouldBe sapNumber
     }
   }
@@ -425,7 +425,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress, legalStatus).map { registration =>
+    connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress.get, legalStatus).map { registration =>
       registration.noIdentifier shouldBe true
     }
   }
@@ -444,7 +444,7 @@ class RegistrationConnectorSpec()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[UnrecognisedHttpResponseException] {
-      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress, legalStatus)
+      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress.get, legalStatus)
     }
 
   }
@@ -461,7 +461,7 @@ class RegistrationConnectorSpec()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[NotFoundException] {
-      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress, legalStatus)
+      connector.registerWithNoIdOrganisation(organisation.organisationName, expectedAddress(uk = false).toAddress.get, legalStatus)
     }
 
   }
@@ -480,7 +480,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth).map {
+    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress.get, individualDateOfBirth).map {
       registration =>
         registration.sapNumber shouldBe sapNumber
     }
@@ -500,7 +500,7 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth).map {
+    connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress.get, individualDateOfBirth).map {
       registration =>
         registration.noIdentifier shouldBe true
     }
@@ -520,7 +520,7 @@ class RegistrationConnectorSpec()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[UnrecognisedHttpResponseException] {
-      connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth)
+      connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress.get, individualDateOfBirth)
     }
 
   }
@@ -538,7 +538,7 @@ class RegistrationConnectorSpec()
 
     val connector = injector.instanceOf[RegistrationConnector]
     recoverToSucceededIf[NotFoundException] {
-      connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress, individualDateOfBirth)
+      connector.registerWithNoIdIndividual(firstName, lastName, expectedAddress(uk = false).toAddress.get, individualDateOfBirth)
     }
 
   }
@@ -561,7 +561,7 @@ object RegistrationConnectorSpec extends OptionValues {
   private val individualDateOfBirth = LocalDate.now()
   private val legalStatus = RegistrationLegalStatus.LimitedCompany
   private val registerWithoutIdIndividualRequest = Json.toJson(
-    RegistrationNoIdIndividualRequest(firstName, lastName, individualDateOfBirth, expectedAddress(uk = false).toAddress))
+    RegistrationNoIdIndividualRequest(firstName, lastName, individualDateOfBirth, expectedAddress(uk = false).toAddress.get))
 
   private val expectedIndividual = TolerantIndividual(
     Some("John"),
@@ -583,7 +583,7 @@ object RegistrationConnectorSpec extends OptionValues {
     "addressLine2" -> address.addressLine2.value,
     "addressLine3" -> address.addressLine3.value,
     "addressLine4" -> address.addressLine4.value,
-    "countryCode" -> address.country.value,
+    "countryCode" -> address.countryOpt.value,
     "postalCode" -> address.postcode.value
   )
 

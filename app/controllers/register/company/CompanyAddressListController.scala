@@ -20,23 +20,22 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.{CompanyPreviousAddressPostCodeLookupId, CompanyContactAddressPostCodeLookupId, CompanyPreviousAddressId}
+import identifiers.register.company.{CompanyAddressListId, CompanyContactAddressPostCodeLookupId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
-import utils.annotations.NoRLSCheck
-import utils.annotations.RegisterCompany
+import utils.annotations.{NoRLSCheck, RegisterCompany}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                              override val cacheConnector: UserAnswersCacheConnector,
@@ -62,7 +61,7 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, CompanyPreviousAddressId, CompanyContactAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
+      viewmodel(mode).right.map(vm => post(vm,  CompanyPreviousAddressId, CompanyAddressListId, CompanyContactAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
   }
 
   def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {

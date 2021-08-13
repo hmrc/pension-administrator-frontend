@@ -23,7 +23,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.partnership.partners.{PartnerAddressId, PartnerNameId}
+import identifiers.register.partnership.partners.{PartnerAddressId, PartnerAddressListId, PartnerNameId}
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
@@ -63,7 +63,7 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.right.map { pn =>
-        get(addressViewModel(mode, index, pn.fullName), mode)
+        get(PartnerAddressId(index), PartnerAddressListId(index), addressViewModel(mode, index, pn.fullName), mode)
       }
   }
 

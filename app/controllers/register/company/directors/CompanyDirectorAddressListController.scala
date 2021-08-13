@@ -23,7 +23,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
-import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorAddressId, DirectorNameId}
+import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId, DirectorNameId}
 import models.requests.DataRequest
 import models.{Index, Mode, TolerantAddress}
 import play.api.data.Form
@@ -60,7 +60,7 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(vm => post(vm, DirectorAddressId(index), CompanyDirectorAddressPostCodeLookupId(index), mode,
+      viewModel(mode, index).right.map(vm => post(vm, DirectorAddressId(index), CompanyDirectorAddressListId(index), CompanyDirectorAddressPostCodeLookupId(index), mode,
         form(vm.addresses, entityName(index))))
   }
 

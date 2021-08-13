@@ -22,7 +22,7 @@ import controllers.actions.AllowAccessActionProvider
 import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Address, Mode}
+import models.{Address, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
@@ -48,11 +48,19 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
   protected def view: manualAddress
 
   protected def get(
+                     id: TypedIdentifier[Address],
+                     selectedId: TypedIdentifier[TolerantAddress],
                      viewModel: ManualAddressViewModel,
                      mode: Mode
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
-
-    Future.successful(Ok(view(form, viewModel, mode)))
+    val preparedForm = request.userAnswers.get(id) match {
+      case None => request.userAnswers.get(selectedId) match {
+        case Some(value) => form.fill(value.toPrepopAddress)
+        case None => form
+      }
+      case Some(value) => form.fill(value)
+    }
+    Future.successful(Ok(view(preparedForm, viewModel, mode)))
   }
 
   protected def post(

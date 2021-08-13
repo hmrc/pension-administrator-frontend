@@ -71,7 +71,7 @@ class IndividualDateOfBirthController @Inject()(
         value =>
           (AreYouInUKId and IndividualDetailsId and IndividualAddressId).retrieve.right.map {
             case false ~ individual ~ address =>
-              registrationService.registerWithNoIdIndividual(request.externalId, individual, address.toAddress,
+              registrationService.registerWithNoIdIndividual(request.externalId, individual, address.toAddress.get,
                 value).flatMap { _ =>
                 saveAndRedirect(mode, value)
               }

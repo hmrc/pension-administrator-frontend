@@ -23,13 +23,14 @@ import controllers.actions._
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.UpdateContactAddressId
-import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressPostCodeLookupId}
+import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualContactAddressPostCodeLookupId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.Individual
 import utils.annotations.NoRLSCheck
@@ -37,7 +38,7 @@ import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualContactAddressListController @Inject()(@Individual override val navigator: Navigator,
                                                        override val appConfig: FrontendAppConfig,
@@ -65,7 +66,7 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty)
-        .right.map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressPostCodeLookupId, mode, form(vm.addresses)))
+        .right.map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressListId, IndividualContactAddressPostCodeLookupId, mode, form(vm.addresses)))
   }
 
 

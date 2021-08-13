@@ -212,7 +212,7 @@ class PartnershipNavigator @Inject()(
 
   private def regionBasedNavigation(answers: UserAnswers): Call = {
     answers.get(PartnershipRegisteredAddressId) map { address =>
-      countryOptions.regions(address.country.getOrElse("")) match {
+      countryOptions.regions(address.countryOpt.getOrElse("")) match {
         case UK => BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => controllers.register.partnership.routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
         case RestOfTheWorld => OutsideEuEeaController.onPageLoad()

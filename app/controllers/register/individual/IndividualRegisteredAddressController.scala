@@ -62,7 +62,7 @@ class IndividualRegisteredAddressController @Inject()(
     implicit request =>
       IndividualDetailsId.retrieve.right.map { individual =>
 
-        val preparedForm = request.userAnswers.get(IndividualAddressId).fold(form)(v => form.fill(v.toAddress))
+        val preparedForm = request.userAnswers.get(IndividualAddressId).fold(form)(v => form.fill(v.toPrepopAddress))
         val view = createView(appConfig, preparedForm, addressViewModel(individual.fullName, mode))
 
         Future.successful(Ok(view()))

@@ -63,7 +63,7 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty).right
-        .map(vm => post(vm, AdviserAddressId, AdviserAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
+        .map(vm => post(vm, AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
   }
 
   def viewModel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {

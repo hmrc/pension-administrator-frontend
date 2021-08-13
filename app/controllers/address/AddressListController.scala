@@ -53,6 +53,7 @@ trait AddressListController extends FrontendBaseController with I18nSupport with
   }
 
   protected def post(viewModel: AddressListViewModel, addressId: TypedIdentifier[Address],
+                     selectAddressId: TypedIdentifier[TolerantAddress],
                      postCodeLookupIdForCleanUp: TypedIdentifier[Seq[TolerantAddress]],
                      mode: Mode, form: Form[Int])
                     (implicit request: DataRequest[AnyContent]): Future[Result] = {
@@ -61,19 +62,27 @@ trait AddressListController extends FrontendBaseController with I18nSupport with
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, viewModel, mode))),
       addressIndex => {
-        val address = viewModel.addresses(addressIndex).copy(country = Some("GB"))
-        val userAnswers = request.userAnswers.set(addressId)(address.toAddress).flatMap(
-          _.remove(postCodeLookupIdForCleanUp)).asOpt.getOrElse(request.userAnswers)
+        val address = viewModel.addresses(addressIndex).copy(countryOpt = Some("GB"))
+        if (address.toAddress.nonEmpty) {
+          val userAnswers = request.userAnswers.set(addressId)(address.toAddress.get).flatMap(
+            _.remove(postCodeLookupIdForCleanUp)).asOpt.getOrElse(request.userAnswers)
 
-        cacheConnector.upsert(request.externalId, userAnswers.json).flatMap {
-          cacheMap =>
-            saveChangeFlag(mode, addressId).flatMap {
-              _ =>
-                Future.successful(Redirect(navigator.nextPage(addressId, mode, UserAnswers(cacheMap))))
-            }
+          cacheConnector.upsert(request.externalId, userAnswers.json).flatMap {
+            cacheMap =>
+              saveChangeFlag(mode, addressId).flatMap {
+                _ =>
+                  Future.successful(Redirect(navigator.nextPage(addressId, mode, UserAnswers(cacheMap))))
+              }
+          }
+        }
+        else {
+          val userAnswers = request.userAnswers.set(selectAddressId)(address).asOpt.getOrElse(request.userAnswers)
+          cacheConnector.upsert(request.externalId, userAnswers.json).map {
+            _ =>
+              Redirect(viewModel.manualInputCall)
+          }
         }
       }
     )
   }
-
 }

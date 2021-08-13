@@ -19,16 +19,16 @@ package controllers.register.partnership
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.PartnershipContactAddressId
+import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId}
 import models.requests.DataRequest
-import models.{Mode, Address}
+import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.NoRLSCheck
 import utils.annotations.Partnership
@@ -68,6 +68,8 @@ class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppCo
       BusinessNameId.retrieve.right.map {
         name =>
           get(
+            PartnershipContactAddressId,
+            PartnershipContactAddressListId,
             viewmodel(mode, name),
             mode
           )
