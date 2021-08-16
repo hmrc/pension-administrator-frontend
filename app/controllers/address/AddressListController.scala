@@ -76,11 +76,12 @@ trait AddressListController extends FrontendBaseController with I18nSupport with
           }
         }
         else {
-          val userAnswers = request.userAnswers.set(selectAddressId)(address).asOpt.getOrElse(request.userAnswers)
-          cacheConnector.upsert(request.externalId, userAnswers.json).map {
-            _ =>
-              Redirect(viewModel.manualInputCall)
-          }
+          val userAnswers = request.userAnswers.remove(addressId)
+            .flatMap(_.set(selectAddressId)(address)).asOpt.getOrElse(request.userAnswers)
+            cacheConnector.upsert(request.externalId, userAnswers.json).map {
+                _ =>
+                  Redirect(viewModel.manualInputCall)
+            }
         }
       }
     )
