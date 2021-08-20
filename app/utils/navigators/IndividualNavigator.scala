@@ -186,7 +186,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
 
   private def regionBasedNavigation(answers: UserAnswers): Call = {
     answers.get(IndividualAddressId).fold(SessionExpiredController.onPageLoad())(address =>
-      countryOptions.regions(address.country.getOrElse("")) match {
+      countryOptions.regions(address.countryOpt.getOrElse("")) match {
         case UK => IndividualAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => IndividualDateOfBirthController.onPageLoad(NormalMode)
         case RestOfTheWorld => OutsideEuEeaController.onPageLoad()

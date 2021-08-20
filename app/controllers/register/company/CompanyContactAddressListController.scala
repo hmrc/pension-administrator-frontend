@@ -61,7 +61,7 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, CompanyContactAddressId, CompanyContactAddressPostCodeLookupId, mode,
+      viewmodel(mode).right.map(vm => post(vm, CompanyContactAddressId, CompanyContactAddressListId, CompanyContactAddressPostCodeLookupId, mode,
         form(vm.addresses, entityName)))
   }
 

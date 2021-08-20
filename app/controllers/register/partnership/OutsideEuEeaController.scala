@@ -46,7 +46,7 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
 
       (BusinessNameId and PartnershipRegisteredAddressId).retrieve.right.map {
         case name ~ address =>
-          Future.successful(Ok(view(name, countryOptions.getCountryNameFromCode(address.toAddress), "partnerships")))
+          Future.successful(Ok(view(name, countryOptions.getCountryNameFromCode(address.toAddress.get), "partnerships")))
         }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }

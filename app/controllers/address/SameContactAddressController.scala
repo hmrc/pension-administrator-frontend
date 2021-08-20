@@ -109,7 +109,7 @@ trait SameContactAddressController extends FrontendBaseController with Retrieval
             tolerantAddress.addressLine3,
             tolerantAddress.addressLine4,
             tolerantAddress.postcode,
-            tolerantAddress.country.getOrElse("GB")
+            tolerantAddress.countryOpt.getOrElse("GB")
           ))
         }
     }

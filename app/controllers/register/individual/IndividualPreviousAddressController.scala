@@ -23,13 +23,14 @@ import controllers.address.ManualAddressController
 import controllers.register.individual.routes._
 import forms.AddressFormProvider
 import identifiers.UpdateContactAddressId
-import identifiers.register.individual.IndividualPreviousAddressId
+import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Mode, Address}
+import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
 import utils.annotations.NoRLSCheck
@@ -67,7 +68,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
+      get(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

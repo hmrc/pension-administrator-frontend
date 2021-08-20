@@ -23,7 +23,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import controllers.address.ManualAddressController
 import controllers.{Retrievals, Variations}
 import forms.AddressFormProvider
-import identifiers.register.company.directors.DirectorAddressId
+import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId}
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
@@ -65,7 +65,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
     implicit request =>
       retrieveDirectorName(mode, index) {
         directorName =>
-          get(addressViewModel(mode, index, directorName), mode)
+          get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName), mode)
       }
   }
 

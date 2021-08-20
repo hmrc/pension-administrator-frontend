@@ -44,7 +44,7 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
     implicit request =>
 
       IndividualAddressId.retrieve.right.map { address =>
-        Future.successful(Ok(view(countryOptions.getCountryNameFromCode(address.toAddress))))
+        Future.successful(Ok(view(countryOptions.getCountryNameFromCode(address.toAddress.get))))
       }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
 
   }

@@ -60,7 +60,7 @@ class DirectorPreviousAddressListController @Inject()(override val appConfig: Fr
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(vm => post(vm, DirectorPreviousAddressId(index), DirectorPreviousAddressPostCodeLookupId(index),
+      viewModel(mode, index).right.map(vm => post(vm, DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), DirectorPreviousAddressPostCodeLookupId(index),
         mode, form(vm.addresses, entityName(index))))
   }
 

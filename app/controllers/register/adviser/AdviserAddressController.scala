@@ -23,12 +23,13 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.UpdateContactAddressId
-import identifiers.register.adviser.{AdviserAddressId, AdviserNameId}
+import identifiers.register.adviser.{AdviserAddressId, AdviserAddressListId, AdviserNameId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Mode, Address}
+import models.{Address, Mode}
 import play.api.data.Form
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.{Adviser, NoRLSCheck}
 import utils.countryOptions.CountryOptions
@@ -67,7 +68,7 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(addressViewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
+      get(AdviserAddressId, AdviserAddressListId, addressViewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

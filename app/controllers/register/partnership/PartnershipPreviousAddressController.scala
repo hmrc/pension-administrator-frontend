@@ -23,13 +23,14 @@ import controllers.address.ManualAddressController
 import controllers.register.partnership.routes._
 import forms.AddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.PartnershipPreviousAddressId
+import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Mode, Address}
+import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.NoRLSCheck
 import utils.annotations.Partnership
@@ -68,7 +69,7 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
-        get(viewmodel(mode, name), mode)
+        get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode)
       }
   }
 

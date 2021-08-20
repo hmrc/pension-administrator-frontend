@@ -19,15 +19,15 @@ package controllers.register.company
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.CompanyPreviousAddressId
+import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId}
 import models.requests.DataRequest
-import models.{Mode, Address}
+import models.{Address, Mode}
 import play.api.data.Form
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.NoRLSCheck
 import utils.annotations.RegisterCompany
@@ -64,7 +64,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
-        get(addressViewModel(mode, name), mode)
+        get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode, name), mode)
       }
   }
 

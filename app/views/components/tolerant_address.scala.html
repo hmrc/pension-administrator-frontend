@@ -34,7 +34,7 @@
 @if(address.postcode.isDefined) {
     <div id="@fieldName-postcode">@address.postcode</div>
 }
-@if(address.country.isDefined) {
+@if(address.countryOpt.isDefined) {
     <div id="@fieldName-country">@countryOptions.getCountryNameFromCode(address)</div>
 }
 </div>

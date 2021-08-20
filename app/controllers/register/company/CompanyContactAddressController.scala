@@ -67,7 +67,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       addressViewModel(mode).retrieve.right.map(vm =>
-        get(vm, mode))
+        get(CompanyContactAddressId, CompanyContactAddressListId, vm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

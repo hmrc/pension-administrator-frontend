@@ -22,7 +22,8 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.UpdateContactAddressId
-import identifiers.register.individual.IndividualContactAddressId
+import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.Address
@@ -69,7 +70,7 @@ class IndividualContactAddressController @Inject()(val appConfig: FrontendAppCon
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
+      get( IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

@@ -79,7 +79,7 @@ class PartnershipContactAddressListController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       viewModel(mode).retrieve.right.map { vm =>
-        post(vm, PartnershipContactAddressId, PartnershipContactAddressPostCodeLookupId, mode, form(vm.addresses, entityName))
+        post(vm, PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId, mode, form(vm.addresses, entityName))
       }
   }
 

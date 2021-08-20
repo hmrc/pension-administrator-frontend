@@ -39,7 +39,7 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
       .flatMap(_.set(AdviserEmailId)("a@a"))
       .flatMap(_.set(AdviserPhoneId)("01234567890"))
       .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
-      .flatMap(_.set(AdviserAddressId)(address.toAddress))
+      .flatMap(_.set(AdviserAddressId)(address.toAddress.get))
       .flatMap(_.set(AdviserAddressListId)(TolerantAddress(Some("100"),
         Some("SuttonStreet"),
         Some("Wokingham"),
@@ -54,7 +54,7 @@ class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with 
       .flatMap(_.set(AdviserEmailId)("a@a"))
       .flatMap(_.set(AdviserPhoneId)("01234567890"))
       .flatMap(_.set(AdviserAddressPostCodeLookupId)(Seq(address)))
-      .flatMap(_.set(AdviserAddressId)(address.toAddress))
+      .flatMap(_.set(AdviserAddressId)(address.toAddress.get))
       .flatMap(_.set(AdviserAddressListId)(TolerantAddress(Some("100"),
         Some("SuttonStreet"),
         Some("Wokingham"),

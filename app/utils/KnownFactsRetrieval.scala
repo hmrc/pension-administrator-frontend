@@ -60,7 +60,7 @@ class KnownFactsRetrieval {
                 case Individual =>
                   request.userAnswers.get(IndividualAddressId)
               }
-              country <- address.country
+              country <- address.countryOpt
             } yield {
               KnownFacts(Set(KnownFact(psaKey, psaId)), Set(KnownFact(countryKey, country)))
             }

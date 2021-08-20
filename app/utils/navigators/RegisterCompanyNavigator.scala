@@ -232,7 +232,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
 
   private def regionBasedNavigation(answers: UserAnswers): Call = {
     answers.get(CompanyAddressId) map { address =>
-      countryOptions.regions(address.country.getOrElse("")) match {
+      countryOptions.regions(address.countryOpt.getOrElse("")) match {
         case UK => controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => routes.WhatYouWillNeedController.onPageLoad()
         case RestOfTheWorld => routes.OutsideEuEeaController.onPageLoad()

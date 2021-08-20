@@ -63,7 +63,7 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
   protected def get(id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
 
-    val preparedForm = request.userAnswers.get(id).fold(form)(v => form.fill(v.toAddress))
+    val preparedForm = request.userAnswers.get(id).fold(form)(v => form.fill(v.toPrepopAddress))
     val view = createView(appConfig, preparedForm, viewModel)
 
     Future.successful(Ok(view()))

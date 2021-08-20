@@ -25,9 +25,10 @@ import models.requests.DataRequest
 import models.{Address, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
+import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Navigator, UserAnswers}
+import utils.{UserAnswers, Navigator}
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
@@ -52,28 +53,35 @@ trait AddressListController extends FrontendBaseController with I18nSupport with
     Future.successful(Ok(view(form, viewModel, mode)))
   }
 
+
   protected def post(viewModel: AddressListViewModel, addressId: TypedIdentifier[Address],
+                     selectAddressId: TypedIdentifier[TolerantAddress],
                      postCodeLookupIdForCleanUp: TypedIdentifier[Seq[TolerantAddress]],
                      mode: Mode, form: Form[Int])
                     (implicit request: DataRequest[AnyContent]): Future[Result] = {
+
+    def performUpsert(userAnswers: UserAnswers)(block: JsValue => Future[Result]):Future[Result] =
+      cacheConnector.upsert(request.externalId, userAnswers.json).flatMap(block)
 
     form.bindFromRequest().fold(
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, viewModel, mode))),
       addressIndex => {
-        val address = viewModel.addresses(addressIndex).copy(country = Some("GB"))
-        val userAnswers = request.userAnswers.set(addressId)(address.toAddress).flatMap(
-          _.remove(postCodeLookupIdForCleanUp)).asOpt.getOrElse(request.userAnswers)
-
-        cacheConnector.upsert(request.externalId, userAnswers.json).flatMap {
-          cacheMap =>
-            saveChangeFlag(mode, addressId).flatMap {
-              _ =>
-                Future.successful(Redirect(navigator.nextPage(addressId, mode, UserAnswers(cacheMap))))
-            }
+        val address = viewModel.addresses(addressIndex).copy(countryOpt = Some("GB"))
+        address.toAddress match {
+          case Some(addr) =>
+            val userAnswers = request.userAnswers.set(addressId)(addr).flatMap(
+              _.remove(postCodeLookupIdForCleanUp)).asOpt.getOrElse(request.userAnswers)
+            performUpsert(userAnswers) ( cacheMap =>
+              saveChangeFlag(mode, addressId)
+                .flatMap(_ => Future.successful(Redirect(navigator.nextPage(addressId, mode, UserAnswers(cacheMap)))))
+            )
+          case None =>
+            val userAnswers = request.userAnswers.remove(addressId)
+              .flatMap(_.set(selectAddressId)(address)).asOpt.getOrElse(request.userAnswers)
+            performUpsert(userAnswers)( _ => Future.successful(Redirect(viewModel.manualInputCall)))
         }
       }
     )
   }
-
 }

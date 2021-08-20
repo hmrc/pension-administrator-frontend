@@ -23,12 +23,13 @@ import controllers.actions._
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId}
+import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.NoRLSCheck
 import utils.annotations.Partnership
@@ -36,7 +37,7 @@ import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class PartnershipPreviousAddressListController @Inject()(
@@ -64,7 +65,7 @@ class PartnershipPreviousAddressListController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId, mode,
+      viewmodel(mode).right.map(vm => post(vm, PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId, mode,
         form(vm.addresses, entityName)))
   }
 

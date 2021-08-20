@@ -24,7 +24,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.company.directors.DirectorPreviousAddressId
+import identifiers.register.company.directors.{DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
@@ -58,7 +58,7 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
     implicit request =>
       retrieveDirectorName(mode, index) {
         directorName =>
-          get(addressViewModel(mode, index, directorName), mode)
+          get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName), mode)
       }
   }
 
