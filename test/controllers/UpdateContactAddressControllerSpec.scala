@@ -26,7 +26,7 @@ import services.PsaDetailsService
 
 import utils.countryOptions.CountryOptions
 import views.html.updateContactAddress
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{Json, JsNull}

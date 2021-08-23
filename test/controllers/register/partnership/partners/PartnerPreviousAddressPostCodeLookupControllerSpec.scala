@@ -24,7 +24,7 @@ import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.partners.{PartnerNameId, PartnerPreviousAddressPostCodeLookupId}
 import models.{PersonName, _}
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
@@ -129,7 +129,7 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
-      when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
+      when(fakeAddressLookupConnector.addressLookupByPostCode(ArgumentMatchers.eq(testAnswer))(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(Future.successful(Seq(fakeAddress(testAnswer))))
 
       val result = controller().onSubmit(NormalMode, index)(postRequest)

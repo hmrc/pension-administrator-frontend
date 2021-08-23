@@ -25,7 +25,7 @@ import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.{DeclarationFitAndProperId, DeclarationId, VariationWorkingKnowledgeId}
 import models.UserType.UserType
 import models.{NormalMode, TolerantIndividual, UpdateMode, UserType}
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar

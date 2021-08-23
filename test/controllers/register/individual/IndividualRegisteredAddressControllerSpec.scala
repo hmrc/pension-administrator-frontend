@@ -24,8 +24,8 @@ import forms.address.NonUKAddressFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
 import models._
-import org.mockito.Matchers
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{atLeastOnce, verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
@@ -161,7 +161,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
 
       val result = controller(userAnswersCacheConnector = userAnswersCacheConnector).onSubmit(NormalMode)(postRequest)
       whenReady(result) {_=>
-        verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),Matchers.eq(RegistrationInfoId))(any(),any())
+        verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),ArgumentMatchers.eq(RegistrationInfoId))(any(),any())
       }
     }
 

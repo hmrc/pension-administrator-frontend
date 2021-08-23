@@ -25,7 +25,7 @@ import forms.register.individual.IndividualDateOfBirthFormProvider
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
 import models._
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form

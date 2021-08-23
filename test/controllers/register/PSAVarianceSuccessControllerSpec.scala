@@ -22,7 +22,7 @@ import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.libs.json.Json
 import play.api.mvc.Results._

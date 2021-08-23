@@ -26,7 +26,7 @@ import identifiers.TypedIdentifier
 import identifiers.register.individual.IndividualSameContactAddressId
 import models._
 import models.requests.DataRequest
-import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}

@@ -23,7 +23,7 @@ import identifiers.register.PsaSubscriptionResponseId
 import models._
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.mvc.Results._
 import play.api.test.Helpers._
