@@ -25,8 +25,8 @@ import forms.address.NonUKAddressFormProvider
 import identifiers.register.company.CompanyAddressId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
-import org.mockito.Matchers
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{atLeastOnce, never, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -155,7 +155,7 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
           .onSubmit(NormalMode)(postRequest)
 
         whenReady(result) { _ =>
-          verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),Matchers.eq(RegistrationInfoId))(any(),any())
+          verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),ArgumentMatchers.eq(RegistrationInfoId))(any(),any())
         }
       }
     }

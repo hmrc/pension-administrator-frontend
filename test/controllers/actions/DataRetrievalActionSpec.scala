@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.cache.UserAnswersCacheConnector
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import models.{PSAUser, UserType}
-import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar

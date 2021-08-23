@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.individual.CheckYourAnswersController.postUrl
 import models._
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Call, Result}

@@ -19,7 +19,7 @@ package controllers
 import scala.concurrent.Future
 import connectors.SessionDataCacheConnector
 import controllers.actions.FakeAuthAction
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import play.api.mvc.Results
 import play.api.test.Helpers._

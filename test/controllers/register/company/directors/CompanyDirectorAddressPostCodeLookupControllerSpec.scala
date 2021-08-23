@@ -23,7 +23,7 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorNameId}
 import models.{PersonName, _}
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.{Form, FormError}
@@ -127,7 +127,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
-      when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
+      when(fakeAddressLookupConnector.addressLookupByPostCode(ArgumentMatchers.eq(testAnswer))(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(Future.successful(Seq(fakeAddress(testAnswer))))
 
       val result = controller().onSubmit(NormalMode, index)(postRequest)
@@ -140,7 +140,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
       val expected = Seq(fakeAddress(testAnswer))
 
-      when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.eq(testAnswer))(Matchers.any(), Matchers.any()))
+      when(fakeAddressLookupConnector.addressLookupByPostCode(ArgumentMatchers.eq(testAnswer))(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(Future.successful(Seq(fakeAddress(testAnswer))))
 
       controller().onSubmit(NormalMode, index)(postRequest)
@@ -178,7 +178,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val boundForm = form.withError(FormError("value", "error.postcode.failed"))
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
-      when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
+      when(fakeAddressLookupConnector.addressLookupByPostCode(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(Future.failed(new HttpException("Failed", INTERNAL_SERVER_ERROR)))
 
       val result = controller().onSubmit(NormalMode, index)(postRequest)
@@ -192,7 +192,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val boundForm = form.withError(FormError("value", Message("error.postcode.noResults").withArgs(testAnswer)))
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
 
-      when(fakeAddressLookupConnector.addressLookupByPostCode(Matchers.any())(Matchers.any(), Matchers.any()))
+      when(fakeAddressLookupConnector.addressLookupByPostCode(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(Future.successful(Nil))
 
       val result = controller().onSubmit(NormalMode, index)(postRequest)

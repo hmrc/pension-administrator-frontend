@@ -23,7 +23,7 @@ import controllers.register.company.directors.routes._
 import identifiers.register.DirectorsOrPartnersChangedId
 import models.Mode.{checkMode, _}
 import models._
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Call

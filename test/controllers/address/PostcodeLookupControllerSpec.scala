@@ -26,7 +26,7 @@ import forms.address.PostCodeLookupFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{NormalMode, TolerantAddress, _}
-import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, OptionValues, WordSpec}
@@ -184,7 +184,7 @@ class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with Mocki
         val cacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
         val addressConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
-        verifyZeroInteractions(addressConnector)
+        verifyNoMoreInteractions(addressConnector)
 
         running(_.overrides(
           bind[Navigator].toInstance(FakeNavigator),

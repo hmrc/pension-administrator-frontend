@@ -18,7 +18,7 @@ package audit
 
 import akka.stream.Materializer
 import org.scalatest.{AsyncFlatSpec, Inside, Matchers}
-import play.api.inject.{ApplicationLifecycle, bind}
+import play.api.inject.{bind, ApplicationLifecycle}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -108,7 +108,7 @@ object FakeAuditConnector extends AuditConnector {
 
   def auditChannel: AuditChannel = ???
 
-  def auditCounter: AuditCounter = ???
+  def datastreamMetrics: DatastreamMetrics = ???
 }
 
 case class TestAuditEvent(payload: String) extends AuditEvent {

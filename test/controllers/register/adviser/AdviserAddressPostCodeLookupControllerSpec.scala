@@ -21,7 +21,7 @@ import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnecto
 import controllers.ControllerSpecBase
 import forms.address.PostCodeLookupFormProvider
 import models.{Mode, NormalMode, TolerantAddress}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application

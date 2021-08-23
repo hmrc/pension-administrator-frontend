@@ -30,7 +30,7 @@ import models.RegistrationLegalStatus.Partnership
 import models.UserType.UserType
 import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse}
 import models.{BusinessDetails, NormalMode, RegistrationInfo, UserType}
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
