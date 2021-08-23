@@ -21,6 +21,7 @@ import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{UserType, PSAUser, UpdateMode}
 import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.when
 import play.api.mvc.{Request, Result, AnyContent, BodyParser}
 import play.api.test.Helpers.{status, contentAsString, _}

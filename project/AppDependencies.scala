@@ -4,31 +4,33 @@ object AppDependencies {
 
   import play.core.PlayVersion
 
+
+
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"       %% "simple-reactivemongo"           % "8.0.0-play-27",
+    "uk.gov.hmrc"       %% "simple-reactivemongo"           % "8.0.0-play-28",
     "uk.gov.hmrc"       %% "logback-json-logger"            % "5.1.0",
-    "uk.gov.hmrc"       %% "govuk-template"                 % "5.69.0-play-27",
+    "uk.gov.hmrc"       %% "govuk-template"                 % "5.69.0-play-28",
     "uk.gov.hmrc"       %% "play-health"                    % "3.16.0-play-27",
-    "uk.gov.hmrc"       %% "play-ui"                        % "9.6.0-play-27",
-    "uk.gov.hmrc"       %% "http-caching-client"            % "9.5.0-play-27",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.9.0-play-27",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-27"     % "5.6.0",
-    "uk.gov.hmrc"       %% "play-language"                  % "5.1.0-play-27",
-    "uk.gov.hmrc"       %% "domain"                         % "6.1.0-play-27"
+    "uk.gov.hmrc"       %% "play-ui"                        % "9.6.0-play-28",
+    "uk.gov.hmrc"       %% "http-caching-client"            % "9.5.0-play-28",
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.9.0-play-28",
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % "5.12.0",
+    "uk.gov.hmrc"       %% "play-language"                  % "5.1.0-play-28",
+    "uk.gov.hmrc"       %% "domain"                         % "6.2.0-play-28"
   )
 
   val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"             %% "hmrctest"                   % "3.10.0-play-26",
     "org.scalatest"           %% "scalatest"                  % "3.0.8",
-    "org.scalatestplus.play"  %% "scalatestplus-play"         % "3.1.2",
+    "org.scalatestplus.play"  %% "scalatestplus-play"         % "4.0.2",
     "org.pegdown"             %  "pegdown"                    % "1.6.0",
     "org.jsoup"               %  "jsoup"                      % "1.12.1",
     "com.typesafe.play"       %% "play-test"                  % PlayVersion.current,
-    "org.mockito"             %  "mockito-all"                % "1.10.19",
+    "org.mockito"             %  "mockito-core"               % "3.7.7",
     "org.scalacheck"          %% "scalacheck"                 % "1.14.0",
     "wolfendale"              %% "scalacheck-gen-regexp"      % "0.1.1",
-    "com.github.tomakehurst"  %  "wiremock-jre8"              % "2.21.0"
+    "com.github.tomakehurst"  %  "wiremock-jre8"              % "2.26.0"
   )
 
   def apply(): Seq[ModuleID] = compile ++ test

@@ -21,7 +21,7 @@ import controllers.actions.{DataRetrievalAction, _}
 import forms.register.YesNoFormProvider
 import models.UserType.Organisation
 import models.{PersonName, UpdateMode}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar

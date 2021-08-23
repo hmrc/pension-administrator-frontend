@@ -28,7 +28,7 @@ import identifiers.register.{DirectorsOrPartnersChangedId, DeclarationChangedId,
 import identifiers.{UpdateModeId, IndexId}
 import models.requests.OptionalDataRequest
 import models.{UserType, PSAUser, UpdateMode}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{OptionValues, BeforeAndAfterEach}

@@ -23,7 +23,7 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.routes
 import identifiers.{JourneyId, AdministratorOrPractitionerId}
 import models._
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures

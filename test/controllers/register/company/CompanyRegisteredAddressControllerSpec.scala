@@ -26,7 +26,7 @@ import identifiers.register.company.CompanyAddressId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
 import org.mockito.Matchers
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{atLeastOnce, never, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
