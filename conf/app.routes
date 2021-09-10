@@ -38,3 +38,5 @@ GET         /update-contact-address/check-your-answers            controllers.Up
 GET         /update-contact-address/second-partner-details        controllers.SecondPartnerController.onPageLoad()
 
 POST        /update-contact-address/second-partner-details        controllers.SecondPartnerController.onSubmit()
+
+GET         /cannot-register-administrator                        controllers.CannotRegisterAdministratorController.onPageLoad
