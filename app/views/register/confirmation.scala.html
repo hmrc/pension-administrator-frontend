@@ -25,7 +25,7 @@
     appConfig: FrontendAppConfig
 )
 
-@(psaId: String, psaName: String, psaEmail: String)(implicit request: DataRequest[_], messages: Messages)
+@(psaId: String, psaName: String, psaEmail: String,isPsaTypeCompany:Boolean)(implicit request: DataRequest[_], messages: Messages)
 
 @registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.schemeLink")</a>}
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
@@ -39,7 +39,11 @@
               @components.heading(messages("confirmation.existingPSA.heading", psaName))
 
          } else {
-                @components.heading(messages("confirmation.newPSA.heading", psaName))
+                @if(isPsaTypeCompany){
+                    @components.heading(messages("confirmation.newPSA.heading.company", psaName))
+                }else{
+                    @components.heading(messages("confirmation.newPSA.heading", psaName))
+                }
 
               <p class="font-large">
                  @messages("confirmation.psaIdNumber")
