@@ -36,8 +36,11 @@
 
     <div class="govuk-box-highlight">
          @if(request.user.isExistingPSA){
-              @components.heading(messages("confirmation.existingPSA.heading", psaName))
-
+                @if(isPsaTypeCompany){
+                    @components.heading(messages("confirmation.newPSA.heading.company", psaName))
+                }else{
+                    @components.heading(messages("confirmation.existingPSA.heading", psaName))
+                }
          } else {
                 @if(isPsaTypeCompany){
                     @components.heading(messages("confirmation.newPSA.heading.company", psaName))
