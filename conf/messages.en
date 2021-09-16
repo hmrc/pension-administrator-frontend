@@ -1154,3 +1154,8 @@ yourActionWasNotProcessed.heading = Sorry, your action was not processed
 yourActionWasNotProcessed.guidance.p1 = Try again later.
 yourActionWasNotProcessed.guidance.p2 = Any information entered will have been saved from the last ‘save and continue’.
 yourActionWasNotProcessed.guidance.p3 = If the problem persists you can tell us about it using the link below.
+
+cannotRegisterAdministrator.title = You cannot register as an administrator using this ID
+cannotRegisterAdministrator.heading = You cannot register as an administrator using this ID
+cannotRegisterAdministrator.p1 = Our records show that the scheme administrator ID you are trying to register with is used by another administrator.
+cannotRegisterAdministrator.head.link = Contact HMRC for help

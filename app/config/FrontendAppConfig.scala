@@ -75,6 +75,7 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   lazy val emailTemplateId: String = loadConfig("email.templateId")
   lazy val emailSendForce: Boolean = runModeConfiguration.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val tpssUrl: String = loadConfig("urls.tpss")
+  lazy val contactHmrcUrl: String = loadConfig("urls.contactHmrcLink")
   lazy val subscriptionDetailsUrl: String = s"${s"${servicesConfig.baseUrl("pension-administrator")}${runModeConfiguration
     .underlying.getString("urls.pension-administrator.subscriptionDetails")}"}"
   lazy val deregisterPsaUrl : String = s"${servicesConfig.baseUrl("pension-administrator")}${runModeConfiguration
