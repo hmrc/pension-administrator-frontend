@@ -63,6 +63,10 @@ class DeclarationController @Inject()(
 
   private val logger = Logger(classOf[DeclarationController])
 
+  def isPsaTypeCompany(userAnswers:UserAnswers): Boolean = {
+    userAnswers.get(RegisterAsBusinessId).getOrElse(false)
+  }
+
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen allowDeclaration(mode) andThen requireData).async {
       implicit request =>
@@ -119,7 +123,7 @@ class DeclarationController @Inject()(
       case (Some(email), Some(name)) =>
         emailConnector.sendEmail(
           emailAddress   = email,
-          templateName   = appConfig.emailTemplateId,
+          templateName   = emailTemplateName(request.userAnswers),
           templateParams = Map("psaName" -> name),
           psaId          = PsaId(psaId)
         )
@@ -127,6 +131,13 @@ class DeclarationController @Inject()(
         Future.successful(EmailNotSent)
     }
 
+  private def emailTemplateName(userAnswers:UserAnswers):String ={
+     if(isPsaTypeCompany(userAnswers)) {
+       appConfig.companyEmailTemplateId
+     } else {
+       appConfig.emailTemplateId
+     }
+  }
   private def enrol(psaId: String)
                    (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] =
     knownFactsRetrieval.retrieve(psaId) map {

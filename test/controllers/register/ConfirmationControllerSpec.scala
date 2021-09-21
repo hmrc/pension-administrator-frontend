@@ -19,7 +19,7 @@ package controllers.register
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import identifiers.register.PsaSubscriptionResponseId
+import identifiers.register.{PsaSubscriptionResponseId, RegisterAsBusinessId}
 import models._
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
@@ -27,7 +27,6 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.mvc.Results._
 import play.api.test.Helpers._
-
 import utils.UserAnswers
 import views.html.register.confirmation
 
@@ -48,6 +47,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
 
     "return OK and the correct view for a GET" in {
       val data = UserAnswers().set(PsaSubscriptionResponseId)(PsaSubscriptionResponse(psaId)).asOpt.value
+          .set(RegisterAsBusinessId)(true).asOpt.value
           .registrationInfo(RegistrationInfo(RegistrationLegalStatus.LimitedCompany, "", false, RegistrationCustomerType.UK, None, None))
           .businessName(psaName)
           .companyEmail(psaEmail)
@@ -59,6 +59,22 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
+      verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
+    }
+
+    "return OK and the correct view for a GET for Individual" in {
+      val data = UserAnswers().set(PsaSubscriptionResponseId)(PsaSubscriptionResponse(psaId)).asOpt.value
+        .registrationInfo(RegistrationInfo(RegistrationLegalStatus.Individual, "", false, RegistrationCustomerType.UK, None, None))
+        .individualDetails(TolerantIndividual(Some("psa"),None,Some("name")))
+        .individualEmail(psaEmail)
+       reset(fakeUserAnswersCacheConnector)
+      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
+      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data.json))
+
+      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsStringOther()
       verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
     }
 
@@ -90,5 +106,8 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString() =
-    view(psaId, psaName, psaEmail)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messagesApi.preferred(fakeRequest)).toString
+    view(psaId, psaName, psaEmail,true)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messagesApi.preferred(fakeRequest)).toString
+
+  private def viewAsStringOther() =
+    view(psaId, psaName, psaEmail,false)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messagesApi.preferred(fakeRequest)).toString
 }

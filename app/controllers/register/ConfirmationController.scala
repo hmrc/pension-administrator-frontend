@@ -19,12 +19,13 @@ package controllers.register
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import identifiers.register.PsaSubscriptionResponseId
+import identifiers.register.{PsaSubscriptionResponseId, RegisterAsBusinessId}
 import models.Mode
 import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswers
 import views.html.register.confirmation
 
 import javax.inject.Inject
@@ -52,7 +53,7 @@ class ConfirmationController @Inject()(
         dataCacheConnector.removeAll(request.externalId).flatMap { _ =>
           (psaName, psaEmail) match {
             case (Some(name), Some(email)) =>
-              Future.successful(Ok(view(response.psaId, name, email)))
+              Future.successful(Ok(view(response.psaId, name, email,isPsaTypeCompany(request.userAnswers))))
             case (noPsaName, noEmail) =>
               logger.warn(s"No Psa Name $noPsaName Or Email $noEmail Found")
               Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
@@ -63,6 +64,10 @@ class ConfirmationController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = authenticate {
     _ => Redirect(controllers.routes.LogoutController.onPageLoad())
+  }
+
+  def isPsaTypeCompany(userAnswers:UserAnswers): Boolean = {
+     userAnswers.get(RegisterAsBusinessId).getOrElse(false)
   }
 
 }

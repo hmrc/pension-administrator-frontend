@@ -608,6 +608,7 @@ declarationFitAndProper.statement6 = I have not been disqualified from acting as
 confirmation.newPSA.title = The pension scheme administrator has been registered
 confirmation.existingPSA.title= The pension scheme administrator is registered on this service.
 confirmation.newPSA.heading = {0} has been registered as a pension scheme administrator.
+confirmation.newPSA.heading.company = {0} has been registered as a pension scheme administrator on the Managing Pension Schemes service
 confirmation.existingPSA.heading = {0} is registered as a pension scheme administrator on this service.
 confirmation.psaIdNumber = The pension scheme administrator ID is
 confirmation.whatYouNeedToKnow.heading = What happens next

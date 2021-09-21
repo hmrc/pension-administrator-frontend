@@ -73,6 +73,7 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   lazy val maxDirectors: Int = loadConfig("register.company.maxDirectors").toInt
   lazy val maxPartners: Int = loadConfig("register.partnership.maxPartners").toInt
   lazy val emailTemplateId: String = loadConfig("email.templateId")
+  lazy val companyEmailTemplateId: String = loadConfig("company.email.templateId")
   lazy val emailSendForce: Boolean = runModeConfiguration.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val tpssUrl: String = loadConfig("urls.tpss")
   lazy val contactHmrcUrl: String = loadConfig("urls.contactHmrcLink")

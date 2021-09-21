@@ -28,6 +28,8 @@ class ConfirmationViewSpec extends ViewBehaviours {
   val psaId: String = "A1234567"
   private val psaName: String = "psa name"
   private val psaEmail: String = "test@test.com"
+  private val isPsaTypeCompanyFalse: Boolean = false
+  private val isPsaTypeCompanyTrue: Boolean = true
   val view: confirmation = inject[confirmation]
 
   "Confirmation view where user is existing PSA" must {
@@ -35,7 +37,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
     val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = true, None, None, "")
     val request = DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers())
 
-    def createView(): () => Html = () => view(psaId, psaName, psaEmail)(request, messages)
+    def createView(): () => Html = () => view(psaId, psaName, psaEmail,isPsaTypeCompanyFalse)(request, messages)
 
     behave like normalPageWithPageTitleCheck(createView(), messageKeyPrefix)
 
@@ -90,7 +92,7 @@ class ConfirmationViewSpec extends ViewBehaviours {
     val messageKeyPrefix = "confirmation.newPSA"
     val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
 
-    def createView(): () => Html = () => view(psaId, psaName, psaEmail)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+    def createView(): () => Html = () => view(psaId, psaName, psaEmail,isPsaTypeCompanyFalse)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
 
     behave like normalPageWithPageTitleCheck(createView(), messageKeyPrefix)
 
@@ -100,6 +102,116 @@ class ConfirmationViewSpec extends ViewBehaviours {
           val doc = asDocument(createView()())
           assertPageTitleEqualsMessage(doc,
             messages(s"$messageKeyPrefix.heading", psaName))
+        }
+      }
+    }
+
+    "display the PSA ID number text" in {
+      createView must haveDynamicText("confirmation.psaIdNumber")
+    }
+
+    "display the PSA ID number" in {
+      createView must haveDynamicText(psaId)
+    }
+
+    "display the 'what you need to know' heading " in {
+      createView must haveDynamicText("confirmation.whatYouNeedToKnow.heading")
+    }
+
+    "display the psa email " in {
+      createView must haveDynamicText(psaEmail)
+    }
+
+    "display the 'what you need to know' detail " in {
+      createView must haveDynamicText(
+        "what-you-need-to-know",
+        "confirmation.whatYouNeedToKnow.newPSA.detail",
+        messages("confirmation.whatYouNeedToKnow.schemeLink")
+      )
+    }
+
+    "have a link to register scheme" in {
+      createView must haveLink(frontendAppConfig.registerSchemeUrl, "register-scheme-link")
+    }
+
+    behave like pageWithSubmitButton(createView())
+
+    "have a link to 'print this screen'" in {
+      createView must haveLinkOnClick("window.print();return false;", "print-this-page-link")
+    }
+
+  }
+
+  "Confirmation view where user is existing PSA Company" must {
+    val messageKeyPrefix = "confirmation.existingPSA"
+    val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = true, None, None, "")
+    val request = DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers())
+
+    def createView(): () => Html = () => view(psaId, psaName, psaEmail,isPsaTypeCompanyTrue)(request, messages)
+
+    behave like normalPageWithPageTitleCheck(createView(), messageKeyPrefix)
+
+
+    "behave like a normal page" when {
+      "rendered" must {
+        "display the correct heading" in {
+          val doc = asDocument(createView()())
+          assertPageTitleEqualsMessage(doc,
+            messages("confirmation.newPSA.heading.company", psaName))
+        }
+      }
+    }
+
+
+    "display the PSA ID number text" in {
+      createView mustNot haveDynamicText("confirmation.psaIdNumber")
+    }
+
+    "display the PSA ID number" in {
+      createView mustNot haveDynamicText(psaId)
+    }
+
+    "display the 'what you need to know' heading " in {
+      createView must haveDynamicText("confirmation.whatYouNeedToKnow.heading")
+    }
+
+    "display the 'email notification' detail " in {
+      createView must haveDynamicText("confirmation.email")
+    }
+
+    "display the 'what you need to know' detail " in {
+      createView must haveDynamicText(
+        "confirmation.whatYouNeedToKnow.schemeLink"
+      )
+    }
+
+    "have a link to register scheme" in {
+      createView must haveLink(frontendAppConfig.registerSchemeUrl, "register-scheme-link")
+    }
+
+    behave like pageWithSubmitButton(createView())
+
+    "have a link to 'print this screen'" in {
+      createView must haveLinkOnClick("window.print();return false;", "print-this-page-link")
+    }
+
+  }
+
+  "Confirmation view where user is new PSA Company" must {
+
+    val messageKeyPrefix = "confirmation.newPSA"
+    val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
+
+    def createView(): () => Html = () => view(psaId, psaName, psaEmail,isPsaTypeCompanyTrue)(DataRequest(fakeRequest, "cacheId", psaUser, UserAnswers()), messages)
+
+    behave like normalPageWithPageTitleCheck(createView(), messageKeyPrefix)
+
+    "behave like a normal page" when {
+      "rendered" must {
+        "display the correct heading" in {
+          val doc = asDocument(createView()())
+          assertPageTitleEqualsMessage(doc,
+            messages(s"$messageKeyPrefix.heading.company", psaName))
         }
       }
     }
