@@ -20,13 +20,14 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.TolerantAddress
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
+import play.api.libs.json.Json
 import play.api.test.Helpers.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
 class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
-  private def url = s"/v2/uk/addresses?postcode=ZZ1%201ZZ"
+  private def url = s"/lookup"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -38,7 +39,9 @@ class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
     "returns an Ok and empty list" which {
       "means the AddressLookup has found no data for postcode" in {
         server.stubFor(
-          get(urlEqualTo(url)).willReturn(
+          post(urlEqualTo(url))
+            .withRequestBody(equalTo(Json.obj("postcode"->"ZZ1 1ZZ").toString()))
+            .willReturn(
             ok("[]")
           )
         )
@@ -88,8 +91,9 @@ class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
         )
 
         server.stubFor(
-          get(urlEqualTo(url))
+          post(urlEqualTo(url))
             .withHeader("user-agent", matching(".+"))
+            .withRequestBody(equalTo(Json.obj("postcode"->"ZZ1 1ZZ").toString()))
             .willReturn(
               ok(payload)
             )
@@ -139,8 +143,9 @@ class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
 
 
         server.stubFor(
-          get(urlEqualTo(url))
+          post(urlEqualTo(url))
             .withHeader("user-agent", matching(".+"))
+            .withRequestBody(equalTo(Json.obj("postcode"->"ZZ1 1ZZ").toString()))
             .willReturn
             (
               aResponse().withStatus(OK)
@@ -158,7 +163,9 @@ class AddressLookupConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
       "means the Address Lookup has returned a response not in the 200 range" in {
 
         server.stubFor(
-          get(urlEqualTo(url)).willReturn(
+          post(urlEqualTo(url))
+            .withRequestBody(equalTo(Json.obj("postcode"->"ZZ1 1ZZ").toString()))
+            .willReturn(
             notFound.withBody("Something is wrong")
           )
         )
