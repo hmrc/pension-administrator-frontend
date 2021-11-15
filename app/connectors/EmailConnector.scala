@@ -16,17 +16,19 @@
 
 package connectors
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.{Inject, ImplementedBy}
 import config.FrontendAppConfig
 import models.SendEmailRequest
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{Json, JsValue}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HttpClient, HttpResponse, HeaderCarrier}
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait EmailStatus
@@ -51,7 +53,7 @@ class EmailConnectorImpl @Inject()(
   private val logger = Logger(classOf[EmailConnectorImpl])
 
   private def callBackUrl(psaId: PsaId): String = {
-    val encryptedPsaId = crypto.QueryParameterCrypto.encrypt(PlainText(psaId.value)).value
+    val encryptedPsaId = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId.value)).value, StandardCharsets.UTF_8.toString)
     appConfig.psaSubmissionEmailCallback(encryptedPsaId)
   }
 
