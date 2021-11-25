@@ -51,13 +51,15 @@ class PhoneViewSpec extends QuestionViewBehaviours[String] {
   def createView: () => HtmlFormat.Appendable = () =>
     view(
       form,
-      viewModel
+      viewModel,
+      None
     )(fakeRequest, messages)
 
   def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
     view(
       form,
-      viewModel
+      viewModel,
+      None
     )(fakeRequest, messages)
 
   "Phone view" must {

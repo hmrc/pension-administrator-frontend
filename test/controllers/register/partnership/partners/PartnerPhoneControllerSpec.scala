@@ -43,7 +43,7 @@ class PartnerPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: phone = app.injector.instanceOf[phone]
 
-  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
 
   "PartnerPhoneController" must {
 

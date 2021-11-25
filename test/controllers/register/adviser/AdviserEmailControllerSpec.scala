@@ -38,7 +38,7 @@ class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
     new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider, controllerComponents, view)
 
-  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
 
   "AdviserEmail Controller" must {
 

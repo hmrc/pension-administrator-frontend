@@ -42,7 +42,7 @@ class PartnerEmailControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: email = app.injector.instanceOf[email]
 
-  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
 
   "PartnerEmail Controller" must {
 

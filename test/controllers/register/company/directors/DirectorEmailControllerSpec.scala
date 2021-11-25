@@ -41,7 +41,7 @@ class DirectorEmailControllerSpec extends ControllerWithCommonBehaviour {
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     controllerComponents, view)
 
-  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
 
   "DirectorEmail Controller" must {
 
