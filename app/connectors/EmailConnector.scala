@@ -63,6 +63,7 @@ class EmailConnectorImpl @Inject()(
                           templateParams: Map[String, String],
                           psaId: PsaId
                         )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus] = {
+    println("\n\n\n\n\n\nsendEmail")
     val emailServiceUrl = appConfig.emailUrl
 
     val sendEmailReq = SendEmailRequest(List(emailAddress), templateName, templateParams, appConfig.emailSendForce, callBackUrl(psaId))

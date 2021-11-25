@@ -16,6 +16,8 @@
 
 package controllers.register
 
+import audit.{AuditService, EmailAuditEvent}
+import config.FrontendAppConfig
 import connectors._
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -26,9 +28,11 @@ import identifiers.UpdateContactAddressId
 import identifiers.register._
 import models._
 import models.register.DeclarationWorkingKnowledge
+import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.BadRequestException
+import uk.gov.hmrc.domain.PsaId
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.{NoRLSCheck, Variations}
 import utils.{Navigator, UserAnswers}
@@ -38,6 +42,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class VariationDeclarationController @Inject()(
+                                                appConfig: FrontendAppConfig,
                                                 authenticate: AuthAction,
                                                 @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
@@ -45,6 +50,8 @@ class VariationDeclarationController @Inject()(
                                                 @Variations navigator: Navigator,
                                                 dataCacheConnector: UserAnswersCacheConnector,
                                                 pensionAdministratorConnector: PensionAdministratorConnector,
+                                                emailConnector: EmailConnector,
+                                                auditService: AuditService,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 val view: variationDeclaration
                                               )(implicit val executionContext: ExecutionContext)
@@ -112,6 +119,7 @@ class VariationDeclarationController @Inject()(
 
           (for {
             psaResponse <- pensionAdministratorConnector.updatePsa(psaId, answers)
+            _           <- sendEmail(psaId)
           } yield {
             if (psaResponse.status == 200)
               Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))
@@ -125,4 +133,25 @@ class VariationDeclarationController @Inject()(
           }
         }
     }
+
+  private def sendEmail(psaId: String)
+                       (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[EmailStatus] =
+    (psaEmail, psaName) match {
+      case (Some(email), Some(name)) =>
+        println("\n\n\n\n\n\n\n\nNikita"+"  "+psaEmail+" "+psaName)
+        println("\n\n\n\n\n\n\n\n"+emailConnector.toString)
+        emailConnector.sendEmail(
+          emailAddress   = email,
+          templateName   = appConfig.variationEmailTemplateId,
+          templateParams = Map("psaName" -> name),
+          psaId          = PsaId(psaId)
+        ).map {
+          status =>
+            auditService.sendEvent(EmailAuditEvent(psaId, "Variation", email))
+            status
+        }
+      case _ =>
+        Future.successful(EmailNotSent)
+    }
+
 }
