@@ -42,7 +42,7 @@ class IndividualPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: phone = app.injector.instanceOf[phone]
 
-  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
+  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode), Some("psaName"))(fakeRequest, messages).toString
 
   "IndividualPhoneController" must {
 
