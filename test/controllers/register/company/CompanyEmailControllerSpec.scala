@@ -39,7 +39,7 @@ class CompanyEmailControllerSpec extends ControllerWithCommonBehaviour {
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     controllerComponents, view)
 
-  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
+  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode), Some("psaName"))(fakeRequest, messages).toString
 
   "CompanyEmail Controller" must {
 

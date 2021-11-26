@@ -42,7 +42,7 @@ class PartnershipPhoneControllerSpec extends ControllerWithCommonBehaviour {
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     controllerComponents, view)
 
-  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
+  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode), None)(fakeRequest, messages).toString
 
   "PartnershipPhoneController" must {
 

@@ -48,14 +48,14 @@ trait PhoneController extends FrontendBaseController with Retrievals with I18nSu
          (implicit request: DataRequest[AnyContent]): Future[Result] = {
     val preparedForm = request.userAnswers.get(id).map(form.fill).getOrElse(form)
 
-    Future.successful(Ok(view(preparedForm, viewModel)))
+    Future.successful(Ok(view(preparedForm, viewModel, psaName())))
   }
 
   def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewModel: CommonFormWithHintViewModel)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(view(formWithErrors, viewModel))),
+        Future.successful(BadRequest(view(formWithErrors, viewModel, psaName()))),
       value => {
         cacheConnector.save(request.externalId, id, value).flatMap(
           cacheMap =>

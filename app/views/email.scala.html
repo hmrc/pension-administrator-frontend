@@ -25,7 +25,11 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
+@(
+    form: Form[_],
+    viewModel: CommonFormWithHintViewModel,
+    psaNameOpt: Option[String]
+)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = titleWithErrors(form, viewModel.title)
@@ -51,7 +55,9 @@
         @components.submit_button("site.save_and_continue")
 
         @if(viewModel.displayReturnLink){
-            @components.return_link(viewModel.entityName, viewModel.mode)
+            @psaNameOpt.map { psaName =>
+            @components.return_link(psaName, viewModel.mode)
+            }
         }
     }
 }
