@@ -60,7 +60,7 @@ class VariationDeclarationControllerSpec
       idNumber = Some("")
     )
 
-  private val psaId = "test psa ID"
+  private val psaId = "A1212128"
   private val onwardRoute = controllers.routes.IndexController.onPageLoad()
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val individual = UserAnswers(Json.obj())
@@ -154,8 +154,7 @@ class VariationDeclarationControllerSpec
           any(),
           any()
         )(any(), any()))
-          .thenThrow(new RuntimeException("Errorr!!!"))
-          //.thenReturn(Future.successful(EmailSent))
+          .thenReturn(Future.successful(EmailSent))
 
         val result = controller().onClickAgree(NormalMode)(fakeRequest)
 
@@ -173,8 +172,8 @@ class VariationDeclarationControllerSpec
         status(result) mustBe SEE_OTHER
 
         verify(mockConnector, times(1)).updatePsa(eqTo(psaId), eqTo(answers))(any(), any())
-//        verify(mockEmailConnector, times(1)).sendEmail(any(), any(),
-//          any(), any())(any(), any())
+        verify(mockEmailConnectorA, times(1)).sendEmail(any(), any(),
+          any(), any())(any(), any())
       }
 
 //      "redirect to Your Action Was Not Processed if ETMP call fails" in {

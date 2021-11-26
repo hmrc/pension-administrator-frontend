@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import audit.{AuditService, EmailAuditEvent}
+import audit.{EmailAuditEvent, AuditService}
 import config.FrontendAppConfig
 import connectors._
 import connectors.cache.UserAnswersCacheConnector
@@ -34,124 +34,75 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.{NoRLSCheck, Variations}
-import utils.{Navigator, UserAnswers}
+import utils.annotations.{Variations, NoRLSCheck}
+import utils.{UserAnswers, Navigator}
 import views.html.register.variationDeclaration
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VariationDeclarationController @Inject()(
-                                                appConfig: FrontendAppConfig,
-                                                authenticate: AuthAction,
-                                                @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                @Variations navigator: Navigator,
-                                                dataCacheConnector: UserAnswersCacheConnector,
-                                                pensionAdministratorConnector: PensionAdministratorConnector,
-                                                emailConnector: EmailConnector,
-                                                auditService: AuditService,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                val view: variationDeclaration
-                                              )(implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Retrievals {
+class VariationDeclarationController @Inject()(appConfig: FrontendAppConfig, authenticate: AuthAction,
+  @NoRLSCheck allowAccess: AllowAccessActionProvider, getData: DataRetrievalAction, requireData: DataRequiredAction,
+  @Variations navigator: Navigator, dataCacheConnector: UserAnswersCacheConnector,
+  pensionAdministratorConnector: PensionAdministratorConnector, emailConnector: EmailConnector,
+  auditService: AuditService, val controllerComponents: MessagesControllerComponents, val view: variationDeclaration)
+  (implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] =
-    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
-      implicit request =>
-        val displayReturnLink =
-          request
-            .userAnswers
-            .get(UpdateContactAddressId)
-            .isEmpty
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(
+    mode) andThen getData andThen requireData).async { implicit request =>
+    val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
 
-        val workingKnowledge =
-          request
-            .userAnswers
-            .get(VariationWorkingKnowledgeId)
-            .getOrElse(false)
+    val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
 
-        Future.successful(Ok(view(
-          psaNameOpt = if (displayReturnLink) psaName() else None,
-          isWorkingKnowldge = workingKnowledge,
-          href = VariationDeclarationController.onClickAgree()
-        )))
-    }
+    Future.successful(Ok(
+      view(psaNameOpt = if (displayReturnLink) psaName() else None, isWorkingKnowldge = workingKnowledge,
+        href = VariationDeclarationController.onClickAgree())))
+  }
 
-  def onClickAgree(mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
-      implicit request =>
-        val workingKnowledge =
-          request
-            .userAnswers
-            .get(VariationWorkingKnowledgeId)
-            .getOrElse(false)
+  def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData)
+    .async { implicit request =>
+      val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
 
-        val psaId =
-          request
-            .user
-            .alreadyEnrolledPsaId
-            .getOrElse(throw new RuntimeException("PSA ID not found"))
+      val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
+      dataCacheConnector.save(cacheId = request.externalId, id = DeclarationId, value = true) flatMap { json =>
+        val answers = UserAnswers(json).set(ExistingPSAId)(
+          ExistingPSA(isExistingPSA = request.user.isExistingPSA, existingPSAId = request.user.existingPSAId)).asOpt
+          .getOrElse(UserAnswers(json))
+          .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.declarationWorkingKnowledge(workingKnowledge))
+          .asOpt.getOrElse(UserAnswers(json))
 
-        dataCacheConnector.save(
-          cacheId = request.externalId,
-          id      = DeclarationId,
-          value   = true
-        ) flatMap { json =>
-          val answers =
-            UserAnswers(json)
-              .set(ExistingPSAId)(
-                ExistingPSA(
-                  isExistingPSA = request.user.isExistingPSA,
-                  existingPSAId = request.user.existingPSAId
-                )
-              )
-              .asOpt
-              .getOrElse(UserAnswers(json))
-              .set(DeclarationWorkingKnowledgeId)(
-                DeclarationWorkingKnowledge.declarationWorkingKnowledge(workingKnowledge)
-              )
-              .asOpt
-              .getOrElse(UserAnswers(json))
-
-          (for {
-            psaResponse <- pensionAdministratorConnector.updatePsa(psaId, answers)
-            _           <- sendEmail(psaId)
-          } yield {
-            if (psaResponse.status == 200)
+        pensionAdministratorConnector.updatePsa(psaId, answers).flatMap { psaResponse =>
+          sendEmail(psaId).map { _ =>
+            if (psaResponse.status == 200) {
               Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))
-            else
+            } else {
               Redirect(YourActionWasNotProcessedController.onPageLoad())
-          }) recoverWith {
-            case _: BadRequestException =>
-              Future.successful(Redirect(SubmissionInvalidController.onPageLoad()))
-            case _ =>
-              Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
+            }
           }
+        } recoverWith {
+          case _: BadRequestException =>
+            Future.successful(Redirect(SubmissionInvalidController.onPageLoad()))
+          case _ =>
+            Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
         }
+      }
     }
 
   private def sendEmail(psaId: String)
-                       (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[EmailStatus] =
+    (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[EmailStatus] =
     (psaEmail, psaName) match {
       case (Some(email), Some(name)) =>
-        println("\n\n\n\n\n\n\n\nNikita"+"  "+psaEmail+" "+psaName)
-        println("\n\n\n\n\n\n\n\n"+emailConnector.toString)
-        emailConnector.sendEmail(
-          emailAddress   = email,
-          templateName   = appConfig.variationEmailTemplateId,
-          templateParams = Map("psaName" -> name),
-          psaId          = PsaId(psaId)
-        ).map {
-          status =>
-            auditService.sendEvent(EmailAuditEvent(psaId, "Variation", email))
-            status
+        emailConnector
+          .sendEmail(
+            emailAddress = email,
+            templateName = appConfig.variationEmailTemplateId,
+            templateParams = Map("psaName" -> name),
+            psaId = PsaId(psaId)
+          )
+          .map { status =>
+          auditService.sendEvent(EmailAuditEvent(psaId, "Variation", email))
+          status
         }
-      case _ =>
-        Future.successful(EmailNotSent)
-    }
-
+      case _ => Future.successful(EmailNotSent)
+  }
 }
