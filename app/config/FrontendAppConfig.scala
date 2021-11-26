@@ -119,8 +119,8 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   def canDeRegisterPsaUrl(psaId: String): String = s"${servicesConfig.baseUrl("pension-administrator") +
     runModeConfiguration.underlying.getString("urls.pension-administrator.canDeRegister").format(psaId)}"
 
-  def psaSubmissionEmailCallback(encryptedPsaId: String) = s"${servicesConfig.baseUrl("pension-administrator") +
-    runModeConfiguration.underlying.getString("urls.pension-administrator.emailCallback").format(encryptedPsaId)}"
+  def psaEmailCallback(encryptedPsaId: String, journeyType: String) = s"${servicesConfig.baseUrl("pension-administrator") +
+    runModeConfiguration.underlying.getString("urls.pension-administrator.emailCallback").format(journeyType, encryptedPsaId)}"
 
   def taxEnrolmentsUrl(serviceName: String): String = s"${servicesConfig.baseUrl("tax-enrolments") +
     runModeConfiguration.underlying.getString("urls.tax-enrolments") +

@@ -16,16 +16,17 @@
 
 package connectors
 
-import com.google.inject.{Inject, ImplementedBy}
+import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import models.SendEmailRequest
+import models.enumeration.JourneyType
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HttpClient, HttpResponse, HeaderCarrier}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -40,7 +41,8 @@ case object EmailNotSent extends EmailStatus
 @ImplementedBy(classOf[EmailConnectorImpl])
 trait EmailConnector {
 
-  def sendEmail(emailAddress: String, templateName: String, templateParams: Map[String, String], psaId: PsaId)
+  def sendEmail(emailAddress: String, templateName: String, templateParams: Map[String, String], psaId: PsaId,
+                journeyType : JourneyType.Name)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus]
 }
 
@@ -52,21 +54,21 @@ class EmailConnectorImpl @Inject()(
 
   private val logger = Logger(classOf[EmailConnectorImpl])
 
-  private def callBackUrl(psaId: PsaId): String = {
+  private def callBackUrl(psaId: PsaId, journeyType: JourneyType.Name): String = {
     val encryptedPsaId = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId.value)).value, StandardCharsets.UTF_8.toString)
-    appConfig.psaSubmissionEmailCallback(encryptedPsaId)
+    appConfig.psaEmailCallback(encryptedPsaId, journeyType.toString)
   }
 
   override def sendEmail(
                           emailAddress: String,
                           templateName: String,
                           templateParams: Map[String, String],
-                          psaId: PsaId
+                          psaId: PsaId,
+                          journeyType: JourneyType.Name
                         )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus] = {
-    println("\n\n\n\n\n\nsendEmail")
     val emailServiceUrl = appConfig.emailUrl
 
-    val sendEmailReq = SendEmailRequest(List(emailAddress), templateName, templateParams, appConfig.emailSendForce, callBackUrl(psaId))
+    val sendEmailReq = SendEmailRequest(List(emailAddress), templateName, templateParams, appConfig.emailSendForce, callBackUrl(psaId, journeyType))
 
     val jsonData = Json.toJson(sendEmailReq)
 

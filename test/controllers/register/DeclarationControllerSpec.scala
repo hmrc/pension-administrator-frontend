@@ -28,6 +28,7 @@ import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
 import models.UserType.UserType
+import models.enumeration.JourneyType
 import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse}
 import models.{BusinessDetails, NormalMode, RegistrationInfo, UserType}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -134,7 +135,8 @@ class DeclarationControllerSpec
             eqTo(email),
             any(),
             eqTo(Map("psaName" -> businessName)),
-            eqTo(PsaId("A0123456"))
+            eqTo(PsaId("A0123456")),
+            eqTo(JourneyType.PSA)
           )(any(), any()))
             .thenReturn(Future.successful(EmailSent))
           when(mockKnownFactsRetrieval.retrieve(any())(any()))
@@ -148,7 +150,7 @@ class DeclarationControllerSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
           verify(mockEmailConnector, times(1)).sendEmail(eqTo(email), any(),
-            eqTo(Map("psaName" -> businessName)), eqTo(PsaId("A0123456")))(any(), any())
+            eqTo(Map("psaName" -> businessName)), eqTo(PsaId("A0123456")), eqTo(JourneyType.PSA))(any(), any())
         }
 
         "on a valid request and not send the email" in {
@@ -166,7 +168,7 @@ class DeclarationControllerSpec
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, never()).sendEmail(eqTo(email), any(), any(), eqTo(PsaId("A0123456")))(any(), any())
+          verify(mockEmailConnector, never()).sendEmail(eqTo(email), any(), any(), eqTo(PsaId("A0123456")), eqTo(JourneyType.PSA))(any(), any())
         }
       }
 

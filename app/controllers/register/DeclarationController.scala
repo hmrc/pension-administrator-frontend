@@ -25,6 +25,7 @@ import controllers.actions._
 import controllers.register.routes._
 import controllers.routes._
 import identifiers.register.{DeclarationId, _}
+import models.enumeration.JourneyType
 import models.requests.DataRequest
 import models.{ExistingPSA, Mode, NormalMode}
 import play.api.Logger
@@ -125,7 +126,8 @@ class DeclarationController @Inject()(
           emailAddress   = email,
           templateName   = emailTemplateName(request.userAnswers),
           templateParams = Map("psaName" -> name),
-          psaId          = PsaId(psaId)
+          psaId          = PsaId(psaId),
+          journeyType    = JourneyType.PSA
         )
       case _ =>
         Future.successful(EmailNotSent)
