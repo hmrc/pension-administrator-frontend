@@ -16,11 +16,13 @@
 
 package utils.testhelpers
 
-import java.time.LocalDate
 import base.SpecBase
 import controllers.register.company.directors.routes._
+import controllers.register.partnership.partners.routes._
 import models.UpdateMode
-import viewmodels.{AnswerRow, AnswerSection, SuperSection, _}
+import viewmodels._
+
+import java.time.LocalDate
 
 object ViewPsaDetailsBuilder extends SpecBase {
 
@@ -224,20 +226,60 @@ object ViewPsaDetailsBuilder extends SpecBase {
 
 
   val partnersSeqAnswers = Seq(
-    AnswerRow("cya.label.dob", Seq("1950-03-29"), false,
-      None),
-    AnswerRow("common.nino", Seq("AA999999A"), false,
-      None),
-    AnswerRow("utr.label", Seq("1234567892"), false,
-      None),
-    AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url))),
-    AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
-      None),
-    AnswerRow("email.label", Seq("abc@hmrc.gsi.gov.uk"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerEmailController.onPageLoad(UpdateMode, 0).url))),
-    AnswerRow("phone.label", Seq("0044-09876542312"), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerPhoneController.onPageLoad(UpdateMode, 0).url)))
+    AnswerRow(
+      label = "cya.label.dob",
+      answer = Seq("1950-03-29"),
+      answerIsMessageKey = false,
+      changeUrl = None
+    ),
+    AnswerRow(
+      label = "partnerNino.checkYourAnswersLabel",
+      answer = Seq("Yes"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(HasPartnerNINOController.onPageLoad(UpdateMode, 0).url))
+    ),
+    AnswerRow(
+      label = "common.nino",
+      answer = Seq("AA999999A"),
+      answerIsMessageKey = false,
+      changeUrl = None
+    ),
+    AnswerRow(
+      label = "partnerUniqueTaxReference.checkYourAnswersLabel",
+      answer = Seq("Yes"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(HasPartnerUTRController.onPageLoad(UpdateMode, 0).url))
+    ),
+    AnswerRow(
+      label = "utr.label",
+      answer = Seq("1234567892"),
+      answerIsMessageKey = false,
+      changeUrl = None
+    ),
+    AnswerRow(
+      label = "cya.label.address",
+      answer = Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(PartnerAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url))
+    ),
+    AnswerRow(
+      label = "common.previousAddress.checkyouranswers",
+      answer = Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"),
+      answerIsMessageKey = false,
+      changeUrl = None
+    ),
+    AnswerRow(
+      label = "email.label",
+      answer = Seq("abc@hmrc.gsi.gov.uk"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(PartnerEmailController.onPageLoad(UpdateMode, 0).url))
+    ),
+    AnswerRow(
+      label = "phone.label",
+      answer = Seq("0044-09876542312"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(PartnerPhoneController.onPageLoad(UpdateMode, 0).url))
+    )
   )
 
   val directorsSeqAnswersWithAddLinks = Seq(
@@ -287,14 +329,49 @@ object ViewPsaDetailsBuilder extends SpecBase {
   )
 
   val partnersSeqAnswersWithAddLinks = Seq(
-    AnswerRow("cya.label.dob", Seq(LocalDate.now().toString), false,
-      None),
-    AnswerRow("common.nino.optional", Seq(""), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, 0).url, "site.add"))),
-    AnswerRow("utr.label.optional", Seq(""), false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, 0).url, "site.add"))),
-    AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url, "site.add")))
+    AnswerRow(
+      label = "cya.label.dob",
+      answer = Seq(LocalDate.now().toString),
+      answerIsMessageKey = false,
+      changeUrl = None
+    ),
+    AnswerRow(
+      label = "partnerNino.checkYourAnswersLabel",
+      answer = Seq("Not entered"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(HasPartnerNINOController.onPageLoad(UpdateMode, 0).url, "site.add"))
+    ),
+    AnswerRow(
+      label = "partnerUniqueTaxReference.checkYourAnswersLabel",
+      answer = Seq("Not entered"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(HasPartnerUTRController.onPageLoad(UpdateMode, 0).url, "site.add")),
+      visuallyHiddenText = None
+    ),
+    AnswerRow(
+      label = "common.previousAddress.checkyouranswers",
+      answer = Seq("Not entered"),
+      answerIsMessageKey = true,
+      changeUrl = Some(Link(PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url, "site.add"))
+    ),
+    AnswerRow(
+      label = "cya.label.address",
+      answer = Seq("Not entered"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(PartnerAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url, "site.add"))
+    ),
+    AnswerRow(
+      label = "email.label",
+      answer = Seq("Not entered"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(PartnerEmailController.onPageLoad(UpdateMode, 0).url, "site.add"))
+    ),
+    AnswerRow(
+      label = "phone.label",
+      answer = Seq("Not entered"),
+      answerIsMessageKey = false,
+      changeUrl = Some(Link(PartnerPhoneController.onPageLoad(UpdateMode, 0).url, "site.add"))
+    )
   )
 
   val pensionAdviserSuperSection = SuperSection(
