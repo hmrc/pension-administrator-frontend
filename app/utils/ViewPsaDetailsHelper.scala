@@ -18,7 +18,7 @@ package utils
 
 import controllers.register.company.directors.routes._
 import controllers.register.company.routes._
-import controllers.register.partnership.partners.{routes => partnerRoutes}
+import controllers.register.partnership.partners.routes._
 import identifiers.TypedIdentifier
 import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import identifiers.register.company._
@@ -638,53 +638,253 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None)
   }
 
-  private def partnerNino(index: Int): Option[AnswerRow] = userAnswers.get(PartnerEnterNINOId(index)) match {
-    case Some(ReferenceValue(nino, false)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
-      None))
+  private def partnerHasNino(index: Index): Option[AnswerRow] =
+    Some((
+      userAnswers.get(HasPartnerNINOId(index)),
+      userAnswers.get(PartnerEnterNINOId(index))
+    ) match {
+      case (Some(answer), _) =>
+        AnswerRow(
+          label = "partnerNino.checkYourAnswersLabel",
+          answer = Seq(messages(s"${if (answer) "site.yes" else "site.no"}")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasPartnerNINOController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case (_, Some(_)) =>
+        AnswerRow(
+          label = "partnerNino.checkYourAnswersLabel",
+          answer = Seq(messages("site.yes")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasPartnerNINOController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case _ =>
+        AnswerRow(
+          label = "partnerNino.checkYourAnswersLabel",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasPartnerNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        )
+    })
 
-    case Some(ReferenceValue(nino, true)) => Some(AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, index).url))))
+  private def partnerNoNinoReason(index: Index): Option[AnswerRow] =
+    Some(userAnswers.get(PartnerNoNINOReasonId(index)) match {
+      case Some(reason) =>
+        AnswerRow(
+          label = "partnerNino.checkYourAnswersLabel.reason",
+          answer = Seq(reason),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerNoNINOReasonController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case _ =>
+        AnswerRow(
+          label = "partnerNino.checkYourAnswersLabel.reason",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerNoNINOReasonController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        )
+    })
 
-    case None => Some(AnswerRow("common.nino.optional", Seq(""), answerIsMessageKey = true,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")), None))
-  }
-
-  private def partnerUtr(index: Int): Option[AnswerRow] = userAnswers.get(PartnerEnterUTRId(index)) match {
-    case Some(ReferenceValue(utr, false)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
-      None))
-
-    case Some(ReferenceValue(utr, true)) => Some(AnswerRow("utr.label", Seq(utr), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, index).url)), None))
-
-    case None => Some(AnswerRow("utr.label.optional", Seq(""), answerIsMessageKey = true,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")), None))
-  }
-
-  private def partnerAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = userAnswers.get(PartnerAddressId(index)) map { address =>
-    AnswerRow("cya.label.address", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url)))
-  }
-
-  private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] = {
-    (userAnswers.get(PartnerConfirmPreviousAddressId(index)), userAnswers.get(PartnerPreviousAddressId(index))) match {
+  private def partnerNino(index: Int): Option[AnswerRow] =
+    (
+      userAnswers.get(HasPartnerNINOId(index)),
+      userAnswers.get(PartnerEnterNINOId(index))
+    ) match {
+      case (_, Some(ReferenceValue(nino, false))) =>
+        Some(AnswerRow(
+          label = "common.nino",
+          answer = Seq(nino),
+          answerIsMessageKey = false,
+          changeUrl = None
+        ))
+      case (_, Some(ReferenceValue(nino, true))) =>
+        Some(AnswerRow(
+          label = "common.nino",
+          answer = Seq(nino),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerEnterNINOController.onPageLoad(UpdateMode, index).url))
+        ))
       case (Some(false), None) =>
-        Some(AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), answerIsMessageKey = true,
-          Some(Link(partnerRoutes.PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add"))))
-      case (_, Some(address)) =>
-        Some(AnswerRow("common.previousAddress.checkyouranswers", addressAnswer(address, countryOptions), answerIsMessageKey = false,
-          None))
-      case _ => None
+        partnerNoNinoReason(index)
+      case (Some(true), None) =>
+        Some(AnswerRow(
+          label = "common.nino",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        ))
+      case _ =>
+        None
     }
+
+  private def partnerHasUtr(index: Index): Option[AnswerRow] =
+    Some((
+      userAnswers.get(HasPartnerUTRId(index)),
+      userAnswers.get(PartnerEnterUTRId(index))
+    ) match {
+      case (Some(answer), _) =>
+        AnswerRow(
+          label = "partnerUniqueTaxReference.checkYourAnswersLabel",
+          answer = Seq(messages(s"${if (answer) "site.yes" else "site.no"}")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasPartnerUTRController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case (_, Some(_)) =>
+        AnswerRow(
+          label = "partnerUniqueTaxReference.checkYourAnswersLabel",
+          answer = Seq(messages("site.yes")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasPartnerUTRController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case _ =>
+        AnswerRow(
+          label = "partnerUniqueTaxReference.checkYourAnswersLabel",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(HasPartnerUTRController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        )
+    })
+
+  private def partnerNoUtrReason(index: Index): Option[AnswerRow] =
+    Some(userAnswers.get(PartnerNoUTRReasonId(index)) match {
+      case Some(reason) =>
+        AnswerRow(
+          label = "partnerUniqueTaxReference.checkYourAnswersLabel.reason",
+          answer = Seq(reason),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerNoUTRReasonController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case _ =>
+        AnswerRow(
+          label = "partnerUniqueTaxReference.checkYourAnswersLabel.reason",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerNoUTRReasonController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        )
+    })
+
+  private def partnerUtr(index: Int): Option[AnswerRow] =
+    (
+      userAnswers.get(HasPartnerUTRId(index)),
+      userAnswers.get(PartnerEnterUTRId(index))
+    ) match {
+      case (_, Some(ReferenceValue(utr, false))) =>
+        Some(AnswerRow(
+          label = "utr.label",
+          answer = Seq(utr),
+          answerIsMessageKey = false,
+          changeUrl = None
+        ))
+      case (_, Some(ReferenceValue(utr, true))) =>
+        Some(AnswerRow(
+          label = "utr.label",
+          answer = Seq(utr),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerEnterUTRController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        ))
+      case (Some(false), _) =>
+        partnerNoUtrReason(index)
+      case (Some(true), None) =>
+        Some(AnswerRow(
+          label = "utr.label",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerEnterUTRController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        ))
+      case _ =>
+        None
+    }
+
+  private def partnerAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
+    Some(userAnswers.get(PartnerAddressId(index)) match {
+      case Some(address) =>
+        AnswerRow(
+          label = "cya.label.address",
+          answer = addressAnswer(address, countryOptions),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url))
+        )
+      case _ =>
+        AnswerRow(
+          label = "cya.label.address",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = true,
+          changeUrl = Some(Link(PartnerAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        )
+    })
+
+  private def partnerPrevAddress(index: Int, countryOptions: CountryOptions): Option[AnswerRow] =
+    (
+      userAnswers.get(PartnerAddressYearsId(index)),
+      userAnswers.get(PartnerPreviousAddressId(index))
+    ) match {
+      case (Some(AddressYears.UnderAYear), None) =>
+        Some(AnswerRow(
+          label = "common.previousAddress.checkyouranswers",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = true,
+          changeUrl = Some(Link(PartnerPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode, index).url, "site.add"))
+        ))
+      case (_, Some(address)) =>
+        Some(AnswerRow(
+          label = "common.previousAddress.checkyouranswers",
+          answer = addressAnswer(address, countryOptions),
+          answerIsMessageKey = false,
+          changeUrl = None
+        ))
+      case _ =>
+        None
+    }
+
+  private def partnerPhone(index: Int): Option[AnswerRow] = {
+    Some(userAnswers.get(PartnerPhoneId(index)) match {
+      case Some(phone) =>
+        AnswerRow(
+          label = "phone.label",
+          answer = Seq(phone),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerPhoneController.onPageLoad(UpdateMode, index).url))
+        )
+      case _ =>
+        AnswerRow(
+          label = "phone.label",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerPhoneController.onPageLoad(UpdateMode, index).url, "site.add"))
+        )
+    })
   }
 
-  private def partnerPhone(index: Int): Option[AnswerRow] = userAnswers.get(PartnerPhoneId(index)) map { phone =>
-    AnswerRow("phone.label", Seq(phone), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerPhoneController.onPageLoad(UpdateMode, index).url)))
-  }
-
-  private def partnerEmail(index: Int): Option[AnswerRow] = userAnswers.get(PartnerEmailId(index)) map { email =>
-    AnswerRow("email.label", Seq(email), answerIsMessageKey = false,
-      Some(Link(controllers.register.partnership.partners.routes.PartnerEmailController.onPageLoad(UpdateMode, index).url)))
+  private def partnerEmail(index: Int): Option[AnswerRow] = {
+    Some(userAnswers.get(PartnerEmailId(index)) match {
+      case Some(email) =>
+        AnswerRow(
+          label = "email.label",
+          answer = Seq(email),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerEmailController.onPageLoad(UpdateMode, index).url))
+        )
+      case _ =>
+        AnswerRow(
+          label = "email.label",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(PartnerEmailController.onPageLoad(UpdateMode, index).url, "site.add"))
+        )
+    })
   }
 
 
@@ -693,7 +893,9 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     AnswerSection(
       Some(person.name),
       Seq(partnerDob(i),
+        partnerHasNino(i),
         partnerNino(i),
+        partnerHasUtr(i),
         partnerUtr(i),
         partnerAddress(i, countryOptions),
         partnerPrevAddress(i, countryOptions),
