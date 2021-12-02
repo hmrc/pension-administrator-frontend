@@ -201,8 +201,9 @@ email.title = What is {0}’s email address?
 individual.email.title = What is your email address?
 adviser.email.title = What is the adviser's email address?
 email.visuallyHidden.text = {0}’s email address
-contact.body = We will only use this to contact {0} about pension scheme administration.
+email.contact.body = We will use this email address to contact {0} if we have any questions about this administrator registration.
 
+phone.contact.body = We will use this phone number to contact {0} if we have any questions about this administrator registration.
 phone.title = What is {0}’s phone number?
 individual.phone.title = What is your phone number?
 adviser.phone.title = What is the adviser's phone number?
