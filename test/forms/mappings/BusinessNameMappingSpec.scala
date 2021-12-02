@@ -61,15 +61,6 @@ class BusinessNameMappingSpec extends StringFieldBehaviours with BusinessNameMap
         maxLength = BusinessNameMapping.maxLength,
         lengthError = FormError(fieldName, businessNameLengthKey, Seq(BusinessNameMapping.maxLength))
       )
-
-      behave like fieldWithRegex(
-        form,
-        fieldName,
-        "[invalid]",
-        FormError(fieldName, invalidBusinessNameKey, Seq(businessNameRegex))
-      )
     }
-
   }
-
 }
