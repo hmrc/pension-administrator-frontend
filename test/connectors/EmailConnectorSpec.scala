@@ -17,6 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
+import models.enumeration.JourneyType
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.http.Status
 import uk.gov.hmrc.domain.PsaId
@@ -45,7 +46,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
               .withHeader("Content-Type", "application/json")
           )
         )
-        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId).map {
+        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId, JourneyType.PSA).map {
           result =>
             result mustBe EmailSent
         }
@@ -60,7 +61,7 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
               .withHeader("Content-Type", "application/json")
           )
         )
-        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId).map {
+        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId, JourneyType.PSA).map {
           result =>
             result mustBe EmailNotSent
         }
@@ -76,7 +77,53 @@ class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHe
           )
         )
 
-        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId).map {
+        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId, JourneyType.PSA).map {
+          result =>
+            result mustBe EmailNotSent
+        }
+      }
+    }
+    "return an EmailSent" when {
+      "variation email sent succesfully with status 202 (Accepted)" in {
+        server.stubFor(
+          post(urlEqualTo(url)).willReturn(
+            aResponse()
+              .withStatus(Status.ACCEPTED)
+              .withHeader("Content-Type", "application/json")
+          )
+        )
+        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId, JourneyType.VARIATION).map {
+          result =>
+            result mustBe EmailSent
+        }
+      }
+    }
+
+    "return an EmailNotSent" when {
+      "variation email service returns back with 204 (No Content)" in {
+        server.stubFor(
+          post(urlEqualTo(url)).willReturn(
+            noContent()
+              .withHeader("Content-Type", "application/json")
+          )
+        )
+        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId, JourneyType.VARIATION).map {
+          result =>
+            result mustBe EmailNotSent
+        }
+      }
+    }
+
+    "return an EmailNotSent" when {
+      "variation email service is down" in {
+        server.stubFor(
+          post(urlEqualTo(url)).willReturn(
+            serviceUnavailable()
+              .withHeader("Content-Type", "application/json")
+          )
+        )
+
+        connector.sendEmail(testEmailAddress, testTemplate, templateParams, testPsaId, JourneyType.VARIATION).map {
           result =>
             result mustBe EmailNotSent
         }
