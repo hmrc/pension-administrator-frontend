@@ -28,8 +28,7 @@ trait BusinessNameMapping extends Mappings with Transforms {
           maxLength(
             BusinessNameMapping.maxLength,
             keyNameMaxLength
-          ),
-          businessName(keyNameInvalid)
+          )
         )
       )
   }
