@@ -61,7 +61,8 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
   private[controllers] val title: Message = "company.same.contact.address.title"
   private[controllers] val heading: Message = "company.same.contact.address.heading"
   private[controllers] val confirmText: Message = "company.same.contact.address.confirm.text"
-  
+
+
   private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
