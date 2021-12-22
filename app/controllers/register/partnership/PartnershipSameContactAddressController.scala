@@ -56,12 +56,14 @@ class PartnershipSameContactAddressController @Inject()(
 
   def form(name: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
 
+  private[controllers] val confirmText: Message = "company.same.contact.address.confirm.text"
+
   private def viewmodel(mode: Mode, address: TolerantAddress, name: String)(implicit request: DataRequest[AnyContent]) =
     SameContactAddressViewModel(
       postCall = routes.PartnershipSameContactAddressController.onSubmit(mode),
       title = Message("partnership.sameContactAddress.title"),
       heading = Message("partnership.sameContactAddress.heading").withArgs(name),
-      hint = None,
+      hint = Some(Message(confirmText)),
       address = address,
       psaName = name,
       mode = mode,
