@@ -60,6 +60,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
   private[controllers] val postCall = CompanySameContactAddressController.onSubmit _
   private[controllers] val title: Message = "company.same.contact.address.title"
   private[controllers] val heading: Message = "company.same.contact.address.heading"
+  private[controllers] val confirmText: Message = "same.contact.address.confirm.text"
 
   private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
@@ -70,7 +71,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
               postCall(mode),
               title = Message(title),
               heading = Message(heading).withArgs(name),
-              hint = None,
+              hint = Some(Message(confirmText,name)),
               address = address,
               psaName = name,
               mode = mode,
