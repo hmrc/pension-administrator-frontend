@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,11 +54,11 @@ class ConfirmationViewSpec extends ViewBehaviours {
 
 
     "display the PSA ID number text" in {
-      createView mustNot haveDynamicText("confirmation.psaIdNumber")
+      createView must haveDynamicText("confirmation.psaIdNumber")
     }
 
     "display the PSA ID number" in {
-      createView mustNot haveDynamicText(psaId)
+      createView must haveDynamicText(psaId)
     }
 
     "display the 'what you need to know' heading " in {
@@ -164,11 +164,11 @@ class ConfirmationViewSpec extends ViewBehaviours {
 
 
     "display the PSA ID number text" in {
-      createView mustNot haveDynamicText("confirmation.psaIdNumber")
+      createView must haveDynamicText("confirmation.psaIdNumber")
     }
 
     "display the PSA ID number" in {
-      createView mustNot haveDynamicText(psaId)
+      createView must haveDynamicText(psaId)
     }
 
     "display the 'what you need to know' heading " in {
