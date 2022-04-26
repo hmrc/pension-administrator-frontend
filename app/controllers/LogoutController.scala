@@ -25,7 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class LogoutController @Inject()(appConfig: FrontendAppConfig, val controllerComponents: MessagesControllerComponents,
   authenticate: AuthAction, sessionDataCacheConnector: SessionDataCacheConnector)(implicit val ec: ExecutionContext)
@@ -35,6 +35,10 @@ class LogoutController @Inject()(appConfig: FrontendAppConfig, val controllerCom
     sessionDataCacheConnector.removeAll(request.externalId).map { _ =>
       Redirect(appConfig.serviceSignOut).withNewSession
     }
+  }
+
+  def keepAlive: Action[AnyContent] = Action.async {
+    Future successful Ok("OK")
   }
 }
 
