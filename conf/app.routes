@@ -1,4 +1,5 @@
 # microservice specific routes
+->          /hmrc-frontend                                        hmrcfrontend.Routes
 ->          /register                                             register.Routes
 ->          /                                                     remove.Routes
 
@@ -7,6 +8,8 @@ GET         /                                                     controllers.Lo
 GET         /index                                                controllers.IndexController.onPageLoad
 
 GET         /login                                                controllers.LoginController.onPageLoad
+
+GET         /keep-alive                                           controllers.LogoutController.keepAlive
 GET         /logout                                               controllers.LogoutController.onPageLoad
 
 GET         /assets/*file                                         controllers.Assets.versioned(path="/public", file: Asset)

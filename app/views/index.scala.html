@@ -15,16 +15,16 @@
  *@
 
 @this(
-    main_template: main_template
+    layout: templates.Layout
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("index.title")
+@layout(
+    pageTitle    =   messages("index.title")
 ) {
 
-    <h1 class="heading-xlarge">@messages("index.heading")</h1>
+    <h1 class="govuk-heading-xl">@messages("index.heading")</h1>
 
-    <p>@messages("index.guidance")</p>
+    <p class="govuk-body">@messages("index.guidance")</p>
 }
