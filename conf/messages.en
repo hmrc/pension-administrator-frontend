@@ -93,6 +93,8 @@ site.return_to = Return to {0}
 site.not_entered = Not entered
 site.exit = Exit to GOV.UK
 site.error = Error:
+site.true = true
+site.false = false
 
 common.you = you
 common.selectContactAddress.heading = Select the contact address for {0}
