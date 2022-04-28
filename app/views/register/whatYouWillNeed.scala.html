@@ -46,12 +46,14 @@
     content = Text(messages("whatYouWillNeed.main.body.hint.company"))
     ))
 
-@govukButton(Button(
-    href = Some(ref.url),
-    attributes = Map("id" -> "submit"),
-    content = {
-        Text(messages("site.continue"))
-    }
-    ))
-
+    <div>
+        @govukButton(Button(
+            href = Some(ref.url),
+            attributes = Map("id" -> "submit"),
+            content = {
+                Text(messages("site.continue"))
+            }
+            )
+        )
+    </div>
 }
