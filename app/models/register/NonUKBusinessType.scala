@@ -16,6 +16,9 @@
 
 package models.register
 
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import utils.{Enumerable, InputOption, WithName}
 
 sealed trait NonUKBusinessType
@@ -30,6 +33,13 @@ object NonUKBusinessType extends Enumerable.Implicits {
     Company,
     BusinessPartnership
   )
+
+  def radioOptions(implicit messages: Messages): Seq[RadioItem] = values.map {
+    value =>
+      RadioItem(
+        content = Text(messages(s"nonUKBusinessType.${value.toString}")),
+        value=Some(value.toString))
+  }
 
   def options: Seq[InputOption] =
     Seq(

@@ -14,35 +14,55 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.routes._
 @import models.Mode
 @import models.register.BusinessType
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    govukRadios : GovukRadios,
+    govukErrorSummary: GovukErrorSummary,
+    formHelper: PlayFrontendFormWithCSRF,
+    button: components.govuk_button
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("businessType.title"))
+@layout(
+    pageTitle  = titleWithErrors(form, messages("businessType.title"))
 ) {
-    @components.back_link()
 
-    @components.error_summary(form.errors)
+
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(("businessType.heading"))</h1>
 
     @formHelper(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
-        @components.input_radio(
-            field = form("value"),
-            legend = messages("businessType.heading"),
-            legendClass = Some("visually-hidden"),
-            inputs = BusinessType.options,
-            headingIsLegend = true
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
+
+        @govukRadios(
+            Radios(
+                fieldset = Some(
+                Fieldset(
+                    legend = Some(
+                        Legend(
+                            content = Text(messages("businessType.heading")),
+                            classes = "govuk-visually-hidden",
+                            isPageHeading = false
+                        )
+                    )
+                )
+            ),
+            items = BusinessType.radioOptions
+            ).withFormField(form("value"))
         )
 
-        @components.submit_button("site.save_and_continue")
+        @button(messages("site.save_and_continue"))
     }
 }
