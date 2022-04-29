@@ -14,34 +14,57 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.routes.RegisterAsBusinessController
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+layout: templates.Layout,
+govukRadios : GovukRadios,
+formHelper: PlayFrontendFormWithCSRF,
+govukErrorSummary: GovukErrorSummary,
+button: components.govuk_button
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("registerAsBusiness.title"))
+@layout(
+pageTitle  = titleWithErrors(form, messages("registerAsBusiness.title"))
 ) {
-    @components.error_summary(form.errors)
 
-    @formHelper(action = RegisterAsBusinessController.onSubmit(), 'autoComplete -> "off") {
-        @components.input_yes_no(
-            field       = form("value"),
-            label       = messages("registerAsBusiness.heading"),
-            labelClass  = Some("visually-hidden"),
-            noLabelKey  = "registerAsBusiness.no.label",
-            yesLabelKey = "registerAsBusiness.yes.label",
-            fieldSetClass = "form-group",
-            headingIsLegend = true
-        )
 
-        @components.submit_button("site.save_and_continue")
+@formHelper(action = RegisterAsBusinessController.onSubmit(), 'autoComplete -> "off") {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
     }
 
+
+
+@govukRadios(Radios(
+    fieldset = Some(Fieldset(
+        legend = Some(Legend(
+            content = Text(messages("registerAsBusiness.heading")),
+            classes = "govuk-fieldset__legend--l",
+            isPageHeading = true
+        ))
+    )),
+    items = Seq(
+        RadioItem(
+            content = Text(messages("registerAsBusiness.yes.label")),
+            value = Some(messages("site.true"))
+            ),
+        RadioItem(
+            content = Text(messages("registerAsBusiness.no.label")),
+            value = Some(messages("site.false"))
+            )
+        ),
+    ).withFormField(form("value"))
+    )
+
+    @button(messages("site.continue"))
+    }
 }

@@ -14,36 +14,52 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.routes._
 @import models.register.NonUKBusinessType
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios,
+    button: components.govuk_button
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("nonUKBusinessType.title"))
+@layout(
+    pageTitle = titleWithErrors(form, messages("nonUKBusinessType.title"))
 ) {
+
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(("nonUKBusinessType.heading"))</h1>
 
     @formHelper(action = NonUKBusinessTypeController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @components.error_summary(form.errors)
-
-        @components.input_radio(
-            field = form("value"),
-            legend = messages("nonUKBusinessType.heading"),
-            legendClass = Some("visually-hidden"),
-            inputs = NonUKBusinessType.options,
-            headingIsLegend = true
+        @govukRadios(
+            Radios(
+                fieldset = Some(
+                Fieldset(
+                    legend = Some(
+                    Legend(
+                        content = Text(messages("nonUKBusinessType.heading")),
+                        classes = "govuk-visually-hidden",
+                        isPageHeading = false
+                        )
+                    )
+                )
+            ),
+            items = NonUKBusinessType.radioOptions
+            ).withFormField(form("value"))
         )
-
-        @components.submit_button("site.save_and_continue")
+        @button(messages("site.save_and_continue"))
     }
 }
