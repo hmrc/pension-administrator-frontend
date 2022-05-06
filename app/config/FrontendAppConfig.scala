@@ -96,6 +96,8 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
 
   lazy val identityVerification: String = s"${servicesConfig.baseUrl("identity-verification")}"
 
+  lazy val personalDetailsValidation: String = s"${servicesConfig.baseUrl("personal-details-validation")}"
+
   lazy val identityVerificationFrontend: String = s"${servicesConfig.baseUrl("identity-verification-frontend")}"
 
   lazy val registerWithIdOrganisationUrl: String = s"${servicesConfig.baseUrl ("pension-administrator") +
@@ -136,6 +138,7 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getOptional[Boolean]("features.welsh-translation").getOrElse(true)
+  lazy val pointingFromIvApiToPdvApi: Boolean = runModeConfiguration.getOptional[Boolean]("features.pointing-from-iv-api-to-pdv-api").getOrElse(true)
 
   lazy val retryAttempts: Int = runModeConfiguration.getOptional[Int]("retry.max.attempts").getOrElse(1)
   lazy val retryWaitMs: Int = runModeConfiguration.getOptional[Int]("retry.initial.wait.ms").getOrElse(1)

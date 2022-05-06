@@ -18,7 +18,7 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{SessionDataCacheConnector, IdentityVerificationConnector}
+import connectors.{SessionDataCacheConnector, PersonalDetailsValidationConnector}
 import connectors.cache.UserAnswersCacheConnector
 import controllers.routes
 import identifiers.register.{RegisterAsBusinessId, AreYouInUKId}
@@ -44,7 +44,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                   ivConnector: IdentityVerificationConnector,
+                                   personalDetailsValidationConnector: PersonalDetailsValidationConnector,
                                    sessionDataCacheConnector: SessionDataCacheConnector,
                                    val parser: BodyParsers.Default)
                                   (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
@@ -143,7 +143,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                              block: AuthenticatedRequest[A] => Future[Result],
                                              authRequest: AuthenticatedRequest[A])
                                             (implicit hc: HeaderCarrier): Future[Result] = {
-    ivConnector.retrieveNinoFromIV(journeyId).flatMap {
+    personalDetailsValidationConnector.retrieveNino(journeyId).flatMap {
       case Some(nino) =>
         val updatedAuth = AuthenticatedRequest(
           request = authRequest.request,
@@ -165,7 +165,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
     getData(RegisterAsBusinessId, id).flatMap {
       case Some(false) =>
-        ivConnector.startRegisterOrganisationAsIndividual(
+        personalDetailsValidationConnector.startRegisterOrganisationAsIndividual(
           config.ukJourneyContinueUrl,
           s"${config.loginContinueUrl}/unauthorised"
         ).map { link =>
@@ -260,11 +260,11 @@ trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with Ac
 class AuthenticationWithNoIV @Inject()(override val authConnector: AuthConnector,
                                        config: FrontendAppConfig,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       identityVerificationConnector: IdentityVerificationConnector,
+                                       personalDetailsValidationConnector: PersonalDetailsValidationConnector,
                                        sessionDataCacheConnector: SessionDataCacheConnector,
                                        parser: BodyParsers.Default
                                       )(implicit executionContext: ExecutionContext) extends
-  FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector, sessionDataCacheConnector, parser)
+  FullAuthentication(authConnector, config, userAnswersCacheConnector, personalDetailsValidationConnector, sessionDataCacheConnector, parser)
 
   with AuthorisedFunctions {
 
