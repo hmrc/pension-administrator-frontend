@@ -15,55 +15,81 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
-@import models.Mode
-@import utils.FormHelpers
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import utils.countryOptions.CountryOptions
 @import viewmodels.address.SameContactAddressViewModel
+@import models.Mode
+@import utils.FormHelpers
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    button: components.govuk_button,
+    govukRadios : GovukRadios
 )
 
 @(form: Form[_], viewmodel: SameContactAddressViewModel, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages(viewmodel.title))
+@layout(
+    pageTitle = titleWithErrors(form, messages(viewmodel.title))
 ) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+    }
+
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
-        @components.back_link()
 
-        @components.error_summary(form.errors)
+    <h1 class="govuk-heading-xl">@messages(viewmodel.heading)</h1>
+    @viewmodel.hint.map{hintText =>
+    <p class="govuk-body">@messages(hintText)</p>
+    }
+    <div class="grid-row">
+         <p class="govuk-body">
+                    @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
+                    <span id="address-value-@i" class="govuk-!-display-block">@line</span>
+                    }
+                </p>
+    </div>
 
-        <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(components.hyphen(messages(viewmodel.heading)).toString)
-
-        @viewmodel.hint.map{hintText =>
-            <p>@messages(hintText)</p>
-        }
-
-        <div class="tabular-data__data tabular-data__data--3-12">
-            <p>
-                @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
-                <span id="address-value-@i" class="address-multi-line">@line</span>
-                }
-            </p>
-        </div>
-
-        @components.input_yes_no(
-            field = form("value"),
-            label = messages(viewmodel.heading),
-            labelClass = Some("visually-hidden")
+     @govukRadios(
+            Radios(
+                fieldset = Some(
+                    Fieldset(
+                        legend = Some(
+                            Legend(
+                                content = Text(messages(viewmodel.heading)),
+                                classes = "govuk-fieldset__legend--xl govuk-visually-hidden",
+                                isPageHeading = false
+                            )
+                        )
+                    )
+                ),
+                items = Seq(
+                    RadioItem(
+                        content = Text(messages("site.yes")),
+                        value = Some("true")
+                    ),
+                    RadioItem(
+                        content = Text(messages("site.no")),
+                        value = Some("false")
+                    )
+                ),
+            classes = "govuk-radios--inline"
+            ).withFormField(form("value"))
         )
-        </div>
-        @components.submit_button("site.save_and_continue")
 
+        @button(messages("site.save_and_continue"))
         @if(viewmodel.displayReturnLink){
-            @components.return_link(viewmodel.psaName, viewmodel.mode)
+        @components.return_link(viewmodel.psaName, viewmodel.mode)
         }
+
     }
 }
