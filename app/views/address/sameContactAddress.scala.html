@@ -47,7 +47,7 @@
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
 
-    <h1 class="govuk-heading-xl">@messages(viewmodel.heading)</h1>
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
     @viewmodel.hint.map{hintText =>
     <p class="govuk-body">@messages(hintText)</p>
     }
@@ -88,7 +88,7 @@
 
         @button(messages("site.save_and_continue"))
         @if(viewmodel.displayReturnLink){
-        @components.return_link(viewmodel.psaName, viewmodel.mode)
+        @components_refactored.return_link(viewmodel.psaName, viewmodel.mode)
         }
 
     }

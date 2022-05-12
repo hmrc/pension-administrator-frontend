@@ -42,13 +42,11 @@ pageTitle  = titleWithErrors(form, messages("registerAsBusiness.title"))
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
     }
 
-
-
 @govukRadios(Radios(
     fieldset = Some(Fieldset(
         legend = Some(Legend(
             content = Text(messages("registerAsBusiness.heading")),
-            classes = "govuk-fieldset__legend--l",
+            classes = "govuk-fieldset__legend--xl",
             isPageHeading = true
         ))
     )),
