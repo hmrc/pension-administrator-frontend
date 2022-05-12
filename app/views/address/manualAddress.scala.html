@@ -27,6 +27,7 @@
 layout: templates.Layout,
 formHelper: PlayFrontendFormWithCSRF,
 govukErrorSummary: GovukErrorSummary,
+address: components_refactored.address,
 button: components.govuk_button
 )
 
@@ -46,6 +47,7 @@ pageTitle = titleWithErrors(form, viewmodel.title)
             @viewmodel.hint.map{hintText =>
             <p class="govuk-body">@messages(hintText)</p>
             }
+            @address(form, viewmodel.countryOptions)
             @button(messages("site.save_and_continue"))
 
             @viewmodel.psaName.map { psaName =>

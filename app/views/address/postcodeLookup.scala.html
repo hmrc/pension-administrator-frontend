@@ -54,7 +54,8 @@ pageTitle = titleWithErrors(form, viewmodel.title)
         @govukInput(
             Input(
                 label = Label(content = Text(viewmodel.formLabel),
-                isPageHeading = true)
+                isPageHeading = true),
+                classes = "govuk-!-width-one-half",
             ).withFormField(form("value"))
         )
         <p class="govuk-body">@Html(viewmodel.enterPostcode.withArgs(link))</p>
