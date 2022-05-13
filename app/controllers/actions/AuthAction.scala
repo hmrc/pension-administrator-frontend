@@ -24,7 +24,7 @@ import controllers.routes
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
 import identifiers.{AdministratorOrPractitionerId, JourneyId, TypedIdentifier, ValidationId}
 import models.AdministratorOrPractitioner.Practitioner
-import models.FeatureToggleName.FromIvToPdv
+import models.FeatureToggleName.FromIvToPdvForAdmin
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
@@ -88,7 +88,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
       case _ if alreadyEnrolledInPODS(enrolments) =>
         savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
       case Some(true) if affinityGroup == Organisation =>
-        featureToggleConnector.get(FromIvToPdv.asString).map { toggle =>
+        featureToggleConnector.get(FromIvToPdvForAdmin.asString).map { toggle =>
           toggle.isEnabled
         }.flatMap {
           case true => doManualPDVAndRetrieveNino(authRequest, block)
