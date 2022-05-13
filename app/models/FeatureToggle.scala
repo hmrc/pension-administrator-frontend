@@ -34,14 +34,14 @@ sealed trait FeatureToggleName {
 
 object FeatureToggleName {
 
-  case object FromIvToPdvForAdmin extends FeatureToggleName {
-    val asString = "from-iv-to-pdv-for-admin"
+  case object PsaFromIvToPdv extends FeatureToggleName {
+    val asString = "psa-from-iv-to-pdv"
   }
 
-  val toggles = Seq(FromIvToPdvForAdmin)
+  val toggles = Seq(PsaFromIvToPdv)
 
   implicit val reads: Reads[FeatureToggleName] = Reads {
-    case JsString(FromIvToPdvForAdmin.asString) => JsSuccess(FromIvToPdvForAdmin)
+    case JsString(PsaFromIvToPdv.asString) => JsSuccess(PsaFromIvToPdv)
     case _ => JsError("Unrecognised feature toggle name")}
 
   implicit val writes: Writes[FeatureToggleName] = Writes(value => JsString(value.asString))

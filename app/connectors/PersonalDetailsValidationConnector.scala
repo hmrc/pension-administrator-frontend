@@ -19,7 +19,7 @@ package connectors
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import connectors.cache.FeatureToggleConnector
-import models.FeatureToggleName.FromIvToPdvForAdmin
+import models.FeatureToggleName.PsaFromIvToPdv
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
@@ -69,7 +69,7 @@ class PersonalDetailsValidationConnectorImpl @Inject()(http: HttpClient, fronten
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Nino]] = {
 
 
-    featureToggleConnector.get(FromIvToPdvForAdmin.asString).map { toggle =>
+    featureToggleConnector.get(PsaFromIvToPdv.asString).map { toggle =>
       toggle.isEnabled
     }.flatMap {
       case true =>

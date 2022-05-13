@@ -55,7 +55,7 @@ class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers 
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    when(frontendAppConfig.pointingFromIvApiToPdvApi).thenReturn(false)
+    //when(frontendAppConfig.pointingFromIvApiToPdvApi).thenReturn(false)
   }
 
   ".retrieveNinoFromIV" must {

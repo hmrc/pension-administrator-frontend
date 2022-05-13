@@ -140,7 +140,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 
   lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getOptional[Boolean]("features.welsh-translation").getOrElse(true)
-  lazy val pointingFromIvApiToPdvApi: Boolean = runModeConfiguration.getOptional[Boolean]("features.pointing-from-iv-api-to-pdv-api").getOrElse(true)
 
   lazy val retryAttempts: Int = runModeConfiguration.getOptional[Int]("retry.max.attempts").getOrElse(1)
   lazy val retryWaitMs: Int = runModeConfiguration.getOptional[Int]("retry.initial.wait.ms").getOrElse(1)

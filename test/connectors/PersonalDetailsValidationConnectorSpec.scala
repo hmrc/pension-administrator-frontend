@@ -54,7 +54,7 @@ class PersonalDetailsValidationConnectorSpec extends AsyncWordSpec with MustMatc
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    when(frontendAppConfig.pointingFromIvApiToPdvApi).thenReturn(true)
+    //when(frontendAppConfig.pointingFromIvApiToPdvApi).thenReturn(true)
   }
 
   ".retrieveNino" must {
