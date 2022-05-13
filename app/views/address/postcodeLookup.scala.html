@@ -28,7 +28,7 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukInput: GovukInput,
-    button: components.govuk_button
+    button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)

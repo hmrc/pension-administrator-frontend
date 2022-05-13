@@ -14,38 +14,43 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import models.{Mode, Index}
 @import viewmodels.address.ManualAddressViewModel
 @import utils.InputOption
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+layout: templates.Layout,
+formHelper: PlayFrontendFormWithCSRF,
+govukErrorSummary: GovukErrorSummary,
+addressWithoutPostcode: components_refactored.addressWithoutPostcode,
+button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewmodel: ManualAddressViewModel)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-  title = titleWithErrors(form, messages(viewmodel.title))
+@layout(
+pageTitle = titleWithErrors(form, viewmodel.title)
 ) {
-    @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
-    @components.back_link()
+        @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
-    @components.error_summary(form.errors)
-    <div class="form-group @if(form.hasErrors){form-group--error}">
-    @components.heading(
-        headingKey=components.hyphen(messages(viewmodel.heading)).toString
-    )
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-    @viewmodel.hint.map{hintText =>
-        <p>@messages(hintText)</p>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
+            @viewmodel.hint.map{hintText =>
+            <p class="govuk-body">@messages(hintText)</p>
+            }
+            @addressWithoutPostcode(form, viewmodel.countryOptions)
+            @button(messages("site.save_and_continue"))
+
+
+        }
     }
 
-    @components.address_without_postcode(form, viewmodel.countryOptions)
-    </div>
-    @components.submit_button("site.save_and_continue")
-  }
-}

@@ -28,7 +28,7 @@ layout: templates.Layout,
 formHelper: PlayFrontendFormWithCSRF,
 govukErrorSummary: GovukErrorSummary,
 address: components_refactored.address,
-button: components.govuk_button
+button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewmodel: ManualAddressViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
