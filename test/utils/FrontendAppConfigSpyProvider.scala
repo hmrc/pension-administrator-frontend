@@ -31,5 +31,3 @@ class FrontendAppConfigSpyProvider @Inject()(val configuration: Configuration, v
 
   override def get(): FrontendAppConfig = frontendAppConfigSpy
 }
-
-

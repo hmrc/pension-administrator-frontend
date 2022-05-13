@@ -18,6 +18,8 @@ package connectors
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
+import connectors.cache.FeatureToggleConnector
+import models.FeatureToggleName.FromIvToPdv
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json._
@@ -30,7 +32,7 @@ import utils.HttpResponseHelper
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
-class PersonalDetailsValidationConnectorImpl @Inject()(http: HttpClient, frontendAppConfig: FrontendAppConfig)
+class PersonalDetailsValidationConnectorImpl @Inject()(http: HttpClient, frontendAppConfig: FrontendAppConfig, featureToggleConnector: FeatureToggleConnector)
   extends PersonalDetailsValidationConnector
     with HttpResponseHelper {
 
@@ -66,29 +68,31 @@ class PersonalDetailsValidationConnectorImpl @Inject()(http: HttpClient, fronten
   override def retrieveNino(journeyId: String)
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Nino]] = {
 
-    if (frontendAppConfig.pointingFromIvApiToPdvApi) {
 
-      val url = s"${frontendAppConfig.personalDetailsValidation}/personal-details-validation/$journeyId"
+    featureToggleConnector.get(FromIvToPdv.asString).map { toggle =>
+      toggle.isEnabled
+    }.flatMap {
+      case true =>
+        val url = s"${frontendAppConfig.personalDetailsValidation}/personal-details-validation/$journeyId"
 
-      http.GET[HttpResponse](url).map {
-        case response if response.status equals OK =>
-          (response.json \ "personalDetails" \ "nino").asOpt[Nino]
-        case response =>
-          logger.debug(s"Call to retrieve Nino failed with status ${response.status} and response body ${response.body}")
-          None
-      }
-    } else {
-      val url = s"${frontendAppConfig.identityVerification}/identity-verification/journey/$journeyId"
+        http.GET[HttpResponse](url).map {
+          case response if response.status equals OK =>
+            (response.json \ "personalDetails" \ "nino").asOpt[Nino]
+          case response =>
+            logger.debug(s"Call to retrieve Nino failed with status ${response.status} and response body ${response.body}")
+            None
+        }
+      case false =>
+        val url = s"${frontendAppConfig.identityVerification}/identity-verification/journey/$journeyId"
 
-      http.GET[HttpResponse](url).flatMap {
-        case response if response.status equals OK =>
-          Future.successful((response.json \ "nino").asOpt[Nino])
-        case response =>
-          logger.debug(s"Call to retrieve Nino from IV failed with status ${response.status} and response body ${response.body}")
-          Future.successful(None)
-      }
+        http.GET[HttpResponse](url).map {
+          case response if response.status equals OK =>
+            (response.json \ "nino").asOpt[Nino]
+          case response =>
+            logger.debug(s"Call to retrieve Nino from IV failed with status ${response.status} and response body ${response.body}")
+            None
+        }
     }
-
   } andThen {
     logExceptions("Unable to retrieve Nino")
   }

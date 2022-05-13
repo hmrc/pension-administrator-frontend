@@ -98,6 +98,8 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
 
   lazy val personalDetailsValidation: String = s"${servicesConfig.baseUrl("personal-details-validation")}"
 
+  lazy val personalDetailsValidationFrontEnd: String = s"${servicesConfig.baseUrl("personal-details-validation-frontend")}"
+
   lazy val identityVerificationFrontend: String = s"${servicesConfig.baseUrl("identity-verification-frontend")}"
 
   lazy val registerWithIdOrganisationUrl: String = s"${servicesConfig.baseUrl ("pension-administrator") +
@@ -147,5 +149,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
 
   lazy val minimalPsaDetailsUrl: String = s"${s"${servicesConfig.baseUrl("pension-administrator")}${
     runModeConfiguration.underlying.getString("urls.pension-administrator.minimalPsaDetails")}"}"
+  def featureToggleUrl(toggle:String) : String = s"$pensionAdministratorUrl${runModeConfiguration.get[String]("urls.featureToggle").format(toggle)}"
 
 }
