@@ -30,7 +30,17 @@
     govukRadios : GovukRadios
 )
 
+
 @(form: Form[_], viewmodel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
+
+
+@hint = @{
+    viewmodel.hint match {
+        case Some(hint) => Some(Hint(
+            content = Text(hint)))
+        case None =>None
+    }
+}
 
 @layout(
     pageTitle = titleWithErrors(form, messages(viewmodel.title))
@@ -55,6 +65,7 @@
                         )
                     )
                 ),
+                hint = hint,
                 items = Seq(
                     RadioItem(
                         content = Text(messages("site.yes")),
