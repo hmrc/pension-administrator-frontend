@@ -58,11 +58,11 @@
                 items = Seq(
                     RadioItem(
                         content = Text(messages("site.yes")),
-                        value = Some("true")
+                        value = Some("over_a_year")
                     ),
                     RadioItem(
                         content = Text(messages("site.no")),
-                        value = Some("false")
+                        value = Some("under_a_year")
                     )
                 ),
                 classes = "govuk-radios--inline"
@@ -70,6 +70,8 @@
         )
 
         @button(messages("site.save_and_continue"))
-
+        @viewmodel.psaName.map { psaName =>
+            @components_refactored.return_link(psaName, mode)
+        }
     }
 }
