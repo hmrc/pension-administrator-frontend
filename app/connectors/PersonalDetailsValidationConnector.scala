@@ -18,11 +18,8 @@ package connectors
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import connectors.cache.FeatureToggleConnector
-import models.FeatureToggleName.PsaFromIvToPdv
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json._
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -32,66 +29,22 @@ import utils.HttpResponseHelper
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
-class PersonalDetailsValidationConnectorImpl @Inject()(http: HttpClient, frontendAppConfig: FrontendAppConfig, featureToggleConnector: FeatureToggleConnector)
+class PersonalDetailsValidationConnectorImpl @Inject()(http: HttpClient, frontendAppConfig: FrontendAppConfig)
   extends PersonalDetailsValidationConnector
     with HttpResponseHelper {
 
   private val logger = Logger(classOf[PersonalDetailsValidationConnectorImpl])
 
-  def startRegisterOrganisationAsIndividual(completionURL: String, failureURL: String)
-                                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
-
-    val jsonData = Json.obj(
-      "origin" -> "PODS",
-      "completionURL" -> completionURL,
-      "failureURL" -> failureURL,
-      "confidenceLevel" -> 200
-    )
-
-    val url = frontendAppConfig.ivRegisterOrganisationAsIndividualUrl
-
-    http.POST[JsObject, HttpResponse](url, jsonData).map { response =>
-      response.status match {
-        case CREATED =>
-          (response.json \ "link").validate[String] match {
-            case JsSuccess(value, _) => value
-            case JsError(errors) => throw JsResultException(errors)
-          }
-        case _ =>
-          handleErrorResponse("POST", url)(response)
-      }
-    } andThen {
-      logExceptions("Unable to start registration of organisation as individual via IV")
-    }
-  }
-
-  override def retrieveNino(journeyId: String)
+  override def retrieveNino(validationId: String)
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Nino]] = {
+    val url = s"${frontendAppConfig.personalDetailsValidation}/personal-details-validation/$validationId"
 
-
-    featureToggleConnector.get(PsaFromIvToPdv.asString).map { toggle =>
-      toggle.isEnabled
-    }.flatMap {
-      case true =>
-        val url = s"${frontendAppConfig.personalDetailsValidation}/personal-details-validation/$journeyId"
-
-        http.GET[HttpResponse](url).map {
-          case response if response.status equals OK =>
-            (response.json \ "personalDetails" \ "nino").asOpt[Nino]
-          case response =>
-            logger.debug(s"Call to retrieve Nino failed with status ${response.status} and response body ${response.body}")
-            None
-        }
-      case false =>
-        val url = s"${frontendAppConfig.identityVerification}/identity-verification/journey/$journeyId"
-
-        http.GET[HttpResponse](url).map {
-          case response if response.status equals OK =>
-            (response.json \ "nino").asOpt[Nino]
-          case response =>
-            logger.debug(s"Call to retrieve Nino from IV failed with status ${response.status} and response body ${response.body}")
-            None
-        }
+    http.GET[HttpResponse](url).map {
+      case response if response.status equals OK =>
+        (response.json \ "personalDetails" \ "nino").asOpt[Nino]
+      case response =>
+        logger.debug(s"Call to retrieve Nino failed with status ${response.status} and response body ${response.body}")
+        None
     }
   } andThen {
     logExceptions("Unable to retrieve Nino")
@@ -104,9 +57,6 @@ class PersonalDetailsValidationConnectorImpl @Inject()(http: HttpClient, fronten
 
 @ImplementedBy(classOf[PersonalDetailsValidationConnectorImpl])
 trait PersonalDetailsValidationConnector {
-  def startRegisterOrganisationAsIndividual(completionURL: String, failureURL: String)
-                                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String]
-
-  def retrieveNino(journeyId: String)
+  def retrieveNino(validationId: String)
                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Nino]]
 }

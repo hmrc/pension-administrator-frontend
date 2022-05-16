@@ -16,52 +16,26 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
-import config.FrontendAppConfig
-import org.mockito.Mockito.when
+import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
 import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
-import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{FrontendAppConfigSpyProvider, WireMockHelper}
+import utils.WireMockHelper
 
 class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues {
 
   import IdentityVerificationConnectorSpec._
 
-  override protected lazy val app: Application = {
-
-    new GuiceApplicationBuilder()
-      .configure(
-        portConfigKey -> server.port().toString,
-        "auditing.enabled" -> false,
-        "metrics.enabled" -> false
-      ).overrides(
-      bind[FrontendAppConfig].toProvider[FrontendAppConfigSpyProvider]
-    )
-      .build()
-  }
-
   override protected def portConfigKey: String = "microservice.services.identity-verification.port"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  private lazy val connector = injector.instanceOf[PersonalDetailsValidationConnector]
-  private lazy val frontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  private lazy val connector = injector.instanceOf[IdentityVerificationConnector]
 
   private val url: String = s"/identity-verification/journey/$journeyId"
-
-  override def beforeAll(): Unit = {
-    super.beforeAll()
-    //when(frontendAppConfig.pointingFromIvApiToPdvApi).thenReturn(false)
-  }
 
   ".retrieveNinoFromIV" must {
 
     "return a Nino" when {
-
       "IV returned successfully with a nino" in {
         server.stubFor(
           get(urlEqualTo(url)
@@ -70,7 +44,7 @@ class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers 
           )
         )
 
-        connector.retrieveNino(journeyId).map {
+        connector.retrieveNinoFromIV(journeyId).map {
           result =>
             result.value mustBe Nino("AB000003D")
         }
@@ -79,7 +53,6 @@ class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers 
 
     "return None" when {
       "no nino returned from IV" in {
-
         server.stubFor(
           get(urlEqualTo(url)
           ).willReturn(
@@ -87,7 +60,7 @@ class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers 
           )
         )
 
-        connector.retrieveNino(journeyId).map {
+        connector.retrieveNinoFromIV(journeyId).map {
           result => {
             result mustBe None
           }
@@ -102,7 +75,7 @@ class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers 
           )
         )
 
-        connector.retrieveNino(journeyId).map {
+        connector.retrieveNinoFromIV(journeyId).map {
           result =>
             result mustBe None
         }
@@ -116,7 +89,7 @@ class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers 
           )
         )
 
-        connector.retrieveNino(journeyId).map {
+        connector.retrieveNinoFromIV(journeyId).map {
           result =>
             result mustBe None
         }

@@ -33,7 +33,7 @@ class IdentityVerificationProxyConnectorSpec extends AsyncWordSpec with MustMatc
 
   override protected def portConfigKey: String = "microservice.services.identity-verification-proxy.port"
 
-  private lazy val connector = injector.instanceOf[PersonalDetailsValidationConnector]
+  private lazy val connector = injector.instanceOf[IdentityVerificationConnector]
 
   "IdentityVerificationConnector .startRegisterOrganisationAsIndividual" must {
     "return correct responses successfully with status 201 (Created)" in {

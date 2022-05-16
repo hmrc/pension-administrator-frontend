@@ -17,45 +17,21 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
-import config.FrontendAppConfig
-import org.mockito.Mockito.when
 import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
-import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{FrontendAppConfigSpyProvider, WireMockHelper}
+import utils.WireMockHelper
 
 class PersonalDetailsValidationConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues {
 
   import PersonalDetailsValidationConnectorSpec._
 
-  override protected lazy val app: Application = {
-
-    new GuiceApplicationBuilder()
-      .configure(
-        portConfigKey -> server.port().toString,
-        "auditing.enabled" -> false,
-        "metrics.enabled" -> false
-      ).overrides(
-      bind[FrontendAppConfig].toProvider[FrontendAppConfigSpyProvider]
-    )
-      .build()
-  }
-
   override protected def portConfigKey: String = "microservice.services.personal-details-validation.port"
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private lazy val connector = injector.instanceOf[PersonalDetailsValidationConnector]
-  private lazy val frontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   private val url: String = s"/personal-details-validation/$journeyId"
-
-  override def beforeAll(): Unit = {
-    super.beforeAll()
-    //when(frontendAppConfig.pointingFromIvApiToPdvApi).thenReturn(true)
-  }
 
   ".retrieveNino" must {
 

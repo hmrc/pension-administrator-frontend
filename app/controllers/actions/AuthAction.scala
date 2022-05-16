@@ -18,7 +18,7 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{PersonalDetailsValidationConnector, SessionDataCacheConnector}
+import connectors.{IdentityVerificationConnector, PersonalDetailsValidationConnector, SessionDataCacheConnector}
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.routes
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
@@ -45,6 +45,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
+                                   identityVerificationConnector: IdentityVerificationConnector,
                                    personalDetailsValidationConnector: PersonalDetailsValidationConnector,
                                    sessionDataCacheConnector: SessionDataCacheConnector,
                                    val parser: BodyParsers.Default,
@@ -170,7 +171,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                              block: AuthenticatedRequest[A] => Future[Result],
                                              authRequest: AuthenticatedRequest[A])
                                             (implicit hc: HeaderCarrier): Future[Result] = {
-    personalDetailsValidationConnector.retrieveNino(journeyId).flatMap {
+    identityVerificationConnector.retrieveNinoFromIV(journeyId).flatMap {
       case Some(nino) =>
         val updatedAuth = AuthenticatedRequest(
           request = authRequest.request,
@@ -211,7 +212,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
     getData(RegisterAsBusinessId, id).flatMap {
       case Some(false) =>
-        personalDetailsValidationConnector.startRegisterOrganisationAsIndividual(
+        identityVerificationConnector.startRegisterOrganisationAsIndividual(
           config.ukJourneyContinueUrl,
           s"${config.loginContinueUrl}/unauthorised"
         ).map { link =>
@@ -230,7 +231,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     getData(RegisterAsBusinessId, id).flatMap {
       case Some(false) =>
         val completionURL = config.ukJourneyContinueUrl
-        val failureURL = s"${config.loginContinueUrl}"
+        val failureURL = s"${config.loginContinueUrl}/unauthorised"
         val url = s"${config.personalDetailsValidationFrontEnd}" +
           s"/personal-details-validation/start?completionUrl=$completionURL&failureUrl=$failureURL"
         Future.successful(SeeOther(url))
@@ -323,13 +324,14 @@ trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with Ac
 class AuthenticationWithNoIV @Inject()(override val authConnector: AuthConnector,
                                        config: FrontendAppConfig,
                                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                                       identityVerificationConnector: IdentityVerificationConnector,
                                        personalDetailsValidationConnector: PersonalDetailsValidationConnector,
                                        sessionDataCacheConnector: SessionDataCacheConnector,
                                        parser: BodyParsers.Default,
                                        featureToggleConnector: FeatureToggleConnector
                                       )(implicit executionContext: ExecutionContext) extends
-  FullAuthentication(authConnector, config, userAnswersCacheConnector, personalDetailsValidationConnector,
-    sessionDataCacheConnector, parser, featureToggleConnector)
+  FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector,
+    personalDetailsValidationConnector, sessionDataCacheConnector, parser, featureToggleConnector)
 
   with AuthorisedFunctions {
 
