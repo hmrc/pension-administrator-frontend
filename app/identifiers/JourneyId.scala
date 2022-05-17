@@ -19,3 +19,7 @@ package identifiers
 object JourneyId extends TypedIdentifier[String] {
   override def toString: String = "journeyId"
 }
+
+object ValidationId extends TypedIdentifier[String] {
+  override def toString: String = "validationId"
+}
