@@ -1,0 +1,79 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import utils.InputOption
+
+@this(
+govukInput: GovukInput,
+govukSelect : GovukSelect
+)
+
+@(form: Form[_], options: Seq[InputOption])(implicit request: Request[_], messages: Messages)
+
+        @govukInput(
+            Input(
+                label = Label(content = Text(messages("address.line.1")),
+                isPageHeading = true),
+                classes = "govuk-!-width-two-thirds"
+            ).withFormField(form("addressLine1"))
+        )
+
+        @govukInput(
+            Input(
+                label = Label(content = Text(messages("address.line.2")),
+                classes = "govuk-!-width-two-thirds",
+                isPageHeading = true),
+                classes = "govuk-!-width-two-thirds"
+            ).withFormField(form("addressLine2"))
+        )
+        @govukInput(
+            Input(
+                label = Label(content = Text(messages("address.line.3")),
+                isPageHeading = true),
+                classes = "govuk-!-width-one-half"
+            ).withFormField(form("addressLine3"))
+        )
+        @govukInput(
+            Input(
+                label = Label(content = Text(messages("address.line.4")),
+                isPageHeading = true),
+                classes = "govuk-!-width-one-half"
+            ).withFormField(form("addressLine4"))
+        )
+
+        <div class="govuk-!-width-one-half">
+                @govukSelect(Select(
+                    id = "country",
+                    name = "country",
+                    hint = Some(Hint(content = Text(messages("address.country.hint")))),
+                    classes = "govuk-!-width-one-third",
+                    items = Seq(SelectItem(value = Some(""))) ++
+                        options.map(valueOption =>
+                            SelectItem(
+                                value = Some(valueOption.value),
+                                text = valueOption.label
+                            )
+                        ),
+                        label = Label(
+                        content = Text(messages("address.country"))
+                    )
+                    ).withFormField(form("country"))
+                )
+        </div>

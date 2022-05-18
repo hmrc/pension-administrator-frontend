@@ -14,40 +14,75 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-main_template: main_template,
-formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    button: components_refactored.submit_button,
+    govukRadios : GovukRadios
 )
 
 
 @(form: Form[_], viewmodel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, viewmodel.title)) {
+
+@hint = @{
+    viewmodel.hint match {
+        case Some(hint) => Some(Hint(
+            content = Text(hint)))
+        case None =>None
+    }
+}
+
+@layout(
+    pageTitle = titleWithErrors(form, messages(viewmodel.title))
+) {
+
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+    }
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
-        @components.back_link()
-
-        @components.error_summary(form.errors)
-        <div class="form-group @if(form.hasErrors){form-group--error}">
-
-        @components.input_yes_no(
-            field = form(viewmodel.formFieldName.fold("value")(identity)),
-            label = viewmodel.heading,
-            labelClass = Some("visually-hidden"),
-            paragraphText = viewmodel.hint,
-            headingIsLegend = true
+        @govukRadios(
+            Radios(
+                fieldset = Some(
+                    Fieldset(
+                        legend = Some(
+                            Legend(
+                                content = Text(messages(viewmodel.heading)),
+                                classes = "govuk-fieldset__legend--xl",
+                                isPageHeading = true
+                            )
+                        )
+                    )
+                ),
+                hint = hint,
+                items = Seq(
+                    RadioItem(
+                        content = Text(messages("site.yes")),
+                        value = Some("true")
+                    ),
+                    RadioItem(
+                        content = Text(messages("site.no")),
+                        value = Some("false")
+                    )
+                ),
+                classes = "govuk-radios--inline"
+            ).withFormField(form(viewmodel.formFieldName.fold("value")(identity)))
         )
-        </div>
-        @components.submit_button(submitMessageKey = "site.save_and_continue")
 
-        @components.return_link(viewmodel.entityName, viewmodel.mode)
+        @button(messages("site.save_and_continue"))
+        @if(viewmodel.displayReturnLink){
+            @components_refactored.return_link(viewmodel.entityName, viewmodel.mode)
+        }
     }
 }

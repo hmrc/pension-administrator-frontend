@@ -36,13 +36,15 @@
     pageTitle = titleWithErrors(form, messages("nonUKBusinessType.title"))
 ) {
 
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(("nonUKBusinessType.heading"))</h1>
 
     @formHelper(action = NonUKBusinessTypeController.onSubmit(), 'autoComplete -> "off") {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-        }
+
+    @if(form.errors.nonEmpty) {
+    @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+    }
+
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(("nonUKBusinessType.heading"))</h1>
 
         @govukRadios(
             Radios(
