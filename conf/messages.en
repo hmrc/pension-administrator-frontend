@@ -95,6 +95,9 @@ site.exit = Exit to GOV.UK
 site.error = Error:
 site.true = true
 site.false = false
+site.company = The company
+site.view = View
+site.add = Add
 
 common.you = you
 common.selectContactAddress.heading = Select the contact address for {0}
@@ -1164,3 +1167,22 @@ cannotRegisterAdministrator.title = You cannot register as an administrator usin
 cannotRegisterAdministrator.heading = You cannot register as an administrator using this ID
 cannotRegisterAdministrator.p1 = Our records show that the scheme administrator ID you are trying to register with is used by another administrator.
 cannotRegisterAdministrator.head.link = Contact HMRC for help
+
+continueWithRegistration.title = You have already started registering a pension scheme administrator
+continueWithRegistration.heading = You have already started registering a pension scheme administrator
+continueWithRegistration.p1 = Do you want to continue?
+continueWithRegistration.yes = Yes, continue registering the administrator
+continueWithRegistration.no = No, register a new administrator
+continueWithRegistration.no.hint = This will delete all the information from your incomplete administrator registration
+
+taskList.complete = Pension scheme administrator details are complete
+taskList.incomplete = Pension scheme administrator details are incomplete
+taskList.numberCompleted = You have completed {0} of {1} sections
+taskList.saveAnswers = We will save your answers until
+taskList.declaration.incomplete = You must complete every section before you can declare.
+taskList.declaration = Read declaration and send details to HMRC
+taskList.basicDetails = basic details
+taskList.companyDetails = company details
+taskList.contactDetails = contact details
+taskList.directors = directors
+taskList.workingKnowledgeDetails = working knowledge details

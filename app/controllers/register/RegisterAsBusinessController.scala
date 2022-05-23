@@ -19,17 +19,19 @@ package controllers.register
 import audit.{AuditService, PSAStartEvent}
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
-import identifiers.register.RegisterAsBusinessId
+import identifiers.register.{BusinessTypeId, RegisterAsBusinessId, RegistrationInfoId}
+import models.FeatureToggleName.PsaRegistration
+import models.RegistrationCustomerType.UK
+import models.register.BusinessType.{LimitedCompany, UnlimitedCompany}
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.{AuthWithNoIV, Register}
-import utils.{Navigator, UserAnswers}
+import utils.annotations.AuthWithNoIV
 import views.html.register.registerAsBusiness
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +42,7 @@ class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
                                              allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              cache: UserAnswersCacheConnector,
-                                             @Register navigator: Navigator,
+                                             featureToggleConnector: FeatureToggleConnector,
                                              auditService: AuditService,
                                              val controllerComponents: MessagesControllerComponents,
                                              val view: registerAsBusiness
@@ -60,18 +62,33 @@ class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
-
       form.bindFromRequest().fold(
         errors =>
           Future.successful(BadRequest(view(errors))),
         isBusiness => {
-          cache.save(request.externalId, RegisterAsBusinessId, isBusiness).map {
-            newCache =>
-              PSAStartEvent.sendEvent(auditService)
-              Redirect(navigator.nextPage(RegisterAsBusinessId, NormalMode, UserAnswers(newCache)))
+          for {
+            newCache <- cache.save(request.externalId, RegisterAsBusinessId, isBusiness)
+            _ = PSAStartEvent.sendEvent(auditService)
+            isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
+          } yield {
+            println("is bis" + isBusiness)
+            println("is fe" + isFeatureEnabled)
+            (isBusiness, isFeatureEnabled) match {
+              case (false, _) => Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())
+              case (true, false) => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+              case (true, true) =>
+                val businessType = request.userAnswers.flatMap(_.get(BusinessTypeId))
+                val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
+                println("bis type " + businessType)
+                println("cust type " + customerType)
+                (businessType, customerType) match {
+                  case (Some(LimitedCompany) | Some(UnlimitedCompany), Some(UK)) =>
+                    Redirect(routes.ContinueWithRegistrationController.onPageLoad())
+                  case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+                }
+            }
           }
         }
       )
   }
-
 }
