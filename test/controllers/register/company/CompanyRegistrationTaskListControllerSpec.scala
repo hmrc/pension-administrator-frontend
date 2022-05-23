@@ -29,11 +29,13 @@ class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase {
   private val view: taskList = app.injector.instanceOf[taskList]
   private val validData = UserAnswers()
   private val companyName = "Test LTD"
+  private val expiryDateMillis = 1653326181964L
+  private val expiryDate = "23 May 2022"
 
   "CompanyRegistrationTaskListController" must {
     "onPageLoad" must {
       "return OK and the correct view for a GET" in {
-        val userAnswers = validData.businessName(companyName)
+        val userAnswers = validData.businessName(companyName).setExpiryDate(expiryDateMillis).asOpt.value
         val result = controller(userAnswers.dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
         val expectedTaskList = TaskList(companyName, List(
@@ -61,5 +63,5 @@ class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase {
     )
 
   private def viewAsString(taskList: TaskList): String =
-    view(taskList)(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
+    view(taskList, expiryDate)(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
 }

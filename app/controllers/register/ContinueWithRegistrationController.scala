@@ -19,6 +19,7 @@ package controllers.register
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import forms.register.YesNoFormProvider
+import identifiers.register.RegistrationInfoId
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -41,7 +42,12 @@ class ContinueWithRegistrationController @Inject()(
   val form: Form[Boolean] = yesNoFormProvider()
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData).async { implicit request =>
-    Future.successful(Ok(continueWithRegistration(form)))
+    val finishedBusinessMatching = request.userAnswers.flatMap(_.get(RegistrationInfoId)).isDefined
+    if(finishedBusinessMatching) {
+      Future.successful(Ok(continueWithRegistration(form)))
+    } else {
+      Future.successful(Redirect(routes.RegisterAsBusinessController.onPageLoad()))
+    }
   }
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData).async { implicit request =>

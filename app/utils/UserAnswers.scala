@@ -165,6 +165,9 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     }
   }
 
+  def set[A: Writes](path: JsPath)(value: A): JsResult[UserAnswers] =
+    JsLens.fromPath(path).set(Json.toJson(value), json).map(UserAnswers)
+
   def setAllFlagsToValue[I <: TypedIdentifier[Boolean]](ids: List[I], value: Boolean)(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
 
     @tailrec
@@ -181,6 +184,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
 
     setRec(ids, JsSuccess(this))
   }
+
+  def setExpiryDate(millis: Long): JsResult[UserAnswers] = set[Long](__ \ "expireAt")(millis)
 
   def setAllExistingAddress(ids: Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]]): JsResult[UserAnswers] = {
 
