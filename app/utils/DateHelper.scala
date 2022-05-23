@@ -17,12 +17,15 @@
 package utils
 
 
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Date
 
 class DateHelper {
   private[utils] def currentDate: LocalDate = LocalDate.now()
 
+  private val simpleFormatter = new SimpleDateFormat("dd MMMM YYYY")
   private val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
   private val formatterWithSlash =DateTimeFormatter.ofPattern("d/MM/uuuu")
 
@@ -31,6 +34,8 @@ class DateHelper {
   def formatDateWithSlash(date: LocalDate): String = date.format(formatterWithSlash)
 
   def dateAfterGivenDays(daysAhead: Int): String = formatDate(currentDate.plusDays(daysAhead))
+
+  def fromMillis(millis: Long): String = simpleFormatter.format(new Date(millis))
 }
 
 object DateHelper extends DateHelper

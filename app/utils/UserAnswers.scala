@@ -44,6 +44,11 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   def getOrException[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): A =
     get(id).getOrElse(throw new RuntimeException("Unexpected empty option"))
 
+  def getOrException[A](path: JsPath)(implicit rds: Reads[A]): A =
+    JsLens.fromPath(path).get(json)
+      .flatMap(Json.fromJson[A])
+      .getOrElse(throw new RuntimeException("Unexpected empty option"))
+
   def setOrException[I <: TypedIdentifier.PathDependent](id: I)(value: id.Data)(implicit writes: Writes[id.Data]): UserAnswers =
     set(id)(value) match {
       case JsSuccess(v, _) => v
@@ -64,7 +69,6 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   def allDirectors: Seq[PersonName] = {
     getAll[PersonName](DirectorNameId.collectionPath).getOrElse(Nil)
   }
-
 
   def allDirectorsAfterDelete(mode: Mode): Seq[Person] = {
     val directors = for ((director, index) <- allDirectors.zipWithIndex) yield {
@@ -242,4 +246,5 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     ).flatten.contains(true)
   }
 
+  def expireAt: Long = getOrException[Long](__ \ "expireAt")
 }

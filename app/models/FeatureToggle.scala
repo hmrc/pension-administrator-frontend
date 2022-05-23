@@ -38,10 +38,15 @@ object FeatureToggleName {
     val asString = "psa-from-iv-to-pdv"
   }
 
+  case object PsaRegistration extends FeatureToggleName {
+    val asString = "psa-registration"
+  }
+
   val toggles = Seq(PsaFromIvToPdv)
 
   implicit val reads: Reads[FeatureToggleName] = Reads {
     case JsString(PsaFromIvToPdv.asString) => JsSuccess(PsaFromIvToPdv)
+    case JsString(PsaRegistration.asString) => JsSuccess(PsaRegistration)
     case _ => JsError("Unrecognised feature toggle name")}
 
   implicit val writes: Writes[FeatureToggleName] = Writes(value => JsString(value.asString))
