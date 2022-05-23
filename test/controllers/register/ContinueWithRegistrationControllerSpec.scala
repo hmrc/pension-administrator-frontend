@@ -26,6 +26,7 @@ import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.UserAnswers
+import utils.testhelpers.DataCompletionBuilder._
 import views.html.register.continueWithRegistration
 
 class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageBehaviours {
@@ -40,9 +41,10 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
 
     "onPageLoad" must {
 
-      "return OK and the correct view for a GET" in {
-
-        val result = onPageLoadAction(getEmptyData, FakeAuthAction)(fakeRequest)
+      "return OK and the correct view for a GET if the user has completed business matching" in {
+        val userAnswers = validData.completeCompanyDetailsUK
+        val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
+          .onPageLoad()(fakeRequest)
 
         status(result) mustBe OK
         contentAsString(result) mustBe viewAsString(form)
@@ -54,6 +56,14 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
+      }
+
+      "return 303 and redirect to 'what to register' if the user hasn't completed business matching" in {
+        val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
+          .onPageLoad()(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.RegisterAsBusinessController.onPageLoad().url)
       }
     }
 
