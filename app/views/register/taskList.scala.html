@@ -28,9 +28,9 @@
 
 @isCompleted(isCompleted: Boolean) = {
     @if(isCompleted){
-        <span class="hmrc-status-tag task-status--completed">@messages("status.complete")</span>
+        <span class="hmrc-status-tag task-status--completed">@messages("taskList.status.completed")</span>
     } else {
-        <span class="hmrc-status-tag task-status--in-progress">@messages("status.incomplete")</span>
+        <span class="hmrc-status-tag task-status--in-progress">@messages("taskList.status.incomplete")</span>
     }
 }
 
