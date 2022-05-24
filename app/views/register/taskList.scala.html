@@ -62,7 +62,7 @@
                     @taskList.tasks.map{ task =>
                         <li class="app-task-list__item">
                            <span class="app-task-list__task-name">
-                              <a href="#" class="app-task-list__task-name govuk-link">
+                              <a href="@task.url" class="app-task-list__task-name govuk-link">
                                 @viewOrAdd(task.isCompleted) @taskList.entityName's @task.name
                               </a>
                            </span>

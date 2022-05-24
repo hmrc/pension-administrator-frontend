@@ -17,10 +17,12 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
+import connectors.cache.FeatureToggleConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
+import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import play.api.Logger
 import play.api.data.Form
@@ -34,7 +36,7 @@ import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddCompanyDirectorsController @Inject()(
                                                appConfig: FrontendAppConfig,
@@ -45,7 +47,8 @@ class AddCompanyDirectorsController @Inject()(
                                                requireData: DataRequiredAction,
                                                formProvider: AddCompanyDirectorsFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
-                                               val view: addCompanyDirectors
+                                               val view: addCompanyDirectors,
+                                               featureToggleConnector: FeatureToggleConnector,
                                              )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -63,24 +66,32 @@ class AddCompanyDirectorsController @Inject()(
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData) {
+    (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete(mode)
 
         if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
-          Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers))
+          Future.successful(Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers)))
         }
         else {
           form.bindFromRequest().fold(
             (formWithErrors: Form[_]) =>
-              BadRequest(view(formWithErrors, mode, directors, psaName())),
+              Future.successful(BadRequest(view(formWithErrors, mode, directors, psaName()))),
             value =>
               request.userAnswers.set(AddCompanyDirectorsId)(value).fold(
                 errors => {
                   logger.error("Unable to set user answer", JsResultException(errors))
-                  InternalServerError
+                  Future.successful(InternalServerError)
                 },
-                userAnswers => Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, userAnswers))
+                userAnswers => {
+                  featureToggleConnector.get(PsaRegistration.asString).map { featureToggle =>
+                   if (featureToggle.isEnabled) {
+                      Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
+                   } else {
+                     Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, userAnswers))
+                   }
+                  }
+                }
               )
           )
         }

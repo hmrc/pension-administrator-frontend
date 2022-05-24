@@ -50,7 +50,10 @@ class CompanyRegistrationTaskListController @Inject()(
     val basicDetails = Task(messages("taskList.basicDetails"), isCompleted = false)
     val companyDetails = Task(messages("taskList.companyDetails"), isCompleted = false)
     val contactDetails = Task(messages("taskList.contactDetails"), isCompleted = false)
-    val directors = Task(messages("taskList.directors"), isCompleted = false)
+    val directors = {
+      val complete = userAnswers.allDirectors.nonEmpty
+      Task(messages("taskList.directors"), isCompleted = complete, url = controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad().url)
+    }
     val workingKnowledgeDetails = Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false)
     TaskList(businessName, List(basicDetails, companyDetails, contactDetails, directors, workingKnowledgeDetails))
   }
