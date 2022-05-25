@@ -61,3 +61,6 @@ GET         /incomplete-changes                             controllers.register
 
 GET         /what-you-will-need                             controllers.register.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
 GET         /what-you-will-need                             controllers.register.WhatYouWillNeedController.onPageLoad(mode: Mode = UpdateMode)
+
+GET         /continue-with-registration                     controllers.register.ContinueWithRegistrationController.onPageLoad()
+POST        /continue-with-registration                     controllers.register.ContinueWithRegistrationController.onSubmit()

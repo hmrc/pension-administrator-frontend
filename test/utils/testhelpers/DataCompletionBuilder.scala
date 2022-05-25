@@ -172,6 +172,20 @@ object DataCompletionBuilder {
         .companyEmail(email)
         .companyPhone(phone)
 
+    def completeCompanyDetailsNonUKCustomer: UserAnswers =
+      answers
+        .areYouInUk(answer = false)
+        .businessType(BusinessType.LimitedCompany)
+        .regInfo(RegistrationLegalStatus.LimitedCompany, RegistrationCustomerType.NonUK)
+        .businessName()
+        .nonUkCompanyAddress(address)
+        .companyContactAddress(address)
+        .companyAddressYears(AddressYears.UnderAYear)
+        .companyTradingOverAYear(flag = true)
+        .companyPreviousAddress(address)
+        .companyEmail(email)
+        .companyPhone(phone)
+
     def completePartnershipDetailsNonUK: UserAnswers =
       answers
         .areYouInUk(answer = false)
@@ -186,14 +200,14 @@ object DataCompletionBuilder {
         .partnershipEmail(email)
         .partnershipPhone(phone)
 
-    def regInfo(legalStatus: RegistrationLegalStatus): UserAnswers =
+    def regInfo(legalStatus: RegistrationLegalStatus, customerType: RegistrationCustomerType = RegistrationCustomerType.UK): UserAnswers =
       answers
         .registrationInfo(
           RegistrationInfo(
             legalStatus = legalStatus,
             sapNumber = "test-sap",
             noIdentifier = false,
-            customerType = RegistrationCustomerType.UK,
+            customerType = customerType,
             idType = None,
             idNumber = None
           )
