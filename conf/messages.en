@@ -1186,3 +1186,10 @@ taskList.companyDetails = company details
 taskList.contactDetails = contact details
 taskList.directors = directors
 taskList.workingKnowledgeDetails = working knowledge details
+
+whatYouWillNeed.workingKnowledge.title = Working knowledge of pensions and pensions tax legislation
+whatYouWillNeed.workingKnowledge.heading = There must be a person or company associated with the scheme that has working knowledge of pensions and pensions tax legislation. You will need to tell us their:
+whatYouWillNeed.workingKnowledge.item1 = name
+whatYouWillNeed.workingKnowledge.item2 = email address
+whatYouWillNeed.workingKnowledge.item3 = phone number
+whatYouWillNeed.workingKnowledge.item4 = address

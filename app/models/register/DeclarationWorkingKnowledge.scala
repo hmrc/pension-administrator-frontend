@@ -32,8 +32,12 @@ object DeclarationWorkingKnowledge extends Enumerable.Implicits {
     def hasWorkingKnowledge:Boolean = false
   }
 
+  case object WhatYouWillNeed extends WithName("whatYouWillNeed") with DeclarationWorkingKnowledge {
+    def hasWorkingKnowledge:Boolean = false
+  }
+
   val values: Seq[DeclarationWorkingKnowledge] = Seq(
-    WorkingKnowledge, Adviser
+    WorkingKnowledge, WhatYouWillNeed, Adviser
   )
 
   val options: Seq[InputOption] = values.map {
@@ -44,6 +48,13 @@ object DeclarationWorkingKnowledge extends Enumerable.Implicits {
   implicit val enumerable: Enumerable[DeclarationWorkingKnowledge] =
     Enumerable(values.map(v => v.toString -> v): _*)
 
-  def declarationWorkingKnowledge(workingKnowledge: Boolean): DeclarationWorkingKnowledge =
-    if(workingKnowledge) WorkingKnowledge else Adviser
+  def declarationWorkingKnowledge(workingKnowledge: Boolean, isRegistrationToggleEnabled: Boolean): DeclarationWorkingKnowledge = {
+    if(workingKnowledge) WorkingKnowledge else {
+      if (isRegistrationToggleEnabled) {
+        WhatYouWillNeed
+      } else {
+        Adviser
+      }
+    }
+  }
 }

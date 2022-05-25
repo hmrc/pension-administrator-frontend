@@ -18,7 +18,7 @@ package controllers.register.company
 
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.BusinessNameId
-import models.Mode
+import models.{Mode, NormalMode}
 import models.register.{Task, TaskList}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +54,7 @@ class CompanyRegistrationTaskListController @Inject()(
       val complete = userAnswers.allDirectors.nonEmpty
       Task(messages("taskList.directors"), isCompleted = complete, url = controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad().url)
     }
-    val workingKnowledgeDetails = Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false)
+    val workingKnowledgeDetails = Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false, url = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url)
     TaskList(businessName, List(basicDetails, companyDetails, contactDetails, directors, workingKnowledgeDetails))
   }
 }

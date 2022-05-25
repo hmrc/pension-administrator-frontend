@@ -134,3 +134,5 @@ GET         /:mode/trading-time                           controllers.register.c
 POST        /:mode/trading-time                           controllers.register.company.CompanyTradingOverAYearController.onSubmit(mode: Mode)
 
 GET         /task-list                                    controllers.register.company.CompanyRegistrationTaskListController.onPageLoad(mode: Mode = NormalMode)
+GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad
+GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad

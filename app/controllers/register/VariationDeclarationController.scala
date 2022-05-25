@@ -89,7 +89,7 @@ class VariationDeclarationController @Inject()(appConfig: FrontendAppConfig,
           ExistingPSA(isExistingPSA = request.user.isExistingPSA,
             existingPSAId = request.user.existingPSAId)).asOpt
           .getOrElse(UserAnswers(json))
-          .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.declarationWorkingKnowledge(workingKnowledge))
+          .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.declarationWorkingKnowledge(workingKnowledge, false))
           .asOpt.getOrElse(UserAnswers(json))
 
         pensionAdministratorConnector.updatePsa(psaId, answers).flatMap { psaResponse =>
