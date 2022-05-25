@@ -37,7 +37,7 @@ class ContinueWithRegistrationController @Inject()(
                                                     getData: DataRetrievalAction,
                                                     continueWithRegistration: continueWithRegistration,
                                                     yesNoFormProvider: YesNoFormProvider,
-                                                    cache: UserAnswersCacheConnector,
+                                                    cache: UserAnswersCacheConnector
                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   val form: Form[Boolean] = yesNoFormProvider()
 
