@@ -17,22 +17,24 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.VATNumberController
 import forms.register.EnterVATFormProvider
 import identifiers.register.{BusinessNameId, EnterVATId}
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterVAT
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
                                           val cacheConnector: UserAnswersCacheConnector,
@@ -43,7 +45,8 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
                                           requireData: DataRequiredAction,
                                           formProvider: EnterVATFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
-                                          val view: enterVAT
+                                          val view: enterVAT,
+                                          featureToggleConnector: FeatureToggleConnector,
                                          )(implicit val executionContext: ExecutionContext) extends VATNumberController {
 
   private def form(companyName: String)
@@ -68,6 +71,20 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(EnterVATId, mode, form(entityName), viewModel(mode, entityName))
+      form(entityName).bindFromRequest().fold(
+        errors =>
+          Future.successful(BadRequest(view(errors, viewModel(mode, entityName)))),
+        value =>
+          for {
+            featureToggle <- featureToggleConnector.get(PsaRegistration.asString)
+            newCache <- cacheConnector.save(request.externalId, EnterVATId, value)
+          } yield {
+            if (featureToggle.isEnabled) {
+              Redirect(companydetails.routes.CheckYourAnswersController.onPageLoad())
+            } else {
+              Redirect(navigator.nextPage(EnterVATId, mode, UserAnswers(newCache)))
+            }
+          }
+      )
   }
 }

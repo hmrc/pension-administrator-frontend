@@ -17,14 +17,15 @@
 package controllers.register.company
 
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register.BusinessNameId
-import models.{Mode, NormalMode}
+import identifiers.register.company.{CompanyContactAddressId, CompanyEmailId, CompanyPhoneId}
+import identifiers.register._
 import models.register.{Task, TaskList}
+import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{DateHelper, UserAnswers}
 import utils.annotations.AuthWithNoIV
+import utils.{DateHelper, UserAnswers}
 import views.html.register.taskList
 
 import javax.inject.Inject
@@ -47,14 +48,49 @@ class CompanyRegistrationTaskListController @Inject()(
 
   private def buildTaskList(userAnswers: UserAnswers)(implicit messages: Messages): TaskList = {
     val businessName = userAnswers.get(BusinessNameId).fold(messages("site.company"))(identity)
-    val basicDetails = Task(messages("taskList.basicDetails"), isCompleted = false)
-    val companyDetails = Task(messages("taskList.companyDetails"), isCompleted = false)
-    val contactDetails = Task(messages("taskList.contactDetails"), isCompleted = false)
     val directors = {
       val complete = userAnswers.allDirectors.nonEmpty
       Task(messages("taskList.directors"), isCompleted = complete, url = controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad().url)
     }
     val workingKnowledgeDetails = Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false, url = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url)
-    TaskList(businessName, List(basicDetails, companyDetails, contactDetails, directors, workingKnowledgeDetails))
+
+    TaskList(businessName, List(
+      buildBasicDetailsTask(userAnswers),
+      buildCompanyDetails(userAnswers),
+      buildContactDetails(userAnswers),
+      directors,
+      workingKnowledgeDetails)
+    )
+  }
+
+  private def buildBasicDetailsTask(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
+    val isCompleted = userAnswers.get(RegistrationInfoId).isDefined
+    val url = routes.BusinessMatchingCheckYourAnswersController.onPageLoad().url
+    Task(messages("taskList.basicDetails"), isCompleted, url)
+  }
+
+  private def buildCompanyDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
+    val isPAYECompleted = userAnswers.get(HasPAYEId).exists(if (_) userAnswers.get(EnterPAYEId).isDefined else true)
+    val isVATCompleted = userAnswers.get(HasVATId).exists(if (_) userAnswers.get(EnterVATId).isDefined else true)
+    val isCompleted = isPAYECompleted && isVATCompleted
+    val url = if(isCompleted){
+      companydetails.routes.CheckYourAnswersController.onPageLoad().url
+    } else {
+      companydetails.routes.WhatYouWillNeedController.onPageLoad().url
+    }
+    Task(messages("taskList.companyDetails"), isCompleted, url)
+  }
+
+  private def buildContactDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
+    val isContactAddressCompleted = userAnswers.get(CompanyContactAddressId).isDefined
+    val isEmailCompleted = userAnswers.get(CompanyEmailId).isDefined
+    val isPhoneCompleted = userAnswers.get(CompanyPhoneId).isDefined
+    val isCompleted = isContactAddressCompleted && isEmailCompleted && isPhoneCompleted
+    val url = if(isCompleted){
+      contactdetails.routes.CheckYourAnswersController.onPageLoad().url
+    } else {
+      contactdetails.routes.WhatYouWillNeedController.onPageLoad().url
+    }
+    Task(messages("taskList.contactDetails"), isCompleted, url)
   }
 }

@@ -17,13 +17,14 @@
 package controllers.register.company
 
 import connectors.RegistrationConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.company.ConfirmCompanyAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
+import models.FeatureToggleName.PsaRegistration
 import models._
 import models.requests.DataRequest
 import play.api.Logger
@@ -52,7 +53,8 @@ class ConfirmCompanyDetailsController @Inject()(
                                                  formProvider: CompanyAddressFormProvider,
                                                  countryOptions: CountryOptions,
                                                  val controllerComponents: MessagesControllerComponents,
-                                                 val view: confirmCompanyDetails
+                                                 val view: confirmCompanyDetails,
+                                                 featureToggleConnector: FeatureToggleConnector,
                                                )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -92,7 +94,13 @@ class ConfirmCompanyDetailsController @Inject()(
             },
           {
             case true =>
-              Future.successful(Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, request.userAnswers)))
+              featureToggleConnector.get(PsaRegistration.asString).map { featureToggle =>
+                if(featureToggle.isEnabled){
+                  Redirect(routes.CompanyRegistrationTaskListController.onPageLoad())
+                } else {
+                  Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, request.userAnswers))
+                }
+              }
             case false =>
               val updatedAnswers = request.userAnswers.removeAllOf(List(ConfirmCompanyAddressId, RegistrationInfoId)).asOpt.getOrElse(request.userAnswers)
               dataCacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>

@@ -202,6 +202,14 @@ contactDetails.error.phone.required = Enter a phone number
 contactDetails.error.phone.length =  Enter a phone number using 24 characters or less
 contactDetails.error.phone.invalid = Enter a phone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
 
+contactDetails.whatYouWillNeed.title = {0}’s contact details
+contactDetails.whatYouWillNeed.heading = {0}’s contact details
+contactDetails.whatYouWillNeed.p1 = You will need to tell us {0}’s:
+contactDetails.whatYouWillNeed.li1 = contact address
+contactDetails.whatYouWillNeed.li2 = previous address if test has used this address for less than 1 year
+contactDetails.whatYouWillNeed.li3 = contact email address
+contactDetails.whatYouWillNeed.li4 = contact phone number
+
 email.title = What is {0}’s email address?
 individual.email.title = What is your email address?
 adviser.email.title = What is the adviser's email address?
@@ -244,6 +252,14 @@ companyDetails.checkYourAnswersLabel = Name
 companyDetails.error.companyName.required = Please give an answer for Company name
 companyDetails.error.companyName.length = The name cannot be more than 160 characters
 companyDetails.error.companyName.invalid = The name contains invalid characters
+
+companyDetails.whatYouWillNeed.title = {0}’s company details
+companyDetails.whatYouWillNeed.heading = {0}’s company details
+companyDetails.whatYouWillNeed.p1 = You will need to tell us {0}’s:
+companyDetails.whatYouWillNeed.li1 = company number, or reason why it does not have one
+companyDetails.whatYouWillNeed.p2 = If {0} has them, you will also need to tell us their:
+companyDetails.whatYouWillNeed.li2 = employer PAYE reference (you can tell us any employer PAYE reference if test has more than one)
+companyDetails.whatYouWillNeed.li3 = VAT registration number
 
 previousAddress.checkYourAnswersLabel = {0}’s previous address
 previousAddress.visuallyHidden.text = {0}’s previous address
