@@ -16,17 +16,18 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.{BusinessNameId, HasVATId}
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -51,7 +52,8 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
       entityName = companyName
     )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany,
+                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
     new HasCompanyVATController(frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -61,7 +63,8 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      featureToggleConnector
     )
 
   private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =
@@ -95,6 +98,16 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "redirect to the 'company task list' page when user selection is no and feature flag is enabled" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+
+      val enabledFeatureFlag = FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      val result = controller(featureToggleConnector = enabledFeatureFlag).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(companydetails.routes.CheckYourAnswersController.onPageLoad().url)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

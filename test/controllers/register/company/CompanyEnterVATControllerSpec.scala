@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.EnterVATFormProvider
@@ -26,7 +26,6 @@ import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterVAT
@@ -42,7 +41,8 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
   val formProvider = new EnterVATFormProvider()
   val form: Form[String] = formProvider(companyName)
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getCompany,
+                 featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
     new CompanyEnterVATController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
@@ -53,7 +53,8 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      featureToggleConnector
     )
 
   private def viewModel: CommonFormWithHintViewModel =

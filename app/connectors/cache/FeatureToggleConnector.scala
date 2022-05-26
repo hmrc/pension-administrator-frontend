@@ -16,7 +16,7 @@
 
 package connectors.cache
 
-import com.google.inject.Inject
+import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import models.FeatureToggle
 import play.api.Logger
@@ -28,12 +28,12 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 import uk.gov.hmrc.http.HttpReads.Implicits._
 
-class FeatureToggleConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
-  extends HttpResponseHelper {
+class IFeatureToggleConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
+  extends FeatureToggleConnector with HttpResponseHelper {
 
   private val logger = Logger(classOf[FeatureToggleConnector])
 
-  def get(name: String)
+  override def get(name: String)
          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[FeatureToggle] = {
     val endPoint = config.featureToggleUrl(name)
     http.GET[HttpResponse](endPoint) map {
@@ -46,4 +46,9 @@ class FeatureToggleConnector @Inject()(http: HttpClient, config: FrontendAppConf
       case Failure(t: Throwable) => logger.warn("Unable to get toggle value", t)
     }
   }
+}
+
+@ImplementedBy(classOf[IFeatureToggleConnector])
+trait FeatureToggleConnector {
+  def get(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[FeatureToggle]
 }

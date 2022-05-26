@@ -16,15 +16,14 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
@@ -37,10 +36,21 @@ class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: phone = app.injector.instanceOf[phone]
 
-  private def controller(dataRetrievalAction: DataRetrievalAction) = new CompanyPhoneController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+  private def controller(dataRetrievalAction: DataRetrievalAction,
+                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+    new CompanyPhoneController(
+      new FakeNavigator(onwardRoute),
+      frontendAppConfig,
+      FakeUserAnswersCacheConnector,
+      FakeAuthAction,
+      FakeAllowAccessProvider(config = frontendAppConfig),
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider,
+      controllerComponents,
+      view,
+      featureToggleConnector
+    )
 
   private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode), Some("psaName"))(fakeRequest, messages).toString
 
