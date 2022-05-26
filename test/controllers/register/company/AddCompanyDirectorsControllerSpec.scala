@@ -22,7 +22,7 @@ import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.company.directors.DirectorNameId
-import models.FeatureToggle.Disabled
+import models.FeatureToggle.{Disabled, Enabled}
 import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, PersonName, UserType}
@@ -70,8 +70,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when less than maximum directors exist and valid data is submitted if PSA registration toggle is off" in {
-      val mockFeatureToggleConnector = mock[FeatureToggleConnector]
-      when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
+      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
 
       val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe): _*)
 
@@ -81,6 +80,19 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "redirect to the task list page when less than maximum directors exist and valid data is submitted if PSA registration toggle is on" in {
+      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
+
+      val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe): _*)
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     }
 
     "return a Bad Request and errors when less than maximum directors exist and invalid data is submitted" in {
@@ -171,7 +183,12 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
 
   protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
 
-  private val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+  private val defaultFeatureToggleConnector = {
+    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
+    mockFeatureToggleConnector
+  }
+
   protected def controller(
                             dataRetrievalAction: DataRetrievalAction = getEmptyData,
                             navigator: FakeNavigator = fakeNavigator()
@@ -186,7 +203,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
       formProvider,
       controllerComponents,
       view,
-      mockFeatureToggleConnector
+      defaultFeatureToggleConnector
     )
 
   val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
