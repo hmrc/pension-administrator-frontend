@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
@@ -29,7 +29,6 @@ import play.api.libs.json._
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Person
@@ -163,6 +162,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
 
   protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
 
+  private val mockFeatureToggleConnector = mock[FeatureToggleConnector]
   protected def controller(
                             dataRetrievalAction: DataRetrievalAction = getEmptyData,
                             navigator: FakeNavigator = fakeNavigator()
@@ -176,7 +176,8 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      mockFeatureToggleConnector
     )
 
   val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",

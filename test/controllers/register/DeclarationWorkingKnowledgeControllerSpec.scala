@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
@@ -27,7 +27,6 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import views.html.register.declarationWorkingKnowledge
 
@@ -39,6 +38,8 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
   val form: Form[Boolean] = formProvider()
 
   val view: declarationWorkingKnowledge = app.injector.instanceOf[declarationWorkingKnowledge]
+  private val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DeclarationWorkingKnowledgeController(
@@ -49,7 +50,8 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      mockFeatureToggleConnector
     )
 
   def viewAsString(form: Form[_] = form): String = view(form, NormalMode)(fakeRequest, messages).toString
