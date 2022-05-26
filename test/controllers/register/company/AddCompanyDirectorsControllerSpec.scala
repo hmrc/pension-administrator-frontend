@@ -22,8 +22,12 @@ import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.company.directors.DirectorNameId
+import models.FeatureToggle.Disabled
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, PersonName, UserType}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.AnyContent
@@ -33,6 +37,8 @@ import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Person
 import views.html.register.company.addCompanyDirectors
+
+import scala.concurrent.Future
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
@@ -63,7 +69,10 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
-    "redirect to the next page when less than maximum directors exist and valid data is submitted" in {
+    "redirect to the next page when less than maximum directors exist and valid data is submitted if PSA registration toggle is off" in {
+      val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+      when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
+
       val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe): _*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
