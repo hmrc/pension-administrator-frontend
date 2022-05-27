@@ -27,8 +27,11 @@
 
 @(psaId: String, psaName: String, psaEmail: String,isPsaTypeCompany:Boolean)(implicit request: DataRequest[_], messages: Messages)
 
-@registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.schemeLink")</a>}
+@registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.registerLink")</a>}
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
+@addSchemeLink = {<a id="add-scheme-link" href="@appConfig.addSchemeUrl">@messages("confirmation.whatYouNeedToKnow.addPensionSchemeLink")</a>}
+@addRacDacLink = {<a id="add-rac-dac-link" href="@appConfig.addRacDacUrl">@messages("confirmation.whatYouNeedToKnow.addRacDacLink")</a>}
+
 
 @main_template(
     if(request.user.isExistingPSA) messages("confirmation.existingPSA.title") else messages("confirmation.newPSA.title")
@@ -60,15 +63,24 @@
     </p>
 
     <h2 class="heading-medium">@messages("confirmation.whatYouNeedToKnow.heading")</h2>
-    <p>@messages("confirmation.action.subheading")</p>
+    @if(isPsaTypeCompany){
+        <p>@messages("confirmation.action.company.subheading")</p>
+    } else {
+        <p>@messages("confirmation.action.individual.subheading")</p>
+    }
+
 
     <ul id="what-you-need-to-know" class="list list-bullet">
         @if(request.user.isExistingPSA){
         <li>@Html(Message("confirmation.whatYouNeedToKnow.existingPSA.detail").withArgs(registerSchemeLink))</li>
-        <li>@messages("confirmation.action.item")</li>
+        <li>@addSchemeLink</li>
+        <li>@addRacDacLink</li>
+        <li>@messages("confirmation.action.psaInvitation.item")</li>
         } else {
-        <li>@Html(Message("confirmation.whatYouNeedToKnow.newPSA.detail").withArgs(registerSchemeLink))</li>
-        <li>@messages("confirmation.action.item")</li>
+        <li>@registerSchemeLink</li>
+        <li>@addSchemeLink</li>
+        <li>@addRacDacLink</li>
+        <li>@messages("confirmation.action.psaInvitation.item")</li>
         }
     </ul>
 
@@ -79,7 +91,4 @@
     @formHelper(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {
         @components.submit_button(submitMessageKey = "site.finishAndSignOut")
     }
-
-
-
 }
