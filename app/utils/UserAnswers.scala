@@ -44,6 +44,11 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   def getOrException[A](id: TypedIdentifier[A])(implicit rds: Reads[A]): A =
     get(id).getOrElse(throw new RuntimeException("Unexpected empty option"))
 
+  def getOrException[A](path: JsPath)(implicit rds: Reads[A]): A =
+    JsLens.fromPath(path).get(json)
+      .flatMap(Json.fromJson[A])
+      .getOrElse(throw new RuntimeException("Unexpected empty option"))
+
   def setOrException[I <: TypedIdentifier.PathDependent](id: I)(value: id.Data)(implicit writes: Writes[id.Data]): UserAnswers =
     set(id)(value) match {
       case JsSuccess(v, _) => v
@@ -64,7 +69,6 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   def allDirectors: Seq[PersonName] = {
     getAll[PersonName](DirectorNameId.collectionPath).getOrElse(Nil)
   }
-
 
   def allDirectorsAfterDelete(mode: Mode): Seq[Person] = {
     val directors = for ((director, index) <- allDirectors.zipWithIndex) yield {
@@ -161,6 +165,9 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     }
   }
 
+  def set[A: Writes](path: JsPath)(value: A): JsResult[UserAnswers] =
+    JsLens.fromPath(path).set(Json.toJson(value), json).map(UserAnswers)
+
   def setAllFlagsToValue[I <: TypedIdentifier[Boolean]](ids: List[I], value: Boolean)(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
 
     @tailrec
@@ -177,6 +184,8 @@ case class UserAnswers(json: JsValue = Json.obj()) {
 
     setRec(ids, JsSuccess(this))
   }
+
+  def setExpiryDate(millis: Long): JsResult[UserAnswers] = set[Long](__ \ "expireAt")(millis)
 
   def setAllExistingAddress(ids: Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]]): JsResult[UserAnswers] = {
 
@@ -242,4 +251,5 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     ).flatten.contains(true)
   }
 
+  def expireAt: Long = getOrException[Long](__ \ "expireAt")
 }

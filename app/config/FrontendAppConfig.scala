@@ -98,7 +98,7 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
 
   lazy val personalDetailsValidation: String = s"${servicesConfig.baseUrl("personal-details-validation")}"
 
-  lazy val personalDetailsValidationFrontEnd: String = s"${servicesConfig.baseUrl("personal-details-validation-frontend")}"
+  lazy val personalDetailsValidationFrontEnd: String = loadConfig("microservice.services.personal-details-validation-frontend.url")
 
   lazy val identityVerificationFrontend: String = s"${servicesConfig.baseUrl("identity-verification-frontend")}"
 

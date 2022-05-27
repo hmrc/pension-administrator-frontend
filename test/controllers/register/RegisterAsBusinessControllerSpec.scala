@@ -17,19 +17,25 @@
 package controllers.register
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.RegisterAsBusinessId
+import models.FeatureToggle.{Disabled, Enabled}
+import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.testhelpers.DataCompletionBuilder._
+import utils.{Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
+
+import scala.concurrent.Future
 
 class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours {
 
@@ -41,7 +47,14 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
 
   val validData: UserAnswers = UserAnswers().registerAsBusiness(true)
 
-  val postRequest: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", true.toString))
+  val postRequestTrue: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", true.toString))
+  val postRequestFalse: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", false.toString))
+
+  private val defaultFeatureToggleConnector = {
+    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
+    mockFeatureToggleConnector
+  }
 
   "RegisterAsBusinessController" must {
 
@@ -51,57 +64,104 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
       validData.dataRetrievalAction,
       form,
       form.fill(true),
-      viewAsString(form)
-    )
-
-    behave like controllerWithOnSubmitMethod(
-      onSubmitAction( navigator),
-      validData.dataRetrievalAction,
-      form.bind(Map.empty[String, String]),
-      viewAsString(form),
-      postRequest
+      viewAsString
     )
 
     behave like controllerThatSavesUserAnswers(
       saveAction,
-      postRequest,
+      postRequestTrue,
       RegisterAsBusinessId,
       true
     )
 
-    "send a PSAStart audit event" in {
+    "calling onSubmit" must {
 
-      auditService.reset()
+      "return a Bad Request and errors when invalid data is submitted" in {
 
-      val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeNavigator, FakeUserAnswersCacheConnector).
-        onSubmit(NormalMode)(postRequest)
+        val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
+          onSubmit(NormalMode)(fakeRequest)
 
-      status(result) mustBe SEE_OTHER
-      auditService.verifyNothingSent() mustBe false
+        val formWithErrors = form.bind(Map.empty[String, String])
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) mustBe viewAsString(formWithErrors)
+      }
+
+      "route to the company 'before you start' page when the registration is for a company / partnership" in {
+        val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
+          onSubmit(NormalMode)(postRequestTrue)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
+      }
+
+      "route to the individual 'before you start' page when the registration is NOT for a company / partnership" in {
+        val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
+          onSubmit(NormalMode)(postRequestFalse)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(individual.routes.WhatYouWillNeedController.onPageLoad().url)
+      }
+
+      "send a PSAStart audit event" in {
+
+        auditService.reset()
+
+        val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
+          onSubmit(NormalMode)(postRequestTrue)
+
+        status(result) mustBe SEE_OTHER
+        auditService.verifyNothingSent() mustBe false
+      }
+
+      "when feature toggle is enabled and the registration is for a company / partnership" must {
+
+        "route to 'continue with registration' page when the registration is for a UK company" in {
+          val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+          when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
+
+          val userAnswers = validData.completeCompanyDetailsUK
+
+          val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector, mockFeatureToggleConnector).
+            onSubmit(NormalMode)(postRequestTrue)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.ContinueWithRegistrationController.onPageLoad().url)
+        }
+
+        "route to the company 'before you start' page when the registration is for a non-UK company" in {
+          val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+          when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
+
+          val userAnswers = validData.completeCompanyDetailsNonUKCustomer
+
+          val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector, mockFeatureToggleConnector).
+            onSubmit(NormalMode)(postRequestTrue)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
+        }
+      }
     }
-
   }
 
   def onPageLoadAction(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
     controller(dataRetrievalAction, authAction).onPageLoad(NormalMode)
 
   def onSubmitAction(navigator: Navigator)(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
-    controller(dataRetrievalAction, authAction, navigator).onSubmit(NormalMode)
+    controller(dataRetrievalAction, authAction).onSubmit(NormalMode)
 
   def saveAction(cache: UserAnswersCacheConnector): Action[AnyContent] =
     controller(cache = cache).onSubmit(NormalMode)
 
-  def viewAsString(form: Form[_]): Form[_] => String =
-    form =>
-      view(
-        form
-      )(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
+  def viewAsString(form: Form[_]): String =
+      view(form)(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
 
   private def controller(
     dataRetrievalAction: DataRetrievalAction = getEmptyData,
     authAction: AuthAction = FakeAuthAction,
-    navigator: Navigator = FakeNavigator,
-    cache: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
+    cache: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
+    featureToggleConnector: FeatureToggleConnector = defaultFeatureToggleConnector
   ): RegisterAsBusinessController =
     new RegisterAsBusinessController(
       frontendAppConfig,
@@ -110,7 +170,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       cache,
-      navigator,
+      featureToggleConnector,
       auditService,
       controllerComponents,
       view

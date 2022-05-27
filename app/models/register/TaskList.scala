@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package models.register
 
-@()
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<link rel="stylesheet" media="all" type="text/css" href='@routes.Assets.versioned("stylesheets/pensionadministratorfrontendtwirlupdate-app.css")' />
-<script src='@routes.Assets.versioned("javascripts/autocomplete/location-autocomplete.min.js")'> </script>
-<script src='@routes.Assets.versioned("javascripts/pensionadministratorfrontendtwirlupdate.js")'> </script>
+case class TaskList(entityName: String, tasks: Seq[Task]){
+  val numberCompleted: Int = tasks.count(_.isCompleted)
+  val allComplete: Boolean = tasks.forall(_.isCompleted)
+}
+
+case class Task(name: String, isCompleted: Boolean)

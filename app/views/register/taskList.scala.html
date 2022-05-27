@@ -1,0 +1,98 @@
+@*
+* Copyright 2021 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import models.register.TaskList
+
+@this(
+    layout: templates.Layout
+)
+
+@(taskList: TaskList, expiryDate: String)(implicit request: Request[_], messages: Messages)
+
+@isCompleted(isCompleted: Boolean) = {
+    @if(isCompleted){
+        <span class="hmrc-status-tag task-status--completed">@messages("taskList.status.completed")</span>
+    } else {
+        <span class="hmrc-status-tag task-status--in-progress">@messages("taskList.status.incomplete")</span>
+    }
+}
+
+@viewOrAdd(isCompleted: Boolean) = @{
+    if(isCompleted) messages("site.view") else messages("site.add")
+}
+
+@layout(
+    pageTitle = taskList.entityName
+) {
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@taskList.entityName</h1>
+
+    @if(taskList.allComplete){
+        <strong class="govuk-body govuk-!-font-weight-bold">@messages("taskList.complete")</strong>
+    } else {
+        <strong class="govuk-body govuk-!-font-weight-bold">@messages("taskList.incomplete")</strong>
+    }
+
+    <p class="govuk-body">@messages("taskList.numberCompleted", taskList.numberCompleted, taskList.tasks.size)</p>
+
+    <strong class="govuk-body govuk-!-font-weight-bold">@messages("taskList.saveAnswers")</strong>
+
+    <p class="govuk-body">@expiryDate</p>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <div class="app-task-list">
+                <ul class="app-task-list__items">
+                    @taskList.tasks.map{ task =>
+                        <li class="app-task-list__item">
+                           <span class="app-task-list__task-name">
+                              <a href="#" class="app-task-list__task-name govuk-link">
+                                @viewOrAdd(task.isCompleted) @taskList.entityName's @task.name
+                              </a>
+                           </span>
+                           @isCompleted(task.isCompleted)
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <strong class="govuk-heading-m">Declaration</strong>
+
+    @if(taskList.allComplete){
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="app-task-list">
+                    <ul class="app-task-list__items">
+                        <li class="app-task-list__item">
+                               <span class="app-task-list__task-name">
+                                  <a href="#" class="app-task-list__task-name govuk-link">
+                                    @messages("taskList.declaration")
+                                  </a>
+                               </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    } else {
+        <p class="govuk-body">@messages("taskList.declaration.incomplete")</p>
+    }
+}
