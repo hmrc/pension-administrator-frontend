@@ -54,7 +54,7 @@ class ConfirmCompanyDetailsController @Inject()(
                                                  countryOptions: CountryOptions,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  val view: confirmCompanyDetails,
-                                                 featureToggleConnector: FeatureToggleConnector,
+                                                 featureToggleConnector: FeatureToggleConnector
                                                )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport

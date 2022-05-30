@@ -50,14 +50,19 @@ class CheckYourAnswersController @Inject()(
   }
 
   private def checkYourAnswersSummary(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
+    import company.routes._
     val isCompanyTradingOverAYear = userAnswers.get(CompanyTradingOverAYearId).isDefined
     Seq(
       AnswerSection(None,
-        CompanyContactAddressId.cya.row(CompanyContactAddressId)(Some(Link(company.routes.CompanySameContactAddressController.onPageLoad(NormalMode).url)), userAnswers) ++
-          CompanyAddressYearsId.cya.row(CompanyAddressYearsId)(Some(Link(company.routes.CompanyAddressYearsController.onPageLoad(NormalMode).url)), userAnswers) ++
-          (if (isCompanyTradingOverAYear) CompanyTradingOverAYearId.cya.row(CompanyTradingOverAYearId)(Some(Link(company.routes.CompanyTradingOverAYearController.onPageLoad(NormalMode).url)), userAnswers) else Nil) ++
-          CompanyEmailId.cya.row(CompanyEmailId)(Some(Link(company.routes.CompanyEmailController.onPageLoad(NormalMode).url)), userAnswers) ++
-          CompanyPhoneId.cya.row(CompanyPhoneId)(Some(Link(company.routes.CompanyPhoneController.onPageLoad(NormalMode).url)), userAnswers)
+        CompanyContactAddressId.cya.row(CompanyContactAddressId)(Some(Link(CompanySameContactAddressController.onPageLoad(NormalMode).url)), userAnswers) ++
+          CompanyAddressYearsId.cya.row(CompanyAddressYearsId)(Some(Link(CompanyAddressYearsController.onPageLoad(NormalMode).url)), userAnswers) ++
+          (if (isCompanyTradingOverAYear) {
+            CompanyTradingOverAYearId.cya.row(CompanyTradingOverAYearId)(Some(Link(CompanyTradingOverAYearController.onPageLoad(NormalMode).url)), userAnswers)
+          } else {
+            Nil
+          }) ++
+          CompanyEmailId.cya.row(CompanyEmailId)(Some(Link(CompanyEmailController.onPageLoad(NormalMode).url)), userAnswers) ++
+          CompanyPhoneId.cya.row(CompanyPhoneId)(Some(Link(CompanyPhoneController.onPageLoad(NormalMode).url)), userAnswers)
       )
     )
   }

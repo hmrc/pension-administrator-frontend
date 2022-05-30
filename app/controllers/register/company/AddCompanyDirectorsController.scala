@@ -48,7 +48,7 @@ class AddCompanyDirectorsController @Inject()(
                                                formProvider: AddCompanyDirectorsFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: addCompanyDirectors,
-                                               featureToggleConnector: FeatureToggleConnector,
+                                               featureToggleConnector: FeatureToggleConnector
                                              )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
