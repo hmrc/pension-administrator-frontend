@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import models.register.TaskList
+@import models.register.Task
 
 @this(
     layout: templates.Layout
@@ -34,8 +35,12 @@
     }
 }
 
-@viewOrAdd(isCompleted: Boolean) = @{
-    if(isCompleted) messages("site.view") else messages("site.add")
+@taskAction(task: Task) = @{
+    (task.isCompleted, task.viewOnly) match {
+        case (true, true) => messages("site.view")
+        case (true, false) => messages("site.change")
+        case (false, _) => messages("site.add")
+    }
 }
 
 @layout(
@@ -63,7 +68,7 @@
                         <li class="app-task-list__item">
                            <span class="app-task-list__task-name">
                               <a href="@task.url" class="app-task-list__task-name govuk-link">
-                                @viewOrAdd(task.isCompleted) @taskList.entityName's @task.name
+                                @taskAction(task) @taskList.entityName's @task.name
                               </a>
                            </span>
                            @isCompleted(task.isCompleted)

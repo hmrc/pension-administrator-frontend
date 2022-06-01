@@ -21,4 +21,4 @@ case class TaskList(entityName: String, declarationUrl: String, tasks: Seq[Task]
   val allComplete: Boolean = tasks.forall(_.isCompleted)
 }
 
-case class Task(name: String, isCompleted: Boolean, url: String = "")
+case class Task(name: String, isCompleted: Boolean, url: String = "", viewOnly: Boolean = false)

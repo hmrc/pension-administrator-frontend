@@ -21,6 +21,8 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.EnterVATFormProvider
 import identifiers.register.{BusinessNameId, EnterVATId}
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
 import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
@@ -101,6 +103,15 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "redirect to the task list page when the feature toggle is enabled" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
+      val featureToggleConnector = FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      val result = controller(featureToggleConnector = featureToggleConnector).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(companydetails.routes.CheckYourAnswersController.onPageLoad().url)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
