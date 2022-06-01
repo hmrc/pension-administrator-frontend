@@ -17,11 +17,13 @@
 package controllers.register.company
 
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register.company.{CompanyContactAddressId, CompanyEmailId, CompanyPhoneId}
 import identifiers.register._
+import identifiers.register.company.{CompanyContactAddressId, CompanyEmailId, CompanyPhoneId}
+import models.AddressYears.reads
 import models.register.{Task, TaskList}
 import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
+import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
@@ -48,18 +50,25 @@ class CompanyRegistrationTaskListController @Inject()(
 
   private def buildTaskList(userAnswers: UserAnswers)(implicit messages: Messages): TaskList = {
     val businessName = userAnswers.get(BusinessNameId).fold(messages("site.company"))(identity)
-    val directors = {
+    /*val directors = {
       val complete = userAnswers.allDirectors.nonEmpty
-      Task(messages("taskList.directors"), isCompleted = complete, url = controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad().url)
-    }
-    val workingKnowledgeDetails = Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false, url = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url)
+      Task(messages("taskList.directors"), isCompleted = complete,
+        url = controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad().url)
+    }*/
 
-    TaskList(businessName, List(
+/*
+    val workingKnowledgeDetails = Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false,
+      url = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url)
+*/
+
+    val declarationUrl = controllers.register.routes.DeclarationFitAndProperController.onPageLoad().url
+
+    TaskList(businessName, declarationUrl, List(
       buildBasicDetailsTask(userAnswers),
       buildCompanyDetails(userAnswers),
       buildContactDetails(userAnswers),
-      directors,
-      workingKnowledgeDetails)
+      buildDirectorDetails(userAnswers),
+      buildWorkingKnowledgeTask(userAnswers))
     )
   }
 
@@ -73,7 +82,7 @@ class CompanyRegistrationTaskListController @Inject()(
     val isPAYECompleted = userAnswers.get(HasPAYEId).exists(if (_) userAnswers.get(EnterPAYEId).isDefined else true)
     val isVATCompleted = userAnswers.get(HasVATId).exists(if (_) userAnswers.get(EnterVATId).isDefined else true)
     val isCompleted = isPAYECompleted && isVATCompleted
-    val url = if(isCompleted){
+    val url: String = if(isCompleted){
       companydetails.routes.CheckYourAnswersController.onPageLoad().url
     } else {
       companydetails.routes.WhatYouWillNeedController.onPageLoad().url
@@ -92,5 +101,28 @@ class CompanyRegistrationTaskListController @Inject()(
       contactdetails.routes.WhatYouWillNeedController.onPageLoad().url
     }
     Task(messages("taskList.contactDetails"), isCompleted, url)
+  }
+
+  private def buildWorkingKnowledgeTask(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
+    val isWorkingKnowledgeCompleted = userAnswers.get(DeclarationWorkingKnowledgeId).isDefined
+    /*val url = if(isWorkingKnowledgeCompleted){
+      contactdetails.routes.CheckYourAnswersController.onPageLoad().url
+    } else {
+      contactdetails.routes.WhatYouWillNeedController.onPageLoad().url
+    }*/
+    val workingKnowledgeDetailsUrl = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url
+    Task(messages("taskList.workingKnowledgeDetails"), isWorkingKnowledgeCompleted, workingKnowledgeDetailsUrl)
+  }
+
+  private def buildDirectorDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
+    val isDirectorsDetailsCompleted = userAnswers.allDirectorsAfterDelete(NormalMode).nonEmpty
+    val directorTaskUrl = if(isDirectorsDetailsCompleted){
+      controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url
+    } else {
+      controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad().url
+    }
+
+    val complete = userAnswers.allDirectorsAfterDelete(NormalMode).nonEmpty
+    Task(messages("taskList.directors"), isCompleted = complete, url = directorTaskUrl)
   }
 }

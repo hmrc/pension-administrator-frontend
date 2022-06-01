@@ -38,7 +38,7 @@ class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase {
         val userAnswers = validData.businessName(companyName).setExpiryDate(expiryDateMillis).asOpt.value
         val result = controller(userAnswers.dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-        val expectedTaskList = TaskList(companyName, List(
+        val expectedTaskList = TaskList(companyName, "", List(
           Task(messages("taskList.basicDetails"), isCompleted = false),
           Task(messages("taskList.companyDetails"), isCompleted = false),
           Task(messages("taskList.contactDetails"), isCompleted = false),
