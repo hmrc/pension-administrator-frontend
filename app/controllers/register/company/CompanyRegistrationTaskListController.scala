@@ -66,7 +66,7 @@ class CompanyRegistrationTaskListController @Inject()(
   private def buildBasicDetailsTask(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
     val isCompleted = userAnswers.get(RegistrationInfoId).isDefined
     val url = routes.BusinessMatchingCheckYourAnswersController.onPageLoad().url
-    Task(messages("taskList.basicDetails"), isCompleted, url)
+    Task(messages("taskList.basicDetails"), isCompleted, url, viewOnly = true)
   }
 
   private def buildCompanyDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
