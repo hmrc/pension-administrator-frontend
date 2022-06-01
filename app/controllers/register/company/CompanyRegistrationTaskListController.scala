@@ -50,17 +50,6 @@ class CompanyRegistrationTaskListController @Inject()(
 
   private def buildTaskList(userAnswers: UserAnswers)(implicit messages: Messages): TaskList = {
     val businessName = userAnswers.get(BusinessNameId).fold(messages("site.company"))(identity)
-    /*val directors = {
-      val complete = userAnswers.allDirectors.nonEmpty
-      Task(messages("taskList.directors"), isCompleted = complete,
-        url = controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad().url)
-    }*/
-
-/*
-    val workingKnowledgeDetails = Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false,
-      url = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url)
-*/
-
     val declarationUrl = controllers.register.routes.DeclarationFitAndProperController.onPageLoad().url
 
     TaskList(businessName, declarationUrl, List(
@@ -105,11 +94,7 @@ class CompanyRegistrationTaskListController @Inject()(
 
   private def buildWorkingKnowledgeTask(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
     val isWorkingKnowledgeCompleted = userAnswers.get(DeclarationWorkingKnowledgeId).isDefined
-    /*val url = if(isWorkingKnowledgeCompleted){
-      contactdetails.routes.CheckYourAnswersController.onPageLoad().url
-    } else {
-      contactdetails.routes.WhatYouWillNeedController.onPageLoad().url
-    }*/
+
     val workingKnowledgeDetailsUrl = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url
     Task(messages("taskList.workingKnowledgeDetails"), isWorkingKnowledgeCompleted, workingKnowledgeDetailsUrl)
   }

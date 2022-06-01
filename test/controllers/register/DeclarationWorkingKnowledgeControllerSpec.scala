@@ -18,12 +18,11 @@ package controllers.register
 
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import models.FeatureToggleName.PsaRegistration
-import models.FeatureToggle.{Disabled, Enabled}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
-import models.NormalMode
+import models.{FeatureToggle, NormalMode}
 import models.register.DeclarationWorkingKnowledge
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -45,7 +44,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
   val defaultFeatureToggleConnector = {
     val mockFeatureToggleConnector = mock[FeatureToggleConnector]
-    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
+    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Enabled(PsaRegistration)))
     mockFeatureToggleConnector
   }
 
@@ -86,25 +85,12 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted when PSA registration toggle is off" in {
-      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
-
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "redirect to the task list page when valid data is submitted when PSA registration toggle is on" in {
-      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-
-      val result = controller().onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

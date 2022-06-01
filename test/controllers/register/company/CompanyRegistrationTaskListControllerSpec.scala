@@ -39,11 +39,11 @@ class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase {
         val result = controller(userAnswers.dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
         val expectedTaskList = TaskList(companyName, "", List(
-          Task(messages("taskList.basicDetails"), isCompleted = false),
-          Task(messages("taskList.companyDetails"), isCompleted = false),
-          Task(messages("taskList.contactDetails"), isCompleted = false),
-          Task(messages("taskList.directors"), isCompleted = false),
-          Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false)
+          Task(messages("taskList.basicDetails"), isCompleted = false, "/register-as-pension-scheme-administrator/register/company/business-matching/check-your-answers"),
+          Task(messages("taskList.companyDetails"), isCompleted = false, "/register-as-pension-scheme-administrator/register/company/details-what-you-will-need"),
+          Task(messages("taskList.contactDetails"), isCompleted = false, "/register-as-pension-scheme-administrator/register/company/contact-what-you-will-need"),
+          Task(messages("taskList.directors"), isCompleted = false, "/register-as-pension-scheme-administrator/register/company/directors/what-you-will-need"),
+          Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false, "/register-as-pension-scheme-administrator/register/working-knowledge-pensions")
         ))
 
         status(result) mustBe OK

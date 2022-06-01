@@ -85,40 +85,27 @@ class AddCompanyDirectorsController @Inject()(
                 },
                 userAnswers => {
                   featureToggleConnector.get(PsaRegistration.asString).map { featureToggle =>
-                   if (featureToggle.isEnabled) {
-                     userAnswers.get(AddCompanyDirectorsId) match {
-                       case Some(false) if mode == NormalMode => Redirect(
-                         controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
-                       case Some(false) if mode == UpdateMode => Redirect(
-                         controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
-                       case _ =>
-                         val index = userAnswers.allDirectorsAfterDelete(mode).length
-                         if (index >= appConfig.maxDirectors) {
-                           Redirect(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode))
-                         } else {
-                           Redirect(controllers.register.company.directors.routes.DirectorNameController.onPageLoad(mode, userAnswers.directorsCount))
-                         }
-                     }
-                   } else {
-                     userAnswers.get(AddCompanyDirectorsId) match {
-                       case Some(false) if mode == NormalMode => Redirect(controllers.register.company.routes.CompanyReviewController.onPageLoad())
-                       case Some(false) if mode == UpdateMode => Redirect(controllers.register.routes.AnyMoreChangesController.onPageLoad())
-                       case _ =>
-                         val index = userAnswers.allDirectorsAfterDelete(mode).length
-                         if (index >= appConfig.maxDirectors) {
-                           Redirect(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode))
-                         } else {
-                           Redirect(controllers.register.company.directors.routes.DirectorNameController.onPageLoad(mode, userAnswers.directorsCount))
-                         }
-                     }
-                   }
+                    (featureToggle.isEnabled, userAnswers.get(AddCompanyDirectorsId)) match {
+                      case(true, Some(false)) if mode == NormalMode =>
+                        Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
+                      case(true, Some(false)) if mode == UpdateMode =>
+                        Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
+                      case(false, Some(false)) if mode == UpdateMode =>
+                        Redirect(controllers.register.company.routes.CompanyReviewController.onPageLoad())
+                      case(false, Some(false)) if mode == UpdateMode =>
+                        Redirect(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+                      case _ =>
+                        val index = userAnswers.allDirectorsAfterDelete(mode).length
+                        if (index >= appConfig.maxDirectors) {
+                          Redirect(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode))
+                        } else {
+                          Redirect(controllers.register.company.directors.routes.DirectorNameController.onPageLoad(mode, userAnswers.directorsCount))
+                        }
+                    }
                   }
                 }
               )
-          )
+            )
         }
-
-
     }
-
 }

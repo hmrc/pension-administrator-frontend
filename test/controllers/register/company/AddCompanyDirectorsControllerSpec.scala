@@ -70,16 +70,14 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when less than maximum directors exist and valid data is submitted if PSA registration toggle is off" in {
-      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
-
       val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe): _*)
 
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
       val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some("/register-as-pension-scheme-administrator/register/company/directors/10/name")
     }
 
     "redirect to the task list page when less than maximum directors exist and valid data is submitted if PSA registration toggle is on" in {
@@ -87,7 +85,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
 
       val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe): _*)
 
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
       val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
 
@@ -122,11 +120,12 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase {
       val getRelevantData = dataRetrievalAction(johnDoe)
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
       val navigator = fakeNavigator()
+      val navUrl = Some("/register-as-pension-scheme-administrator/register/company/directors/2/name")
 
       val result = controller(getRelevantData, navigator).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      navigator.lastUserAnswers.value.get(AddCompanyDirectorsId).value mustBe true
+      redirectLocation(result) mustBe navUrl
     }
 
     "redirect to the next page when maximum active directors exist and the user submits" in {

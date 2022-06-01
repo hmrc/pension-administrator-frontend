@@ -54,10 +54,10 @@ object DeclarationWorkingKnowledge extends Enumerable.Implicits {
 
   def declarationWorkingKnowledge(workingKnowledge: Boolean, isRegistrationToggleEnabled: Boolean): DeclarationWorkingKnowledge = {
     (isRegistrationToggleEnabled, workingKnowledge) match {
-      case(false, true) => WhatYouWillNeed
+      case(false, true) => WorkingKnowledge
       case(false, false) => Adviser
       case(true, true) => TaskList
-      case(true, false) => WorkingKnowledge
+      case(true, false) => WhatYouWillNeed
     }
   }
 
