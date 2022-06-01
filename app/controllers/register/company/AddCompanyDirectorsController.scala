@@ -90,7 +90,7 @@ class AddCompanyDirectorsController @Inject()(
                         Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
                       case(true, Some(false)) if mode == UpdateMode =>
                         Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
-                      case(false, Some(false)) if mode == UpdateMode =>
+                      case(false, Some(false)) if mode == NormalMode =>
                         Redirect(controllers.register.company.routes.CompanyReviewController.onPageLoad())
                       case(false, Some(false)) if mode == UpdateMode =>
                         Redirect(controllers.register.routes.AnyMoreChangesController.onPageLoad())
