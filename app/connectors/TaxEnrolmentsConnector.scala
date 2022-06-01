@@ -72,9 +72,8 @@ class TaxEnrolmentsConnectorImpl @Inject()(
                               (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext,
                                request: DataRequest[AnyContent]): Future[HttpResponse] = {
 
-println("\n\n\n known facts:" + knownFacts)
     http.PUT[KnownFacts, HttpResponse](url, knownFacts) flatMap {
-      response => println("\n\n\n Response:" + response.toString())
+      response =>
         response.status match {
           case NO_CONTENT =>
             auditService.sendEvent(PSAEnrolmentEvent(request.externalId, enrolmentKey))
