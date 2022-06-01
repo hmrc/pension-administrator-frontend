@@ -23,7 +23,7 @@ import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import models.FeatureToggleName.PsaRegistration
-import models.Mode
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -86,15 +86,39 @@ class AddCompanyDirectorsController @Inject()(
                 userAnswers => {
                   featureToggleConnector.get(PsaRegistration.asString).map { featureToggle =>
                    if (featureToggle.isEnabled) {
-                      Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
+                     userAnswers.get(AddCompanyDirectorsId) match {
+                       case Some(false) if mode == NormalMode => Redirect(
+                         controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
+                       case Some(false) if mode == UpdateMode => Redirect(
+                         controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
+                       case _ =>
+                         val index = userAnswers.allDirectorsAfterDelete(mode).length
+                         if (index >= appConfig.maxDirectors) {
+                           Redirect(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode))
+                         } else {
+                           Redirect(controllers.register.company.directors.routes.DirectorNameController.onPageLoad(mode, userAnswers.directorsCount))
+                         }
+                     }
                    } else {
-                     Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, userAnswers))
+                     userAnswers.get(AddCompanyDirectorsId) match {
+                       case Some(false) if mode == NormalMode => Redirect(controllers.register.company.routes.CompanyReviewController.onPageLoad())
+                       case Some(false) if mode == UpdateMode => Redirect(controllers.register.routes.AnyMoreChangesController.onPageLoad())
+                       case _ =>
+                         val index = userAnswers.allDirectorsAfterDelete(mode).length
+                         if (index >= appConfig.maxDirectors) {
+                           Redirect(controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode))
+                         } else {
+                           Redirect(controllers.register.company.directors.routes.DirectorNameController.onPageLoad(mode, userAnswers.directorsCount))
+                         }
+                     }
                    }
                   }
                 }
               )
           )
         }
+
+
     }
 
 }
