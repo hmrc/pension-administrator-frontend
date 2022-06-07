@@ -28,6 +28,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
 import utils.{DateHelper, UserAnswers}
+import identifiers.register.BusinessNameId
+
 import views.html.register.taskList
 
 import javax.inject.Inject

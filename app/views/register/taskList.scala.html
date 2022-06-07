@@ -28,10 +28,10 @@
 @(taskList: TaskList, expiryDate: String)(implicit request: Request[_], messages: Messages)
 
 @isCompleted(isCompleted: Boolean) = {
-    @if(isCompleted){
-        <span class="hmrc-status-tag task-status--completed">@messages("status.complete")</span>
+    @if(isCompleted) {
+        <span class="hmrc-status-tag task-status--completed">@messages("taskList.status.completed")</span>
     } else {
-        <span class="hmrc-status-tag task-status--in-progress">@messages("status.incomplete")</span>
+        <span class="hmrc-status-tag task-status--in-progress">@messages("taskList.status.incomplete")</span>
     }
 }
 
@@ -41,6 +41,10 @@
         case (true, false) => messages("site.change")
         case (false, _) => messages("site.add")
     }
+}
+
+@viewOrAdd(isCompleted: Boolean) = @{
+    if(isCompleted) messages("site.view") else messages("site.add")
 }
 
 @layout(
@@ -68,7 +72,7 @@
                         <li class="app-task-list__item">
                            <span class="app-task-list__task-name">
                               <a href="@task.url" class="app-task-list__task-name govuk-link">
-                                @taskAction(task) @taskList.entityName's @task.name
+                                @viewOrAdd(task.isCompleted) @taskList.entityName's @task.name
                               </a>
                            </span>
                            @isCompleted(task.isCompleted)

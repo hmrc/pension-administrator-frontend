@@ -1191,6 +1191,8 @@ continueWithRegistration.yes = Yes, continue registering the administrator
 continueWithRegistration.no = No, register a new administrator
 continueWithRegistration.no.hint = This will delete all the information from your incomplete administrator registration
 
+taskList.status.completed = Completed
+taskList.status.incomplete = Incomplete
 taskList.complete = Pension scheme administrator details are complete
 taskList.incomplete = Pension scheme administrator details are incomplete
 taskList.numberCompleted = You have completed {0} of {1} sections
