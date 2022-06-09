@@ -99,13 +99,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     }
   }
 
-  private object ExceptionThrowingRegistrationConnector extends FakeRegistrationConnector {
-    override def registerWithIdIndividual (nino: Nino)
-                                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
-      throw new Exception("registerWithIdIndividual should not be called in this test")
-    }
-  }
-
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, registrationConnector: RegistrationConnector = FakeRegistrationConnector()) =
     new IndividualDetailsCorrectController(
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -132,7 +125,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       new CountryOptions(environment, frontendAppConfig)
     )(fakeRequest, messages).toString
 
-  "IndividualDetailsCorrect Controller" must {
+  "IndividualDetailsCorrectController" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -141,16 +134,16 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       contentAsString(result) mustBe viewAsString()
     }
 
-//    "fetch and render the correct individual information if a different nino is provided from IV" in {
-//      val registrationConnector = FakeRegistrationConnector(otherIndividual)
-//      val result = controller(registrationConnector = registrationConnector).onPageLoad(NormalMode)(fakeRequest)
-//
-//      status(result) mustBe OK
-//
-//      FakeUserAnswersCacheConnector.verify(IndividualDetailsId, individual)
-//      FakeUserAnswersCacheConnector.verify(IndividualAddressId, address)
-//      FakeUserAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
-//    }
+    "fetch and render the correct individual information if a different nino is provided from IV" in {
+      val registrationConnector = FakeRegistrationConnector(otherIndividual)
+      val result = controller(registrationConnector = registrationConnector).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+
+      FakeUserAnswersCacheConnector.verify(IndividualDetailsId, otherIndividual)
+      FakeUserAnswersCacheConnector.verify(IndividualAddressId, address)
+      FakeUserAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
+    }
 
     "save the individual and address details on a GET and individual name to PSA Name cache" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
@@ -180,7 +173,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(data))
 
-      val result = controller(getRelevantData, ExceptionThrowingRegistrationConnector).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
     }
