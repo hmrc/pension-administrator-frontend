@@ -1,0 +1,112 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.play.views.html._
+@import controllers.register.company.routes._
+@import models.Mode
+@import utils.FormHelpers
+@import models.requests.DataRequest
+@import play.api.mvc.AnyContent
+@import viewmodels.Person
+@import config.FrontendAppConfig
+@import utils.ViewHelper.titleWithErrors
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+
+@this(
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios,
+    button: components_refactored.submit_button,
+    appConfig: FrontendAppConfig
+)
+
+@(form: Form[_], mode: Mode, directorsComplete: Seq[Person],directorsIncomplete: Seq[Person], psaNameOpt: Option[String])(implicit request: DataRequest[AnyContent], messages: Messages)
+
+@directors = @{ directorsComplete ++ directorsIncomplete }
+
+@disableSubmission = @{
+    directors.exists(director => if(mode == NormalMode) !director.isComplete else director.isNew && !director.isComplete)
+}
+
+@layout(
+    pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))
+) {
+
+        @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages("addCompanyDirectors.heading")</h1>
+
+        @if(directors.isEmpty) {
+            <p class="govuk-body">@messages("addCompanyDirectors.addADirector.hint")</p>
+            @button("addCompanyDirectors.addADirector")
+        } else {
+
+            @if(directorsIncomplete.length > 0) {
+                <h1 class="govuk-heading-s">@messages("taskList.status.incomplete")</h1>
+                @components_refactored.person_list(directorsIncomplete, mode)
+            }
+            @if(directorsComplete.length > 0) {
+                <h1 class="govuk-heading-s">@messages("taskList.status.completed")</h1>
+                @components_refactored.person_list(directorsComplete, mode)
+            }
+            @if(directors.size < appConfig.maxDirectors) {
+                @govukRadios(
+                    Radios(
+                        fieldset = Some(
+                            Fieldset(legend = Some(
+                                    Legend( content = Text(messages("addCompanyDirectors.addYesNo")),
+                                            classes = "govuk-fieldset__legend--m",
+                                            isPageHeading = false
+                                        )
+                                    )
+                                )
+                        ),
+                        items = Seq(
+                                RadioItem(
+                                    content = Text(messages("site.yes")),
+                                    value = Some(messages("site.true"))
+                                ),
+                                RadioItem(
+                                    content = Text(messages("site.no")),
+                                    value = Some(messages("site.false"))
+                                    )
+                                ),
+                    hint = Some(Hint(content = Text(messages("addCompanyDirectors.addADirector.hint")))),
+                    classes = "govuk-radios--inline"
+                    ).withFormField(form("value"))
+                )
+
+            } else {
+            <p class="govuk-body">@messages("addCompanyDirectors.atMaximum")</p>
+            <p class="govuk-body">@messages("addCompanyDirectors.tellUsIfYouHaveMore")</p>
+            }
+
+            @button(disabled = disableSubmission)
+        }
+        @psaNameOpt.map{ psaName =>
+            <p class="govuk-margin-top-5 govuk-body">
+                <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", psaName)</a>
+            </p>
+        }
+    }
+}

@@ -43,7 +43,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
                                                        formProvider: DeclarationWorkingKnowledgeFormProvider,
                                                        val controllerComponents: MessagesControllerComponents,
                                                        val view: declarationWorkingKnowledge,
-                                                       featureToggleConnector: FeatureToggleConnector,
+                                                       featureToggleConnector: FeatureToggleConnector
                                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
