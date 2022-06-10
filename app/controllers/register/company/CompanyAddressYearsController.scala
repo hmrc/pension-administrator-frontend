@@ -17,28 +17,31 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressYearsId
-import javax.inject.Inject
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
-import models.{Mode, AddressYears}
+import models.{AddressYears, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.{NoRLSCheck, RegisterCompany}
+import utils.annotations.{NoRLSCheck, RegisterCompany, RegisterContactV2}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class CompanyAddressYearsController @Inject()(@RegisterCompany override val navigator: Navigator,
+                                              @RegisterContactV2 val navigatorV2: Navigator,
                                               override val appConfig: FrontendAppConfig,
                                               override val cacheConnector: UserAnswersCacheConnector,
                                               @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
@@ -47,7 +50,8 @@ class CompanyAddressYearsController @Inject()(@RegisterCompany override val navi
                                               requireData: DataRequiredAction,
                                               formProvider: AddressYearsFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
-                                              val view: addressYears
+                                              val view: addressYears,
+                                              featureToggleConnector: FeatureToggleConnector
                                              )(implicit val executionContext: ExecutionContext)
                                                extends AddressYearsController with I18nSupport with Retrievals {
 
@@ -65,7 +69,11 @@ class CompanyAddressYearsController @Inject()(@RegisterCompany override val navi
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyAddressYearsId, mode, form(entityName), viewModel(mode, entityName))
+      featureToggleConnector.get(PsaRegistration.asString).flatMap {
+        case Enabled(_) =>
+          post(CompanyAddressYearsId, mode, form(entityName), viewModel(mode, entityName), Some(navigatorV2))
+        case _ => post(CompanyAddressYearsId, mode, form(entityName), viewModel(mode, entityName))
+      }
   }
 
   private def viewModel(mode: Mode, companyName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel = {

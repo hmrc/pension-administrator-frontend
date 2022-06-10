@@ -17,15 +17,16 @@
 package controllers.register.company.companydetails
 
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import controllers.register.company
+import identifiers.register.company.{CompanyRegistrationNumberId, HasCompanyCRNId}
 import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
 import viewmodels.{AnswerSection, Link, Section}
 import views.html.check_your_answers
-import controllers.register.company
 
 import javax.inject.Inject
 
@@ -41,10 +42,14 @@ class CheckYourAnswersController @Inject()(
     implicit request =>
       val sections: Seq[Section] = Seq(
         AnswerSection(None,
-          HasPAYEId.cya.row(HasPAYEId)(Some(Link(company.routes.HasCompanyPAYEController.onPageLoad(NormalMode).url)), request.userAnswers) ++
-            EnterPAYEId.cya.row(EnterPAYEId)(Some(Link(company.routes.CompanyEnterPAYEController.onPageLoad(NormalMode).url)), request.userAnswers) ++
-            HasVATId.cya.row(HasVATId)(Some(Link(company.routes.HasCompanyVATController.onPageLoad(NormalMode).url)), request.userAnswers) ++
-            EnterVATId.cya.row(EnterVATId)(Some(Link(company.routes.CompanyEnterVATController.onPageLoad(NormalMode).url)), request.userAnswers)
+          HasCompanyCRNId.cya.row(HasCompanyCRNId)(Some(
+            Link(company.routes.HasCompanyCRNController.onPageLoad(CheckMode).url)), request.userAnswers) ++
+          CompanyRegistrationNumberId.cya.row(CompanyRegistrationNumberId)(Some(
+            Link(company.routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url)), request.userAnswers) ++
+            HasPAYEId.cya.row(HasPAYEId)(Some(Link(company.routes.HasCompanyPAYEController.onPageLoad(CheckMode).url)), request.userAnswers) ++
+            EnterPAYEId.cya.row(EnterPAYEId)(Some(Link(company.routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url)), request.userAnswers) ++
+            HasVATId.cya.row(HasVATId)(Some(Link(company.routes.HasCompanyVATController.onPageLoad(CheckMode).url)), request.userAnswers) ++
+            EnterVATId.cya.row(EnterVATId)(Some(Link(company.routes.CompanyEnterVATController.onPageLoad(CheckMode).url)), request.userAnswers)
         )
       )
       val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()

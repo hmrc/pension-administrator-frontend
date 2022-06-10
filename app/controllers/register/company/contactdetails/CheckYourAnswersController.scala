@@ -19,7 +19,7 @@ package controllers.register.company.contactdetails
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.company
 import identifiers.register.company._
-import models.NormalMode
+import models.{CheckMode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -54,15 +54,16 @@ class CheckYourAnswersController @Inject()(
     val isCompanyTradingOverAYear = userAnswers.get(CompanyTradingOverAYearId).isDefined
     Seq(
       AnswerSection(None,
-        CompanyContactAddressId.cya.row(CompanyContactAddressId)(Some(Link(CompanySameContactAddressController.onPageLoad(NormalMode).url)), userAnswers) ++
-          CompanyAddressYearsId.cya.row(CompanyAddressYearsId)(Some(Link(CompanyAddressYearsController.onPageLoad(NormalMode).url)), userAnswers) ++
+        CompanyContactAddressId.cya.row(CompanyContactAddressId)(Some(Link(CompanySameContactAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
+          CompanyAddressYearsId.cya.row(CompanyAddressYearsId)(Some(Link(CompanyAddressYearsController.onPageLoad(CheckMode).url)), userAnswers) ++
           (if (isCompanyTradingOverAYear) {
-            CompanyTradingOverAYearId.cya.row(CompanyTradingOverAYearId)(Some(Link(CompanyTradingOverAYearController.onPageLoad(NormalMode).url)), userAnswers)
+            CompanyTradingOverAYearId.cya.row(CompanyTradingOverAYearId)(Some(Link(CompanyTradingOverAYearController.onPageLoad(CheckMode).url)), userAnswers)
           } else {
             Nil
           }) ++
-          CompanyEmailId.cya.row(CompanyEmailId)(Some(Link(CompanyEmailController.onPageLoad(NormalMode).url)), userAnswers) ++
-          CompanyPhoneId.cya.row(CompanyPhoneId)(Some(Link(CompanyPhoneController.onPageLoad(NormalMode).url)), userAnswers)
+          CompanyPreviousAddressId.cya.row(CompanyPreviousAddressId)(Some(Link(CompanyPreviousAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
+          CompanyEmailId.cya.row(CompanyEmailId)(Some(Link(CompanyEmailController.onPageLoad(CheckMode).url)), userAnswers) ++
+          CompanyPhoneId.cya.row(CompanyPhoneId)(Some(Link(CompanyPhoneController.onPageLoad(CheckMode).url)), userAnswers)
       )
     )
   }
