@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
@@ -26,7 +26,6 @@ import models.{NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -60,10 +59,12 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
 
   val form: Form[Int] = formProvider(Seq(0), "error.required")
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
+                 featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
     new CompanyAddressListController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
@@ -71,7 +72,8 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      featureToggleConnector
     )
 
   private lazy val viewModel = AddressListViewModel(

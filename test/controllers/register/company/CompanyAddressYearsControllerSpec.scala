@@ -16,13 +16,16 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes.CompanyAddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.{BusinessNameId, BusinessUTRId}
-import models.{AddressYears, NormalMode}
+import models.FeatureToggleName.PsaRegistration
+import models.{AddressYears, FeatureToggle, NormalMode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
@@ -30,16 +33,23 @@ import play.api.mvc.MessagesControllerComponents
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
+import scala.concurrent.Future
+
 class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
   import CompanyAddressYearsControllerSpec._
+
+  val defaultFeatureToggleConnector = {
+    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Disabled(PsaRegistration)))
+    mockFeatureToggleConnector
+  }
 
   "render the view correctly on a GET request" in {
     val request = addCSRFToken(FakeRequest(CompanyAddressYearsController.onPageLoad(NormalMode)))
@@ -51,7 +61,8 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
   "redirect to the next page on a POST request" in {
     running(_.overrides(modules(dataRetrieval)++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
-        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+        bind[FeatureToggleConnector].toInstance(defaultFeatureToggleConnector)
       ):_*)) {
       app =>
         val controller = app.injector.instanceOf[CompanyAddressYearsController]
