@@ -68,15 +68,15 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="app-task-list">
                 <ul class="app-task-list__items">
-                    @taskList.tasks.map{ task =>
-                        <li class="app-task-list__item">
+                    @for((task, i) <- taskList.tasks.zipWithIndex){
+                    <li class="app-task-list__item">
                            <span class="app-task-list__task-name">
-                              <a href="@task.url" class="app-task-list__task-name govuk-link">
+                              <a id="section-link-@i" href="@task.url" class="app-task-list__task-name govuk-link">
                                 @taskAction(task) @taskList.entityName's @task.name
                               </a>
                            </span>
-                           @isCompleted(task.isCompleted)
-                        </li>
+                        @isCompleted(task.isCompleted)
+                    </li>
                     }
                 </ul>
             </div>
@@ -92,7 +92,7 @@
                     <ul class="app-task-list__items">
                         <li class="app-task-list__item">
                                <span class="app-task-list__task-name">
-                                  <a href="@taskList.declarationUrl" class="app-task-list__task-name govuk-link">
+                                  <a id="section-declaration-link" href="@taskList.declarationUrl" class="app-task-list__task-name govuk-link">
                                     @messages("taskList.declaration")
                                   </a>
                                </span>
