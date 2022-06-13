@@ -18,7 +18,7 @@ package controllers.register.company
 
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register._
-import identifiers.register.company.{CompanyContactAddressId, CompanyEmailId, CompanyPhoneId}
+import identifiers.register.company.{CompanyContactAddressId, CompanyEmailId, CompanyPhoneId, MoreThanTenDirectorsId}
 import models.AddressYears.reads
 import models.register.{Task, TaskList}
 import models.{Mode, NormalMode}
@@ -29,7 +29,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
 import utils.{DateHelper, UserAnswers}
 import identifiers.register.BusinessNameId
-
 import views.html.register.taskList
 
 import javax.inject.Inject
@@ -109,7 +108,15 @@ class CompanyRegistrationTaskListController @Inject()(
       controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad().url
     }
 
-    val complete = userAnswers.allDirectorsAfterDelete(NormalMode).nonEmpty
-    Task(messages("taskList.directors"), isCompleted = complete, url = directorTaskUrl)
+    Task(messages("taskList.directors"), isCompleted = isEstablisherCompanyAndDirectorsComplete(userAnswers), url = directorTaskUrl)
+  }
+
+  def isEstablisherCompanyAndDirectorsComplete(userAnswers: UserAnswers): Boolean = {
+    val allDirectors = userAnswers.allDirectorsAfterDelete(NormalMode)
+
+    val allDirectorsCompleted = allDirectors.nonEmpty && allDirectors.forall(_.isComplete) &&
+      (allDirectors.size < 10 || userAnswers.get(MoreThanTenDirectorsId).isDefined)
+
+      allDirectorsCompleted
   }
 }

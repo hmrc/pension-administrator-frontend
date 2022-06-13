@@ -36,10 +36,10 @@
 }
 
 @taskAction(task: Task) = @{
-    (task.isCompleted, task.viewOnly) match {
-        case (true, true) => messages("site.view")
-        case (true, false) => messages("site.change")
-        case (false, _) => messages("site.add")
+    (task.isCompleted, task.viewOnly,task.url) match {
+        case (true, true,_) => messages("site.view")
+        case (true, false,_) => messages("site.change")
+        case (false, _,url) => if(url.contains("add-directors")) messages("site.change") else  messages("site.add")
     }
 }
 
@@ -72,7 +72,7 @@
                         <li class="app-task-list__item">
                            <span class="app-task-list__task-name">
                               <a href="@task.url" class="app-task-list__task-name govuk-link">
-                                @viewOrAdd(task.isCompleted) @taskList.entityName's @task.name
+                                @taskAction(task) @taskList.entityName's @task.name
                               </a>
                            </span>
                            @isCompleted(task.isCompleted)
