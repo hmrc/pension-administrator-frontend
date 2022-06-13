@@ -202,7 +202,7 @@ contactDetails.error.phone.required = Enter a phone number
 contactDetails.error.phone.length =  Enter a phone number using 24 characters or less
 contactDetails.error.phone.invalid = Enter a phone number, like 01632 960 001, 07700 900 982 or +44 0808 157 0192
 
-contactDetails.whatYouWillNeed.title = {0}’s contact details
+contactDetails.whatYouWillNeed.title = Contact details
 contactDetails.whatYouWillNeed.heading = {0}’s contact details
 contactDetails.whatYouWillNeed.p1 = You will need to tell us {0}’s:
 contactDetails.whatYouWillNeed.li1 = contact address
@@ -253,7 +253,7 @@ companyDetails.error.companyName.required = Please give an answer for Company na
 companyDetails.error.companyName.length = The name cannot be more than 160 characters
 companyDetails.error.companyName.invalid = The name contains invalid characters
 
-companyDetails.whatYouWillNeed.title = {0}’s company details
+companyDetails.whatYouWillNeed.title = Company details
 companyDetails.whatYouWillNeed.heading = {0}’s company details
 companyDetails.whatYouWillNeed.p1 = You will need to tell us {0}’s:
 companyDetails.whatYouWillNeed.li1 = company number, or reason why it does not have one
@@ -1191,6 +1191,7 @@ continueWithRegistration.yes = Yes, continue registering the administrator
 continueWithRegistration.no = No, register a new administrator
 continueWithRegistration.no.hint = This will delete all the information from your incomplete administrator registration
 
+taskList.title = Administrator details
 taskList.status.completed = Completed
 taskList.status.incomplete = Incomplete
 taskList.complete = Pension scheme administrator details are complete
