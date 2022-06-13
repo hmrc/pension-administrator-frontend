@@ -29,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
 import utils.{DateHelper, UserAnswers}
 import identifiers.register.BusinessNameId
+import utils.dataCompletion.DataCompletion.isAdviserComplete
 import views.html.register.taskList
 
 import javax.inject.Inject
@@ -94,7 +95,7 @@ class CompanyRegistrationTaskListController @Inject()(
   }
 
   private def buildWorkingKnowledgeTask(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
-    val isWorkingKnowledgeCompleted = userAnswers.get(DeclarationWorkingKnowledgeId).isDefined
+    val isWorkingKnowledgeCompleted = isAdviserComplete(userAnswers,NormalMode)
 
     val workingKnowledgeDetailsUrl = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url
     Task(messages("taskList.workingKnowledgeDetails"), isWorkingKnowledgeCompleted, workingKnowledgeDetailsUrl)
