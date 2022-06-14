@@ -17,23 +17,26 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPhoneId
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
-import utils.Navigator
+import play.api.data.Form
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import utils.{Navigator, UserAnswers}
 import utils.annotations.{NoRLSCheck, RegisterCompany}
-import viewmodels.{Message, CommonFormWithHintViewModel}
+import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
@@ -44,7 +47,8 @@ class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator
                                        requireData: DataRequiredAction,
                                        formProvider: PhoneFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: phone
+                                       val view: phone,
+                                       featureToggleConnector: FeatureToggleConnector
                                       )(implicit val executionContext: ExecutionContext) extends PhoneController {
 
   private val form = formProvider()
@@ -57,7 +61,23 @@ class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyPhoneId, mode, form, viewModel(mode))
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(view(formWithErrors, viewModel(mode), psaName()))),
+        value => {
+          for {
+            cacheMap <- cacheConnector.save(request.externalId, CompanyPhoneId, value)
+            featureToggle <- featureToggleConnector.get(PsaRegistration.asString)
+            _ <- saveChangeFlag(mode, CompanyPhoneId)
+          } yield {
+            if(featureToggle.isEnabled){
+              Redirect(contactdetails.routes.CheckYourAnswersController.onPageLoad())
+            } else {
+              Redirect(navigator.nextPage(CompanyPhoneId, mode, UserAnswers(cacheMap)))
+            }
+          }
+        }
+      )
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =

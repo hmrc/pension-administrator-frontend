@@ -17,23 +17,25 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.company.routes.HasCompanyVATController
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.{BusinessNameId, HasVATId}
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfig,
                                         override val dataCacheConnector: UserAnswersCacheConnector,
@@ -44,7 +46,8 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
                                         requireData: DataRequiredAction,
                                         formProvider: HasReferenceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        val view: hasReferenceNumber
+                                        val view: hasReferenceNumber,
+                                        featureToggleConnector: FeatureToggleConnector
                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
@@ -75,5 +78,22 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         post(HasVATId, mode, form(companyName), viewModel(mode, companyName))
+
+        form(companyName).bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(view(formWithErrors, viewModel(mode, companyName)))),
+          value =>
+            for {
+              cacheMap <- dataCacheConnector.save(request.externalId, HasVATId, value)
+              featureToggle <- featureToggleConnector.get(PsaRegistration.asString)
+            } yield {
+              val userSelectsNo = !value
+              if(featureToggle.isEnabled && userSelectsNo){
+                Redirect(companydetails.routes.CheckYourAnswersController.onPageLoad())
+              } else {
+                Redirect(navigator.nextPage(HasVATId, mode, UserAnswers(cacheMap)))
+              }
+            }
+        )
     }
 }

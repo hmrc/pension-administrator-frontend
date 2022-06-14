@@ -229,7 +229,8 @@ class DataCompletion {
 
   def isAdviserComplete(ua: UserAnswers, mode: Mode): Boolean = {
     val isWkYes = if (mode == NormalMode) {
-      ua.get(DeclarationWorkingKnowledgeId).contains(DeclarationWorkingKnowledge.WorkingKnowledge)
+      ua.get(DeclarationWorkingKnowledgeId).contains(DeclarationWorkingKnowledge.WorkingKnowledge) ||
+        ua.get(DeclarationWorkingKnowledgeId).contains(DeclarationWorkingKnowledge.TaskList)
     } else {
       ua.get(VariationWorkingKnowledgeId).contains(true)
     }

@@ -54,7 +54,8 @@ trait AddressYearsController extends FrontendBaseController with Retrievals with
     Future.successful(Ok(view(filledForm, viewmodel, mode)))
   }
 
-  protected def post(id: TypedIdentifier[AddressYears], mode: Mode, form: Form[AddressYears], viewmodel: AddressYearsViewModel)
+  protected def post(id: TypedIdentifier[AddressYears], mode: Mode, form: Form[AddressYears], viewmodel: AddressYearsViewModel,
+                     nav: Option[Navigator] = None)
                     (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
     form.bindFromRequest().fold(
       formWithErrors =>
@@ -63,7 +64,7 @@ trait AddressYearsController extends FrontendBaseController with Retrievals with
         cacheConnector.save(request.externalId, id, addressYears).flatMap {
           answers =>
             saveChangeFlag(mode, id).map(_ =>
-              Redirect(navigator.nextPage(id, mode, UserAnswers(answers)))
+              Redirect(nav.getOrElse(navigator).nextPage(id, mode, UserAnswers(answers)))
             )
         }
     )

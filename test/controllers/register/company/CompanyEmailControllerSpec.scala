@@ -16,15 +16,14 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
@@ -34,10 +33,12 @@ class CompanyEmailControllerSpec extends ControllerWithCommonBehaviour {
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   val view: email = app.injector.instanceOf[email]
-  private def controller(dataRetrievalAction: DataRetrievalAction) = new CompanyEmailController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
+  private def controller(dataRetrievalAction: DataRetrievalAction,
+                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) = new CompanyEmailController(
+    new FakeNavigator(onwardRoute), new FakeNavigator(onwardRoute),
+    frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+    controllerComponents, view, featureToggleConnector)
 
   private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode), Some("psaName"))(fakeRequest, messages).toString
 

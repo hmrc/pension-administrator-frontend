@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import models.register.TaskList
+@import models.register.Task
 
 @this(
     layout: templates.Layout
@@ -27,10 +28,18 @@
 @(taskList: TaskList, expiryDate: String)(implicit request: Request[_], messages: Messages)
 
 @isCompleted(isCompleted: Boolean) = {
-    @if(isCompleted){
+    @if(isCompleted) {
         <span class="hmrc-status-tag task-status--completed">@messages("taskList.status.completed")</span>
     } else {
         <span class="hmrc-status-tag task-status--in-progress">@messages("taskList.status.incomplete")</span>
+    }
+}
+
+@taskAction(task: Task) = @{
+    (task.isCompleted, task.viewOnly,task.url) match {
+        case (true, true,_) => messages("site.view")
+        case (true, false,_) => messages("site.change")
+        case (false, _,url) => if(url.contains("add-directors")) messages("site.change") else  messages("site.add")
     }
 }
 
@@ -39,7 +48,7 @@
 }
 
 @layout(
-    pageTitle = taskList.entityName
+    pageTitle = messages("taskList.title")
 ) {
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@taskList.entityName</h1>
 
@@ -59,15 +68,15 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="app-task-list">
                 <ul class="app-task-list__items">
-                    @taskList.tasks.map{ task =>
-                        <li class="app-task-list__item">
+                    @for((task, i) <- taskList.tasks.zipWithIndex){
+                    <li class="app-task-list__item">
                            <span class="app-task-list__task-name">
-                              <a href="#" class="app-task-list__task-name govuk-link">
-                                @viewOrAdd(task.isCompleted) @taskList.entityName's @task.name
+                              <a id="section-link-@i" href="@task.url" class="app-task-list__task-name govuk-link">
+                                @taskAction(task) @taskList.entityName's @task.name
                               </a>
                            </span>
-                           @isCompleted(task.isCompleted)
-                        </li>
+                        @isCompleted(task.isCompleted)
+                    </li>
                     }
                 </ul>
             </div>
@@ -83,7 +92,7 @@
                     <ul class="app-task-list__items">
                         <li class="app-task-list__item">
                                <span class="app-task-list__task-name">
-                                  <a href="#" class="app-task-list__task-name govuk-link">
+                                  <a id="section-declaration-link" href="@taskList.declarationUrl" class="app-task-list__task-name govuk-link">
                                     @messages("taskList.declaration")
                                   </a>
                                </span>

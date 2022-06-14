@@ -16,11 +16,14 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.HasPAYEId
-import models.{Mode, NormalMode}
+import models.FeatureToggleName.PsaRegistration
+import models.{FeatureToggle, Mode, NormalMode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -31,6 +34,8 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
+import scala.concurrent.Future
+
 class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
@@ -40,6 +45,12 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
   private val form = formProvider("hasPAYE.error.required", companyName)
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
+
+  val defaultFeatureToggleConnector = {
+    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Enabled(PsaRegistration)))
+    mockFeatureToggleConnector
+  }
 
   private def viewModel =
     CommonFormWithHintViewModel(
@@ -92,6 +103,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
         running(_.overrides(
           modules(UserAnswers().businessName().dataRetrievalAction) ++
             Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
+              bind[FeatureToggleConnector].toInstance(defaultFeatureToggleConnector),
               bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)): _*)) {
           app =>
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))

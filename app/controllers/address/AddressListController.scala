@@ -28,7 +28,7 @@ import play.api.i18n.I18nSupport
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{UserAnswers, Navigator}
+import utils.{Navigator, UserAnswers}
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
@@ -57,7 +57,7 @@ trait AddressListController extends FrontendBaseController with I18nSupport with
   protected def post(viewModel: AddressListViewModel, addressId: TypedIdentifier[Address],
                      selectAddressId: TypedIdentifier[TolerantAddress],
                      postCodeLookupIdForCleanUp: TypedIdentifier[Seq[TolerantAddress]],
-                     mode: Mode, form: Form[Int])
+                     mode: Mode, form: Form[Int], nav: Option[Navigator] = None)
                     (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     def performUpsert(userAnswers: UserAnswers)(block: JsValue => Future[Result]):Future[Result] =
@@ -74,7 +74,7 @@ trait AddressListController extends FrontendBaseController with I18nSupport with
               _.remove(postCodeLookupIdForCleanUp)).asOpt.getOrElse(request.userAnswers)
             performUpsert(userAnswers) ( cacheMap =>
               saveChangeFlag(mode, addressId)
-                .flatMap(_ => Future.successful(Redirect(navigator.nextPage(addressId, mode, UserAnswers(cacheMap)))))
+                .flatMap(_ => Future.successful(Redirect(nav.getOrElse(navigator).nextPage(addressId, mode, UserAnswers(cacheMap)))))
             )
           case None =>
             val userAnswers = request.userAnswers.remove(addressId)
@@ -84,4 +84,5 @@ trait AddressListController extends FrontendBaseController with I18nSupport with
       }
     )
   }
+
 }

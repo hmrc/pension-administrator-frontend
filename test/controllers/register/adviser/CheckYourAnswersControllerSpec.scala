@@ -16,6 +16,7 @@
 
 package controllers.register.adviser
 
+import connectors.cache.FeatureToggleConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
@@ -25,7 +26,6 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
-
 import utils._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
@@ -37,7 +37,9 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private def sections: Seq[AnswerSection] = Seq(AnswerSection(None, adviserDetails))
 
   private val mockDataCompletion = mock[DataCompletion]
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
+                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+
     new CheckYourAnswersController(
       frontendAppConfig,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -47,7 +49,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       mockDataCompletion,
       countryOptions,
       controllerComponents,
-      view
+      view,
+      featureToggleConnector
     )
 
   private def viewAsString(isComplete: Boolean = true): String =
