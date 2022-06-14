@@ -86,6 +86,8 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
       regionBasedNavigation(ua)
     case WhatYouWillNeedId =>
       routes.CompanySameContactAddressController.onPageLoad(NormalMode)
+    case WhatYouWillNeedIdV2 =>
+      crnNavigation(ua)
   }
 
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {

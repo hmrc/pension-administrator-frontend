@@ -23,8 +23,10 @@ import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
+
 import javax.inject.Inject
 import models.Mode
+import models.RegistrationIdType.Nino
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -60,12 +62,13 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
         case Some(value) => form.fill(value)
       }
 
-      (request.userAnswers.get(IndividualDetailsId), request.userAnswers.get(IndividualAddressId), request.userAnswers.get(RegistrationInfoId)) match {
-        case (Some(individual), Some(address), Some(_)) =>
-          Future.successful(Ok(view(preparedForm, mode, individual, address, countryOptions)))
-        case _ =>
-          request.user.nino match {
-            case Some(nino) =>
+      request.user.nino match {
+        case None => Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
+        case Some(nino) =>
+          (request.userAnswers.get(IndividualDetailsId), request.userAnswers.get(IndividualAddressId), request.userAnswers.get(RegistrationInfoId)) match {
+            case (Some(individual), Some(address), Some(info)) if info.idType.contains(Nino) && info.idNumber.contains(nino.value) =>
+              Future.successful(Ok(view(preparedForm, mode, individual, address, countryOptions)))
+            case _ =>
               for {
                 registration <- registrationConnector.registerWithIdIndividual(nino)
                 _ <- dataCacheConnector.save(request.externalId, IndividualDetailsId, registration.response.individual)
@@ -74,8 +77,6 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
               } yield {
                 Ok(view(preparedForm, mode, registration.response.individual, registration.response.address, countryOptions))
               }
-            case _ =>
-              Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
           }
       }
 

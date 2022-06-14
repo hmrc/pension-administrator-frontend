@@ -18,11 +18,13 @@ package controllers.register.company.companydetails
 
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.BusinessNameId
+import identifiers.register.company.WhatYouWillNeedIdV2
 import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.AuthWithNoIV
+import utils.Navigator
+import utils.annotations.{AuthWithNoIV, RegisterCompanyV2}
 import views.html.register.company.companydetails
 
 import javax.inject.Inject
@@ -30,6 +32,7 @@ import javax.inject.Inject
 class WhatYouWillNeedController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            @AuthWithNoIV authenticate: AuthAction,
+                                           @RegisterCompanyV2 navigator: Navigator,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            whatYouWillNeedView: companydetails.whatYouWillNeed
@@ -39,7 +42,8 @@ class WhatYouWillNeedController @Inject()(
     Ok(whatYouWillNeedView(companyName))
   }
 
-  def onSubmit(): Action[AnyContent] = authenticate { _ =>
-    Redirect(controllers.register.company.routes.HasCompanyCRNController.onPageLoad(NormalMode))
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData)  {
+    implicit request =>
+      Redirect(navigator.nextPage(WhatYouWillNeedIdV2, NormalMode, request.userAnswers))
   }
 }
