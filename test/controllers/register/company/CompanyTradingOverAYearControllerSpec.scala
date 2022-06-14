@@ -16,16 +16,15 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.register.company.routes._
 import forms.HasReferenceNumberFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -50,9 +49,11 @@ class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
       entityName = companyName
     )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany,
+                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
     new CompanyTradingOverAYearController(frontendAppConfig,
       FakeUserAnswersCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
@@ -60,7 +61,8 @@ class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      featureToggleConnector
     )
 
   private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =

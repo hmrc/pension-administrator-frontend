@@ -18,19 +18,21 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.{CompanyAddressListId, CompanyContactAddressPostCodeLookupId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
-import utils.annotations.{NoRLSCheck, RegisterCompany}
+import utils.annotations.{NoRLSCheck, RegisterCompany, RegisterContactV2}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -40,13 +42,15 @@ import scala.concurrent.{ExecutionContext, Future}
 class CompanyAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                              override val cacheConnector: UserAnswersCacheConnector,
                                              @RegisterCompany override val navigator: Navigator,
+                                             @RegisterContactV2 val navigatorV2: Navigator,
                                              authenticate: AuthAction,
                                              @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: AddressListFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             val view: addressList
+                                             val view: addressList,
+                                             featureToggleConnector: FeatureToggleConnector
                                             )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
@@ -61,7 +65,16 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm,  CompanyPreviousAddressId, CompanyAddressListId, CompanyContactAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
+
+      featureToggleConnector.get(PsaRegistration.asString).flatMap {
+        case Enabled(_) =>
+          viewmodel(mode).right.map(vm =>
+            post(vm, CompanyPreviousAddressId, CompanyAddressListId, CompanyContactAddressPostCodeLookupId, mode,
+              form(vm.addresses, entityName), Some(navigatorV2))
+          )
+        case _ => viewmodel(mode).right.map(vm =>
+          post(vm, CompanyPreviousAddressId, CompanyAddressListId, CompanyContactAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
+      }
   }
 
   def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {

@@ -51,8 +51,8 @@ trait EmailAddressController extends FrontendBaseController with Retrievals with
     Future.successful(Ok(view(preparedForm, viewModel, psaName())))
   }
 
-  def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewModel: CommonFormWithHintViewModel)
-          (implicit request: DataRequest[AnyContent]): Future[Result] = {
+  def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewModel: CommonFormWithHintViewModel,
+           nav: Option[Navigator] = None)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel, psaName()))),
@@ -60,7 +60,7 @@ trait EmailAddressController extends FrontendBaseController with Retrievals with
         cacheConnector.save(request.externalId, id, value).flatMap(
           cacheMap =>
             saveChangeFlag(mode, id).map { _ =>
-              Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+              Redirect(nav.getOrElse(navigator).nextPage(id, mode, UserAnswers(cacheMap)))
             }
         )
     )

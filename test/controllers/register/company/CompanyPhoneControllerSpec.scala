@@ -16,18 +16,20 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
+import play.api.test.Helpers._
 
 class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
@@ -37,10 +39,21 @@ class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: phone = app.injector.instanceOf[phone]
 
-  private def controller(dataRetrievalAction: DataRetrievalAction) = new CompanyPhoneController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+  private def controller(dataRetrievalAction: DataRetrievalAction,
+                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+    new CompanyPhoneController(
+      new FakeNavigator(onwardRoute),
+      frontendAppConfig,
+      FakeUserAnswersCacheConnector,
+      FakeAuthAction,
+      FakeAllowAccessProvider(config = frontendAppConfig),
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider,
+      controllerComponents,
+      view,
+      featureToggleConnector
+    )
 
   private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode), Some("psaName"))(fakeRequest, messages).toString
 
@@ -54,6 +67,14 @@ class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
       form = phoneForm,
       request = postRequest
     )
+
+    "redirect to the task list page if feature toggle is enabled" in {
+      val featureToggle = FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      val result = controller(getCompany, featureToggle).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(contactdetails.routes.CheckYourAnswersController.onPageLoad().url)
+    }
   }
 
 }

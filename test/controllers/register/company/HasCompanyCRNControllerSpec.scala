@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
@@ -27,7 +27,6 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -52,9 +51,11 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
       entityName = companyName
     )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany,
+                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
     new HasCompanyCRNController(frontendAppConfig,
       FakeUserAnswersCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
@@ -62,7 +63,8 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      featureToggleConnector
     )
 
   private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =

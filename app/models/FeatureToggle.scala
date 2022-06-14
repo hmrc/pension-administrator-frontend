@@ -42,7 +42,7 @@ object FeatureToggleName {
     val asString = "psa-registration"
   }
 
-  val toggles = Seq(PsaFromIvToPdv)
+  val toggles = Seq(PsaFromIvToPdv, PsaRegistration)
 
   implicit val reads: Reads[FeatureToggleName] = Reads {
     case JsString(PsaFromIvToPdv.asString) => JsSuccess(PsaFromIvToPdv)

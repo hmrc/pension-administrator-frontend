@@ -28,7 +28,7 @@ case object DeclarationWorkingKnowledgeId extends TypedIdentifier[DeclarationWor
 
   override def cleanup(value: Option[DeclarationWorkingKnowledge], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
-      case Some(DeclarationWorkingKnowledge.WorkingKnowledge) =>
+      case Some(DeclarationWorkingKnowledge.WorkingKnowledge) | Some(DeclarationWorkingKnowledge.TaskList) =>
         userAnswers.remove(AdviserNameId)
           .flatMap(_.remove(AdviserEmailId))
           .flatMap(_.remove(AdviserPhoneId))

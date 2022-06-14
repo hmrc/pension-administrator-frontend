@@ -26,13 +26,13 @@ import controllers.actions._
 import controllers.register.routes._
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipEmailId
-import identifiers.register.{BusinessNameId, DeclarationFitAndProperId, DeclarationId, RegistrationInfoId, VariationWorkingKnowledgeId}
+import identifiers.register._
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
 import models.UserType.UserType
 import models.enumeration.JourneyType
-import models.{NormalMode, RegistrationInfo, TolerantIndividual, UpdateMode, UserType}
+import models._
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
