@@ -17,8 +17,7 @@
 package controllers.register.company
 
 import java.time.LocalDate
-
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyAddressFormProvider
@@ -32,7 +31,6 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
@@ -290,7 +288,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
   private def controller(
     dataRetrievalAction: DataRetrievalAction,
-    dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
+    dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
+    featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled
   ) =
     new ConfirmCompanyDetailsController(
       dataCacheConnector,
@@ -303,7 +302,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       formProvider,
       countryOptions,
       controllerComponents,
-      view
+      view,
+      featureToggleConnector
     )
 
   private def viewAsString(companyName: String = companyName, address: TolerantAddress = testLimitedCompanyAddress): String =

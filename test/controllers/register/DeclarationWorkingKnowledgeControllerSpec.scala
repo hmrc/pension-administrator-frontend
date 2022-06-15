@@ -16,20 +16,24 @@
 
 package controllers.register
 
-import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import models.FeatureToggleName.PsaRegistration
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
-import models.NormalMode
+import models.{FeatureToggle, NormalMode}
 import models.register.DeclarationWorkingKnowledge
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import views.html.register.declarationWorkingKnowledge
+
+import scala.concurrent.Future
 
 class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
@@ -38,7 +42,14 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
   val formProvider = new DeclarationWorkingKnowledgeFormProvider()
   val form: Form[Boolean] = formProvider()
 
+  val defaultFeatureToggleConnector = {
+    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Enabled(PsaRegistration)))
+    mockFeatureToggleConnector
+  }
+
   val view: declarationWorkingKnowledge = app.injector.instanceOf[declarationWorkingKnowledge]
+
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new DeclarationWorkingKnowledgeController(
@@ -49,7 +60,8 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      defaultFeatureToggleConnector
     )
 
   def viewAsString(form: Form[_] = form): String = view(form, NormalMode)(fakeRequest, messages).toString
@@ -72,7 +84,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString(form.fill(true))
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data is submitted when PSA registration toggle is off" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
       val result = controller().onSubmit(NormalMode)(postRequest)

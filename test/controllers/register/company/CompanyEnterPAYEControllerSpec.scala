@@ -16,11 +16,14 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import forms.EnterPAYEFormProvider
 import identifiers.register.EnterPAYEId
-import models.NormalMode
+import models.FeatureToggleName.PsaRegistration
+import models.{FeatureToggle, NormalMode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -31,6 +34,8 @@ import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterPAYE
+
+import scala.concurrent.Future
 
 class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
@@ -54,6 +59,12 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
     )
 
   private val payeNumber = "123AB456"
+
+  val defaultFeatureToggleConnector = {
+    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Disabled(PsaRegistration)))
+    mockFeatureToggleConnector
+  }
 
   private def viewAsString(form: Form[_] = form): String = view(
     form,
@@ -94,6 +105,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
       "return a redirect when the submitted data is valid" in {
         running(_.overrides(modules(UserAnswers().businessName().dataRetrievalAction) ++
           Seq[GuiceableModule](bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+            bind[FeatureToggleConnector].toInstance(defaultFeatureToggleConnector),
           bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute))) : _*
         )) {
           app =>

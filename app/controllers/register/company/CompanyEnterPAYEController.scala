@@ -18,32 +18,35 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.EnterPAYEController
 import forms.EnterPAYEFormProvider
 import identifiers.register.{BusinessNameId, EnterPAYEId}
+import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.{RegisterCompany, RegisterCompanyV2}
+import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterPAYE
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
                                            val cacheConnector: UserAnswersCacheConnector,
                                            @RegisterCompany val navigator: Navigator,
+                                           @RegisterCompanyV2 val navigatorV2: Navigator,
                                            authenticate: AuthAction,
                                            allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            formProvider: EnterPAYEFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           val view: enterPAYE
+                                           val view: enterPAYE,
+                                           featureToggleConnector: FeatureToggleConnector
                                           )(implicit val executionContext: ExecutionContext) extends EnterPAYEController {
 
   protected def form(companyName: String)
@@ -69,6 +72,20 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(EnterPAYEId, mode, form(entityName), viewModel(mode, entityName))
+      form(entityName).bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(view(formWithErrors, viewModel(mode, entityName)))),
+        value =>
+          for {
+            isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
+            newCache <- cacheConnector.save(request.externalId, EnterPAYEId, value)
+          } yield {
+            if (isFeatureEnabled) {
+              Redirect(navigatorV2.nextPage(EnterPAYEId, mode, UserAnswers(newCache)))
+            } else {
+              Redirect(navigator.nextPage(EnterPAYEId, mode, UserAnswers(newCache)))
+            }
+          }
+      )
   }
 }

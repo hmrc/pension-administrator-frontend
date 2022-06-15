@@ -17,16 +17,19 @@
 package controllers.register.adviser
 
 import config.FrontendAppConfig
+import connectors.cache.FeatureToggleConnector
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.UpdateContactAddressId
 import identifiers.register.adviser._
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.Mode
 import models.Mode._
 import models.requests.DataRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.Adviser
@@ -36,7 +39,7 @@ import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            @Adviser navigator: Navigator,
@@ -46,7 +49,8 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            dataCompletion: DataCompletion,
                                            implicit val countryOptions: CountryOptions,
                                            val controllerComponents: MessagesControllerComponents,
-                                           val view: check_your_answers
+                                           val view: check_your_answers,
+                                           featureToggleConnector: FeatureToggleConnector
                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -56,14 +60,19 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val isDataComplete = dataCompletion.isAdviserComplete(request.userAnswers, mode)
-      if (isDataComplete) {
-        Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
-      } else {
-        cyaPage(mode)
+      for {
+        isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
+      } yield {
+        (isFeatureEnabled, isDataComplete) match {
+          case(true, true) => Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
+          case(false, true) => Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+          case(_, false) => cyaPage(mode)
+        }
       }
+
   }
 
   private def cyaPage(mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {

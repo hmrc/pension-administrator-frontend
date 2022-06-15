@@ -17,33 +17,37 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.register.EnterNumberController
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyRegistrationNumberId
-import javax.inject.Inject
+import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.{RegisterCompany, RegisterCompanyV2}
+import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.register.company.enterNumber
 
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppConfig,
                                                     val cacheConnector: UserAnswersCacheConnector,
                                                     @RegisterCompany val navigator: Navigator,
+                                                    @RegisterCompanyV2 val navigatorV2: Navigator,
                                                     authenticate: AuthAction,
                                                     allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
                                                     formProvider: CompanyRegistrationNumberFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
-                                                    val view: enterNumber
+                                                    val view: enterNumber,
+                                                    featureToggleConnector: FeatureToggleConnector
                                                    )(implicit val executionContext: ExecutionContext) extends EnterNumberController {
 
   private val form = formProvider()
@@ -68,7 +72,22 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyRegistrationNumberId, mode, form, viewModel(mode, entityName))
+
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(view(formWithErrors, viewModel(mode, entityName)))),
+        value =>
+          for {
+            isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
+            newCache <- cacheConnector.save(request.externalId, CompanyRegistrationNumberId, value)
+          } yield {
+            if (isFeatureEnabled) {
+              Redirect(navigatorV2.nextPage(CompanyRegistrationNumberId, mode, UserAnswers(newCache)))
+            } else {
+              Redirect(navigator.nextPage(CompanyRegistrationNumberId, mode, UserAnswers(newCache)))
+            }
+          }
+      )
   }
 
 }

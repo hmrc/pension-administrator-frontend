@@ -16,10 +16,11 @@
 
 package controllers.register
 
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
+import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
@@ -41,7 +42,8 @@ class DeclarationWorkingKnowledgeController @Inject()(
                                                        requireData: DataRequiredAction,
                                                        formProvider: DeclarationWorkingKnowledgeFormProvider,
                                                        val controllerComponents: MessagesControllerComponents,
-                                                       val view: declarationWorkingKnowledge
+                                                       val view: declarationWorkingKnowledge,
+                                                       featureToggleConnector: FeatureToggleConnector
                                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
@@ -62,9 +64,13 @@ class DeclarationWorkingKnowledgeController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value => {
-          dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId,
-            DeclarationWorkingKnowledge.declarationWorkingKnowledge(value)).map(cacheMap =>
-            Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
+          for {
+            isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
+            cacheMap <- dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId,
+              DeclarationWorkingKnowledge.declarationWorkingKnowledge(value, isFeatureEnabled))
+          } yield {
+              Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap)))
+          }
         }
       )
   }

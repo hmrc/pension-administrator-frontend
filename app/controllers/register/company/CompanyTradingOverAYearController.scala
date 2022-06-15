@@ -17,35 +17,38 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.HasReferenceNumberController
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.company.routes._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyTradingOverAYearId
-import javax.inject.Inject
+import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.{RegisterCompany, RegisterContactV2}
+import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyTradingOverAYearController @Inject()(override val appConfig: FrontendAppConfig,
                                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                                   @RegisterCompany override val navigator: Navigator,
+                                                  @RegisterContactV2 val navigatorV2: Navigator,
                                                   authenticate: AuthAction,
                                                   allowAccess: AllowAccessActionProvider,
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   formProvider: HasReferenceNumberFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  val view: hasReferenceNumber
+                                                  val view: hasReferenceNumber,
+                                                  featureToggleConnector: FeatureToggleConnector
                                                  )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
@@ -74,8 +77,24 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         BusinessNameId.retrieve.right.map {
-          companyName =>
-            post(CompanyTradingOverAYearId, mode, form(companyName), viewModel(mode, companyName))
+          companyName => {
+            form(companyName).bindFromRequest().fold(
+              (formWithErrors: Form[_]) =>
+                Future.successful(BadRequest(view(formWithErrors, viewModel(mode, companyName)))),
+              value => {
+                for {
+                  isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
+                  newCache <- dataCacheConnector.save(request.externalId, CompanyTradingOverAYearId, value)
+                } yield {
+                  if (isFeatureEnabled) {
+                    Redirect(navigatorV2.nextPage(CompanyTradingOverAYearId, mode, UserAnswers(newCache)))
+                  } else {
+                    Redirect(navigator.nextPage(CompanyTradingOverAYearId, mode, UserAnswers(newCache)))
+                  }
+                }
+              }
+            )
+          }
         }
     }
 }

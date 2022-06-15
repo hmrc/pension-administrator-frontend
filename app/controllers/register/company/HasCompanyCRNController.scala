@@ -17,35 +17,38 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.company.routes._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.HasCompanyCRNId
-import javax.inject.Inject
+import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.Navigator
-import utils.annotations.RegisterCompany
+import utils.annotations.{RegisterCompany, RegisterCompanyV2}
+import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfig,
                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                         @RegisterCompany override val navigator: Navigator,
+                                        @RegisterCompanyV2 val navigatorV2: Navigator,
                                         authenticate: AuthAction,
                                         allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
                                         formProvider: HasReferenceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        val view: hasReferenceNumber
+                                        val view: hasReferenceNumber,
+                                        featureToggleConnector: FeatureToggleConnector
                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
@@ -74,6 +77,20 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        post(HasCompanyCRNId, mode, form(companyName), viewModel(mode, companyName))
+        form(companyName).bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(view(formWithErrors, viewModel(mode, companyName)))),
+          value =>
+            for {
+              isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
+              newCache <- dataCacheConnector.save(request.externalId, HasCompanyCRNId, value)
+            } yield {
+              if (isFeatureEnabled) {
+                Redirect(navigatorV2.nextPage(HasCompanyCRNId, mode, UserAnswers(newCache)))
+              } else {
+                Redirect(navigator.nextPage(HasCompanyCRNId, mode, UserAnswers(newCache)))
+              }
+            }
+        )
     }
 }

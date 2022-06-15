@@ -17,25 +17,28 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyEmailId
-import javax.inject.Inject
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.{NoRLSCheck, RegisterCompany}
-import viewmodels.{Message, CommonFormWithHintViewModel}
+import utils.annotations.{NoRLSCheck, RegisterCompany, RegisterContactV2}
+import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator,
+                                       @RegisterContactV2 val navigatorV2: Navigator,
                                        val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
@@ -44,7 +47,8 @@ class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator
                                        requireData: DataRequiredAction,
                                        formProvider: EmailFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: email
+                                       val view: email,
+                                       featureToggleConnector: FeatureToggleConnector
                                       )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
   private val form = formProvider()
@@ -57,7 +61,11 @@ class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(CompanyEmailId, mode, form, viewModel(mode))
+      featureToggleConnector.get(PsaRegistration.asString).flatMap {
+        case Enabled(_) =>
+          post(CompanyEmailId, mode, form, viewModel(mode), Some(navigatorV2))
+        case _ => post(CompanyEmailId, mode, form, viewModel(mode))
+      }
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =

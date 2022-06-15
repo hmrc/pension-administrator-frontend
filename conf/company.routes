@@ -134,3 +134,21 @@ GET         /:mode/trading-time                           controllers.register.c
 POST        /:mode/trading-time                           controllers.register.company.CompanyTradingOverAYearController.onSubmit(mode: Mode)
 
 GET         /task-list                                    controllers.register.company.CompanyRegistrationTaskListController.onPageLoad(mode: Mode = NormalMode)
+
+GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad
+GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad
+
+GET         /business-matching/check-your-answers         controllers.register.company.BusinessMatchingCheckYourAnswersController.onPageLoad()
+POST        /business-matching/check-your-answers         controllers.register.company.BusinessMatchingCheckYourAnswersController.onSubmit()
+
+GET         /details-what-you-will-need                   controllers.register.company.companydetails.WhatYouWillNeedController.onPageLoad()
+POST        /details-what-you-will-need                   controllers.register.company.companydetails.WhatYouWillNeedController.onSubmit()
+
+GET         /details-check-your-answers                   controllers.register.company.companydetails.CheckYourAnswersController.onPageLoad()
+POST        /details-check-your-answers                   controllers.register.company.companydetails.CheckYourAnswersController.onSubmit()
+
+GET         /contact-what-you-will-need                   controllers.register.company.contactdetails.WhatYouWillNeedController.onPageLoad()
+POST        /contact-what-you-will-need                   controllers.register.company.contactdetails.WhatYouWillNeedController.onSubmit()
+
+GET         /contact-check-your-answers                   controllers.register.company.contactdetails.CheckYourAnswersController.onPageLoad()
+POST        /contact-check-your-answers                   controllers.register.company.contactdetails.CheckYourAnswersController.onSubmit()
