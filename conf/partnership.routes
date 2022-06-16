@@ -123,3 +123,5 @@ POST        /:mode/vat-registration-number                controllers.register.p
 
 GET         /add-another-partner                          controllers.register.partnership.TellUsAboutAnotherPartnerController.onPageLoad(mode: Mode = NormalMode)
 GET         /:mode/add-another-partner                    controllers.register.partnership.TellUsAboutAnotherPartnerController.onPageLoad(mode: Mode)
+
+GET         /task-list                                    controllers.register.partnership.PartnershipRegistrationTaskListController.onPageLoad(mode: Mode = NormalMode)

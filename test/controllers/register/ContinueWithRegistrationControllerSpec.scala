@@ -16,11 +16,14 @@
 
 package controllers.register
 
+import connectors.RegistrationConnectorSpec.{sapNumber, utr}
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeUnAuthorisedAction}
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.YesNoFormProvider
-import models.NormalMode
+import identifiers.register.{BusinessTypeId, RegistrationInfoId}
+import models.{NormalMode, RegistrationCustomerType, RegistrationIdType, RegistrationInfo, RegistrationLegalStatus}
+import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -31,12 +34,10 @@ import views.html.register.continueWithRegistration
 
 class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageBehaviours {
 
-  private val form: Form[Boolean] = new YesNoFormProvider().apply()
-  private val view: continueWithRegistration = app.injector.instanceOf[continueWithRegistration]
-  private val validData: UserAnswers = UserAnswers()
-  private val postRequestTrue: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", true.toString))
-  private val postRequestFalse: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", false.toString))
+  import ContinueWithRegistrationControllerSpec._
 
+  private val view: continueWithRegistration = app.injector.instanceOf[continueWithRegistration]
+  
   "ContinueWithRegistrationController" must {
 
     "onPageLoad" must {
@@ -68,12 +69,39 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
     }
 
     "onSubmit" must {
-      "redirect to 'company registration task list' page when form value is true" in {
-        val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
+      "redirect to 'company registration task list' page when form value is true for UK company" in {
+        val userAnswers = validData
+          .setOrException(BusinessTypeId)(LimitedCompany)
+          .setOrException(RegistrationInfoId)(registrationInfo(RegistrationCustomerType.UK))
+
+        val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
           .onSubmit()(postRequestTrue)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
+      }
+
+      "redirect to 'partnership registration task list' page when form value is true for UK partnership" in {
+        val userAnswers = validData
+          .setOrException(BusinessTypeId)(BusinessPartnership)
+          .setOrException(RegistrationInfoId)(registrationInfo(RegistrationCustomerType.UK))
+
+        val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
+          .onSubmit()(postRequestTrue)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(partnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
+      }
+
+      "redirect to WYWN page when form value is true when customer type is NON UK" in {
+        val userAnswers = validData
+          .setOrException(RegistrationInfoId)(registrationInfo(RegistrationCustomerType.NonUK))
+
+        val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
+          .onSubmit()(postRequestTrue)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
       }
 
       "redirect to company 'before you begin' page when form value is false" in {
@@ -105,4 +133,25 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
 
   private def viewAsString(form: Form[_]): String =
     view(form)(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
+}
+
+object ContinueWithRegistrationControllerSpec {
+
+  private val utr = "test-utr"
+  private val sapNumber = "test-sap-number"
+  private def registrationInfo(registrationCustomerType:RegistrationCustomerType) = RegistrationInfo(
+    RegistrationLegalStatus.LimitedCompany,
+    sapNumber,
+    noIdentifier = false,
+    registrationCustomerType,
+    Some(RegistrationIdType.UTR),
+    Some(utr)
+  )
+
+
+  private val form: Form[Boolean] = new YesNoFormProvider().apply()
+  private val validData: UserAnswers = UserAnswers()
+  private val postRequestTrue: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", true.toString))
+  private val postRequestFalse: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", false.toString))
+
 }

@@ -19,8 +19,10 @@ package controllers.register
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import forms.register.YesNoFormProvider
-import identifiers.register.RegistrationInfoId
+import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import models.NormalMode
+import models.RegistrationCustomerType.UK
+import models.register.BusinessType.{LimitedCompany, UnlimitedCompany}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,7 +45,7 @@ class ContinueWithRegistrationController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData).async { implicit request =>
     val finishedBusinessMatching = request.userAnswers.flatMap(_.get(RegistrationInfoId)).isDefined
-    if(finishedBusinessMatching) {
+    if (finishedBusinessMatching) {
       Future.successful(Ok(continueWithRegistration(form)))
     } else {
       Future.successful(Redirect(routes.RegisterAsBusinessController.onPageLoad()))
@@ -54,7 +56,16 @@ class ContinueWithRegistrationController @Inject()(
     form.bindFromRequest().fold(
       errors => Future.successful(BadRequest(continueWithRegistration(errors))),
       continueRegistration => if (continueRegistration) {
-        Future.successful(Redirect(company.routes.CompanyRegistrationTaskListController.onPageLoad()))
+        val businessType = request.userAnswers.flatMap(_.get(BusinessTypeId))
+        val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
+        val result = (businessType, customerType) match {
+          case (Some(LimitedCompany) | Some(UnlimitedCompany), Some(UK)) =>
+            Redirect(company.routes.CompanyRegistrationTaskListController.onPageLoad())
+          case (Some(_), Some(UK)) =>
+            Redirect(partnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
+          case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+        }
+        Future.successful(result)
       } else {
         cache.removeAll(request.externalId).map(_ =>
           Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
