@@ -29,8 +29,7 @@
 
 @registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.registerLink")</a>}
 @printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
-@addSchemeLink = {<a id="add-scheme-link" href="@appConfig.addSchemeUrl">@messages("confirmation.whatYouNeedToKnow.addPensionSchemeLink")</a>}
-@addRacDacLink = {<a id="add-rac-dac-link" href="@appConfig.addRacDacUrl">@messages("confirmation.whatYouNeedToKnow.addRacDacLink")</a>}
+@schemeOverviewLink = {<a id="scheme-overview-link" href="@appConfig.schemesOverviewUrl">@messages("confirmation.action.subheading.schemesOverviewLink")</a>}
 
 
 @main_template(
@@ -64,22 +63,21 @@
 
     <h2 class="heading-medium">@messages("confirmation.whatYouNeedToKnow.heading")</h2>
     @if(isPsaTypeCompany){
-        <p>@messages("confirmation.action.company.subheading")</p>
+        <p>@Html(Message("confirmation.action.company.subheading").withArgs(schemeOverviewLink))</p>
     } else {
-        <p>@messages("confirmation.action.individual.subheading")</p>
+        <p>@Html(Message("confirmation.action.individual.subheading").withArgs(schemeOverviewLink))</p>
     }
 
 
     <ul id="what-you-need-to-know" class="list list-bullet">
         @if(request.user.isExistingPSA){
         <li>@Html(Message("confirmation.whatYouNeedToKnow.existingPSA.detail").withArgs(registerSchemeLink))</li>
-        <li>@addSchemeLink</li>
-        <li>@addRacDacLink</li>
+        <li>@messages("confirmation.whatYouNeedToKnow.registerMessage")</li>
+        <li>@messages("confirmation.whatYouNeedToKnow.addPensionSchemeOrRacDacMessage")</li>
         <li>@messages("confirmation.action.psaInvitation.item")</li>
         } else {
-        <li>@registerSchemeLink</li>
-        <li>@addSchemeLink</li>
-        <li>@addRacDacLink</li>
+        <li>@messages("confirmation.whatYouNeedToKnow.registerMessage")</li>
+        <li>@messages("confirmation.whatYouNeedToKnow.addPensionSchemeOrRacDacMessage")</li>
         <li>@messages("confirmation.action.psaInvitation.item")</li>
         }
     </ul>

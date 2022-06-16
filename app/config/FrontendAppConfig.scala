@@ -117,12 +117,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   lazy val registerPsaUrl: String = s"${servicesConfig.baseUrl("pension-administrator") +
         runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")}"
 
-  lazy val addSchemeUrl: String = s"${servicesConfig.baseUrl("migration-frontend") +
-    runModeConfiguration.underlying.getString("urls.migration-frontend.addScheme")}"
-
-  lazy val addRacDacUrl: String = s"${servicesConfig.baseUrl("migration-frontend") +
-    runModeConfiguration.underlying.getString("urls.migration-frontend.addRacDac")}"
-
   def updatePsaUrl(psaId:String): String = s"${servicesConfig.baseUrl("pension-administrator") +
     runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsa").format(psaId)}"
 
