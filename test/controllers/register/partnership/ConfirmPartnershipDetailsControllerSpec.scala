@@ -16,26 +16,30 @@
 
 package controllers.register.partnership
 
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
+import models.FeatureToggle.{Disabled, Enabled}
+import models.FeatureToggleName.PsaRegistration
 import models.register.BusinessType.BusinessPartnership
 import models.{BusinessDetails, _}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
+class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 
   private val testLimitedCompanyAddress = TolerantAddress(
     Some("Some Building"),
@@ -59,6 +63,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   private val validBusinessPartnershipUtr = "0987654321"
   private val invalidUtr = "INVALID"
   private val sapNumber = "test-sap-number"
+  private val mockFeatureToggleConnector = mock[FeatureToggleConnector]
 
   val partnershipName = "MyPartnership"
   val organisation: Organisation = Organisation("MyOrganisation", OrganisationTypeEnum.Partnership)
@@ -85,6 +90,11 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     Some(RegistrationIdType.UTR),
     Some(validBusinessPartnershipUtr)
   )
+
+  override protected def beforeEach(): Unit = {
+    reset(mockFeatureToggleConnector)
+    when(mockFeatureToggleConnector.get(any())( any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
+  }
 
   val view: confirmPartnershipDetails = app.injector.instanceOf[confirmPartnershipDetails]
 
@@ -144,7 +154,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
     "valid data is submitted" when {
       "yes" which {
-        "upsert address and organisation name from api response" in {
+        "upsert address and organisation name from api response with feature toggle false"  in {
           val dataCacheConnector = FakeUserAnswersCacheConnector
 
           val expectedJson =
@@ -163,6 +173,27 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           redirectLocation(result) mustBe Some(onwardRoute.url)
           dataCacheConnector.lastUpsert.value mustBe expectedJson
         }
+
+        "upsert address and organisation name from api response with feature toggle true" in {
+          val dataCacheConnector = FakeUserAnswersCacheConnector
+
+          val expectedJson =
+            UserAnswers(data)
+              .set(PartnershipRegisteredAddressId)(testBusinessPartnershipAddress)
+              .flatMap(_.set(RegistrationInfoId)(regInfo))
+              .asOpt
+              .value
+              .json
+
+          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+          when(mockFeatureToggleConnector.get(any())( any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
+          val result = controller(dataRetrievalAction, dataCacheConnector).onSubmit(NormalMode)(postRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.PartnershipRegistrationTaskListController.onPageLoad().url)
+          dataCacheConnector.lastUpsert.value mustBe expectedJson
+        }
       }
       "no" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
@@ -172,6 +203,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
       }
+
     }
 
     "redirect to Session Expired" when {
@@ -276,7 +308,8 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       formProvider,
       countryOptions,
       controllerComponents,
-      view
+      view,
+      mockFeatureToggleConnector
     )
 
   private def viewAsString(partnershipName: String = partnershipName, address: TolerantAddress = testBusinessPartnershipAddress): String =

@@ -17,13 +17,14 @@
 package controllers.register.partnership
 
 import connectors.RegistrationConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipRegisteredAddressId}
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
+import models.FeatureToggleName.PsaRegistration
 import models._
 import models.requests.DataRequest
 import play.api.Logger
@@ -52,7 +53,8 @@ class ConfirmPartnershipDetailsController @Inject()(
                                                      formProvider: ConfirmPartnershipDetailsFormProvider,
                                                      countryOptions: CountryOptions,
                                                      val controllerComponents: MessagesControllerComponents,
-                                                     val view: confirmPartnershipDetails
+                                                     val view: confirmPartnershipDetails,
+                                                     featureToggleConnector: FeatureToggleConnector
                                                    )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -130,7 +132,14 @@ class ConfirmPartnershipDetailsController @Inject()(
           },
         {
           case true =>
-            Future.successful(Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, request.userAnswers)))
+            featureToggleConnector.get(PsaRegistration.asString).map { featureToggle =>
+              if(featureToggle.isEnabled){
+                Redirect(routes.PartnershipRegistrationTaskListController.onPageLoad())
+              } else {
+                Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, request.userAnswers))
+              }
+            }
+
           case false =>
             val updatedAnswers = request.userAnswers.removeAllOf(List(
               PartnershipRegisteredAddressId, RegistrationInfoId
