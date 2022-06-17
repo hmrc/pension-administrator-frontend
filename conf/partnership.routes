@@ -125,3 +125,6 @@ GET         /add-another-partner                          controllers.register.p
 GET         /:mode/add-another-partner                    controllers.register.partnership.TellUsAboutAnotherPartnerController.onPageLoad(mode: Mode)
 
 GET         /task-list                                    controllers.register.partnership.PartnershipRegistrationTaskListController.onPageLoad(mode: Mode = NormalMode)
+
+GET         /business-matching/check-your-answers         controllers.register.partnership.BusinessMatchingCheckYourAnswersController.onPageLoad()
+POST        /business-matching/check-your-answers         controllers.register.partnership.BusinessMatchingCheckYourAnswersController.onSubmit()
