@@ -62,7 +62,7 @@ class ContinueWithRegistrationController @Inject()(
           case (Some(LimitedCompany) | Some(UnlimitedCompany), Some(UK)) =>
             Redirect(company.routes.CompanyRegistrationTaskListController.onPageLoad())
           case (Some(_), Some(UK)) =>
-            Redirect(partnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
+            Redirect(administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
           case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
         }
         Future.successful(result)

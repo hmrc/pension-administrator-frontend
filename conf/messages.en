@@ -261,6 +261,12 @@ companyDetails.whatYouWillNeed.p2 = If {0} has them, you will also need to tell 
 companyDetails.whatYouWillNeed.li2 = employer PAYE reference (you can tell us any employer PAYE reference if test has more than one)
 companyDetails.whatYouWillNeed.li3 = VAT registration number
 
+partnershipDetails.whatYouWillNeed.title = Partnership details
+partnershipDetails.whatYouWillNeed.heading = {0}’s partnership details
+partnershipDetails.whatYouWillNeed.p1 = If {0} has them, you will also need to tell us their:
+partnershipDetails.whatYouWillNeed.li1 = employer PAYE reference (you can tell us any employer PAYE reference if test has more than one)
+partnershipDetails.whatYouWillNeed.li2 = VAT registration number
+
 previousAddress.checkYourAnswersLabel = {0}’s previous address
 previousAddress.visuallyHidden.text = {0}’s previous address
 

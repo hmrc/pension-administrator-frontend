@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package controllers.register.partnership
+package controllers.register.administratorPartnership
 
 import connectors.RegistrationConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipRegisteredAddressId}
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
+import models.FeatureToggleName.PsaRegistration
 import models._
 import models.requests.DataRequest
 import play.api.Logger
@@ -33,17 +34,17 @@ import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.Partnership
+import utils.annotations.PartnershipV2
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
-import views.html.register.partnership.confirmPartnershipDetails
+import views.html.register.administratorPartnership.confirmPartnershipDetails
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmPartnershipDetailsController @Inject()(
                                                      dataCacheConnector: UserAnswersCacheConnector,
-                                                     @Partnership navigator: Navigator,
+                                                     @PartnershipV2 val navigator: Navigator,
                                                      authenticate: AuthAction,
                                                      allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
@@ -96,7 +97,7 @@ class ConfirmPartnershipDetailsController @Inject()(
             fn(registration)
         } recoverWith {
           case _: NotFoundException =>
-            Future.successful(Redirect(controllers.register.partnership.routes.PartnershipCompanyNotFoundController.onPageLoad()))
+            Future.successful(Redirect(controllers.register.administratorPartnership.routes.PartnershipCompanyNotFoundController.onPageLoad()))
         }
     }
   }
@@ -130,7 +131,7 @@ class ConfirmPartnershipDetailsController @Inject()(
           },
         {
           case true =>
-            Future.successful(Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, request.userAnswers)))
+            Future.successful(Redirect(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()))
           case false =>
             val updatedAnswers = request.userAnswers.removeAllOf(List(
               PartnershipRegisteredAddressId, RegistrationInfoId

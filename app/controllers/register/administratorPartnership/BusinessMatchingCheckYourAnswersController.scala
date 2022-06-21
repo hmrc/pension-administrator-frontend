@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.partnership
+package controllers.register.administratorPartnership
 
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.{BusinessNameId, BusinessUTRId}
@@ -23,7 +23,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
-import viewmodels.{AnswerSection, Section}
+import viewmodels.{AnswerSection, Message, Section}
 import views.html.check_your_answers
 
 import javax.inject.Inject
@@ -44,7 +44,13 @@ class BusinessMatchingCheckYourAnswersController @Inject()(
             BusinessUTRId.cya.row(BusinessUTRId)(None, request.userAnswers)
         )
       )
-      Ok(checkYourAnswersView(sections, routes.PartnershipRegistrationTaskListController.onPageLoad(), None, NormalMode, isComplete = true))
+
+      val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
+
+
+  Ok(checkYourAnswersView(sections, routes.PartnershipRegistrationTaskListController.onPageLoad(), None, NormalMode, isComplete = true, Some(partnershipName)))
+
+
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>
