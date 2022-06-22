@@ -17,14 +17,14 @@
 package controllers.register.administratorPartnership
 
 import connectors.RegistrationConnector
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.TypedIdentifier
-import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipRegisteredAddressId}
+import identifiers.register.partnership.PartnershipRegisteredAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
-import models.FeatureToggleName.PsaRegistration
+
 import models._
 import models.requests.DataRequest
 import play.api.Logger

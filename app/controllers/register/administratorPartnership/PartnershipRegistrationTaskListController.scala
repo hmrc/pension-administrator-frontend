@@ -69,7 +69,8 @@ class PartnershipRegistrationTaskListController @Inject()(
     val isPAYECompleted = userAnswers.get(HasPAYEId).exists(if (_) userAnswers.get(EnterPAYEId).isDefined else true)
     val isVATCompleted = userAnswers.get(HasVATId).exists(if (_) userAnswers.get(EnterVATId).isDefined else true)
     val isCompleted = isPAYECompleted && isVATCompleted
-    val url: String = if (isCompleted) {
+    val isValueEntered = userAnswers.get(HasPAYEId).getOrElse(false) || userAnswers.get(HasVATId).getOrElse(false)
+    val url: String = if (isCompleted || isValueEntered) {
       partnershipdetails.routes.CheckYourAnswersController.onPageLoad().url
     } else {
       partnershipdetails.routes.WhatYouWillNeedController.onPageLoad().url

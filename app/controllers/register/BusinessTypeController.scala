@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import forms.register.BusinessTypeFormProvider
-import identifiers.register.{BusinessTypeId, EnterPAYEId}
+import identifiers.register.BusinessTypeId
 import models.FeatureToggleName.PsaRegistration
 
 import javax.inject.Inject

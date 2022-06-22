@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.partnership
+package controllers.register.administratorPartnership
 
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
@@ -40,15 +40,15 @@ class PartnershipRegistrationTaskListControllerSpec extends ControllerSpecBase {
 
         val expectedTaskList = TaskList(partnershipName, "", List(
           Task(messages("taskList.basicDetails"), isCompleted = false,
-            "/register-as-pension-scheme-administrator/register/administrator-partnership/business-matching/check-your-answers"),
-//          Task(messages("taskList.partnershipDetails"), isCompleted = false,
-//            "/register-as-pension-scheme-administrator/register/administrator-partnership/details-what-you-will-need"),
-//          Task(messages("taskList.contactDetails"), isCompleted = false,
-//            "/register-as-pension-scheme-administrator/register/administrator-partnership/contact-what-you-will-need"),
-//          Task(messages("taskList.partners"), isCompleted = false,
-//            "/register-as-pension-scheme-administrator/register/administrator-partnership/directors/what-you-will-need"),
-//          Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false,
-//            "/register-as-pension-scheme-administrator/register/working-knowledge-pensions")
+            "/register-as-pension-scheme-administrator/register/partnership/business-matching/check-your-answers"),
+          Task(messages("taskList.partnershipDetails"), isCompleted = false,
+            "/register-as-pension-scheme-administrator/register/administrator-partnership/details-what-you-will-need"),
+          //          Task(messages("taskList.contactDetails"), isCompleted = false,
+          //            "/register-as-pension-scheme-administrator/register/administrator-partnership/contact-what-you-will-need"),
+          //          Task(messages("taskList.partners"), isCompleted = false,
+          //            "/register-as-pension-scheme-administrator/register/administrator-partnership/directors/what-you-will-need"),
+          //          Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false,
+          //            "/register-as-pension-scheme-administrator/register/working-knowledge-pensions")
         ))
 
         status(result) mustBe OK

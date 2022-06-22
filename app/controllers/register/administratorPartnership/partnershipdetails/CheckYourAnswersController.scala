@@ -18,13 +18,13 @@ package controllers.register.administratorPartnership.partnershipdetails
 
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.administratorPartnership
-import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
+import identifiers.register.{BusinessNameId, EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
 import models.{CheckMode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
-import viewmodels.{AnswerSection, Link, Section}
+import viewmodels.{AnswerSection, Link, Message, Section}
 import views.html.check_your_answers
 
 import javax.inject.Inject
@@ -48,7 +48,9 @@ class CheckYourAnswersController @Inject()(
         )
       )
       val nextPage = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
-      Ok(checkYourAnswersView(sections, nextPage, None, NormalMode, isComplete = true))
+      val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
+
+      Ok(checkYourAnswersView(sections, nextPage, None, NormalMode, isComplete = true, Some(partnershipName)))
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>

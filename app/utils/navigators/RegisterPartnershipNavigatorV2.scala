@@ -24,7 +24,6 @@ import identifiers.register.partnership._
 import identifiers.{Identifier, UpdateContactAddressId}
 import models.InternationalRegion._
 import models._
-import models.register.BusinessType
 import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}

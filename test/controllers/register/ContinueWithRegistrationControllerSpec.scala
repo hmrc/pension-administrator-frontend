@@ -90,7 +90,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
           .onSubmit()(postRequestTrue)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(partnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
       }
 
       "redirect to WYWN page when form value is true when customer type is NON UK" in {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.partnership
+package controllers.register.administratorPartnership
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
@@ -31,7 +31,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
-import views.html.register.partnership.confirmPartnershipDetails
+import views.html.register.administratorPartnership.confirmPartnershipDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -123,7 +123,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.register.partnership.routes.PartnershipCompanyNotFoundController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.register.administratorPartnership.routes.PartnershipCompanyNotFoundController.onPageLoad().url)
     }
 
     "data is saved on page load" in {
@@ -242,7 +242,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   }
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
 
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation

@@ -1,4 +1,3 @@
-->          /partner                                      administratorPartners.Routes
 
 GET         /what-you-will-need                           controllers.register.administratorPartnership.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
 POST        /what-you-will-need                           controllers.register.administratorPartnership.WhatYouWillNeedController.onSubmit(mode: Mode = NormalMode)
