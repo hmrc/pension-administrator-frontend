@@ -42,7 +42,7 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")
 
-  val viewmodel = ManualAddressViewModel(
+  def viewmodel = ManualAddressViewModel(
     postCall = routes.PartnershipPreviousAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.heading", Message("thePartnership")),

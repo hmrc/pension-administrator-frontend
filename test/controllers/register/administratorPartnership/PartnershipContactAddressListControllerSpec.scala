@@ -31,7 +31,7 @@ import play.api.libs.json.Json
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.annotations.Partnership
+import utils.annotations.PartnershipV2
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -64,7 +64,7 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
 
   val form = new AddressListFormProvider()(addresses, "error.required")
 
-  val viewModel: AddressListViewModel = AddressListViewModel(
+  def viewModel: AddressListViewModel = AddressListViewModel(
     routes.PartnershipContactAddressListController.onSubmit(NormalMode),
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
     addresses,
@@ -89,7 +89,7 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
 
     "redirect to the next page on a POST request" in {
       running(_.overrides(modules(retrieval) ++
-        Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
+        Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[PartnershipV2]).toInstance(FakeNavigator),
           bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)): _*)) {
         app =>
           val controller = app.injector.instanceOf[PartnershipContactAddressListController]
@@ -107,7 +107,7 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
       bind[AuthAction].to(FakeAuthAction),
       bind[AllowAccessActionProvider].to(FakeAllowAccessProvider(config = frontendAppConfig)),
       bind[DataRetrievalAction].toInstance(retrieval),
-      bind(classOf[Navigator]).qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
+      bind(classOf[Navigator]).qualifiedWith(classOf[PartnershipV2]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     ).build()
 

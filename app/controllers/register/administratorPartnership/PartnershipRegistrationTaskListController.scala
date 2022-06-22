@@ -54,7 +54,7 @@ class PartnershipRegistrationTaskListController @Inject()(
       buildBasicDetailsTask(userAnswers),
       buildPartnershipDetails(userAnswers)
       //      buildContactDetails(userAnswers),
-      //      buildDirectorDetails(userAnswers),
+      //      buildPartnerDetails(userAnswers),
       //      buildWorkingKnowledgeTask(userAnswers))
     ))
   }

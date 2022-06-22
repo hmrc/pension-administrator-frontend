@@ -42,7 +42,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
     .businessName(partnershipName)
     .dataRetrievalAction
 
-  val viewModel = AddressYearsViewModel(
+  def viewModel = AddressYearsViewModel(
     PartnershipAddressYearsController.onSubmit(NormalMode),
     Message("addressYears.heading", Message("thePartnership")),
     Message("addressYears.heading").withArgs(partnershipName),
@@ -55,10 +55,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
   "render the view correctly on a GET request" in {
     val request = addCSRFToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode)))
     val result = route(application, request).value
-    val actual = contentAsString(result)
-    val expected = view(form, viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString
-    println(actual)
-    println(expected)
+
         status(result) mustBe OK
         contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString
   }

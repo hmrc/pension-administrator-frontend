@@ -95,7 +95,7 @@ class CheckYourAnswersController @Inject()(
 
     Ok(view(
       Seq(partnershipDetails),
-      controllers.register.partnership.routes.CheckYourAnswersController.onSubmit(),
+      routes.CheckYourAnswersController.onSubmit(),
       None,
       mode,
       dataCompletion.isPartnershipDetailsComplete(request.userAnswers)

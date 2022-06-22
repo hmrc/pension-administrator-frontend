@@ -51,7 +51,7 @@ class PartnershipContactAddressControllerSpec
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form: Form[Address] = formProvider("error.country.invalid")
 
-  private val viewModel = ManualAddressViewModel(
+  private def viewModel = ManualAddressViewModel(
     postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.heading").withArgs("the partnership"),

@@ -72,6 +72,7 @@ object HasPartnershipPAYEControllerSpec {
       heading = Message("hasPAYE.heading", partnershipName),
       hint = Some(Message("hasPAYE.hint")),
       mode = mode,
-      entityName = partnershipName
+      entityName = partnershipName,
+      displayPartnershipLink = true
     )
 }

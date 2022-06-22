@@ -71,6 +71,7 @@ object PartnershipEnterPAYEControllerSpec {
       heading = Message("enterPAYE.heading", partnershipName),
       mode = mode,
       hint = Some(Message("enterPAYE.hint")),
-      entityName = partnershipName
+      entityName = partnershipName,
+      displayPartnershipLink = true
     )
 }

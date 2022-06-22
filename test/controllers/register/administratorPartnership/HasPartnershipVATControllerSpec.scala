@@ -50,7 +50,8 @@ class HasPartnershipVATControllerSpec extends ControllerWithCommonBehaviour {
       heading = Message("hasVAT.heading", partnershipName),
       mode = mode,
       hint = None,
-      entityName = partnershipName
+      entityName = partnershipName,
+      displayPartnershipLink = true
     )
 
   private def hasReferenceNumberView(form: Form[_]): String =

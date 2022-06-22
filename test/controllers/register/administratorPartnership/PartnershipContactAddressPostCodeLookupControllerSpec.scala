@@ -45,7 +45,7 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
   private val partnershipName = "PartnershipName"
 
   val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
-  val viewModel = PostcodeLookupViewModel(
+  def viewModel = PostcodeLookupViewModel(
     routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode),
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
     Message("postcode.lookup.heading", Message("thePartnership")),
