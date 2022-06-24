@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.register.AddEntityController
+import controllers.register.AddToListEntityController
 import forms.register.AddEntityFormProvider
 import identifiers.register.partnership.AddPartnersId
 import models.Mode
@@ -29,9 +29,9 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.{NoRLSCheck, PartnershipPartner}
+import utils.annotations.{NoRLSCheck, PartnershipPartnerV2}
 import viewmodels.{EntityViewModel, Message, Person}
-import views.html.register.addEntity
+import views.html.register.addToListEntity
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -39,15 +39,15 @@ import scala.concurrent.ExecutionContext
 class AddPartnerController @Inject()(
                                       override val appConfig: FrontendAppConfig,
                                       override val cacheConnector: UserAnswersCacheConnector,
-                                      @PartnershipPartner override val navigator: Navigator,
+                                      @PartnershipPartnerV2 override val navigator: Navigator,
                                       authenticate: AuthAction,
                                       @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       formProvider: AddEntityFormProvider,
                                       val controllerComponents: MessagesControllerComponents,
-                                      val view: addEntity
-                                    )(implicit val executionContext: ExecutionContext) extends AddEntityController with Retrievals with I18nSupport {
+                                      val view: addToListEntity
+                                    )(implicit val executionContext: ExecutionContext) extends AddToListEntityController with Retrievals with I18nSupport {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -58,18 +58,20 @@ class AddPartnerController @Inject()(
     entities = partners,
     maxLimit = appConfig.maxPartners,
     entityType = Message("addPartners.entityType"),
-    psaName = psaName()
+    psaName = psaName(),
+    insetText = Some(Message("addPartner.insetText")),
+    returnLink = Some(routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete(mode)
+      val partners: Seq[Person] = request.userAnswers.allPartnersAfterDeleteV2(mode)
       get(AddPartnersId, form, viewmodel(partners, mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete(mode)
+      val partners: Seq[Person] = request.userAnswers.allPartnersAfterDeleteV2(mode)
       post(AddPartnersId, form, viewmodel(partners, mode), mode)
   }
 

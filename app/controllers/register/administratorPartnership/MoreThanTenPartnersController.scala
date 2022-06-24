@@ -25,7 +25,7 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.PartnershipPartner
+import utils.annotations.PartnershipPartnerV2
 import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
@@ -34,7 +34,7 @@ import scala.concurrent.ExecutionContext
 
 class MoreThanTenPartnersController @Inject()(val appConfig: FrontendAppConfig,
                                               override val cacheConnector: UserAnswersCacheConnector,
-                                              @PartnershipPartner val navigator: Navigator,
+                                              @PartnershipPartnerV2 val navigator: Navigator,
                                               authenticate: AuthAction,
                                               allowAccess: AllowAccessActionProvider,
                                               getData: DataRetrievalAction,

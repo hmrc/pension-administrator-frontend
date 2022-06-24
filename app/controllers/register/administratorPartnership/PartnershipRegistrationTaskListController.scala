@@ -16,9 +16,11 @@
 
 package controllers.register.administratorPartnership
 
+import config.FrontendAppConfig
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register._
-import models.Mode
+import identifiers.register.partnership.MoreThanTenPartnersId
+import models.{Mode, NormalMode}
 import models.register.{Task, TaskList}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.Format.GenericFormat
@@ -31,7 +33,7 @@ import views.html.register.taskList
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class PartnershipRegistrationTaskListController @Inject()(
+class PartnershipRegistrationTaskListController @Inject()(appConfig: FrontendAppConfig,
                                                            val controllerComponents: MessagesControllerComponents,
                                                            @AuthWithNoIV authenticate: AuthAction,
                                                            allowAccess: AllowAccessActionProvider,
@@ -52,9 +54,9 @@ class PartnershipRegistrationTaskListController @Inject()(
 
     TaskList(businessName, declarationUrl, List(
       buildBasicDetailsTask(userAnswers),
-      buildPartnershipDetails(userAnswers)
+      buildPartnershipDetails(userAnswers),
       //      buildContactDetails(userAnswers),
-      //      buildPartnerDetails(userAnswers),
+        buildPartnersDetails(userAnswers)
       //      buildWorkingKnowledgeTask(userAnswers))
     ))
   }
@@ -98,23 +100,23 @@ class PartnershipRegistrationTaskListController @Inject()(
   //    Task(messages("taskList.workingKnowledgeDetails"), isWorkingKnowledgeCompleted, workingKnowledgeDetailsUrl)
   //  }
   //
-  //  private def buildDirectorDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
-  //    val isDirectorsDetailsCompleted = userAnswers.allDirectorsAfterDelete(NormalMode).nonEmpty
-  //    val directorTaskUrl = if(isDirectorsDetailsCompleted){
-  //      controllers.register.partnership.routes.AddPartnershipDirectorsController.onPageLoad(NormalMode).url
-  //    } else {
-  //      controllers.register.partnership.directors.routes.WhatYouWillNeedController.onPageLoad().url
-  //    }
-  //
-  //    Task(messages("taskList.directors"), isCompleted = isEstablisherPartnershipAndDirectorsComplete(userAnswers), url = directorTaskUrl)
-  //  }
-  //
-  //  def isEstablisherPartnershipAndDirectorsComplete(userAnswers: UserAnswers): Boolean = {
-  //    val allDirectors = userAnswers.allDirectorsAfterDelete(NormalMode)
-  //
-  //    val allDirectorsCompleted = allDirectors.nonEmpty && allDirectors.forall(_.isComplete) &&
-  //      (allDirectors.size < 10 || userAnswers.get(MoreThanTenDirectorsId).isDefined)
-  //
-  //      allDirectorsCompleted
-  //  }
+    private def buildPartnersDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
+      val isPartnersCompleted = userAnswers.allPartnersAfterDeleteV2(NormalMode).nonEmpty
+      val partnerTaskUrl = if(isPartnersCompleted){
+        controllers.register.administratorPartnership.routes.AddPartnerController.onPageLoad(NormalMode).url
+      } else {
+        controllers.register.administratorPartnership.partners.routes.WhatYouWillNeedController.onPageLoad().url
+      }
+
+      Task(messages("taskList.partners"), isCompleted = isPartnershipPartnersComplete(userAnswers), url = partnerTaskUrl)
+    }
+
+    def isPartnershipPartnersComplete(userAnswers: UserAnswers): Boolean = {
+      val allPartners = userAnswers.allPartnersAfterDeleteV2(NormalMode)
+
+      val allPartnersCompleted = allPartners.nonEmpty && allPartners.forall(_.isComplete) && allPartners.size >= 2 &&
+        (allPartners.size < appConfig.maxPartners || userAnswers.get(MoreThanTenPartnersId).isDefined)
+
+      allPartnersCompleted
+    }
 }

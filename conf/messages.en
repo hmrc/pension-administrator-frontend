@@ -1221,3 +1221,5 @@ whatYouWillNeed.workingKnowledge.item1 = name
 whatYouWillNeed.workingKnowledge.item2 = email address
 whatYouWillNeed.workingKnowledge.item3 = phone number
 whatYouWillNeed.workingKnowledge.item4 = address
+
+addPartner.insetText = You will need to tell us details for at least two partners. You can add up to 10 using the digital service

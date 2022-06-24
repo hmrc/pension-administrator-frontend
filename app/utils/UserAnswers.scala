@@ -137,6 +137,34 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     partners.flatten
   }
 
+  def allPartnersAfterDeleteV2(mode: Mode): Seq[Person] = {
+    val partners = for ((partner, index) <- allPartners.zipWithIndex) yield {
+      if (partner.isDeleted) {
+        Seq.empty
+      } else {
+        val isComplete = DataCompletion.isPartnerComplete(UserAnswers(json), index)
+        val editUrl = if (isComplete) {
+          controllers.register.administratorPartnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
+        } else {
+          controllers.register.administratorPartnership.partners.routes.PartnerNameController.onPageLoad(mode, Index(index)).url
+        }
+
+        Seq(
+          Person(
+            index,
+            partner.fullName,
+            controllers.register.administratorPartnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, mode).url,
+            editUrl,
+            partner.isDeleted,
+            isComplete,
+            partner.isNew
+          )
+        )
+      }
+    }
+    partners.flatten
+  }
+
   def partnersCount: Int = {
     getAll[PersonName](PartnerNameId.collectionPath)
       .getOrElse(Nil).length

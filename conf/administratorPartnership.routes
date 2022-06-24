@@ -1,3 +1,4 @@
+->          /partner                                      administratorPartnershipPartners.Routes
 
 GET         /what-you-will-need                           controllers.register.administratorPartnership.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
 POST        /what-you-will-need                           controllers.register.administratorPartnership.WhatYouWillNeedController.onSubmit(mode: Mode = NormalMode)
@@ -120,8 +121,6 @@ POST        /vat-registration-number                      controllers.register.a
 GET         /:mode/vat-registration-number                controllers.register.administratorPartnership.PartnershipEnterVATController.onPageLoad(mode: Mode)
 POST        /:mode/vat-registration-number                controllers.register.administratorPartnership.PartnershipEnterVATController.onSubmit(mode: Mode)
 
-GET         /add-another-partner                          controllers.register.administratorPartnership.TellUsAboutAnotherPartnerController.onPageLoad(mode: Mode = NormalMode)
-GET         /:mode/add-another-partner                    controllers.register.administratorPartnership.TellUsAboutAnotherPartnerController.onPageLoad(mode: Mode)
 
 GET         /task-list                                    controllers.register.administratorPartnership.PartnershipRegistrationTaskListController.onPageLoad(mode: Mode = NormalMode)
 
