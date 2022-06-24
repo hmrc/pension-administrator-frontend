@@ -171,7 +171,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
       case Some(AddressYears.UnderAYear) =>
         PartnershipTradingOverAYearController.onPageLoad(CheckMode)
       case Some(AddressYears.OverAYear) =>
-        controllers.register.administratorPartnership.partnershipDetails.routes.CheckYourAnswersController.onPageLoad()
+        contactDetailsCYA
       case _ =>
         controllers.routes.SessionExpiredController.onPageLoad()
     }

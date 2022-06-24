@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.administratorPartnership.contactDetails
+package controllers.register.administratorPartnership
 
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase

@@ -58,7 +58,19 @@ formHelper: FormWithCSRF
 
         @if(viewModel.displayReturnLink){
             @psaNameOpt.map { psaName =>
-            @components.return_link(psaName, viewModel.mode)
+                @components.return_link(psaName, viewModel.mode)
+            }
+        }
+
+        @if(viewModel.displayPartnershipLink){
+            @viewModel.partnershipName.map { partnershipName =>
+                <div class="grid-row">
+                    <div class="column-two-thirds">
+                        <p class="govuk-margin-top-5">
+                            <a id="return-link" href=@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url>@messages("site.return_to", partnershipName)</a>
+                        </p>
+                    </div>
+                </div>
             }
         }
     }

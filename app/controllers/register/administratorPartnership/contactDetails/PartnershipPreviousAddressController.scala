@@ -60,7 +60,9 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
     countryOptions.options,
     title = Message("enter.previous.address.heading", Message("thePartnership")),
     heading = Message("enter.previous.address.heading", name),
-    psaName = psaName()
+    psaName = psaName(),
+    partnershipName = Some(name),
+    displayPartnershipLink = true
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

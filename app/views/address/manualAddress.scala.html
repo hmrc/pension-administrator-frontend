@@ -53,6 +53,14 @@ pageTitle = titleWithErrors(form, viewmodel.title)
             @viewmodel.psaName.map { psaName =>
             @components_refactored.return_link(psaName, mode)
             }
+
+            @if(viewmodel.displayPartnershipLink && mode != UpdateMode){
+                @viewmodel.partnershipName.map { partnershipName =>
+                    <p class="govuk-margin-top-5 govuk-body">
+                        <a id="return-link" class="govuk-link" href="@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", partnershipName)</a>
+                    </p>
+                }
+            }
         }
     }
 

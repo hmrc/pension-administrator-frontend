@@ -26,7 +26,9 @@ case class ManualAddressViewModel(
                                    title: Message,
                                    heading: Message,
                                    hint: Option[Message] = None,
-                                   psaName: Option[String] = None
+                                   psaName: Option[String] = None,
+                                   partnershipName: Option[String] = None,
+                                   displayPartnershipLink: Boolean = false
                                  ) {
 
 }
