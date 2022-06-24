@@ -76,7 +76,9 @@ class PartnershipPreviousAddressListController @Inject()(
         Message("select.previous.address.heading", Message("thePartnership")),
         Message("select.previous.address.heading", entityName),
         Message("select.address.hint.text"),
-        Message("manual.entry.link")
+        Message("manual.entry.link"),
+        partnershipName = Some(entityName),
+        displayPartnershipLink = true
       )
     }.left.map(_ => Future.successful(Redirect(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode))))
   }

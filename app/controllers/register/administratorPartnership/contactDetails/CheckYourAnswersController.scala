@@ -59,7 +59,7 @@ class CheckYourAnswersController @Inject()(
           } else {
             Nil
           }) ++
-          PartnershipPreviousAddressId.cya.row(PartnershipPreviousAddressId)(Some(Link(routes.PartnershipPreviousAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
+          PartnershipPreviousAddressId.cya.row(PartnershipPreviousAddressId)(Some(Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)), userAnswers) ++
           PartnershipEmailId.cya.row(PartnershipEmailId)(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url)), userAnswers) ++
           PartnershipPhoneId.cya.row(PartnershipPhoneId)(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)), userAnswers)
       )

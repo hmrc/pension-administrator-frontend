@@ -118,7 +118,9 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
     Message("manual.entry.text"),
     Some(Message("manual.entry.link")),
     Message("postcode.lookup.form.label"),
-    None
+    None,
+    partnershipName = Some("Test Partnership Name"),
+    displayPartnershipLink = true
   )
 }
 

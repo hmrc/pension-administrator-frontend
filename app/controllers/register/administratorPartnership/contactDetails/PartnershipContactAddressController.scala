@@ -59,7 +59,9 @@ class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppCo
       countryOptions = countryOptions.options,
       title = Message("enter.address.heading").withArgs(Message("thePartnership")),
       heading = Message("enter.address.heading").withArgs(partnershipName),
-      psaName = psaName()
+      psaName = psaName(),
+      partnershipName = Some(partnershipName),
+      displayPartnershipLink = true
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

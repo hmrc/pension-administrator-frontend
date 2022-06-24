@@ -29,5 +29,7 @@ case class AddressListViewModel(
                                  selectAddress: Message = Message("select.address.hint.text"),
                                  selectAddressLink: Message = Message("manual.entry.link"),
                                  psaName: Option[String] = None,
-                                 selectAddressPostLink: Option[Message] = None
+                                 selectAddressPostLink: Option[Message] = None,
+                                 partnershipName: Option[String] = None,
+                                 displayPartnershipLink: Boolean = false
                                )

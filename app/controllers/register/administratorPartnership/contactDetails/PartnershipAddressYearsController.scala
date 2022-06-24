@@ -52,14 +52,16 @@ class PartnershipAddressYearsController @Inject()(val appConfig: FrontendAppConf
   extends AddressYearsController with Retrievals with I18nSupport {
 
 
-  private def viewModel(mode: Mode, partnershipName: String)
+  private def viewModel(mode: Mode, partnershipNameValue: String)
                        (implicit request: DataRequest[AnyContent]) =
     AddressYearsViewModel(
       routes.PartnershipAddressYearsController.onSubmit(mode),
       Message("addressYears.heading", Message("thePartnership")),
-      Message("addressYears.heading").withArgs(partnershipName),
-      Message("addressYears.heading").withArgs(partnershipName),
-      psaName = psaName()
+      Message("addressYears.heading").withArgs(partnershipNameValue),
+      Message("addressYears.heading").withArgs(partnershipNameValue),
+      psaName = psaName(),
+      partnershipName = Some(partnershipNameValue),
+      displayPartnershipLink = true
     )
 
   def form(partnershipName: String)

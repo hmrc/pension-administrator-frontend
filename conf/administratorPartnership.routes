@@ -87,8 +87,8 @@ POST        /non-uk-partnership-name                      controllers.register.a
 GET         /enter-registered-address                     controllers.register.administratorPartnership.PartnershipRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /enter-registered-address                     controllers.register.administratorPartnership.PartnershipRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
 
-GET         /is-this-previous-address                     controllers.register.administratorPartnership.contactDetails.PartnershipConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
-POST        /is-this-previous-address                     controllers.register.administratorPartnership.contactDetails.PartnershipConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
+GET         /is-this-previous-address                     controllers.register.administratorPartnership.PartnershipConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
+POST        /is-this-previous-address                     controllers.register.administratorPartnership.PartnershipConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)
 
 GET         /email-address                                controllers.register.administratorPartnership.contactDetails.PartnershipEmailController.onPageLoad(mode: Mode = NormalMode)
 POST        /email-address                                controllers.register.administratorPartnership.contactDetails.PartnershipEmailController.onSubmit(mode: Mode = NormalMode)

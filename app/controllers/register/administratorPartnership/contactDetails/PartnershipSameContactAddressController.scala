@@ -67,7 +67,8 @@ class PartnershipSameContactAddressController @Inject()(
       address = address,
       psaName = name,
       mode = mode,
-      displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
+      displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty,
+      displayPartnershipLink = true
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

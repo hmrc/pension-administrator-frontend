@@ -45,7 +45,9 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
     routes.PartnershipAddressYearsController.onSubmit(NormalMode),
     Message("addressYears.heading", Message("thePartnership")),
     Message("addressYears.heading").withArgs(partnershipName),
-    Message("addressYears.heading").withArgs(partnershipName)
+    Message("addressYears.heading").withArgs(partnershipName),
+    partnershipName = Some(partnershipName),
+    displayPartnershipLink = true
   )
 
   val form = new AddressYearsFormProvider()("error.required")

@@ -64,7 +64,9 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
           Message("manual.entry.text"),
           Some(Message("manual.entry.link")),
           Message("postcode.lookup.form.label"),
-          psaName = psaName()
+          psaName = psaName(),
+          partnershipName = Some(name),
+          displayPartnershipLink = true
         )
       }
   )

@@ -63,7 +63,9 @@ class PartnershipContactAddressListController @Inject()(
         addresses,
         Message("select.address.heading", Message("thePartnership")),
         Message("select.address.heading", entityName),
-        psaName = psaName()
+        psaName = psaName(),
+        partnershipName = Some(entityName),
+        displayPartnershipLink = true
       )
     }
   }

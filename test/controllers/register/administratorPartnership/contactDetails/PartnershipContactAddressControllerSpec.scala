@@ -54,7 +54,9 @@ class PartnershipContactAddressControllerSpec
     postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.heading").withArgs("the partnership"),
-    heading = Message(s"$messagePrefix.heading").withArgs("Test Partnership Name")
+    heading = Message(s"$messagePrefix.heading").withArgs("Test Partnership Name"),
+    partnershipName = Some("Test Partnership Name"),
+    displayPartnershipLink = true
   )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =

@@ -54,7 +54,8 @@ class PartnershipTradingOverAYearController @Inject()(override val appConfig: Fr
       heading = Message("trading.title", partnershipName),
       mode = mode,
       hint = None,
-      entityName = partnershipName
+      entityName = partnershipName,
+      displayPartnershipLink = true
     )
 
   private def form(partnershipName: String)
