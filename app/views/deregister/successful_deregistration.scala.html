@@ -15,33 +15,30 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
-@import views.html._
-@import viewmodels.Message
-@import models.requests._
-@import views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 
 @this(
-  main_template: main_template,
-  appConfig: FrontendAppConfig
+  layout: templates.Layout,
+  appConfig: FrontendAppConfig,
+  govukPanel : GovukPanel
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.schemeLink")</a>}
-@printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
-
-@main_template(
-   title = messages("deregisterSuccess.title")
+@layout(
+    pageTitle = messages("deregisterSuccess.title"),
+    showBackLink = false
 ) {
 
-    <div class="govuk-box-highlight">
-          @components.heading(messages("deregisterSuccess.heading"))
-    </div>
+    @govukPanel(Panel(
+        title = Text(messages("deregisterSuccess.heading")),
+        content = HtmlContent("")
+    ))
+    <p class="govuk-body">@messages("deregisterSuccess.p1")</p>
 
-    <p>@messages("deregisterSuccess.p1")</p>
-
-    <a id="gov-uk-link" href="@appConfig.govUkUrl" role="button">@messages("youNeedToRegister.govUkLlink")</a>
+    <p class="govuk-body">
+        <a id="gov-uk-link" class="govuk-link" href="@appConfig.govUkUrl" role="button">@messages("youNeedToRegister.govUkLlink")</a>
+    </p>
 
 }
