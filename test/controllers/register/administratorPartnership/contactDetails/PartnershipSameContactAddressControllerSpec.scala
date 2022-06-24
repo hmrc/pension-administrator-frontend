@@ -60,9 +60,10 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
     heading = Message("partnership.sameContactAddress.heading").withArgs(partnershipName),
     hint = Some(Message("same.contact.address.confirm.text",partnershipName)),
     address = testAddress,
-    psaName = "Test name",
+    psaName = partnershipName,
     mode = NormalMode,
-    displayReturnLink = true
+    displayReturnLink = true,
+    displayPartnershipLink = true
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)

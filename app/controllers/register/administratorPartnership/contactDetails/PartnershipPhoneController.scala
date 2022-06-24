@@ -70,7 +70,6 @@ class PartnershipPhoneController @Inject()(@PartnershipV2 val navigator: Navigat
       heading = Message("phone.title", entityName),
       mode = mode,
       entityName = entityName,
-      partnershipName = Some(entityName),
       displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty,
       displayPartnershipLink = true
     )

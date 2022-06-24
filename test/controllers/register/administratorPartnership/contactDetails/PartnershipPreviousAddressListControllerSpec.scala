@@ -186,7 +186,9 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
       Message("select.previous.address.heading", Message("thePartnership")),
       Message("select.previous.address.heading", "Test Partnership Name"),
       Message("select.address.hint.text"),
-      Message("manual.entry.link")
+      Message("manual.entry.link"),
+      partnershipName = Some("Test Partnership Name"),
+      displayPartnershipLink = true
     )
   }
 

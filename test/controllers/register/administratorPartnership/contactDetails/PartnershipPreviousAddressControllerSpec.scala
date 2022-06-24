@@ -45,7 +45,9 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
     postCall = routes.PartnershipPreviousAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.heading", Message("thePartnership")),
-    heading = Message(s"$messagePrefix.heading", "Test Partnership Name")
+    heading = Message(s"$messagePrefix.heading", "Test Partnership Name"),
+    partnershipName = Some("Test Partnership Name"),
+    displayPartnershipLink = true
   )
 
   "PartnershipPreviousAddress Controller" must {

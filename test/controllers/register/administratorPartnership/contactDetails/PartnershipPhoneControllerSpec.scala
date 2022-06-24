@@ -68,7 +68,8 @@ object PartnershipPhoneControllerSpec {
       title = Message("phone.title", Message("thePartnership")),
       heading = Message("phone.title", partnershipName),
       mode = mode,
-      entityName = partnershipName
+      entityName = partnershipName,
+      displayPartnershipLink = true
     )
 }
 

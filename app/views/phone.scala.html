@@ -62,16 +62,14 @@ formHelper: FormWithCSRF
             }
         }
 
-        @if(viewModel.displayPartnershipLink){
-            @viewModel.partnershipName.map { partnershipName =>
-                <div class="grid-row">
-                    <div class="column-two-thirds">
-                        <p class="govuk-margin-top-5">
-                            <a id="return-link" href=@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url>@messages("site.return_to", partnershipName)</a>
-                        </p>
-                    </div>
+        @if(viewModel.displayPartnershipLink && viewModel.mode != UpdateMode){
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <p class="govuk-margin-top-5">
+                        <a id="return-link" href=@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url>@messages("site.return_to", viewModel.entityName)</a>
+                    </p>
                 </div>
-            }
+            </div>
         }
     }
 }

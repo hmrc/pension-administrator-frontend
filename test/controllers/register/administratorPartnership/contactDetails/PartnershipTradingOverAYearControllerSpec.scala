@@ -51,7 +51,8 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerWithCommonBeha
       heading = Message("trading.title", name),
       mode = NormalMode,
       hint = None,
-      entityName = name
+      entityName = name,
+      displayPartnershipLink = true
     )
 
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))

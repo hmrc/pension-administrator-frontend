@@ -64,7 +64,8 @@ class PartnershipEmailControllerSpec extends ControllerWithCommonBehaviour {
       title = Message("email.title", Message("thePartnership")),
       heading = Message("email.title", partnershipName),
       mode = mode,
-      entityName = partnershipName
+      entityName = partnershipName,
+      displayPartnershipLink = true
     )
 }
 

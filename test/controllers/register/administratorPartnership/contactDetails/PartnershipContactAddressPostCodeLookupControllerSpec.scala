@@ -52,7 +52,9 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
     Message("postcode.lookup.heading").withArgs(partnershipName),
     Message("manual.entry.text"),
     Some(Message("manual.entry.link")),
-    Message("postcode.lookup.form.label")
+    Message("postcode.lookup.form.label"),
+    partnershipName = Some(partnershipName),
+    displayPartnershipLink = true
   )
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     BusinessNameId.toString -> partnershipName
