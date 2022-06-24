@@ -46,11 +46,10 @@
             )
         </div>
         @components.submit_button("site.save_and_continue")
-@components.heading(returnLink.get)
 
-        @if(returnLink.nonEmpty){
+        @returnLink.map { returnLinkUrl =>
         <p class="govuk-margin-top-5 govuk-body">
-            <a id="return-link" class="govuk-link" href="@returnLink.getOrElse('#')">@messages("site.return_to", businessType)</a>
+            <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", businessType)</a>
         </p>
         }
     }

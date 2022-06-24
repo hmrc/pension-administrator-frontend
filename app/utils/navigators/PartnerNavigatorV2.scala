@@ -75,7 +75,6 @@ class PartnerNavigatorV2 @Inject()(config: FrontendAppConfig) extends Navigator 
   //noinspection ScalaStyle
   private def normalAndUpdateRoutes(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AddPartnersId => addPartnerRoutes(ua, mode)
-    case TellUsAboutAnotherPartnerId => PartnerNameController.onPageLoad(mode, ua.partnersCount)
     case PartnerNameId(index) => PartnerDOBController.onPageLoad(mode, index)
     case PartnerDOBId(index) => HasPartnerNINOController.onPageLoad(mode, index)
 

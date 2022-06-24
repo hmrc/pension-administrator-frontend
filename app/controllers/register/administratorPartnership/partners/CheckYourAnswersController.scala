@@ -54,7 +54,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(mode, index) {_ =>
+      retrievePartnerNameV2(mode, index) {_ =>
         loadCyaPage(index, mode)
       }
   }

@@ -46,7 +46,7 @@ class PartnershipRegistrationTaskListControllerSpec extends ControllerSpecBase {
           Task(messages("taskList.contactDetails"), isCompleted = false,
             "/register-as-pension-scheme-administrator/register/administrator-partnership/contact-what-you-will-need"),
                     Task(messages("taskList.partners"), isCompleted = false,
-                      "/register-as-pension-scheme-administrator/register/partnership/partner/what-you-will-need"),
+                      "/register-as-pension-scheme-administrator/register/administrator-partnership/partner/what-you-will-need"),
                     Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false,
                       "/register-as-pension-scheme-administrator/register/working-knowledge-pensions")
         ))

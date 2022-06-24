@@ -133,3 +133,5 @@ POST        /contact-what-you-will-need                   controllers.register.a
 GET         /contact-check-your-answers                   controllers.register.administratorPartnership.contactDetails.CheckYourAnswersController.onPageLoad()
 POST        /contact-check-your-answers                   controllers.register.administratorPartnership.contactDetails.CheckYourAnswersController.onSubmit()
 
+GET         /pensionadvisor/what-you-will-need            controllers.register.administratorPartnership.workingknowledge.WhatYouWillNeedController.onPageLoad
+GET         /pensionadvisor/what-you-will-need            controllers.register.administratorPartnership.workingknowledge.WhatYouWillNeedController.onPageLoad

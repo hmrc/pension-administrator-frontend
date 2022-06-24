@@ -52,8 +52,7 @@ class PartnerNameController @Inject()(val appConfig: FrontendAppConfig,
       None,
       None,
       mode,
-      entityName = name,
-      displayReturnLink = true
+      entityName = name
     )
 
   private[partners] def id(index: Index): PartnerNameId =
