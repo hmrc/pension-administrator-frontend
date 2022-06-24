@@ -19,6 +19,8 @@ package controllers.register.administratorPartnership
 import config.FrontendAppConfig
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register._
+import identifiers.register.partnership._
+import models.{Mode, NormalMode}
 import identifiers.register.partnership.MoreThanTenPartnersId
 import models.{Mode, NormalMode}
 import models.register.{Task, TaskList}
@@ -27,13 +29,15 @@ import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
+import utils.dataCompletion.DataCompletion.isAdviserComplete
 import utils.{DateHelper, UserAnswers}
 import views.html.register.taskList
 
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class PartnershipRegistrationTaskListController @Inject()(appConfig: FrontendAppConfig,
+class PartnershipRegistrationTaskListController @Inject()(
+                                                           appConfig: FrontendAppConfig,
                                                            val controllerComponents: MessagesControllerComponents,
                                                            @AuthWithNoIV authenticate: AuthAction,
                                                            allowAccess: AllowAccessActionProvider,
@@ -55,9 +59,9 @@ class PartnershipRegistrationTaskListController @Inject()(appConfig: FrontendApp
     TaskList(businessName, declarationUrl, List(
       buildBasicDetailsTask(userAnswers),
       buildPartnershipDetails(userAnswers),
-      //      buildContactDetails(userAnswers),
-        buildPartnersDetails(userAnswers)
-      //      buildWorkingKnowledgeTask(userAnswers))
+      buildContactDetails(userAnswers),
+      buildPartnersDetails(userAnswers),
+      buildWorkingKnowledgeTask(userAnswers)
     ))
   }
 
@@ -73,50 +77,51 @@ class PartnershipRegistrationTaskListController @Inject()(appConfig: FrontendApp
     val isCompleted = isPAYECompleted && isVATCompleted
     val isValueEntered = userAnswers.get(HasPAYEId).getOrElse(false) || userAnswers.get(HasVATId).getOrElse(false)
     val url: String = if (isCompleted || isValueEntered) {
-      partnershipdetails.routes.CheckYourAnswersController.onPageLoad().url
+      partnershipDetails.routes.CheckYourAnswersController.onPageLoad().url
     } else {
-      partnershipdetails.routes.WhatYouWillNeedController.onPageLoad().url
+      partnershipDetails.routes.WhatYouWillNeedController.onPageLoad().url
     }
     Task(messages("taskList.partnershipDetails"), isCompleted, url)
   }
-  //
-  //  private def buildContactDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
-  //    val isContactAddressCompleted = userAnswers.get(PartnershipContactAddressId).isDefined
-  //    val isEmailCompleted = userAnswers.get(PartnershipEmailId).isDefined
-  //    val isPhoneCompleted = userAnswers.get(PartnershipPhoneId).isDefined
-  //    val isCompleted = isContactAddressCompleted && isEmailCompleted && isPhoneCompleted
-  //    val url = if(isCompleted){
-  //      contactdetails.routes.CheckYourAnswersController.onPageLoad().url
-  //    } else {
-  //      contactdetails.routes.WhatYouWillNeedController.onPageLoad().url
-  //    }
-  //    Task(messages("taskList.contactDetails"), isCompleted, url)
-  //  }
-  //
-  //  private def buildWorkingKnowledgeTask(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
-  //    val isWorkingKnowledgeCompleted = isAdviserComplete(userAnswers,NormalMode)
-  //
-  //    val workingKnowledgeDetailsUrl = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url
-  //    Task(messages("taskList.workingKnowledgeDetails"), isWorkingKnowledgeCompleted, workingKnowledgeDetailsUrl)
-  //  }
-  //
-    private def buildPartnersDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
-      val isPartnersCompleted = userAnswers.allPartnersAfterDeleteV2(NormalMode).nonEmpty
-      val partnerTaskUrl = if(isPartnersCompleted){
-        controllers.register.administratorPartnership.routes.AddPartnerController.onPageLoad(NormalMode).url
+
+    private def buildContactDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
+      val isContactAddressCompleted = userAnswers.get(PartnershipContactAddressId).isDefined
+      val isEmailCompleted = userAnswers.get(PartnershipEmailId).isDefined
+      val isPhoneCompleted = userAnswers.get(PartnershipPhoneId).isDefined
+      val isCompleted = isContactAddressCompleted && isEmailCompleted && isPhoneCompleted
+      val isValueEntered = isContactAddressCompleted || isEmailCompleted || isPhoneCompleted
+      val url: String = if (isCompleted || isValueEntered){
+        contactDetails.routes.CheckYourAnswersController.onPageLoad().url
       } else {
-        controllers.register.administratorPartnership.partners.routes.WhatYouWillNeedController.onPageLoad().url
+        contactDetails.routes.WhatYouWillNeedController.onPageLoad().url
       }
-
-      Task(messages("taskList.partners"), isCompleted = isPartnershipPartnersComplete(userAnswers), url = partnerTaskUrl)
+      Task(messages("taskList.contactDetails"), isCompleted, url)
     }
 
-    def isPartnershipPartnersComplete(userAnswers: UserAnswers): Boolean = {
-      val allPartners = userAnswers.allPartnersAfterDeleteV2(NormalMode)
+    private def buildWorkingKnowledgeTask(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
+      val isWorkingKnowledgeCompleted = isAdviserComplete(userAnswers,NormalMode)
 
-      val allPartnersCompleted = allPartners.nonEmpty && allPartners.forall(_.isComplete) && allPartners.size >= 2 &&
-        (allPartners.size < appConfig.maxPartners || userAnswers.get(MoreThanTenPartnersId).isDefined)
-
-      allPartnersCompleted
+      val workingKnowledgeDetailsUrl = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url
+      Task(messages("taskList.workingKnowledgeDetails"), isWorkingKnowledgeCompleted, workingKnowledgeDetailsUrl)
     }
+
+  private def buildPartnersDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
+    val isPartnersCompleted = userAnswers.allPartnersAfterDeleteV2(NormalMode).nonEmpty
+    val partnerTaskUrl = if(isPartnersCompleted){
+      controllers.register.administratorPartnership.routes.AddPartnerController.onPageLoad(NormalMode).url
+    } else {
+      controllers.register.administratorPartnership.partners.routes.WhatYouWillNeedController.onPageLoad().url
+    }
+
+    Task(messages("taskList.partners"), isCompleted = isPartnershipPartnersComplete(userAnswers), url = partnerTaskUrl)
+  }
+
+  def isPartnershipPartnersComplete(userAnswers: UserAnswers): Boolean = {
+    val allPartners = userAnswers.allPartnersAfterDeleteV2(NormalMode)
+
+    val allPartnersCompleted = allPartners.nonEmpty && allPartners.forall(_.isComplete) && allPartners.size >= 2 &&
+      (allPartners.size < appConfig.maxPartners || userAnswers.get(MoreThanTenPartnersId).isDefined)
+
+    allPartnersCompleted
+  }
 }

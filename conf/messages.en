@@ -96,6 +96,7 @@ site.error = Error:
 site.true = true
 site.false = false
 site.company = The company
+site.partnership = The partnership
 site.view = View
 site.add = Add
 
