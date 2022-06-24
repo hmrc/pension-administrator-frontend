@@ -158,13 +158,27 @@ object DataCompletionBuilder {
         .partnershipPhone(phone)
         .businessName("limited partnership")
 
+    def completePartnershipContactDetailsUK: UserAnswers =
+      answers
+        .areYouInUk(answer = true)
+        .businessType(BusinessType.LimitedPartnership)
+        .regInfo(RegistrationLegalStatus.Partnership)
+        .businessUtr()
+        .partnershipContactAddress(address)
+        .partnershipAddressYears(AddressYears.UnderAYear)
+        .partnershipTradingOverAYear(flag = true)
+        .partnershipPreviousAddress(address)
+        .partnershipEmail(email)
+        .partnershipPhone(phone)
+        .businessName("limited partnership")
+
     def completePartnershipDetailsUKV2: UserAnswers =
       answers
         .areYouInUk(answer = true)
         .businessType(BusinessType.LimitedPartnership)
         .regInfo(RegistrationLegalStatus.Partnership)
         .businessUtr()
-        //.businessName("limited partnership")
+        .businessName("limited partnership")
         .businessType(BusinessType.BusinessPartnership)
         .hasVat(answer = true)
         .hasPaye(flag = true)
