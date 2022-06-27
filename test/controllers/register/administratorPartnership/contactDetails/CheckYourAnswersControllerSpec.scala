@@ -18,7 +18,6 @@ package controllers.register.administratorPartnership.contactDetails
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.administratorPartnership.partnershipDetails.routes._
 import models._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -86,7 +85,8 @@ class CheckYourAnswersControllerSpec
         postUrl = call,
         psaNameOpt = None,
         mode = NormalMode,
-        isComplete = isComplete
+        isComplete = isComplete,
+        businessNameId = Some(defaultPartnership)
       )(fakeRequest, messages).toString()
   }
 

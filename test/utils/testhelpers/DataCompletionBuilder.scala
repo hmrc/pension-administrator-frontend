@@ -179,7 +179,6 @@ object DataCompletionBuilder {
         .regInfo(RegistrationLegalStatus.Partnership)
         .businessUtr()
         .businessName("limited partnership")
-        .businessType(BusinessType.BusinessPartnership)
         .hasVat(answer = true)
         .hasPaye(flag = true)
         .enterPaye(paye = "test-paye")
