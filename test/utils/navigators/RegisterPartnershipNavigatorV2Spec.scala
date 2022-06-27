@@ -92,7 +92,6 @@ class RegisterPartnershipNavigatorV2Spec extends SpecBase with NavigatorBehaviou
       (PartnershipAddressId, ukAddress, reconsiderAreYouInUk),
       (PartnershipAddressId, euEea, partnershipDetailsWynPage),
       (PartnershipAddressId, restOfTheWorld, outsideEuEea),
-      (PartnershipAddressId, invalidAddress, sessionExpiredPage),
       (PartnershipAddressId, emptyAnswers, sessionExpiredPage)
     )
 
@@ -244,7 +243,7 @@ object RegisterPartnershipNavigatorV2Spec extends OptionValues {
   protected val ukAddress: UserAnswers = UserAnswers().set(PartnershipAddressId)(address("GB")).asOpt.get
   protected val euEea: UserAnswers = UserAnswers().set(PartnershipAddressId)(address("AT")).asOpt.get
   protected val restOfTheWorld: UserAnswers = UserAnswers().set(PartnershipAddressId)(address("AF")).asOpt.get
-  protected val invalidAddress: UserAnswers = UserAnswers().set(PartnershipAddressId)(address("ZZ")).asOpt.get
+
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
 
   protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
