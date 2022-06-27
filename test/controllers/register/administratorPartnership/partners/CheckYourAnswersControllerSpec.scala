@@ -112,7 +112,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       psaNameOpt = None,
       mode = mode,
       isComplete = isComplete,
-      BusinessNameId = Some("Test Partnership Name")
+      Some("Test Partnership Name")
     )(fakeRequest, messages).toString()
 
     status(result) mustBe OK

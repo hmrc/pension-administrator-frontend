@@ -71,6 +71,6 @@ object PartnershipEnterPAYEControllerSpec {
       mode = mode,
       hint = Some(Message("enterPAYE.hint")),
       entityName = partnershipName,
-      displayPartnershipLink = true
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }

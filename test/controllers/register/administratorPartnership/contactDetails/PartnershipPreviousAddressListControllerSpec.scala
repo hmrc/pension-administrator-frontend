@@ -188,7 +188,7 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
       Message("select.address.hint.text"),
       Message("manual.entry.link"),
       partnershipName = Some("Test Partnership Name"),
-      displayPartnershipLink = true
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
   }
 

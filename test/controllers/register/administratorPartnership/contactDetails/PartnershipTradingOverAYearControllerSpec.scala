@@ -52,7 +52,7 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerWithCommonBeha
       mode = NormalMode,
       hint = None,
       entityName = name,
-      displayPartnershipLink = true
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))

@@ -57,7 +57,7 @@ class PartnershipEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
       mode = mode,
       hint = Some(Message("enterPAYE.hint")),
       entityName = partnershipName,
-      displayPartnershipLink = true
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =

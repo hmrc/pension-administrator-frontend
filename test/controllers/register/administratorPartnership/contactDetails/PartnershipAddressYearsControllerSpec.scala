@@ -47,7 +47,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
     Message("addressYears.heading").withArgs(partnershipName),
     Message("addressYears.heading").withArgs(partnershipName),
     partnershipName = Some(partnershipName),
-    displayPartnershipLink = true
+    returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 
   val form = new AddressYearsFormProvider()("error.required")

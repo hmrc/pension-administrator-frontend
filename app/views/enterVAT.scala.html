@@ -55,11 +55,11 @@
         </div>
         @components.submit_button("site.save_and_continue")
 
-        @if(viewModel.displayPartnershipLink){
+        @viewModel.returnLink.map { returnLinkUrl =>
         <div class="grid-row">
             <div class="column-two-thirds">
                 <p class="govuk-margin-top-5">
-                    <a id="return-link" href=@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url>@messages("site.return_to", viewModel.entityName)</a>
+                    <a id="return-link" href=@returnLinkUrl>@messages("site.return_to", viewModel.entityName)</a>
                 </p>
             </div>
         </div>

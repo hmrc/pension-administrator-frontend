@@ -50,7 +50,7 @@ class PartnerEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
     behave like controllerWithCommonFunctions(
       onPageLoadAction = data => controller(data).onPageLoad(NormalMode, index),
       onSubmitAction = data => controller(data).onSubmit(NormalMode, index),
-      validData = getPartner,
+      validData = getPartnershipPartner,
       viewAsString = enterUTRView,
       form = utrForm,
       request = postRequest
@@ -64,6 +64,7 @@ object PartnerEnterUTRControllerSpec {
   private val index = 0
   private val partnerName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "1111111111"))
+  private val psaName = "Test Partnership Name"
 
   private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
@@ -71,7 +72,8 @@ object PartnerEnterUTRControllerSpec {
       title = Message("enterUTR.heading", Message("thePartner")),
       heading = Message("enterUTR.heading", partnerName),
       mode = mode,
-      entityName = partnerName
+      entityName = psaName,
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }
 

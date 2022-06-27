@@ -31,6 +31,5 @@ case class AddressListViewModel(
                                  psaName: Option[String] = None,
                                  selectAddressPostLink: Option[Message] = None,
                                  partnershipName: Option[String] = None,
-                                 displayPartnershipLink: Boolean = false,
                                  returnLink : Option[String] = None
                                )
