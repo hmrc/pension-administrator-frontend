@@ -41,7 +41,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
     case BusinessUTRId =>
       PartnershipNameController.onPageLoad()
     case BusinessNameId =>
-      regionBasedNameNavigation(ua)
+      PartnershipIsRegisteredNameController.onPageLoad()
     case IsRegisteredNameId =>
       registeredNameRoutes(ua)
     case HasPAYEId if hasPaye(ua) =>
@@ -238,27 +238,11 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
     }
   }
 
-  private def regionBasedNameNavigation(answers: UserAnswers): Call = {
-    answers.get(AreYouInUKId) match {
-      case Some(false) => PartnershipRegisteredAddressController.onPageLoad()
-      case Some(true) => PartnershipIsRegisteredNameController.onPageLoad()
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
-    }
-  }
-
-
   private def registeredNameRoutes(answers: UserAnswers): Call =
     answers.get(IsRegisteredNameId) match {
       case Some(true) => ConfirmPartnershipDetailsController.onPageLoad()
       case _ => controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
     }
-
-//  private def directorRoutes(answers: UserAnswers, mode: Mode): Call =
-//    if (answers.allDirectorsAfterDelete(mode).isEmpty) {
-//      controllers.register.partnership.directors.routes.WhatYouWillNeedController.onPageLoad()
-//    } else {
-//      routes.AddPartnershipDirectorsController.onPageLoad(mode)
-//    }
 
   private def partnerRoutes(answers: UserAnswers, mode: Mode): Call =
     if (answers.allPartnersAfterDelete(mode).isEmpty) {
