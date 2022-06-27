@@ -26,7 +26,7 @@
     formHelper: FormWithCSRF
 )
 
-@(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode, isComplete: Boolean, BusinessNameId: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode, isComplete: Boolean, businessNameId: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
     @main_template(
         title = messages("checkYourAnswers.title")
@@ -55,7 +55,7 @@
 
         @components.submit_button("site.save_and_continue")
 
-        @BusinessNameId.map { partnershipName =>
+        @businessNameId.map { partnershipName =>
         <div class="grid-row">
             <div class="column-two-thirds">
                 <p class="govuk-margin-top-5">

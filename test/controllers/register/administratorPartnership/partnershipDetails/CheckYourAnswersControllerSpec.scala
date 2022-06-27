@@ -84,7 +84,8 @@ class CheckYourAnswersControllerSpec
         postUrl = call,
         psaNameOpt = None,
         mode = NormalMode,
-        isComplete = isComplete
+        isComplete = isComplete,
+        businessNameId = Some(defaultPartnership)
       )(fakeRequest, messages).toString()
   }
 
