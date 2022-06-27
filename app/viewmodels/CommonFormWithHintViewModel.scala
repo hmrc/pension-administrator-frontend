@@ -28,5 +28,6 @@ case class CommonFormWithHintViewModel(
                                         mode: Mode,
                                         entityName: String,
                                         displayReturnLink: Boolean = true,
-                                        displayPartnershipLink: Boolean = false
+                                        displayPartnershipLink: Boolean = false,
+                                        returnLink : Option[String] = None
                                       )

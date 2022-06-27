@@ -66,13 +66,14 @@ class PartnerEnterNINOController @Inject()(@PartnershipPartnerV2 val navigator: 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
-  private def viewModel(mode: Mode, index: Index, partnerName: String) =
+  private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerEnterNINOController.onSubmit(mode, index),
       title = Message("enterNINO.heading", Message("thePartner")),
       heading = Message("enterNINO.heading", partnerName),
       hint = Some(Message("enterNINO.hint")),
       mode = mode,
-      entityName = partnerName
+      entityName = psaName().getOrElse(Message("thePartnership")),
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }

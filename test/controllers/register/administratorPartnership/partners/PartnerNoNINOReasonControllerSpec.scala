@@ -49,7 +49,7 @@ class PartnerNoNINOReasonControllerSpec extends ControllerWithCommonBehaviour {
     behave like controllerWithCommonFunctions(
       onPageLoadAction = data => controller(data).onPageLoad(NormalMode, index),
       onSubmitAction = data => controller(data).onSubmit(NormalMode, index),
-      validData = getPartner,
+      validData = getPartnershipPartner,
       viewAsString = reasonView,
       form = reasonForm,
       request = postRequest
@@ -63,6 +63,7 @@ object PartnerNoNINOReasonControllerSpec {
   private val index = 0
   private val partnerName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test reason"))
+  private val psaName = "Test Partnership Name"
 
   private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
@@ -70,7 +71,8 @@ object PartnerNoNINOReasonControllerSpec {
       title = Message("whyNoNINO.heading", Message("thePartner")),
       heading = Message("whyNoNINO.heading", partnerName),
       mode = mode,
-      entityName = partnerName
+      entityName = psaName,
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }
 

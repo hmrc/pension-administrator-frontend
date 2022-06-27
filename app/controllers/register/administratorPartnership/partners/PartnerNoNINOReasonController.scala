@@ -66,12 +66,13 @@ class PartnerNoNINOReasonController @Inject()(@PartnershipPartnerV2 val navigato
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
-  private def viewModel(mode: Mode, index: Index, partnerName: String) =
+  private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerNoNINOReasonController.onSubmit(mode, index),
       title = Message("whyNoNINO.heading", Message("thePartner")),
       heading = Message("whyNoNINO.heading", partnerName),
       mode = mode,
-      entityName = partnerName
+      entityName = psaName().getOrElse(Message("thePartnership")),
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }

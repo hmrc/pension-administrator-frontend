@@ -49,7 +49,7 @@ class PartnerEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
     behave like controllerWithCommonFunctions(
       onPageLoadAction = data => controller(data).onPageLoad(NormalMode, index),
       onSubmitAction = data => controller(data).onSubmit(NormalMode, index),
-      validData = getPartner,
+      validData = getPartnershipPartner,
       viewAsString = enterNINOView,
       form = ninoForm,
       request = postRequest
@@ -63,7 +63,7 @@ object PartnerEnterNINOControllerSpec {
   private val index = 0
   private val partnerName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "AB100100A"))
-
+  private val psaName = "Test Partnership Name"
   private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
       postCall = routes.PartnerEnterNINOController.onSubmit(mode, index),
@@ -71,7 +71,8 @@ object PartnerEnterNINOControllerSpec {
       heading = Message("enterNINO.heading", partnerName),
       hint = Some(Message("enterNINO.hint")),
       mode = mode,
-      entityName = partnerName
+      entityName = psaName,
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }
 

@@ -46,14 +46,15 @@ class HasPartnerNINOController @Inject()(override val appConfig: FrontendAppConf
                                          val view: hasReferenceNumber
                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
-  private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, entityName: String, index: Index)(implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.HasPartnerNINOController.onSubmit(mode, index),
       title = Message("hasNINO.heading", Message("thePartner")),
       heading = Message("hasNINO.heading", entityName),
       mode = mode,
       hint = None,
-      entityName = entityName
+      entityName = psaName().getOrElse(Message("thePartnership")),
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =

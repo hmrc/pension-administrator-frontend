@@ -84,10 +84,12 @@
         @if(viewmodel.displayReturnLink){
             @components_refactored.return_link(viewmodel.entityName, viewmodel.mode)
         }
-        @if(viewmodel.displayPartnershipLink && viewmodel.mode != UpdateMode){
+        @if(viewmodel.mode != UpdateMode){
+            @viewmodel.returnLink.map { returnLinkUrl =>
             <p class="govuk-margin-top-5 govuk-body">
-                <a id="return-link" class="govuk-link" href="@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", viewmodel.entityName)</a>
+                <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewmodel.entityName)</a>
             </p>
+            }
         }
     }
 }

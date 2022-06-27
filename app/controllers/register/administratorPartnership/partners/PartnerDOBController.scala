@@ -54,7 +54,8 @@ class PartnerDOBController @Inject()(val appConfig: FrontendAppConfig,
       None,
       None,
       mode,
-      psaName
+      psaName,
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
   private[partners] def id(index: Index): PartnerDOBId =

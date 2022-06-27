@@ -53,6 +53,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
   private val completeUserAnswers =
     UserAnswers()
+      .businessName("Test Partnership Name")
       .partnerName(index = 0, partnerDetails)
       .partnerDob(index = 0, dob)
       .partnerHasNINO(index = 0, flag = true)
@@ -110,7 +111,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       postUrl = call(mode),
       psaNameOpt = None,
       mode = mode,
-      isComplete = isComplete
+      isComplete = isComplete,
+      BusinessNameId = Some("Test Partnership Name")
     )(fakeRequest, messages).toString()
 
     status(result) mustBe OK
@@ -233,7 +235,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
           val result = controller(getEmptyData).onPageLoad(index, mode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          println("AAAAAAA"+redirectLocation(result).value)
           redirectLocation(result).value mustBe routes.PartnerNameController.onPageLoad(mode, index).url
         }
       }

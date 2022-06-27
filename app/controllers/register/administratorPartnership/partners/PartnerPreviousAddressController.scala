@@ -74,7 +74,8 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
       Message("enter.previous.address.heading", Message("thePartner")),
       Message("enter.previous.address.heading", name),
       None,
-      psaName = psaName()
+      psaName = psaName(),
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
 }

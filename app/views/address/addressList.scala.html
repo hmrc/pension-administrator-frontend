@@ -63,13 +63,12 @@ pageTitle = titleWithErrors(form, viewModel.title)
                     @button(messages("site.save_and_continue"))
                     @viewModel.psaName.map { psaName =>
                         @components_refactored.return_link(psaName, mode)
-                    }
-
-                    @if(viewModel.displayPartnershipLink && mode != UpdateMode){
-                        @viewModel.partnershipName.map { partnershipName =>
+                        @if(mode != UpdateMode){
+                            @viewModel.returnLink.map { returnLinkUrl =>
                             <p class="govuk-margin-top-5 govuk-body">
-                                <a id="return-link" class="govuk-link" href="@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", partnershipName)</a>
+                                <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to",psaName)</a>
                             </p>
+                            }
                         }
                     }
             }

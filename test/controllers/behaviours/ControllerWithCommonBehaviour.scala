@@ -39,6 +39,8 @@ trait ControllerWithCommonBehaviour extends ControllerSpecBase with ScalaFutures
         val result = onPageLoadAction(validData)(fakeRequest)
 
         status(result) mustBe OK
+        println("Actuka :contentAsString(result)"+contentAsString(result))
+        println("EWxxxpeed :viewAsString(form)"+viewAsString(form))
         contentAsString(result) mustBe viewAsString(form)
       }
 

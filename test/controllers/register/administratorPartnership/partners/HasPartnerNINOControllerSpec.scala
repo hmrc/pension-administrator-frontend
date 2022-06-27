@@ -50,7 +50,7 @@ class HasPartnerNINOControllerSpec extends ControllerWithCommonBehaviour {
     behave like controllerWithCommonFunctions(
       onPageLoadAction = data => controller(data).onPageLoad(NormalMode, index),
       onSubmitAction = data => controller(data).onSubmit(NormalMode, index),
-      validData = getPartner,
+      validData = getPartnershipPartner,
       viewAsString = hasReferenceNumberView,
       form = hasReferenceNumberForm,
       request = postRequest
@@ -61,6 +61,7 @@ class HasPartnerNINOControllerSpec extends ControllerWithCommonBehaviour {
 
 object HasPartnerNINOControllerSpec {
   private val partnerName = "test first name test last name"
+  private val psaName = "Test Partnership Name"
   private val formProvider = new HasReferenceNumberFormProvider()
   private val index = 0
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))
@@ -71,7 +72,8 @@ object HasPartnerNINOControllerSpec {
       title = Message("hasNINO.heading", Message("thePartner")),
       heading = Message("hasNINO.heading", partnerName),
       mode = mode,
-      entityName = partnerName
+      entityName = psaName,
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }
 

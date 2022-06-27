@@ -79,7 +79,8 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
           Message("select.address.heading", name),
           Message("select.address.hint.text"),
           Message("manual.entry.link"),
-          psaName = psaName()
+          psaName = psaName(),
+          returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
         )
     }.left.map(_ => Future.successful(Redirect(routes.PartnerAddressPostCodeLookupController.onPageLoad(mode, index))))
   }

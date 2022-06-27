@@ -47,14 +47,15 @@ class HasPartnerUTRController @Inject()(override val appConfig: FrontendAppConfi
                                         val view: hasReferenceNumber
                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
-  private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, entityName: String, index: Index)(implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = HasPartnerUTRController.onSubmit(mode, index),
       title = Message("hasUTR.heading", Message("thePartner")),
       heading = Message("hasUTR.heading", entityName),
       mode = mode,
       hint = Some(Message("utr.p1")),
-      entityName = entityName
+      entityName = psaName().getOrElse(Message("thePartnership")),
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =

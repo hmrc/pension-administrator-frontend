@@ -54,7 +54,8 @@ class ConfirmDeletePartnerController @Inject()(val appConfig: FrontendAppConfig,
     "confirmDelete.partner.heading",
     name,
     None,
-    psaName = psaName()
+    psaName = psaName(),
+    returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

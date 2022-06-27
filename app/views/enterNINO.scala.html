@@ -51,5 +51,10 @@
             headingIsLegend = true
         )
         @components.submit_button("site.save_and_continue")
+        @viewModel.returnLink.map { returnLinkUrl =>
+        <p class="govuk-margin-top-5 govuk-body">
+            <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewModel.entityName)</a>
+        </p>
+        }
     }
 }

@@ -28,7 +28,8 @@ case class ManualAddressViewModel(
                                    hint: Option[Message] = None,
                                    psaName: Option[String] = None,
                                    partnershipName: Option[String] = None,
-                                   displayPartnershipLink: Boolean = false
+                                   displayPartnershipLink: Boolean = false,
+                                   returnLink : Option[String] = None
                                  ) {
 
 }

@@ -24,8 +24,9 @@ import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
-import identifiers.register.{BusinessNameId, RegistrationInfoId}
+import identifiers.register.{BusinessNameId, BusinessTypeId, RegistrationInfoId}
 import models._
+import models.register.BusinessType
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
@@ -85,6 +86,23 @@ trait ControllerSpecBase extends SpecBase {
     Some(
       Json.obj(
         BusinessNameId.toString -> "Test Partnership Name",
+        "partners" -> Json.arr(
+          Json.obj(
+            PartnerNameId.toString ->
+              PersonName("test first name", "test last name")
+          )
+        )
+      )
+    )
+  )
+
+  def getPartnershipPartner: FakeDataRetrievalAction = new FakeDataRetrievalAction(
+    Some(
+      Json.obj(
+        BusinessNameId.toString -> "Test Partnership Name",
+        BusinessTypeId.toString -> BusinessType.BusinessPartnership.toString,
+        RegistrationInfoId.toString -> RegistrationInfo(
+          RegistrationLegalStatus.Partnership, "", noIdentifier = false, RegistrationCustomerType.UK, None, None),
         "partners" -> Json.arr(
           Json.obj(
             PartnerNameId.toString ->

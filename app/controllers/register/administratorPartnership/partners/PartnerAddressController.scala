@@ -57,7 +57,8 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
     countryOptions.options,
     Message("enter.address.heading", Message("thePartner")),
     Message("enter.address.heading", name),
-    psaName = psaName()
+    psaName = psaName(),
+    returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

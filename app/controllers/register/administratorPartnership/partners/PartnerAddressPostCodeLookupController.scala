@@ -77,7 +77,8 @@ class PartnerAddressPostCodeLookupController @Inject()(
           Message("manual.entry.text"),
           Some(Message("manual.entry.link")),
           Message("postcode.lookup.form.label"),
-          psaName = psaName()
+          psaName = psaName(),
+          returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
         )
 
 }

@@ -41,14 +41,14 @@ class PartnerEmailControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: email = app.injector.instanceOf[email]
 
-  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
+  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index), Some(psaName))(fakeRequest, messages).toString
 
   "PartnerEmail Controller" must {
 
     behave like controllerWithCommonFunctions(
       onPageLoadAction = data => controller(data).onPageLoad(NormalMode, index),
       onSubmitAction = data => controller(data).onSubmit(NormalMode, index),
-      validData = getPartner,
+      validData = getPartnershipPartner,
       viewAsString = emailView,
       form = emailForm,
       request = postRequest
@@ -63,6 +63,7 @@ object PartnerEmailControllerSpec {
   private val index = 0
   private val partnerName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
+  private val psaName = "Test Partnership Name"
 
   private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
@@ -70,7 +71,8 @@ object PartnerEmailControllerSpec {
       title = Message("email.title", Message("thePartner")),
       heading = Message("email.title", partnerName),
       mode = mode,
-      entityName = partnerName
+      entityName = psaName,
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }
 

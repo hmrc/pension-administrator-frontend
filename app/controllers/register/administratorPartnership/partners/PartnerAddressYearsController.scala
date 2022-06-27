@@ -76,6 +76,7 @@ class PartnerAddressYearsController @Inject()(val appConfig: FrontendAppConfig,
       title = Message("addressYears.heading", Message("thePartner")),
       heading = Message("addressYears.heading", partnerName),
       legend = Message("addressYears.heading", partnerName),
-      psaName = psaName()
+      psaName = psaName(),
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }

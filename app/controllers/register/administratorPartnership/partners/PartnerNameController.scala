@@ -52,7 +52,8 @@ class PartnerNameController @Inject()(val appConfig: FrontendAppConfig,
       None,
       None,
       mode,
-      entityName = name
+      entityName = name,
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
   private[partners] def id(index: Index): PartnerNameId =

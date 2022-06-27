@@ -19,6 +19,7 @@ package controllers.register.administratorPartnership.partners
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
+import controllers.register.administratorPartnership.partners.PartnerEmailControllerSpec.psaName
 import forms.PhoneFormProvider
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
@@ -42,14 +43,14 @@ class PartnerPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: phone = app.injector.instanceOf[phone]
 
-  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
+  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode, index), Some(psaName))(fakeRequest, messages).toString
 
   "PartnerPhoneController" must {
 
     behave like controllerWithCommonFunctions(
       onPageLoadAction = data => controller(data).onPageLoad(NormalMode, index),
       onSubmitAction = data => controller(data).onSubmit(NormalMode, index),
-      validData = getPartner,
+      validData = getPartnershipPartner,
       viewAsString = phoneView,
       form = phoneForm,
       request = postRequest
@@ -61,6 +62,7 @@ class PartnerPhoneControllerSpec extends ControllerWithCommonBehaviour {
 object PartnerPhoneControllerSpec {
   private val formProvider = new PhoneFormProvider()
   private val phoneForm = formProvider()
+  private val psaName = "Test Partnership Name"
   private val index = 0
   private val partnerName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "12345"))
@@ -71,7 +73,8 @@ object PartnerPhoneControllerSpec {
       title = Message("phone.title", Message("thePartner")),
       heading = Message("phone.title", partnerName),
       mode = mode,
-      entityName = partnerName
+      entityName = psaName,
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }
 

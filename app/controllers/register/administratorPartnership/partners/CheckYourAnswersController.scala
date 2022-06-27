@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership.partners._
 import models.Mode.checkMode
 import models._
@@ -32,7 +33,7 @@ import utils.annotations.{NoRLSCheck, PartnershipPartnerV2}
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
-import viewmodels.{AnswerSection, Link}
+import viewmodels.{AnswerSection, Link, Message}
 import views.html.check_your_answers
 
 import javax.inject.Inject
@@ -89,12 +90,15 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
           PartnerEmailId(index).row(Some(Link(routes.PartnerEmailController.onPageLoad(checkMode(mode), index).url))) ++
           PartnerPhoneId(index).row(Some(Link(routes.PartnerPhoneController.onPageLoad(checkMode(mode), index).url)))
       ))
+    val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
     Future.successful(Ok(view(
       answerSection,
       routes.CheckYourAnswersController.onSubmit(index, mode),
       psaName(),
       mode,
-      dataCompletion.isPartnerComplete(request.userAnswers, index)))
+      dataCompletion.isPartnerComplete(request.userAnswers, index),
+      Some(partnershipName)
+    ))
     )
   }
 }

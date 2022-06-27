@@ -20,9 +20,10 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
-import identifiers.register.BusinessNameId
+import identifiers.register.{BusinessNameId, BusinessTypeId, RegistrationInfoId}
 import identifiers.register.partnership.partners.{PartnerAddressYearsId, PartnerNameId}
 import models._
+import models.register.BusinessType
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -39,9 +40,12 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
   private val form = formProvider(Message("error.addressYears.required"))
   private val index = Index(0)
   private val partnerName = "test first name test last name"
-
+  private val psaName = "Test Partnership Name"
   private val validData = Json.obj(
     BusinessNameId.toString -> "Test Partnership Name",
+    BusinessTypeId.toString -> BusinessType.BusinessPartnership.toString,
+    RegistrationInfoId.toString -> RegistrationInfo(
+      RegistrationLegalStatus.Partnership, "", noIdentifier = false, RegistrationCustomerType.UK, None, None),
     "partners" -> Json.arr(
       Json.obj(
         PartnerNameId.toString ->
@@ -56,7 +60,7 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
     )
   )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getPartnershipPartner) =
     new PartnerAddressYearsController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
@@ -78,7 +82,8 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
       title = Message("addressYears.heading", Message("thePartner")),
       heading = Message("addressYears.heading", partnerName),
       legend = Message("addressYears.heading", partnerName),
-      psaName = None
+      psaName = Some(psaName),
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
   private def viewAsString(form: Form[_] = form) =

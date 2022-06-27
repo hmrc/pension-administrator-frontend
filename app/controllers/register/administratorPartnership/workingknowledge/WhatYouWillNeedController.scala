@@ -37,6 +37,8 @@ class WhatYouWillNeedController @Inject()(authenticate: AuthAction,
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val href = controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
-      Future.successful(Ok(view(href)))
+      Future.successful(Ok(view(href ,
+        psaName = psaName(),
+        returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url))))
   }
 }

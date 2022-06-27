@@ -30,5 +30,6 @@ case class PostcodeLookupViewModel(
                                     psaName: Option[String] = None,
                                     findAddressMessageKey: String  = "site.find_address",
                                     partnershipName: Option[String] = None,
-                                    displayPartnershipLink: Boolean = false
+                                    displayPartnershipLink: Boolean = false,
+                                    returnLink : Option[String] = None
                                   )

@@ -28,5 +28,6 @@ case class AddressYearsViewModel(postCall: Call,
                                  inputs: Seq[InputOption] = AddressYears.options,
                                  psaName: Option[String] = None,
                                  partnershipName: Option[String] = None,
-                                 displayPartnershipLink: Boolean = false
+                                 displayPartnershipLink: Boolean = false,
+                                 returnLink : Option[String] = None
                                 )
