@@ -14,29 +14,23 @@
  * limitations under the License.
  *@
 
-@import play.api.data.Form
 @import config.FrontendAppConfig
-@import viewmodels.Message
-@import uk.gov.hmrc.play.views.html._
-@import views.html._
-
 
 @this(
-main_template: main_template,
+layout: templates.Layout,
 appConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-title = messages("unableToStopBeingPsa.title")
+@layout(
+pageTitle = messages("unableToStopBeingPsa.title")
 ) {
-    @components.back_link()
 
-    @components.heading(messages("unableToStopBeingPsa.heading"))
+    <h1 class="govuk-heading-xl">@messages("unableToStopBeingPsa.heading")</h1>
 
-    <p>@messages("unableToStopBeingPsa.p1")</p>
+    <p class="govuk-body">@messages("unableToStopBeingPsa.p1")</p>
 
-    <p><a id="return-link" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("unableToStopBeingPsa.continue.link")</a></p>
+    <p class="govuk-body"><a id="return-link" href="@appConfig.managePensionsYourPensionSchemesUrl" class="govuk-link">@messages("unableToStopBeingPsa.continue.link")</a></p>
 
 }

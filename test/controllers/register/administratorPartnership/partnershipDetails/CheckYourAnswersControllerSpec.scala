@@ -19,13 +19,10 @@ package controllers.register.administratorPartnership.partnershipDetails
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.administratorPartnership.partnershipDetails.routes._
-import identifiers.register.{BusinessNameId, BusinessTypeId}
 import models._
-import models.register.BusinessType.BusinessPartnership
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.Json
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import utils.dataCompletion.DataCompletion
@@ -44,7 +41,7 @@ class CheckYourAnswersControllerSpec
     when(mockDataCompletion.isPartnershipDetailsComplete(any())).thenReturn(true)
   }
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
 
   private val defaultPartnership = "limited partnership"
   private val vat = "test-vat"
@@ -87,7 +84,8 @@ class CheckYourAnswersControllerSpec
         postUrl = call,
         psaNameOpt = None,
         mode = NormalMode,
-        isComplete = isComplete
+        isComplete = isComplete,
+        businessNameId = Some(defaultPartnership)
       )(fakeRequest, messages).toString()
   }
 
@@ -120,78 +118,29 @@ class CheckYourAnswersControllerSpec
     )
   )
 
-  private val answerRowsNonUK = Seq(
-    answerRow(
-      label = Message("businessName.heading", defaultPartnership),
-      answer = Seq(defaultPartnership)
-    )
-  )
 
   "CheckYourAnswers Controller" when {
 
     "on GET" must {
 
-//      "render the view correctly for all the rows of answer section if business name and utr is present for UK" in {
-//        val retrievalAction = UserAnswers().completePartnershipDetailsUKV2.dataRetrievalAction
-//        val result = controller(retrievalAction).onPageLoad()(fakeRequest)
-//
-//        val sections = Seq(AnswerSection(None, answerRows))
-//        testRenderedView(sections, result)
-//      }
+      "render the view correctly for all the rows of answer section if business name and utr is present for UK" in {
+        val retrievalAction = UserAnswers().completePartnershipDetailsUKV2.dataRetrievalAction
+        val result = controller(retrievalAction).onPageLoad()(fakeRequest)
 
-//      "render the view correctly for all the rows of answer section if business name and address is present for NON UK" in {
-//        val retrievalAction = UserAnswers().completePartnershipDetailsNonUK.dataRetrievalAction
-//        val result = controller(retrievalAction).onPageLoad()(fakeRequest)
-//
-//        val sections = Seq(AnswerSection(None, answerRowsNonUK))
-//        testRenderedView(sections, result)
-//      }
-//
-//      "redirect to register as business page when business name, registration info and utr is not present for UK" in {
-//        val result = controller(UserAnswers().areYouInUk(answer = true).dataRetrievalAction).onPageLoad()(fakeRequest)
-//
-//        status(result) mustBe SEE_OTHER
-//        redirectLocation(result) mustBe Some(controllers.register.routes.RegisterAsBusinessController.onPageLoad().url)
-//      }
-//
-//      "redirect to register as business page when business name, registration info and address is not present for NON UK" in {
-//        val result = controller(UserAnswers().areYouInUk(answer = false).dataRetrievalAction).onPageLoad()(fakeRequest)
-//
-//        status(result) mustBe SEE_OTHER
-//        redirectLocation(result) mustBe Some(controllers.register.routes.RegisterAsBusinessController.onPageLoad().url)
-//      }
-//
-//      "redirect to session expired page if no existing data" in {
-//        val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
-//        status(result) mustBe SEE_OTHER
-//        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-//      }
-//    }
-//
-//    "on POST" must {
-//      "redirect to the next page when data is complete" in {
-//        val retrievalAction = UserAnswers().completePartnershipDetailsUK.dataRetrievalAction
-//        val result = controller(retrievalAction).onSubmit()(fakeRequest)
-//
-//        status(result) mustBe SEE_OTHER
-//        redirectLocation(result) mustBe Some(onwardRoute.url)
-//      }
-//
-//      "load the same cya page when data is not complete" in {
-//        when(mockDataCompletion.isPartnershipDetailsComplete(any())).thenReturn(false)
-//        val retrievalAction = UserAnswers().completePartnershipDetailsUK.dataRetrievalAction
-//        val result = controller(retrievalAction).onSubmit()(fakeRequest)
-//
-//        val sections = Seq(AnswerSection(None, answerRows))
-//        testRenderedView(sections, result, isComplete = false)
-//      }
-//
-//      "redirect to Session expired if there is no cached data" in {
-//        val result = controller(dontGetAnyData).onSubmit()(fakeRequest)
-//
-//        status(result) mustBe SEE_OTHER
-//        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
-//      }
+        val sections = Seq(AnswerSection(None, answerRows))
+        testRenderedView(sections, result)
+      }
+    }
+
+    "on POST" must {
+      "redirect to the next page when save and continue is clicked" in {
+        val retrievalAction = UserAnswers().completePartnershipDetailsUKV2.dataRetrievalAction
+        val result = controller(retrievalAction).onSubmit()(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
+
     }
   }
 }

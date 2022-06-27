@@ -17,6 +17,7 @@
 package controllers.register.administratorPartnership.contactDetails
 
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
 import models.{CheckMode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
@@ -25,7 +26,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 import utils.annotations.AuthWithNoIV
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerSection, Link, Section}
+import viewmodels.{AnswerSection, Link, Message, Section}
 import views.html.check_your_answers
 
 import javax.inject.Inject
@@ -41,7 +42,9 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val nextPage = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
-      Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage, None, NormalMode, isComplete = true))
+      val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
+      Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage, None, NormalMode, isComplete = true, Some(partnershipName)))
+
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>
