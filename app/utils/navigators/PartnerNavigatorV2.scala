@@ -24,7 +24,7 @@ import controllers.routes.SessionExpiredController
 import identifiers.register.DeclarationChangedId
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.partnership.partners._
-import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId, TellUsAboutAnotherPartnerId}
+import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
 import identifiers.{Identifier, UpdateContactAddressId}
 import models.Mode.journeyMode
 import models._
