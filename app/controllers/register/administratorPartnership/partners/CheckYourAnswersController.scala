@@ -97,7 +97,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       psaName(),
       mode,
       dataCompletion.isPartnerComplete(request.userAnswers, index),
-      Some(partnershipName)
+      returnLink =  Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     ))
     )
   }

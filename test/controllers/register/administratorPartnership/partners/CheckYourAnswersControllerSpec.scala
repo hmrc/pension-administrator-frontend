@@ -112,7 +112,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       psaNameOpt = None,
       mode = mode,
       isComplete = isComplete,
-      Some("Test Partnership Name")
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )(fakeRequest, messages).toString()
 
     status(result) mustBe OK

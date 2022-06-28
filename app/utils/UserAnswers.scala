@@ -143,12 +143,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
         Seq.empty
       } else {
         val isComplete = DataCompletion.isPartnerComplete(UserAnswers(json), index)
-        val editUrl = if (isComplete) {
-          controllers.register.administratorPartnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
-        } else {
-          controllers.register.administratorPartnership.partners.routes.PartnerNameController.onPageLoad(mode, Index(index)).url
-        }
-
+        val editUrl:String = controllers.register.administratorPartnership.partners.routes.CheckYourAnswersController.onPageLoad(Index(index), mode).url
         Seq(
           Person(
             index,
