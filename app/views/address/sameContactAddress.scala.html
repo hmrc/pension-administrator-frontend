@@ -91,5 +91,10 @@
         @components_refactored.return_link(viewmodel.psaName, viewmodel.mode)
         }
 
+        @if(viewmodel.displayPartnershipLink && viewmodel.mode != UpdateMode){
+            <p class="govuk-margin-top-5 govuk-body">
+                <a id="return-link" class="govuk-link" href="@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", viewmodel.psaName)</a>
+            </p>
+        }
     }
 }

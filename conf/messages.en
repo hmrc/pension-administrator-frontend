@@ -96,6 +96,7 @@ site.error = Error:
 site.true = true
 site.false = false
 site.company = The company
+site.partnership = The partnership
 site.view = View
 site.add = Add
 
@@ -260,6 +261,12 @@ companyDetails.whatYouWillNeed.li1 = company number, or reason why it does not h
 companyDetails.whatYouWillNeed.p2 = If {0} has them, you will also need to tell us their:
 companyDetails.whatYouWillNeed.li2 = employer PAYE reference (you can tell us any employer PAYE reference if test has more than one)
 companyDetails.whatYouWillNeed.li3 = VAT registration number
+
+partnershipDetails.whatYouWillNeed.title = Partnership details
+partnershipDetails.whatYouWillNeed.heading = {0}’s partnership details
+partnershipDetails.whatYouWillNeed.p1 = If {0} has them, you will also need to tell us their:
+partnershipDetails.whatYouWillNeed.li1 = employer PAYE reference (you can tell us any employer PAYE reference if test has more than one)
+partnershipDetails.whatYouWillNeed.li2 = VAT registration number
 
 previousAddress.checkYourAnswersLabel = {0}’s previous address
 previousAddress.visuallyHidden.text = {0}’s previous address
@@ -1205,6 +1212,9 @@ taskList.companyDetails = company details
 taskList.contactDetails = contact details
 taskList.directors = directors
 taskList.workingKnowledgeDetails = working knowledge details
+
+taskList.partnershipDetails = partnership details
+taskList.partners = partners
 
 whatYouWillNeed.workingKnowledge.title = Working knowledge of pensions and pensions tax legislation
 whatYouWillNeed.workingKnowledge.heading = There must be a person or company associated with the scheme that has working knowledge of pensions and pensions tax legislation. You will need to tell us their:

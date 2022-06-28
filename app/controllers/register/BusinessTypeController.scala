@@ -17,17 +17,19 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import forms.register.BusinessTypeFormProvider
 import identifiers.register.BusinessTypeId
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.Register
+import utils.annotations.{Register, RegisterV2}
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.businessType
 
@@ -36,12 +38,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class BusinessTypeController @Inject()(appConfig: FrontendAppConfig,
                                        dataCacheConnector: UserAnswersCacheConnector,
                                        @Register navigator: Navigator,
+                                       @RegisterV2 navigatorV2: Navigator,
                                        authenticate: AuthAction,
                                        allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: BusinessTypeFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
+                                       featureToggleConnector: FeatureToggleConnector,
                                        val view: businessType
                                       )(implicit val executionContext: ExecutionContext)
                                         extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
@@ -62,9 +66,17 @@ class BusinessTypeController @Inject()(appConfig: FrontendAppConfig,
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          dataCacheConnector.save(request.externalId, BusinessTypeId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(BusinessTypeId, mode, UserAnswers(cacheMap))))
+            value =>
+            for {
+              isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
+              newCache <- dataCacheConnector.save(request.externalId, BusinessTypeId, value)
+            } yield {
+              if (isFeatureEnabled) {
+                Redirect(navigatorV2.nextPage(BusinessTypeId, mode, UserAnswers(newCache)))
+              } else {
+                Redirect(navigator.nextPage(BusinessTypeId, mode, UserAnswers(newCache)))
+              }
+            }
       )
   }
 

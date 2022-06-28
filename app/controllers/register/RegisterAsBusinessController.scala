@@ -25,7 +25,6 @@ import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.{BusinessTypeId, RegisterAsBusinessId, RegistrationInfoId}
 import models.FeatureToggleName.PsaRegistration
 import models.RegistrationCustomerType.UK
-import models.register.BusinessType.{LimitedCompany, UnlimitedCompany}
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -78,8 +77,7 @@ class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
                 val businessType = request.userAnswers.flatMap(_.get(BusinessTypeId))
                 val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
                 (businessType, customerType) match {
-                  case (Some(LimitedCompany) | Some(UnlimitedCompany), Some(UK)) =>
-                    Redirect(routes.ContinueWithRegistrationController.onPageLoad())
+                  case (Some(_), Some(UK)) => Redirect(routes.ContinueWithRegistrationController.onPageLoad())
                   case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
                 }
             }

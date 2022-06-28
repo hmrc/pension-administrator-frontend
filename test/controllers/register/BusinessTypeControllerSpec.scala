@@ -16,19 +16,24 @@
 
 package controllers.register
 
-import connectors.cache.FakeUserAnswersCacheConnector
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.BusinessTypeFormProvider
 import identifiers.register.BusinessTypeId
+import models.FeatureToggle.Disabled
+import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
 import models.register.BusinessType
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.data.Form
 import play.api.libs.json.{JsString, _}
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import views.html.register.businessType
+
+import scala.concurrent.Future
 
 class BusinessTypeControllerSpec extends ControllerSpecBase {
 
@@ -40,10 +45,19 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
 
   val view: businessType = app.injector.instanceOf[businessType]
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private val defaultFeatureToggleConnector = {
+    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
+    mockFeatureToggleConnector
+  }
+
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
+                         featureToggleConnector: FeatureToggleConnector = defaultFeatureToggleConnector,
+                        ) =
     new BusinessTypeController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
@@ -51,6 +65,7 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
+      featureToggleConnector,
       view
     )
 

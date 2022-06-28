@@ -39,7 +39,7 @@
     (task.isCompleted, task.viewOnly,task.url) match {
         case (true, true,_) => messages("site.view")
         case (true, false,_) => messages("site.change")
-        case (false, _,url) => if(url.contains("add-directors")) messages("site.change") else  messages("site.add")
+        case (false, _,url) => if(url.contains("add-directors") || url.contains("add-partners")) messages("site.change") else  messages("site.add")
     }
 }
 
