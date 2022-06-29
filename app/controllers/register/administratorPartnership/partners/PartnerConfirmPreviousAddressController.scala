@@ -50,7 +50,7 @@ class PartnerConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
   private[controllers] val title: Message = "confirmPreviousAddress.title"
   private[controllers] val heading: Message = "confirmPreviousAddress.heading"
 
-  private def viewmodel(mode: Mode, index: Index) =
+  private def viewModel(mode: Mode, index: Index) =
     Retrieval(
       implicit request =>
         (PartnerNameId(index) and ExistingCurrentAddressId(index)).retrieve.right.map {
@@ -70,14 +70,14 @@ class PartnerConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode, index).retrieve.right.map { vm =>
+      viewModel(mode, index).retrieve.right.map { vm =>
         get(PartnerConfirmPreviousAddressId(index), vm)
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode, index).retrieve.right.map { vm =>
+      viewModel(mode, index).retrieve.right.map { vm =>
         post(PartnerConfirmPreviousAddressId(index), PartnerPreviousAddressId(index), vm, mode)
       }
   }

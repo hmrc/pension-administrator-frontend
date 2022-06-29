@@ -42,14 +42,14 @@ class AlreadyDeletedController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      def viewmodel(name: String) = AlreadyDeletedViewModel(
+      def viewModel(name: String) = AlreadyDeletedViewModel(
         Message("alreadyDeleted.partner.title"),
         name,
         controllers.register.administratorPartnership.routes.AddPartnerController.onPageLoad(NormalMode)
       )
 
       PartnerNameId(index).retrieve.right.map { partnerDetails =>
-        Future.successful(Ok(view(viewmodel(partnerDetails.fullName))))
+        Future.successful(Ok(view(viewModel(partnerDetails.fullName))))
       }
 
   }

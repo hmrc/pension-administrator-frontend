@@ -22,7 +22,6 @@ import identifiers.register._
 import identifiers.register.partnership._
 import models.{Mode, NormalMode}
 import identifiers.register.partnership.MoreThanTenPartnersId
-import models.{Mode, NormalMode}
 import models.register.{Task, TaskList}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.Format.GenericFormat

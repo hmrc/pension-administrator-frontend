@@ -58,19 +58,19 @@ class PartnerAddressYearsController @Inject()(val appConfig: FrontendAppConfig,
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val partnerName = entityName(index)
-        get(PartnerAddressYearsId(index), form(partnerName), viewmodel(mode, index, partnerName), mode)
+        get(PartnerAddressYearsId(index), form(partnerName), viewModel(mode, index, partnerName), mode)
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val partnerName = entityName(index)
-      post(PartnerAddressYearsId(index), mode, form(partnerName), viewmodel(mode, index, partnerName))
+      post(PartnerAddressYearsId(index), mode, form(partnerName), viewModel(mode, index, partnerName))
   }
 
   private def entityName(index: Int)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
-  private def viewmodel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
+  private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
     AddressYearsViewModel(
       postCall = routes.PartnerAddressYearsController.onSubmit(mode, index),
       title = Message("addressYears.heading", Message("thePartner")),

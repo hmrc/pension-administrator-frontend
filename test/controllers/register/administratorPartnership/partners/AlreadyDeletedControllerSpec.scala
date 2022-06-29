@@ -30,7 +30,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
 
   private val partnerName = "test first name test last name"
 
-  def viewmodel: AlreadyDeletedViewModel = AlreadyDeletedViewModel(Message("alreadyDeleted.partner.title"), partnerName, onwardRoute)
+  def viewModel: AlreadyDeletedViewModel = AlreadyDeletedViewModel(Message("alreadyDeleted.partner.title"), partnerName, onwardRoute)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new AlreadyDeletedController(
@@ -46,7 +46,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
   val view: alreadyDeleted = app.injector.instanceOf[alreadyDeleted]
 
   def viewAsString(): String = view(
-    viewmodel
+    viewModel
   )(fakeRequest, messages).toString
 
   "AlreadyDeleted Controller" must {
