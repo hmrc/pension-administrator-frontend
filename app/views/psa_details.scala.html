@@ -18,10 +18,13 @@
 @import play.api.mvc.Call
 @import uk.gov.hmrc.play.views.html._
 @import viewmodels.SuperSection
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-        main_template: main_template,
-        appConfig: FrontendAppConfig
+        layout: templates.Layout,
+        appConfig: FrontendAppConfig,
+        govukSummaryList : GovukSummaryList,
+        govukButton: GovukButton
 )
 
 
@@ -33,34 +36,33 @@
         messages: Messages
 )
 
-    @main_template(
-        title = messages(psaDetails.title)
+    @layout(
+        pageTitle = messages(psaDetails.title)
     ) {
 
-        @components.back_link()
 
         @psaDetails.userAnswersIncompleteMessage.map { incompleteMessage =>
             @components.incomplete_alert(incompleteMessage)
         }
-
-        @components.heading(
-            headingKey = psaDetails.header
-        )
-
-        <h2 id="psadetails-header" class="heading-large">@messages("psaDetails.header")</h2>
+        <h1 class="govuk-heading-xl">@psaDetails.header</h1>
+        <h2 id="psadetails-header" class="govuk-heading-l">@messages("psaDetails.header")</h2>
 
         @for((section, i) <- psaDetails.superSections.zipWithIndex) {
             @{
-                components.super_section(section, i.toString)
+                components_refactored.super_section(section, i.toString,govukSummaryList)
             }
         }
 
         @if(psaDetails.isUserAnswerUpdated) {
-            @components.button_link("psaDetails.declaration.link.text", nextPage.url, "declaration-link")
+            @govukButton(Button(
+                attributes = Map("id" -> "declaration-link"),
+                content = Text(messages("psaDetails.declaration.link.text")),
+                href = Some(nextPage.url)
+                ))
         }
 
-        <p>
-            <a id="return-to-overview" href="@appConfig.schemesOverviewUrl">
+        <p class="govuk-body">
+            <a id="return-to-overview" class="govuk-link" href="@appConfig.schemesOverviewUrl">
                 @messages("site.return_to", psaDetails.header)
             </a>
         </p>

@@ -116,7 +116,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
 
       "when feature toggle is enabled and the registration is for a company / partnership" must {
 
-        "route to 'continue with registration' page when the registration is for a UK company" in {
+        "route to 'continue with registration' page when the registration is for a UK company or partnership" in {
           val mockFeatureToggleConnector = mock[FeatureToggleConnector]
           when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
 

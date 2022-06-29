@@ -2,6 +2,7 @@
 ->          /individual                                     individual.Routes
 ->          /adviser                                        adviser.Routes
 ->          /partnership                                    partnership.Routes
+->          /administrator-partnership                      administratorPartnership.Routes
 
 GET         /business-type                                  controllers.register.BusinessTypeController.onPageLoad(mode: Mode = NormalMode)
 POST        /business-type                                  controllers.register.BusinessTypeController.onSubmit(mode: Mode = NormalMode)

@@ -15,29 +15,26 @@
  *@
 
 @import config.FrontendAppConfig
-@import viewmodels.Message
 
 @this(
-    main_template: main_template,
+    layout: templates.Layout,
     appConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@continueTpss() = {<a id="continueTpssLink" href="@appConfig.tpssUrl">@messages("pensionSchemePractitioner.link")</a>}
+@continueTpss() = {<a id="continueTpssLink" class="govuk-link" href="@appConfig.tpssUrl">@messages("pensionSchemePractitioner.link")</a>}
 
-@main_template(
-  title = messages("pensionSchemePractitioner.title")
+@layout(
+    pageTitle = messages("pensionSchemePractitioner.title")
 ) {
 
-  @components.back_link()
+    <h1 class="govuk-heading-xl">@messages("pensionSchemePractitioner.heading")</h1>
 
-  @components.heading(messages("pensionSchemePractitioner.heading"))
+    <p class="govuk-body-l">@messages("pensionSchemePractitioner.lede")</p>
 
-  <p class="lede">@messages("pensionSchemePractitioner.lede")</p>
+    <p class="govuk-body">@messages("pensionSchemePractitioner.explanation")</p>
 
-  <p>@messages("pensionSchemePractitioner.explanation")</p>
-
-  <p>@Html(messages("pensionSchemePractitioner.continue",continueTpss()))</p>
+    <p class="govuk-body">@Html(messages("pensionSchemePractitioner.continue",continueTpss()))</p>
 
 }

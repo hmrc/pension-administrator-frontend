@@ -1,0 +1,59 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers.register.administratorPartnership
+
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
+import identifiers.register.{BusinessNameId, BusinessUTRId}
+import models.NormalMode
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.annotations.AuthWithNoIV
+import viewmodels.{AnswerSection, Message, Section}
+import views.html.check_your_answers
+
+import javax.inject.Inject
+
+class BusinessMatchingCheckYourAnswersController @Inject()(
+                                                            val controllerComponents: MessagesControllerComponents,
+                                                            @AuthWithNoIV authenticate: AuthAction,
+                                                            getData: DataRetrievalAction,
+                                                            requireData: DataRequiredAction,
+                                                            checkYourAnswersView: check_your_answers
+                                                          ) extends FrontendBaseController with I18nSupport {
+
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+    implicit request =>
+      val sections: Seq[Section] = Seq(
+        AnswerSection(None,
+          BusinessNameId.cya.row(BusinessNameId)(None, request.userAnswers) ++
+            BusinessUTRId.cya.row(BusinessUTRId)(None, request.userAnswers)
+        )
+      )
+
+      val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
+
+
+  Ok(checkYourAnswersView(sections, routes.PartnershipRegistrationTaskListController.onPageLoad(), None, NormalMode, isComplete = true, Some(partnershipName)))
+
+
+  }
+
+  def onSubmit(): Action[AnyContent] = authenticate { _ =>
+    Redirect(routes.PartnershipRegistrationTaskListController.onPageLoad())
+  }
+}

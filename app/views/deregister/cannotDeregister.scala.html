@@ -15,27 +15,21 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
-@import views.html._
-@import controllers.routes._
-@import models.Mode
-@import viewmodels.Message
-@import config.FrontendAppConfig
 
 @this(
-    main_template: main_template,
+    layout: templates.Layout,
     appConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("cannotDeregister.title")) {
-    @components.back_link()
-    @components.heading(messages("cannotDeregister.title"))
+@layout(
+    pageTitle = messages("cannotDeregister.title")) {
 
-    <p>@messages("cannotDeregister.p1")</p>
+    <h1 class="govuk-heading-xl">@messages("cannotDeregister.title")</h1>
 
-    <p><a id="return-to-schemes" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("schemesOverview.manage.link")</a></p>
+    <p class="govuk-body">@messages("cannotDeregister.p1")</p>
+
+    <p class="govuk-body"><a id="return-to-schemes" class="govuk-link" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("schemesOverview.manage.link")</a></p>
 
 }

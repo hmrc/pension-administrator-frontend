@@ -28,7 +28,8 @@ case class SameContactAddressViewModel(
                                         address: TolerantAddress,
                                         psaName: String,
                                         mode: Mode,
-                                        displayReturnLink: Boolean
+                                        displayReturnLink: Boolean,
+                                        displayPartnershipLink: Boolean = false
                                       ) {
 
 }
