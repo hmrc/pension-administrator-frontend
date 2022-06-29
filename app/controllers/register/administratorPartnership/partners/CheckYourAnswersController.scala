@@ -68,7 +68,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
           Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
         }
       } else {
-        loadCyaPage(index, mode)
+        Future.successful(Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers)))
       }
   }
 
@@ -90,13 +90,12 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
           PartnerEmailId(index).row(Some(Link(routes.PartnerEmailController.onPageLoad(checkMode(mode), index).url))) ++
           PartnerPhoneId(index).row(Some(Link(routes.PartnerPhoneController.onPageLoad(checkMode(mode), index).url)))
       ))
-    val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
     Future.successful(Ok(view(
       answerSection,
       routes.CheckYourAnswersController.onSubmit(index, mode),
       psaName(),
       mode,
-      dataCompletion.isPartnerComplete(request.userAnswers, index),
+      isComplete = true,
       returnLink =  Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     ))
     )

@@ -256,7 +256,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
         val sections = Seq(AnswerSection(None, rows))
 
         testRenderedView(
-          sections, retrievalAction, mode = UpdateMode, isComplete = false)
+          sections, retrievalAction, mode = UpdateMode)
 
         FakeUserAnswersCacheConnector.verifyNot(DirectorsOrPartnersChangedId)
       }
