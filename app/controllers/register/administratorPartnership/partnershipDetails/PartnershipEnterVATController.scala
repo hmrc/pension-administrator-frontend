@@ -56,7 +56,7 @@ class PartnershipEnterVATController @Inject()(val appConfig: FrontendAppConfig,
       heading = Message("enterVAT.heading", entityName),
       mode = mode,
       entityName = entityName,
-      displayPartnershipLink = true
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =

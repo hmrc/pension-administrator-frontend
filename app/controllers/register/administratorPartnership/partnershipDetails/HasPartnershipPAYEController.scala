@@ -54,7 +54,7 @@ class HasPartnershipPAYEController @Inject()(override val appConfig: FrontendApp
       mode = mode,
       hint = Some(Message("hasPAYE.hint")),
       entityName = partnershipName,
-      displayPartnershipLink = true
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
   private def form(partnershipName: String)

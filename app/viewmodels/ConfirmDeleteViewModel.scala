@@ -25,5 +25,6 @@ case class ConfirmDeleteViewModel(
                                    heading: String,
                                    name: String,
                                    secondaryHeader: Option[String] = None,
-                                   psaName: Option[String] = None
+                                   psaName: Option[String] = None,
+                                   returnLink: Option[String] = None
                                  )

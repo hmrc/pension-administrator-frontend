@@ -47,7 +47,7 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
     title = Message(s"$messagePrefix.heading", Message("thePartnership")),
     heading = Message(s"$messagePrefix.heading", "Test Partnership Name"),
     partnershipName = Some("Test Partnership Name"),
-    displayPartnershipLink = true
+    returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 
   "PartnershipPreviousAddress Controller" must {

@@ -58,5 +58,15 @@
         )
         </div>
         @components.submit_button("site.save_and_continue")
+
+        @viewModel.returnLink.map { returnLinkUrl =>
+        <div class="grid-row">
+            <div class="column-two-thirds">
+                <p class="govuk-margin-top-5">
+                    <a id="return-link" href=@returnLinkUrl>@messages("site.return_to", viewModel.entityName)</a>
+                </p>
+            </div>
+        </div>
+        }
     }
 }

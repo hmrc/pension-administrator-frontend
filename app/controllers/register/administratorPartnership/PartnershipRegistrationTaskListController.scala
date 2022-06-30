@@ -21,6 +21,7 @@ import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredA
 import identifiers.register._
 import identifiers.register.partnership._
 import models.{Mode, NormalMode}
+import identifiers.register.partnership.MoreThanTenPartnersId
 import models.register.{Task, TaskList}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.Format.GenericFormat
@@ -103,20 +104,23 @@ class PartnershipRegistrationTaskListController @Inject()(
       Task(messages("taskList.workingKnowledgeDetails"), isWorkingKnowledgeCompleted, workingKnowledgeDetailsUrl)
     }
 
-    private def buildPartnersDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
-      val isPartnersCompleted = userAnswers.allPartnersAfterDelete(NormalMode).nonEmpty
-      val partnerTaskUrl = if(isPartnersCompleted){
-        controllers.register.administratorPartnership.routes.AddPartnerController.onPageLoad(NormalMode).url
-      } else {
-        controllers.register.partnership.partners.routes.WhatYouWillNeedController.onPageLoad().url
-      }
-      Task(messages("taskList.partners"), isCompleted = isPartnershipPartnersComplete(userAnswers), url = partnerTaskUrl)
+  private def buildPartnersDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
+    val isPartnersCompleted = userAnswers.allPartnersAfterDeleteV2(NormalMode).nonEmpty
+    val partnerTaskUrl = if(isPartnersCompleted){
+      controllers.register.administratorPartnership.routes.AddPartnerController.onPageLoad(NormalMode).url
+    } else {
+      controllers.register.administratorPartnership.partners.routes.WhatYouWillNeedController.onPageLoad().url
     }
 
-    def isPartnershipPartnersComplete(userAnswers: UserAnswers): Boolean = {
-      val allPartners = userAnswers.allPartnersAfterDelete(NormalMode)
-      val allPartnersCompleted = allPartners.nonEmpty && allPartners.forall(_.isComplete) && allPartners.size >= 2 &&
-        (allPartners.size < appConfig.maxPartners || userAnswers.get(MoreThanTenPartnersId).isDefined)
-      allPartnersCompleted
-    }
+    Task(messages("taskList.partners"), isCompleted = isPartnershipPartnersComplete(userAnswers), url = partnerTaskUrl)
+  }
+
+  def isPartnershipPartnersComplete(userAnswers: UserAnswers): Boolean = {
+    val allPartners = userAnswers.allPartnersAfterDeleteV2(NormalMode)
+
+    val allPartnersCompleted = allPartners.nonEmpty && allPartners.forall(_.isComplete) && allPartners.size >= 2 &&
+      (allPartners.size < appConfig.maxPartners || userAnswers.get(MoreThanTenPartnersId).isDefined)
+
+    allPartnersCompleted
+  }
 }

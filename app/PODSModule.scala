@@ -77,6 +77,10 @@ class PODSModule extends AbstractModule {
       .annotatedWith(classOf[PartnershipPartner])
       .to(classOf[PartnerNavigator])
 
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[PartnershipPartnerV2])
+      .to(classOf[PartnerNavigatorV2])
+
     bind(classOf[CountryOptions])
       .annotatedWith(classOf[EUAndEEA])
       .to(classOf[CountryOptionsEUAndEEA])

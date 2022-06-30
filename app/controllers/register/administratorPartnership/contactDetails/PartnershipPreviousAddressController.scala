@@ -62,7 +62,7 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
     heading = Message("enter.previous.address.heading", name),
     psaName = psaName(),
     partnershipName = Some(name),
-    displayPartnershipLink = true
+    returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

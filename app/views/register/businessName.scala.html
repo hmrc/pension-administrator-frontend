@@ -25,7 +25,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], businessType: String, href: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], businessType: String, href: Call,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = titleWithErrors(form, messages("businessName.title", businessType))
@@ -46,5 +46,11 @@
             )
         </div>
         @components.submit_button("site.save_and_continue")
+
+        @returnLink.map { returnLinkUrl =>
+        <p class="govuk-margin-top-5 govuk-body">
+            <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", businessType)</a>
+        </p>
+        }
     }
 }

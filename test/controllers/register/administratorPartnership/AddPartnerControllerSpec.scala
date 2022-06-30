@@ -30,11 +30,10 @@ import play.api.libs.json._
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{EntityViewModel, Message, Person}
-import views.html.register.addEntity
+import views.html.register.addToListEntity
 
 class AddPartnerControllerSpec extends ControllerSpecBase {
 
@@ -159,7 +158,7 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private val formProvider = new AddEntityFormProvider()
   private val form = formProvider()
 
-  val view: addEntity = app.injector.instanceOf[addEntity]
+  val view: addToListEntity = app.injector.instanceOf[addToListEntity]
 
   protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
 
@@ -186,7 +185,9 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
     heading = Message("addPartners.heading"),
     entities = partners,
     maxLimit = maxPartners,
-    entityType = Message("addPartners.entityType")
+    entityType = Message("addPartners.entityType"),
+    insetText = Some(Message("addPartner.insetText")),
+    returnLink = Some(routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 
   val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
@@ -203,9 +204,10 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
   private val joeBloggs = PersonName("Joe", "Bloggs")
   // scalastyle:on magic.number
 
-  private def deleteLink(index: Int) = controllers.register.partnership.partners.routes.ConfirmDeletePartnerController.onPageLoad(index, NormalMode).url
+  private def deleteLink(index: Int) = controllers.register.administratorPartnership.partners
+    .routes.ConfirmDeletePartnerController.onPageLoad(index, NormalMode).url
 
-  private def editLink(index: Int) = controllers.register.partnership.partners.routes.CheckYourAnswersController.onPageLoad(index, NormalMode).url
+  private def editLink(index: Int) = controllers.register.administratorPartnership.partners.routes.CheckYourAnswersController.onPageLoad(index, NormalMode).url
 
   // scalastyle:off magic.number
   private val maxPartners = frontendAppConfig.maxPartners

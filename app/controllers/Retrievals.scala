@@ -54,6 +54,14 @@ trait Retrievals {
       f(partnerDetails.fullName)
     }
   }
+  private[controllers] def retrievePartnerNameV2(mode: Mode, index: Int)
+                                              (f: String => Future[Result])
+                                              (implicit request: DataRequest[AnyContent]): Future[Result] = {
+    retrieve[PersonName](PartnerNameId(index),
+      controllers.register.administratorPartnership.partners.routes.PartnerNameController.onPageLoad(mode, index)) { partnerDetails =>
+      f(partnerDetails.fullName)
+    }
+  }
 
   private[controllers] def retrieveAdviserName(mode: Mode)
                                                (f: String => Future[Result])

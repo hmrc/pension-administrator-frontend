@@ -17,6 +17,7 @@
 package viewmodels
 
 import play.api.mvc.Call
+import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 
 case class EntityViewModel(
                             postCall: Call,
@@ -25,5 +26,8 @@ case class EntityViewModel(
                             entities: Seq[Person],
                             maxLimit: Int,
                             entityType: String,
-                            psaName: Option[String] = None
+                            psaName: Option[String] = None,
+                            returnLink: Option[String] = None,
+                            hintText: Option[Hint] = None,
+                            insetText: Option[String] = None
                           )

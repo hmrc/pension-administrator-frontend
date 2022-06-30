@@ -64,7 +64,7 @@ class PartnershipPreviousAddressPostCodeLookupController @Inject()(
     Message("postcode.lookup.form.label"),
     psaName(),
     partnershipName = Some(name),
-    displayPartnershipLink = true
+    returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 
   override protected def form: Form[String] = formProvider()
