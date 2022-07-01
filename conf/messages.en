@@ -645,9 +645,15 @@ confirmation.whatYouNeedToKnow.heading = What happens next
 confirmation.whatYouNeedToKnow.existingPSA.detail=Your administrator ID has not changed. You can now {0}
 confirmation.whatYouNeedToKnow.newPSA.detail = {0}, or
 confirmation.whatYouNeedToKnow.schemeLink = applying to register a new pension scheme
+confirmation.whatYouNeedToKnow.registerMessage = apply to register a new pension scheme
+confirmation.whatYouNeedToKnow.addPensionSchemeOrRacDacMessage = add a pension scheme or RAC/DAC from the Pension Schemes Online service
+confirmation.whatYouNeedToKnow.addRacDacLink = add RAC/DACs from the Pension Schemes Online service
 confirmation.email = We have sent a confirmation email to
-confirmation.action.subheading = The pension scheme administrator can now manage pension schemes, either by:
+confirmation.action.company.subheading = The pension scheme administrator can now {0} They can:
+confirmation.action.subheading.schemesOverviewLink = manage pension schemes.
+confirmation.action.individual.subheading = You can now {0} You can:
 confirmation.action.item = being invited to be a pension scheme administrator for an existing pension
+confirmation.action.psaInvitation.item = be invited to be an administrator of an existing pension scheme
 
 duplicateRegistration.title = A different Government Gateway account has already been used to register you as a scheme administrator
 duplicateRegistration.heading = A different Government Gateway account has already been used to register you as a scheme administrator
