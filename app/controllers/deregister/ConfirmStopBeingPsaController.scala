@@ -80,7 +80,7 @@ class ConfirmStopBeingPsaController @Inject()(
                   value => {
                     if (value) {
                       for {
-                        _ <- deregistrationConnector.stopBeingPSA(psaId)
+                       // _ <- deregistrationConnector.stopBeingPSA(psaId)
                         _ <- enrolments.deEnrol(request.user.groupIdentifier, psaId, request.externalId)
                         _ <- dataCacheConnector.removeAll(request.externalId)
                       } yield {
