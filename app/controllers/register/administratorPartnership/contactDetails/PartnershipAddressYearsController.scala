@@ -61,7 +61,7 @@ class PartnershipAddressYearsController @Inject()(val appConfig: FrontendAppConf
       Message("addressYears.heading").withArgs(partnershipNameValue),
       psaName = psaName(),
       partnershipName = Some(partnershipNameValue),
-      displayPartnershipLink = true
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
   def form(partnershipName: String)

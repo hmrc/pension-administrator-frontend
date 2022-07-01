@@ -78,7 +78,7 @@ class PartnershipPreviousAddressListController @Inject()(
         Message("select.address.hint.text"),
         Message("manual.entry.link"),
         partnershipName = Some(entityName),
-        displayPartnershipLink = true
+        returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
       )
     }.left.map(_ => Future.successful(Redirect(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode))))
   }

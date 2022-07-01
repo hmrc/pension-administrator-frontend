@@ -69,7 +69,7 @@ object PartnershipPhoneControllerSpec {
       heading = Message("phone.title", partnershipName),
       mode = mode,
       entityName = partnershipName,
-      displayPartnershipLink = true
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }
 

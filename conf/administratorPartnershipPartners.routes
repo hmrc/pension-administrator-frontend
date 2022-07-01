@@ -1,0 +1,102 @@
+
+GET         /:index/contact-email-address                         controllers.register.administratorPartnership.partners.PartnerEmailController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/contact-email-address                         controllers.register.administratorPartnership.partners.PartnerEmailController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/contact-email-address                   controllers.register.administratorPartnership.partners.PartnerEmailController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/contact-email-address                   controllers.register.administratorPartnership.partners.PartnerEmailController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/contact-phone-number                          controllers.register.administratorPartnership.partners.PartnerPhoneController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/contact-phone-number                          controllers.register.administratorPartnership.partners.PartnerPhoneController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/contact-phone-number                    controllers.register.administratorPartnership.partners.PartnerPhoneController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/contact-phone-number                    controllers.register.administratorPartnership.partners.PartnerPhoneController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/have-national-insurance-number                controllers.register.administratorPartnership.partners.HasPartnerNINOController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/have-national-insurance-number                controllers.register.administratorPartnership.partners.HasPartnerNINOController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/have-national-insurance-number          controllers.register.administratorPartnership.partners.HasPartnerNINOController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/have-national-insurance-number          controllers.register.administratorPartnership.partners.HasPartnerNINOController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/why-no-national-insurance-number              controllers.register.administratorPartnership.partners.PartnerNoNINOReasonController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/why-no-national-insurance-number              controllers.register.administratorPartnership.partners.PartnerNoNINOReasonController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/why-no-national-insurance-number        controllers.register.administratorPartnership.partners.PartnerNoNINOReasonController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/why-no-national-insurance-number        controllers.register.administratorPartnership.partners.PartnerNoNINOReasonController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/national-insurance-number                     controllers.register.administratorPartnership.partners.PartnerEnterNINOController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/national-insurance-number                     controllers.register.administratorPartnership.partners.PartnerEnterNINOController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/national-insurance-number               controllers.register.administratorPartnership.partners.PartnerEnterNINOController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/national-insurance-number               controllers.register.administratorPartnership.partners.PartnerEnterNINOController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/name                                          controllers.register.administratorPartnership.partners.PartnerNameController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/name                                          controllers.register.administratorPartnership.partners.PartnerNameController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/name                                    controllers.register.administratorPartnership.partners.PartnerNameController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/name                                    controllers.register.administratorPartnership.partners.PartnerNameController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/date-of-birth                                 controllers.register.administratorPartnership.partners.PartnerDOBController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/date-of-birth                                 controllers.register.administratorPartnership.partners.PartnerDOBController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/date-of-birth                           controllers.register.administratorPartnership.partners.PartnerDOBController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/date-of-birth                           controllers.register.administratorPartnership.partners.PartnerDOBController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/partners-confirm-delete                       controllers.register.administratorPartnership.partners.ConfirmDeletePartnerController.onPageLoad(index: Index, mode:Mode = NormalMode)
+POST        /:index/partners-confirm-delete                       controllers.register.administratorPartnership.partners.ConfirmDeletePartnerController.onSubmit(index: Index, mode:Mode = NormalMode)
+GET         /:index/:mode/partners-confirm-delete                 controllers.register.administratorPartnership.partners.ConfirmDeletePartnerController.onPageLoad(index: Index, mode:Mode)
+POST        /:index/:mode/partners-confirm-delete                 controllers.register.administratorPartnership.partners.ConfirmDeletePartnerController.onSubmit(index: Index, mode:Mode)
+
+GET         /:index/unique-taxpayer-reference                     controllers.register.administratorPartnership.partners.PartnerEnterUTRController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/unique-taxpayer-reference                     controllers.register.administratorPartnership.partners.PartnerEnterUTRController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/unique-taxpayer-reference               controllers.register.administratorPartnership.partners.PartnerEnterUTRController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/unique-taxpayer-reference               controllers.register.administratorPartnership.partners.PartnerEnterUTRController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/have-unique-taxpayer-reference                controllers.register.administratorPartnership.partners.HasPartnerUTRController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/have-unique-taxpayer-reference                controllers.register.administratorPartnership.partners.HasPartnerUTRController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/have-unique-taxpayer-reference          controllers.register.administratorPartnership.partners.HasPartnerUTRController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/have-unique-taxpayer-reference          controllers.register.administratorPartnership.partners.HasPartnerUTRController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/why-no-utr                                    controllers.register.administratorPartnership.partners.PartnerNoUTRReasonController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/why-no-utr                                    controllers.register.administratorPartnership.partners.PartnerNoUTRReasonController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/why-no-utr                              controllers.register.administratorPartnership.partners.PartnerNoUTRReasonController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/why-no-utr                              controllers.register.administratorPartnership.partners.PartnerNoUTRReasonController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/already-deleted                               controllers.register.administratorPartnership.partners.AlreadyDeletedController.onPageLoad(index: Index, mode: Mode = NormalMode)
+
+GET         /:index/contact-address-1-year                        controllers.register.administratorPartnership.partners.PartnerAddressYearsController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/contact-address-1-year                        controllers.register.administratorPartnership.partners.PartnerAddressYearsController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/contact-address-1-year                  controllers.register.administratorPartnership.partners.PartnerAddressYearsController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/contact-address-1-year                  controllers.register.administratorPartnership.partners.PartnerAddressYearsController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/enter-contact-address                         controllers.register.administratorPartnership.partners.PartnerAddressController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/enter-contact-address                         controllers.register.administratorPartnership.partners.PartnerAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/enter-contact-address                   controllers.register.administratorPartnership.partners.PartnerAddressController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/enter-contact-address                   controllers.register.administratorPartnership.partners.PartnerAddressController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/postcode                                      controllers.register.administratorPartnership.partners.PartnerAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/postcode                                      controllers.register.administratorPartnership.partners.PartnerAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/postcode                                controllers.register.administratorPartnership.partners.PartnerAddressPostCodeLookupController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/postcode                                controllers.register.administratorPartnership.partners.PartnerAddressPostCodeLookupController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/select-contact-address                        controllers.register.administratorPartnership.partners.PartnerAddressListController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/select-contact-address                        controllers.register.administratorPartnership.partners.PartnerAddressListController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/select-contact-address                  controllers.register.administratorPartnership.partners.PartnerAddressListController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/select-contact-address                  controllers.register.administratorPartnership.partners.PartnerAddressListController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/previous-postcode                             controllers.register.administratorPartnership.partners.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/previous-postcode                             controllers.register.administratorPartnership.partners.PartnerPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/previous-postcode                       controllers.register.administratorPartnership.partners.PartnerPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/previous-postcode                       controllers.register.administratorPartnership.partners.PartnerPreviousAddressPostCodeLookupController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/enter-previous-address                        controllers.register.administratorPartnership.partners.PartnerPreviousAddressController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/enter-previous-address                        controllers.register.administratorPartnership.partners.PartnerPreviousAddressController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/enter-previous-address                  controllers.register.administratorPartnership.partners.PartnerPreviousAddressController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/enter-previous-address                  controllers.register.administratorPartnership.partners.PartnerPreviousAddressController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/select-previous-contact-address               controllers.register.administratorPartnership.partners.PartnerPreviousAddressListController.onPageLoad(mode: Mode = NormalMode, index: Index)
+POST        /:index/select-previous-contact-address               controllers.register.administratorPartnership.partners.PartnerPreviousAddressListController.onSubmit(mode: Mode = NormalMode, index: Index)
+GET         /:index/:mode/select-previous-contact-address         controllers.register.administratorPartnership.partners.PartnerPreviousAddressListController.onPageLoad(mode: Mode, index: Index)
+POST        /:index/:mode/select-previous-contact-address         controllers.register.administratorPartnership.partners.PartnerPreviousAddressListController.onSubmit(mode: Mode, index: Index)
+
+GET         /:index/check-your-answers                            controllers.register.administratorPartnership.partners.CheckYourAnswersController.onPageLoad(index: Index, mode: Mode = NormalMode)
+POST        /:index/check-your-answers                            controllers.register.administratorPartnership.partners.CheckYourAnswersController.onSubmit(index: Index, mode: Mode = NormalMode)
+GET         /:index/:mode/check-your-answers                      controllers.register.administratorPartnership.partners.CheckYourAnswersController.onPageLoad(index: Index, mode: Mode)
+POST        /:index/:mode/check-your-answers                      controllers.register.administratorPartnership.partners.CheckYourAnswersController.onSubmit(index: Index, mode: Mode)
+
+GET         /:index/is-this-previous-address                      controllers.register.administratorPartnership.partners.PartnerConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode, index: Index)
+POST        /:index/is-this-previous-address                      controllers.register.administratorPartnership.partners.PartnerConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode, index: Index)
+
+GET         /what-you-will-need                                   controllers.register.administratorPartnership.partners.WhatYouWillNeedController.onPageLoad()

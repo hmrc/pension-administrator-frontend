@@ -65,7 +65,7 @@ class PartnershipContactAddressListController @Inject()(
         Message("select.address.heading", entityName),
         psaName = psaName(),
         partnershipName = Some(entityName),
-        displayPartnershipLink = true
+        returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
       )
     }
   }

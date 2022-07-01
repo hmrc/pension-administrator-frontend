@@ -1,3 +1,4 @@
+->          /partner                                      administratorPartnershipPartners.Routes
 
 GET         /contact-address-1-year                       controllers.register.administratorPartnership.contactDetails.PartnershipAddressYearsController.onPageLoad(mode: Mode = NormalMode)
 POST        /contact-address-1-year                       controllers.register.administratorPartnership.contactDetails.PartnershipAddressYearsController.onSubmit(mode: Mode = NormalMode)
@@ -114,8 +115,6 @@ POST        /vat-registration-number                      controllers.register.a
 GET         /:mode/vat-registration-number                controllers.register.administratorPartnership.partnershipDetails.PartnershipEnterVATController.onPageLoad(mode: Mode)
 POST        /:mode/vat-registration-number                controllers.register.administratorPartnership.partnershipDetails.PartnershipEnterVATController.onSubmit(mode: Mode)
 
-GET         /add-another-partner                          controllers.register.administratorPartnership.TellUsAboutAnotherPartnerController.onPageLoad(mode: Mode = NormalMode)
-GET         /:mode/add-another-partner                    controllers.register.administratorPartnership.TellUsAboutAnotherPartnerController.onPageLoad(mode: Mode)
 
 GET         /task-list                                    controllers.register.administratorPartnership.PartnershipRegistrationTaskListController.onPageLoad(mode: Mode = NormalMode)
 
@@ -134,3 +133,5 @@ POST        /contact-what-you-will-need                   controllers.register.a
 GET         /contact-check-your-answers                   controllers.register.administratorPartnership.contactDetails.CheckYourAnswersController.onPageLoad()
 POST        /contact-check-your-answers                   controllers.register.administratorPartnership.contactDetails.CheckYourAnswersController.onSubmit()
 
+GET         /pensionadvisor/what-you-will-need            controllers.register.administratorPartnership.workingknowledge.WhatYouWillNeedController.onPageLoad
+GET         /pensionadvisor/what-you-will-need            controllers.register.administratorPartnership.workingknowledge.WhatYouWillNeedController.onPageLoad

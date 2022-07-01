@@ -21,12 +21,14 @@ import connectors.cache.FeatureToggleConnector
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.UpdateContactAddressId
+import identifiers.register.BusinessTypeId
 import identifiers.register.adviser._
 import models.FeatureToggleName.PsaRegistration
 
 import javax.inject.Inject
 import models.Mode
 import models.Mode._
+import models.register.BusinessType
 import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -67,7 +69,14 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
         isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
       } yield {
         (isFeatureEnabled, isDataComplete) match {
-          case(true, true) => Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
+          case(true, true) =>
+            request.userAnswers.get(BusinessTypeId) match {
+               case Some(BusinessType.LimitedCompany) | Some(BusinessType.UnlimitedCompany) =>
+                 Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
+              case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
+                Redirect(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
+              case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+              }
           case(false, true) => Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
           case(_, false) => cyaPage(mode)
         }

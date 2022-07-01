@@ -20,11 +20,12 @@ import config.FrontendAppConfig
 import controllers.register.individual.routes
 import identifiers.Identifier
 import identifiers.register._
-import javax.inject.Inject
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.{Mode, NormalMode}
 import play.api.mvc.Call
 import utils.{Navigator, UserAnswers}
+
+import javax.inject.Inject
 
 class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
                                  ) extends Navigator {
@@ -66,10 +67,30 @@ class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
       case Some(DeclarationWorkingKnowledge.Adviser) =>
         controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
       case Some(DeclarationWorkingKnowledge.WhatYouWillNeed) =>
-        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad()
+        declarationWorkingKnowledgeWhatYouWillRoutes(userAnswers)
       case Some(DeclarationWorkingKnowledge.TaskList) =>
-        controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
+        declarationWorkingKnowledgeTaskListRoutes(userAnswers)
       case None => controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def declarationWorkingKnowledgeTaskListRoutes(userAnswers: UserAnswers) = {
+    userAnswers.get(BusinessTypeId) match {
+      case Some(BusinessType.LimitedCompany) | Some(BusinessType.UnlimitedCompany) =>
+        controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
+      case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
+        controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def declarationWorkingKnowledgeWhatYouWillRoutes(userAnswers: UserAnswers) = {
+    userAnswers.get(BusinessTypeId) match {
+      case Some(BusinessType.LimitedCompany) | Some(BusinessType.UnlimitedCompany) =>
+        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad()
+      case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
+        controllers.register.administratorPartnership.workingknowledge.routes.WhatYouWillNeedController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 

@@ -120,7 +120,7 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
     Message("postcode.lookup.form.label"),
     None,
     partnershipName = Some("Test Partnership Name"),
-    displayPartnershipLink = true
+    returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 }
 

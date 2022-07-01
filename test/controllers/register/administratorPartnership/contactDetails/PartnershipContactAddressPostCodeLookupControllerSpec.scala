@@ -54,7 +54,7 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
     Some(Message("manual.entry.link")),
     Message("postcode.lookup.form.label"),
     partnershipName = Some(partnershipName),
-    displayPartnershipLink = true
+    returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     BusinessNameId.toString -> partnershipName

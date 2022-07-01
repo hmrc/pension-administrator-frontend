@@ -71,7 +71,7 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
     Message("select.address.heading", Message("thePartnership")),
     Message("select.address.heading", testName),
     partnershipName = Some(testName),
-    displayPartnershipLink = true
+    returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 
   val retrieval = new FakeDataRetrievalAction(Some(Json.obj(

@@ -71,6 +71,6 @@ class PartnershipEmailController @Inject()(@PartnershipV2 val navigator: Navigat
       mode = mode,
       entityName = entityName,
       displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty,
-      displayPartnershipLink = true
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 }

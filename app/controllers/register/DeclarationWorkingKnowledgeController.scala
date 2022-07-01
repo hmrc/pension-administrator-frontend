@@ -17,6 +17,7 @@
 package controllers.register
 
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import controllers.Retrievals
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
@@ -45,7 +46,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
                                                        val view: declarationWorkingKnowledge,
                                                        featureToggleConnector: FeatureToggleConnector
                                                      )(implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+  extends FrontendBaseController with I18nSupport with Enumerable.Implicits with Retrievals {
 
   private val form = formProvider()
 
@@ -55,7 +56,9 @@ class DeclarationWorkingKnowledgeController @Inject()(
         case None => form
         case Some(value) => form.fill(value.hasWorkingKnowledge)
       }
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode,
+        psaName = psaName(),
+        returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

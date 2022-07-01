@@ -21,7 +21,7 @@
     main_template: main_template
 )
 
-@(href: Call)(implicit request: Request[_], messages: Messages)
+@(href: Call,psaName: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("whatYouWillNeed.workingKnowledge.title")
@@ -39,4 +39,12 @@
         <li>@messages("whatYouWillNeed.workingKnowledge.item4")</li>
     </ul>
     @components.button_link("site.continue", href.url, "submit")
+
+    @psaName.map { psaName =>
+        @returnLink.map { returnLinkUrl =>
+        <p class="govuk-margin-top-5 govuk-body">
+            <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", psaName)</a>
+        </p>
+        }
+    }
 }
