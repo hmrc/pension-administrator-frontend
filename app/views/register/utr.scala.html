@@ -30,14 +30,14 @@ button: components.govuk_button,
 govukInput: GovukInput
 )
 
-@(form: Form[_], businessType: String, href: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], businessType: String, hint: String, href: Call)(implicit request: Request[_], messages: Messages)
 
 @hintHtml = {
     <p>@messages("utr.p1")</p>
     <p>@messages("utr.p2")</p>
 }
 @layout(
-        pageTitle = titleWithErrors(form, messages("utr.title", businessType))
+        pageTitle = titleWithErrors(form, messages("utr.title", businessType, hint))
 ) {
 
         @formHelper(action = href, 'autoComplete -> "off", 'novalidate -> "novalidate") {
@@ -51,7 +51,7 @@ govukInput: GovukInput
                 inputmode = Some("numeric"),
                 pattern = Some("[0-9]*"),
                 classes = "govuk-!-width-one-half",
-                label = Label(classes = "govuk-label--xl", content = Text(messages("utr.heading", businessType)),
+                label = Label(classes = "govuk-label--xl", content = Text(messages("utr.heading", businessType, hint)),
                 isPageHeading = true
                 ),
                 hint = Some(Hint(

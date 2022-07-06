@@ -22,10 +22,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.UTRController
 import identifiers.register.{BusinessTypeId, BusinessUTRId}
-import javax.inject.Inject
 import models.NormalMode
-import models.register.BusinessType
-import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
@@ -33,6 +30,7 @@ import utils.annotations.Partnership
 import viewmodels.Message
 import views.html.register.utr
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConfig,
@@ -49,7 +47,7 @@ class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConf
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessTypeId.retrieve.right.map { businessType =>
-        get(BusinessUTRId, toString(businessType), href)
+        get(BusinessUTRId, Message("thePartnership"), Message("utr.partnership.hint"), href)
       }
   }
 
@@ -57,13 +55,10 @@ class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConf
     implicit request =>
 
       BusinessTypeId.retrieve.right.map { businessType =>
-        post(BusinessUTRId, toString(businessType), href, NormalMode)
+        post(BusinessUTRId, Message("thePartnership"), Message("utr.partnership.hint"), href, NormalMode)
       }
   }
 
   def href: Call = routes.PartnershipUTRController.onSubmit()
-
-  def toString(businessType: BusinessType)
-              (implicit request: DataRequest[AnyContent]): String = Message(s"businessType.${businessType.toString}").toLowerCase()
 
 }

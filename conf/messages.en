@@ -1066,8 +1066,10 @@ partnershipName.error.required = Enter a partnership name
 partnershipName.error.invalid = Partnership name must only include letters, numbers and the characters ’, &, \ and /
 partnershipName.error.length = Partnership name must be 105 characters or fewer
 
-utr.title = What is the Unique Taxpayer Reference (UTR) of the {0} you want to register?
-utr.heading = What is the Unique Taxpayer Reference (UTR) of the {0} you want to register?
+utr.title = What is {0}’s {1} Unique Taxpayer Reference (UTR)?
+utr.heading = What is {0}’s {1} Unique Taxpayer Reference (UTR)?
+utr.company.hint = Corporation Tax
+utr.partnership.hint = Self Assessment
 utr.p1 = This is a 10-digit or 13-digit number. It may also start or end with the letter ‘k’.
 utr.p2 = You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 
