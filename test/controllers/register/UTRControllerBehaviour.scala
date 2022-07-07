@@ -38,6 +38,8 @@ trait UTRControllerBehaviour extends ControllerSpecBase {
 
   val invalidUTR = "abcd123456"
 
+  val hint = "test"
+
   val view: utr = app.injector.instanceOf[utr]
 
   def utrController[I <: TypedIdentifier[String]](id: I,
@@ -47,7 +49,7 @@ trait UTRControllerBehaviour extends ControllerSpecBase {
     "return OK and the correct view for a GET request" in {
       val fixture = testFixture(createController)
 
-      val result = fixture.controller.get(id, entity, onwardRoute)(testRequest())
+      val result = fixture.controller.get(id, entity, hint, onwardRoute)(testRequest())
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(testForm(), entity, onwardRoute)
@@ -58,7 +60,7 @@ trait UTRControllerBehaviour extends ControllerSpecBase {
       val data = UserAnswers().set(id)(testUTR).asOpt.value
       val request = testRequest(data)
 
-      val result = fixture.controller.get(id, entity, onwardRoute)(request)
+      val result = fixture.controller.get(id, entity, hint, onwardRoute)(request)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(testForm().fill(testUTR), entity, onwardRoute)
@@ -68,7 +70,7 @@ trait UTRControllerBehaviour extends ControllerSpecBase {
       val fixture = testFixture(createController)
       val request = testRequest(utr = Some(testUTR))
 
-      val result = fixture.controller.post(id, entity, onwardRoute, NormalMode)(request)
+      val result = fixture.controller.post(id, entity, hint, onwardRoute, NormalMode)(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -80,7 +82,7 @@ trait UTRControllerBehaviour extends ControllerSpecBase {
       val request = testRequest(utr = Some(invalidUTR))
       val formWithErrors = testForm().bind(Map("value" -> invalidUTR))
 
-      val result = fixture.controller.post(id, entity, onwardRoute, NormalMode)(request)
+      val result = fixture.controller.post(id, entity, hint, onwardRoute, NormalMode)(request)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(formWithErrors, entity, onwardRoute)
@@ -128,6 +130,6 @@ trait UTRControllerBehaviour extends ControllerSpecBase {
     new UTRFormProvider()()
 
   def viewAsString(form: Form[_], entity: String, href: Call): String =
-    view(form, entity, href)(fakeRequest, messages).toString()
+    view(form, entity, hint, href)(fakeRequest, messages).toString()
 
 }

@@ -49,20 +49,20 @@ trait UTRController extends FrontendBaseController with I18nSupport with Variati
 
   protected def view: utr
 
-  def get[I <: TypedIdentifier[String]](id: I, entity: String, href: Call)
+  def get[I <: TypedIdentifier[String]](id: I, entity: String, hint: String, href: Call)
                                        (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id).fold(form)(form.fill)
-    Future.successful(Ok(view(preparedForm, entity, href)))
+    Future.successful(Ok(view(preparedForm, entity, hint, href)))
 
   }
 
-  def post[I <: TypedIdentifier[String]](id: I, entity: String, href: Call, mode: Mode)
+  def post[I <: TypedIdentifier[String]](id: I, entity: String, hint: String, href: Call, mode: Mode)
                                         (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(view(formWithErrors, entity, href))),
+        Future.successful(BadRequest(view(formWithErrors, entity, hint, href))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
             Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap))))
