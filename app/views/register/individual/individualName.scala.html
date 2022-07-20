@@ -14,7 +14,10 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import utils.FormHelpers
 @import controllers.register.company.directors.routes._
 @import models.Mode
@@ -22,34 +25,43 @@
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewModel: PersonDetailsViewModel)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages(viewModel.title))
+@layout(
+    pageTitle = titleWithErrors(form, messages(viewModel.title))
 ) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
-        @components.back_link()
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+    }
 
-        @components.error_summary(form.errors)
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages(viewModel.heading)</h1>
 
-        @components.heading(viewModel.heading)
-
-        @components.input_text(
-            field = form("firstName"),
-            label = messages("personDetails.firstName")
+        @govukInput(
+            Input(
+                classes = "govuk-!-width-one-half",
+                label = Label(classes = "govuk-label--s", content = Text(messages("personDetails.firstName")),
+                isPageHeading = false)
+             ).withFormField(form("firstName"))
         )
 
-        @components.input_text(
-            field = form("lastName"),
-            label = messages("personDetails.lastName")
+        @govukInput(
+            Input(
+                classes = "govuk-!-width-one-half",
+                label = Label(classes = "govuk-label--s", content = Text(messages("personDetails.lastName")),
+                isPageHeading = false)
+            ).withFormField(form("lastName"))
         )
 
-        @components.submit_button("site.save_and_continue")
+        @submit_button("site.save_and_continue")
     }
 }

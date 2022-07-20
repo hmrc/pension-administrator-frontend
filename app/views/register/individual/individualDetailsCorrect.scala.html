@@ -14,7 +14,10 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.individual.routes._
 @import models.{Mode, TolerantAddress, TolerantIndividual}
 @import utils.FormHelpers
@@ -22,40 +25,39 @@
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    submit_button: components_refactored.submit_button,
+    input_yes_no:  components_refactored.input_yes_no
 )
 
 @(form: Form[_], mode: Mode, individual: TolerantIndividual, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("individualDetailsCorrect.title"))
+@layout(
+    pageTitle = titleWithErrors(form, messages("individualDetailsCorrect.title"))
 ) {
 
     @formHelper(action = IndividualDetailsCorrectController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @components.error_summary(form.errors)
-
-        <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(messages("individualDetailsCorrect.heading"))
-
-
-        <p id="individual-value">@individual.fullName</p>
-        <p>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("individualDetailsCorrect.heading")</h1>
+        <p class="govuk-body" id="individual-value">@individual.fullName</p>
+        <div class="govuk-body">
             @for((line, i) <- address.lines(countryOptions).zipWithIndex) {
-            <span id="address-value-@i" class="address-multi-line">@line</span>
+            <div id="address-value-@i" class="address-multi-line">@line</div>
             }
-        </p>
+        </div>
 
-
-        @components.input_yes_no(
+        @input_yes_no(
             field = form("value"),
             label = messages("individualDetailsCorrect.heading"),
-            labelClass = Some("visually-hidden")
+            labelClass = Some("govuk-visually-hidden"),
+            headingIsLegend = false
         )
-        </div>
-        @components.submit_button("site.save_and_continue")
+        @submit_button("site.save_and_continue")
     }
 }

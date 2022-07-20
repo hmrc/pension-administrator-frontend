@@ -17,24 +17,22 @@
 @import config.FrontendAppConfig
 
 @this(
-    main_template: main_template,
+    layout: templates.Layout,
     appConfig: FrontendAppConfig
 )
 
 @(country: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("outsideEuEea.individual.title")
+@layout(
+    pageTitle = messages("outsideEuEea.individual.title")
 ) {
 
-    @components.back_link()
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("outsideEuEea.individual.heading")</h1>
 
-    @components.heading(messages("outsideEuEea.individual.heading"))
+    <p class="govuk-body">@messages("outsideEuEea.individual.currentCountry.text", country)</p>
 
-    <p>@messages("outsideEuEea.individual.currentCountry.text", country)</p>
+    <p class="govuk-body">@messages("outsideEuEea.individual.body")</p>
 
-    <p>@messages("outsideEuEea.individual.body")</p>
-
-    <a id="return-gov-uk" href="@appConfig.govUkUrl">@messages("site.return.govuk")</a>
+    <p class="govuk-body"><a id="return-gov-uk" href="@appConfig.govUkUrl" class="govuk-link">@messages("site.return.govuk")</a></p>
 
 }
