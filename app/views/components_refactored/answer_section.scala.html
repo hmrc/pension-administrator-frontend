@@ -23,7 +23,7 @@
     govukSummaryList : GovukSummaryList
 )
 
-@(answerSection: AnswerSection, idPath: String)(implicit messages: Messages)
+@(answerSection: AnswerSection, idPath: String, wideKey: Boolean = false)(implicit messages: Messages)
 
 @if(answerSection.headingKey.isDefined){
 <h2 id="cya-@idPath-heading" class="govuk-heading-m">@messages(answerSection.headingKey.get)</h2>
@@ -34,14 +34,15 @@
         for((rowVal, indexVal) <- answerSection.rows.zipWithIndex)
             yield {
                 SummaryListRow(
-                    key = Key(content = Text(messages(rowVal.label))),
+                    key = Key(content = Text(messages(rowVal.label)),
+                    classes = if(wideKey) "govuk-!-width-one-half" else ""),
                     value = Value(content =
                             if(rowVal.answerIsMessageKey){
                                 Text(messages(rowVal.answer.head))
                             }else{
                                 HtmlContent((for((r, index2) <- rowVal.answer.zipWithIndex)
                                 yield{
-                                    s"""<div id="cya-$idPath-$indexVal-$index2-answer" class="address-multi-line">$r</div>"""
+                                    s"""<div id="cya-$idPath-$indexVal-$index2-answer" class="govuk-!-display-block">$r</div>"""
                                     }).mkString)
                                     }
                                 ),
