@@ -15,34 +15,39 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    submit_button: components_refactored.submit_button,
+    govukInsetText : GovukInsetText
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("whatYouWillNeed.title")
+@layout(
+    pageTitle = messages("whatYouWillNeed.title")
 ) {
 
-    @components.back_link()
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("whatYouWillNeed.heading")</h1>
 
-    @components.heading(messages("whatYouWillNeed.heading"))
+    <p class="govuk-body">@messages("whatYouWillNeed.body.text")</p>
 
-    @components.paragraph_text(messages("whatYouWillNeed.body.text"))
-
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("whatYouWillNeed.body.item1")</li>
         <li>@messages("whatYouWillNeed.body.item2")</li>
     </ul>
 
-    <div id="hintText" class="panel panel-border-wide"><p>@messages("whatYouWillNeed.main.body.hint")</p></div>
+    @govukInsetText(InsetText(
+        content = Text(messages("whatYouWillNeed.main.body.hint"))
+    ))
 
     @formHelper(action = controllers.register.individual.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
-            @components.submit_button("site.continue")
+            @submit_button("site.continue")
     }
 
 }

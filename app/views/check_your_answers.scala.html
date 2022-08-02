@@ -17,65 +17,56 @@
 @import config.FrontendAppConfig
 @import models.Mode
 @import play.api.mvc.Call
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import viewmodels.{Section, AnswerSection, RepeaterAnswerSection}
 @import viewmodels.Message
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    submit_button: components_refactored.submit_button,
+    answer_section:components_refactored.answer_section
 )
 
 @(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode, isComplete: Boolean, businessNameId: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-    @main_template(
-        title = messages("checkYourAnswers.title")
+@layout(
+    pageTitle = messages("checkYourAnswers.title")
     ) {
 
             @formHelper(action = postUrl, 'autoComplete -> "off") {
 
-            @components.back_link()
-
             @if(!isComplete) {
-                @components.incomplete_alert()
+                @components_refactored.incomplete_alert()
             }
 
-            @components.heading(
-                    headingKey=messages("checkYourAnswers.heading").toString
-            )
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("checkYourAnswers.heading")</h1>
 
             @for((section, i) <- answerSections.zipWithIndex){
                 @{
                     section match {
-                        case a: AnswerSection => components.answer_section(a, i.toString)
+                        case a: AnswerSection => answer_section(a, i.toString,true)
                         case r: RepeaterAnswerSection => components.repeater_answer_section(r, i.toString)
                 }
             }
         }
 
-        @components.submit_button("site.save_and_continue")
+        @submit_button("site.save_and_continue")
 
         @businessNameId.map { partnershipName =>
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                <p class="govuk-margin-top-5">
-                    <a id="return-link" href=@postUrl>@messages("site.return_to", partnershipName)</a>
+                <p class="govuk-body">
+                    <a id="return-link" class="govuk-link" href=@postUrl>@messages("site.return_to", partnershipName)</a>
                 </p>
-            </div>
-        </div>
         }
 
         @psaNameOpt.map { psaName =>
-            @components.return_link(psaName, mode)
+            @components_refactored.return_link(psaName, mode)
             @if(mode != UpdateMode){
                 @returnLink.map { returnLinkUrl =>
-                <div class="grid-row">
-                    <div class="column-two-thirds">
-                        <p class="govuk-margin-top-5">
-                            <a id="return-link" href=@returnLinkUrl>@messages("site.return_to", psaName)</a>
+                        <p class="govuk-body">
+                            <a id="return-link" class="govuk-link" href=@returnLinkUrl>@messages("site.return_to", psaName)</a>
                         </p>
-                    </div>
-                </div>
                 }
             }
         }

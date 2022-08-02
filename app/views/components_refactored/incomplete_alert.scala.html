@@ -14,24 +14,13 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@import viewmodels.Message
 
-@this(
-    layout: templates.Layout,
-    appConfig: FrontendAppConfig
-)
+@(alertMessage: String = "incomplete.alert.message")(implicit messages: Messages)
+<div class="govuk-error-summary govuk-error-summary--show" role="alert" aria-labelledby="error-summary-title">
 
-@()(implicit request: Request[_], messages: Messages)
-
-@layout(
-    pageTitle = messages("youWillNeedToUpdate.title")
-) {
-
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("youWillNeedToUpdate.heading")</h1>
-    <p class="govuk-body">
-        @messages("youWillNeedToUpdate.text")
-        <a id="inform-hmrc-link" href="@appConfig.tellHMRCChangesUrl" class="govuk-link">
-            @messages(s"youWillNeedToUpdate.link").
-        </a>
+    <p class="govuk-error-message" id="alert-heading">
+        @messages(alertMessage)
     </p>
-}
+
+</div>

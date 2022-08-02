@@ -14,38 +14,47 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.individual.routes._
 @import models.Mode
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukDateInput : GovukDateInput,
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("individualDateOfBirth.heading"))
+@layout(
+    pageTitle = titleWithErrors(form, messages("individualDateOfBirth.heading"))
 ) {
 
     @formHelper(action = IndividualDateOfBirthController.onSubmit(mode), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
-        @components.back_link()
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+    }
 
-        @components.error_summary(form.errors)
+    @govukDateInput(
+        DateInput(
+            id = "dateOfBirth",
+            hint = Some(Hint(content = Text(messages("common.dateOfBirth.hint")))),
+            fieldset = Some(Fieldset(
+                            legend = Some(Legend(
+                                    content = Text(messages("individualDateOfBirth.heading")),
+                                    classes = "govuk-fieldset__legend--xl",
+                                    isPageHeading = true))
+                        ))
+        ).withFormField(form("dateOfBirth"))
+      )
 
-        <div class="form-group @if(form.hasErrors){form-group--error}">
-
-        @components.input_date(
-            field = form("dateOfBirth"),
-            label = messages("individualDateOfBirth.heading"),
-            headingIsLegend = true,
-            labelClass = "visuallyhidden",
-            hint = messages("common.dateOfBirth.hint")
-        )
-        </div>
-        @components.submit_button("site.save_and_continue")
+        @submit_button("site.save_and_continue")
     }
 }
