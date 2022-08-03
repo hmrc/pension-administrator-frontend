@@ -43,7 +43,7 @@ pageTitle = titleWithErrors(form, viewModel.title)
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(("areYouInUK.heading"))</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewModel.title)</h1>
 
             @if(viewModel.mode == CheckMode){
 
