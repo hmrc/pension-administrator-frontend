@@ -1,3 +1,7 @@
 @import 'partials/_variables';
 @import 'location-autocomplete.min';
 @import "_task-list.scss";
+
+.autocomplete__wrapper ul, .autocomplete__wrapper li {
+  font-family: "nta",Arial,sans-serif;
+}
