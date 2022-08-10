@@ -15,12 +15,25 @@
  *@
 
 @(
- psaName: String,
- mode: Mode
+    heading: String,
+    linkMessage: String,
+    linkId: String,
+    link: Call,
+    list: Option[Seq[String]] = None
 )(implicit messages: Messages)
 
-@if(mode == UpdateMode) {
- <p class="govuk-margin-top-5 govuk-body">
-  <a id="return-link" class="govuk-link" href="@controllers.routes.PsaDetailsController.onPageLoad().url">@messages("site.return.psa_details", psaName)</a>
- </p>
-}
+<h2 class="govuk-heading-l govuk-!-margin-bottom-3">@messages(heading)</h2>
+
+<p class="govuk-body">
+    <a id="@linkId" href="@link">
+        @messages(linkMessage)
+    </a>
+</p>
+
+<ul class="govuk-list govuk-list--bullet">
+    @list.map { list =>
+        @for(listItem <- list){
+            <li>@listItem</li>
+        }
+    }
+</ul>
