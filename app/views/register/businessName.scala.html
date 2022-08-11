@@ -52,8 +52,6 @@
 
         @submit_button("site.save_and_continue")
 
-        @components_refactored.return_link_alt(messages("site.return_to", businessType))
-
         @returnLink.map { returnLinkUrl =>
             <p class="govuk-margin-top-8 govuk-body">
                 <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", businessType)</a>
