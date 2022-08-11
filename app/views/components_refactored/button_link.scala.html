@@ -20,14 +20,20 @@
 
 @this(govukButton : GovukButton)
 
-@(messageKey: String = "", href: String, id: String, disabled: Boolean = false)(implicit messages: Messages)
+@(
+    messageKey: String = "",
+    href: String,
+    id: String,
+    disabled: Boolean = false,
+    classes: Option[String] = None
+)(implicit messages: Messages)
 
-<div class="govuk-form-group">
-@govukButton(Button(
-    content = Text(messages(messageKey)),
-    href = Some(href),
-    preventDoubleClick = true,
-    attributes = Map("id" -> id),
-    disabled = disabled
-))
-</div>
+<p class="govuk-body">
+    @govukButton(Button(
+        content = Text(messages(messageKey)),
+        href = Some(href),
+        attributes = Map("id" -> id),
+        disabled = disabled,
+        classes = classes.fold("")(classes => classes),
+    ))
+</p>
