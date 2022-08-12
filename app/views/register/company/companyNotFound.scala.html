@@ -38,11 +38,11 @@
 
     @components_refactored.heading(messages("companyNotFound.heading"))
 
-    <p class="govuk-body">@messages("companyNotFound.lede")</p>
+    @components_refactored.paragraph_text(messages("companyNotFound.lede"))
 
     <h2 class="govuk-heading-m">@messages("companyNotFound.businessNameExactMatch")</h2>
 
-    <p class="govuk-body">@messages("companyNotFound.businessNameExactMatch.description")</p>
+    @components_refactored.paragraph_text(messages("companyNotFound.businessNameExactMatch.description"))
 
     <h2 class="govuk-heading-m">@messages("companyNotFound.businessNameChanged")</h2>
 
@@ -52,7 +52,7 @@
 
     <h2 class="govuk-heading-m">@messages("companyNotFound.utrDoesntMatch")</h2>
 
-    <p class="govuk-body">@messages("companyNotFound.utrDoesntMatch.description")</p>
+    @components_refactored.paragraph_text(messages("companyNotFound.utrDoesntMatch.description"))
 
     @button_link("site.enterDetailsAgain",controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode).url, "enter-details-again-link")
 
