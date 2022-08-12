@@ -46,9 +46,9 @@
 
     <h2 class="govuk-heading-m">@messages("companyNotFound.businessNameChanged")</h2>
 
-    <p class="govuk-body">@Html(Message("companyNotFound.businessNameChanged.company").withArgs(openLink1, closeLink, openLink2, closeLink))</p>
+    @components_refactored.paragraph_text_to_html(Message("companyNotFound.businessNameChanged.company").withArgs(openLink1, closeLink, openLink2, closeLink))
 
-    <p class="govuk-body">@Html(Message("companyNotFound.businessNameChanged.individual").withArgs(openLink3, closeLink))</p>
+    @components_refactored.paragraph_text_to_html(Message("companyNotFound.businessNameChanged.individual").withArgs(openLink3, closeLink))
 
     <h2 class="govuk-heading-m">@messages("companyNotFound.utrDoesntMatch")</h2>
 
