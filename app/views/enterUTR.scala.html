@@ -34,11 +34,6 @@
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
-@hintHtml = {
-    @components_refactored.paragraph_text(messages("utr.p1"))
-    @components_refactored.paragraph_text(messages("utr.p2"))
-}
-
 @layout(
     pageTitle = titleWithErrors(form, viewModel.title)
 ) {
@@ -49,12 +44,18 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
+        @components_refactored.heading(viewModel.heading, true)
+
+        @components_refactored.paragraph_text(messages("utr.p1"))
+
+        @components_refactored.paragraph_text(messages("utr.p2"))
+
         @input_text(
             field = form("value"),
             label = viewModel.heading,
-            labelClass = Some("govuk-label--xl"),
+            labelClass = Some("govuk-visually-hidden"),
             inputClass = Some("govuk-!-width-one-half"),
-            headingIsLegend = true
+            headingIsLegend = false
         )
 
         @submit_button("site.save_and_continue")
