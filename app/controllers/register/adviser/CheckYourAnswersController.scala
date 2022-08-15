@@ -58,7 +58,10 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveAdviserName(mode) { _ =>
-        Future.successful(cyaPage(mode))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          Future.successful(cyaPage(mode, returnLink))
+        }
       }
   }
 
@@ -78,13 +81,14 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
               case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
               }
           case(false, true) => Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
-          case(_, false) => cyaPage(mode)
+          case(true, false) => cyaPage(mode, Some(companyTaskListUrl()))
+          case(false, false) => cyaPage(mode, None)
         }
       }
 
   }
 
-  private def cyaPage(mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
+  private def cyaPage(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): Result = {
     val adviserName = AdviserNameId.row(Some(Link(routes.AdviserNameController.onPageLoad(checkMode(mode)).url)))
     val address = AdviserAddressId.row(Some(Link(routes.AdviserAddressPostCodeLookupController.onPageLoad(checkMode(mode)).url)))
     val details = AdviserEmailId.row(Some(Link(routes.AdviserEmailController.onPageLoad(checkMode(mode)).url))) ++
@@ -94,7 +98,13 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
 
     val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
 
-    Ok(view(sections, routes.CheckYourAnswersController.onSubmit(mode),
-      if (displayReturnLink) psaName() else None, mode, dataCompletion.isAdviserComplete(request.userAnswers, mode)))
+    Ok(view(
+      sections,
+      routes.CheckYourAnswersController.onSubmit(mode),
+      if (displayReturnLink) psaName() else None,
+      mode,
+      dataCompletion.isAdviserComplete(request.userAnswers,mode),
+      returnLink = returnLink
+    ))
   }
 }

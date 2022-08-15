@@ -18,15 +18,15 @@ package connectors.cache
 
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
-import models.FeatureToggle
+import models.{FeatureToggle, FeatureToggleName}
 import play.api.Logger
 import play.api.http.Status._
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
-import uk.gov.hmrc.http.HttpReads.Implicits._
 
 class IFeatureToggleConnector @Inject()(http: HttpClient, config: FrontendAppConfig)
   extends FeatureToggleConnector with HttpResponseHelper {
@@ -51,4 +51,7 @@ class IFeatureToggleConnector @Inject()(http: HttpClient, config: FrontendAppCon
 @ImplementedBy(classOf[IFeatureToggleConnector])
 trait FeatureToggleConnector {
   def get(name: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[FeatureToggle]
+
+  def enabled(name: FeatureToggleName)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
+    get(name.asString).map(_.isEnabled)
 }

@@ -20,12 +20,13 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
@@ -42,7 +43,6 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
 
   val formProvider = new AddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider("error.country.invalid")
-  val companyName = "Test Company Name"
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyPreviousAddressController(
@@ -56,7 +56,8 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
       formProvider,
       countryOptions,
       controllerComponents,
-      view
+      view,
+      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
     )
 
   private lazy val viewModel = ManualAddressViewModel(
@@ -64,7 +65,8 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     countryOptions.options,
     title = Message("enter.previous.address.heading", Message("theCompany")),
     heading = Message("enter.previous.address.heading", companyName),
-    psaName = Some(companyName)
+    psaName = Some(companyName),
+    returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
   )
 
   private def viewAsString(form: Form[_] = form) =

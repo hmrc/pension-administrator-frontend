@@ -32,7 +32,12 @@
     submit_button: components_refactored.submit_button
 )
 
-@(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
+@(
+        form: Form[_],
+        viewModel: CommonFormWithHintViewModel,
+)(
+        implicit request: Request[_], messages: Messages
+)
 
 @layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 

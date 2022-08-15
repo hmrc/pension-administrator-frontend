@@ -18,24 +18,25 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
-import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company._
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
 import utils.annotations.{NoRLSCheck, RegisterCompany}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyContactAddressListController @Inject()(override val appConfig: FrontendAppConfig,
                                                     override val cacheConnector: UserAnswersCacheConnector,
@@ -46,26 +47,34 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
                                                     requireData: DataRequiredAction,
                                                     formProvider: AddressListFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
-                                                    val view: addressList
+                                                    val view: addressList,
+                                                    featureToggleConnector: FeatureToggleConnector
                                                    )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
-  def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
-    formProvider(addresses, Message("select.address.required.error").withArgs(name))
+  def form(addresses: Seq[TolerantAddress])(implicit request: DataRequest[AnyContent]): Form[Int] =
+    formProvider(addresses, Message("select.address.required.error").withArgs(companyName))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map { vm =>
-        get(vm, mode, form(vm.addresses, entityName))
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        viewmodel(mode, returnLink).right.map(vm =>
+          get(vm, mode, form(vm.addresses))
+        )
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, CompanyContactAddressId, CompanyContactAddressListId, CompanyContactAddressPostCodeLookupId, mode,
-        form(vm.addresses, entityName)))
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        viewmodel(mode, returnLink).right.map(vm =>
+          post(vm, CompanyContactAddressId, CompanyContactAddressListId, CompanyContactAddressPostCodeLookupId, mode, form(vm.addresses))
+        )
+      }
   }
 
-  def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+  def viewmodel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
     (BusinessNameId and CompanyContactAddressPostCodeLookupId).retrieve.right.map {
       case name ~ addresses =>
         AddressListViewModel(
@@ -75,12 +84,10 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
           Message("select.address.heading", Message("theCompany")),
           Message("select.address.heading", name),
           Message("select.address.hint.text"),
-          Message("manual.entry.link")
+          Message("manual.entry.link"),
+          psaName = Some(name),
+          returnLink = returnLink
         )
     }.left.map(_ => Future.successful(Redirect(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode))))
   }
-
-  private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
-
 }

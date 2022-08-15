@@ -17,12 +17,14 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ReasonController
 import controllers.actions._
 import controllers.register.company.directors.routes.DirectorNoUTRReasonController
 import forms.ReasonFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorNoUTRReasonId}
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -44,7 +46,8 @@ class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Na
                                               requireData: DataRequiredAction,
                                               formProvider: ReasonFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
-                                              val view: reason
+                                              val view: reason,
+                                              featureToggleConnector: FeatureToggleConnector
                                              )(implicit val executionContext: ExecutionContext) extends ReasonController {
 
   private def form(directorName: String)
@@ -54,24 +57,32 @@ class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Na
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        get(DirectorNoUTRReasonId(index), viewModel(mode, index, directorName), form(directorName))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(DirectorNoUTRReasonId(index), viewModel(mode, index, returnLink), form(directorName))
+        }
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val directorName = entityName(index)
-      post(DirectorNoUTRReasonId(index), mode, viewModel(mode, index, directorName), form(directorName))
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        post(DirectorNoUTRReasonId(index), mode, viewModel(mode, index, returnLink), form(directorName))
+      }
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def viewModel(mode: Mode, index: Index, directorName: String) =
+  private def viewModel(mode: Mode, index: Index, returnLink: Option[String])
+                       (implicit request: DataRequest[AnyContent])=
     CommonFormWithHintViewModel(
       postCall = DirectorNoUTRReasonController.onSubmit(mode, index),
       title = Message("whyNoUTR.heading", Message("theDirector")),
-      heading = Message("whyNoUTR.heading", directorName),
+      heading = Message("whyNoUTR.heading", entityName(index)),
       mode = mode,
-      entityName = directorName
+      entityName = companyName,
+      returnLink = returnLink
     )
 }

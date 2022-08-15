@@ -77,7 +77,6 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
     Some("UK")
   )
 
-  val companyName = "MyCompany"
   val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
 
   private val data = Json.obj(

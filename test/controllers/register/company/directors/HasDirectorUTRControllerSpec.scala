@@ -17,14 +17,15 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.HasReferenceNumberFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -38,9 +39,18 @@ class HasDirectorUTRControllerSpec extends ControllerWithCommonBehaviour {
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasDirectorUTRController(
-    frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+    frontendAppConfig,
+    FakeUserAnswersCacheConnector,
+    new FakeNavigator(onwardRoute),
+    FakeAuthAction,
+    FakeAllowAccessProvider(config = frontendAppConfig),
+    dataRetrievalAction,
+    new DataRequiredActionImpl,
+    formProvider,
+    controllerComponents,
+    view,
+    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+  )
 
   private def hasReferenceNumberView(form: Form[_]): String =
     view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
@@ -70,7 +80,8 @@ object HasDirectorUTRControllerSpec {
       heading = Message("hasUTR.heading", directorName),
       hint = Some(Message("utr.p1")),
       mode = mode,
-      entityName = directorName
+      entityName = directorName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }
 

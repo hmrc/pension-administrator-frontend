@@ -17,11 +17,14 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.{DOBController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorDOBId, DirectorNameId}
+import models.FeatureToggleName.PsaRegistration
+import models.requests.DataRequest
+
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,13 +43,15 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       val controllerComponents: MessagesControllerComponents,
-                                      val view: dob
+                                      val view: dob,
+                                      featureToggleConnector: FeatureToggleConnector
                                      )(implicit val executionContext: ExecutionContext) extends DOBController with Retrievals {
 
   private[directors] def viewModel(mode: Mode,
                                    index: Index,
                                    psaName: String,
-                                   directorName: String) =
+                                   directorName: String,
+                                   returnLink: Option[String]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorDOBController.onSubmit(mode, index),
       title = Message("dob.heading", Message("theDirector")),
@@ -54,7 +59,8 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
       None,
       None,
       mode,
-      psaName
+      psaName,
+      returnLink = returnLink
     )
 
   private[directors] def id(index: Index): DirectorDOBId =
@@ -64,7 +70,10 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
     implicit request =>
       (BusinessNameId and DirectorNameId(index)).retrieve.right.map {
         case psaName ~ directorName =>
-          Future(get(id(index), viewModel(mode, index, psaName, directorName.fullName)))
+          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            Future(get(id(index), viewModel(mode, index, psaName, directorName.fullName, returnLink)))
+          }
       }
   }
 
@@ -72,8 +81,10 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
     implicit request =>
       (BusinessNameId and DirectorNameId(index)).retrieve.right.map {
         case psaName ~ directorName =>
-          post(id(index), viewModel(mode, index, psaName, directorName.fullName))
+          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            post(id(index), viewModel(mode, index, psaName, directorName.fullName, returnLink))
+          }
       }
   }
-
 }

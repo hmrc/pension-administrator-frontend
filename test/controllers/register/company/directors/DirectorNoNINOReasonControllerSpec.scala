@@ -17,14 +17,15 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.ReasonFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
@@ -38,9 +39,18 @@ class DirectorNoNINOReasonControllerSpec extends ControllerWithCommonBehaviour {
   val view: reason = app.injector.instanceOf[reason]
   
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorNoNINOReasonController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+    new FakeNavigator(onwardRoute),
+    frontendAppConfig,
+    FakeUserAnswersCacheConnector,
+    FakeAuthAction,
+    FakeAllowAccessProvider(config = frontendAppConfig),
+    dataRetrievalAction,
+    new DataRequiredActionImpl,
+    formProvider,
+    controllerComponents,
+    view,
+    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+  )
 
   private def reasonView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
@@ -70,7 +80,8 @@ object DirectorNoNINOReasonControllerSpec {
       title = Message("whyNoNINO.heading", Message("theDirector")),
       heading = Message("whyNoNINO.heading", directorName),
       mode = mode,
-      entityName = directorName
+      entityName = directorName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }
 

@@ -54,10 +54,13 @@ trait AddressListController extends FrontendBaseController with I18nSupport with
   }
 
 
-  protected def post(viewModel: AddressListViewModel, addressId: TypedIdentifier[Address],
+  protected def post(viewModel: AddressListViewModel,
+                     addressId: TypedIdentifier[Address],
                      selectAddressId: TypedIdentifier[TolerantAddress],
                      postCodeLookupIdForCleanUp: TypedIdentifier[Seq[TolerantAddress]],
-                     mode: Mode, form: Form[Int], nav: Option[Navigator] = None)
+                     mode: Mode,
+                     form: Form[Int],
+                     nav: Option[Navigator] = None)
                     (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     def performUpsert(userAnswers: UserAnswers)(block: JsValue => Future[Result]):Future[Result] =

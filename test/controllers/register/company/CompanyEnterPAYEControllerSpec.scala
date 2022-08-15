@@ -18,8 +18,10 @@ package controllers.register.company
 
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
+import controllers.actions.FakeFeatureToggleConnector
 import forms.EnterPAYEFormProvider
 import identifiers.register.EnterPAYEId
+import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
 import models.{FeatureToggle, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -39,8 +41,6 @@ import scala.concurrent.Future
 
 class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
-  private val companyName = "test company"
-
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   private val formProvider = new EnterPAYEFormProvider()
@@ -55,16 +55,11 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
       heading = Message("enterPAYE.heading", companyName),
       hint = Some(Message("enterPAYE.hint")),
       mode = NormalMode,
-      entityName = companyName
+      entityName = companyName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 
   private val payeNumber = "123AB456"
-
-  val defaultFeatureToggleConnector = {
-    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
-    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Disabled(PsaRegistration)))
-    mockFeatureToggleConnector
-  }
 
   private def viewAsString(form: Form[_] = form): String = view(
     form,
@@ -75,9 +70,9 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
     "on a GET" must {
       "return OK and the correct view for a GET" in {
-        running(
-          _.overrides(modules(UserAnswers().businessName().dataRetrievalAction): _*)
-        ) {
+        running(_.overrides(modules(UserAnswers().businessName(companyName).dataRetrievalAction)
+          ++ Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))) : _*
+        )) {
           app =>
             val controller = app.injector.instanceOf[CompanyEnterPAYEController]
             val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -105,7 +100,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
       "return a redirect when the submitted data is valid" in {
         running(_.overrides(modules(UserAnswers().businessName().dataRetrievalAction) ++
           Seq[GuiceableModule](bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-            bind[FeatureToggleConnector].toInstance(defaultFeatureToggleConnector),
+            bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.disabled),
           bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute))) : _*
         )) {
           app =>
@@ -121,7 +116,8 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
       "redirect to Session Expired if no existing data is found" in {
         running(
-          _.overrides(modules(dontGetAnyData): _*)
+          _.overrides(modules(dontGetAnyData) ++
+            Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.disabled)): _*)
         ) {
           app =>
             val request = FakeRequest().withFormUrlEncodedBody(("value", payeNumber))

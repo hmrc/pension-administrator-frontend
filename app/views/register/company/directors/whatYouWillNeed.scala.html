@@ -24,7 +24,7 @@
     button_link: components_refactored.button_link
 )
 
-@(href: Call)(implicit request: Request[_], messages: Messages)
+@(href: Call, returnLinkCompanyName: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle = messages("whatYouWillNeed.directorsOrPartners.title")
@@ -46,4 +46,6 @@
     </ul>
 
     @button_link("site.continue", href.url, "submit")
+
+    @components_refactored.return_to_company_task_list(returnLinkCompanyName)
 }

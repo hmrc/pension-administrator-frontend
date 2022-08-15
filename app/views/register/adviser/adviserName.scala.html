@@ -24,7 +24,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, psaNameOpt: Option[String], returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = titleWithErrors(form, messages("adviserName.title"))
@@ -46,8 +46,12 @@
         )
         </div>
         @components.submit_button("site.save_and_continue")
-        @psaNameOpt.map{ psaName =>
-            @components.return_link(psaName, mode)
+        @psaNameOpt.map { psaName =>
+            @returnLink.map { returnLinkUrl =>
+                <p class="govuk-margin-top-5 govuk-body">
+                    <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", psaName)</a>
+                </p>
+            }
         }
     }
 }

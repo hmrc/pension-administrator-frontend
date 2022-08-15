@@ -17,11 +17,14 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorEmailId, DirectorNameId}
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -42,7 +45,8 @@ class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigato
                                         requireData: DataRequiredAction,
                                         formProvider: EmailFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        val view: email
+                                        val view: email,
+                                        featureToggleConnector: FeatureToggleConnector
                                        )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
   private val form = formProvider()
@@ -50,23 +54,34 @@ class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigato
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(DirectorEmailId(index), form, viewModel(mode, index, entityName(index)))
+        featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
+          val returnLinkCompanyName = if (feature.isEnabled) Some(companyName) else None
+          get(DirectorEmailId(index), form, viewModel(mode, index, entityName(index), returnLinkCompanyName))
+        }
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(DirectorEmailId(index), mode, form, viewModel(mode, index, entityName(index)))
+      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
+        val returnLinkCompanyName = if (feature.isEnabled) Some(companyName) else None
+        post(DirectorEmailId(index), mode, form, viewModel(mode, index, entityName(index), returnLinkCompanyName))
+      }
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def viewModel(mode: Mode, index: Index, directorName: String) =
+  private def companyName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
+
+  private def viewModel(mode: Mode, index: Index, directorName: String, returnLink: Option[String])
+                       (implicit request: DataRequest[AnyContent])=
     CommonFormWithHintViewModel(
       postCall = routes.DirectorEmailController.onSubmit(mode, index),
       title = Message("email.title", Message("theDirector")),
       heading = Message("email.title", directorName),
       mode = mode,
-      entityName = directorName
+      entityName = companyName,
+      returnLink = returnLink
     )
 }

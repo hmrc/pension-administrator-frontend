@@ -17,14 +17,15 @@
 package controllers.register.company.directors
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.{ControllerSpecBase, PersonNameControllerBehaviour}
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.personName
 
@@ -38,7 +39,9 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
   "DirectorNameController" must {
 
     val controller = testController(getEmptyData)
-    val viewModel = controller.viewModel(NormalMode, 0, psaName)
+    val viewModel = controller.viewModel(NormalMode, 0, psaName,
+      Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
+    )
     val id = controller.id(0)
 
     behave like personNameController(viewModel, id, createController(getEmptyData))
@@ -78,7 +81,8 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
       controllerComponents = controllerComponents,
-      view = view
+      view = view,
+      featureToggleConnector = FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
     )
   }
 

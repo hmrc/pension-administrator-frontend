@@ -17,11 +17,13 @@
 package controllers.register.company
 
 import connectors.AddressLookupConnector
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
@@ -32,7 +34,6 @@ import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
@@ -47,8 +48,6 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
   private val validPostcode = "ZZ1 1ZZ"
 
   val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
-
-  private val companyName = "CompanyName"
 
   private val onwardRoute = controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(NormalMode)
   private val address = TolerantAddress(
@@ -94,7 +93,8 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
     running(_.overrides(modules(dataRetrieval) ++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
+        bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
+        bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
       ): _*)) {
       app =>
         val controller = app.injector.instanceOf[CompanyContactAddressPostCodeLookupController]
@@ -115,7 +115,8 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-      bind[MessagesControllerComponents].to(controllerComponents)
+      bind[MessagesControllerComponents].to(controllerComponents),
+      bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
     ).build()
 }
 

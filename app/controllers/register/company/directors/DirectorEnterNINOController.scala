@@ -17,11 +17,14 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.register.NINOController
 import forms.register.NINOFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorEnterNINOId, DirectorNameId}
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
@@ -43,7 +46,8 @@ class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navi
                                             requireData: DataRequiredAction,
                                             formProvider: NINOFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
-                                            val view: enterNINO
+                                            val view: enterNINO,
+                                            featureToggleConnector: FeatureToggleConnector
                                            )(implicit val executionContext: ExecutionContext) extends NINOController {
 
   private def form(directorName: String)
@@ -53,25 +57,32 @@ class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navi
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        get(DirectorEnterNINOId(index), form(directorName), viewModel(mode, index, directorName))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(DirectorEnterNINOId(index), form(directorName), viewModel(mode, index, directorName, returnLink))
+        }
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val directorName = entityName(index)
-      post(DirectorEnterNINOId(index), mode, form(directorName), viewModel(mode, index, directorName))
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        post(DirectorEnterNINOId(index), mode, form(directorName), viewModel(mode, index, directorName, returnLink))
+      }
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def viewModel(mode: Mode, index: Index, directorName: String) =
+  private def viewModel(mode: Mode, index: Index, directorName: String, returnLink: Option[String])(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorEnterNINOController.onSubmit(mode, index),
       title = Message("enterNINO.heading", Message("theDirector")),
       heading = Message("enterNINO.heading", directorName),
       hint = Some(Message("enterNINO.hint")),
       mode = mode,
-      entityName = directorName
+      entityName = companyName,
+      returnLink = returnLink
     )
 }

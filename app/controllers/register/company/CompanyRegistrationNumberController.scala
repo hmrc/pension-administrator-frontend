@@ -18,6 +18,7 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import controllers.Retrievals
 import controllers.actions._
 import controllers.register.EnterNumberController
 import forms.register.company.CompanyRegistrationNumberFormProvider
@@ -27,6 +28,7 @@ import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.annotations.{RegisterCompany, RegisterCompanyV2}
 import utils.{Navigator, UserAnswers}
@@ -48,26 +50,27 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: enterNumber,
                                                     featureToggleConnector: FeatureToggleConnector
-                                                   )(implicit val executionContext: ExecutionContext) extends EnterNumberController {
+                                                   )(implicit val executionContext: ExecutionContext) extends EnterNumberController with Retrievals {
 
   private val form = formProvider()
 
-  private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyRegistrationNumberController.onSubmit(mode),
       title = Message("companyRegistrationNumber.heading", Message("theCompany")),
-      heading = Message("companyRegistrationNumber.heading", entityName),
+      heading = Message("companyRegistrationNumber.heading", companyName),
       hint = Some(Message("companyRegistrationNumber.hint")),
       mode = mode,
-      entityName = entityName
+      entityName = companyName,
+      returnLink = returnLink
     )
-
-  private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(CompanyRegistrationNumberId, form, viewModel(mode, entityName))
+      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
+        val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
+        get(CompanyRegistrationNumberId, form, viewModel(mode, returnLink))
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -75,7 +78,10 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, viewModel(mode, entityName)))),
+          featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
+            val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
+            Future.successful(BadRequest(view(formWithErrors, viewModel(mode, returnLink))))
+          },
         value =>
           for {
             isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)

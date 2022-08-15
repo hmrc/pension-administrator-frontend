@@ -18,22 +18,23 @@ package controllers.register.adviser
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
-import controllers.actions.{DataRequiredAction, AuthAction, DataRetrievalAction}
+import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.adviser.AdviserNameFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.AdviserNameId
+import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.Adviser
 import utils.{Navigator, UserAnswers}
 import views.html.register.adviser.adviserName
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdviserNameController @Inject()(
                                        appConfig: FrontendAppConfig,
@@ -44,7 +45,8 @@ class AdviserNameController @Inject()(
                                        formProvider: AdviserNameFormProvider,
                                        dataCacheConnector: UserAnswersCacheConnector,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: adviserName
+                                       val view: adviserName,
+                                       featureToggleConnector: FeatureToggleConnector
                                      )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   val form: Form[String] = formProvider()
@@ -58,11 +60,16 @@ class AdviserNameController @Inject()(
 
       val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
 
-      Future.successful(Ok(view(
-        preparedForm,
-        mode,
-        if (displayReturnLink) psaName() else None
-      )))
+      featureToggleConnector.enabled(PsaRegistration).map { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+
+        Ok(view(
+          preparedForm,
+          mode,
+          if (displayReturnLink) psaName() else None,
+          returnLink
+        ))
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requiredData).async {
@@ -72,11 +79,15 @@ class AdviserNameController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(
-            formWithErrors,
-            mode,
-            if (displayReturnLink) psaName() else None
-          ))),
+          featureToggleConnector.enabled(PsaRegistration).map { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            BadRequest(view(
+              formWithErrors,
+              mode,
+              if (displayReturnLink) psaName() else None,
+              returnLink
+            ))
+          },
         value => {
           dataCacheConnector.save(request.externalId, AdviserNameId, value).map(
             cacheMap =>

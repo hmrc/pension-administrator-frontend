@@ -34,8 +34,6 @@ import views.html.enterVAT
 
 class CompanyEnterVATControllerSpec extends ControllerSpecBase {
 
-  private val companyName = "Test Company Name"
-
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val view: enterVAT = app.injector.instanceOf[enterVAT]

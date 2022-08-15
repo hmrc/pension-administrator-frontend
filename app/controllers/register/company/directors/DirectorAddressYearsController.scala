@@ -17,12 +17,15 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
+import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorNameId}
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
@@ -46,7 +49,8 @@ class DirectorAddressYearsController @Inject()(@CompanyDirector override val nav
                                                requireData: DataRequiredAction,
                                                formProvider: AddressYearsFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
-                                               val view: addressYears
+                                               val view: addressYears,
+                                               featureToggleConnector: FeatureToggleConnector
                                               )(implicit val executionContext: ExecutionContext)
   extends AddressYearsController with Retrievals with I18nSupport {
 
@@ -57,28 +61,35 @@ class DirectorAddressYearsController @Inject()(@CompanyDirector override val nav
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        get(DirectorAddressYearsId(index), form(directorName), viewModel(mode, index, directorName), mode)
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(DirectorAddressYearsId(index), form(directorName), viewModel(mode, index, directorName, returnLink), mode)
+        }
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        post(DirectorAddressYearsId(index), mode, form(directorName), viewModel(mode, index, directorName))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          post(DirectorAddressYearsId(index), mode, form(directorName), viewModel(mode, index, directorName, returnLink))
+        }
     }
 
   private def entityName(index: Int)
                         (implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def viewModel(mode: Mode, index: Index, directorName: String)
+  private def viewModel(mode: Mode, index: Index, directorName: String, returnLink: Option[String])
                        (implicit request: DataRequest[AnyContent]): AddressYearsViewModel =
     AddressYearsViewModel(
       postCall = routes.DirectorAddressYearsController.onSubmit(mode, index),
       title = Message("addressYears.heading", Message("theDirector")),
       heading = Message("addressYears.heading", directorName),
       legend = Message("addressYears.heading", directorName),
-      psaName = psaName()
+      psaName = psaName(),
+      returnLink = returnLink
     )
 
 }

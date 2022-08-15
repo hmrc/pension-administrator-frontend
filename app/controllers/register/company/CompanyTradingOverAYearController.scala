@@ -51,14 +51,15 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
                                                   featureToggleConnector: FeatureToggleConnector
                                                  )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
-  private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = CompanyTradingOverAYearController.onSubmit(mode),
       title = Message("trading.title", Message("theCompany")),
       heading = Message("trading.title", companyName),
       mode = mode,
       hint = None,
-      entityName = companyName
+      entityName = companyName,
+      returnLink = returnLink
     )
 
   private def form(companyName: String)
@@ -69,7 +70,10 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
       implicit request =>
         BusinessNameId.retrieve.right.map {
           companyName =>
-            get(CompanyTradingOverAYearId, form(companyName), viewModel(mode, companyName))
+            featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+              val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+              get(CompanyTradingOverAYearId, form(companyName), viewModel(mode, returnLink))
+            }
         }
     }
 
@@ -80,7 +84,10 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
           companyName => {
             form(companyName).bindFromRequest().fold(
               (formWithErrors: Form[_]) =>
-                Future.successful(BadRequest(view(formWithErrors, viewModel(mode, companyName)))),
+                featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+                  val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+                  Future.successful(BadRequest(view(formWithErrors, viewModel(mode, returnLink))))
+                },
               value => {
                 for {
                   isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)

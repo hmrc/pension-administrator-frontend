@@ -16,12 +16,14 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, FakeFeatureToggleConnector}
 import forms.address.SameContactAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressId
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
@@ -44,7 +46,6 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
   val formProvider: SameContactAddressFormProvider = app.injector.instanceOf[SameContactAddressFormProvider]
   val postCall: Call = routes.CompanySameContactAddressController.onSubmit(NormalMode)
   val address: TolerantAddress = TolerantAddress(Some("Add1"), Some("Add2"), None, None, None, Some("GB"))
-  val companyName: String = "CompanyName"
 
   val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
 
@@ -57,11 +58,12 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
     postCall,
     Message("company.same.contact.address.title"),
     Message("company.same.contact.address.heading").withArgs(companyName),
-    Some(Message("same.contact.address.confirm.text",companyName)),
+    Some(Message("same.contact.address.confirm.text", companyName)),
     address,
-    "Test name",
+    companyName,
     NormalMode,
-    displayReturnLink = true
+    displayReturnLink = true,
+    returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
   )
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
@@ -69,16 +71,16 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
   "render the view correctly on a GET request" in {
     val request = addCSRFToken(FakeRequest(routes.CompanySameContactAddressController.onPageLoad(NormalMode)))
     val result = route(application, request).value
-        status(result) mustBe OK
-        contentAsString(result) mustBe view(formProvider("error.required"), viewModel, countryOptions)(request, messagesApi.preferred(fakeRequest)).toString()
-
+    status(result) mustBe OK
+    contentAsString(result) mustBe view(formProvider("error.required"), viewModel, countryOptions)(request, messagesApi.preferred(fakeRequest)).toString()
   }
 
   "redirect to the next page on a POST request" in {
-    running(_.overrides(modules(dataRetrieval)++
+    running(_.overrides(modules(dataRetrieval) ++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(postCall)),
+        bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-      ):_*)) {
+      ): _*)) {
       app =>
         val controller = app.injector.instanceOf[CompanySameContactAddressController]
 
@@ -96,7 +98,8 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(postCall)),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+      bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
     ).build()
 
 }

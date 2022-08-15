@@ -17,13 +17,18 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
+import connectors.cache.FeatureToggleConnector
 import controllers.Retrievals
 import controllers.actions._
+import identifiers.register.BusinessNameId
+
 import javax.inject.Inject
 import models.NormalMode
+import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewmodels.Message
 import views.html.register.company.directors.whatYouWillNeed
 
 import scala.concurrent.Future
@@ -39,6 +44,6 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val href = routes.DirectorNameController.onPageLoad(NormalMode, request.userAnswers.directorsCount)
-      Future.successful(Ok(view(href)))
+      Future.successful(Ok(view(href, companyName)))
   }
 }

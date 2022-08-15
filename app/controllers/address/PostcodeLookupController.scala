@@ -37,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait PostcodeLookupController extends FrontendBaseController with Retrievals with I18nSupport {
   implicit val executionContext: ExecutionContext
+
   protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
@@ -53,8 +54,8 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
 
   private val invalidPostcode: Message = "error.postcode.failed"
 
-  protected def get(viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
-
+  protected def get(viewmodel: PostcodeLookupViewModel, mode: Mode)
+                   (implicit request: DataRequest[AnyContent]): Future[Result] = {
     Future.successful(Ok(view(form, viewmodel, mode)))
   }
 
@@ -64,12 +65,8 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
                       mode: Mode,
                       invalidPostcode: Message = invalidPostcode
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
-
     form.bindFromRequest().fold(
-      formWithErrors =>
-        Future.successful {
-          BadRequest(view(formWithErrors, viewmodel, mode))
-        },
+      formWithErrors => Future.successful(BadRequest(view(formWithErrors, viewmodel, mode))),
       lookupPostcode(id, viewmodel, invalidPostcode, mode)
     )
   }
@@ -80,28 +77,18 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
                               invalidPostcode: Message,
                               mode: Mode
                             )(postcode: String)(implicit request: DataRequest[AnyContent]): Future[Result] = {
-
     addressLookupConnector.addressLookupByPostCode(postcode).flatMap {
-
       case Nil => Future.successful(Ok(view(formWithError(Message("error.postcode.noResults", postcode)), viewmodel, mode)))
-
       case addresses =>
         cacheConnector.save(
           request.externalId,
           id,
           addresses
-        ).map {
-          json =>
-            Redirect(navigator.nextPage(id, mode, UserAnswers(json)))
-        }
-    } recoverWith {
-
-      case _ =>
-        Future.successful(BadRequest(view(formWithError(invalidPostcode), viewmodel, mode)))
-
+        ).map(json => Redirect(navigator.nextPage(id, mode, UserAnswers(json))))
+    }.recoverWith {
+      case _ => Future.successful(BadRequest(view(formWithError(invalidPostcode), viewmodel, mode)))
     }
   }
-
 
   protected def formWithError(message: Message)(implicit request: DataRequest[AnyContent]): Form[String] = {
     form.withError("value", message)

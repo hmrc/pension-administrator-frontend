@@ -29,7 +29,15 @@
     answer_section:components_refactored.answer_section
 )
 
-@(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode, isComplete: Boolean, businessNameId: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(
+    answerSections: Seq[Section],
+    postUrl: Call,
+    psaNameOpt: Option[String] = None,
+    mode: Mode,
+    isComplete: Boolean,
+    businessNameId: Option[String] = None,
+    returnLink: Option[String] = None
+)(implicit request: Request[_],messages: Messages)
 
 @layout(
     pageTitle = messages("checkYourAnswers.title")

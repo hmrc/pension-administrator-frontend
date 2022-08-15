@@ -17,28 +17,42 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.ReasonFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
 
 class DirectorNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
-  import DirectorNoUTRReasonControllerSpec._
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val reasonForm = formProvider(directorName)
   val view: reason = app.injector.instanceOf[reason]
+  private val formProvider = new ReasonFormProvider()
+  private val index = 0
+  private val directorName = "test first name test last name"
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test reason"))
+
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorNoUTRReasonController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+    new FakeNavigator(onwardRoute),
+    frontendAppConfig,
+    FakeUserAnswersCacheConnector,
+    FakeAuthAction,
+    FakeAllowAccessProvider(config = frontendAppConfig),
+    dataRetrievalAction,
+    new DataRequiredActionImpl,
+    formProvider,
+    controllerComponents,
+    view,
+    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+  )
 
   private def reasonView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
@@ -53,12 +67,6 @@ class DirectorNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-}
-object DirectorNoUTRReasonControllerSpec {
-  private val formProvider = new ReasonFormProvider()
-  private val index = 0
-  private val directorName = "test first name test last name"
-  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test reason"))
 
   private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
@@ -66,11 +74,7 @@ object DirectorNoUTRReasonControllerSpec {
       title = Message("whyNoUTR.heading", Message("theDirector")),
       heading = Message("whyNoUTR.heading", directorName),
       mode = mode,
-      entityName = directorName
+      entityName = companyName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }
-
-
-
-
-

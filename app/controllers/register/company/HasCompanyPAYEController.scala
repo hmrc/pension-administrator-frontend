@@ -18,7 +18,7 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
-import controllers.HasReferenceNumberController
+import controllers.{HasReferenceNumberController, Retrievals}
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.{BusinessNameId, HasPAYEId}
@@ -47,28 +47,29 @@ class HasCompanyPAYEController @Inject()(override val appConfig: FrontendAppConf
                                          val controllerComponents: MessagesControllerComponents,
                                          val view: hasReferenceNumber,
                                          featureToggleConnector: FeatureToggleConnector
-                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
+                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController with Retrievals {
 
-  private def viewModel(mode: Mode, companyName: String): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = controllers.register.company.routes.HasCompanyPAYEController.onSubmit(mode),
       title = Message("hasPAYE.heading", Message("theCompany")),
       heading = Message("hasPAYE.heading", companyName),
       mode = mode,
       hint = Some(Message("hasPAYE.hint")),
-      entityName = companyName
+      entityName = companyName,
+      returnLink = returnLink
     )
 
   private def form(companyName: String)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider("hasPAYE.error.required", companyName)
 
-  private def companyName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
-
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(HasPAYEId, form(companyName), viewModel(mode, companyName))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(HasPAYEId, form(companyName), viewModel(mode, returnLink))
+        }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
@@ -76,7 +77,10 @@ class HasCompanyPAYEController @Inject()(override val appConfig: FrontendAppConf
       implicit request =>
         form(companyName).bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(view(formWithErrors, viewModel(mode, companyName)))),
+            featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+              val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+              Future.successful(BadRequest(view(formWithErrors, viewModel(mode, returnLink))))
+            },
           value =>
             for {
               isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)

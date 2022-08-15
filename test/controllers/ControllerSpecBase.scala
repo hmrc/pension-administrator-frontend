@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
@@ -42,6 +42,8 @@ trait ControllerSpecBase extends SpecBase {
 
   val firstIndex = Index(0)
 
+  val companyName = "Test Company Name"
+
   protected def applicationBuilder(data: DataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
@@ -59,7 +61,7 @@ trait ControllerSpecBase extends SpecBase {
       RegistrationInfoId.toString -> RegistrationInfo(
         RegistrationLegalStatus.LimitedCompany, "", noIdentifier = false, RegistrationCustomerType.UK, None, None),
       BusinessNameId.toString -> "Test Company Name")
-    ))
+  ))
 
   def getDirector: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
@@ -115,6 +117,17 @@ trait ControllerSpecBase extends SpecBase {
 
   def getAdviser: FakeDataRetrievalAction = new FakeDataRetrievalAction(
     Some(Json.obj(AdviserNameId.toString -> "Test Adviser Name")))
+
+  def getCompanyAndAdvisor: FakeDataRetrievalAction = new FakeDataRetrievalAction(
+    Some(Json.obj(
+      AdviserNameId.toString -> "Test Adviser Name",
+      RegistrationInfoId.toString -> RegistrationInfo(
+        RegistrationLegalStatus.LimitedCompany, "",
+        noIdentifier = false, RegistrationCustomerType.UK, None, None
+      ),
+      BusinessNameId.toString -> "Test Company Name"
+    ))
+  )
 
   def modules(dataRetrievalAction: DataRetrievalAction): Seq[GuiceableModule] = Seq(
     bind[AuthAction].toInstance(FakeAuthAction),

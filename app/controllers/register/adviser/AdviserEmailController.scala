@@ -17,20 +17,22 @@
 package controllers.register.adviser
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.{AdviserEmailId, AdviserNameId}
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Adviser
 import utils.annotations.NoRLSCheck
-import viewmodels.{Message, CommonFormWithHintViewModel}
+import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
 import scala.concurrent.ExecutionContext
@@ -44,7 +46,8 @@ class AdviserEmailController @Inject()(@Adviser val navigator: Navigator,
                                        requireData: DataRequiredAction,
                                        formProvider: EmailFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: email
+                                       val view: email,
+                                       featureToggleConnector: FeatureToggleConnector
                                       )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
   private val form = formProvider()
@@ -52,24 +55,31 @@ class AdviserEmailController @Inject()(@Adviser val navigator: Navigator,
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(AdviserEmailId, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(AdviserEmailId, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink))
+        }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      post(AdviserEmailId, mode, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty))
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        post(AdviserEmailId, mode, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink))
+      }
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(AdviserNameId).getOrElse(Message("theAdviser"))
 
-  private def viewModel(mode: Mode, displayReturnLink:Boolean)(implicit request: DataRequest[AnyContent]) =
+  private def viewModel(mode: Mode, displayReturnLink: Boolean, returnLink: Option[String])(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.AdviserEmailController.onSubmit(mode),
       title = Message("email.title", Message("theAdviser")),
       heading = Message("email.title", entityName),
       mode = mode,
       entityName = entityName,
-      displayReturnLink = displayReturnLink
+      displayReturnLink = displayReturnLink,
+      returnLink = returnLink
     )
 }
