@@ -27,21 +27,15 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@openLink1 = {
-    <a class="govuk-link" id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">
-}
-@openLink2 = {
-    <a class="govuk-link" id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">
-}
-@closeLink = {
-    </a>
-}
+@openLink1 = {<a class="govuk-link" id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}
+@openLink2 = {<a class="govuk-link" id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}
+@closeLink = {</a>}
 
 @layout(pageTitle = messages("companyUpdateDetails.title")) {
 
     @components_refactored.heading(messages("companyUpdateDetails.heading"))
 
-    <p class="govuk-body">@messages("companyUpdateDetails.p1")</p>
+    @components_refactored.paragraph_text(messages("companyUpdateDetails.p1"))
 
     <ul class="govuk-list govuk-list--bullet">
         <li>@Html(Message("companyUpdateDetails.item1").withArgs(openLink1, closeLink))</li>
