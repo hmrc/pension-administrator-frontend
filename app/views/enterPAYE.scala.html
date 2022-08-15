@@ -41,7 +41,7 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages(viewModel.heading))
+        @components_refactored.heading(messages(viewModel.heading), true)
 
         @components_refactored.paragraph_text(messages("enterPAYE.p1", viewModel.entityName))
 
