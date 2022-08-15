@@ -14,59 +14,55 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
 @import controllers.register.company.routes._
 @import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_text: components_refactored.input_text,
+    submit_button: components_refactored.submit_button
 )
 
-@(
-    form: Form[_],
-    viewModel: CommonFormWithHintViewModel
-)(
-    implicit request: Request[_], messages: Messages
-)
+@(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, viewModel.title)
+@hintHtml = {
+    @components_refactored.paragraph_text(messages("utr.p1"))
+    @components_refactored.paragraph_text(messages("utr.p2"))
+}
+
+@layout(
+    pageTitle = titleWithErrors(form, viewModel.title)
 ) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
-        @components.back_link()
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @components.error_summary(form.errors)
-
-        <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(viewModel.heading)
-
-        <p>@messages("utr.p1")</p>
-        <p>@messages("utr.p2")</p>
-
-        @components.input_text(
+        @input_text(
             field = form("value"),
             label = viewModel.heading,
-            labelClass = Some("visually-hidden"),
-            hint = viewModel.hint,
-            headingIsLegend = false
+            labelClass = Some("govuk-label--xl"),
+            inputClass = Some("govuk-!-width-one-half"),
+            headingIsLegend = true
         )
-        </div>
-        @components.submit_button("site.save_and_continue")
+
+        @submit_button("site.save_and_continue")
 
         @viewModel.returnLink.map { returnLinkUrl =>
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                <p class="govuk-margin-top-5">
-                    <a id="return-link" href=@returnLinkUrl>@messages("site.return_to", viewModel.entityName)</a>
-                </p>
-            </div>
-        </div>
+            <p class="govuk-body govuk-margin-top-8">
+                <a id="return-link" class="govuk-link" @returnLinkUrl>@messages("site.return_to", viewModel.entityName)</a>
+            </p>
         }
     }
 }

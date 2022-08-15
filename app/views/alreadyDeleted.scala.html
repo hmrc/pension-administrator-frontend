@@ -14,30 +14,27 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import utils.FormHelpers
 @import models.Mode
 @import viewmodels.{AlreadyDeletedViewModel, Message}
 
 @this(
-    main_template: main_template
+    layout: templates.Layout,
+    button_link: components_refactored.button_link
 )
 
 @(viewmodel: AlreadyDeletedViewModel)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = Message(viewmodel.title)
-) {
+@layout(pageTitle = Message(viewmodel.title)) {
 
-        @components.back_link()
+    @components_refactored.heading(headingKey=components.hyphen(Message("alreadyDeleted.heading", viewmodel.deletedEntity)).toString, true)
 
-        @components.heading(
-            headingKey=components.hyphen(Message("alreadyDeleted.heading", viewmodel.deletedEntity)).toString
-        )
+    @components_refactored.paragraph_text(messages("alreadyDeleted.lede", viewmodel.deletedEntity))
+    @components_refactored.paragraph_text(messages("alreadyDeleted.text"))
 
-        <p>@messages("alreadyDeleted.lede", viewmodel.deletedEntity)</p>
-        <p>@messages("alreadyDeleted.text")</p>
-
-        @components.button_link("site.continue", viewmodel.returnCall.url, "return-to-list")
+    @button_link("site.continue", viewmodel.returnCall.url, "return-to-list")
 
 }
