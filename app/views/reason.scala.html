@@ -15,44 +15,47 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.routes._
 @import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_textarea: components_refactored.input_textarea,
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, viewModel.title)
+@layout(
+    pageTitle = titleWithErrors(form, viewModel.title)
 ) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
-        @components.back_link()
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @components.error_summary(form.errors)
-        <div class="form-group @if(form.hasErrors){form-group--error}">
-
-        @components.input_textarea(
+        @input_textarea(
             field = form("value"),
             label = viewModel.heading,
-            labelClass = Some("visually-hidden"),
-            headingIsLegend = true
+            inputClass = Some("govuk-!-width-two-thirds"),
         )
 
-        </div>
-        @components.submit_button("site.save_and_continue")
+        @submit_button("site.save_and_continue")
 
         @viewModel.returnLink.map { returnLinkUrl =>
-        <p class="govuk-margin-top-5 govuk-body">
-            <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewModel.entityName)</a>
-        </p>
+            <p class="govuk-margin-top-8 govuk-body">
+                <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewModel.entityName)</a>
+            </p>
         }
     }
 }
