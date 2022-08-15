@@ -62,11 +62,11 @@
         } else {
 
             @if(directorsIncomplete.length > 0) {
-                <h1 class="govuk-heading-s">@messages("taskList.status.incomplete")</h1>
+                <h2 class="govuk-heading-s">@messages("taskList.status.incomplete")</h2>
                 @components_refactored.person_list(directorsIncomplete, mode)
             }
             @if(directorsComplete.length > 0) {
-                <h1 class="govuk-heading-s">@messages("taskList.status.completed")</h1>
+                <h2 class="govuk-heading-s">@messages("taskList.status.completed")</h2>
                 @components_refactored.person_list(directorsComplete, mode)
             }
             @if(directors.size < appConfig.maxDirectors) {
@@ -104,7 +104,7 @@
             @button()
         }
         @psaNameOpt.map{ psaName =>
-            <p class="govuk-margin-top-5 govuk-body">
+            <p class="govuk-margin-top-8 govuk-body">
                 <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", psaName)</a>
             </p>
         }
