@@ -30,9 +30,7 @@
     govukRadios : GovukRadios
 )
 
-
 @(form: Form[_], viewmodel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
-
 
 @hint = @{
     viewmodel.hint match {
@@ -81,9 +79,11 @@
         )
 
         @button(messages("site.save_and_continue"))
+
         @if(viewmodel.displayReturnLink){
             @components_refactored.return_link(viewmodel.entityName, viewmodel.mode)
         }
+
         @if(viewmodel.mode != UpdateMode){
             @viewmodel.returnLink.map { returnLinkUrl =>
             <p class="govuk-margin-top-5 govuk-body">
