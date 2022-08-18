@@ -14,34 +14,32 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import config.FrontendAppConfig
 @import viewmodels.Message
 
 @this(
-    main_template: main_template,
+    layout: templates.Layout,
     appConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@openLink1 = {<a id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}
-@openLink2 = {<a id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}
+@openLink1 = {<a class="govuk-link" id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}
+@openLink2 = {<a class="govuk-link" id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}
 @closeLink = {</a>}
 
-@main_template(
-    title = messages("companyUpdateDetails.title")
-) {
+@layout(pageTitle = messages("companyUpdateDetails.title")) {
 
-    @components.back_link()
+    @components_refactored.heading(messages("companyUpdateDetails.heading"))
 
-    @components.heading(messages("companyUpdateDetails.heading"))
-    <p>
-        @messages("companyUpdateDetails.p1")
-    </p>
-    <ul class="list list-bullet">
+    @components_refactored.paragraph_text(messages("companyUpdateDetails.p1"))
+
+    <ul class="govuk-list govuk-list--bullet">
         <li>@Html(Message("companyUpdateDetails.item1").withArgs(openLink1, closeLink))</li>
         <li>@Html(Message("companyUpdateDetails.item2").withArgs(openLink2, closeLink))</li>
     </ul>
-
 
 }
