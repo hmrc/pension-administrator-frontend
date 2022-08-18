@@ -55,7 +55,7 @@
         @submit_button("site.save_and_continue")
 
         @businessNameId.map { partnershipName =>
-                <p class="govuk-body">
+                <p class="govuk-margin-top-5 govuk-body">
                     <a id="return-link" class="govuk-link" href=@postUrl>@messages("site.return_to", partnershipName)</a>
                 </p>
         }
@@ -64,7 +64,7 @@
             @components_refactored.return_link(psaName, mode)
             @if(mode != UpdateMode){
                 @returnLink.map { returnLinkUrl =>
-                        <p class="govuk-body">
+                        <p class="govuk-margin-top-5 govuk-body">
                             <a id="return-link" class="govuk-link" href=@returnLinkUrl>@messages("site.return_to", psaName)</a>
                         </p>
                 }
