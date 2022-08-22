@@ -52,7 +52,7 @@
     <p class="govuk-body">@messages(hintText)</p>
     }
     <div class="grid-row">
-         <p class="govuk-body">
+         <p class="govuk-body-l">
                     @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
                     <span id="address-value-@i" class="govuk-!-display-block">@line</span>
                     }
