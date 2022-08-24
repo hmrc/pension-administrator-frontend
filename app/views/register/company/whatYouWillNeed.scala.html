@@ -14,33 +14,35 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    submit_button: components_refactored.submit_button
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("whatYouWillNeed.title")
+@layout(
+    pageTitle = messages("whatYouWillNeed.title")
 ) {
 
-    @components.back_link()
+    @components_refactored.heading(messages("whatYouWillNeed.heading"))
 
-    @components.heading(messages("whatYouWillNeed.heading"))
+    @components_refactored.paragraph_text(messages("whatYouWillNeed.body.text"))
 
-    @components.paragraph_text(messages("whatYouWillNeed.body.text"))
-
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("whatYouWillNeed.company.body.item1")</li>
         <li>@messages("whatYouWillNeed.company.body.item2")</li>
         <li>@messages("whatYouWillNeed.company.body.item3")</li>
     </ul>
 
     @formHelper(action = controllers.register.company.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
-            @components.submit_button("site.continue")
+            @submit_button("site.continue")
     }
 
 }
