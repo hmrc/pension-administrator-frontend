@@ -14,7 +14,10 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.company.routes._
 @import models.Mode
 @import utils.FormHelpers
@@ -25,8 +28,11 @@
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF,
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_yes_no: components_refactored.input_yes_no,
+    button: components_refactored.submit_button,
     appConfig: FrontendAppConfig
 )
 
@@ -36,41 +42,48 @@
     directors.exists(director => if(mode == NormalMode) !director.isComplete else director.isNew && !director.isComplete)
 }
 
-@main_template(
-    title = titleWithErrors(form, messages("addCompanyDirectors.title"))
+@layout(
+    pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))
 ) {
 
     @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @components.error_summary(form.errors)
-
-        @components.heading(messages("addCompanyDirectors.heading"))
+        @components_refactored.heading(messages("addCompanyDirectors.heading"), true)
 
         @if(directors.isEmpty) {
-            @components.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
-            @components.submit_button("addCompanyDirectors.addADirector")
+
+            @components_refactored.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
+            @button("addCompanyDirectors.addADirector")
+
         } else {
 
-            @components.person_list(directors, mode)
+            @components_refactored.person_list(directors, mode)
 
             @if(directors.size < appConfig.maxDirectors) {
-                @components.input_yes_no(
+
+                @input_yes_no(
                     field = form("value"),
                     label = messages("addCompanyDirectors.addYesNo"),
-                    legendClass = Some("heading-medium"),
                     hint = Some(messages("addCompanyDirectors.addADirector.hint"))
                 )
+
             } else {
-                @components.paragraph_text(messages("addCompanyDirectors.atMaximum"))
-                @components.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
+
+                @components_refactored.paragraph_text(messages("addCompanyDirectors.atMaximum"))
+                @components_refactored.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
+
             }
 
-            @components.submit_button(disabled = disableSubmission)
+            @button(disabled = disableSubmission)
         }
+
         @psaNameOpt.map{ psaName =>
             @components.return_link(psaName, mode)
         }
+
     }
 }

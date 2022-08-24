@@ -41,7 +41,7 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("confirmRegisteredAddress.heading", name ))
+        @components_refactored.heading(messages("confirmRegisteredAddress.heading", name ), true)
 
         @components_refactored.tolerant_address("companyAddress", address, countryOptions)
 
