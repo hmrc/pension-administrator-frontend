@@ -14,43 +14,49 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import utils.FormHelpers
 @import controllers.register.routes._
 @import models.Mode
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_text: components_refactored.input_text,
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], businessType: String, href: Call,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("businessName.title", businessType))
-) {
-    @components.back_link()
-
-    @components.error_summary(form.errors)
+@layout(pageTitle = titleWithErrors(form, messages("businessName.title", businessType))) {
 
     @formHelper(action = href, 'autoComplete -> "off") {
-        <div class="form-group @if(form.hasErrors){form-group--error}">
 
-            @components.input_text(
-                field = form("value"),
-                label = messages("businessName.heading", businessType),
-                labelClass = Some("visually-hidden"),
-                paragraphText = Some(messages("businessName.p1")),
-                headingIsLegend = true
-            )
-        </div>
-        @components.submit_button("site.save_and_continue")
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
+
+        @input_text(
+            field = form("value"),
+            label = messages("businessName.heading", businessType),
+            labelClass = Some("govuk-label--xl"),
+            inputClass = Some("govuk-!-width-one-half"),
+            hint = Some(messages("businessName.p1")),
+            headingIsLegend = true
+        )
+
+        @submit_button("site.save_and_continue")
 
         @returnLink.map { returnLinkUrl =>
-        <p class="govuk-margin-top-5 govuk-body">
-            <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", businessType)</a>
-        </p>
+            <p class="govuk-margin-top-8 govuk-body">
+                <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", businessType)</a>
+            </p>
         }
+
     }
 }

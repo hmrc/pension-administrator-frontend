@@ -14,41 +14,46 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import config.FrontendAppConfig
 @import viewmodels.Message
 @import models.NormalMode
 
 @this(
-    main_template: main_template,
-    appConfig: FrontendAppConfig
+    layout: templates.Layout,
+    appConfig: FrontendAppConfig,
+    button_link: components_refactored.button_link
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@openLink1 = {<a id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}
-@openLink2 = {<a id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}
-@openLink3 = {<a id="tell-hmrc-link" href="@appConfig.tellHMRCChangesUrl">}
+@openLink1 = {<a class="govuk-link" id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}
+@openLink2 = {<a class="govuk-link" id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}
+@openLink3 = {<a class="govuk-link" id="tell-hmrc-link" href="@appConfig.tellHMRCChangesUrl">}
 @closeLink = {</a>}
 
-@main_template(
-    title = messages("companyNotFound.title")
-) {
+@layout(pageTitle = messages("companyNotFound.title")) {
 
-    @components.back_link()
+    @components_refactored.heading(messages("companyNotFound.heading"))
 
-    @components.heading(messages("companyNotFound.heading"))
+    @components_refactored.paragraph_text(messages("companyNotFound.lede"))
 
-    <p>@messages("companyNotFound.lede")</p>
+    <h2 class="govuk-heading-m">@messages("companyNotFound.businessNameExactMatch")</h2>
 
-    <h2>@messages("companyNotFound.businessNameExactMatch")</h2>
-    <p>@messages("companyNotFound.businessNameExactMatch.description")</p>
+    @components_refactored.paragraph_text(messages("companyNotFound.businessNameExactMatch.description"))
 
-    <h2>@messages("companyNotFound.businessNameChanged")</h2>
-    <p>@Html(Message("companyNotFound.businessNameChanged.company").withArgs(openLink1, closeLink, openLink2, closeLink))</p>
-    <p>@Html(Message("companyNotFound.businessNameChanged.individual").withArgs(openLink3, closeLink))</p>
+    <h2 class="govuk-heading-m">@messages("companyNotFound.businessNameChanged")</h2>
 
-    <h2>@messages("companyNotFound.utrDoesntMatch")</h2>
-    <p>@messages("companyNotFound.utrDoesntMatch.description")</p>
+    @components_refactored.paragraph_text_to_html(Message("companyNotFound.businessNameChanged.company").withArgs(openLink1, closeLink, openLink2, closeLink))
 
-    @components.button_link("site.enterDetailsAgain",controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode).url, "enter-details-again-link")
+    @components_refactored.paragraph_text_to_html(Message("companyNotFound.businessNameChanged.individual").withArgs(openLink3, closeLink))
+
+    <h2 class="govuk-heading-m">@messages("companyNotFound.utrDoesntMatch")</h2>
+
+    @components_refactored.paragraph_text(messages("companyNotFound.utrDoesntMatch.description"))
+
+    @button_link("site.enterDetailsAgain",controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode).url, "enter-details-again-link")
+
 }

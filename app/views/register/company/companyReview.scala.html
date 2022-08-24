@@ -14,41 +14,43 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import models.{Mode, CheckMode}
 @import controllers.register.company.routes._
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    submit_button: components_refactored.submit_button
 )
 
 @(companyName: String, directors: Seq[String])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("companyReview.title")
-) {
-
-    @components.back_link()
-
-    @components.heading(messages("companyReview.heading"))
-
-    @components.review_section(
-        heading = companyName,
-        linkMessage = "companyReview.editLink",
-        linkId = "edit-company-details",
-        link = CheckYourAnswersController.onPageLoad
-    )
-
-    @components.review_section(
-        heading = messages("companyReview.directors.heading", companyName),
-        linkMessage = "companyReview.directors.changeLink",
-        linkId = "edit-director-details",
-        link = AddCompanyDirectorsController.onPageLoad(NormalMode),
-        list = Some(directors)
-    )
+@layout(pageTitle = messages("companyReview.title")) {
 
     @formHelper(action = CompanyReviewController.onSubmit, 'autoComplete -> "off") {
-            @components.submit_button("site.save_and_continue")
+
+        @components_refactored.heading(messages("companyReview.heading"))
+
+        @components_refactored.review_section(
+            heading = companyName,
+            linkMessage = "companyReview.editLink",
+            linkId = "edit-company-details",
+            link = CheckYourAnswersController.onPageLoad
+        )
+
+        @components_refactored.review_section(
+            heading = messages("companyReview.directors.heading", companyName),
+            linkMessage = "companyReview.directors.changeLink",
+            linkId = "edit-director-details",
+            link = AddCompanyDirectorsController.onPageLoad(NormalMode),
+            list = Some(directors)
+        )
+
+        @submit_button("site.save_and_continue")
+
     }
 }

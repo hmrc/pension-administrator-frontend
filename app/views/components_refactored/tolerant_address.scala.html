@@ -1,0 +1,40 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.TolerantAddress
+@import utils.countryOptions.CountryOptions
+
+@(fieldName: String, address: TolerantAddress, countryOptions: CountryOptions)
+<p class="govuk-body-l">
+@if(address.addressLine1.isDefined) {
+    <span id="@fieldName-addressLine1" class="govuk-!-display-block">@address.addressLine1</span>
+}
+@if(address.addressLine2.isDefined) {
+    <span id="@fieldName-addressLine2" class="govuk-!-display-block">@address.addressLine2</span>
+}
+@if(address.addressLine3.isDefined) {
+    <span id="@fieldName-addressLine3" class="govuk-!-display-block">@address.addressLine3</span>
+}
+@if(address.addressLine4.isDefined) {
+    <span id="@fieldName-addressLine4" class="govuk-!-display-block">@address.addressLine4</span>
+}
+@if(address.postcode.isDefined) {
+    <span id="@fieldName-postcode" class="govuk-!-display-block">@address.postcode</span>
+}
+@if(address.countryOpt.isDefined) {
+    <span id="@fieldName-country" class="govuk-!-display-block">@countryOptions.getCountryNameFromCode(address)</span>
+}
+</p>

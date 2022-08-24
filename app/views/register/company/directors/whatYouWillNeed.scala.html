@@ -14,25 +14,27 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import viewmodels.Message
 
 @this(
-    main_template: main_template
+    layout: templates.Layout,
+    button_link: components_refactored.button_link
 )
 
 @(href: Call)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("whatYouWillNeed.directorsOrPartners.title")
+@layout(
+    pageTitle = messages("whatYouWillNeed.directorsOrPartners.title")
 ) {
-    @components.back_link()
 
-    @components.heading(headingKey = messages("whatYouWillNeed.directors.heading"))
+    @components_refactored.heading(messages("whatYouWillNeed.directors.heading"), true)
 
-    <p>@messages("whatYouWillNeed.directors.body.text")</p>
+    @components_refactored.paragraph_text(messages("whatYouWillNeed.directors.body.text"))
 
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("whatYouWillNeed.directorsOrPartners.body.item1")</li>
         <li>@messages("whatYouWillNeed.directorsOrPartners.body.item2")</li>
         <li>@messages("whatYouWillNeed.directorsOrPartners.body.item3")</li>
@@ -43,5 +45,5 @@
         <li>@messages("whatYouWillNeed.directorsOrPartners.body.item8")</li>
     </ul>
 
-    @components.button_link("site.continue", href.url, "submit")
+    @button_link("site.continue", href.url, "submit")
 }

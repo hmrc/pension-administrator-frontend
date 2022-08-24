@@ -15,35 +15,40 @@
  *@
 
 @import controllers.register.routes._
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import models.Mode
 @import viewmodels.CommonFormViewModel
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_yes_no: components_refactored.input_yes_no,
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewModel: CommonFormViewModel)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, viewModel.title)
-) {
+@layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
-        @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
-        @components.back_link()
-
-            @components.error_summary(form.errors)
-
-            @components.input_yes_no(
-                field = form("value"),
-                label = viewModel.heading,
-                labelClass = Some("visually-hidden"),
-                headingIsLegend = true
-            )
-
-            @components.submit_button("site.save_and_continue")
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
+
+        @input_yes_no(
+            field = form("value"),
+            label = viewModel.heading,
+            labelClass = Some("govuk-label--xl"),
+            headingIsLegend = true
+        )
+
+        @submit_button("site.save_and_continue")
+
     }
+}
