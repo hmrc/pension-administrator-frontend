@@ -32,19 +32,20 @@
     pageTitle = messages("whatYouWillNeed.partnership.title")
 ) {
 
-    @components_refactored.heading(messages("whatYouWillNeed.partnership.heading"))
-
-    @components_refactored.paragraph_text(messages("whatYouWillNeed.partnership.body.text1"))
-
-    @components_refactored.paragraph_text(messages("whatYouWillNeed.partnership.body.text2"))
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("whatYouWillNeed.partnership.body.item1")</li>
-        <li>@messages("whatYouWillNeed.partnership.body.item2")</li>
-        <li>@messages("whatYouWillNeed.partnership.body.item3")</li>
-    </ul>
-
     @formHelper(action = controllers.register.partnership.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
+
+        @components_refactored.heading(messages("whatYouWillNeed.partnership.heading"))
+
+        @components_refactored.paragraph_text(messages("whatYouWillNeed.partnership.body.text1"))
+
+        @components_refactored.paragraph_text(messages("whatYouWillNeed.partnership.body.text2"))
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("whatYouWillNeed.partnership.body.item1")</li>
+            <li>@messages("whatYouWillNeed.partnership.body.item2")</li>
+            <li>@messages("whatYouWillNeed.partnership.body.item3")</li>
+        </ul>
+
         @submit_button("site.continue")
     }
 }

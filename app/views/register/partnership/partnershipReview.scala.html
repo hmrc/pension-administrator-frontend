@@ -33,28 +33,30 @@
     pageTitle = messages("partnershipReview.title")
 ) {
 
-    @components_refactored.heading(messages("partnershipReview.heading"))
-
-    @components_refactored.review_section(
-        heading = partnershipName,
-        linkMessage = "partnershipReview.editLink",
-        linkId = "edit-partnership-details",
-        link = CheckYourAnswersController.onPageLoad
-    )
-
-    @components_refactored.review_section(
-        heading = messages("partnershipReview.partners.heading"),
-        linkMessage = if(partners.lengthCompare(10)<0){
-            "partnershipReview.partners.editLink"
-        } else {
-            "partnershipReview.partners.changeLink"
-        },
-        linkId = "edit-partner-details",
-        link = AddPartnerController.onPageLoad(NormalMode),
-        list = Some(partners)
-    )
-
     @formHelper(action = PartnershipReviewController.onSubmit, 'autoComplete -> "off") {
-            @submit_button("site.confirm")
+
+        @components_refactored.heading(messages("partnershipReview.heading"))
+
+        @components_refactored.review_section(
+            heading = partnershipName,
+            linkMessage = "partnershipReview.editLink",
+            linkId = "edit-partnership-details",
+            link = CheckYourAnswersController.onPageLoad
+        )
+
+        @components_refactored.review_section(
+            heading = messages("partnershipReview.partners.heading"),
+            linkMessage = if(partners.lengthCompare(10)<0){
+                "partnershipReview.partners.editLink"
+            } else {
+                "partnershipReview.partners.changeLink"
+            },
+            linkId = "edit-partner-details",
+            link = AddPartnerController.onPageLoad(NormalMode),
+            list = Some(partners)
+        )
+
+        @submit_button("site.confirm")
+
     }
 }
