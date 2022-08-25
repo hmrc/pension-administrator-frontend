@@ -15,78 +15,90 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import viewmodels.Message
 @import models.requests._
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF,
-    appConfig: FrontendAppConfig
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    appConfig: FrontendAppConfig,
+    govukPanel: GovukPanel,
+    submit_button: components_refactored.submit_button,
 )
 
 @(psaId: String, psaName: String, psaEmail: String,isPsaTypeCompany:Boolean)(implicit request: DataRequest[_], messages: Messages)
 
-@registerSchemeLink = {<a id="register-scheme-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.registerLink")</a>}
-@printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
-@schemeOverviewLink = {<a id="scheme-overview-link" href="@appConfig.schemesOverviewUrl">@messages("confirmation.action.subheading.schemesOverviewLink")</a>}
+@registerSchemeLink = {<a id="register-scheme-link" class="govuk-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.registerLink")</a>}
+@printThisPageLink = {<a id="print-this-page-link" class="govuk-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
+@schemeOverviewLink = {<a id="scheme-overview-link" class="govuk-link" href="@appConfig.schemesOverviewUrl">@messages("confirmation.action.subheading.schemesOverviewLink")</a>}
 
+@panelTitle = @{
+    if(request.user.isExistingPSA){
+        if(isPsaTypeCompany){
+            messages("confirmation.newPSA.heading.company", psaName)
+        } else {
+            messages("confirmation.existingPSA.heading", psaName)
+        }
+    } else {
+        if(isPsaTypeCompany){
+            messages("confirmation.newPSA.heading.company", psaName)
+        } else {
+            messages("confirmation.newPSA.heading", psaName)
+        }
+    }
+}
 
-@main_template(
-    if(request.user.isExistingPSA) messages("confirmation.existingPSA.title") else messages("confirmation.newPSA.title")
+@panelContent = {
+    @messages("confirmation.psaIdNumber")
+    <strong>@psaId</strong>
+}
+
+@layout(
+    pageTitle = if(request.user.isExistingPSA) messages("confirmation.existingPSA.title") else messages("confirmation.newPSA.title")
 ) {
 
-    <div class="govuk-box-highlight">
-         @if(request.user.isExistingPSA){
-                @if(isPsaTypeCompany){
-                    @components.heading(messages("confirmation.newPSA.heading.company", psaName))
-                }else{
-                    @components.heading(messages("confirmation.existingPSA.heading", psaName))
-                }
-         } else {
-                @if(isPsaTypeCompany){
-                    @components.heading(messages("confirmation.newPSA.heading.company", psaName))
-                }else{
-                    @components.heading(messages("confirmation.newPSA.heading", psaName))
-                }
-        }
-        <p class="font-large">
-            @messages("confirmation.psaIdNumber")
-            <strong class="bold">@psaId</strong>
-        </p>
-    </div>
-
-    <p>
-        @messages("confirmation.email", psaEmail)
-        <span class="bold">@psaEmail</span>.
-    </p>
-
-    <h2 class="heading-medium">@messages("confirmation.whatYouNeedToKnow.heading")</h2>
-    @if(isPsaTypeCompany){
-        <p>@Html(Message("confirmation.action.company.subheading").withArgs(schemeOverviewLink))</p>
-    } else {
-        <p>@Html(Message("confirmation.action.individual.subheading").withArgs(schemeOverviewLink))</p>
-    }
-
-
-    <ul id="what-you-need-to-know" class="list list-bullet">
-        @if(request.user.isExistingPSA){
-        <li>@Html(Message("confirmation.whatYouNeedToKnow.existingPSA.detail").withArgs(registerSchemeLink))</li>
-        <li>@messages("confirmation.whatYouNeedToKnow.registerMessage")</li>
-        <li>@messages("confirmation.whatYouNeedToKnow.addPensionSchemeOrRacDacMessage")</li>
-        <li>@messages("confirmation.action.psaInvitation.item")</li>
-        } else {
-        <li>@messages("confirmation.whatYouNeedToKnow.registerMessage")</li>
-        <li>@messages("confirmation.whatYouNeedToKnow.addPensionSchemeOrRacDacMessage")</li>
-        <li>@messages("confirmation.action.psaInvitation.item")</li>
-        }
-    </ul>
-
-    <div class="print-page subsection">
-        @printThisPageLink
-    </div>
-
     @formHelper(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {
-        @components.submit_button(submitMessageKey = "site.finishAndSignOut")
+
+        @govukPanel(
+            Panel(
+                title = Text(panelTitle),
+                content = HtmlContent(panelContent)
+            )
+        )
+
+        <p class="govuk-body">
+            @messages("confirmation.email", psaEmail)
+            <strong>@psaEmail</strong>.
+        </p>
+
+        <h2 class="govuk-heading-l">@messages("confirmation.whatYouNeedToKnow.heading")</h2>
+
+        @if(isPsaTypeCompany){
+            <p class="govuk-body">@Html(Message("confirmation.action.company.subheading").withArgs(schemeOverviewLink))</p>
+        } else {
+            <p class="govuk-body">@Html(Message("confirmation.action.individual.subheading").withArgs(schemeOverviewLink))</p>
+        }
+
+        <ul id="what-you-need-to-know" class="govuk-list govuk-list--bullet">
+            @if(request.user.isExistingPSA){
+                <li>@Html(Message("confirmation.whatYouNeedToKnow.existingPSA.detail").withArgs(registerSchemeLink))</li>
+                <li>@messages("confirmation.whatYouNeedToKnow.registerMessage")</li>
+                <li>@messages("confirmation.whatYouNeedToKnow.addPensionSchemeOrRacDacMessage")</li>
+                <li>@messages("confirmation.action.psaInvitation.item")</li>
+            } else {
+                <li>@messages("confirmation.whatYouNeedToKnow.registerMessage")</li>
+                <li>@messages("confirmation.whatYouNeedToKnow.addPensionSchemeOrRacDacMessage")</li>
+                <li>@messages("confirmation.action.psaInvitation.item")</li>
+            }
+        </ul>
+
+        <p class="govuk-body print-page">@printThisPageLink</p>
+
+        @submit_button("site.finishAndSignOut")
+
     }
 }
