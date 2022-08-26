@@ -48,16 +48,16 @@
 
 
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
+
     @viewmodel.hint.map{hintText =>
-    <p class="govuk-body">@messages(hintText)</p>
+        <p class="govuk-body">@messages(hintText)</p>
     }
-    <div class="grid-row">
-         <p class="govuk-body-l">
-                    @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
-                    <span id="address-value-@i" class="govuk-!-display-block">@line</span>
-                    }
-                </p>
-    </div>
+
+    <p class="govuk-body-l">
+        @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
+            <span id="address-value-@i" class="govuk-!-display-block">@line</span>
+        }
+    </p>
 
      @govukRadios(
             Radios(
