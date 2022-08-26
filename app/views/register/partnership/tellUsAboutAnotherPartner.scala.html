@@ -14,24 +14,27 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+
 @this(
-        main_template: main_template,
-        formHelper: FormWithCSRF
+    layout: templates.Layout,
+    button_link: components_refactored.button_link
 )
 
 @(href: Call)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("tellUsAboutAnotherPartner.title")
+@layout(
+    pageTitle = messages("tellUsAboutAnotherPartner.title")
 ) {
 
-    @components.back_link()
+    @components_refactored.heading(messages("tellUsAboutAnotherPartner.heading"))
 
-    @components.heading(messages("tellUsAboutAnotherPartner.heading"))
+    @components_refactored.paragraph_text(messages("tellUsAboutAnotherPartner.body.text1"))
 
-    @components.paragraph_text(messages("tellUsAboutAnotherPartner.body.text1"))
+    @components_refactored.paragraph_text(messages("tellUsAboutAnotherPartner.body.text2"))
 
-    @components.paragraph_text(messages("tellUsAboutAnotherPartner.body.text2"))
+    @button_link("site.continue", href.url, "submit")
 
-    @components.button_link("site.continue", href.url, "submit")
 }

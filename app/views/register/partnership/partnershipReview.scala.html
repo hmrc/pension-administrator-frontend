@@ -14,45 +14,49 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import models.{Mode, NormalMode, CheckMode}
 @import controllers.register.partnership.routes._
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    submit_button: components_refactored.submit_button
 )
 
 @(partnershipName: String, partners: Seq[String])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("partnershipReview.title")
+@layout(
+    pageTitle = messages("partnershipReview.title")
 ) {
 
-    @components.back_link()
-
-    @components.heading(messages("partnershipReview.heading"))
-
-    @components.review_section(
-        heading = partnershipName,
-        linkMessage = "partnershipReview.editLink",
-        linkId = "edit-partnership-details",
-        link = CheckYourAnswersController.onPageLoad
-    )
-
-    @components.review_section(
-        heading = messages("partnershipReview.partners.heading"),
-        linkMessage = if(partners.lengthCompare(10)<0){
-            "partnershipReview.partners.editLink"
-        } else {
-            "partnershipReview.partners.changeLink"
-        },
-        linkId = "edit-partner-details",
-        link = AddPartnerController.onPageLoad(NormalMode),
-        list = Some(partners)
-    )
-
     @formHelper(action = PartnershipReviewController.onSubmit, 'autoComplete -> "off") {
-            @components.submit_button("site.confirm")
+
+        @components_refactored.heading(messages("partnershipReview.heading"))
+
+        @components_refactored.review_section(
+            heading = partnershipName,
+            linkMessage = "partnershipReview.editLink",
+            linkId = "edit-partnership-details",
+            link = CheckYourAnswersController.onPageLoad
+        )
+
+        @components_refactored.review_section(
+            heading = messages("partnershipReview.partners.heading"),
+            linkMessage = if(partners.lengthCompare(10)<0){
+                "partnershipReview.partners.editLink"
+            } else {
+                "partnershipReview.partners.changeLink"
+            },
+            linkId = "edit-partner-details",
+            link = AddPartnerController.onPageLoad(NormalMode),
+            list = Some(partners)
+        )
+
+        @submit_button("site.confirm")
+
     }
 }

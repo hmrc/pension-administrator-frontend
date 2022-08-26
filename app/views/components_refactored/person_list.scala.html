@@ -20,7 +20,7 @@
 @(people: Seq[Person], mode: Mode)(implicit messages: Messages)
 
 <div class="govuk-form-group govuk-!-margin-bottom-7">
-    <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short ">
+    <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short" id="people">
         @for(person <- people) {
         <div class="hmrc-add-to-a-list__contents">
             <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light">
