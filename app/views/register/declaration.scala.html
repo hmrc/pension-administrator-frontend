@@ -15,25 +15,26 @@
  *@
 
 @import controllers.register.routes
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 
 @this(
-    main_template: main_template
+    layout: templates.Layout,
+    button_link: components_refactored.button_link
 )
 
 @(workingKnowledge: Boolean)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("declaration.title")
+@layout(
+    pageTitle = messages("declaration.title")
 ) {
 
-    @components.back_link()
+    @components_refactored.heading(messages("declaration.heading"))
 
-    @components.heading(messages("declaration.heading"))
+    @components_refactored.paragraph_text(messages("declaration.declaration"))
 
-    @components.paragraph_text(messages("declaration.declaration"))
-
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>
             @messages("declaration.statement1")
         </li>
@@ -48,14 +49,13 @@
         </li>
         <li>
             @if(workingKnowledge) {
-            @messages("declaration.statement5a")
+                @messages("declaration.statement5a")
             } else {
-            @messages("declaration.statement5b")
+                @messages("declaration.statement5b")
             }
         </li>
     </ul>
 
-    <div class="form-group">
-            @components.button_link("site.agreeAndContinue", controllers.register.routes.DeclarationController.onSubmit().url, "submit")
-    </div>
+    @button_link("site.agreeAndContinue", controllers.register.routes.DeclarationController.onSubmit().url, "submit")
+
 }
