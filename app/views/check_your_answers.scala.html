@@ -26,7 +26,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     submit_button: components_refactored.submit_button,
-    answer_section:components_refactored.answer_section
+    answer_section:components_refactored.answer_section,
+    incomplete_alert: components_refactored.incomplete_alert
 )
 
 @(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode, isComplete: Boolean, businessNameId: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
@@ -38,7 +39,7 @@
             @formHelper(action = postUrl, 'autoComplete -> "off") {
 
             @if(!isComplete) {
-                @components_refactored.incomplete_alert()
+                @incomplete_alert()
             }
 
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("checkYourAnswers.heading")</h1>
