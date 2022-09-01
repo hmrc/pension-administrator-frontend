@@ -15,24 +15,27 @@
 *@
 
 @import config.FrontendAppConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(
-layout: templates.Layout,
-appConfig: FrontendAppConfig
+    layout: templates.Layout,
+    appConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-pageTitle = messages("duplicateRegistration.title")
-) {
+@layout(pageTitle = messages("duplicateRegistration.title")) {
 
-<h1 class="govuk-heading-xl">@messages("duplicateRegistration.heading")</h1>
+    @components_refactored.heading(messages("duplicateRegistration.heading"))
 
-<p class="govuk-body" id="p1">@messages("duplicateRegistration.p1")</p>
-<p class="govuk-body" id="p2">@messages("duplicateRegistration.p2")</p>
+    @components_refactored.paragraph_text(messages("duplicateRegistration.p1", "p1"))
 
-<p class="govuk-body">
-    <a id="go-to-gov-uk" class="govuk-link" href="@appConfig.govUkUrl">@messages("exitToGovUK")</a>
-</p>
+    @components_refactored.paragraph_text(messages("duplicateRegistration.p2", "p2"))
+
+    <p class="govuk-body">
+        <a id="go-to-gov-uk" class="govuk-link" href="@appConfig.govUkUrl">@messages("exitToGovUK")</a>
+    </p>
+
 }

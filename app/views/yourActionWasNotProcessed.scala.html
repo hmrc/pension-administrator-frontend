@@ -14,42 +14,38 @@
  * limitations under the License.
  *@
 
-
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import config.FrontendAppConfig
 
 @this(
-    main_template: main_template,
-    appConfig: FrontendAppConfig
+    layout: templates.Layout,
+    appConfig: FrontendAppConfig,
+    button_link: components_refactored.button_link
 )
 
-@(
-        psaDetails: Option[viewmodels.PsaViewDetailsViewModel]
-)(
-        implicit request: Request[_],
-        messages: Messages
-)
+@(psaDetails: Option[viewmodels.PsaViewDetailsViewModel])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("yourActionWasNotProcessed.title")
-    ) {
+@layout(pageTitle = messages("yourActionWasNotProcessed.title")) {
 
-    @components.back_link()
+    @components_refactored.heading(messages("yourActionWasNotProcessed.heading"))
 
-    <h1 class="heading-xlarge">@messages("yourActionWasNotProcessed.heading")</h1>
+    @components_refactored.paragraph_text(messages("yourActionWasNotProcessed.guidance.p1"))
 
-    <p>@messages("yourActionWasNotProcessed.guidance.p1")</p>
+    @components_refactored.paragraph_text(messages("yourActionWasNotProcessed.guidance.p2"))
 
-    <p>@messages("yourActionWasNotProcessed.guidance.p2")</p>
-
-    <p>@messages("yourActionWasNotProcessed.guidance.p3")</p>
+    @components_refactored.paragraph_text(messages("yourActionWasNotProcessed.guidance.p3"))
 
     @psaDetails.map(
         details => {
-            components.button_link(
+            button_link(
                 messageKey = messages("site.return_to", details.header),
                 href = appConfig.schemesOverviewUrl,
                 id = "return"
             )
         }
     )
+
 }

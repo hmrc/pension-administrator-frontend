@@ -15,6 +15,9 @@
  *@
 
 @import config.FrontendAppConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 
 @this(
     layout: templates.Layout,
@@ -25,15 +28,13 @@
 
 @continueTpss() = {<a id="continueTpssLink" class="govuk-link" href="@appConfig.tpssUrl">@messages("pensionSchemePractitioner.link")</a>}
 
-@layout(
-    pageTitle = messages("pensionSchemePractitioner.title")
-) {
+@layout(pageTitle = messages("pensionSchemePractitioner.title")) {
 
-    <h1 class="govuk-heading-xl">@messages("pensionSchemePractitioner.heading")</h1>
+    @components_refactored.heading(messages("pensionSchemePractitioner.heading"))
 
     <p class="govuk-body-l">@messages("pensionSchemePractitioner.lede")</p>
 
-    <p class="govuk-body">@messages("pensionSchemePractitioner.explanation")</p>
+    @components_refactored.paragraph_text(messages("pensionSchemePractitioner.explanation"))
 
     <p class="govuk-body">@Html(messages("pensionSchemePractitioner.continue",continueTpss()))</p>
 

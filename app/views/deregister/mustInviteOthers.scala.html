@@ -15,27 +15,34 @@
  *@
 
 @import config.FrontendAppConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(
-layout: templates.Layout,
-appConfig: FrontendAppConfig
+    layout: templates.Layout,
+    appConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-pageTitle = messages("mustInviteOthers.title")
-) {
+@layout(pageTitle = messages("mustInviteOthers.title")) {
 
-    <h1 class="govuk-heading-xl">@messages("mustInviteOthers.title")</h1>
-    <p class="govuk-body">@messages("mustInviteOthers.p1")</p>
-    <p class="govuk-body">@messages("mustInviteOthers.p2")</p>
+    @components_refactored.heading(messages("mustInviteOthers.title"))
+
+    @components_refactored.paragraph_text(messages("mustInviteOthers.p1"))
+
+    @components_refactored.paragraph_text(messages("mustInviteOthers.p2"))
+
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("mustInviteOthers.li1")</li>
         <li>@messages("mustInviteOthers.li2")</li>
     </ul>
-    <p class="govuk-body">@messages("mustInviteOthers.p3")</p>
 
-    <p class="govuk-body"><a id="return-to-schemes" class="govuk-link" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("schemesOverview.manage.link")</a></p>
+    @components_refactored.paragraph_text(messages("mustInviteOthers.p3"))
+
+    <p class="govuk-body">
+        <a id="return-to-schemes" class="govuk-link" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("schemesOverview.manage.link")</a>
+    </p>
 
 }

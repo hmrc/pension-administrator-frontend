@@ -14,17 +14,20 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+
 @this(
-  main_template: main_template
+    layout: templates.Layout
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("session_expired.title")
-    ) {
+@layout(pageTitle = messages("session_expired.title")) {
 
-    <h1 class="heading-xlarge">@messages("session_expired.heading")</h1>
+    @components_refactored.heading(messages("session_expired.heading"))
 
-    <p>@messages("session_expired.guidance")</p>
+    @components_refactored.paragraph_text(messages("session_expired.guidance"))
+
 }

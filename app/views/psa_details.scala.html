@@ -16,55 +16,51 @@
 @import config.FrontendAppConfig
 @import models.Index
 @import play.api.mvc.Call
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import viewmodels.SuperSection
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-        layout: templates.Layout,
-        appConfig: FrontendAppConfig,
-        govukSummaryList : GovukSummaryList,
-        govukButton: GovukButton
+    layout: templates.Layout,
+    appConfig: FrontendAppConfig,
+    govukSummaryList : GovukSummaryList,
+    govukButton: GovukButton,
+    super_section: components_refactored.super_section,
+    incomplete_alert: components_refactored.incomplete_alert
 )
 
+@(psaDetails: viewmodels.PsaViewDetailsViewModel, nextPage: Call)(implicit request: Request[_], messages: Messages)
 
-@(
-        psaDetails: viewmodels.PsaViewDetailsViewModel,
-        nextPage: Call
-)(
-        implicit request: Request[_],
-        messages: Messages
-)
+@layout(pageTitle = messages(psaDetails.title)) {
 
-    @layout(
-        pageTitle = messages(psaDetails.title)
-    ) {
-
-
-        @psaDetails.userAnswersIncompleteMessage.map { incompleteMessage =>
-            @components.incomplete_alert(incompleteMessage)
-        }
-        <h1 class="govuk-heading-xl">@psaDetails.header</h1>
-        <h2 id="psadetails-header" class="govuk-heading-l">@messages("psaDetails.header")</h2>
-
-        @for((section, i) <- psaDetails.superSections.zipWithIndex) {
-            @{
-                components_refactored.super_section(section, i.toString,govukSummaryList)
-            }
-        }
-
-        @if(psaDetails.isUserAnswerUpdated) {
-            @govukButton(Button(
-                attributes = Map("id" -> "declaration-link"),
-                content = Text(messages("psaDetails.declaration.link.text")),
-                href = Some(nextPage.url)
-                ))
-        }
-
-        <p class="govuk-body">
-            <a id="return-to-overview" class="govuk-link" href="@appConfig.schemesOverviewUrl">
-                @messages("site.return_to", psaDetails.header)
-            </a>
-        </p>
-
+    @psaDetails.userAnswersIncompleteMessage.map { incompleteMessage =>
+        @incomplete_alert(incompleteMessage)
     }
+
+    @components_refactored.heading(psaDetails.header)
+
+    <h2 id="psadetails-header" class="govuk-heading-l">@messages("psaDetails.header")</h2>
+
+    @for((section, i) <- psaDetails.superSections.zipWithIndex) {
+        @{
+            super_section(section, i.toString)
+        }
+    }
+
+    @if(psaDetails.isUserAnswerUpdated) {
+        @govukButton(Button(
+            attributes = Map("id" -> "declaration-link"),
+            content = Text(messages("psaDetails.declaration.link.text")),
+            href = Some(nextPage.url)
+        ))
+    }
+
+    <p class="govuk-body">
+        <a id="return-to-overview" class="govuk-link" href="@appConfig.schemesOverviewUrl">
+            @messages("site.return_to", psaDetails.header)
+        </a>
+    </p>
+
+}

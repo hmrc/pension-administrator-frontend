@@ -15,37 +15,43 @@
  *@
 
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import utils.FormHelpers
 @import models.Mode
 @import viewmodels.Message
 
 @this(
-    main_template: main_template
+    layout: templates.Layout,
+    button_link: components_refactored.button_link,
+    govukInsetText : GovukInsetText
 )
 
 @(address: Seq[String], continueUrl: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("updateContactAddress.title")
-) {
-    @components.back_link()
+@addressContent = {
+    @for(addressItem <- address) {
+        <span class="govuk-!-display-block">@addressItem</span>
+    }
+}
 
-    @components.heading(
-        headingKey=messages("updateContactAddress.heading")
-    )
+@layout(pageTitle = messages("updateContactAddress.title")) {
 
-    <p>@messages("updateContactAddress.p1")</p>
+    @components_refactored.heading(messages("updateContactAddress.heading"))
 
-    <p class="govuk-inset-text panel panel-border-wide">
-        @for(addressItem <- address) {
-            <span class="address-multi-line">@addressItem</span>
-        }
-    </p>
+    @components_refactored.paragraph_text(messages("updateContactAddress.p1"))
 
-    <p>@messages("updateContactAddress.p2")</p>
-    <p>@messages("updateContactAddress.p3")</p>
-    <p>@messages("updateContactAddress.p4")</p>
+    @govukInsetText(InsetText(
+        content = HtmlContent(addressContent)
+    ))
 
-    @components.button_link("site.continue", continueUrl, "submit")
+    @components_refactored.paragraph_text(messages("updateContactAddress.p2"))
+
+    @components_refactored.paragraph_text(messages("updateContactAddress.p3"))
+
+    @components_refactored.paragraph_text(messages("updateContactAddress.p4"))
+
+    @button_link("site.continue", continueUrl, "submit")
+
 }

@@ -16,7 +16,8 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(
   layout: templates.Layout,
@@ -35,7 +36,8 @@
         title = Text(messages("deregisterSuccess.heading")),
         content = HtmlContent("")
     ))
-    <p class="govuk-body">@messages("deregisterSuccess.p1")</p>
+
+    @components_refactored.paragraph_text(messages("deregisterSuccess.p1"))
 
     <p class="govuk-body">
         <a id="gov-uk-link" class="govuk-link" href="@appConfig.govUkUrl" role="button">@messages("youNeedToRegister.govUkLlink")</a>
