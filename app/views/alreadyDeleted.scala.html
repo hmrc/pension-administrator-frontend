@@ -30,9 +30,10 @@
 
 @layout(pageTitle = Message(viewmodel.title)) {
 
-    @components_refactored.heading(headingKey=components.hyphen(Message("alreadyDeleted.heading", viewmodel.deletedEntity)).toString, true)
+    @components_refactored.heading((Message("alreadyDeleted.heading", viewmodel.deletedEntity)).toString, true)
 
     @components_refactored.paragraph_text(messages("alreadyDeleted.lede", viewmodel.deletedEntity))
+
     @components_refactored.paragraph_text(messages("alreadyDeleted.text"))
 
     @button_link("site.continue", viewmodel.returnCall.url, "return-to-list")
