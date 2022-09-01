@@ -15,12 +15,14 @@
  *@
 
 @import viewmodels.Message
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(govukErrorSummary : GovukErrorSummary)
 
 @(alertMessage: String = "incomplete.alert.message")(implicit messages: Messages)
-<div class="govuk-error-summary govuk-error-summary--show" role="alert" aria-labelledby="error-summary-title">
 
-    <p class="govuk-error-message" id="alert-heading">
+<div class="govuk-error-summary govuk-error-summary--show" role="alert" aria-labelledby="error-summary-title" data-disable-auto-focus="true" data-module="govuk-error-summary">
+    <p class="govuk-error-message govuk-!-margin-bottom-0" id="error-summary-title">
         @messages(alertMessage)
     </p>
-
 </div>
