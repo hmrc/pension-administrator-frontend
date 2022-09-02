@@ -27,7 +27,7 @@ object AppDependencies {
     "org.scalacheck"          %% "scalacheck"                 % "1.14.0",
     "wolfendale"              %% "scalacheck-gen-regexp"      % "0.1.1",
     "com.github.tomakehurst"  %  "wiremock-jre8"              % "2.26.0"
-  )
+  ).map(_ % "test")
 
   def apply(): Seq[ModuleID] = compile ++ test
 }
