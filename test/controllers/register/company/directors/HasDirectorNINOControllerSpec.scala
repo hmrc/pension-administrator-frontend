@@ -74,6 +74,7 @@ object HasDirectorNINOControllerSpec {
   private val formProvider = new HasReferenceNumberFormProvider()
   private val index = 0
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))
+  private val companyName = "Test Company Name"
 
   private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
@@ -81,7 +82,7 @@ object HasDirectorNINOControllerSpec {
       title = Message("hasNINO.heading", Message("theDirector")),
       heading = Message("hasNINO.heading", directorName),
       mode = mode,
-      entityName = directorName,
+      entityName = companyName,
       returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }

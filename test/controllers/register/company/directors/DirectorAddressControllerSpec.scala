@@ -100,6 +100,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       val result = controller(data).onPageLoad(NormalMode, firstIndex)(fakeRequest)
 
       status(result) mustBe OK
+      println(viewAsString())
       contentAsString(result) mustBe viewAsString()
     }
 

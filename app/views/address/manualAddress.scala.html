@@ -33,33 +33,34 @@ button: components_refactored.submit_button
 
 @(form: Form[_], viewmodel: ManualAddressViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-pageTitle = titleWithErrors(form, viewmodel.title)
-) {
+@layout(pageTitle = titleWithErrors(form, viewmodel.title)) {
 
-        @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
-            @viewmodel.hint.map{hintText =>
-            <p class="govuk-body">@messages(hintText)</p>
-            }
-            @address(form, viewmodel.countryOptions)
-            @button(messages("site.save_and_continue"))
 
-            @viewmodel.psaName.map { psaName =>
+        @viewmodel.hint.map{hintText =>
+            <p class="govuk-body">@messages(hintText)</p>
+        }
+
+        @address(form, viewmodel.countryOptions)
+
+        @button(messages("site.save_and_continue"))
+
+        @viewmodel.psaName.map { psaName =>
             @components_refactored.return_link(psaName, mode)
-                @if(mode != UpdateMode){
-                    @viewmodel.returnLink.map { returnLinkUrl =>
+            @if(mode != UpdateMode){
+                @viewmodel.returnLink.map { returnLinkUrl =>
                     <p class="govuk-margin-top-5 govuk-body">
                         <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to",psaName)</a>
                     </p>
-                    }
                 }
             }
         }
     }
+}
 

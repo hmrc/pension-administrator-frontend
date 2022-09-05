@@ -66,6 +66,7 @@ object DirectorPhoneControllerSpec {
   private val phoneForm = formProvider()
   private val index = 0
   private val directorName = "test first name test last name"
+  private val companyName = "Test Company Name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "12345"))
 
   private def viewModel(mode: Mode, index: Index) =
@@ -74,7 +75,7 @@ object DirectorPhoneControllerSpec {
       title = Message("phone.title", Message("theDirector")),
       heading = Message("phone.title", directorName),
       mode = mode,
-      entityName = directorName,
+      entityName = companyName,
       returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }
