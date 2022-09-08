@@ -56,7 +56,7 @@
 
         @if(viewModel.displayReturnLink){
             @psaNameOpt.map { psaName =>
-                @components.return_link(psaName, viewModel.mode)
+                @components_refactored.return_link(psaName, viewModel.mode)
                 @if(viewModel.mode != UpdateMode){
                     @viewModel.returnLink.map { returnLinkUrl =>
                     <p class="govuk-margin-top-8 govuk-body">

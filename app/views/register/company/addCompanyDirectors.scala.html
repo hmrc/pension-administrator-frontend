@@ -32,7 +32,7 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     input_yes_no: components_refactored.input_yes_no,
-    button: components_refactored.submit_button,
+    submit_button: components_refactored.submit_button,
     appConfig: FrontendAppConfig
 )
 
@@ -42,9 +42,7 @@
     directors.exists(director => if(mode == NormalMode) !director.isComplete else director.isNew && !director.isComplete)
 }
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))) {
 
     @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
 
@@ -57,7 +55,7 @@
         @if(directors.isEmpty) {
 
             @components_refactored.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
-            @button("addCompanyDirectors.addADirector")
+            @submit_button("addCompanyDirectors.addADirector")
 
         } else {
 
@@ -74,16 +72,16 @@
             } else {
 
                 @components_refactored.paragraph_text(messages("addCompanyDirectors.atMaximum"))
+
                 @components_refactored.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
 
             }
 
-            @button(disabled = disableSubmission)
+            @submit_button(disabled = disableSubmission)
         }
 
         @psaNameOpt.map{ psaName =>
-            @components.return_link(psaName, mode)
+            @components_refactored.return_link(psaName, mode)
         }
-
     }
 }

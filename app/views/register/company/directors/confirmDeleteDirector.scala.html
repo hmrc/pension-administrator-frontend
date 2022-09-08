@@ -14,34 +14,33 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import controllers.register.company.directors.routes._
 @import models.NormalMode
 @import models.Mode
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    submit_button: components_refactored.submit_button
 )
 
 @(index: Int, fullName: String, mode:Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("confirmDeleteDirector.title")
-) {
+@layout(pageTitle = messages("confirmDeleteDirector.title")) {
 
     @formHelper(action = ConfirmDeleteDirectorController.onSubmit(mode, index), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @components_refactored.heading(messages("confirmDeleteDirector.heading", fullName))
 
-        @components.heading(
-            headingKey = messages("confirmDeleteDirector.heading", fullName))
+        @submit_button("site.confirm")
 
-        @components.submit_button("site.confirm")
-
-        <a id="cancel" href=@controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url>
+        <a id="cancel" class="govuk-link" href=@controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url>
             @messages("site.cancel")
         </a>
-
     }
 }

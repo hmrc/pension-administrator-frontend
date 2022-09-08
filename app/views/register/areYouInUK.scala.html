@@ -28,28 +28,26 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukRadios : GovukRadios,
     govukErrorSummary: GovukErrorSummary,
-    button: components.govuk_button
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewModel: AreYouInUKViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(
-pageTitle = titleWithErrors(form, viewModel.title)
-) {
+@layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
-        @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewModel.title)</h1>
+        @components_refactored.heading(messages(viewModel.title))
 
-            @if(viewModel.mode == CheckMode){
-
-                @viewModel.p1.map{p1 => <p class="govuk-body">@messages(p1)</p>}
-                @viewModel.p2.map{p2 => <p class="govuk-body">@messages(p2)</p>}
-            }
+        @if(viewModel.mode == CheckMode){
+            @viewModel.p1.map{p1 => @components_refactored.paragraph_text(messages(p1))}
+            @viewModel.p2.map{p2 => @components_refactored.paragraph_text(messages(p2))}
+        }
 
         @govukRadios(Radios(
             fieldset = Some(Fieldset(
@@ -73,6 +71,7 @@ pageTitle = titleWithErrors(form, viewModel.title)
             ).withFormField(form("value"))
         )
 
-            @button(messages("site.save_and_continue"))
-        }
+        @submit_button(messages("site.save_and_continue"))
+
     }
+}
