@@ -37,7 +37,7 @@ class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigato
     }
   }
 
-  //noinspection ScalaStyle
+  // scalastyle:off cyclomatic.complexity
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AddCompanyDirectorsId => addCompanyDirectorRoutes(ua, mode)
 
@@ -73,7 +73,7 @@ class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigato
     }
   }
 
-  //noinspection ScalaStyle
+  // scalastyle:off cyclomatic.complexity
   private def normalAndUpdateRoutes(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AddCompanyDirectorsId => addCompanyDirectorRoutes(ua, mode)
 

@@ -69,7 +69,6 @@ class ConfirmStopBeingPsaController @Inject()(
 
   def onSubmit: Action[AnyContent] = auth.async {
     implicit request =>
-      
       request.user.alreadyEnrolledPsaId.map { psaId =>
         minimalPsaConnector.getMinimalPsaDetails(psaId).flatMap {
           minimalDetails =>

@@ -63,7 +63,8 @@ class PartnerAddressListController @Inject()(override val appConfig: FrontendApp
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.right.flatMap { pn =>
-        viewModel(mode, index, pn.fullName).right.map(vm => post(vm, PartnerAddressId(index), PartnerAddressListId(index),PartnerAddressPostCodeLookupId(index), mode,
+        viewModel(mode, index, pn.fullName).right.map(vm => post(vm, PartnerAddressId(index), PartnerAddressListId(index),
+          PartnerAddressPostCodeLookupId(index), mode,
           form(vm.addresses, pn.fullName)))
       }
   }

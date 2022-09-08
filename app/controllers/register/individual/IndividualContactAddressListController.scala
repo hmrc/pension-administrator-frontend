@@ -66,7 +66,8 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty)
-        .right.map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressListId, IndividualContactAddressPostCodeLookupId, mode, form(vm.addresses)))
+        .right.map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressListId,
+        IndividualContactAddressPostCodeLookupId, mode, form(vm.addresses)))
   }
 
 
