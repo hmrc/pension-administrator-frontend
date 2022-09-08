@@ -14,35 +14,38 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
 @import viewmodels.OrganisationNameViewModel
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_text: components_refactored.input_text,
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewModel: OrganisationNameViewModel)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages(viewModel.title))
-) {
-    @components.back_link()
+@layout(pageTitle = titleWithErrors(form, messages(viewModel.title))) {
 
-    @components.error_summary(form.errors)
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+    }
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
-        <div class="form-group @if(form.hasErrors){form-group--error}">
+        @input_text(
+            field = form("value"),
+            label = messages(viewModel.heading),
+            headingIsLegend = true
+        )
 
-            @components.input_text(
-                field = form("value"),
-                label = messages(viewModel.heading),
-                headingIsLegend = true
-            )
-        </div>
-        @components.submit_button("site.save_and_continue")
+        @submit_button("site.save_and_continue")
     }
 }

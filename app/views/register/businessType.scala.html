@@ -28,20 +28,18 @@
     govukRadios : GovukRadios,
     govukErrorSummary: GovukErrorSummary,
     formHelper: PlayFrontendFormWithCSRF,
-    button: components.govuk_button
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle  = titleWithErrors(form, messages("businessType.title"))
-) {
+@layout(pageTitle  = titleWithErrors(form, messages("businessType.title"))) {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-        }
+    @if(form.errors.nonEmpty) {
+        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+    }
 
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(("businessType.heading"))</h1>
+    @components_refactored.heading(messages("businessType.heading"))
 
     @formHelper(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
 
@@ -62,6 +60,6 @@
             ).withFormField(form("value"))
         )
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
     }
 }
