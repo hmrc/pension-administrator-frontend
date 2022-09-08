@@ -20,10 +20,12 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.DirectorsOrPartnersChangedId
+import identifiers.register.{BusinessNameId, DirectorsOrPartnersChangedId, RegistrationInfoId}
 import identifiers.register.company.directors.DirectorNameId
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
+import models.RegistrationCustomerType.UK
+import models.RegistrationLegalStatus.LimitedCompany
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -45,6 +47,8 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
   private val jonathanDoe = PersonName("Jonathan", "Doe")
   private val joeBloggs = PersonName("Joe", "Bloggs")
 
+  val registrationInfo = RegistrationInfo(LimitedCompany, "", noIdentifier=false, UK, Some(RegistrationIdType.Nino), Some("AB121212C"))
+
   private val directors = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
@@ -53,7 +57,9 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       Json.obj(
         DirectorNameId.toString -> joeBloggs
       )
-    )
+    ),
+    RegistrationInfoId.toString -> registrationInfo,
+    BusinessNameId.toString -> companyName
   )
 
   private val data = new FakeDataRetrievalAction(Some(directors))
