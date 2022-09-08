@@ -40,17 +40,16 @@
     ).toHtml
 }
 
-@layout(
-pageTitle = titleWithErrors(form, viewmodel.title)
-) {
+@layout(pageTitle = titleWithErrors(form, viewmodel.title)) {
 
-        @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
+
         @govukInput(
             Input(
                 label = Label(content = Text(viewmodel.formLabel),
@@ -58,19 +57,20 @@ pageTitle = titleWithErrors(form, viewmodel.title)
                 classes = "govuk-!-width-one-half",
             ).withFormField(form("value"))
         )
+
         <p class="govuk-body">@Html(viewmodel.enterPostcode.withArgs(link))</p>
+
         @button(messages(viewmodel.findAddressMessageKey))
+
         @viewmodel.psaName.map { psaName =>
             @components_refactored.return_link(psaName, mode)
-
             @if(mode != UpdateMode){
                 @viewmodel.returnLink.map { returnLinkUrl =>
-                <p class="govuk-margin-top-5 govuk-body">
-                    <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to",psaName)</a>
-                </p>
+                    <p class="govuk-margin-top-5 govuk-body">
+                        <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to",psaName)</a>
+                    </p>
                 }
             }
         }
     }
 }
-

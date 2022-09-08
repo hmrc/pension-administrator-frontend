@@ -25,7 +25,7 @@
     govukRadios : GovukRadios,
     govukErrorSummary: GovukErrorSummary,
     formHelper: PlayFrontendFormWithCSRF,
-    button: components.govuk_button
+    submit_button: components_refactored.submit_button,
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
@@ -34,21 +34,22 @@
     pageTitle = titleWithErrors(form, messages("continueWithRegistration.title"))
 ) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
-
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(("continueWithRegistration.heading"))</h1>
-
-    <p class="govuk-body">@messages("continueWithRegistration.p1")</p>
-
     @formHelper(action = controllers.register.routes.ContinueWithRegistrationController.onSubmit(), 'autoComplete -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
+
+        @components_refactored.heading(messages("continueWithRegistration.heading"))
+
+        @components_refactored.paragraph_text(messages("continueWithRegistration.p1"))
+
         @govukRadios(Radios(
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                content = Text(messages("continueWithRegistration.heading")),
-                classes = "govuk-visually-hidden",
-                isPageHeading = false
+                    content = Text(messages("continueWithRegistration.heading")),
+                    classes = "govuk-visually-hidden",
+                    isPageHeading = false
                 ))
             )),
             items = Seq(
@@ -64,6 +65,7 @@
             )
         ).withFormField(form("value")))
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
+
     }
 }
