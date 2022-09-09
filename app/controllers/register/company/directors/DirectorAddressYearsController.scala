@@ -22,11 +22,8 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorNameId}
 import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Index, Mode}
 import play.api.data.Form
@@ -38,6 +35,7 @@ import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorAddressYearsController @Inject()(@CompanyDirector override val navigator: Navigator,

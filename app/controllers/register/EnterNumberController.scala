@@ -19,7 +19,6 @@ package controllers.register
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
-import identifiers.register.BusinessNameId
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -27,7 +26,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
-import viewmodels.{CommonFormWithHintViewModel, Message}
+import viewmodels.CommonFormWithHintViewModel
 import views.html.register.company.enterNumber
 
 import scala.concurrent.{ExecutionContext, Future}

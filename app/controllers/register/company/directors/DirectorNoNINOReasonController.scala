@@ -21,11 +21,8 @@ import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ReasonController
 import controllers.actions._
 import forms.ReasonFormProvider
-import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorNameId, DirectorNoNINOReasonId}
 import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -35,6 +32,7 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorNoNINOReasonController @Inject()(@CompanyDirector val navigator: Navigator,

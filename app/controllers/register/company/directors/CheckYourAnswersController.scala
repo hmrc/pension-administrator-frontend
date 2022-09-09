@@ -21,14 +21,11 @@ import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.register.company.directors.routes._
 import controllers.{Retrievals, Variations}
-import identifiers.register.BusinessNameId
 import identifiers.register.company.directors._
 import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode.checkMode
 import models.requests.DataRequest
-import models.{Mode, _}
+import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -37,9 +34,10 @@ import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import utils.{Enumerable, Navigator}
-import viewmodels.{AnswerSection, Link, Message}
+import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(
@@ -76,9 +74,6 @@ class CheckYourAnswersController @Inject()(
         loadCyaPage(index, mode)
       }
   }
-
-  private def companyName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   private def loadCyaPage(index: Int, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val answersSection = Seq(

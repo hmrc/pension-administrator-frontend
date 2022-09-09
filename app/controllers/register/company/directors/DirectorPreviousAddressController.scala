@@ -23,7 +23,6 @@ import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
-import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorPreviousAddressId, DirectorPreviousAddressListId}
 import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest

@@ -24,7 +24,6 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
-import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.DirectorPreviousAddressPostCodeLookupId
 import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest

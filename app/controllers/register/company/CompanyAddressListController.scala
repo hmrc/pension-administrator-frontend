@@ -23,7 +23,6 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
-import identifiers.register.BusinessNameId
 import identifiers.register.company.{CompanyAddressListId, CompanyContactAddressPostCodeLookupId,
   CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
 import models.FeatureToggle.Enabled

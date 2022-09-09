@@ -22,19 +22,18 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.VATNumberController
 import forms.register.EnterVATFormProvider
-import identifiers.register.{BusinessNameId, EnterVATId}
+import identifiers.register.EnterVATId
 import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
+import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterVAT
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
