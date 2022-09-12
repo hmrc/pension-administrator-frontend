@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import com.ibm.icu.text.DateFormat.BooleanAttribute
-
-import java.time.LocalDate
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
-import identifiers.UpdateContactAddressId
 import identifiers.register._
 import identifiers.register.adviser._
 import identifiers.register.company._
@@ -29,6 +25,8 @@ import identifiers.register.partnership.partners._
 import models._
 import models.register.{BusinessType, DeclarationWorkingKnowledge}
 import org.scalatest.OptionValues
+
+import java.time.LocalDate
 
 
 package object utils {

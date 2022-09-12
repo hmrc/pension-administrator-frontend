@@ -23,9 +23,7 @@ import forms.EnterPAYEFormProvider
 import identifiers.register.EnterPAYEId
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
-import models.{FeatureToggle, NormalMode}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import models.NormalMode
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -36,8 +34,6 @@ import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterPAYE
-
-import scala.concurrent.Future
 
 class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
@@ -71,7 +67,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
     "on a GET" must {
       "return OK and the correct view for a GET" in {
         running(_.overrides(modules(UserAnswers().businessName(companyName).dataRetrievalAction)
-          ++ Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))) : _*
+          ++ Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))): _*
         )) {
           app =>
             val controller = app.injector.instanceOf[CompanyEnterPAYEController]
@@ -101,7 +97,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
         running(_.overrides(modules(UserAnswers().businessName().dataRetrievalAction) ++
           Seq[GuiceableModule](bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
             bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.disabled),
-          bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute))) : _*
+            bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute))): _*
         )) {
           app =>
             val request = FakeRequest().withFormUrlEncodedBody(("value", payeNumber))
