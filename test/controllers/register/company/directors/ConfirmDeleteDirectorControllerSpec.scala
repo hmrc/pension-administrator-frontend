@@ -17,11 +17,13 @@
 package controllers.register.company.directors
 
 import base.SpecBase
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.company.directors.DirectorNameId
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Index, NormalMode, PersonName}
 import play.api.Application
 import play.api.inject.bind
@@ -49,7 +51,8 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
     running(_.overrides(modules(dataRetrieval) ++
       Seq[GuiceableModule](bind[Navigator].toInstance(
         new FakeNavigator(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode))),
-        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+        bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
       ): _*)) {
       app =>
         val controller = app.injector.instanceOf[ConfirmDeleteDirectorController]
@@ -90,6 +93,7 @@ object ConfirmDeleteDirectorControllerSpec extends SpecBase {
     .overrides(
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+      bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
     ).build()
 }
