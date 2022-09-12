@@ -14,50 +14,55 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.routes._
 @import models.Mode
 @import models.register.DeclarationWorkingKnowledge
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    submit_button: components_refactored.submit_button,
+    input_yes_no: components_refactored.input_yes_no
 )
 
 @(form: Form[_], mode: Mode,psaName: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("declarationWorkingKnowledge.title"))
+@layout(
+    pageTitle = titleWithErrors(form, messages("declarationWorkingKnowledge.title"))
 ) {
 
     @formHelper(action = DeclarationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @components.error_summary(form.errors)
+        @components_refactored.heading(messages("declarationWorkingKnowledge.heading"))
 
-        <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(messages("declarationWorkingKnowledge.heading"))
+        @components_refactored.paragraph_text(messages("declarationWorkingKnowledge.p1"))
+        @components_refactored.paragraph_text(messages("declarationWorkingKnowledge.p2"))
+        @components_refactored.paragraph_text(messages("declarationWorkingKnowledge.p3"))
 
-        <p>@messages("declarationWorkingKnowledge.p1")</p>
-        <p>@messages("declarationWorkingKnowledge.p2")</p>
-        <p>@messages("declarationWorkingKnowledge.p3")</p>
-
-        @components.input_yes_no(
+        @input_yes_no(
             field = form("value"),
             label = messages("declarationWorkingKnowledge.heading"),
-            labelClass = Some("visually-hidden")
+            labelClass = Some("govuk-visually-hidden")
         )
-        </div>
-        @components.submit_button("site.save_and_continue")
+
+        @submit_button("site.save_and_continue")
 
         @psaName.map { psaName =>
-                @returnLink.map { returnLinkUrl =>
+            @returnLink.map { returnLinkUrl =>
                 <p class="govuk-margin-top-5 govuk-body">
                     <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", psaName)</a>
                 </p>
-           }
+            }
         }
     }
 }

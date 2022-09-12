@@ -15,26 +15,27 @@
  *@
 
 @import controllers.register.routes
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import models.NormalMode
 
 @this(
-    main_template: main_template
+    layout: templates.Layout,
+    button_link: components_refactored.button_link
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("declarationFitAndProper.title")
+@layout(
+    pageTitle = messages("declarationFitAndProper.title")
 ) {
 
-    @components.back_link()
+    @components_refactored.heading(messages("declarationFitAndProper.heading"))
 
-    @components.heading(messages("declarationFitAndProper.heading"))
+    @components_refactored.paragraph_text(messages("declarationFitAndProper.declaration"))
 
-    @components.paragraph_text(messages("declarationFitAndProper.declaration"))
-
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>
             @messages("declarationFitAndProper.statement1")
         </li>
@@ -55,8 +56,6 @@
         </li>
     </ul>
 
-    <div class="form-group">
-        @components.button_link("site.agreeAndContinue", controllers.register.routes.DeclarationFitAndProperController.onClickAgree().url, "submit")
-    </div>
+    @button_link("site.agreeAndContinue", controllers.register.routes.DeclarationFitAndProperController.onClickAgree().url, "submit")
 
 }

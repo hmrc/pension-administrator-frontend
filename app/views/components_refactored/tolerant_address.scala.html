@@ -20,7 +20,6 @@
 @(fieldName: String, address: TolerantAddress, countryOptions: CountryOptions)
 
 <p class="govuk-body-l">
-
 @if(address.addressLine1.isDefined) {
     <span id="@fieldName-addressLine1" class="govuk-!-display-block">@address.addressLine1</span>
 }
