@@ -64,7 +64,8 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
     implicit request =>
       PartnerNameId(index).retrieve.right.flatMap { pn =>
         viewModel(mode, index, pn.fullName).right.map(vm =>
-          post(vm, PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), PartnerPreviousAddressPostCodeLookupId(index), mode, form(vm.addresses, pn.fullName)))
+          post(vm, PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index),
+            PartnerPreviousAddressPostCodeLookupId(index), mode, form(vm.addresses, pn.fullName)))
       }
   }
 

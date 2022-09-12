@@ -16,11 +16,13 @@
 
 package controllers.register.adviser
 
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.adviser.{AdviserAddressPostCodeLookupId, AdviserNameId}
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
@@ -30,7 +32,6 @@ import play.api.mvc.MessagesControllerComponents
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -119,7 +120,8 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
     "redirect to the next page on POST of valid data" in {
       running(_.overrides(modules(dataRetrievalAction)++
         Seq[GuiceableModule](
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+          bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))):_*)) {
         app =>
           val controller = app.injector.instanceOf[AdviserAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
@@ -135,7 +137,8 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
     "redirect to Session Expired controller when no session data exists on a POST request" in {
       running(_.overrides(modules(dontGetAnyData)++
         Seq[GuiceableModule](
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+          bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))):_*)) {
         app =>
           val controller = app.injector.instanceOf[AdviserAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
@@ -151,7 +154,8 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
     "redirect to Adviser Address Post Code Lookup if no address data on a POST request" in {
       running(_.overrides(modules(getEmptyData)++
         Seq[GuiceableModule](
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+          bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))):_*)) {
         app =>
           val controller = app.injector.instanceOf[AdviserAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
@@ -183,6 +187,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
       bind[DataRetrievalAction].toInstance(dataRetrievalAction),
       bind[MessagesControllerComponents].to(controllerComponents),
       bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+      bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
     ).build()
 }

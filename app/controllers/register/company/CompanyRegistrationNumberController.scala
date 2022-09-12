@@ -22,13 +22,11 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.register.EnterNumberController
 import forms.register.company.CompanyRegistrationNumberFormProvider
-import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyRegistrationNumberId
 import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.annotations.{RegisterCompany, RegisterCompanyV2}
 import utils.{Navigator, UserAnswers}

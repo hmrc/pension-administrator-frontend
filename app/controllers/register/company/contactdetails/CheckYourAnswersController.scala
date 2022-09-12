@@ -20,10 +20,8 @@ import connectors.cache.FeatureToggleConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.company
-import identifiers.register.BusinessNameId
 import identifiers.register.company._
 import models.FeatureToggleName.PsaRegistration
-import models.requests.DataRequest
 import models.{CheckMode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -31,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 import utils.annotations.AuthWithNoIV
 import utils.countryOptions.CountryOptions
-import viewmodels.{AnswerSection, Link, Message, Section}
+import viewmodels.{AnswerSection, Link, Section}
 import views.html.check_your_answers
 
 import javax.inject.Inject
@@ -44,13 +42,16 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             checkYourAnswersView: check_your_answers,
                                             featureToggleConnector: FeatureToggleConnector
-                                          )(implicit countryOptions: CountryOptions, ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                          )
+                                          (implicit countryOptions: CountryOptions, ec: ExecutionContext) extends FrontendBaseController
+  with I18nSupport with Retrievals {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
       featureToggleConnector.enabled(PsaRegistration).ifA (
-        ifTrue = Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage, Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl())),
+        ifTrue = Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage,
+          Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl())),
         ifFalse = Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage, None, NormalMode, isComplete = true))
       )
   }

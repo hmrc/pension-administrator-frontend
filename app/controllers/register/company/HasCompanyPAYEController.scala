@@ -18,10 +18,10 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
-import controllers.{HasReferenceNumberController, Retrievals}
 import controllers.actions._
+import controllers.{HasReferenceNumberController, Retrievals}
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.{BusinessNameId, HasPAYEId}
+import identifiers.register.HasPAYEId
 import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest

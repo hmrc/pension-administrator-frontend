@@ -47,7 +47,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
   private val jonathanDoe = PersonName("Jonathan", "Doe")
   private val joeBloggs = PersonName("Joe", "Bloggs")
 
-  val registrationInfo = RegistrationInfo(LimitedCompany, "", noIdentifier=false, UK, Some(RegistrationIdType.Nino), Some("AB121212C"))
+  val registrationInfo: RegistrationInfo = RegistrationInfo(LimitedCompany, "", noIdentifier=false, UK, Some(RegistrationIdType.Nino), Some("AB121212C"))
 
   private val directors = Json.obj(
     "directors" -> Json.arr(

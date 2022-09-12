@@ -63,7 +63,8 @@ class IndividualPreviousAddressListController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, IndividualPreviousAddressId, IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId, mode, form(vm.addresses)))
+      viewmodel(mode).right.map(vm => post(vm, IndividualPreviousAddressId, IndividualPreviousAddressListId,
+        IndividualPreviousAddressPostCodeLookupId, mode, form(vm.addresses)))
   }
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {

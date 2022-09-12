@@ -23,9 +23,6 @@ import controllers.{DOBController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorDOBId, DirectorNameId}
 import models.FeatureToggleName.PsaRegistration
-import models.requests.DataRequest
-
-import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
@@ -33,6 +30,7 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.dob
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,

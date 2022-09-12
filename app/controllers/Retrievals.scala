@@ -82,6 +82,7 @@ trait Retrievals {
 
   }
 
+  // scalastyle:off
   case class ~[A, B](a: A, b: B)
 
   trait Retrieval[A] {

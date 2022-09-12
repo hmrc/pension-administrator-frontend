@@ -22,11 +22,8 @@ import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.company.directors.routes.HasDirectorUTRController
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorNameId, HasDirectorUTRId}
 import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -37,6 +34,7 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConfig,
