@@ -135,13 +135,13 @@ trait Retrievals {
 
   private[controllers] def taskListReturnLinkUrl()(implicit request: DataRequest[AnyContent]): Option[String] = {
     request.userAnswers.get(RegistrationInfoId).map(_.legalStatus) match {
-      case Some(LimitedCompany) => Some(companyTaskListUrl)
+      case Some(LimitedCompany) => Some(companyTaskListUrl())
       case Some(Partnership) => Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
       case _ => None
     }
   }
 
-  private[controllers] def companyTaskListUrl()(implicit request: DataRequest[AnyContent]): String = {
+  private[controllers] def companyTaskListUrl(): String = {
     controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url
   }
 

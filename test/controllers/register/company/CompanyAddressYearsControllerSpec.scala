@@ -23,6 +23,7 @@ import forms.address.AddressYearsFormProvider
 import identifiers.register.{BusinessNameId, BusinessUTRId}
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
+import controllers.register.company.routes.CompanyAddressYearsController
 import models.{AddressYears, NormalMode}
 import play.api.Application
 import play.api.inject.bind
