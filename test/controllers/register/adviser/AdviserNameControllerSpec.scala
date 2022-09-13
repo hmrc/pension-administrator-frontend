@@ -17,13 +17,15 @@
 package controllers.register.adviser
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, _}
+import controllers.actions._
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.adviser.AdviserNameFormProvider
 import identifiers.register.adviser.AdviserNameId
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
-import models.NormalMode
+import models.RegistrationCustomerType.UK
+import models.RegistrationLegalStatus.LimitedCompany
+import models.{NormalMode, RegistrationIdType, RegistrationInfo}
 import play.api.data.Form
 import play.api.test.FakeRequest
 import utils.{FakeNavigator, UserAnswers}
@@ -34,7 +36,9 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
   val view: adviserName = app.injector.instanceOf[adviserName]
   val formProvider = new AdviserNameFormProvider()
   private val form = formProvider()
-  private val userAnswer = UserAnswers().adviserName("test").businessName(companyName)
+  val registrationInfo: RegistrationInfo = RegistrationInfo(LimitedCompany, "", noIdentifier = false, UK, Some(RegistrationIdType.Nino), Some("AB121212C"))
+  private val validUserAnswer = UserAnswers().adviserName("test").businessName(companyName).registrationInfo(registrationInfo)
+  private val emptyUserAnswer = UserAnswers().businessName(companyName).registrationInfo(registrationInfo)
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("adviserName", "test"))
 
   private def onPageLoadAction(dataRetrievalAction: DataRetrievalAction, fakeAuth: AuthAction) = {
@@ -65,10 +69,9 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
     Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
   )(fakeRequest, messages).toString
 
-// todo fix
-//  behave like controllerWithOnPageLoadMethod(onPageLoadAction, getEmptyData, userAnswer.dataRetrievalAction, form, form.fill("test"), viewAsString)
+  behave like controllerWithOnPageLoadMethod(onPageLoadAction, emptyUserAnswer.dataRetrievalAction, validUserAnswer.dataRetrievalAction, form, form.fill("test"), viewAsString)
 
-//  behave like controllerWithOnSubmitMethod(onSubmitAction, getEmptyData, form.bind(Map(AdviserNameId.toString -> "")), viewAsString, postRequest)
+  behave like controllerWithOnSubmitMethod(onSubmitAction, validUserAnswer.dataRetrievalAction, form.bind(Map(AdviserNameId.toString -> "")), viewAsString, postRequest)
 
 }
 
