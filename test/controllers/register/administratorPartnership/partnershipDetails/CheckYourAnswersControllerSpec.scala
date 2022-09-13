@@ -64,8 +64,8 @@ class CheckYourAnswersControllerSpec
                          label: String,
                          answer: Seq[String],
                          answerIsMessageKey: Boolean = false,
-                         changeUrl: Option[Link] = None,
-                         visuallyHiddenLabel: Option[Message] = None
+                         changeUrl: Option[Link],
+                         visuallyHiddenLabel: Option[Message]
                        ): AnswerRow = {
     AnswerRow(label, answer, answerIsMessageKey, changeUrl, visuallyHiddenLabel)
   }
