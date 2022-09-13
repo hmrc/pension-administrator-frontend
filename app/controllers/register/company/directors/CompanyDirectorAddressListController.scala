@@ -18,12 +18,13 @@ package controllers.register.company.directors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId, DirectorNameId}
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Index, Mode, TolerantAddress}
 import play.api.data.Form
@@ -45,7 +46,8 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
                                                      requireData: DataRequiredAction,
                                                      formProvider: AddressListFormProvider,
                                                      val controllerComponents: MessagesControllerComponents,
-                                                     val view: addressList
+                                                     val view: addressList,
+                                                     featureToggleConnector: FeatureToggleConnector
                                                     )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
@@ -53,18 +55,27 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map { vm =>
-        get(vm, mode, form(vm.addresses, entityName(index)))
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        viewModel(mode, index, returnLink).right.map(vm =>
+          get(vm, mode, form(vm.addresses, entityName(index)))
+        )
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode, index).right.map(vm => post(vm, DirectorAddressId(index), CompanyDirectorAddressListId(index), CompanyDirectorAddressPostCodeLookupId(index), mode,
-        form(vm.addresses, entityName(index))))
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        viewModel(mode, index, returnLink).right.map(vm =>
+          post(vm, DirectorAddressId(index), CompanyDirectorAddressListId(index), CompanyDirectorAddressPostCodeLookupId(index), mode,
+            form(vm.addresses, entityName(index)))
+        )
+      }
   }
 
-  private def viewModel(mode: Mode, index: Index)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+  private def viewModel(mode: Mode, index: Index, returnLink: Option[String])
+                       (implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
     CompanyDirectorAddressPostCodeLookupId(index).retrieve.right.map { addresses =>
       AddressListViewModel(
         postCall = routes.CompanyDirectorAddressListController.onSubmit(mode, index),
@@ -74,7 +85,8 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
         Message("select.address.heading", entityName(index)),
         Message("select.address.hint.text"),
         Message("manual.entry.link"),
-        psaName = psaName()
+        psaName = psaName(),
+        returnLink = returnLink
       )
     }.left.map(_ => Future.successful(Redirect(routes.CompanyDirectorAddressPostCodeLookupController.onPageLoad(mode, index))))
   }

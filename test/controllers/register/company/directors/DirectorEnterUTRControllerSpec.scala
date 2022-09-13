@@ -17,14 +17,15 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EnterUTRFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterUTR
@@ -38,9 +39,18 @@ class DirectorEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
   val view: enterUTR = app.injector.instanceOf[enterUTR]
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEnterUTRController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+    new FakeNavigator(onwardRoute),
+    frontendAppConfig,
+    FakeUserAnswersCacheConnector,
+    FakeAuthAction,
+    FakeAllowAccessProvider(config = frontendAppConfig),
+    dataRetrievalAction,
+    new DataRequiredActionImpl,
+    formProvider,
+    controllerComponents,
+    view,
+    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+  )
 
   private def enterUTRView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
@@ -55,7 +65,6 @@ class DirectorEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-
 }
 
 object DirectorEnterUTRControllerSpec {
@@ -70,9 +79,7 @@ object DirectorEnterUTRControllerSpec {
       title = Message("enterUTR.heading", Message("theDirector")),
       heading = Message("enterUTR.heading", directorName),
       mode = mode,
-      entityName = directorName
+      entityName = directorName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }
-
-
-

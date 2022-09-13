@@ -22,11 +22,12 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.test.Helpers._
-
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -60,7 +61,8 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
       new FakeCountryOptions(environment, frontendAppConfig),
       auditService,
       controllerComponents,
-      view
+      view,
+      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
     )
 
   private val viewModel =

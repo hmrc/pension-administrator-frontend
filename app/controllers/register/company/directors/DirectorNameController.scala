@@ -17,11 +17,13 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.{PersonNameController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.DirectorNameId
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.I18nSupport
@@ -41,10 +43,11 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: personName
+                                       val view: personName,
+                                       featureToggleConnector: FeatureToggleConnector
                                       )(implicit val executionContext: ExecutionContext) extends PersonNameController with Retrievals with I18nSupport {
 
-  private[directors] def viewModel(mode: Mode, index: Index, name: String) =
+  private[directors] def viewModel(mode: Mode, index: Index, name: String, returnLink: Option[String]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorNameController.onSubmit(mode, index),
       title = "directorName.heading",
@@ -52,7 +55,8 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
       None,
       None,
       mode,
-      entityName = name
+      entityName = name,
+      returnLink = returnLink
     )
 
   private[directors] def id(index: Index): DirectorNameId =
@@ -61,15 +65,20 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
-        Future.successful(get(id(index), viewModel(mode, index, name), mode))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          Future.successful(get(id(index), viewModel(mode, index, name, returnLink), mode))
+        }
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
-        post(id(index), viewModel(mode, index, name), mode)
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          post(id(index), viewModel(mode, index, name, returnLink), mode)
+        }
       }
   }
-
 }

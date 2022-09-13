@@ -17,20 +17,22 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
 import controllers.register.company.routes.CompanySameContactAddressController
 import forms.address.SameContactAddressFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.company._
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.{Inject, Singleton}
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
@@ -52,7 +54,8 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
                                                     formProvider: SameContactAddressFormProvider,
                                                     val countryOptions: CountryOptions,
                                                     val controllerComponents: MessagesControllerComponents,
-                                                    val view: sameContactAddress
+                                                    val view: sameContactAddress,
+                                                    featureToggleConnector: FeatureToggleConnector
                                                    )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
   def form(name: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
@@ -62,7 +65,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
   private[controllers] val heading: Message = "company.same.contact.address.heading"
   private[controllers] val confirmText: Message = "same.contact.address.confirm.text"
 
-  private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
+  private def viewmodel(mode: Mode, returnLink: Option[String]): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
         (CompanyAddressId and BusinessNameId).retrieve.right.map {
@@ -71,27 +74,33 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
               postCall(mode),
               title = Message(title),
               heading = Message(heading).withArgs(name),
-              hint = Some(Message(confirmText,name)),
+              hint = Some(Message(confirmText, name)),
               address = address,
               psaName = name,
               mode = mode,
-              displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
+              displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty,
+              returnLink = returnLink
             )
         }
     )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map { vm =>
-        get(CompanySameContactAddressId, vm, form(vm.psaName))
+      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
+        val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
+        viewmodel(mode, returnLink).retrieve.right.map { vm =>
+          get(CompanySameContactAddressId, vm, form(vm.psaName))
+        }
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map { vm =>
-        post(CompanySameContactAddressId, CompanyAddressListId, CompanyContactAddressId, vm, mode, form(vm.psaName))
+      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
+        val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
+        viewmodel(mode, returnLink).retrieve.right.map { vm =>
+          post(CompanySameContactAddressId, CompanyAddressListId, CompanyContactAddressId, vm, mode, form(vm.psaName))
+        }
       }
   }
-
 }

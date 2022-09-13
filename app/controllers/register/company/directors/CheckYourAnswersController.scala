@@ -17,11 +17,14 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.register.company.directors.routes._
 import controllers.{Retrievals, Variations}
+import identifiers.register.BusinessNameId
 import identifiers.register.company.directors._
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.Mode.checkMode
 import models.requests.DataRequest
@@ -34,7 +37,7 @@ import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import utils.{Enumerable, Navigator}
-import viewmodels.{AnswerSection, Link}
+import viewmodels.{AnswerSection, Link, Message}
 import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,13 +53,14 @@ class CheckYourAnswersController @Inject()(
                                             override val cacheConnector: UserAnswersCacheConnector,
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: check_your_answers
+                                            view: check_your_answers,
+                                            featureToggleConnector: FeatureToggleConnector
                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with Retrievals with Variations with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrieveDirectorName(mode, index) {_ =>
+      retrieveDirectorName(mode, index) { _ =>
         loadCyaPage(index, mode)
       }
   }
@@ -72,6 +76,9 @@ class CheckYourAnswersController @Inject()(
         loadCyaPage(index, mode)
       }
   }
+
+  private def companyName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   private def loadCyaPage(index: Int, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val answersSection = Seq(
@@ -91,12 +98,24 @@ class CheckYourAnswersController @Inject()(
           DirectorPhoneId(index).row(Some(Link(DirectorPhoneController.onPageLoad(checkMode(mode), index).url)))
       ))
 
-    Future.successful(Ok(view(
-      answersSection,
-      controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
-      psaName(),
-      mode,
-      dataCompletion.isDirectorComplete(request.userAnswers, index)
-    )))
+    featureToggleConnector.enabled(PsaRegistration).ifA(
+      ifTrue =
+        Ok(view(
+          answersSection,
+          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
+          psaName(),
+          mode,
+          dataCompletion.isDirectorComplete(request.userAnswers, index),
+          returnLink = taskListReturnLinkUrl()
+        )),
+      ifFalse =
+        Ok(view(
+          answersSection,
+          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
+          None,
+          mode,
+          dataCompletion.isDirectorComplete(request.userAnswers, index)
+        ))
+    )
   }
 }

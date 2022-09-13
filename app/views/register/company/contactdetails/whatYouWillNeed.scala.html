@@ -26,7 +26,7 @@
     submit_button: components_refactored.submit_button
 )
 
-@(companyName: String)(implicit request: Request[_], messages: Messages)
+@(companyName: String, returnLinkCompanyName: Option[String])(implicit request: Request[_], messages: Messages)
 
 @layout(
     pageTitle = messages("contactDetails.whatYouWillNeed.title", companyName)
@@ -45,4 +45,6 @@
     @formHelper(action = WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
         @submit_button("site.continue")
     }
+
+    @returnLinkCompanyName.map(companyName => components_refactored.return_to_company_task_list(companyName))
 }

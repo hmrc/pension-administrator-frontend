@@ -22,6 +22,7 @@ import controllers.actions._
 import controllers.register.company.routes.CompanyAddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.{BusinessNameId, BusinessUTRId}
+import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
 import models.{AddressYears, FeatureToggle, NormalMode}
 import org.mockito.ArgumentMatchers.any
@@ -45,12 +46,6 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
   import CompanyAddressYearsControllerSpec._
 
-  val defaultFeatureToggleConnector = {
-    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
-    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Disabled(PsaRegistration)))
-    mockFeatureToggleConnector
-  }
-
   "render the view correctly on a GET request" in {
     val request = addCSRFToken(FakeRequest(CompanyAddressYearsController.onPageLoad(NormalMode)))
     val result = route(application, request).value
@@ -62,7 +57,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
     running(_.overrides(modules(dataRetrieval)++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[FeatureToggleConnector].toInstance(defaultFeatureToggleConnector)
+        bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.disabled)
       ):_*)) {
       app =>
         val controller = app.injector.instanceOf[CompanyAddressYearsController]
@@ -76,8 +71,6 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
   }
 }
 object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSpec {
-
-  val companyName = "Test Company Name"
 
   val view: addressYears = app.injector.instanceOf[addressYears]
 
@@ -101,7 +94,8 @@ object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSp
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-      bind[MessagesControllerComponents].to(controllerComponents)
+      bind[MessagesControllerComponents].to(controllerComponents),
+      bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
     ).build()
 
 }

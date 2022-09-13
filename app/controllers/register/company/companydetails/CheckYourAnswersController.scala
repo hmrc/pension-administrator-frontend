@@ -16,29 +16,35 @@
 
 package controllers.register.company.companydetails
 
+import connectors.cache.FeatureToggleConnector
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.company
 import identifiers.register.company.{CompanyRegistrationNumberId, HasCompanyCRNId}
-import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
+import identifiers.register.{BusinessNameId, EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
+import models.FeatureToggleName.PsaRegistration
+import models.requests.DataRequest
 import models.{CheckMode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
-import viewmodels.{AnswerSection, Link, Section}
+import viewmodels.{AnswerSection, Link, Message, Section}
 import views.html.check_your_answers
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             @AuthWithNoIV authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            checkYourAnswersView: check_your_answers
-                                          ) extends FrontendBaseController with I18nSupport {
+                                            checkYourAnswersView: check_your_answers,
+                                            featureToggleConnector: FeatureToggleConnector
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val sections: Seq[Section] = Seq(
         AnswerSection(None,
@@ -53,11 +59,13 @@ class CheckYourAnswersController @Inject()(
         )
       )
       val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
-      Ok(checkYourAnswersView(sections, nextPage, None, NormalMode, isComplete = true))
+      featureToggleConnector.enabled(PsaRegistration).ifA (
+        ifTrue = Ok(checkYourAnswersView(sections, nextPage, Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl())),
+        ifFalse = Ok(checkYourAnswersView(sections, nextPage, None, NormalMode, isComplete = true))
+      )
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>
     Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
   }
-
 }

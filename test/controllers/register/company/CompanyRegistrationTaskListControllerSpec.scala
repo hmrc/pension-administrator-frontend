@@ -28,7 +28,6 @@ class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase {
 
   private val view: taskList = app.injector.instanceOf[taskList]
   private val validData = UserAnswers()
-  private val companyName = "Test LTD"
   private val expiryDateMillis = 1653326181964L
   private val expiryDate = "23 May 2022"
 

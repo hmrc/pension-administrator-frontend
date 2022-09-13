@@ -37,12 +37,15 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
       view
     )
 
-  private def viewAsString() = view(routes.DirectorNameController.onPageLoad(NormalMode, 0))(fakeRequest, messages).toString
+  private def viewAsString() = view(
+    routes.DirectorNameController.onPageLoad(NormalMode, 0),
+    companyName
+  )(fakeRequest, messages).toString
 
   "WhatYouWillNeed Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller(getCompany).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()

@@ -33,7 +33,6 @@ class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private val companyName = "Test Company Name"
   private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("trading.error.required", companyName)
 

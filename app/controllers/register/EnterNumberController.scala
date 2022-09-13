@@ -19,6 +19,7 @@ package controllers.register
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
+import identifiers.register.BusinessNameId
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -26,7 +27,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
-import viewmodels.CommonFormWithHintViewModel
+import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.register.company.enterNumber
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -58,8 +59,9 @@ trait EnterNumberController extends FrontendBaseController with I18nSupport {
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
-      (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(view(formWithErrors, viewModel))),
+      (formWithErrors: Form[_]) => {
+        Future.successful(BadRequest(view(formWithErrors, viewModel)))
+      },
       value =>
         cacheConnector.save(request.externalId, id, value).map(
           cacheMap =>

@@ -56,16 +56,14 @@ class DeclarationWorkingKnowledgeController @Inject()(
         case None => form
         case Some(value) => form.fill(value.hasWorkingKnowledge)
       }
-      Ok(view(preparedForm, mode,
-        psaName = psaName(),
-        returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)))
+      Ok(view(preparedForm, mode, psaName(), taskListReturnLinkUrl()))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, psaName(), taskListReturnLinkUrl()))),
         value => {
           for {
             isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)

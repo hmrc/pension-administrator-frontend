@@ -16,10 +16,12 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.DataRetrievalAction
+import controllers.actions.{DataRetrievalAction, FakeFeatureToggleConnector}
 import forms.address.AddressListFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
@@ -61,7 +63,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
   )
 
   private val dataRetrievalAction =
-    UserAnswers().businessName().companyContactAddressList(addresses).dataRetrievalAction
+    UserAnswers().businessName(companyName).companyContactAddressList(addresses).dataRetrievalAction
 
   private def addressListViewModel(addresses: Seq[TolerantAddress]): AddressListViewModel = {
     AddressListViewModel(
@@ -69,16 +71,19 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
       routes.CompanyContactAddressController.onPageLoad(NormalMode),
       addresses,
       Message("select.address.heading", Message("theCompany")),
-      Message("select.address.heading", "test company"),
+      Message("select.address.heading", companyName),
       Message("select.address.hint.text"),
-      Message("manual.entry.link")
+      Message("manual.entry.link"),
+      psaName = Some(companyName),
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
   }
 
   "company Contact Address List Controller" must {
 
     "return Ok and the correct view on a GET request" in {
-      running(_.overrides(modules(dataRetrievalAction): _*)) {
+      running(_.overrides(modules(dataRetrievalAction) ++
+        Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))): _*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]
           val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -91,7 +96,8 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Company Address Post Code Lookup if no address data on a GET request" in {
-      running(_.overrides(modules(getEmptyData): _*)) {
+      running(_.overrides(modules(getEmptyData) ++
+        Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))): _*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]
           val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -102,7 +108,8 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired controller when no session data exists on a GET request" in {
-      running(_.overrides(modules(dontGetAnyData): _*)) {
+      running(_.overrides(modules(dontGetAnyData) ++
+        Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))): _*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]
           val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -113,8 +120,9 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page on POST of valid data" in {
-      running(_.overrides(modules(dataRetrievalAction)++
+      running(_.overrides(modules(dataRetrievalAction) ++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
+          bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))),
           bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]
@@ -141,6 +149,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
     "redirect to Company Address Post Code Lookup if no address data on a POST request" in {
       running(_.overrides(modules(getEmptyData)++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
+          bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))),
           bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]

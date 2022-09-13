@@ -17,11 +17,13 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.company.directors.{DirectorNameId, HasDirectorNINOId}
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -44,17 +46,20 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
                                           requireData: DataRequiredAction,
                                           formProvider: HasReferenceNumberFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
-                                          val view: hasReferenceNumber
+                                          val view: hasReferenceNumber,
+                                          featureToggleConnector: FeatureToggleConnector
                                          )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController with I18nSupport {
 
-  private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, entityName: String, index: Index, returnLink: Option[String])
+                       (implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.HasDirectorNINOController.onSubmit(mode, index),
       title = Message("hasNINO.heading", Message("theDirector")),
       heading = Message("hasNINO.heading", entityName),
       mode = mode,
       hint = None,
-      entityName = entityName
+      entityName = companyName,
+      returnLink = returnLink
     )
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
@@ -67,7 +72,10 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        get(HasDirectorNINOId(index), form(directorName), viewModel(mode, directorName, index))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(HasDirectorNINOId(index), form(directorName), viewModel(mode, directorName, index, returnLink))
+        }
 
     }
 
@@ -75,6 +83,9 @@ class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppCon
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        post(HasDirectorNINOId(index), mode, form(directorName), viewModel(mode, directorName, index))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          post(HasDirectorNINOId(index), mode, form(directorName), viewModel(mode, directorName, index, returnLink))
+        }
     }
 }

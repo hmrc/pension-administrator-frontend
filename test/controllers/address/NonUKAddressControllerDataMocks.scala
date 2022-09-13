@@ -41,7 +41,7 @@ trait NonUKAddressControllerDataMocks extends ControllerSpecBase {
   }
 
   val externalId: String = "test-external-id"
-  val companyName = "Test Company Name"
+  val testCompanyName = "Test Company Name"
   val sapNumber = "test-sap-number"
   val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
 

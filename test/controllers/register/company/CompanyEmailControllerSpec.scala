@@ -20,6 +20,8 @@ import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
@@ -29,18 +31,30 @@ import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
 class CompanyEmailControllerSpec extends ControllerWithCommonBehaviour {
-  import CompanyEmailControllerSpec._
+
+  private val formProvider = new EmailFormProvider()
+  private val emailForm = formProvider()
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   val view: email = app.injector.instanceOf[email]
-  private def controller(dataRetrievalAction: DataRetrievalAction,
-                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) = new CompanyEmailController(
-    new FakeNavigator(onwardRoute), new FakeNavigator(onwardRoute),
-    frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view, featureToggleConnector)
 
-  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode), Some("psaName"))(fakeRequest, messages).toString
+  private def controller(dataRetrievalAction: DataRetrievalAction) = new CompanyEmailController(
+    new FakeNavigator(onwardRoute),
+    new FakeNavigator(onwardRoute),
+    frontendAppConfig,
+    FakeUserAnswersCacheConnector,
+    FakeAuthAction,
+    FakeAllowAccessProvider(config = frontendAppConfig),
+    dataRetrievalAction,
+    new DataRequiredActionImpl,
+    formProvider,
+    controllerComponents,
+    view,
+    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+  )
+
+  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode), Some(companyName))(fakeRequest, messages).toString
 
   "CompanyEmail Controller" must {
 
@@ -53,20 +67,14 @@ class CompanyEmailControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-}
-
-object CompanyEmailControllerSpec {
-  private val formProvider = new EmailFormProvider()
-  private val emailForm = formProvider()
-  private val CompanyName = "Test Company Name"
-  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
   private def viewModel(mode: Mode) =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyEmailController.onSubmit(mode),
       title = Message("email.title", Message("theCompany")),
-      heading = Message("email.title", CompanyName),
+      heading = Message("email.title", companyName),
       mode = mode,
-      entityName = CompanyName
+      entityName = companyName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }

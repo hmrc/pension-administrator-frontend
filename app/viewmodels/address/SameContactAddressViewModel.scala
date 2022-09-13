@@ -29,7 +29,6 @@ case class SameContactAddressViewModel(
                                         psaName: String,
                                         mode: Mode,
                                         displayReturnLink: Boolean,
-                                        displayPartnershipLink: Boolean = false
-                                      ) {
-
-}
+                                        displayPartnershipLink: Boolean = false,
+                                        returnLink: Option[String] = None
+                                      )
