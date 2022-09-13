@@ -36,7 +36,6 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
   private def onwardRoute = controllers.routes.IndexController.onPageLoad()
 
   private val formProvider = new AddressListFormProvider()
-  private val companyName = "ThisCompanyName"
   private val companyDetails = Json.obj(BusinessNameId.toString -> companyName)
 
   private val addresses = Seq(

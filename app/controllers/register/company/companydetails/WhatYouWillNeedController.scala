@@ -16,18 +16,23 @@
 
 package controllers.register.company.companydetails
 
+import connectors.cache.FeatureToggleConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.BusinessNameId
 import identifiers.register.company.WhatYouWillNeedIdV2
+import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
+import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.{AuthWithNoIV, RegisterCompanyV2}
+import viewmodels.Message
 import views.html.register.company.companydetails
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
@@ -35,15 +40,21 @@ class WhatYouWillNeedController @Inject()(
                                            @RegisterCompanyV2 navigator: Navigator,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           whatYouWillNeedView: companydetails.whatYouWillNeed
-                                         ) extends FrontendBaseController with I18nSupport {
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) { implicit request =>
-    val companyName = request.userAnswers.getOrException(BusinessNameId)
-    Ok(whatYouWillNeedView(companyName))
+                                           whatYouWillNeedView: companydetails.whatYouWillNeed,
+                                           featureToggleConnector: FeatureToggleConnector
+                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
+    featureToggleConnector.get(PsaRegistration.asString).map { feature =>
+      val returnLinkCompanyName = if (feature.isEnabled) Some(companyName) else None
+      Ok(whatYouWillNeedView(companyName, returnLinkCompanyName))
+    }
   }
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData)  {
     implicit request =>
       Redirect(navigator.nextPage(WhatYouWillNeedIdV2, NormalMode, request.userAnswers))
   }
+
+  private def companyName(implicit request: DataRequest[AnyContent]): String =
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 }

@@ -19,12 +19,13 @@ package controllers.register.company.directors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.DirectorPreviousAddressPostCodeLookupId
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -48,7 +49,8 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
                                                                  requireData: DataRequiredAction,
                                                                  formProvider: PostCodeLookupFormProvider,
                                                                  val controllerComponents: MessagesControllerComponents,
-                                                                 val view: postcodeLookup
+                                                                 val view: postcodeLookup,
+                                                                 featureToggleConnector: FeatureToggleConnector
                                                                )(implicit val executionContext: ExecutionContext)
                                                                  extends PostcodeLookupController with Retrievals {
 
@@ -58,7 +60,10 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
     implicit request =>
       retrieveDirectorName(mode, index) {
         directorName =>
-          get(viewModel(mode, index, directorName), mode)
+          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            get(viewModel(mode, index, directorName, returnLink), mode)
+          }
       }
   }
 
@@ -66,12 +71,15 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
     implicit request =>
       retrieveDirectorName(mode, index) {
         directorName =>
-          post(DirectorPreviousAddressPostCodeLookupId(index), viewModel(mode, index, directorName), mode)
+          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            post(DirectorPreviousAddressPostCodeLookupId(index), viewModel(mode, index, directorName, returnLink), mode)
+          }
       }
   }
 
-  private def viewModel(mode: Mode, index: Index, directorName: String)(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel = {
-
+  private def viewModel(mode: Mode, index: Index, directorName: String, returnLink: Option[String])
+                       (implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel = {
     PostcodeLookupViewModel(
       routes.DirectorPreviousAddressPostCodeLookupController.onSubmit(mode, index),
       routes.DirectorPreviousAddressController.onPageLoad(mode, index),
@@ -80,7 +88,8 @@ class DirectorPreviousAddressPostCodeLookupController @Inject()(
       Message("manual.entry.text"),
       Some(Message("manual.entry.link")),
       Message("postcode.lookup.form.label"),
-      psaName()
+      psaName = psaName(),
+      returnLink = returnLink
     )
   }
 

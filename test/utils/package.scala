@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import java.time.LocalDate
-
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import identifiers.register._
 import identifiers.register.adviser._
@@ -27,6 +25,8 @@ import identifiers.register.partnership.partners._
 import models._
 import models.register.{BusinessType, DeclarationWorkingKnowledge}
 import org.scalatest.OptionValues
+
+import java.time.LocalDate
 
 
 package object utils {

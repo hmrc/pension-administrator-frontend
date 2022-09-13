@@ -17,29 +17,43 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
 class DirectorEmailControllerSpec extends ControllerWithCommonBehaviour {
-  import DirectorEmailControllerSpec._
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val view: email = app.injector.instanceOf[email]
+  private val formProvider = new EmailFormProvider()
+  private val emailForm = formProvider()
+  private val index = 0
+  private val directorName = "test first name test last name"
+  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEmailController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+    new FakeNavigator(onwardRoute),
+    frontendAppConfig,
+    FakeUserAnswersCacheConnector,
+    FakeAuthAction,
+    FakeAllowAccessProvider(config = frontendAppConfig),
+    dataRetrievalAction,
+    new DataRequiredActionImpl,
+    formProvider,
+    controllerComponents,
+    view,
+    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+  )
 
   private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
 
@@ -54,14 +68,6 @@ class DirectorEmailControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-}
-
-object DirectorEmailControllerSpec {
-  private val formProvider = new EmailFormProvider()
-  private val emailForm = formProvider()
-  private val index = 0
-  private val directorName = "test first name test last name"
-  private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
   private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
@@ -69,6 +75,7 @@ object DirectorEmailControllerSpec {
       title = Message("email.title", Message("theDirector")),
       heading = Message("email.title", directorName),
       mode = mode,
-      entityName = directorName
+      entityName = companyName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }

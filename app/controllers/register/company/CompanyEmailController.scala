@@ -21,8 +21,6 @@ import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
-import identifiers.UpdateContactAddressId
-import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyEmailId
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
@@ -56,28 +54,28 @@ class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(CompanyEmailId, form, viewModel(mode))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(CompanyEmailId, form, viewModel(mode, returnLink))
+        }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       featureToggleConnector.get(PsaRegistration.asString).flatMap {
-        case Enabled(_) =>
-          post(CompanyEmailId, mode, form, viewModel(mode), Some(navigatorV2))
+        case Enabled(_) => post(CompanyEmailId, mode, form, viewModel(mode, Some(companyTaskListUrl())), Some(navigatorV2))
         case _ => post(CompanyEmailId, mode, form, viewModel(mode))
       }
   }
 
-  private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
-
-  private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
+  private def viewModel(mode: Mode, returnLink: Option[String] = None)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyEmailController.onSubmit(mode),
       title = Message("email.title", Message("theCompany")),
-      heading = Message("email.title", entityName),
+      heading = Message("email.title", companyName),
       mode = mode,
-      entityName = entityName,
-      displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
+      entityName = companyName,
+      displayReturnLink = returnLink.nonEmpty,
+      returnLink = returnLink
     )
 }

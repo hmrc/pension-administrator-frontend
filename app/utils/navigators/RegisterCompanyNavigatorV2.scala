@@ -31,8 +31,8 @@ import utils.{Navigator, UserAnswers}
 @Singleton
 class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Navigator {
 
-//  scalastyle:off cyclomatic.complexity
-// scalastyle:off method.length
+  // scalastyle:off cyclomatic.complexity
+  // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case BusinessUTRId =>
       routes.CompanyNameController.onPageLoad()

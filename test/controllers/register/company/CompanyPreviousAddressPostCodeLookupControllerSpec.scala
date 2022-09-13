@@ -23,6 +23,8 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -31,7 +33,6 @@ import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
-
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -61,7 +62,8 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
     )
 
   private def viewAsString(form: Form[_] = form) =
@@ -87,11 +89,12 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
     Message("previous.postcode.lookup.heading", name),
     Message("manual.entry.text"),
     Some(Message("manual.entry.link")),
-    Message("postcode.lookup.form.label")
+    Message("postcode.lookup.form.label"),
+    psaName = Some(companyName),
+    returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
   )
 
   private val testAnswer = "AB12 1AB"
-  private val companyName = "Test Company Name"
 
   "CompanyPreviousAddressPostCodeLookup Controller" must {
 

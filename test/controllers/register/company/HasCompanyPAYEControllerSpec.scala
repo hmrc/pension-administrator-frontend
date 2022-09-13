@@ -18,12 +18,12 @@ package controllers.register.company
 
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
+import controllers.actions.FakeFeatureToggleConnector
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.HasPAYEId
+import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
-import models.{FeatureToggle, Mode, NormalMode}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -34,23 +34,14 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
-import scala.concurrent.Future
-
 class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  private val companyName = "test company"
   private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("hasPAYE.error.required", companyName)
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
-
-  val defaultFeatureToggleConnector = {
-    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
-    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Enabled(PsaRegistration)))
-    mockFeatureToggleConnector
-  }
 
   private def viewModel =
     CommonFormWithHintViewModel(
@@ -59,7 +50,8 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       heading = Message("hasPAYE.heading", companyName),
       mode = NormalMode,
       hint = Some(Message("hasPAYE.hint")),
-      entityName = companyName
+      entityName = companyName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 
   private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
@@ -68,7 +60,8 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
   "HasCompanyPAYEController Controller" when {
     "on a GET" must {
       "return OK and the correct view" in {
-        running(_.overrides(modules(UserAnswers().businessName().dataRetrievalAction): _*)) {
+        running(_.overrides(modules(UserAnswers().businessName(companyName).dataRetrievalAction) ++
+          Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))): _*)) {
           app =>
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
             val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -78,8 +71,9 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       }
 
       "populate the view correctly when the question has previously been answered" in {
-        val validData = UserAnswers().businessName().set(HasPAYEId)(value = true).asOpt.value.dataRetrievalAction
-        running(_.overrides(modules(validData): _*)) {
+        val validData = UserAnswers().businessName(companyName).set(HasPAYEId)(value = true).asOpt.value.dataRetrievalAction
+        running(_.overrides(modules(validData) ++
+          Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))): _*)) {
           app =>
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
             val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -101,9 +95,9 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
     "on a POST" must {
       "redirect to the next page when valid data is submitted" in {
         running(_.overrides(
-          modules(UserAnswers().businessName().dataRetrievalAction) ++
+          modules(UserAnswers().businessName(companyName).dataRetrievalAction) ++
             Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
-              bind[FeatureToggleConnector].toInstance(defaultFeatureToggleConnector),
+              bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))),
               bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)): _*)) {
           app =>
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
@@ -116,7 +110,8 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
-        running(_.overrides(modules(UserAnswers().businessName().dataRetrievalAction): _*)) {
+        running(_.overrides(modules(UserAnswers().businessName(companyName).dataRetrievalAction) ++
+          Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))): _*)) {
           app =>
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
             val boundForm = form.bind(Map("value" -> "invalid value"))

@@ -33,7 +33,7 @@ import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
 import viewmodels._
 
-//scalastyle:off number.of.methods
+// scalastyle:off
 class ViewPsaDetailsHelper(userAnswers: UserAnswers,
                            countryOptions: CountryOptions
                           )(implicit messages: Messages) {

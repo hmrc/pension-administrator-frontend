@@ -14,47 +14,44 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.play.views.html._
 @import controllers.register.adviser.routes._
 @import models.Mode
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    layout: templates.Layout,
-    formHelper: PlayFrontendFormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    submit_button: components_refactored.submit_button,
-    input_text: components_refactored.input_text
+    main_template: main_template,
+    formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, psaNameOpt: Option[String], returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("adviserName.title"))
+@main_template(
+    title = titleWithErrors(form, messages("adviserName.title"))
 ) {
 
     @formHelper(action = AdviserNameController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-        }
+        @components.back_link()
 
-        @input_text(
-            field = form("adviserName"),
-            label = messages("adviserName.heading"),
-            labelClass = Some("govuk-label--xl"),
-            inputClass = Some("govuk-!-width-one-half"),
-            hint = Some(messages("adviserName.p1")),
+        @components.error_summary(form.errors)
+
+        <div class="form-group @if(form.hasErrors){form-group--error}">
+
+        @components.input_text(
+          field = form("adviserName"),
+          label = messages("adviserName.heading"),
+            paragraphText = Some(messages("adviserName.p1")),
             headingIsLegend = true
         )
-
-        @submit_button("site.save_and_continue")
-
-        @psaNameOpt.map{ psaName =>
-            @components_refactored.return_link(psaName, mode)
+        </div>
+        @components.submit_button("site.save_and_continue")
+        @psaNameOpt.map { psaName =>
+            @returnLink.map { returnLinkUrl =>
+                <p class="govuk-margin-top-5 govuk-body">
+                    <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", psaName)</a>
+                </p>
+            }
         }
     }
 }

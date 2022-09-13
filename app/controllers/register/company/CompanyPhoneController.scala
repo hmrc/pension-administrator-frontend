@@ -22,21 +22,19 @@ import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.UpdateContactAddressId
-import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPhoneId
 import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.{Navigator, UserAnswers}
 import utils.annotations.{NoRLSCheck, RegisterCompany}
+import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
@@ -56,14 +54,20 @@ class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(CompanyPhoneId, form, viewModel(mode))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(CompanyPhoneId, form, viewModel(mode, returnLink))
+        }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, viewModel(mode), psaName()))),
+          featureToggleConnector.enabled(PsaRegistration).map { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            BadRequest(view(formWithErrors, viewModel(mode, returnLink), psaName()))
+          },
         value => {
           for {
             cacheMap <- cacheConnector.save(request.externalId, CompanyPhoneId, value)
@@ -80,16 +84,14 @@ class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator
       )
   }
 
-  private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
-
-  private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]) =
+  private def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyPhoneController.onSubmit(mode),
       title = Message("phone.title", Message("theCompany")),
-      heading = Message("phone.title", entityName),
+      heading = Message("phone.title", companyName),
       mode = mode,
-      entityName = entityName,
-      displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
+      entityName = companyName,
+      displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty,
+      returnLink = returnLink
     )
 }

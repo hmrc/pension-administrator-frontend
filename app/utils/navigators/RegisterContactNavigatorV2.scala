@@ -122,7 +122,6 @@ class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions,
     case CompanyPreviousAddressPostCodeLookupId =>
       routes.CompanyAddressListController.onPageLoad(CheckMode)
     case CompanyPreviousAddressId =>
-      println("------------- in here")
       checkYourAnswers
     case CompanyEmailId =>
       checkYourAnswers
@@ -149,7 +148,6 @@ class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions,
   }
 
   private def finishAmendmentNavigation(answers: UserAnswers): Call = {
-    println("--------------in amend")
     answers.get(UpdateContactAddressId) match {
       case Some(_) => updateContactAddressCYAPage()
       case _ => anyMoreChanges

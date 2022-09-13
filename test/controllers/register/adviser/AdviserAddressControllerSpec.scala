@@ -22,6 +22,8 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Address, NormalMode, TolerantAddress}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -29,7 +31,6 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
-
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
@@ -159,10 +160,21 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   def controller(dataRetrievalAction: DataRetrievalAction = getAdviser) =
-    new AdviserAddressController(frontendAppConfig, FakeUserAnswersCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute), FakeAllowAccessProvider(config = frontendAppConfig),
-      FakeAuthAction, dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-      countryOptions, fakeAuditService, controllerComponents, view)
+    new AdviserAddressController(
+      frontendAppConfig,
+      FakeUserAnswersCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeAllowAccessProvider(config = frontendAppConfig),
+      FakeAuthAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider,
+      countryOptions,
+      fakeAuditService,
+      controllerComponents,
+      view,
+      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+    )
 
   def viewAsString(form: Form[_] = form): String = view(form, addressViewModel, NormalMode)(fakeRequest, messages).toString
 }

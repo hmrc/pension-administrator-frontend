@@ -17,13 +17,13 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.EnterUTRController
 import controllers.actions._
 import controllers.register.company.directors.routes.DirectorEnterUTRController
 import forms.EnterUTRFormProvider
 import identifiers.register.company.directors.{DirectorEnterUTRId, DirectorNameId}
-import javax.inject.Inject
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import play.api.data.Form
@@ -33,6 +33,7 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterUTR
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navigator,
@@ -44,9 +45,9 @@ class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navig
                                            requireData: DataRequiredAction,
                                            formProvider: EnterUTRFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           val view: enterUTR
+                                           val view: enterUTR,
+                                           featureToggleConnector: FeatureToggleConnector
                                           )(implicit val executionContext: ExecutionContext) extends EnterUTRController {
-
   private def form(directorName: String)
                   (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] = formProvider(directorName)
 
@@ -54,24 +55,31 @@ class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navig
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        get(DirectorEnterUTRId(index), form(directorName), viewModel(mode, index, directorName))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(DirectorEnterUTRId(index), form(directorName), viewModel(mode, index, directorName, returnLink))
+        }
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val directorName = entityName(index)
-      post(DirectorEnterUTRId(index), mode, form(directorName), viewModel(mode, index, directorName))
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        post(DirectorEnterUTRId(index), mode, form(directorName), viewModel(mode, index, directorName, returnLink))
+      }
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
-  private def viewModel(mode: Mode, index: Index, directorName: String) =
+  private def viewModel(mode: Mode, index: Index, directorName: String, returnLink: Option[String])(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = DirectorEnterUTRController.onSubmit(mode, index),
       title = Message("enterUTR.heading", Message("theDirector")),
       heading = Message("enterUTR.heading", directorName),
       mode = mode,
-      entityName = directorName
+      entityName = companyName,
+      returnLink = returnLink
     )
 }

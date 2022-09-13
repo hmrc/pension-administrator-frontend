@@ -33,7 +33,7 @@ import identifiers.{Identifier, UpdateContactAddressId}
 class IndividualNavigator @Inject()(config: FrontendAppConfig,
                                     countryOptions: CountryOptions) extends Navigator {
 
-  //noinspection ScalaStyle
+  // scalastyle:off cyclomatic.complexity
   override def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case AreYouInUKId => countryOfRegistrationRoutes(ua)
 
@@ -58,7 +58,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
-  //noinspection ScalaStyle
+  // scalastyle:off cyclomatic.complexity
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AreYouInUKId => countryOfRegistrationEditRoutes(ua)
     case IndividualDateOfBirthId => checkYourAnswers

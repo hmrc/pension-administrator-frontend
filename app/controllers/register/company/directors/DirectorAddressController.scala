@@ -18,12 +18,13 @@ package controllers.register.company.directors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import controllers.{Retrievals, Variations}
 import forms.AddressFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, DirectorAddressId}
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
@@ -47,25 +48,30 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
                                           formProvider: AddressFormProvider,
                                           countryOptions: CountryOptions,
                                           val controllerComponents: MessagesControllerComponents,
-                                          val view: manualAddress
+                                          val view: manualAddress,
+                                          featureToggleConnector: FeatureToggleConnector
                                          )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals with Variations {
 
   override protected val form: Form[Address] = formProvider()
 
-  private def addressViewModel(mode: Mode, index: Index, directorName: String)
+  private def addressViewModel(mode: Mode, index: Index, directorName: String, returnLink: Option[String])
                               (implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.DirectorAddressController.onSubmit(mode, index),
     countryOptions.options,
     Message("enter.address.heading", Message("theDirector")),
     Message("enter.address.heading", directorName),
-    psaName = psaName()
+    psaName = psaName(),
+    returnLink = returnLink
   )
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(mode, index) {
         directorName =>
-          get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName), mode)
+          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName, returnLink), mode)
+          }
       }
   }
 
@@ -73,8 +79,10 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
     implicit request =>
       retrieveDirectorName(mode, index) {
         directorName =>
-          val vm = addressViewModel(mode, index, directorName)
-          post(DirectorAddressId(index), vm, mode)
+          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            post(DirectorAddressId(index), addressViewModel(mode, index, directorName, returnLink), mode)
+          }
       }
   }
 

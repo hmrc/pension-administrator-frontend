@@ -45,6 +45,7 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig,
     case VariationWorkingKnowledgeId => variationWorkingKnowledgeEditRoute(ua)
   }
 
+  // scalastyle:off cyclomatic.complexity
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
 
     case ConfirmDeleteAdviserId => deleteAdviserRoute(ua)

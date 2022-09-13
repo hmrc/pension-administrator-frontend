@@ -24,6 +24,7 @@ import utils.navigators._
 
 class PODSModule extends AbstractModule {
 
+  // scalastyle:off
   override def configure(): Unit = {
 
     bind(classOf[AuthAction])

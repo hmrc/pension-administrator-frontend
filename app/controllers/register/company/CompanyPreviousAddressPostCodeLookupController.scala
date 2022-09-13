@@ -19,15 +19,17 @@ package controllers.register.company
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
-import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
+import models.FeatureToggleName.PsaRegistration
 import models.Mode
+import models.requests.DataRequest
 import play.api.data.Form
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.NoRLSCheck
 import utils.annotations.RegisterCompany
@@ -48,7 +50,8 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
                                                                 requireData: DataRequiredAction,
                                                                 formProvider: PostCodeLookupFormProvider,
                                                                 val controllerComponents: MessagesControllerComponents,
-                                                                val view: postcodeLookup
+                                                                val view: postcodeLookup,
+                                                                featureToggleConnector: FeatureToggleConnector
                                                               )(implicit val executionContext: ExecutionContext) extends PostcodeLookupController {
 
   override protected def form: Form[String] = formProvider()
@@ -56,25 +59,34 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
-        get(viewModel(mode, name), mode)
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(viewModel(mode, name, returnLink), mode)
+        }
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.right.map { name =>
-        post(CompanyPreviousAddressPostCodeLookupId, viewModel(mode, name), mode)
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          post(CompanyPreviousAddressPostCodeLookupId, viewModel(mode, name, returnLink), mode)
+        }
       }
   }
 
-  def viewModel(mode: Mode, name: String): PostcodeLookupViewModel = PostcodeLookupViewModel(
-    routes.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode),
-    routes.CompanyPreviousAddressController.onPageLoad(mode),
-    Message("previous.postcode.lookup.heading", Message("theCompany")),
-    Message("previous.postcode.lookup.heading", name),
-    Message("manual.entry.text"),
-    Some(Message("manual.entry.link")),
-    Message("postcode.lookup.form.label")
-  )
+  def viewModel(mode: Mode, name: String, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): PostcodeLookupViewModel =
+    PostcodeLookupViewModel(
+      routes.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode),
+      routes.CompanyPreviousAddressController.onPageLoad(mode),
+      Message("previous.postcode.lookup.heading", Message("theCompany")),
+      Message("previous.postcode.lookup.heading", name),
+      Message("manual.entry.text"),
+      Some(Message("manual.entry.link")),
+      Message("postcode.lookup.form.label"),
+      psaName = Some(companyName),
+      returnLink = returnLink
+    )
 
 }

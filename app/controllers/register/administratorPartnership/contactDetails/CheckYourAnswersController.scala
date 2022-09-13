@@ -55,14 +55,18 @@ class CheckYourAnswersController @Inject()(
     val isPartnershipTradingOverAYear = userAnswers.get(PartnershipTradingOverAYearId).isDefined
     Seq(
       AnswerSection(None,
-        PartnershipContactAddressId.cya.row(PartnershipContactAddressId)(Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
-          PartnershipAddressYearsId.cya.row(PartnershipAddressYearsId)(Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)), userAnswers) ++
+        PartnershipContactAddressId.cya.row(PartnershipContactAddressId)
+        (Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
+          PartnershipAddressYearsId.cya.row(PartnershipAddressYearsId)
+          (Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)), userAnswers) ++
           (if (isPartnershipTradingOverAYear) {
-            PartnershipTradingOverAYearId.cya.row(PartnershipTradingOverAYearId)(Some(Link(routes.PartnershipTradingOverAYearController.onPageLoad(CheckMode).url)), userAnswers)
+            PartnershipTradingOverAYearId.cya.row(PartnershipTradingOverAYearId)(Some
+            (Link(routes.PartnershipTradingOverAYearController.onPageLoad(CheckMode).url)), userAnswers)
           } else {
             Nil
           }) ++
-          PartnershipPreviousAddressId.cya.row(PartnershipPreviousAddressId)(Some(Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)), userAnswers) ++
+          PartnershipPreviousAddressId.cya.row(PartnershipPreviousAddressId)(Some
+          (Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)), userAnswers) ++
           PartnershipEmailId.cya.row(PartnershipEmailId)(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url)), userAnswers) ++
           PartnershipPhoneId.cya.row(PartnershipPhoneId)(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)), userAnswers)
       )

@@ -27,11 +27,13 @@ import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.DataRequest
 import models.{Mode, PersonName}
+import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Call, Result}
+import viewmodels.Message
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.language.implicitConversions
 
 trait Retrievals {
@@ -80,6 +82,7 @@ trait Retrievals {
 
   }
 
+  // scalastyle:off
   case class ~[A, B](a: A, b: B)
 
   trait Retrieval[A] {
@@ -121,16 +124,29 @@ trait Retrievals {
 
   private[controllers] def psaName()(implicit request: DataRequest[AnyContent]): Option[String] = {
 
-    val legalStatus =  request.userAnswers.get(RegistrationInfoId).map(_.legalStatus)
+    val legalStatus = request.userAnswers.get(RegistrationInfoId).map(_.legalStatus)
 
     legalStatus match {
       case Some(Individual) => request.userAnswers.get(IndividualDetailsId).map(_.fullName)
-
       case Some(LimitedCompany) | Some(Partnership) => request.userAnswers.get(BusinessNameId)
-
       case _ => None
     }
   }
+
+  private[controllers] def taskListReturnLinkUrl()(implicit request: DataRequest[AnyContent]): Option[String] = {
+    request.userAnswers.get(RegistrationInfoId).map(_.legalStatus) match {
+      case Some(LimitedCompany) => Some(companyTaskListUrl())
+      case Some(Partnership) => Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
+      case _ => None
+    }
+  }
+
+  private[controllers] def companyTaskListUrl(): String = {
+    controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url
+  }
+
+  private[controllers] def companyName(implicit request: DataRequest[AnyContent], messages: Messages): String =
+    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   private[controllers] def psaEmail(implicit request: DataRequest[AnyContent]): Option[String] = {
     val answers = request.userAnswers
@@ -141,5 +157,13 @@ trait Retrievals {
         case Partnership => answers.get(PartnershipEmailId)
       }
     }
+  }
+
+  implicit class IfM(f: Future[Boolean])(implicit ec: ExecutionContext){
+    def ifA[A](ifTrue: => A, ifFalse: => A): Future[A] =
+      f.map(bool => if(bool) ifTrue else ifFalse)
+
+    def ifM[A](ifTrue: => Future[A], ifFalse: => Future[A]): Future[A] =
+      f.flatMap(bool => if(bool) ifTrue else ifFalse)
   }
 }
