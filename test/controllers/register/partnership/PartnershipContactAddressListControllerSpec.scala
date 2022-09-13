@@ -82,8 +82,8 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
     "render the view correctly on a GET request" in {
       val request = addCSRFToken(FakeRequest(GET, routes.PartnershipContactAddressListController.onPageLoad(NormalMode).url))
       val result = route(application, request).value
-          status(result) mustBe OK
-          contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(request)).toString()
+      status(result) mustBe OK
+      contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(request)).toString()
 
     }
 
