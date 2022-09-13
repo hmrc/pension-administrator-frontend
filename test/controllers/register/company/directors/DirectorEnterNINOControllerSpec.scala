@@ -70,6 +70,7 @@ object DirectorEnterNINOControllerSpec {
   private val formProvider = new NINOFormProvider()
   private val index = 0
   private val directorName = "test first name test last name"
+  private val companyName = "Test Company Name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "AB100100A"))
 
   private def viewModel(mode: Mode, index: Index) =
@@ -79,7 +80,7 @@ object DirectorEnterNINOControllerSpec {
       heading = Message("enterNINO.heading", directorName),
       hint = Some(Message("enterNINO.hint")),
       mode = mode,
-      entityName = directorName,
+      entityName = companyName,
       returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }

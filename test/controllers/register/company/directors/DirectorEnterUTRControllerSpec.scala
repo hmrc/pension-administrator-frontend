@@ -71,6 +71,7 @@ object DirectorEnterUTRControllerSpec {
   private val formProvider = new EnterUTRFormProvider()
   private val index = 0
   private val directorName = "test first name test last name"
+  private val companyName = "Test Company Name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "1111111111"))
 
   private def viewModel(mode: Mode, index: Index) =
@@ -79,7 +80,7 @@ object DirectorEnterUTRControllerSpec {
       title = Message("enterUTR.heading", Message("theDirector")),
       heading = Message("enterUTR.heading", directorName),
       mode = mode,
-      entityName = directorName,
+      entityName = companyName,
       returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }

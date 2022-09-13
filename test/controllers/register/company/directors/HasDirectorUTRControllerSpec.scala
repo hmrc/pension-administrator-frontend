@@ -69,6 +69,7 @@ class HasDirectorUTRControllerSpec extends ControllerWithCommonBehaviour {
 }
 object HasDirectorUTRControllerSpec {
   private val directorName = "test first name test last name"
+  private val companyName = "Test Company Name"
   private val formProvider = new HasReferenceNumberFormProvider()
   private val index = 0
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))
@@ -80,7 +81,7 @@ object HasDirectorUTRControllerSpec {
       heading = Message("hasUTR.heading", directorName),
       hint = Some(Message("utr.p1")),
       mode = mode,
-      entityName = directorName,
+      entityName = companyName,
       returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }
