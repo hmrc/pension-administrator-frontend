@@ -47,5 +47,8 @@
 
     @button_link("site.continue", href.url, "submit")
 
-    @components_refactored.return_to_company_task_list(returnLinkCompanyName)
+    <p class="govuk-margin-top-8 govuk-body">
+        <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", returnLinkCompanyName)</a>
+    </p>
+
 }

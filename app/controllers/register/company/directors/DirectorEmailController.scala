@@ -55,7 +55,7 @@ class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigato
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
-          val returnLinkCompanyName = if (feature.isEnabled) Some(companyName) else None
+          val returnLinkCompanyName = if (feature.isEnabled) Some(companyTaskListUrl()) else None
           get(DirectorEmailId(index), form, viewModel(mode, index, entityName(index), returnLinkCompanyName))
         }
     }
