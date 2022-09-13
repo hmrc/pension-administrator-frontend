@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId

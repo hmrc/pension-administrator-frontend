@@ -23,9 +23,7 @@ import forms.HasReferenceNumberFormProvider
 import identifiers.register.HasPAYEId
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
-import models.{FeatureToggle, Mode, NormalMode}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -35,8 +33,6 @@ import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
-
-import scala.concurrent.Future
 
 class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
 
