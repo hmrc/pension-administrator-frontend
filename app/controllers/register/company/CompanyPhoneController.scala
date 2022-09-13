@@ -22,21 +22,19 @@ import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.UpdateContactAddressId
-import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPhoneId
 import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.{Navigator, UserAnswers}
 import utils.annotations.{NoRLSCheck, RegisterCompany}
+import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,

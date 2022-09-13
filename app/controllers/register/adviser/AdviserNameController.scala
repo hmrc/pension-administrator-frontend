@@ -34,7 +34,7 @@ import utils.annotations.Adviser
 import utils.{Navigator, UserAnswers}
 import views.html.register.adviser.adviserName
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AdviserNameController @Inject()(
                                        appConfig: FrontendAppConfig,

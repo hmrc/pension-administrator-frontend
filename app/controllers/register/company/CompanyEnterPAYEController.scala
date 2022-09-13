@@ -23,7 +23,7 @@ import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.EnterPAYEController
 import forms.EnterPAYEFormProvider
-import identifiers.register.{BusinessNameId, EnterPAYEId}
+import identifiers.register.EnterPAYEId
 import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest

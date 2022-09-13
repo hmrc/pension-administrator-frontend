@@ -18,12 +18,9 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
-import controllers.Retrievals
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
-import identifiers.UpdateContactAddressId
-import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyEmailId
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration

@@ -18,23 +18,22 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
-import controllers.{HasReferenceNumberController, Retrievals}
 import controllers.actions._
 import controllers.register.company.routes.HasCompanyVATController
+import controllers.{HasReferenceNumberController, Retrievals}
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.{BusinessNameId, HasVATId}
+import identifiers.register.HasVATId
 import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
+import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfig,
