@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.ReasonFormProvider
 import models.FeatureToggle.Enabled
@@ -34,10 +34,10 @@ class DirectorNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   private val formProvider = new ReasonFormProvider()
+  private val directorName = "test first name test last name"
   private val reasonForm = formProvider(directorName)
   val view: reason = app.injector.instanceOf[reason]
   private val index = 0
-  private val directorName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test reason"))
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorNoUTRReasonController(

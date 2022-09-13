@@ -16,14 +16,13 @@
 
 package controllers.register
 
-import connectors.RegistrationConnectorSpec.{sapNumber, utr}
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeUnAuthorisedAction}
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.YesNoFormProvider
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
-import models.{NormalMode, RegistrationCustomerType, RegistrationIdType, RegistrationInfo, RegistrationLegalStatus}
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
+import models._
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -37,7 +36,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
   import ContinueWithRegistrationControllerSpec._
 
   private val view: continueWithRegistration = app.injector.instanceOf[continueWithRegistration]
-  
+
   "ContinueWithRegistrationController" must {
 
     "onPageLoad" must {
@@ -139,7 +138,8 @@ object ContinueWithRegistrationControllerSpec {
 
   private val utr = "test-utr"
   private val sapNumber = "test-sap-number"
-  private def registrationInfo(registrationCustomerType:RegistrationCustomerType) = RegistrationInfo(
+
+  private def registrationInfo(registrationCustomerType: RegistrationCustomerType) = RegistrationInfo(
     RegistrationLegalStatus.LimitedCompany,
     sapNumber,
     noIdentifier = false,

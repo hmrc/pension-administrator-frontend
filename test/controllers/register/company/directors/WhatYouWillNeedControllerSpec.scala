@@ -20,14 +20,13 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import models.NormalMode
 import play.api.test.Helpers._
-
 import views.html.register.company.directors.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
   val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
     new WhatYouWillNeedController(
       frontendAppConfig,
       FakeAuthAction,

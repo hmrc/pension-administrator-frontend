@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
