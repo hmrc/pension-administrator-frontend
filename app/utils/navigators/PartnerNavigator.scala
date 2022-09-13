@@ -41,7 +41,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     }
   }
 
-  //noinspection ScalaStyle
+  // scalastyle:off cyclomatic.complexity
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case PartnerNameId(index) => checkYourAnswersPage(index, journeyMode(mode))
     case PartnerDOBId(index) => checkYourAnswersPage(index, journeyMode(mode))
@@ -73,7 +73,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     }
   }
 
-  //noinspection ScalaStyle
+  // scalastyle:off cyclomatic.complexity
   private def normalAndUpdateRoutes(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AddPartnersId => addPartnerRoutes(ua, mode)
     case TellUsAboutAnotherPartnerId => PartnerNameController.onPageLoad(mode, ua.partnersCount)

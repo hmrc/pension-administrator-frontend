@@ -44,13 +44,16 @@ class CheckYourAnswersController @Inject()(
                                             requireData: DataRequiredAction,
                                             checkYourAnswersView: check_your_answers,
                                             featureToggleConnector: FeatureToggleConnector
-                                          )(implicit countryOptions: CountryOptions, ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                          )
+                                          (implicit countryOptions: CountryOptions, ec: ExecutionContext) extends FrontendBaseController
+  with I18nSupport with Retrievals {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
       featureToggleConnector.enabled(PsaRegistration).ifA (
-        ifTrue = Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage, Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl())),
+        ifTrue = Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage,
+          Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl())),
         ifFalse = Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage, None, NormalMode, isComplete = true))
       )
   }
