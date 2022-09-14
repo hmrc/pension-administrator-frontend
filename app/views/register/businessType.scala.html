@@ -39,8 +39,6 @@
         @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
     }
 
-    @components_refactored.heading(messages("businessType.heading"))
-
     @formHelper(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
 
         @govukRadios(
@@ -50,8 +48,8 @@
                     legend = Some(
                         Legend(
                             content = Text(messages("businessType.heading")),
-                            classes = "govuk-visually-hidden",
-                            isPageHeading = false
+                            classes = "govuk-fieldset__legend--xl",
+                            isPageHeading = true
                         )
                     )
                 )

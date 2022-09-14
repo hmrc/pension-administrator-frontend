@@ -33,6 +33,14 @@
 
 @(form: Form[_], viewModel: AreYouInUKViewModel)(implicit request: Request[_], messages: Messages)
 
+
+@hintHtml = {
+    @if(viewModel.mode == CheckMode){
+        <p>@viewModel.p1.map{p1 => @messages(p1)}</p>
+        <p>@viewModel.p2.map{p2 => @messages(p2)}</p>
+    }
+}
+
 @layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
@@ -41,21 +49,16 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewModel.title)</h1>
-        @components_refactored.heading(messages(viewModel.title))
-
-        @if(viewModel.mode == CheckMode){
-            @viewModel.p1.map{p1 => @components_refactored.paragraph_text(messages(p1))}
-            @viewModel.p2.map{p2 => @components_refactored.paragraph_text(messages(p2))}
-        }
-
         @govukRadios(Radios(
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                content = Text(viewModel.heading),
-                classes = "govuk-visually-hidden",
-                isPageHeading = false
+                    content = Text(viewModel.heading),
+                    classes = "govuk-fieldset__legend--xl",
+                    isPageHeading = true
                 ))
+            )),
+            hint = Some(Hint(
+                content = HtmlContent(hintHtml)
             )),
             items = Seq(
                 RadioItem(
