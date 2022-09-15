@@ -27,7 +27,7 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios,
-    button: components.govuk_button
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
@@ -36,15 +36,13 @@
     pageTitle = titleWithErrors(form, messages("nonUKBusinessType.title"))
 ) {
 
-
     @formHelper(action = NonUKBusinessTypeController.onSubmit(), 'autoComplete -> "off") {
 
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-    @if(form.errors.nonEmpty) {
-    @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
-
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(("nonUKBusinessType.heading"))</h1>
+        @components_refactored.heading(messages("nonUKBusinessType.heading"))
 
         @govukRadios(
             Radios(
@@ -62,6 +60,8 @@
             items = NonUKBusinessType.radioOptions
             ).withFormField(form("value"))
         )
-        @button(messages("site.save_and_continue"))
+
+        @submit_button(messages("site.save_and_continue"))
+
     }
 }

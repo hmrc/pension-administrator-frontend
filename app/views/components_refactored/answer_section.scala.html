@@ -26,7 +26,7 @@
 @(answerSection: AnswerSection, idPath: String, wideKey: Boolean = false)(implicit messages: Messages)
 
 @if(answerSection.headingKey.isDefined){
-<h2 id="cya-@idPath-heading" class="govuk-heading-m">@messages(answerSection.headingKey.get)</h2>
+    <h2 id="cya-@idPath-heading" class="govuk-heading-m">@messages(answerSection.headingKey.get)</h2>
 }
 
 @govukSummaryList(SummaryList(

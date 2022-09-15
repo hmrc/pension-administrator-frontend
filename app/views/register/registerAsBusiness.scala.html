@@ -26,42 +26,41 @@
     govukRadios : GovukRadios,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    submit_button: components.govuk_button
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle  = titleWithErrors(form, messages("registerAsBusiness.title"))
-) {
+@layout(pageTitle  = titleWithErrors(form, messages("registerAsBusiness.title"))) {
 
+    @formHelper(action = RegisterAsBusinessController.onSubmit(), 'autoComplete -> "off") {
 
-@formHelper(action = RegisterAsBusinessController.onSubmit(), 'autoComplete -> "off") {
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
-
-    @govukRadios(Radios(
-        fieldset = Some(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages("registerAsBusiness.heading")),
-                classes = "govuk-fieldset__legend--xl",
-                isPageHeading = true
-            ))
-        )),
-        items = Seq(
-            RadioItem(
-                content = Text(messages("registerAsBusiness.yes.label")),
-                value = Some(messages("site.true"))
+        @govukRadios(Radios(
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("registerAsBusiness.heading")),
+                    classes = "govuk-fieldset__legend--xl",
+                    isPageHeading = true
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    content = Text(messages("registerAsBusiness.yes.label")),
+                    value = Some(messages("site.true"))
+                    ),
+                RadioItem(
+                    content = Text(messages("registerAsBusiness.no.label")),
+                    value = Some(messages("site.false"))
+                    )
                 ),
-            RadioItem(
-                content = Text(messages("registerAsBusiness.no.label")),
-                value = Some(messages("site.false"))
-                )
-            ),
-        ).withFormField(form("value")))
+            ).withFormField(form("value")
+        ))
 
         @submit_button(messages("site.continue"))
+
     }
 }

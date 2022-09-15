@@ -27,18 +27,18 @@
                 <span id="cya-@idPath-0-answer">@messages(row.answer.head)</span>
             } else{
                 @for((r, i) <- row.answer.zipWithIndex){
-                    <span id="cya-@idPath-@i-answer" class="address-multi-line">@r</span>
+                    <span id="cya-@idPath-@i-answer" class="govuk-!-display-block">@r</span>
                 }
             }
     </dd>
     <dd class="cya-change">
         @row.changeUrl.map { changeUrl =>
-            <a id="cya-@idPath-change" href='@{changeUrl.url}'>
+            <a id="cya-@idPath-change" class="govuk-link" href='@{changeUrl.url}'>
                 <span>@messages(changeUrl.text)</span>
                 @row.visuallyHiddenText.map{ hiddenLabel =>
-                    <span class="visually-hidden">@messages(hiddenLabel)</span>
+                    <span class="govuk-visually-hidden">@messages(hiddenLabel)</span>
                 }.getOrElse {
-                    <span class="visually-hidden">@messages("site.hidden-edit", messages(row.label))</span>
+                    <span class="govuk-visually-hidden">@messages("site.hidden-edit", messages(row.label))</span>
                 }
 
             </a>

@@ -19,27 +19,33 @@
 
 @(people: Seq[Person], mode: Mode)(implicit messages: Messages)
 
-<div class="govuk-form-group govuk-!-margin-bottom-7">
-    <dl class="hmrc-add-to-a-list hmrc-add-to-a-list--short" id="people">
+<div class="govuk-form-group">
+    <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short" id="people">
         @for(person <- people) {
-        <div class="hmrc-add-to-a-list__contents">
-            <dt class="hmrc-add-to-a-list__identifier hmrc-add-to-a-list__identifier--light">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
                 @person.name
             </dt>
-            @if(mode != UpdateMode || person.isNew) {
-                <dd class="hmrc-add-to-a-list__change">
-                    <a class="govuk-link" id="@person.editLinkId" href="@person.editLink">
-                        <span aria-hidden="true">@messages("site.change")</span>
-                        <span class="govuk-visually-hidden">@messages("site.change") @person.name</span>
-                    </a>
-                </dd>
-             }
-            @if(mode != UpdateMode || people.size > 1) {
-                <dd class="hmrc-add-to-a-list__remove">
-                    <a id="@person.deleteLinkId" class="govuk-link" href="@person.deleteLink">
-                        <span aria-hidden="true">@messages("site.delete")</span>
-                        <span class="govuk-visually-hidden">@messages("site.delete") @person.name</span>
-                    </a>
+            @if(mode != UpdateMode || person.isNew || people.size > 1) {
+                <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
+                    <ul class="govuk-summary-list__actions-list">
+                        @if(mode != UpdateMode || person.isNew) {
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a class="govuk-link" id="@person.editLinkId" href="@person.editLink">
+                                    <span aria-hidden="true">@messages("site.change")</span>
+                                    <span class="govuk-visually-hidden">@messages("site.change") @person.name</span>
+                                </a>
+                            </li>
+                        }
+                        @if(mode != UpdateMode || people.size > 1) {
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a id="@person.deleteLinkId" class="govuk-link" href="@person.deleteLink">
+                                    <span aria-hidden="true">@messages("site.delete")</span>
+                                    <span class="govuk-visually-hidden">@messages("site.delete") @person.name</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
                 </dd>
             }
         </div>

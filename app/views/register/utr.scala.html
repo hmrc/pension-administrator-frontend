@@ -23,11 +23,11 @@
 @import views.html._
 
 @this(
-layout: templates.Layout,
-formHelper: PlayFrontendFormWithCSRF,
-govukErrorSummary: GovukErrorSummary,
-button: components.govuk_button,
-govukInput: GovukInput
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    submit_button: components_refactored.submit_button,
+    govukInput: GovukInput
 )
 
 @(form: Form[_], businessType: String, hint: String, href: Call)(implicit request: Request[_], messages: Messages)
@@ -36,11 +36,10 @@ govukInput: GovukInput
     <p>@messages("utr.p1")</p>
     <p>@messages("utr.p2")</p>
 }
-@layout(
-        pageTitle = titleWithErrors(form, messages("utr.title", businessType, hint))
-) {
 
-        @formHelper(action = href, 'autoComplete -> "off", 'novalidate -> "novalidate") {
+@layout(pageTitle = titleWithErrors(form, messages("utr.title", businessType, hint))) {
+
+    @formHelper(action = href, 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
@@ -61,7 +60,7 @@ govukInput: GovukInput
             ).withFormField(form("value"))
         )
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
 
     }
 }
