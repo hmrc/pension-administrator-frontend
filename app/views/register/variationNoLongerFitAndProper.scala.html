@@ -14,31 +14,29 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import utils.FormHelpers
 @import models.Mode
 @import viewmodels.Message
 
 @this(
-    main_template: main_template
+    layout: templates.Layout
 )
 
 @(psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("noLongerFitAndProper.title")
-) {
+@layout(pageTitle = messages("noLongerFitAndProper.title")) {
 
-    @components.back_link()
+    @components_refactored.heading(messages("noLongerFitAndProper.heading"))
 
-    @components.heading(
-        messages("noLongerFitAndProper.heading")
-    )
+    @components_refactored.paragraph_text(messages("noLongerFitAndProper.p1", psaNameOpt.getOrElse("")))
 
-    <p>@messages("noLongerFitAndProper.p1", psaNameOpt.getOrElse(""))</p>
-    <p>@messages("noLongerFitAndProper.p2")</p>
+    @components_refactored.paragraph_text(messages("noLongerFitAndProper.p2"))
 
     @psaNameOpt.map{ psaName =>
-        @components.return_link(psaName, mode)
+        @components_refactored.return_link(psaName, mode)
     }
+
 }

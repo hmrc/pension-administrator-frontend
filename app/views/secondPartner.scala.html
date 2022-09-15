@@ -15,44 +15,48 @@
  *@
 
 @import controllers.register.routes._
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import models.Mode
 @import viewmodels.AreYouInUKViewModel
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_yes_no: components_refactored.input_yes_no,
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], partnerName: Option[String], postCall: Call)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("secondPartner.heading"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("secondPartner.heading"))) {
 
-        @formHelper(action = postCall, 'autoComplete -> "off") {
+    @formHelper(action = postCall, 'autoComplete -> "off") {
 
-        @components.back_link()
-
-            @components.error_summary(form.errors)
-
-            @components.heading(messages("secondPartner.heading"))
-
-            @if(partnerName.nonEmpty) {
-                <p>@messages("secondPartner.p1", partnerName.get)</p>
-            } else {
-                <p>@messages("secondPartner.p1.noName")</p>
-            }
-
-            @components.input_yes_no(
-                field = form("value"),
-                label = messages("secondPartner.label"),
-                labelClass = None,
-                secondaryLabel = None,
-                headingIsLegend = false
-            )
-
-            @components.submit_button("site.continue")
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
+
+        @components_refactored.heading(messages("secondPartner.heading"))
+
+        @if(partnerName.nonEmpty) {
+            @components_refactored.paragraph_text(messages("secondPartner.p1", partnerName.get))
+        } else {
+            @components_refactored.paragraph_text("secondPartner.p1.noName")
+        }
+
+        @input_yes_no(
+            field = form("value"),
+            label = messages("secondPartner.label"),
+            labelClass = None,
+            headingIsLegend = false
+        )
+
+        @submit_button("site.continue")
+
     }
+}

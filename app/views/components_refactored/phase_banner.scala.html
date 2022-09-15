@@ -14,16 +14,15 @@
  * limitations under the License.
  *@
 
-@this(
-    layout: templates.Layout
-)
+@(appConfig: config.FrontendAppConfig)
+<div class="phase-banner">
 
-@()(implicit request: Request[_], messages: Messages)
+    <p>
 
-@layout(pageTitle = messages("index.title")) {
+        <strong class="phase-tag">BETA</strong>
 
-    @components_refactored.heading(messages("index.heading"))
+        <span>This is a new service – your <a href=@{appConfig.betaFeedbackUnauthenticatedUrl}>feedback</a> will help us to improve it.</span>
 
-    @components_refactored.paragraph_text(messages("index.guidance"))
+    </p>
 
-}
+</div>

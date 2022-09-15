@@ -14,27 +14,29 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import config.FrontendAppConfig
 
 @this(
-    main_template: main_template,
+    layout: templates.Layout,
     appConfig: FrontendAppConfig
 )
 
 @(organisationName: String, country: String, organisationType: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("outsideEuEea.title")
-) {
+@layout(pageTitle = messages("outsideEuEea.title")) {
 
-    @components.back_link()
+    @components_refactored.heading(messages("outsideEuEea.heading", organisationName))
 
-    @components.heading(messages("outsideEuEea.heading", organisationName))
+    @components_refactored.paragraph_text(messages("outsideEuEea.currentCountry.text", organisationName, country))
 
-    <p>@messages("outsideEuEea.currentCountry.text", organisationName, country)</p>
+    @components_refactored.paragraph_text(messages("outsideEuEea.body", organisationType))
 
-    <p>@messages("outsideEuEea.body", organisationType)</p>
-
-    <a id="return-gov-uk" href="@appConfig.govUkUrl">@messages("site.return.govuk")</a>
+    <p class="govuk-body">
+        <a id="return-gov-uk" class="govuk-link" href="@appConfig.govUkUrl">@messages("site.return.govuk")</a>
+    </p>
 
 }

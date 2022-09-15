@@ -43,7 +43,7 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(viewModel.heading)
+        @components_refactored.heading(viewModel.heading, true)
 
         @input_text(
             field = form("firstName"),
