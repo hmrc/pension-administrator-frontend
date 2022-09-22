@@ -28,11 +28,9 @@
 
 @(ref: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = s"${messages("whatYouWillNeed.main.title")}"
-) {
+@layout(pageTitle = s"${messages("whatYouWillNeed.main.title")}") {
 
-    <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.main.heading")</h1>
+    @components_refactored.heading(messages("whatYouWillNeed.main.heading"))
 
     <p class="govuk-body">@messages("whatYouWillNeed.main.body.text")</p>
 
@@ -43,17 +41,15 @@
     </ul>
 
     @govukInsetText(InsetText(
-    content = Text(messages("whatYouWillNeed.main.body.hint.company"))
+        content = Text(messages("whatYouWillNeed.main.body.hint.company"))
     ))
 
-    <div>
-        @govukButton(Button(
-            href = Some(ref.url),
-            attributes = Map("id" -> "submit"),
-            content = {
-                Text(messages("site.continue"))
-            }
-            )
-        )
-    </div>
+    @govukButton(Button(
+        href = Some(ref.url),
+        attributes = Map("id" -> "submit"),
+        content = {
+            Text(messages("site.continue"))
+        }
+    ))
+
 }

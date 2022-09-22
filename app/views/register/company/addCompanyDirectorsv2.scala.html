@@ -33,7 +33,7 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios,
-    button: components_refactored.submit_button,
+    submit_button: components_refactored.submit_button,
     appConfig: FrontendAppConfig
 )
 
@@ -45,30 +45,39 @@
     directors.exists(director => if(mode == NormalMode) !director.isComplete else director.isNew && !director.isComplete)
 }
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))) {
 
-        @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages("addCompanyDirectors.heading")</h1>
+
+        @components_refactored.heading(messages("addCompanyDirectors.heading"))
 
         @if(directors.isEmpty) {
-            <p class="govuk-body">@messages("addCompanyDirectors.addADirector.hint")</p>
-            @button("addCompanyDirectors.addADirector")
+
+            @components_refactored.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
+
+            @submit_button("addCompanyDirectors.addADirector")
+
         } else {
 
             @if(directorsIncomplete.length > 0) {
-                <h2 class="govuk-heading-s">@messages("taskList.status.incomplete")</h2>
+
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-2">@messages("taskList.status.incomplete")</h2>
+
                 @components_refactored.person_list(directorsIncomplete, mode)
+
             }
             @if(directorsComplete.length > 0) {
-                <h2 class="govuk-heading-s">@messages("taskList.status.completed")</h2>
+
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-2">@messages("taskList.status.completed")</h2>
+
                 @components_refactored.person_list(directorsComplete, mode)
+
             }
+
             @if(directors.size < appConfig.maxDirectors) {
                 @govukRadios(
                     Radios(
@@ -97,16 +106,22 @@
                 )
 
             } else {
-            <p class="govuk-body">@messages("addCompanyDirectors.atMaximum")</p>
-            <p class="govuk-body">@messages("addCompanyDirectors.tellUsIfYouHaveMore")</p>
+
+                @components_refactored.paragraph_text(messages("addCompanyDirectors.atMaximum"))
+
+                @components_refactored.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
+
             }
 
-            @button()
+            @submit_button()
+
         }
+
         @psaNameOpt.map{ psaName =>
-            <p class="govuk-margin-top-8 govuk-body">
+            <p class="govuk-margin-top-7 govuk-body">
                 <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", psaName)</a>
             </p>
         }
+
     }
 }

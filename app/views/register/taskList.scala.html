@@ -27,12 +27,14 @@
 
 @(taskList: TaskList, expiryDate: String)(implicit request: Request[_], messages: Messages)
 
-@isCompleted(isCompleted: Boolean) = {
-    @if(isCompleted) {
-        <span class="hmrc-status-tag task-status--completed">@messages("taskList.status.completed")</span>
-    } else {
-        <span class="hmrc-status-tag task-status--in-progress">@messages("taskList.status.incomplete")</span>
-    }
+@isCompleted(isCompleted: Boolean, id: String) = {
+    <span class="hmrc-status-tag" id="@id">
+        @if(isCompleted) {
+            @messages("taskList.status.completed")
+        } else {
+            @messages("taskList.status.incomplete")
+        }
+    </span>
 }
 
 @taskAction(task: Task) = @{
@@ -47,22 +49,26 @@
     if(isCompleted) messages("site.view") else messages("site.add")
 }
 
-@layout(
-    pageTitle = messages("taskList.title")
-) {
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@taskList.entityName</h1>
+@layout(pageTitle = messages("taskList.title")) {
 
-    @if(taskList.allComplete){
-        <strong class="govuk-body govuk-!-font-weight-bold">@messages("taskList.complete")</strong>
-    } else {
-        <strong class="govuk-body govuk-!-font-weight-bold">@messages("taskList.incomplete")</strong>
-    }
+    @components_refactored.heading(messages(taskList.entityName))
+
+    <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-1">
+        @if(taskList.allComplete){
+            @messages("taskList.complete")
+        } else {
+            @messages("taskList.incomplete")
+        }
+    </p>
 
     <p class="govuk-body">@messages("taskList.numberCompleted", taskList.numberCompleted, taskList.tasks.size)</p>
 
-    <strong class="govuk-body govuk-!-font-weight-bold">@messages("taskList.saveAnswers")</strong>
-
-    <p class="govuk-body">@expiryDate</p>
+    <p class="govuk-body">
+        <span class="govuk-!-font-weight-bold">@messages("taskList.saveAnswers")</span>
+        <span class="govuk-!-display-block govuk-!-margin-top-1">
+            @expiryDate
+        </span>
+    </p>
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -70,12 +76,12 @@
                 <ul class="app-task-list__items">
                     @for((task, i) <- taskList.tasks.zipWithIndex){
                     <li class="app-task-list__item">
-                           <span class="app-task-list__task-name">
-                              <a id="section-link-@i" href="@task.url" class="app-task-list__task-name govuk-link">
+                        <span class="app-task-list__task-name">
+                            <a id="section-link-@i" href="@task.url" aria-describedby="section-link-@i-tag">
                                 @taskAction(task) @taskList.entityName's @task.name
-                              </a>
-                           </span>
-                        @isCompleted(task.isCompleted)
+                            </a>
+                        </span>
+                        @isCompleted(task.isCompleted, s"section-link-$i-tag")
                     </li>
                     }
                 </ul>
@@ -83,7 +89,7 @@
         </div>
     </div>
 
-    <strong class="govuk-heading-m">Declaration</strong>
+    <h2 class="govuk-heading-m">Declaration</h2>
 
     @if(taskList.allComplete){
         <div class="govuk-grid-row">

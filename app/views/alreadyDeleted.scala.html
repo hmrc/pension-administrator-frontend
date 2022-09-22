@@ -30,7 +30,7 @@
 
 @layout(pageTitle = Message(viewmodel.title)) {
 
-    @components_refactored.heading((Message("alreadyDeleted.heading", viewmodel.deletedEntity)).toString, true)
+    @components_refactored.heading(messages("alreadyDeleted.heading", viewmodel.deletedEntity).toString, true)
 
     @components_refactored.paragraph_text(messages("alreadyDeleted.lede", viewmodel.deletedEntity))
 

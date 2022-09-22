@@ -28,10 +28,9 @@
 
 @(companyName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("companyDetails.whatYouWillNeed.title", companyName)
-) {
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("companyDetails.whatYouWillNeed.heading", companyName)</h1>
+@layout(pageTitle = messages("companyDetails.whatYouWillNeed.title", companyName)) {
+
+    @components_refactored.heading(messages("companyDetails.whatYouWillNeed.heading", companyName))
 
     <p class="govuk-body">@messages("companyDetails.whatYouWillNeed.p1", companyName)</p>
 
@@ -49,4 +48,5 @@
     @formHelper(action = WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
         @submit_button("site.continue")
     }
+
 }

@@ -29,11 +29,9 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("whatYouWillNeed.title")
-) {
+@layout(pageTitle = messages("whatYouWillNeed.title")) {
 
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("whatYouWillNeed.heading")</h1>
+    @components_refactored.heading(messages("whatYouWillNeed.heading"))
 
     <p class="govuk-body">@messages("whatYouWillNeed.body.text")</p>
 
@@ -47,7 +45,7 @@
     ))
 
     @formHelper(action = controllers.register.individual.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
-            @submit_button("site.continue")
+        @submit_button("site.continue")
     }
 
 }

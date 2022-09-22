@@ -26,7 +26,7 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    button: components_refactored.submit_button,
+    submit_button: components_refactored.submit_button,
     govukRadios : GovukRadios
 )
 
@@ -40,15 +40,13 @@
     }
 }
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewmodel.title))
-) {
-
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
+@layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
         @govukRadios(
             Radios(
@@ -78,7 +76,7 @@
             ).withFormField(form(viewmodel.formFieldName.fold("value")(identity)))
         )
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
 
         @if(viewmodel.displayReturnLink){
             @components_refactored.return_link(viewmodel.entityName, viewmodel.mode)
@@ -86,10 +84,12 @@
 
         @if(viewmodel.mode != UpdateMode){
             @viewmodel.returnLink.map { returnLinkUrl =>
-            <p class="govuk-margin-top-5 govuk-body">
-                <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewmodel.entityName)</a>
-            </p>
+                <p class="govuk-margin-top-5 govuk-body">
+                    <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewmodel.entityName)</a>
+                </p>
             }
         }
+
     }
+
 }

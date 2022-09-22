@@ -26,21 +26,19 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    button: components_refactored.submit_button,
+    submit_button: components_refactored.submit_button,
     govukRadios : GovukRadios
 )
 
 @(form: Form[_], viewmodel: AddressYearsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewmodel.title))
-) {
-
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
+@layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
         @govukRadios(
             Radios(
@@ -69,7 +67,8 @@
             ).withFormField(form("value"))
         )
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
+
         @viewmodel.psaName.map { psaName =>
             @components_refactored.return_link(psaName, mode)
             @if(mode != UpdateMode){
@@ -80,5 +79,7 @@
                 }
             }
         }
+
     }
+
 }

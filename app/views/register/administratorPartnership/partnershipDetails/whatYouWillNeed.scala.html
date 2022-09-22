@@ -28,24 +28,25 @@
 
 @(partnershipName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("partnershipDetails.whatYouWillNeed.title", partnershipName)
-) {
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("partnershipDetails.whatYouWillNeed.heading", partnershipName)</h1>
-
-    <p class="govuk-body">@messages("partnershipDetails.whatYouWillNeed.p1", partnershipName)</p>
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("partnershipDetails.whatYouWillNeed.li1")</li>
-        <li>@messages("partnershipDetails.whatYouWillNeed.li2")</li>
-    </ul>
+@layout(pageTitle = messages("partnershipDetails.whatYouWillNeed.title", partnershipName)) {
 
     @formHelper(action = WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
+
+        @components_refactored.heading(messages("partnershipDetails.whatYouWillNeed.heading", partnershipName))
+
+        <p class="govuk-body">@messages("partnershipDetails.whatYouWillNeed.p1", partnershipName)</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("partnershipDetails.whatYouWillNeed.li1")</li>
+            <li>@messages("partnershipDetails.whatYouWillNeed.li2")</li>
+        </ul>
+
         @submit_button("site.continue")
 
-    <p class="govuk-margin-top-5 govuk-body">
-        <a id="return-link" class="govuk-link" href="@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", partnershipName)</a>
-    </p>
+        <p class="govuk-margin-top-5 govuk-body">
+            <a id="return-link" class="govuk-link" href="@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", partnershipName)</a>
+        </p>
 
     }
+
 }

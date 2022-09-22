@@ -23,16 +23,22 @@
 
 @(country: String)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("outsideEuEea.individual.title")
-) {
+@layout(pageTitle = messages("outsideEuEea.individual.title")) {
 
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("outsideEuEea.individual.heading")</h1>
+    @components_refactored.heading(messages("outsideEuEea.individual.heading"))
 
-    <p class="govuk-body">@messages("outsideEuEea.individual.currentCountry.text", country)</p>
+    <p class="govuk-body">
+        @messages("outsideEuEea.individual.currentCountry.text", country)
+    </p>
 
-    <p class="govuk-body">@messages("outsideEuEea.individual.body")</p>
+    <p class="govuk-body">
+        @messages("outsideEuEea.individual.body")
+    </p>
 
-    <p class="govuk-body"><a id="return-gov-uk" href="@appConfig.govUkUrl" class="govuk-link">@messages("site.return.govuk")</a></p>
+    <p class="govuk-body">
+        <a id="return-gov-uk" href="@appConfig.govUkUrl" class="govuk-link">
+            @messages("site.return.govuk")
+        </a>
+    </p>
 
 }

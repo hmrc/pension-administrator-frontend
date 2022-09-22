@@ -24,33 +24,32 @@
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-layout: templates.Layout,
-formHelper: PlayFrontendFormWithCSRF,
-govukErrorSummary: GovukErrorSummary,
-addressWithoutPostcode: components_refactored.addressWithoutPostcode,
-button: components_refactored.submit_button
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    addressWithoutPostcode: components_refactored.addressWithoutPostcode,
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewmodel: ManualAddressViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(
-pageTitle = titleWithErrors(form, viewmodel.title)
-) {
+@layout(pageTitle = titleWithErrors(form, viewmodel.title)) {
 
-        @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
-            @viewmodel.hint.map{hintText =>
+        @components_refactored.heading(viewmodel.heading)
+
+        @viewmodel.hint.map{hintText =>
             <p class="govuk-body">@messages(hintText)</p>
-            }
-            @addressWithoutPostcode(form, viewmodel.countryOptions)
-            @button(messages("site.save_and_continue"))
-
-
         }
-    }
 
+        @addressWithoutPostcode(form, viewmodel.countryOptions)
+
+        @submit_button(messages("site.save_and_continue"))
+
+    }
+}

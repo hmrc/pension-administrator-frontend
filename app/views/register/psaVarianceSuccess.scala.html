@@ -28,9 +28,7 @@
 
 @printThisPageLink = {<a id="print-this-page-link" class="govuk-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
 
-@layout(
-   pageTitle = messages("psaVarianceSuccess.title")
-) {
+@layout(pageTitle = messages("psaVarianceSuccess.title")) {
 
     <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">
@@ -40,8 +38,8 @@
 
     <p class="govuk-body print-page">@printThisPageLink</p>
 
-   @psaNameOpt.map{ psaName =>
-     @components_refactored.return_link(psaName, UpdateMode)
-   }
+    @psaNameOpt.map{ psaName =>
+        @components_refactored.return_link(psaName, UpdateMode)
+    }
 
 }

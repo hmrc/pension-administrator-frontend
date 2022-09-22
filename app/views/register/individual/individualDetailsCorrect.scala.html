@@ -29,14 +29,12 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     submit_button: components_refactored.submit_button,
-    input_yes_no:  components_refactored.input_yes_no
+    input_yes_no: components_refactored.input_yes_no
 )
 
 @(form: Form[_], mode: Mode, individual: TolerantIndividual, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("individualDetailsCorrect.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("individualDetailsCorrect.title"))) {
 
     @formHelper(action = IndividualDetailsCorrectController.onSubmit(mode), 'autoComplete -> "off") {
 
@@ -44,13 +42,15 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("individualDetailsCorrect.heading")</h1>
+        @components_refactored.heading(messages("individualDetailsCorrect.heading"))
+
         <p class="govuk-body" id="individual-value">@individual.fullName</p>
-        <div class="govuk-body">
+
+        <p class="govuk-body">
             @for((line, i) <- address.lines(countryOptions).zipWithIndex) {
-            <div id="address-value-@i" class="address-multi-line">@line</div>
+                <span id="address-value-@i" class="govuk-!-display-block">@line</span>
             }
-        </div>
+        </p>
 
         @input_yes_no(
             field = form("value"),
@@ -58,6 +58,9 @@
             labelClass = Some("govuk-visually-hidden"),
             headingIsLegend = false
         )
+
         @submit_button("site.save_and_continue")
+
     }
+
 }

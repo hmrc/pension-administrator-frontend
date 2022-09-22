@@ -45,7 +45,7 @@
         @for((section, i) <- answerSections.zipWithIndex){
             @{
                 section match {
-                    case a: AnswerSection => answer_section(a, i.toString,true)
+                    case a: AnswerSection => answer_section(a, i.toString, true)
                     case r: RepeaterAnswerSection => components_refactored.repeater_answer_section(r, i.toString)
                 }
             }
@@ -63,7 +63,7 @@
             @components_refactored.return_link(psaName, mode)
             @if(mode != UpdateMode){
                 @returnLink.map { returnLinkUrl =>
-                    <p class="govuk-margin-top-5 govuk-body">
+                    <p class="govuk-margin-top-7 govuk-body">
                         <a id="return-link" class="govuk-link" href=@returnLinkUrl>@messages("site.return_to", psaName)</a>
                     </p>
                 }

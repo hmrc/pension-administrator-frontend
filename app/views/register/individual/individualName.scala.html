@@ -34,17 +34,15 @@
 
 @(form: Form[_], viewModel: PersonDetailsViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewModel.title))
-) {
+@layout(pageTitle = titleWithErrors(form, messages(viewModel.title))) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages(viewModel.heading)</h1>
+        @components_refactored.heading(messages(viewModel.heading))
 
         @govukInput(
             Input(
@@ -63,5 +61,7 @@
         )
 
         @submit_button("site.save_and_continue")
+
     }
+
 }

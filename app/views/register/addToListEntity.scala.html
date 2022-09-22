@@ -53,7 +53,8 @@
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
+
+        @components_refactored.heading(messages(viewmodel.heading))
 
         @if(viewmodel.entities.isEmpty) {
             <p class="govuk-body">@messages("addEntity.addAnEntity.hint", viewmodel.entityType)</p>

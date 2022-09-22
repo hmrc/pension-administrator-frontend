@@ -29,44 +29,36 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    button: components_refactored.submit_button,
+    submit_button: components_refactored.submit_button,
     govukRadios : GovukRadios
 )
 
 @(form: Form[_], viewmodel: SameContactAddressViewModel, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewmodel.title))
-) {
-
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
-
+@layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
-
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
-
-    @viewmodel.hint.map{hintText =>
-        <p class="govuk-body">@messages(hintText)</p>
-    }
-
-    <p class="govuk-body-l">
-        @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
-            <span id="address-value-@i" class="govuk-!-display-block">@line</span>
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
-    </p>
 
-     @govukRadios(
+        @components_refactored.heading(viewmodel.heading, true)
+
+        <p class="govuk-body">
+            @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
+                <span id="address-value-@i" class="govuk-!-display-block">@line</span>
+            }
+        </p>
+
+        @govukRadios(
             Radios(
                 fieldset = Some(
                     Fieldset(
                         legend = Some(
                             Legend(
                                 content = Text(messages(viewmodel.heading)),
-                                classes = "govuk-fieldset__legend--xl govuk-visually-hidden",
+                                classes = "govuk-visually-hidden",
                                 isPageHeading = false
                             )
                         )
@@ -82,13 +74,15 @@
                         value = Some("false")
                     )
                 ),
-            classes = "govuk-radios--inline"
+            classes = "govuk-radios--inline",
+            hint = viewmodel.hint.map(hintValue => Hint(content = Text(messages(hintValue)))),
             ).withFormField(form("value"))
         )
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
+
         @if(viewmodel.displayReturnLink){
-        @components_refactored.return_link(viewmodel.psaName, viewmodel.mode)
+            @components_refactored.return_link(viewmodel.psaName, viewmodel.mode)
         }
 
         @if(viewmodel.displayPartnershipLink && viewmodel.mode != UpdateMode){
@@ -96,5 +90,6 @@
                 <a id="return-link" class="govuk-link" href="@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", viewmodel.psaName)</a>
             </p>
         }
+
     }
 }

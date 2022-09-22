@@ -30,9 +30,7 @@
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("continueWithRegistration.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("continueWithRegistration.title"))) {
 
     @formHelper(action = controllers.register.routes.ContinueWithRegistrationController.onSubmit(), 'autoComplete -> "off") {
 
@@ -40,18 +38,15 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("continueWithRegistration.heading"))
-
-        @components_refactored.paragraph_text(messages("continueWithRegistration.p1"))
-
         @govukRadios(Radios(
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("continueWithRegistration.heading")),
-                    classes = "govuk-visually-hidden",
-                    isPageHeading = false
+                    classes = "govuk-fieldset__legend--xl govuk-!-margin-bottom-6",
+                    isPageHeading = true
                 ))
             )),
+            hint = Some(Hint(content = Text(messages("continueWithRegistration.p1")))),
             items = Seq(
                 RadioItem(
                     content = Text(messages("continueWithRegistration.yes")),

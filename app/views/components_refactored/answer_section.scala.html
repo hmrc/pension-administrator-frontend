@@ -30,40 +30,38 @@
 }
 
 @govukSummaryList(SummaryList(
-    rows =
-        for((rowVal, indexVal) <- answerSection.rows.zipWithIndex)
-            yield {
-                SummaryListRow(
-                    key = Key(content = Text(messages(rowVal.label)),
-                    classes = if(wideKey) "govuk-!-width-one-half" else ""),
-                    value = Value(content =
-                            if(rowVal.answerIsMessageKey){
-                                Text(messages(rowVal.answer.head))
-                            }else{
-                                HtmlContent((for((r, index2) <- rowVal.answer.zipWithIndex)
-                                yield{
-                                    s"""<div id="cya-$idPath-$indexVal-$index2-answer" class="govuk-!-display-block">$r</div>"""
-                                    }).mkString)
-                                    }
-                                ),
-                    actions =
-                        (rowVal.changeUrl match {
-                            case Some(changeUrlLink) =>
-                                    Some(Actions(
-                                        items = Seq(ActionItem(href = changeUrlLink.url,
-                                                    content = Text(messages(changeUrlLink.text)),
-                                                    visuallyHiddenText =
-                                                    rowVal.visuallyHiddenText match {
-                                                        case Some(hiddenLabel) =>  Some(messages(hiddenLabel))
-                                                        case _ =>  Some(messages("site.hidden-edit", messages(rowVal.label)))
-                                                        },
-                                        attributes = Map("id" -> s"cya-$idPath-$indexVal-change")
-                                        )
-                                     )
-                                ))
-                        case _ => None
-                        })
-                )
-        }
-
+    rows = for((rowVal, indexVal) <- answerSection.rows.zipWithIndex)
+    yield {
+        SummaryListRow(
+            key = Key(content = Text(messages(rowVal.label)),
+            classes = if(wideKey) "govuk-!-width-one-half" else ""),
+            value = Value(content =
+                if(rowVal.answerIsMessageKey){
+                    Text(messages(rowVal.answer.head))
+                } else {
+                    HtmlContent((for((r, index2) <- rowVal.answer.zipWithIndex)
+                        yield{
+                            s"""<span id="cya-$idPath-$indexVal-$index2-answer" class="govuk-!-display-block">$r</span>"""
+                        }
+                    ).mkString)
+                }
+            ),
+            actions = (rowVal.changeUrl match {
+                case Some(changeUrlLink) =>
+                        Some(Actions(
+                            items = Seq(ActionItem(href = changeUrlLink.url,
+                                content = Text(messages(changeUrlLink.text)),
+                                visuallyHiddenText =
+                                rowVal.visuallyHiddenText match {
+                                    case Some(hiddenLabel) =>  Some(messages(hiddenLabel))
+                                    case _ =>  Some(messages("site.hidden-edit", messages(rowVal.label)))
+                                },
+                            attributes = Map("id" -> s"cya-$idPath-$indexVal-change")
+                            )
+                         )
+                    ))
+                case _ => None
+            })
+        )
+    }
 ))

@@ -28,21 +28,23 @@
 
 @(companyName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("contactDetails.whatYouWillNeed.title", companyName)
-) {
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("contactDetails.whatYouWillNeed.heading", companyName)</h1>
-
-    <p class="govuk-body">@messages("contactDetails.whatYouWillNeed.p1", companyName)</p>
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("contactDetails.whatYouWillNeed.li1")</li>
-        <li>@messages("contactDetails.whatYouWillNeed.li2")</li>
-        <li>@messages("contactDetails.whatYouWillNeed.li3")</li>
-        <li>@messages("contactDetails.whatYouWillNeed.li4")</li>
-    </ul>
+@layout(pageTitle = messages("contactDetails.whatYouWillNeed.title", companyName)) {
 
     @formHelper(action = WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
+
+        @components_refactored.heading(messages("contactDetails.whatYouWillNeed.heading", companyName))
+
+        <p class="govuk-body">@messages("contactDetails.whatYouWillNeed.p1", companyName)</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("contactDetails.whatYouWillNeed.li1")</li>
+            <li>@messages("contactDetails.whatYouWillNeed.li2")</li>
+            <li>@messages("contactDetails.whatYouWillNeed.li3")</li>
+            <li>@messages("contactDetails.whatYouWillNeed.li4")</li>
+        </ul>
+
         @submit_button("site.continue")
+
     }
+
 }
