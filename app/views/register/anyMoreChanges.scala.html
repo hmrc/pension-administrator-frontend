@@ -54,7 +54,7 @@
         @input_yes_no(
             field = form("value"),
             label = messages("anyMoreChanges.title"),
-            labelClass = Some("visually-hidden")
+            labelClass = Some("govuk-visually-hidden")
         )
 
         @submit_button("site.save_and_continue")
@@ -62,5 +62,7 @@
         @psaNameOpt.map { psaName =>
             @components_refactored.return_link(psaName, UpdateMode)
         }
+
     }
+
 }

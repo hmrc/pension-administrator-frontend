@@ -23,14 +23,21 @@
 )
 
 @(
-        field: Field,
-        label: String,
-        inputClass: Option[String] = None,
-        labelClass: Option[String] = None,
-        hint: Option[String] = None,
-
+    field: Field,
+    label: String,
+    inputClass: Option[String] = None,
+    labelClass: Option[String] = None,
+    hint: Option[String] = None,
+    headingIsLegend: Boolean = true,
 )(implicit messages: Messages)
 
+@cssAdjust = @{
+    if(headingIsLegend == true){
+        labelClass.fold("govuk-label--xl govuk-!-margin-bottom-5")(classes => classes)
+    } else {
+        labelClass.fold("govuk-label--m")(classes => classes)
+    }
+}
 
 @govukTextarea(Textarea(
     id = field.id,
@@ -38,12 +45,11 @@
     name = field.id,
     value = field.value,
     label = Label(
-      isPageHeading = true,
-      classes = labelClass.fold("govuk-label--xl")(classes => "govuk-label--xl " + classes),
+      isPageHeading = headingIsLegend,
+      classes = cssAdjust,
       content = Text(label)
     ),
     hint = hint.map(hintValue => Hint(content = Text(hintValue))),
-    classes = inputClass.fold("")(classes => classes),
+    classes = inputClass.fold("govuk-!-width-two-thirds")(classes => classes),
     errorMessage = field.error.map(errorValue => ErrorMessage(content = Text(errorValue.message)))
-  ))
-
+))

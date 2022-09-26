@@ -28,7 +28,7 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
+    input_text: components_refactored.input_text,
     submit_button: components_refactored.submit_button
 )
 
@@ -42,22 +42,18 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages(viewModel.heading))
+        @components_refactored.heading(messages(viewModel.heading), true)
 
-        @govukInput(
-            Input(
-                classes = "govuk-!-width-one-half",
-                label = Label(classes = "govuk-label--s", content = Text(messages("personDetails.firstName")),
-                isPageHeading = false)
-             ).withFormField(form("firstName"))
+        @input_text(
+            field = form("firstName"),
+            label = messages("personDetails.firstName"),
+            headingIsLegend = false
         )
 
-        @govukInput(
-            Input(
-                classes = "govuk-!-width-one-half",
-                label = Label(classes = "govuk-label--s", content = Text(messages("personDetails.lastName")),
-                isPageHeading = false)
-            ).withFormField(form("lastName"))
+        @input_text(
+            field = form("lastName"),
+            label = messages("personDetails.lastName"),
+            headingIsLegend = false
         )
 
         @submit_button("site.save_and_continue")

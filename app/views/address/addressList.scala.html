@@ -35,7 +35,7 @@
 @(form: Form[_], viewModel: AddressListViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @hintHtml = {
-    <p>@messages(viewModel.selectAddress) <a id="manual-address-link" class="govuk-link" href="@viewModel.manualInputCall">@messages(viewModel.selectAddressLink)</a></p>
+    <p class="govuk-body">@messages(viewModel.selectAddress) <a id="manual-address-link" class="govuk-link" href="@viewModel.manualInputCall">@messages(viewModel.selectAddressLink)</a></p>
 }
 
 @layout(pageTitle = titleWithErrors(form, viewModel.title)) {
@@ -46,21 +46,22 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
+        @components_refactored.heading(viewModel.heading, true)
+
+        @hintHtml
+
         @govukRadios(Radios(
             fieldset = Some(
                 Fieldset(
                     legend = Some(
                         Legend(
                             content = Text(messages(viewModel.heading)),
-                            classes = "govuk-fieldset__legend--xl",
-                            isPageHeading = true
+                            classes = "govuk-visually-hidden",
+                            isPageHeading = false
                         )
                     )
                 )
             ),
-            hint = Some(Hint(
-                content = HtmlContent(hintHtml)
-            )),
             items = for((address, i) <- viewModel.addresses.zipWithIndex) yield {
                 RadioItem(
                     content = Text(address.print),

@@ -34,9 +34,7 @@
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, viewModel.title)
-) {
+@layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
@@ -46,8 +44,7 @@
 
         @input_textarea(
             field = form("value"),
-            label = viewModel.heading,
-            inputClass = Some("govuk-!-width-two-thirds"),
+            label = viewModel.heading
         )
 
         @submit_button("site.save_and_continue")
@@ -57,5 +54,7 @@
                 <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewModel.entityName)</a>
             </p>
         }
+
     }
+
 }

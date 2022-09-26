@@ -27,7 +27,7 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
+    input_text: components_refactored.input_text,
     submit_button: components_refactored.submit_button
 )
 
@@ -47,18 +47,11 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @govukInput(
-            Input(
-                label = Label(
-                    content = Text(viewmodel.heading),
-                    isPageHeading = true,
-                    classes = "govuk-label--xl"
-                ),
-                classes = "govuk-!-width-one-half",
-                hint = Some(Hint(
-                    content = Text(viewmodel.formLabel)
-                )),
-            ).withFormField(form("value"))
+        @input_text(
+            field = form("value"),
+            label = messages(viewmodel.heading),
+            hint = Some(messages(viewmodel.formLabel)),
+            headingIsLegend = true
         )
 
         @components_refactored.paragraph_text_to_html(viewmodel.enterPostcode.withArgs(link))

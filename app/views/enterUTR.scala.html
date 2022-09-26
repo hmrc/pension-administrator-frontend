@@ -34,9 +34,7 @@
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, viewModel.title)
-) {
+@layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
@@ -54,8 +52,7 @@
             field = form("value"),
             label = viewModel.heading,
             labelClass = Some("govuk-visually-hidden"),
-            inputClass = Some("govuk-!-width-one-half"),
-            headingIsLegend = false
+            numericField = true
         )
 
         @submit_button("site.save_and_continue")

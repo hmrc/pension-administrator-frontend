@@ -27,7 +27,8 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     submit_button: components_refactored.submit_button,
-    govukInput: GovukInput
+    input_text: components_refactored.input_text,
+    govukInput: GovukInput,
 )
 
 @(form: Form[_], businessType: String, hint: String, href: Call)(implicit request: Request[_], messages: Messages)
@@ -45,22 +46,21 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @govukInput(
-            Input(
-                inputmode = Some("numeric"),
-                pattern = Some("[0-9]*"),
-                classes = "govuk-!-width-one-half",
-                label = Label(classes = "govuk-label--xl", content = Text(messages("utr.heading", businessType, hint)),
-                isPageHeading = true
-                ),
-                hint = Some(Hint(
-                content = HtmlContent(hintHtml
-                    )
-                ))
-            ).withFormField(form("value"))
+        @components_refactored.heading(messages("utr.heading", businessType, hint))
+
+        @components_refactored.paragraph_text(messages("utr.p1"))
+
+        @components_refactored.paragraph_text(messages("utr.p2"))
+
+        @input_text(
+            field = form("value"),
+            label = messages("utr.heading", businessType, hint),
+            labelClass = Some("govuk-visually-hidden"),
+            numericField = true,
         )
 
         @submit_button(messages("site.save_and_continue"))
 
     }
+
 }

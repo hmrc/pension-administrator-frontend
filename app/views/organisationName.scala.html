@@ -26,7 +26,7 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     submit_button: components_refactored.submit_button,
-    govukInput: GovukInput
+    input_text: components_refactored.input_text
 )
 
 @(form: Form[_], viewModel: OrganisationNameViewModel)(implicit request: Request[_], messages: Messages)
@@ -39,18 +39,14 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @govukInput(
-            Input( label =
-                Label(
-                    classes = "govuk-label--xl",
-                    content = Text(messages(viewModel.heading)),
-                    isPageHeading = true
-                ),
-            classes = "govuk-!-width-one-half"
-            ).withFormField(form("value"))
+        @input_text(
+            field = form("value"),
+            label = viewModel.heading,
+            headingIsLegend = true
         )
 
         @submit_button(messages("site.save_and_continue"))
 
     }
+
 }

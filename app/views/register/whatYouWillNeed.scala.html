@@ -22,11 +22,11 @@
 
 @this(
     layout: templates.Layout,
-    govukButton: GovukButton,
-    govukInsetText : GovukInsetText
+    govukInsetText : GovukInsetText,
+    button_link: components_refactored.button_link
 )
 
-@(ref: Call)(implicit request: Request[_], messages: Messages)
+@(href: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = s"${messages("whatYouWillNeed.main.title")}") {
 
@@ -44,12 +44,6 @@
         content = Text(messages("whatYouWillNeed.main.body.hint.company"))
     ))
 
-    @govukButton(Button(
-        href = Some(ref.url),
-        attributes = Map("id" -> "submit"),
-        content = {
-            Text(messages("site.continue"))
-        }
-    ))
+    @button_link("site.continue", href.url, "submit")
 
 }

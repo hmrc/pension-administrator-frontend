@@ -42,17 +42,13 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("nonUKBusinessType.heading"))
-
         @govukRadios(
             Radios(
-                fieldset = Some(
-                Fieldset(
-                    legend = Some(
-                    Legend(
+                fieldset = Some(Fieldset(
+                    legend = Some(Legend(
                         content = Text(messages("nonUKBusinessType.heading")),
-                        classes = "govuk-visually-hidden",
-                        isPageHeading = false
+                        classes = "govuk-fieldset__legend--xl govuk-!-margin-bottom-5",
+                        isPageHeading = true
                         )
                     )
                 )
@@ -64,4 +60,5 @@
         @submit_button(messages("site.save_and_continue"))
 
     }
+
 }

@@ -34,6 +34,14 @@
     numericField: Boolean = false
 )(implicit messages: Messages)
 
+@cssAdjust = @{
+    if(headingIsLegend == true){
+        labelClass.fold("govuk-label--xl govuk-!-margin-bottom-5")(classes => classes)
+    } else {
+        labelClass.fold("")(classes => classes)
+    }
+}
+
 @govukInput(Input(
     id = field.id,
     name = field.id,
@@ -41,12 +49,12 @@
     inputmode = if (numericField) { Some("numeric") } else { None },
     label = Label(
         isPageHeading = headingIsLegend,
-        classes = labelClass.fold("")(classes => classes),
+        classes = cssAdjust,
         content = Text(label)
     ),
     formGroupClasses = groupClass.getOrElse(""),
     hint = hint.map(hintValue => Hint(content = Text(hintValue))),
-    classes = inputClass.fold("")(classes => classes),
+    classes = inputClass.fold("govuk-!-width-one-half")(classes => classes),
     pattern = if (numericField) { Some("[0-9]*") } else { None },
     errorMessage = field.error.map(errorValue => ErrorMessage(content = Text(messages(errorValue.message))))
 ).withFormField(field))

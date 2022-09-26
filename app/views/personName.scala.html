@@ -34,8 +34,7 @@
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewModel.title))) {
+@layout(pageTitle = titleWithErrors(form, messages(viewModel.title))) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
@@ -48,14 +47,12 @@
         @input_text(
             field = form("firstName"),
             label = messages("personDetails.firstName"),
-            inputClass = Some("govuk-!-width-one-half"),
             headingIsLegend = false
         )
 
         @input_text(
             field = form("lastName"),
             label = messages("personDetails.lastName"),
-            inputClass = Some("govuk-!-width-one-half"),
             headingIsLegend = false
         )
 

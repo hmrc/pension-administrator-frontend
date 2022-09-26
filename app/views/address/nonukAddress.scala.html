@@ -41,7 +41,7 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(viewmodel.heading)
+        @components_refactored.heading(viewmodel.heading, true)
 
         @viewmodel.hint.map{hintText =>
             <p class="govuk-body">@messages(hintText)</p>
