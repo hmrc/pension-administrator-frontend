@@ -30,12 +30,16 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     appConfig: FrontendAppConfig,
-    submit_button: components_refactored.submit_button,
     input_yes_no: components_refactored.input_yes_no,
-    govukRadios : GovukRadios
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], psaName: String)(implicit request: Request[_], messages: Messages)
+
+@hintHtml = {
+    <p class="govuk-!-margin-top-0">@messages("confirmStopBeingPsa.p1")</p>
+    <p>@messages("confirmStopBeingPsa.p2")</p>
+}
 
 @layout(
     pageTitle = titleWithErrors(form, messages("confirmStopBeingPsa.title"))
@@ -47,33 +51,11 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("confirmStopBeingPsa.heading"))
-
-        @components_refactored.paragraph_text(messages("confirmStopBeingPsa.p1"))
-
-        @components_refactored.paragraph_text(messages("confirmStopBeingPsa.p2"))
-
-        @govukRadios(
-            Radios(
-                fieldset = Some(Fieldset(
-                    legend = Some(Legend(
-                        content = Text(messages("confirmStopBeingPsa.heading")),
-                        classes = "govuk-visually-hidden",
-                        isPageHeading = false
-                    ))
-                )),
-                items = Seq(
-                    RadioItem(
-                        content = Text(messages("site.yes")),
-                        value = Some("true")
-                    ),
-                    RadioItem(
-                        content = Text(messages("site.no")),
-                        value = Some("false")
-                    )
-                ),
-                classes = "govuk-radios--inline"
-            ).withFormField(form("value"))
+        @input_yes_no(
+            field = form("value"),
+            label = messages("confirmStopBeingPsa.heading"),
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
         )
 
         @submit_button(messages("site.continue"))

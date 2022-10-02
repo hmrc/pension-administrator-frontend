@@ -22,9 +22,9 @@
 
 @this(
     layout: templates.Layout,
-    govukRadios : GovukRadios,
-    govukErrorSummary: GovukErrorSummary,
     formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_radio: components_refactored.input_radio,
     submit_button: components_refactored.submit_button,
 )
 
@@ -38,16 +38,12 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @govukRadios(Radios(
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("continueWithRegistration.heading")),
-                    classes = "govuk-fieldset__legend--xl govuk-!-margin-bottom-5",
-                    isPageHeading = true
-                ))
-            )),
-            hint = Some(Hint(content = Text(messages("continueWithRegistration.p1")))),
-            items = Seq(
+        @input_radio(
+            field = form("value"),
+            legend = messages("continueWithRegistration.heading"),
+            legendAsHeading = true,
+            hint = Some(messages("continueWithRegistration.p1")),
+            inputs = Seq(
                 RadioItem(
                     content = Text(messages("continueWithRegistration.yes")),
                     value = Some(messages("site.true"))
@@ -58,7 +54,7 @@
                     hint = Some(Hint(content = Text(messages("continueWithRegistration.no.hint"))))
                 )
             )
-        ).withFormField(form("value")))
+        )
 
         @submit_button(messages("site.save_and_continue"))
 

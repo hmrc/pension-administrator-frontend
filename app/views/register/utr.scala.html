@@ -34,7 +34,7 @@
 @(form: Form[_], businessType: String, hint: String, href: Call)(implicit request: Request[_], messages: Messages)
 
 @hintHtml = {
-    <p>@messages("utr.p1")</p>
+    <p class="govuk-!-margin-top-0">@messages("utr.p1")</p>
     <p>@messages("utr.p2")</p>
 }
 
@@ -46,21 +46,15 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("utr.heading", businessType, hint))
-
-        @components_refactored.paragraph_text(messages("utr.p1"))
-
-        @components_refactored.paragraph_text(messages("utr.p2"))
-
         @input_text(
             field = form("value"),
             label = messages("utr.heading", businessType, hint),
-            labelClass = Some("govuk-visually-hidden"),
+            headingIsLegend = true,
             numericField = true,
+            hint = Some(hintHtml.toString)
         )
 
         @submit_button(messages("site.save_and_continue"))
 
     }
-
 }

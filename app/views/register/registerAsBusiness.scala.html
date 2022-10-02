@@ -23,9 +23,9 @@
 
 @this(
     layout: templates.Layout,
-    govukRadios : GovukRadios,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
+    input_radio: components_refactored.input_radio,
     submit_button: components_refactored.submit_button
 )
 
@@ -39,26 +39,21 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @govukRadios(Radios(
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("registerAsBusiness.heading")),
-                    classes = "govuk-fieldset__legend--xl govuk-!-margin-bottom-5",
-                    isPageHeading = true
-                ))
-            )),
-            items = Seq(
+        @input_radio(
+            field = form("value"),
+            legend = messages("registerAsBusiness.heading"),
+            legendAsHeading = true,
+            inputs = Seq(
                 RadioItem(
                     content = Text(messages("registerAsBusiness.yes.label")),
                     value = Some(messages("site.true"))
-                    ),
+                ),
                 RadioItem(
                     content = Text(messages("registerAsBusiness.no.label")),
                     value = Some(messages("site.false"))
-                    )
-                ),
-            ).withFormField(form("value")
-        ))
+                )
+            ),
+        )
 
         @submit_button(messages("site.continue"))
 

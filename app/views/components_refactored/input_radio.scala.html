@@ -1,0 +1,86 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+
+
+@this(
+    govukRadios : GovukRadios,
+    govukInput: GovukInput
+)
+
+@(
+    field: Field,
+    legend: String,
+    legendClass: Option[String] = None,
+    hint: Option[String] = None,
+    legendAsHeading: Boolean = false,
+    inline: Boolean = false,
+    inputs: Seq[RadioItem],
+    chtml_field: Option[Field] = None,
+    chtml_label: Option[String] = None,
+    chtml_name: Option[String] = None
+)(implicit messages: Messages)
+
+@cssAdjust = @{
+    if(legendAsHeading == true){
+        legendClass.fold("govuk-fieldset__legend--xl govuk-!-margin-bottom-5")(classes => classes)
+    } else {
+        legendClass.fold("govuk-fieldset__legend--m")(classes => classes)
+    }
+}
+
+@conditionalHtml(chtml_name: Option[String], inputValue: String) = @{
+    if(chtml_name.nonEmpty &&  (inputValue  == chtml_name.get)){
+    chtml_field match {
+        case Some(html_field) => {
+            Some(
+                govukInput(Input(
+                    id = html_field.id,
+                    name = html_field.name,
+                    label = Label(
+                        content = Text(chtml_label.getOrElse("")),
+                    ),
+                    classes = "govuk-!-width-one-half"
+                ).withFormField(html_field))
+                )
+            }
+        case _ => None
+        }
+    } else {
+        None
+    }
+}
+
+@govukRadios(Radios(
+    name = field.name,
+    classes = if(inline) "govuk-radios--inline" else "",
+    errorMessage = field.error match {
+        case Some(e) => Some(ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
+        case None => None
+    },
+    hint = if(hint.isDefined) Some(Hint(content = Text(hint.get))) else None,
+    fieldset = Some(Fieldset(
+        legend = Some(Legend(
+            content = Text(legend),
+            isPageHeading = legendAsHeading,
+            classes = cssAdjust
+        )),
+    )),
+    items = inputs
+).withFormField(field))

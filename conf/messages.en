@@ -394,7 +394,7 @@ hasPAYE.visuallyHidden.text = whether {0} has an employer PAYE reference
 
 enterPAYE.heading = What is {0}’s employer PAYE reference?
 enterPAYE.hint = For example, 123/AB456
-enterPAYE.p1 = You can tell us any employer PAYE reference if {0} has more then one.
+enterPAYE.p1 = You can tell us any employer PAYE reference if {0} has more than one.
 enterPAYE.error.invalid = Enter {0}’s employer PAYE reference in the correct format
 enterPAYE.error.length = Enter {0}’s employer PAYE reference using 16 characters or less
 enterPAYE.error.required = Enter an employer PAYE reference
@@ -1066,8 +1066,8 @@ partnershipName.error.required = Enter a partnership name
 partnershipName.error.invalid = Partnership name must only include letters, numbers and the characters ’, &, \ and /
 partnershipName.error.length = Partnership name must be 105 characters or fewer
 
-utr.title = What is the {0}’s Unique Taxpayer Reference (UTR)?
-utr.heading = What is the {0}’s Unique Taxpayer Reference (UTR)?
+utr.title = What is {0}’s {1} Unique Taxpayer Reference (UTR)?
+utr.heading = What is {0}’s {1} Unique Taxpayer Reference (UTR)?
 utr.company.hint = Corporation Tax
 utr.partnership.hint = Self Assessment
 utr.p1 = This is a 10-digit or 13-digit number. For example, 12345 67890. It may also start or end with the letter ‘k’.

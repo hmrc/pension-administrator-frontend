@@ -25,7 +25,7 @@
 
 @this(
     layout: templates.Layout,
-    govukRadios : GovukRadios,
+    input_radio: components_refactored.input_radio,
     govukErrorSummary: GovukErrorSummary,
     formHelper: PlayFrontendFormWithCSRF,
     submit_button: components_refactored.submit_button
@@ -41,21 +41,11 @@
 
     @formHelper(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @govukRadios(
-            Radios(
-                fieldset = Some(
-                Fieldset(
-                    legend = Some(
-                        Legend(
-                            content = Text(messages("businessType.heading")),
-                            classes = "govuk-fieldset__legend--xl",
-                            isPageHeading = true
-                        )
-                    )
-                )
-            ),
-            items = BusinessType.radioOptions
-            ).withFormField(form("value"))
+        @input_radio(
+            field = form("value"),
+            legend = messages("businessType.heading"),
+            legendAsHeading = true,
+            inputs = BusinessType.radioOptions
         )
 
         @submit_button(messages("site.save_and_continue"))

@@ -35,16 +35,6 @@
     headingIsLegend: Boolean = false
 )(implicit messages: Messages)
 
-@ariaDescribedBy = @{
-    if(field.hasErrors || hint.nonEmpty){
-        val errorId = if (field.hasErrors) Seq(s"error-message-${field.id}-input") else Seq.empty
-        val hintId = if (hint.nonEmpty) Seq(s"${field.id}-yesno-hint") else Seq.empty
-        Some((hintId ++ errorId).mkString(" "))
-    } else {
-        None
-    }
-}
-
 @cssAdjust = @{
     if(headingIsLegend == true){
         labelClass.fold("govuk-fieldset__legend--xl govuk-!-margin-bottom-5")(classes => classes)
@@ -60,23 +50,16 @@
             classes = cssAdjust,
             isPageHeading = headingIsLegend
         )),
-        describedBy = ariaDescribedBy,
-        attributes = Map("id" -> field.id),
     )),
     classes = "govuk-radios--inline",
-    hint = hint.map( hintText => Hint(content = Text(hintText))),
+    hint = hint.map( hintText => Hint(content = HtmlContent(hintText))),
     errorMessage = field.errors.headOption.map ( error => ErrorMessage(content = Text(messages(error.message, error.args: _*))) ),
-
     items = Seq(
         RadioItem(
-            content = Text(messages("site.yes")),
-            value = Some(messages("site.true")),
-            id = Some(field.id+"-yes")
+            content = Text(messages("site.yes"))
         ),
         RadioItem(
-            content = Text(messages("site.no")),
-            value = Some(messages("site.false")),
-            id = Some(field.id+"-no")
+            content = Text(messages("site.no"))
         )
     )
     ).withFormField(field)

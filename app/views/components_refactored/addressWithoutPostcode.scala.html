@@ -63,7 +63,7 @@ govukSelect : GovukSelect
                     id = "country",
                     name = "country",
                     hint = Some(Hint(content = Text(messages("address.country.hint")))),
-                    classes = "govuk-!-width-one-third",
+                    classes = "govuk-!-width-one-half",
                     items = Seq(SelectItem(value = Some(""))) ++
                         options.map(valueOption =>
                             SelectItem(

@@ -26,8 +26,8 @@
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    govukRadios : GovukRadios,
     govukErrorSummary: GovukErrorSummary,
+    input_yes_no: components_refactored.input_yes_no,
     submit_button: components_refactored.submit_button
 )
 
@@ -36,7 +36,7 @@
 
 @hintHtml = {
     @if(viewModel.mode == CheckMode){
-        <p>@viewModel.p1.map{p1 => @messages(p1)}</p>
+        <p class="govuk-!-margin-top-0">@viewModel.p1.map{p1 => @messages(p1)}</p>
         <p>@viewModel.p2.map{p2 => @messages(p2)}</p>
     }
 }
@@ -49,29 +49,11 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @govukRadios(Radios(
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(viewModel.heading),
-                    classes = "govuk-fieldset__legend--xl",
-                    isPageHeading = true
-                ))
-            )),
-            hint = Some(Hint(
-                content = HtmlContent(hintHtml)
-            )),
-            items = Seq(
-                RadioItem(
-                content = Text(messages("site.yes")),
-                value = Some(messages("site.true"))
-                ),
-            RadioItem(
-                content = Text(messages("site.no")),
-                value = Some(messages("site.false"))
-                )
-            ),
-            classes = "govuk-radios--inline"
-            ).withFormField(form("value"))
+        @input_yes_no(
+            field = form("value"),
+            label = viewModel.heading,
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
         )
 
         @submit_button(messages("site.save_and_continue"))

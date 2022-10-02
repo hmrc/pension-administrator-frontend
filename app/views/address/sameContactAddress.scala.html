@@ -29,11 +29,19 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    submit_button: components_refactored.submit_button,
-    govukRadios : GovukRadios
+    input_yes_no: components_refactored.input_yes_no,
+    submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewmodel: SameContactAddressViewModel, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
+
+@hintHtml = {
+    <p class="govuk-!-margin-top-0">
+        @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
+            <span id="address-value-@i" class="govuk-!-display-block">@line</span>
+        }
+    </p>
+}
 
 @layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
@@ -43,40 +51,11 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(viewmodel.heading, true)
-
-        <p class="govuk-body">
-            @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
-                <span id="address-value-@i" class="govuk-!-display-block">@line</span>
-            }
-        </p>
-
-        @govukRadios(
-            Radios(
-                fieldset = Some(
-                    Fieldset(
-                        legend = Some(
-                            Legend(
-                                content = Text(messages(viewmodel.heading)),
-                                classes = "govuk-visually-hidden",
-                                isPageHeading = false
-                            )
-                        )
-                    )
-                ),
-                items = Seq(
-                    RadioItem(
-                        content = Text(messages("site.yes")),
-                        value = Some("true")
-                    ),
-                    RadioItem(
-                        content = Text(messages("site.no")),
-                        value = Some("false")
-                    )
-                ),
-            classes = "govuk-radios--inline",
-            hint = viewmodel.hint.map(hintValue => Hint(content = Text(messages(hintValue)))),
-            ).withFormField(form("value"))
+        @input_yes_no(
+            field = form("value"),
+            label = viewmodel.heading,
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
         )
 
         @submit_button(messages("site.save_and_continue"))
