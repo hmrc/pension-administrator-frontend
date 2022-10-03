@@ -44,9 +44,7 @@
 
         @input_text(
             field = form("value"),
-            label = viewModel.heading,
-            labelClass = Some("govuk-label--xl"),
-            inputClass = Some("govuk-!-width-one-half"),
+            label = messages(viewModel.heading),
             hint = viewModel.hint,
             headingIsLegend = true
         )

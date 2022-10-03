@@ -49,17 +49,19 @@
             content = Text(label),
             classes = cssAdjust,
             isPageHeading = headingIsLegend
-        )),
+        ))
     )),
     classes = "govuk-radios--inline",
     hint = hint.map( hintText => Hint(content = HtmlContent(hintText))),
     errorMessage = field.errors.headOption.map ( error => ErrorMessage(content = Text(messages(error.message, error.args: _*))) ),
     items = Seq(
         RadioItem(
-            content = Text(messages("site.yes"))
+            content = Text(messages("site.yes")),
+            value = Some(messages("site.true"))
         ),
         RadioItem(
-            content = Text(messages("site.no"))
+            content = Text(messages("site.no")),
+            value = Some(messages("site.false"))
         )
     )
     ).withFormField(field)

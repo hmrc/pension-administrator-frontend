@@ -43,7 +43,7 @@
 
         @input_text(
             field = form("value"),
-            label = viewModel.heading,
+            label = messages(viewModel.heading),
             hint = Some(messages("enterVAT.paragraph", viewModel.entityName)),
             numericField = true,
             headingIsLegend = true

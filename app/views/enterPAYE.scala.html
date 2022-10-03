@@ -47,11 +47,9 @@
 
         @input_text(
             field = form("value"),
-            label = viewModel.heading,
-            labelClass = Some("govuk-visually-hidden"),
-            inputClass = Some("govuk-!-width-one-half"),
+            label = messages(viewModel.heading),
             hint = viewModel.hint,
-            headingIsLegend = false
+            labelClass = Some("govuk-visually-hidden")
         )
 
         @submit_button("site.save_and_continue")

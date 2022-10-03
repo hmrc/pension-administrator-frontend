@@ -32,6 +32,7 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
+    input_yes_no: components_refactored.input_yes_no,
     govukRadios : GovukRadios,
     submit_button: components_refactored.submit_button,
     appConfig: FrontendAppConfig
@@ -79,30 +80,12 @@
             }
 
             @if(directors.size < appConfig.maxDirectors) {
-                @govukRadios(
-                    Radios(
-                        fieldset = Some(
-                            Fieldset(legend = Some(
-                                    Legend( content = Text(messages("addCompanyDirectors.addYesNo")),
-                                            classes = "govuk-fieldset__legend--m",
-                                            isPageHeading = false
-                                        )
-                                    )
-                                )
-                        ),
-                        items = Seq(
-                                RadioItem(
-                                    content = Text(messages("site.yes")),
-                                    value = Some(messages("site.true"))
-                                ),
-                                RadioItem(
-                                    content = Text(messages("site.no")),
-                                    value = Some(messages("site.false"))
-                                    )
-                                ),
-                    hint = Some(Hint(content = Text(messages("addCompanyDirectors.addADirector.hint")))),
-                    classes = "govuk-radios--inline"
-                    ).withFormField(form("value"))
+
+                @input_yes_no(
+                    field = form("value"),
+                    label = messages("addCompanyDirectors.addYesNo"),
+                    labelClass = Some("govuk-fieldset__legend--m"),
+                    hint = Some(messages("addCompanyDirectors.addADirector.hint"))
                 )
 
             } else {
@@ -122,6 +105,5 @@
                 <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", psaName)</a>
             </p>
         }
-
     }
 }
