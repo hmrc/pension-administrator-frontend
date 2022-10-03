@@ -28,15 +28,11 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios,
+    input_radio: components_refactored.input_radio,
     submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], viewModel: AddressListViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
-
-@hintHtml = {
-    <p class="govuk-body">@messages(viewModel.selectAddress) <a id="manual-address-link" class="govuk-link" href="@viewModel.manualInputCall">@messages(viewModel.selectAddressLink)</a></p>
-}
 
 @layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
@@ -48,26 +44,18 @@
 
         @components_refactored.heading(viewModel.heading, true)
 
-        @hintHtml
+        <p class="govuk-body">@messages(viewModel.selectAddress) <a id="manual-address-link" class="govuk-link" href="@viewModel.manualInputCall">@messages(viewModel.selectAddressLink)</a></p>
 
-        @govukRadios(Radios(
-            fieldset = Some(
-                Fieldset(
-                    legend = Some(
-                        Legend(
-                            content = Text(messages(viewModel.heading)),
-                            classes = "govuk-visually-hidden",
-                            isPageHeading = false
-                        )
-                    )
-                )
-            ),
-            items = for((address, i) <- viewModel.addresses.zipWithIndex) yield {
+        @input_radio(
+            field = form("value"),
+            legend = messages(viewModel.heading),
+            legendClass = Some("govuk-visually-hidden"),
+            inputs = for((address, i) <- viewModel.addresses.zipWithIndex) yield {
                 RadioItem(
                     content = Text(address.print),
                     value = Some(i.toString)
                 )
-            }).withFormField(form("value"))
+            }
         )
 
         @submit_button(messages("site.save_and_continue"))
@@ -82,6 +70,5 @@
                 }
             }
         }
-
     }
 }
