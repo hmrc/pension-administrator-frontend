@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import connectors.RegistrationConnectorSpec.{sapNumber, utr}
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeUnAuthorisedAction}
 import controllers.behaviours.ControllerWithQuestionPageBehaviours

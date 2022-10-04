@@ -34,6 +34,11 @@
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
+@hintHtml = {
+    <p class="govuk-!-margin-top-0">@messages("utr.p1")</p>
+    <p>@messages("utr.p2")</p>
+}
+
 @layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
@@ -42,17 +47,12 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(viewModel.heading, true)
-
-        @components_refactored.paragraph_text(messages("utr.p1"))
-
-        @components_refactored.paragraph_text(messages("utr.p2"))
-
         @input_text(
             field = form("value"),
             label = messages(viewModel.heading),
-            labelClass = Some("govuk-visually-hidden"),
-            numericField = true
+            headingIsLegend = true,
+            numericField = true,
+            hint = Some(hintHtml.toString)
         )
 
         @submit_button("site.save_and_continue")
