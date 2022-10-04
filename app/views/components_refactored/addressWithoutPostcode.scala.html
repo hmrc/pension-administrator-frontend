@@ -21,59 +21,56 @@
 @import utils.InputOption
 
 @this(
-govukInput: GovukInput,
-govukSelect : GovukSelect
+    govukInput: GovukInput,
+    govukSelect : GovukSelect
 )
 
 @(form: Form[_], options: Seq[InputOption])(implicit request: Request[_], messages: Messages)
 
-        @govukInput(
-            Input(
-                label = Label(content = Text(messages("address.line.1")),
-                isPageHeading = true),
-                classes = "govuk-!-width-two-thirds"
-            ).withFormField(form("addressLine1"))
-        )
+@govukInput(
+    Input(
+        label = Label(content = Text(messages("address.line.1"))),
+        classes = "govuk-!-width-two-thirds"
+    ).withFormField(form("addressLine1"))
+)
 
-        @govukInput(
-            Input(
-                label = Label(content = Text(messages("address.line.2")),
-                classes = "govuk-!-width-two-thirds",
-                isPageHeading = true),
-                classes = "govuk-!-width-two-thirds"
-            ).withFormField(form("addressLine2"))
-        )
-        @govukInput(
-            Input(
-                label = Label(content = Text(messages("address.line.3")),
-                isPageHeading = true),
-                classes = "govuk-!-width-one-half"
-            ).withFormField(form("addressLine3"))
-        )
-        @govukInput(
-            Input(
-                label = Label(content = Text(messages("address.line.4")),
-                isPageHeading = true),
-                classes = "govuk-!-width-one-half"
-            ).withFormField(form("addressLine4"))
-        )
+@govukInput(
+    Input(
+        label = Label(content = Text(messages("address.line.2"))),
+        classes = "govuk-!-width-two-thirds"
+    ).withFormField(form("addressLine2"))
+)
 
-        <div class="govuk-!-width-one-half">
-                @govukSelect(Select(
-                    id = "country",
-                    name = "country",
-                    hint = Some(Hint(content = Text(messages("address.country.hint")))),
-                    classes = "govuk-!-width-one-half",
-                    items = Seq(SelectItem(value = Some(""))) ++
-                        options.map(valueOption =>
-                            SelectItem(
-                                value = Some(valueOption.value),
-                                text = valueOption.label
-                            )
-                        ),
-                        label = Label(
-                        content = Text(messages("address.country"))
-                    )
-                    ).withFormField(form("country"))
+@govukInput(
+    Input(
+        label = Label(content = Text(messages("address.line.3"))),
+        classes = "govuk-!-width-one-half"
+    ).withFormField(form("addressLine3"))
+)
+
+@govukInput(
+    Input(
+        label = Label(content = Text(messages("address.line.4"))),
+        classes = "govuk-!-width-one-half"
+    ).withFormField(form("addressLine4"))
+)
+
+<div class="govuk-!-width-two-thirds">
+    @govukSelect(Select(
+        id = "country",
+        name = "country",
+        hint = Some(Hint(content = Text(messages("address.country.hint")))),
+        classes = "govuk-!-width-two-thirds",
+        items = Seq(SelectItem(value = Some(""))) ++
+            options.map(valueOption =>
+                SelectItem(
+                    value = Some(valueOption.value),
+                    text = valueOption.label
                 )
-        </div>
+            ),
+            label = Label(
+            content = Text(messages("address.country"))
+        )
+        ).withFormField(form("country"))
+    )
+</div>

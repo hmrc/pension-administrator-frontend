@@ -58,7 +58,8 @@
 }
 
 @layout(
-    pageTitle = if(request.user.isExistingPSA) messages("confirmation.existingPSA.title") else messages("confirmation.newPSA.title")
+    pageTitle = if(request.user.isExistingPSA) messages("confirmation.existingPSA.title") else messages("confirmation.newPSA.title"),
+    showBackLink = false
 ) {
 
     @formHelper(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {

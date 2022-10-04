@@ -26,6 +26,7 @@
     layout: templates.Layout,
     appConfig: FrontendAppConfig,
     govukSummaryList : GovukSummaryList,
+    button_link: components_refactored.button_link,
     govukButton: GovukButton,
     super_section: components_refactored.super_section,
     incomplete_alert: components_refactored.incomplete_alert
@@ -50,11 +51,9 @@
     }
 
     @if(psaDetails.isUserAnswerUpdated) {
-        @govukButton(Button(
-            attributes = Map("id" -> "declaration-link"),
-            content = Text(messages("psaDetails.declaration.link.text")),
-            href = Some(nextPage.url)
-        ))
+
+        @button_link("psaDetails.declaration.link.text", nextPage.url, "declaration-link")
+
     }
 
     <p class="govuk-body">

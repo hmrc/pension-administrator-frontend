@@ -1,25 +1,39 @@
+// prevent resubmit warning
+if (window.history && window.history.replaceState && typeof window.history.replaceState === 'function') {
+  window.history.replaceState(null, null, window.location.href);
+}
+
+document.addEventListener('DOMContentLoaded', function(event) {
+
+    // handle back click
+    var backLink = document.querySelector('.govuk-back-link');
+    if (backLink !== null) {
+        backLink.addEventListener('click', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            window.history.back();
+        });
+    }
+
+    // handle country picker
+    var selectEl = document.querySelector('#country')
+    if( selectEl !== null ){
+        accessibleAutocomplete.enhanceSelectElement({
+            defaultValue: "",
+            selectElement: selectEl
+        })
+
+        // fix to ensure error when blank
+        var input = document.querySelector('input[role="combobox"]');
+        input.addEventListener('keydown', function(e){
+           if (e.which != 13 && e.which != 9) {
+             selectEl.value = "";
+           }
+        });
+    }
+});
 
 $(document).ready(function() {
-
-    // If there is an error summary, set focus to the summary
-    if ($('.error-summary--show').length) {
-      $('.error-summary--show').focus()
-    }
-
-    if(document.querySelectorAll('select').length > 0){
-        accessibleAutocomplete({
-            element: document.getElementById('country'),
-            id: 'country',
-            source: '/register-as-pension-scheme-administrator/assets/javascripts/autocomplete/location-autocomplete-graph.json'
-        })
-
-        accessibleAutocomplete.enhanceSelectElement({
-            defaultValue: '',
-            selectElement: document.querySelector('select')
-        })
-
-    }
-
     function beforePrintCall(){
         if($('.no-details').length > 0){
             // store current focussed element to return focus to later
