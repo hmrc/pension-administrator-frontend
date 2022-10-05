@@ -39,8 +39,11 @@
 
         @submit_button("site.confirm")
 
-        <a id="cancel" class="govuk-link" href=@controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url>
-            @messages("site.cancel")
-        </a>
+        <p class="govuk-body">
+            <a id="cancel" class="govuk-link" href=@controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url>
+                @messages("site.cancel")
+            </a>
+        </p>
+
     }
 }

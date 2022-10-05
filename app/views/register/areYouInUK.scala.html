@@ -33,7 +33,6 @@
 
 @(form: Form[_], viewModel: AreYouInUKViewModel)(implicit request: Request[_], messages: Messages)
 
-
 @hintHtml = {
     @if(viewModel.mode == CheckMode){
         <p class="govuk-!-margin-top-0">@viewModel.p1.map{p1 => @messages(p1)}</p>

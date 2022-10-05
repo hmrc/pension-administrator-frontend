@@ -34,6 +34,15 @@
 
 @(form: Form[_], mode: Mode, individual: TolerantIndividual, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
+@hintHtml = {
+    <p class="govuk-!-margin-top-0" id="individual-value">@individual.fullName</p>
+    <p>
+        @for((line, i) <- address.lines(countryOptions).zipWithIndex) {
+        <span id="address-value-@i" class="govuk-!-display-block">@line</span>
+        }
+    </p>
+}
+
 @layout(pageTitle = titleWithErrors(form, messages("individualDetailsCorrect.title"))) {
 
     @formHelper(action = IndividualDetailsCorrectController.onSubmit(mode), 'autoComplete -> "off") {
@@ -42,24 +51,14 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("individualDetailsCorrect.heading"))
-
-        <p class="govuk-body" id="individual-value">@individual.fullName</p>
-
-        <p class="govuk-body">
-            @for((line, i) <- address.lines(countryOptions).zipWithIndex) {
-                <span id="address-value-@i" class="govuk-!-display-block">@line</span>
-            }
-        </p>
-
         @input_yes_no(
             field = form("value"),
             label = messages("individualDetailsCorrect.heading"),
-            labelClass = Some("govuk-visually-hidden")
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
         )
 
         @submit_button("site.save_and_continue")
 
     }
-
 }

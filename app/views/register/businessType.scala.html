@@ -35,11 +35,11 @@
 
 @layout(pageTitle  = titleWithErrors(form, messages("businessType.title"))) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
-
     @formHelper(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
         @input_radio(
             field = form("value"),
@@ -49,5 +49,6 @@
         )
 
         @submit_button(messages("site.save_and_continue"))
+
     }
 }

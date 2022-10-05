@@ -38,9 +38,7 @@
     displayReturnLink: Boolean,
     personWithWorkingKnowledgeName:String)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("stillUseAdviser.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("stillUseAdviser.title"))) {
 
     @formHelper(action = StillUseAdviserController.onSubmit(), 'autoComplete -> "off") {
 
@@ -68,5 +66,6 @@
                 @components_refactored.return_link(psaName, mode)
             }
         }
+
     }
 }

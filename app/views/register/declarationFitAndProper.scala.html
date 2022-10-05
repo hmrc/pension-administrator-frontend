@@ -27,33 +27,19 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("declarationFitAndProper.title")
-) {
+@layout(pageTitle = messages("declarationFitAndProper.title")) {
 
     @components_refactored.heading(messages("declarationFitAndProper.heading"))
 
     @components_refactored.paragraph_text(messages("declarationFitAndProper.declaration"))
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>
-            @messages("declarationFitAndProper.statement1")
-        </li>
-        <li>
-            @messages("declarationFitAndProper.statement2")
-        </li>
-        <li>
-            @messages("declarationFitAndProper.statement3")
-        </li>
-        <li>
-            @messages("declarationFitAndProper.statement4")
-        </li>
-        <li>
-            @messages("declarationFitAndProper.statement5")
-        </li>
-        <li>
-            @messages("declarationFitAndProper.statement6")
-        </li>
+        <li>@messages("declarationFitAndProper.statement1")</li>
+        <li>@messages("declarationFitAndProper.statement2")</li>
+        <li>@messages("declarationFitAndProper.statement3")</li>
+        <li>@messages("declarationFitAndProper.statement4")</li>
+        <li>@messages("declarationFitAndProper.statement5")</li>
+        <li>@messages("declarationFitAndProper.statement6")</li>
     </ul>
 
     @button_link("site.agreeAndContinue", controllers.register.routes.DeclarationFitAndProperController.onClickAgree().url, "submit")

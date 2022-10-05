@@ -50,7 +50,7 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("addCompanyDirectors.heading"), true)
+        @components_refactored.heading(messages("addCompanyDirectors.heading"))
 
         @if(directors.isEmpty) {
 
@@ -83,5 +83,6 @@
         @psaNameOpt.map{ psaName =>
             @components_refactored.return_link(psaName, mode)
         }
+
     }
 }

@@ -26,9 +26,7 @@
 
 @(href: Call,psaName: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("whatYouWillNeed.workingKnowledge.title")
-) {
+@layout(pageTitle = messages("whatYouWillNeed.workingKnowledge.title")) {
 
     @components_refactored.heading(messages("whatYouWillNeed.workingKnowledge.title"))
 
@@ -50,4 +48,5 @@
         </p>
         }
     }
+
 }

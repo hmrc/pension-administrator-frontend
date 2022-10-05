@@ -33,9 +33,7 @@
 
 @(form: Form[_], viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewModel.title))
-) {
+@layout(pageTitle = titleWithErrors(form, messages(viewModel.title))) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
@@ -51,9 +49,10 @@
         )
 
         @submit_button("site.save_and_continue")
-    }
 
-    @viewModel.psaName.map { psaName =>
-        @components_refactored.return_link(psaName, mode)
+        @viewModel.psaName.map { psaName =>
+            @components_refactored.return_link(psaName, mode)
+        }
+
     }
 }

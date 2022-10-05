@@ -27,22 +27,21 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("whatYouWillNeed.title")
-) {
-
-    @components_refactored.heading(messages("whatYouWillNeed.heading"))
-
-    @components_refactored.paragraph_text(messages("whatYouWillNeed.body.text"))
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("whatYouWillNeed.company.body.item1")</li>
-        <li>@messages("whatYouWillNeed.company.body.item2")</li>
-        <li>@messages("whatYouWillNeed.company.body.item3")</li>
-    </ul>
+@layout(pageTitle = messages("whatYouWillNeed.title")) {
 
     @formHelper(action = controllers.register.company.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
-            @submit_button("site.continue")
-    }
 
+        @components_refactored.heading(messages("whatYouWillNeed.heading"))
+
+        @components_refactored.paragraph_text(messages("whatYouWillNeed.body.text"))
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("whatYouWillNeed.company.body.item1")</li>
+            <li>@messages("whatYouWillNeed.company.body.item2")</li>
+            <li>@messages("whatYouWillNeed.company.body.item3")</li>
+        </ul>
+
+        @submit_button("site.continue")
+
+    }
 }

@@ -41,9 +41,7 @@
     <p>@messages("confirmStopBeingPsa.p2")</p>
 }
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("confirmStopBeingPsa.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("confirmStopBeingPsa.title"))) {
 
     @formHelper(action = controllers.deregister.routes.ConfirmStopBeingPsaController.onSubmit(), 'autoComplete -> "off") {
 

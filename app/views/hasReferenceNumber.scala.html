@@ -32,8 +32,6 @@
 
 @(form: Form[_], viewmodel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
-
-
 @layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
@@ -64,5 +62,4 @@
         }
 
     }
-
 }

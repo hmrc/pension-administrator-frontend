@@ -32,9 +32,7 @@
 
 @(form: Form[_], psaNameOpt: Option[String], displayReturnLink: Boolean)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("declarationFitAndProper.variations.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("declarationFitAndProper.variations.title"))) {
 
     @formHelper(action = routes.VariationDeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
 
@@ -47,24 +45,12 @@
         @components_refactored.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
 
         <ul class="govuk-list govuk-list--bullet">
-            <li>
-                @messages("declarationFitAndProper.variations.statement1")
-            </li>
-            <li>
-                @messages("declarationFitAndProper.variations.statement2")
-            </li>
-            <li>
-                @messages("declarationFitAndProper.variations.statement3")
-            </li>
-            <li>
-                @messages("declarationFitAndProper.variations.statement4")
-            </li>
-            <li>
-                @messages("declarationFitAndProper.variations.statement5")
-            </li>
-            <li>
-                @messages("declarationFitAndProper.variations.statement6")
-            </li>
+            <li>@messages("declarationFitAndProper.variations.statement1")</li>
+            <li>@messages("declarationFitAndProper.variations.statement2")</li>
+            <li>@messages("declarationFitAndProper.variations.statement3")</li>
+            <li>@messages("declarationFitAndProper.variations.statement4")</li>
+            <li>@messages("declarationFitAndProper.variations.statement5")</li>
+            <li>@messages("declarationFitAndProper.variations.statement6")</li>
         </ul>
 
         @input_yes_no(
@@ -81,5 +67,6 @@
                 @components_refactored.return_link(psaName, UpdateMode)
             }
         }
+
     }
 }

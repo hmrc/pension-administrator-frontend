@@ -28,9 +28,7 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("whatYouWillNeed.partnership.title")
-) {
+@layout(pageTitle = messages("whatYouWillNeed.partnership.title")) {
 
     @formHelper(action = controllers.register.partnership.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
 
@@ -47,5 +45,6 @@
         </ul>
 
         @submit_button("site.continue")
+
     }
 }

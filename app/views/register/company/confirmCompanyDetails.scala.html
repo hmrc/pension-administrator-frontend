@@ -33,6 +33,10 @@
 
 @(form: Form[_], address: TolerantAddress, name: String, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
+@hintHtml = {
+    @components_refactored.tolerant_address("companyAddress", address, countryOptions)
+}
+
 @layout(pageTitle = titleWithErrors(form, messages("confirmCompanyAddress.title"))) {
 
     @formHelper(action = ConfirmCompanyDetailsController.onSubmit(), 'autoComplete -> "off") {
@@ -41,16 +45,14 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("confirmRegisteredAddress.heading", name ), true)
-
-        @components_refactored.tolerant_address("companyAddress", address, countryOptions)
-
         @input_yes_no(
             field = form("value"),
             label = messages("confirmRegisteredAddress.heading", name),
-            labelClass = Some("govuk-visually-hidden")
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
         )
 
         @submit_button("site.save_and_continue")
+
     }
 }

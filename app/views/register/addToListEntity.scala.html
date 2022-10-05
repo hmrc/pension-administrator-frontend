@@ -75,7 +75,7 @@
                     field = form("value"),
                     label = messages("addEntity.addYesNo", viewmodel.entityType.dropRight(1)),
                     labelClass = Some("govuk-fieldset__legend--m"),
-                    hint = Some("viewmodel.hintText")
+                    hint = Some(messages("viewmodel.hintText"))
                 )
 
                 @if(viewmodel.insetText.nonEmpty) {

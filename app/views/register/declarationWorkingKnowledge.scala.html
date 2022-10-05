@@ -33,9 +33,7 @@
 
 @(form: Form[_], mode: Mode,psaName: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("declarationWorkingKnowledge.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("declarationWorkingKnowledge.title"))) {
 
     @formHelper(action = DeclarationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
 
@@ -64,5 +62,6 @@
                 </p>
             }
         }
+
     }
 }

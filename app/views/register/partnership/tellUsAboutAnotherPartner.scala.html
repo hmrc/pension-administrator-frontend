@@ -25,9 +25,7 @@
 
 @(href: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("tellUsAboutAnotherPartner.title")
-) {
+@layout(pageTitle = messages("tellUsAboutAnotherPartner.title")) {
 
     @components_refactored.heading(messages("tellUsAboutAnotherPartner.heading"))
 

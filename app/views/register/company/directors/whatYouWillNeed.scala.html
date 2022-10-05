@@ -26,9 +26,7 @@
 
 @(href: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("whatYouWillNeed.directorsOrPartners.title")
-) {
+@layout(pageTitle = messages("whatYouWillNeed.directorsOrPartners.title")) {
 
     @components_refactored.heading(messages("whatYouWillNeed.directors.heading"))
 
@@ -46,4 +44,5 @@
     </ul>
 
     @button_link("site.continue", href.url, "submit")
+
 }

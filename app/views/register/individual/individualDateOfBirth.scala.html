@@ -26,35 +26,28 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukDateInput : GovukDateInput,
+    input_date: components_refactored.input_date,
     submit_button: components_refactored.submit_button
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("individualDateOfBirth.heading"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("individualDateOfBirth.heading"))) {
 
     @formHelper(action = IndividualDateOfBirthController.onSubmit(mode), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-    @govukDateInput(
-        DateInput(
-            id = "dateOfBirth",
-            hint = Some(Hint(content = Text(messages("common.dateOfBirth.hint")))),
-            fieldset = Some(Fieldset(
-                            legend = Some(Legend(
-                                    content = Text(messages("individualDateOfBirth.heading")),
-                                    classes = "govuk-fieldset__legend--xl",
-                                    isPageHeading = true))
-                        ))
-        ).withFormField(form("dateOfBirth"))
-      )
+        @input_date(
+            field = form("dateOfBirth"),
+            legend = messages("individualDateOfBirth.heading"),
+            headingIsLegend = true,
+            hint = Some(messages("common.dateOfBirth.hint"))
+        )
 
         @submit_button("site.save_and_continue")
+
     }
 }

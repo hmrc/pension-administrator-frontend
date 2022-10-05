@@ -29,9 +29,7 @@
 
 @(partnershipName: String, partners: Seq[String])(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("partnershipReview.title")
-) {
+@layout(pageTitle = messages("partnershipReview.title")) {
 
     @formHelper(action = PartnershipReviewController.onSubmit, 'autoComplete -> "off") {
 

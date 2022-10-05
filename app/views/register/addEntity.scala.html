@@ -44,53 +44,51 @@
     viewmodel.entities.exists(entity => if(mode == NormalMode) !entity.isComplete else entity.isNew && !entity.isComplete)
 }
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewmodel.title))
-) {
+@layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
-        @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-            @if(form.errors.nonEmpty) {
-                @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        @components_refactored.heading(viewmodel.heading)
+
+        @if(viewmodel.entities.isEmpty) {
+
+            @components_refactored.paragraph_text(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
+            @submit_button(Message("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
+
+        } else {
+
+            @components_refactored.person_list(viewmodel.entities, mode)
+
+            @if(viewmodel.entities.size < 2) {
+                @govukInsetText(InsetText(
+                    content = Text(messages("addEntity.hintText")),
+                    id = Some("too-few-partners-hint")
+                ))
             }
 
-            @components_refactored.heading(viewmodel.heading)
-
-            @if(viewmodel.entities.isEmpty) {
-
-                @components_refactored.paragraph_text(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
-                @submit_button(Message("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
-
+            @if(viewmodel.entities.size < viewmodel.maxLimit) {
+                @input_yes_no(
+                    field = form("value"),
+                    label = Message("addEntity.addYesNo", viewmodel.entityType.dropRight(1)),
+                    hint = Some(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
+                )
             } else {
-
-                @components_refactored.person_list(viewmodel.entities, mode)
-
-                @if(viewmodel.entities.size < 2) {
-                    @govukInsetText(InsetText(
-                        content = Text(messages("addEntity.hintText")),
-                        id = Some("too-few-partners-hint")
-                    ))
-                }
-
-                @if(viewmodel.entities.size < viewmodel.maxLimit) {
-                    @input_yes_no(
-                        field = form("value"),
-                        label = Message("addEntity.addYesNo", viewmodel.entityType.dropRight(1)),
-                        hint = Some(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
-                    )
-                } else {
-                    @components_refactored.paragraph_text(Message("addEntity.atMaximum", viewmodel.entityType))
-                    @components_refactored.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
-                }
-
-                @submit_button(disabled = disableSubmission)
-
+                @components_refactored.paragraph_text(Message("addEntity.atMaximum", viewmodel.entityType))
+                @components_refactored.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
             }
 
-            @viewmodel.psaName.map { psaName =>
-                @components_refactored.return_link(psaName, mode)
-            }
+            @submit_button(disabled = disableSubmission)
 
         }
+
+        @viewmodel.psaName.map { psaName =>
+            @components_refactored.return_link(psaName, mode)
+        }
+
+    }
+
 }
