@@ -14,13 +14,10 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import utils.FormHelpers
-
 @this(
     layout: templates.Layout,
     button_link: components.button_link,
-    govukInsetText : GovukInsetText
+    inset_text: components.inset_text,
 )
 
 @(address: Seq[String], continueUrl: String)(implicit request: Request[_], messages: Messages)
@@ -37,9 +34,9 @@
 
     @components.paragraph_text(messages("updateContactAddress.p1"))
 
-    @govukInsetText(InsetText(
-        content = HtmlContent(addressContent)
-    ))
+    @inset_text(
+        content = addressContent.toString
+    )
 
     @components.paragraph_text(messages("updateContactAddress.p2"))
 

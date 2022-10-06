@@ -14,15 +14,14 @@
 * limitations under the License.
 *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.administratorPartnership.partners.routes.WhatYouWillNeedController
 
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components.submit_button,
-    govukInsetText : GovukInsetText
+    inset_text: components.inset_text,
+    submit_button: components.submit_button
 )
 
 @(href: Call,partnershipName: String)(implicit request: Request[_], messages: Messages)
@@ -46,9 +45,9 @@
             <li>@messages("whatYouWillNeed.directorsOrPartners.body.item8")</li>
         </ul>
 
-        @govukInsetText(InsetText(
-            content = Text(messages("whatYouWillNeed.directorsOrPartners.hint"))
-        ))
+        @inset_text(
+            content = messages("whatYouWillNeed.directorsOrPartners.hint")
+        )
 
         @submit_button("site.continue")
 

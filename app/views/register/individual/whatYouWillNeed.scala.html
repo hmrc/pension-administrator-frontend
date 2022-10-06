@@ -14,35 +14,35 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components.submit_button,
-    govukInsetText : GovukInsetText
+    inset_text: components.inset_text,
+    submit_button: components.submit_button
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("whatYouWillNeed.title")) {
 
-    @components.heading(messages("whatYouWillNeed.heading"))
-
-    <p class="govuk-body">@messages("whatYouWillNeed.body.text")</p>
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("whatYouWillNeed.body.item1")</li>
-        <li>@messages("whatYouWillNeed.body.item2")</li>
-    </ul>
-
-    @govukInsetText(InsetText(
-        content = Text(messages("whatYouWillNeed.main.body.hint"))
-    ))
-
     @formHelper(action = controllers.register.individual.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
-        @submit_button("site.continue")
-    }
 
+        @components.heading(messages("whatYouWillNeed.heading"))
+
+        <p class="govuk-body">@messages("whatYouWillNeed.body.text")</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("whatYouWillNeed.body.item1")</li>
+            <li>@messages("whatYouWillNeed.body.item2")</li>
+        </ul>
+
+        @inset_text(
+            content = messages("whatYouWillNeed.main.body.hint")
+        )
+
+        @submit_button("site.continue")
+
+    }
 }

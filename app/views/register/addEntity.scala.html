@@ -31,7 +31,7 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     input_yes_no: components.input_yes_no,
-    govukInsetText : GovukInsetText,
+    inset_text: components.inset_text,
     submit_button: components.submit_button
 )
 
@@ -61,10 +61,10 @@
             @components.person_list(viewmodel.entities, mode)
 
             @if(viewmodel.entities.size < 2) {
-                @govukInsetText(InsetText(
-                    content = Text(messages("addEntity.hintText")),
+                @inset_text(
+                    content = messages("addEntity.hintText"),
                     id = Some("too-few-partners-hint")
-                ))
+                )
             }
 
             @if(viewmodel.entities.size < viewmodel.maxLimit) {

@@ -30,9 +30,9 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     input_yes_no: components.input_yes_no,
+    inset_text: components.inset_text,
     submit_button: components.submit_button,
-    appConfig: FrontendAppConfig,
-    govukInsetText : GovukInsetText
+    appConfig: FrontendAppConfig
 )
 
 @(form: Form[_], viewmodel: EntityViewModel, mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
@@ -75,9 +75,9 @@
                 )
 
                 @if(viewmodel.insetText.nonEmpty) {
-                    @govukInsetText(InsetText(
-                        content = Text(viewmodel.insetText.getOrElse(""))
-                    ))
+                    @inset_text(
+                        content = viewmodel.insetText.getOrElse("")
+                    )
                 }
 
             } else {

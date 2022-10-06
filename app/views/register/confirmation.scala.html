@@ -24,7 +24,7 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     appConfig: FrontendAppConfig,
-    govukPanel: GovukPanel,
+    panel: components.panel,
     submit_button: components.submit_button,
 )
 
@@ -59,11 +59,9 @@
 
     @formHelper(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {
 
-        @govukPanel(
-            Panel(
-                title = Text(panelTitle),
-                content = HtmlContent(panelContent)
-            )
+        @panel(
+            panelTitle = panelTitle,
+            panelContent = panelContent.toString
         )
 
         <p class="govuk-body">

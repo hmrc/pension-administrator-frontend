@@ -18,19 +18,19 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-  layout: templates.Layout,
-  appConfig: FrontendAppConfig,
-  govukPanel : GovukPanel
+    layout: templates.Layout,
+    appConfig: FrontendAppConfig,
+    panel: components.panel
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("deregisterSuccess.title"), showBackLink = false) {
 
-    @govukPanel(Panel(
-        title = Text(messages("deregisterSuccess.heading")),
-        content = HtmlContent("")
-    ))
+    @panel(
+        panelTitle = messages("deregisterSuccess.heading"),
+        panelContent = ""
+    )
 
     @components.paragraph_text(messages("deregisterSuccess.p1"))
 
