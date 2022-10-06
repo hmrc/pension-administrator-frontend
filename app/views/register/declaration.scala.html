@@ -16,16 +16,16 @@
 
 @this(
     layout: templates.Layout,
-    button_link: components_refactored.button_link
+    button_link: components.button_link
 )
 
 @(workingKnowledge: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("declaration.title")) {
 
-    @components_refactored.heading(messages("declaration.heading"))
+    @components.heading(messages("declaration.heading"))
 
-    @components_refactored.paragraph_text(messages("declaration.declaration"))
+    @components.paragraph_text(messages("declaration.declaration"))
 
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("declaration.statement1")</li>

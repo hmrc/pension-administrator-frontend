@@ -19,7 +19,7 @@
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components_refactored.submit_button
+    submit_button: components.submit_button
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -28,9 +28,9 @@
 
     @formHelper(action = controllers.register.company.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
 
-        @components_refactored.heading(messages("whatYouWillNeed.heading"))
+        @components.heading(messages("whatYouWillNeed.heading"))
 
-        @components_refactored.paragraph_text(messages("whatYouWillNeed.body.text"))
+        @components.paragraph_text(messages("whatYouWillNeed.body.text"))
 
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages("whatYouWillNeed.company.body.item1")</li>

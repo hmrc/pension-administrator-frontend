@@ -19,18 +19,18 @@
 
 @this(
     layout: templates.Layout,
-    button_link: components_refactored.button_link
+    button_link: components.button_link
 )
 
 @(viewmodel: AlreadyDeletedViewModel)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = Message(viewmodel.title)) {
 
-    @components_refactored.heading(messages("alreadyDeleted.heading", viewmodel.deletedEntity).toString, true)
+    @components.heading(messages("alreadyDeleted.heading", viewmodel.deletedEntity).toString, true)
 
-    @components_refactored.paragraph_text(messages("alreadyDeleted.lede", viewmodel.deletedEntity))
+    @components.paragraph_text(messages("alreadyDeleted.lede", viewmodel.deletedEntity))
 
-    @components_refactored.paragraph_text(messages("alreadyDeleted.text"))
+    @components.paragraph_text(messages("alreadyDeleted.text"))
 
     @button_link("site.continue", viewmodel.returnCall.url, "return-to-list")
 

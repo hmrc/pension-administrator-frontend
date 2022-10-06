@@ -26,7 +26,7 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    submit_button: components_refactored.submit_button,
+    submit_button: components.submit_button,
     govukRadios : GovukRadios
 )
 
@@ -70,7 +70,7 @@
         @submit_button(messages("site.save_and_continue"))
 
         @viewmodel.psaName.map { psaName =>
-            @components_refactored.return_link(psaName, mode)
+            @components.return_link(psaName, mode)
             @if(mode != UpdateMode){
                 @viewmodel.returnLink.map { returnLinkUrl =>
                 <p class="govuk-margin-top-5 govuk-body">

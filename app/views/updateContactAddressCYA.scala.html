@@ -20,9 +20,9 @@
 @this(
     layout: templates.Layout,
     appConfig: FrontendAppConfig,
-    button_link: components_refactored.button_link,
-    super_section: components_refactored.super_section,
-    incomplete_alert: components_refactored.incomplete_alert
+    button_link: components.button_link,
+    super_section: components.super_section,
+    incomplete_alert: components.incomplete_alert
 )
 
 @(psaDetails: viewmodels.PsaViewDetailsViewModel, nextPage:Call)(implicit request: Request[_], messages: Messages)
@@ -33,7 +33,7 @@
         @incomplete_alert(incompleteMessage)
     }
 
-    @components_refactored.heading(messages("updateContactAddressCYA.heading", psaDetails.header))
+    @components.heading(messages("updateContactAddressCYA.heading", psaDetails.header))
 
     @for((section, i) <- psaDetails.superSections.zipWithIndex){
         @{

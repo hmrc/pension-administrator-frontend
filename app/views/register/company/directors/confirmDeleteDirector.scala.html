@@ -24,7 +24,7 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    submit_button: components_refactored.submit_button
+    submit_button: components.submit_button
 )
 
 @(index: Int, fullName: String, mode:Mode)(implicit request: Request[_], messages: Messages)
@@ -33,7 +33,7 @@
 
     @formHelper(action = ConfirmDeleteDirectorController.onSubmit(mode, index), 'autoComplete -> "off") {
 
-        @components_refactored.heading(messages("confirmDeleteDirector.heading", fullName))
+        @components.heading(messages("confirmDeleteDirector.heading", fullName))
 
         @submit_button("site.confirm")
 

@@ -30,8 +30,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_yes_no: components_refactored.input_yes_no,
-    submit_button: components_refactored.submit_button,
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button,
     appConfig: FrontendAppConfig
 )
 
@@ -49,16 +49,16 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("addCompanyDirectors.heading"))
+        @components.heading(messages("addCompanyDirectors.heading"))
 
         @if(directors.isEmpty) {
 
-            @components_refactored.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
+            @components.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
             @submit_button("addCompanyDirectors.addADirector")
 
         } else {
 
-            @components_refactored.person_list(directors, mode)
+            @components.person_list(directors, mode)
 
             @if(directors.size < appConfig.maxDirectors) {
 
@@ -70,9 +70,9 @@
 
             } else {
 
-                @components_refactored.paragraph_text(messages("addCompanyDirectors.atMaximum"))
+                @components.paragraph_text(messages("addCompanyDirectors.atMaximum"))
 
-                @components_refactored.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
+                @components.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
 
             }
 
@@ -80,7 +80,7 @@
         }
 
         @psaNameOpt.map{ psaName =>
-            @components_refactored.return_link(psaName, mode)
+            @components.return_link(psaName, mode)
         }
 
     }

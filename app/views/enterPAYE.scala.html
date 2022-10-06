@@ -24,8 +24,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_text: components_refactored.input_text,
-    submit_button: components_refactored.submit_button
+    input_text: components.input_text,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_],viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
@@ -38,9 +38,9 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages(viewModel.heading), true)
+        @components.heading(messages(viewModel.heading), true)
 
-        @components_refactored.paragraph_text(messages("enterPAYE.p1", viewModel.entityName))
+        @components.paragraph_text(messages("enterPAYE.p1", viewModel.entityName))
 
         @input_text(
             field = form("value"),

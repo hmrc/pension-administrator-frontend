@@ -19,14 +19,14 @@
 @this(
     layout: templates.Layout,
     govukInsetText : GovukInsetText,
-    button_link: components_refactored.button_link
+    button_link: components.button_link
 )
 
 @(href: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = s"${messages("whatYouWillNeed.main.title")}") {
 
-    @components_refactored.heading(messages("whatYouWillNeed.main.heading"))
+    @components.heading(messages("whatYouWillNeed.main.heading"))
 
     <p class="govuk-body">@messages("whatYouWillNeed.main.body.text")</p>
 

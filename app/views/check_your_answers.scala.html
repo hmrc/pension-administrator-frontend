@@ -22,9 +22,9 @@
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components_refactored.submit_button,
-    answer_section:components_refactored.answer_section,
-    incomplete_alert: components_refactored.incomplete_alert
+    submit_button: components.submit_button,
+    answer_section:components.answer_section,
+    incomplete_alert: components.incomplete_alert
 )
 
 @(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode, isComplete: Boolean, businessNameId: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
@@ -37,13 +37,13 @@
             @incomplete_alert()
         }
 
-        @components_refactored.heading(messages("checkYourAnswers.heading"))
+        @components.heading(messages("checkYourAnswers.heading"))
 
         @for((section, i) <- answerSections.zipWithIndex){
             @{
                 section match {
                     case a: AnswerSection => answer_section(a, i.toString, true)
-                    case r: RepeaterAnswerSection => components_refactored.repeater_answer_section(r, i.toString)
+                    case r: RepeaterAnswerSection => components.repeater_answer_section(r, i.toString)
                 }
             }
         }
@@ -57,7 +57,7 @@
         }
 
         @psaNameOpt.map { psaName =>
-            @components_refactored.return_link(psaName, mode)
+            @components.return_link(psaName, mode)
             @if(mode != UpdateMode){
                 @returnLink.map { returnLinkUrl =>
                     <p class="govuk-margin-top-7 govuk-body">

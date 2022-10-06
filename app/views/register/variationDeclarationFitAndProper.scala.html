@@ -24,8 +24,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_yes_no: components_refactored.input_yes_no,
-    submit_button: components_refactored.submit_button
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], psaNameOpt: Option[String], displayReturnLink: Boolean)(implicit request: Request[_], messages: Messages)
@@ -38,9 +38,9 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("declarationFitAndProper.variations.heading", psaNameOpt.getOrElse("")))
+        @components.heading(messages("declarationFitAndProper.variations.heading", psaNameOpt.getOrElse("")))
 
-        @components_refactored.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
+        @components.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
 
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages("declarationFitAndProper.variations.statement1")</li>
@@ -62,7 +62,7 @@
 
         @if(displayReturnLink){
             @psaNameOpt.map{ psaName =>
-                @components_refactored.return_link(psaName, UpdateMode)
+                @components.return_link(psaName, UpdateMode)
             }
         }
 

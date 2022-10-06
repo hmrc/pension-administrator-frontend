@@ -24,8 +24,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    addressWithoutPostcode: components_refactored.addressWithoutPostcode,
-    submit_button: components_refactored.submit_button
+    addressWithoutPostcode: components.addressWithoutPostcode,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewmodel: ManualAddressViewModel)(implicit request: Request[_], messages: Messages)
@@ -38,7 +38,7 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(viewmodel.heading, true)
+        @components.heading(viewmodel.heading, true)
 
         @viewmodel.hint.map{hintText =>
             <p class="govuk-body">@messages(hintText)</p>

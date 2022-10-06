@@ -25,12 +25,12 @@
 
 @layout(pageTitle = messages("incompleteChanges.title")) {
 
-    @components_refactored.heading(messages("incompleteChanges.heading"))
+    @components.heading(messages("incompleteChanges.heading"))
 
-    @components_refactored.paragraph_text(messages("incompleteChanges.p1"))
+    @components.paragraph_text(messages("incompleteChanges.p1"))
 
     @psaNameOpt.map{ psaName =>
-        @components_refactored.return_link(psaName, mode)
+        @components.return_link(psaName, mode)
     }
 
 }

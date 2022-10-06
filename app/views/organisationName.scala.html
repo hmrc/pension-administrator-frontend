@@ -24,8 +24,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    submit_button: components_refactored.submit_button,
-    input_text: components_refactored.input_text
+    submit_button: components.submit_button,
+    input_text: components.input_text
 )
 
 @(form: Form[_], viewModel: OrganisationNameViewModel)(implicit request: Request[_], messages: Messages)

@@ -21,7 +21,7 @@
 @this(
     layout: templates.Layout,
     appConfig: FrontendAppConfig,
-    button_link: components_refactored.button_link
+    button_link: components.button_link
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -33,23 +33,23 @@
 
 @layout(pageTitle = messages("companyNotFound.title")) {
 
-    @components_refactored.heading(messages("companyNotFound.heading"))
+    @components.heading(messages("companyNotFound.heading"))
 
-    @components_refactored.paragraph_text(messages("companyNotFound.lede"))
+    @components.paragraph_text(messages("companyNotFound.lede"))
 
     <h2 class="govuk-heading-m">@messages("companyNotFound.businessNameExactMatch")</h2>
 
-    @components_refactored.paragraph_text(messages("companyNotFound.businessNameExactMatch.description"))
+    @components.paragraph_text(messages("companyNotFound.businessNameExactMatch.description"))
 
     <h2 class="govuk-heading-m">@messages("companyNotFound.businessNameChanged")</h2>
 
-    @components_refactored.paragraph_text_to_html(Message("companyNotFound.businessNameChanged.company").withArgs(openLink1, closeLink, openLink2, closeLink))
+    @components.paragraph_text_to_html(Message("companyNotFound.businessNameChanged.company").withArgs(openLink1, closeLink, openLink2, closeLink))
 
-    @components_refactored.paragraph_text_to_html(Message("companyNotFound.businessNameChanged.individual").withArgs(openLink3, closeLink))
+    @components.paragraph_text_to_html(Message("companyNotFound.businessNameChanged.individual").withArgs(openLink3, closeLink))
 
     <h2 class="govuk-heading-m">@messages("companyNotFound.utrDoesntMatch")</h2>
 
-    @components_refactored.paragraph_text(messages("companyNotFound.utrDoesntMatch.description"))
+    @components.paragraph_text(messages("companyNotFound.utrDoesntMatch.description"))
 
     @button_link("site.enterDetailsAgain",controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode).url, "enter-details-again-link")
 

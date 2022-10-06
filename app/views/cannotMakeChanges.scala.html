@@ -22,12 +22,12 @@
 
 @layout(pageTitle = messages("cannotMakeChanges.title")) {
 
-    @components_refactored.heading(messages("cannotMakeChanges.heading"))
+    @components.heading(messages("cannotMakeChanges.heading"))
 
     @psaNameOpt.map{ psaName =>
-        @components_refactored.paragraph_text(messages("cannotMakeChanges.p1", psaName))
-        @components_refactored.paragraph_text(messages("cannotMakeChanges.p2"))
-        @components_refactored.return_link(psaName, mode)
+        @components.paragraph_text(messages("cannotMakeChanges.p1", psaName))
+        @components.paragraph_text(messages("cannotMakeChanges.p2"))
+        @components.return_link(psaName, mode)
     }
 
 }

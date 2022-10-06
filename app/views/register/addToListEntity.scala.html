@@ -29,8 +29,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_yes_no: components_refactored.input_yes_no,
-    submit_button: components_refactored.submit_button,
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button,
     appConfig: FrontendAppConfig,
     govukInsetText : GovukInsetText
 )
@@ -48,7 +48,7 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages(viewmodel.heading))
+        @components.heading(messages(viewmodel.heading))
 
         @if(viewmodel.entities.isEmpty) {
 
@@ -59,11 +59,11 @@
 
             @if(entitiesIncomplete.length > 0) {
                 <h2 class="govuk-heading-s">@messages("taskList.status.incomplete")</h2>
-                @components_refactored.person_list(entitiesIncomplete, mode)
+                @components.person_list(entitiesIncomplete, mode)
             }
             @if(entitiesComplete.length > 0) {
                 <h2 class="govuk-heading-s">@messages("taskList.status.completed")</h2>
-                @components_refactored.person_list(entitiesComplete, mode)
+                @components.person_list(entitiesComplete, mode)
             }
             @if(viewmodel.entities.size < viewmodel.maxLimit) {
 
@@ -82,8 +82,8 @@
 
             } else {
 
-                @components_refactored.paragraph_text(messages("addEntity.atMaximum", viewmodel.entityType))
-                @components_refactored.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
+                @components.paragraph_text(messages("addEntity.atMaximum", viewmodel.entityType))
+                @components.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
 
             }
 

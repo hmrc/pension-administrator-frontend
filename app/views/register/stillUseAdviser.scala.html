@@ -26,8 +26,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_yes_no: components_refactored.input_yes_no,
-    submit_button: components_refactored.submit_button
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(
@@ -45,11 +45,11 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("stillUseAdviser.heading", psaNameOpt.getOrElse(""), personWithWorkingKnowledgeName))
+        @components.heading(messages("stillUseAdviser.heading", psaNameOpt.getOrElse(""), personWithWorkingKnowledgeName))
 
-        @components_refactored.paragraph_text(messages("stillUseAdviser.p1"))
+        @components.paragraph_text(messages("stillUseAdviser.p1"))
 
-        @components_refactored.paragraph_text(messages("stillUseAdviser.p2", psaNameOpt.getOrElse(""), personWithWorkingKnowledgeName))
+        @components.paragraph_text(messages("stillUseAdviser.p2", psaNameOpt.getOrElse(""), personWithWorkingKnowledgeName))
 
         @input_yes_no(
             field = form("value"),
@@ -62,7 +62,7 @@
 
         @if(displayReturnLink){
             @psaNameOpt.map{psaName =>
-                @components_refactored.return_link(psaName, mode)
+                @components.return_link(psaName, mode)
             }
         }
 

@@ -26,8 +26,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_text: components_refactored.input_text,
-    submit_button: components_refactored.submit_button
+    input_text: components.input_text,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -40,7 +40,7 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(viewModel.heading, true)
+        @components.heading(viewModel.heading, true)
 
         @input_text(
             field = form("firstName"),
@@ -54,7 +54,7 @@
 
         @submit_button("site.save_and_continue")
 
-        @components_refactored.return_link(viewModel.entityName, mode)
+        @components.return_link(viewModel.entityName, mode)
 
         @if(mode != UpdateMode){
              @viewModel.returnLink.map { returnLinkUrl =>

@@ -25,11 +25,11 @@
 
 @layout(pageTitle = messages("duplicateRegistration.title")) {
 
-    @components_refactored.heading(messages("duplicateRegistration.heading"))
+    @components.heading(messages("duplicateRegistration.heading"))
 
-    @components_refactored.paragraph_text(messages("duplicateRegistration.p1", "p1"))
+    @components.paragraph_text(messages("duplicateRegistration.p1", "p1"))
 
-    @components_refactored.paragraph_text(messages("duplicateRegistration.p2", "p2"))
+    @components.paragraph_text(messages("duplicateRegistration.p2", "p2"))
 
     <p class="govuk-body">
         <a id="go-to-gov-uk" class="govuk-link" href="@appConfig.govUkUrl">@messages("exitToGovUK")</a>

@@ -25,14 +25,14 @@
 
 @layout(pageTitle = messages("noLongerFitAndProper.title")) {
 
-    @components_refactored.heading(messages("noLongerFitAndProper.heading"))
+    @components.heading(messages("noLongerFitAndProper.heading"))
 
-    @components_refactored.paragraph_text(messages("noLongerFitAndProper.p1", psaNameOpt.getOrElse("")))
+    @components.paragraph_text(messages("noLongerFitAndProper.p1", psaNameOpt.getOrElse("")))
 
-    @components_refactored.paragraph_text(messages("noLongerFitAndProper.p2"))
+    @components.paragraph_text(messages("noLongerFitAndProper.p2"))
 
     @psaNameOpt.map{ psaName =>
-        @components_refactored.return_link(psaName, mode)
+        @components.return_link(psaName, mode)
     }
 
 }

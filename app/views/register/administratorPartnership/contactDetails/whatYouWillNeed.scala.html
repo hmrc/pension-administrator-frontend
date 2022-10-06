@@ -20,7 +20,7 @@
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components_refactored.submit_button
+    submit_button: components.submit_button
 )
 
 @(partnershipName: String)(implicit request: Request[_], messages: Messages)
@@ -29,7 +29,7 @@
 
     @formHelper(action = WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
 
-        @components_refactored.heading(messages("contactDetails.whatYouWillNeed.heading", partnershipName))
+        @components.heading(messages("contactDetails.whatYouWillNeed.heading", partnershipName))
 
         <p class="govuk-body">@messages("contactDetails.whatYouWillNeed.p1", partnershipName)</p>
 

@@ -25,18 +25,18 @@
 
 @layout(pageTitle = messages("mustInviteOthers.title")) {
 
-    @components_refactored.heading(messages("mustInviteOthers.title"))
+    @components.heading(messages("mustInviteOthers.title"))
 
-    @components_refactored.paragraph_text(messages("mustInviteOthers.p1"))
+    @components.paragraph_text(messages("mustInviteOthers.p1"))
 
-    @components_refactored.paragraph_text(messages("mustInviteOthers.p2"))
+    @components.paragraph_text(messages("mustInviteOthers.p2"))
 
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("mustInviteOthers.li1")</li>
         <li>@messages("mustInviteOthers.li2")</li>
     </ul>
 
-    @components_refactored.paragraph_text(messages("mustInviteOthers.p3"))
+    @components.paragraph_text(messages("mustInviteOthers.p3"))
 
     <p class="govuk-body">
         <a id="return-to-schemes" class="govuk-link" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("schemesOverview.manage.link")</a>

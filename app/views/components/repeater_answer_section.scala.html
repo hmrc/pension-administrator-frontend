@@ -22,7 +22,7 @@
 <h2 id="cya-@idPath-heading" class="govuk-heading-l">@messages(answerSection.headingKey)</h2>
 
 <ul role="list" class="tabular-data tabular-data--list">
-    @components_refactored.answer_row(answerSection.relevanceRow, s"$idPath-relevance")
+    @components.answer_row(answerSection.relevanceRow, s"$idPath-relevance")
     @for((row, i) <- answerSection.rows.zipWithIndex){
         <li class="tabular-data__entry tabular-data__entry--grouped divider--bottom">
             <div id="cya-@idPath-@i-answer" class="tabular-data__data tabular-data__data--6-12">@row.answer</div>

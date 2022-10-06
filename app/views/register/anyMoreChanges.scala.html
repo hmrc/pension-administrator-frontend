@@ -28,8 +28,8 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     appConfig: FrontendAppConfig,
-    input_yes_no: components_refactored.input_yes_no,
-    submit_button: components_refactored.submit_button
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
@@ -42,13 +42,13 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("anyMoreChanges.heading"))
+        @components.heading(messages("anyMoreChanges.heading"))
 
-        @components_refactored.paragraph_text(messages("anyMoreChanges.p1"))
+        @components.paragraph_text(messages("anyMoreChanges.p1"))
 
-        @components_refactored.paragraph_text(messages("anyMoreChanges.p2"))
+        @components.paragraph_text(messages("anyMoreChanges.p2"))
 
-        @components_refactored.paragraph_text(messages("anyMoreChanges.p3", dateAfterGivenDays(appConfig.daysDataSaved)))
+        @components.paragraph_text(messages("anyMoreChanges.p3", dateAfterGivenDays(appConfig.daysDataSaved)))
 
         @input_yes_no(
             field = form("value"),
@@ -59,7 +59,7 @@
         @submit_button("site.save_and_continue")
 
         @psaNameOpt.map { psaName =>
-            @components_refactored.return_link(psaName, UpdateMode)
+            @components.return_link(psaName, UpdateMode)
         }
 
     }

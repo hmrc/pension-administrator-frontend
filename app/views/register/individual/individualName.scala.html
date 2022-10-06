@@ -25,8 +25,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_text: components_refactored.input_text,
-    submit_button: components_refactored.submit_button
+    input_text: components.input_text,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: PersonDetailsViewModel)(implicit request: Request[_], messages: Messages)
@@ -39,7 +39,7 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages(viewModel.heading), true)
+        @components.heading(messages(viewModel.heading), true)
 
         @input_text(
             field = form("firstName"),

@@ -16,18 +16,18 @@
 
 @this(
     layout: templates.Layout,
-    button_link: components_refactored.button_link
+    button_link: components.button_link
 )
 
 @(href: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("tellUsAboutAnotherPartner.title")) {
 
-    @components_refactored.heading(messages("tellUsAboutAnotherPartner.heading"))
+    @components.heading(messages("tellUsAboutAnotherPartner.heading"))
 
-    @components_refactored.paragraph_text(messages("tellUsAboutAnotherPartner.body.text1"))
+    @components.paragraph_text(messages("tellUsAboutAnotherPartner.body.text1"))
 
-    @components_refactored.paragraph_text(messages("tellUsAboutAnotherPartner.body.text2"))
+    @components.paragraph_text(messages("tellUsAboutAnotherPartner.body.text2"))
 
     @button_link("site.continue", href.url, "submit")
 

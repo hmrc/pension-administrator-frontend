@@ -19,7 +19,7 @@
 
 @this(
     layout: templates.Layout,
-    button_link: components_refactored.button_link,
+    button_link: components.button_link,
     govukInsetText : GovukInsetText
 )
 
@@ -33,19 +33,19 @@
 
 @layout(pageTitle = messages("updateContactAddress.title")) {
 
-    @components_refactored.heading(messages("updateContactAddress.heading"))
+    @components.heading(messages("updateContactAddress.heading"))
 
-    @components_refactored.paragraph_text(messages("updateContactAddress.p1"))
+    @components.paragraph_text(messages("updateContactAddress.p1"))
 
     @govukInsetText(InsetText(
         content = HtmlContent(addressContent)
     ))
 
-    @components_refactored.paragraph_text(messages("updateContactAddress.p2"))
+    @components.paragraph_text(messages("updateContactAddress.p2"))
 
-    @components_refactored.paragraph_text(messages("updateContactAddress.p3"))
+    @components.paragraph_text(messages("updateContactAddress.p3"))
 
-    @components_refactored.paragraph_text(messages("updateContactAddress.p4"))
+    @components.paragraph_text(messages("updateContactAddress.p4"))
 
     @button_link("site.continue", continueUrl, "submit")
 

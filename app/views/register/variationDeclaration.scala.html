@@ -16,16 +16,16 @@
 
 @this(
     layout: templates.Layout,
-    button_link: components_refactored.button_link
+    button_link: components.button_link
 )
 
 @(psaNameOpt: Option[String], isWorkingKnowldge:Boolean, href: Call)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("declaration.variations.title")) {
 
-    @components_refactored.heading(messages("declaration.variations.heading"))
+    @components.heading(messages("declaration.variations.heading"))
 
-    @components_refactored.paragraph_text(messages("declaration.variations.statement0"))
+    @components.paragraph_text(messages("declaration.variations.statement0"))
 
     <ol class="govuk-list govuk-list--bullet">
         <li>
@@ -50,7 +50,7 @@
     @button_link("site.agreeAndContinue", href.url, "submit")
 
     @psaNameOpt.map { psaName =>
-        @components_refactored.return_link(psaName, UpdateMode)
+        @components.return_link(psaName, UpdateMode)
     }
 
 }

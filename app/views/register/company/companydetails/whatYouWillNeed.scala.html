@@ -20,14 +20,14 @@
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components_refactored.submit_button
+    submit_button: components.submit_button
 )
 
 @(companyName: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("companyDetails.whatYouWillNeed.title", companyName)) {
 
-    @components_refactored.heading(messages("companyDetails.whatYouWillNeed.heading", companyName))
+    @components.heading(messages("companyDetails.whatYouWillNeed.heading", companyName))
 
     <p class="govuk-body">@messages("companyDetails.whatYouWillNeed.p1", companyName)</p>
 

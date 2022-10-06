@@ -25,9 +25,9 @@
 
 @layout(pageTitle = messages("unableToStopBeingPsa.title")) {
 
-    @components_refactored.heading(messages("unableToStopBeingPsa.heading"))
+    @components.heading(messages("unableToStopBeingPsa.heading"))
 
-    @components_refactored.paragraph_text(messages("unableToStopBeingPsa.p1"))
+    @components.paragraph_text(messages("unableToStopBeingPsa.p1"))
 
     <p class="govuk-body">
         <a id="return-link" href="@appConfig.managePensionsYourPensionSchemesUrl" class="govuk-link">@messages("unableToStopBeingPsa.continue.link")</a>

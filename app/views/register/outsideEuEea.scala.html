@@ -25,11 +25,11 @@
 
 @layout(pageTitle = messages("outsideEuEea.title")) {
 
-    @components_refactored.heading(messages("outsideEuEea.heading", organisationName))
+    @components.heading(messages("outsideEuEea.heading", organisationName))
 
-    @components_refactored.paragraph_text(messages("outsideEuEea.currentCountry.text", organisationName, country))
+    @components.paragraph_text(messages("outsideEuEea.currentCountry.text", organisationName, country))
 
-    @components_refactored.paragraph_text(messages("outsideEuEea.body", organisationType))
+    @components.paragraph_text(messages("outsideEuEea.body", organisationType))
 
     <p class="govuk-body">
         <a id="return-gov-uk" class="govuk-link" href="@appConfig.govUkUrl">@messages("site.return.govuk")</a>

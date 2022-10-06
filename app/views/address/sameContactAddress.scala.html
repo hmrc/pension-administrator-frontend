@@ -26,8 +26,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_yes_no: components_refactored.input_yes_no,
-    submit_button: components_refactored.submit_button
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewmodel: SameContactAddressViewModel, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
@@ -58,7 +58,7 @@
         @submit_button(messages("site.save_and_continue"))
 
         @if(viewmodel.displayReturnLink){
-            @components_refactored.return_link(viewmodel.psaName, viewmodel.mode)
+            @components.return_link(viewmodel.psaName, viewmodel.mode)
         }
 
         @if(viewmodel.displayPartnershipLink && viewmodel.mode != UpdateMode){

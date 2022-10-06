@@ -25,8 +25,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_text: components_refactored.input_text,
-    submit_button: components_refactored.submit_button
+    input_text: components.input_text,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_],viewModel: CommonFormWithHintViewModel,psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
@@ -51,7 +51,7 @@
 
         @if(viewModel.displayReturnLink){
             @psaNameOpt.map { psaName =>
-                @components_refactored.return_link(psaName, viewModel.mode)
+                @components.return_link(psaName, viewModel.mode)
                 @if(viewModel.mode != UpdateMode){
                     @viewModel.returnLink.map { returnLinkUrl =>
                     <p class="govuk-margin-top-8 govuk-body">

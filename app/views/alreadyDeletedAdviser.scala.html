@@ -19,14 +19,14 @@
 
 @this(
     layout: templates.Layout,
-    button_link: components_refactored.button_link
+    button_link: components.button_link
 )
 
 @(continueCall: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = Message("adviser.alreadyDeleted.heading")) {
 
-    @components_refactored.heading(messages("adviser.alreadyDeleted.heading"))
+    @components.heading(messages("adviser.alreadyDeleted.heading"))
 
     @button_link("site.continue", continueCall, "return-to-list")
 

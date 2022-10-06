@@ -27,11 +27,11 @@
 
 @layout(pageTitle = messages("pensionSchemePractitioner.title")) {
 
-    @components_refactored.heading(messages("pensionSchemePractitioner.heading"))
+    @components.heading(messages("pensionSchemePractitioner.heading"))
 
     <p class="govuk-body-l">@messages("pensionSchemePractitioner.lede")</p>
 
-    @components_refactored.paragraph_text(messages("pensionSchemePractitioner.explanation"))
+    @components.paragraph_text(messages("pensionSchemePractitioner.explanation"))
 
     <p class="govuk-body">@Html(messages("pensionSchemePractitioner.continue",continueTpss()))</p>
 

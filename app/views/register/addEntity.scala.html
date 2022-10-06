@@ -30,9 +30,9 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_yes_no: components_refactored.input_yes_no,
+    input_yes_no: components.input_yes_no,
     govukInsetText : GovukInsetText,
-    submit_button: components_refactored.submit_button
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewmodel: EntityViewModel, mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
@@ -49,16 +49,16 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(viewmodel.heading)
+        @components.heading(viewmodel.heading)
 
         @if(viewmodel.entities.isEmpty) {
 
-            @components_refactored.paragraph_text(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
+            @components.paragraph_text(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
             @submit_button(Message("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
 
         } else {
 
-            @components_refactored.person_list(viewmodel.entities, mode)
+            @components.person_list(viewmodel.entities, mode)
 
             @if(viewmodel.entities.size < 2) {
                 @govukInsetText(InsetText(
@@ -74,8 +74,8 @@
                     hint = Some(Message("addEntity.addAnEntity.hint", viewmodel.entityType))
                 )
             } else {
-                @components_refactored.paragraph_text(Message("addEntity.atMaximum", viewmodel.entityType))
-                @components_refactored.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
+                @components.paragraph_text(Message("addEntity.atMaximum", viewmodel.entityType))
+                @components.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
             }
 
             @submit_button(disabled = disableSubmission)
@@ -83,7 +83,7 @@
         }
 
         @viewmodel.psaName.map { psaName =>
-            @components_refactored.return_link(psaName, mode)
+            @components.return_link(psaName, mode)
         }
 
     }

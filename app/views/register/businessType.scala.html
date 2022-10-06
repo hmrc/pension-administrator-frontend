@@ -24,10 +24,10 @@
 
 @this(
     layout: templates.Layout,
-    input_radio: components_refactored.input_radio,
+    input_radio: components.input_radio,
     govukErrorSummary: GovukErrorSummary,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components_refactored.submit_button
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)

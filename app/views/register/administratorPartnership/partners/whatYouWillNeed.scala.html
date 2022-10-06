@@ -21,7 +21,7 @@
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components_refactored.submit_button,
+    submit_button: components.submit_button,
     govukInsetText : GovukInsetText
 )
 
@@ -31,7 +31,7 @@
 
     @formHelper(action = href, 'autoComplete -> "off") {
 
-        @components_refactored.heading(messages("whatYouWillNeed.partners.heading"))
+        @components.heading(messages("whatYouWillNeed.partners.heading"))
 
         <p class="govuk-body">@messages("whatYouWillNeed.partners.body.text")</p>
 

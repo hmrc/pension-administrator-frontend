@@ -26,8 +26,8 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     govukDateInput : GovukDateInput,
-    input_date: components_refactored.input_date,
-    submit_button: components_refactored.submit_button
+    input_date: components.input_date,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)

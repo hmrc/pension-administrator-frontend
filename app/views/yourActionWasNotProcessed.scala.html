@@ -19,20 +19,20 @@
 @this(
     layout: templates.Layout,
     appConfig: FrontendAppConfig,
-    button_link: components_refactored.button_link
+    button_link: components.button_link
 )
 
 @(psaDetails: Option[viewmodels.PsaViewDetailsViewModel])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("yourActionWasNotProcessed.title")) {
 
-    @components_refactored.heading(messages("yourActionWasNotProcessed.heading"))
+    @components.heading(messages("yourActionWasNotProcessed.heading"))
 
-    @components_refactored.paragraph_text(messages("yourActionWasNotProcessed.guidance.p1"))
+    @components.paragraph_text(messages("yourActionWasNotProcessed.guidance.p1"))
 
-    @components_refactored.paragraph_text(messages("yourActionWasNotProcessed.guidance.p2"))
+    @components.paragraph_text(messages("yourActionWasNotProcessed.guidance.p2"))
 
-    @components_refactored.paragraph_text(messages("yourActionWasNotProcessed.guidance.p3"))
+    @components.paragraph_text(messages("yourActionWasNotProcessed.guidance.p3"))
 
     @psaDetails.map(
         details => {

@@ -17,7 +17,6 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
-
 @this(
     govukRadios : GovukRadios,
     govukInput: GovukInput
@@ -30,10 +29,7 @@
     hint: Option[String] = None,
     legendAsHeading: Boolean = false,
     inline: Boolean = false,
-    inputs: Seq[RadioItem],
-    chtml_field: Option[Field] = None,
-    chtml_label: Option[String] = None,
-    chtml_name: Option[String] = None
+    inputs: Seq[RadioItem]
 )(implicit messages: Messages)
 
 @cssAdjust = @{
@@ -41,28 +37,6 @@
         legendClass.fold("govuk-fieldset__legend--xl govuk-!-margin-bottom-5")(classes => classes)
     } else {
         legendClass.fold("govuk-fieldset__legend--m")(classes => classes)
-    }
-}
-
-@conditionalHtml(chtml_name: Option[String], inputValue: String) = @{
-    if(chtml_name.nonEmpty &&  (inputValue  == chtml_name.get)){
-    chtml_field match {
-        case Some(html_field) => {
-            Some(
-                govukInput(Input(
-                    id = html_field.id,
-                    name = html_field.name,
-                    label = Label(
-                        content = Text(chtml_label.getOrElse("")),
-                    ),
-                    classes = "govuk-!-width-one-half"
-                ).withFormField(html_field))
-                )
-            }
-        case _ => None
-        }
-    } else {
-        None
     }
 }
 

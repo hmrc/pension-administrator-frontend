@@ -21,10 +21,10 @@
     layout: templates.Layout,
     appConfig: FrontendAppConfig,
     govukSummaryList : GovukSummaryList,
-    button_link: components_refactored.button_link,
+    button_link: components.button_link,
     govukButton: GovukButton,
-    super_section: components_refactored.super_section,
-    incomplete_alert: components_refactored.incomplete_alert
+    super_section: components.super_section,
+    incomplete_alert: components.incomplete_alert
 )
 
 @(psaDetails: viewmodels.PsaViewDetailsViewModel, nextPage: Call)(implicit request: Request[_], messages: Messages)
@@ -35,7 +35,7 @@
         @incomplete_alert(incompleteMessage)
     }
 
-    @components_refactored.heading(psaDetails.header)
+    @components.heading(psaDetails.header)
 
     <h2 id="psadetails-header" class="govuk-heading-l">@messages("psaDetails.header")</h2>
 
