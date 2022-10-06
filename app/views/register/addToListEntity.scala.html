@@ -14,17 +14,14 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
-@import controllers.register.company.routes._
 @import models.Mode
 @import utils.FormHelpers
 @import models.requests.DataRequest
 @import play.api.mvc.AnyContent
-@import viewmodels.{Person,EntityViewModel}
+@import viewmodels.{EntityViewModel}
 @import config.FrontendAppConfig
 @import utils.ViewHelper.titleWithErrors
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 
@@ -42,7 +39,6 @@
 
 @entitiesIncomplete = @{ viewmodel.entities.filterNot(_.isComplete) }
 @entitiesComplete = @{ viewmodel.entities.filter(_.isComplete) }
-
 
 @layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
@@ -101,5 +97,6 @@
                 </p>
             }
         }
+
     }
 }
