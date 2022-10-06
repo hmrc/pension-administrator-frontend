@@ -17,6 +17,7 @@
 package identifiers.register
 
 import identifiers.TypedIdentifier
+import models.register.BusinessType.{LimitedCompany, OverseasCompany, UnlimitedCompany}
 import play.api.i18n.Messages
 import utils.UserAnswers
 import utils.checkyouranswers.{CheckYourAnswers, StringCYA}
@@ -43,8 +44,13 @@ case object BusinessUTRId extends TypedIdentifier[String] {
   private def label(userAnswers: UserAnswers): Message =
     userAnswers.get(BusinessTypeId).map(
       businessType =>
-        Message("utr.heading", Message(s"businessType.${businessType.toString}.lc"))
+        if( businessType == LimitedCompany || businessType == UnlimitedCompany || businessType == OverseasCompany){
+          Message("utr.heading", Message("theCompany"), Message("utr.company.hint"))
+        } else {
+          Message("utr.heading", Message("thePartnership"), Message("utr.partnership.hint"))
+        }
     ).getOrElse(
-      Message("utr.heading", Message("theCompany"))
+      Message("utr.heading", Message("theCompany"), Message("utr.company.hint"))
     )
+
 }

@@ -55,7 +55,7 @@ class BusinessUTRIdSpec extends SpecBase {
 
         BusinessUTRId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(
           Seq(AnswerRow(
-            label = Message("utr.heading", "the company"),
+            label = Message("utr.heading", "the company", Message("utr.company.hint")),
             answer = Seq("1111111111"),
             answerIsMessageKey = false,
             changeUrl = Some(Link(onwardUrl)),
@@ -77,7 +77,7 @@ class BusinessUTRIdSpec extends SpecBase {
 
         BusinessUTRId.row(Some(Link(onwardUrl)))(request, implicitly) must equal(
           Seq(AnswerRow(
-            label = Message("utr.heading", "unlimited company"),
+            label = Message("utr.heading", "the company", Message("utr.company.hint")),
             answer = Seq("site.not_entered"),
             answerIsMessageKey = true,
             changeUrl = Some(Link(onwardUrl, "site.add")),
