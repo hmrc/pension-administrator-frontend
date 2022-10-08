@@ -16,8 +16,11 @@
 
 package controllers.register.company
 
+import connectors.cache.FeatureToggleConnector
+import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.{BusinessNameId, BusinessUTRId}
+import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,16 +30,18 @@ import viewmodels.{AnswerSection, Section}
 import views.html.check_your_answers
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class BusinessMatchingCheckYourAnswersController @Inject()(
                                                             val controllerComponents: MessagesControllerComponents,
                                                             @AuthWithNoIV authenticate: AuthAction,
                                                             getData: DataRetrievalAction,
                                                             requireData: DataRequiredAction,
-                                                            checkYourAnswersView: check_your_answers
-                                                          ) extends FrontendBaseController with I18nSupport {
+                                                            checkYourAnswersView: check_your_answers,
+                                                            featureToggleConnector: FeatureToggleConnector
+                                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val sections: Seq[Section] = Seq(
         AnswerSection(None,
@@ -44,7 +49,10 @@ class BusinessMatchingCheckYourAnswersController @Inject()(
             BusinessUTRId.cya.row(BusinessUTRId)(None, request.userAnswers)
         )
       )
-      Ok(checkYourAnswersView(sections, routes.CompanyRegistrationTaskListController.onPageLoad(), None, NormalMode, isComplete = true))
+      featureToggleConnector.enabled(PsaRegistration).map { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyName) else None
+        Ok(checkYourAnswersView(sections, routes.CompanyRegistrationTaskListController.onPageLoad(), None, NormalMode, isComplete = true, returnLink))
+      }
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>

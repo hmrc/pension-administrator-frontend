@@ -58,8 +58,9 @@ trait EnterNumberController extends FrontendBaseController with I18nSupport {
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
-      (formWithErrors: Form[_]) =>
-        Future.successful(BadRequest(view(formWithErrors, viewModel))),
+      (formWithErrors: Form[_]) => {
+        Future.successful(BadRequest(view(formWithErrors, viewModel)))
+      },
       value =>
         cacheConnector.save(request.externalId, id, value).map(
           cacheMap =>

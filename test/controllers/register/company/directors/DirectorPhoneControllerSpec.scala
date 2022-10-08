@@ -17,14 +17,15 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
@@ -40,7 +41,9 @@ class DirectorPhoneControllerSpec extends ControllerWithCommonBehaviour {
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorPhoneController(
     new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+    controllerComponents, view,
+    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+  )
 
   private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
 
@@ -63,6 +66,7 @@ object DirectorPhoneControllerSpec {
   private val phoneForm = formProvider()
   private val index = 0
   private val directorName = "test first name test last name"
+  private val companyName = "Test Company Name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "12345"))
 
   private def viewModel(mode: Mode, index: Index) =
@@ -71,6 +75,7 @@ object DirectorPhoneControllerSpec {
       title = Message("phone.title", Message("theDirector")),
       heading = Message("phone.title", directorName),
       mode = mode,
-      entityName = directorName
+      entityName = companyName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }

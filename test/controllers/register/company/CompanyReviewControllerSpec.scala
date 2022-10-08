@@ -32,7 +32,6 @@ class CompanyReviewControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
-  val companyName = "test company name"
   val directors: Seq[String] = Seq("director a", "director b", "director c")
 
   val view: companyReview = app.injector.instanceOf[companyReview]

@@ -22,6 +22,8 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorNameId}
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{PersonName, _}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -30,7 +32,6 @@ import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
-
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -72,7 +73,8 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
     )
 
   private lazy val viewModel = PostcodeLookupViewModel(

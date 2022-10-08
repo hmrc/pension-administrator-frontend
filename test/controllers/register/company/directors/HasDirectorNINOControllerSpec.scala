@@ -17,14 +17,15 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.HasReferenceNumberFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -38,9 +39,18 @@ class HasDirectorNINOControllerSpec extends ControllerWithCommonBehaviour {
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasDirectorNINOController(
-    frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+    frontendAppConfig,
+    FakeUserAnswersCacheConnector,
+    new FakeNavigator(onwardRoute),
+    FakeAuthAction,
+    FakeAllowAccessProvider(config = frontendAppConfig),
+    dataRetrievalAction,
+    new DataRequiredActionImpl,
+    formProvider,
+    controllerComponents,
+    view,
+    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+  )
 
   private def hasReferenceNumberView(form: Form[_]): String =
     view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
@@ -64,6 +74,7 @@ object HasDirectorNINOControllerSpec {
   private val formProvider = new HasReferenceNumberFormProvider()
   private val index = 0
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))
+  private val companyName = "Test Company Name"
 
   private def viewModel(mode: Mode, index: Index) =
     CommonFormWithHintViewModel(
@@ -71,6 +82,7 @@ object HasDirectorNINOControllerSpec {
       title = Message("hasNINO.heading", Message("theDirector")),
       heading = Message("hasNINO.heading", directorName),
       mode = mode,
-      entityName = directorName
+      entityName = companyName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }

@@ -55,7 +55,7 @@
 
         @viewModel.returnLink.map { returnLinkUrl =>
             <p class="govuk-body govuk-margin-top-8">
-                <a id="return-link" class="govuk-link" @returnLinkUrl>@messages("site.return_to", viewModel.entityName)</a>
+                <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewModel.entityName)</a>
             </p>
         }
 

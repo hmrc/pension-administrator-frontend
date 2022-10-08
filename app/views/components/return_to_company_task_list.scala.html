@@ -1,5 +1,5 @@
-/*
- * Copyright 2022 HM Revenue & Customs
+@*
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package identifiers
+@(companyName: String)(implicit messages: Messages)
 
-object JourneyId extends TypedIdentifier[String] {
-  override def toString: String = "journeyId"
-}
-
-object ValidationId extends TypedIdentifier[String] {
-  override def toString: String = "validationId"
-}
+<p class="govuk-margin-top-8 govuk-body">
+  <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return.psa_details", companyName)</a>
+</p>

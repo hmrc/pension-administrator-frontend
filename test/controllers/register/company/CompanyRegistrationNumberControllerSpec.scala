@@ -33,8 +33,6 @@ import views.html.register.company.enterNumber
 
 class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
 
-  private val companyName = "Test Company Name"
-
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
 
   val formProvider = new CompanyRegistrationNumberFormProvider()

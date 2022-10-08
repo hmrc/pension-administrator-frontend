@@ -17,13 +17,13 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.company.directors.routes.HasDirectorUTRController
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.company.directors.{DirectorNameId, HasDirectorUTRId}
-import javax.inject.Inject
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -34,6 +34,7 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConfig,
@@ -45,17 +46,20 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
                                          requireData: DataRequiredAction,
                                          formProvider: HasReferenceNumberFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         val view: hasReferenceNumber
+                                         val view: hasReferenceNumber,
+                                         featureToggleConnector: FeatureToggleConnector
                                          )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController with I18nSupport {
 
-  private def viewModel(mode: Mode, entityName: String, index: Index): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, entityName: String, index: Index, returnLink: Option[String])
+                       (implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = HasDirectorUTRController.onSubmit(mode, index),
       title = Message("hasUTR.heading", Message("theDirector")),
       heading = Message("hasUTR.heading", entityName),
       mode = mode,
       hint = Some(Message("utr.p1")),
-      entityName = entityName
+      entityName = companyName,
+      returnLink = returnLink
     )
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
@@ -68,7 +72,10 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        get(HasDirectorUTRId(index), form(directorName), viewModel(mode, directorName, index))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(HasDirectorUTRId(index), form(directorName), viewModel(mode, directorName, index, returnLink))
+        }
 
     }
 
@@ -76,6 +83,9 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        post(HasDirectorUTRId(index), mode, form(directorName), viewModel(mode, directorName, index))
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          post(HasDirectorUTRId(index), mode, form(directorName), viewModel(mode, directorName, index, returnLink))
+        }
     }
 }

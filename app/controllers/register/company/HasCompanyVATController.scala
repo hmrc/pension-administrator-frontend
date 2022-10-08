@@ -18,23 +18,22 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
-import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.company.routes.HasCompanyVATController
+import controllers.{HasReferenceNumberController, Retrievals}
 import forms.HasReferenceNumberFormProvider
-import identifiers.register.{BusinessNameId, HasVATId}
+import identifiers.register.HasVATId
 import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
+import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfig,
@@ -48,20 +47,18 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
                                         val controllerComponents: MessagesControllerComponents,
                                         val view: hasReferenceNumber,
                                         featureToggleConnector: FeatureToggleConnector
-                                       )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
+                                       )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController with Retrievals {
 
-  private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = HasCompanyVATController.onSubmit(mode),
       title = Message("hasVAT.heading", Message("theCompany")),
-      heading = Message("hasVAT.heading", entityName),
+      heading = Message("hasVAT.heading", companyName),
       mode = mode,
       hint = None,
-      entityName = entityName
+      entityName = companyName,
+      returnLink = returnLink
     )
-
-  private def companyName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   private def form(companyName: String)
                   (implicit request: DataRequest[AnyContent]): Form[Boolean] =
@@ -70,25 +67,28 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(HasVATId, form(companyName), viewModel(mode, companyName))
-
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLinkCompanyName = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(HasVATId, form(companyName), viewModel(mode, returnLinkCompanyName))
+        }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        post(HasVATId, mode, form(companyName), viewModel(mode, companyName))
-
         form(companyName).bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(view(formWithErrors, viewModel(mode, companyName)))),
+            featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+              val returnLinkCompanyName = if (featureEnabled) Some(companyTaskListUrl()) else None
+              Future.successful(BadRequest(view(formWithErrors, viewModel(mode, returnLinkCompanyName))))
+            },
           value =>
             for {
               cacheMap <- dataCacheConnector.save(request.externalId, HasVATId, value)
               featureToggle <- featureToggleConnector.get(PsaRegistration.asString)
             } yield {
               val userSelectsNo = !value
-              if(featureToggle.isEnabled && userSelectsNo){
+              if (featureToggle.isEnabled && userSelectsNo) {
                 Redirect(companydetails.routes.CheckYourAnswersController.onPageLoad())
               } else {
                 Redirect(navigator.nextPage(HasVATId, mode, UserAnswers(cacheMap)))

@@ -18,15 +18,16 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company._
-import models.{Mode, Address}
+import models.FeatureToggleName.PsaRegistration
+import models.{Address, Mode}
 import play.api.data.Form
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.{NoRLSCheck, RegisterCompany}
 import utils.countryOptions.CountryOptions
@@ -46,36 +47,44 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
                                                 formProvider: AddressFormProvider,
                                                 val countryOptions: CountryOptions,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                val view: manualAddress
+                                                val view: manualAddress,
+                                                featureToggleConnector: FeatureToggleConnector
                                                )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
 
-  private def addressViewModel(mode: Mode): Retrieval[ManualAddressViewModel] = Retrieval(
-    implicit request =>
-      BusinessNameId.retrieve.right.map { companyName =>
-        ManualAddressViewModel(
-          routes.CompanyContactAddressController.onSubmit(mode),
-          countryOptions.options,
-          Message("enter.address.heading", Message("theCompany")),
-          Message("enter.address.heading", companyName),
-          psaName = psaName()
-        )
-      }
-  )
+  private def addressViewModel(mode: Mode, returnLink: Option[String]): Retrieval[ManualAddressViewModel] =
+    Retrieval(
+      implicit request =>
+        BusinessNameId.retrieve.right.map { companyName =>
+          ManualAddressViewModel(
+            routes.CompanyContactAddressController.onSubmit(mode),
+            countryOptions.options,
+            Message("enter.address.heading", Message("theCompany")),
+            Message("enter.address.heading", companyName),
+            psaName = psaName(),
+            returnLink = returnLink
+          )
+        }
+    )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      addressViewModel(mode).retrieve.right.map(vm =>
-        get(CompanyContactAddressId, CompanyContactAddressListId, vm, mode))
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        addressViewModel(mode, returnLink).retrieve.right.map(vm =>
+          get(CompanyContactAddressId, CompanyContactAddressListId, vm, mode)
+        )
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      addressViewModel(mode).retrieve.right.map(vm => {
-        post(CompanyContactAddressId, vm, mode)
-      }
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        addressViewModel(mode, returnLink).retrieve.right.map(vm =>
+          post(CompanyContactAddressId, vm, mode)
         )
+      }
   }
-
 }

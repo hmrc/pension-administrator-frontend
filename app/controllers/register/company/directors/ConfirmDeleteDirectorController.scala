@@ -17,12 +17,14 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.register.company.routes.AddCompanyDirectorsController
 import controllers.{ConfirmDeleteController, Retrievals}
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.company.directors.DirectorNameId
+import models.FeatureToggleName.PsaRegistration
+
 import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, NormalMode}
@@ -43,32 +45,40 @@ class ConfirmDeleteDirectorController @Inject()(val appConfig: FrontendAppConfig
                                                 val cacheConnector: UserAnswersCacheConnector,
                                                 formProvider: ConfirmDeleteFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                val view: confirmDelete
+                                                val view: confirmDelete,
+                                                featureToggleConnector: FeatureToggleConnector
                                                )(implicit val executionContext: ExecutionContext) extends ConfirmDeleteController with Retrievals {
 
   def form(directorName: String)(implicit messages: Messages): Form[Boolean] = formProvider(directorName)
 
-  private def vm(index: Index, name: String, mode: Mode)(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
+  private def vm(index: Index, name: String, mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
     routes.ConfirmDeleteDirectorController.onSubmit(mode, index),
     controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
     Message("confirmDeleteDirector.title"),
     "confirmDeleteDirector.heading",
     name,
     None,
-    psaName()
+    psaName(),
+    returnLink
   )
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      DirectorNameId(index).retrieve.right.map { details =>
-        get(vm(index, details.fullName, mode), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index), mode)
+      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
+        val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
+        DirectorNameId(index).retrieve.right.map { details =>
+          get(vm(index, details.fullName, mode, returnLink), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index), mode)
+        }
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      DirectorNameId(index).retrieve.right.map { details =>
-        post(vm(index, details.fullName, mode), DirectorNameId(index), AddCompanyDirectorsController.onPageLoad(mode), mode)
+      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
+        val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
+        DirectorNameId(index).retrieve.right.map { details =>
+          post(vm(index, details.fullName, mode, returnLink), DirectorNameId(index), AddCompanyDirectorsController.onPageLoad(mode), mode)
+        }
       }
   }
 

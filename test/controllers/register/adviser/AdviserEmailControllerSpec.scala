@@ -17,14 +17,15 @@
 package controllers.register.adviser
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
@@ -35,8 +36,18 @@ class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
   val view: email = app.injector.instanceOf[email]
   private def controller(dataRetrievalAction: DataRetrievalAction) = new AdviserEmailController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider, controllerComponents, view)
+    new FakeNavigator(onwardRoute),
+    frontendAppConfig,
+    FakeUserAnswersCacheConnector,
+    FakeAuthAction,
+    FakeAllowAccessProvider(config = frontendAppConfig),
+    dataRetrievalAction,
+    new DataRequiredActionImpl,
+    formProvider,
+    controllerComponents,
+    view,
+    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+  )
 
   private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
 
@@ -51,9 +62,7 @@ class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
   }
-
 }
-
 
 object AdviserEmailControllerSpec {
   private val formProvider = new EmailFormProvider()
@@ -68,10 +77,7 @@ object AdviserEmailControllerSpec {
       title = Message("email.title", Message("theAdviser")),
       heading = Message("email.title", adviserName),
       mode = mode,
-      entityName = adviserName
+      entityName = adviserName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }
-
-
-
-

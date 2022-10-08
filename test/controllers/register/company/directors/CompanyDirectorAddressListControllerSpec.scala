@@ -21,12 +21,13 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorNameId}
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{NormalMode, PersonName, TolerantAddress}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
@@ -78,7 +79,8 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
     )
 
   private lazy val viewModel =

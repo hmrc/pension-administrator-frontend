@@ -61,11 +61,10 @@
             @components.return_link(viewmodel.psaName, viewmodel.mode)
         }
 
-        @if(viewmodel.displayPartnershipLink && viewmodel.mode != UpdateMode){
+        @viewmodel.returnLink.map { returnLinkUrl =>
             <p class="govuk-margin-top-5 govuk-body">
-                <a id="return-link" class="govuk-link" href="@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", viewmodel.psaName)</a>
+                <a id="task-list-return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to",viewmodel.psaName)</a>
             </p>
         }
-
     }
 }

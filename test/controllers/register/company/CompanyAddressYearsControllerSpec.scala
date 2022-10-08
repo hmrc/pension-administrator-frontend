@@ -19,13 +19,12 @@ package controllers.register.company
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.company.routes.CompanyAddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.{BusinessNameId, BusinessUTRId}
+import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
-import models.{AddressYears, FeatureToggle, NormalMode}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import controllers.register.company.routes.CompanyAddressYearsController
+import models.{AddressYears, NormalMode}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
@@ -39,31 +38,23 @@ import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
-import scala.concurrent.Future
-
 class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
   import CompanyAddressYearsControllerSpec._
 
-  val defaultFeatureToggleConnector = {
-    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
-    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Disabled(PsaRegistration)))
-    mockFeatureToggleConnector
-  }
-
   "render the view correctly on a GET request" in {
     val request = addCSRFToken(FakeRequest(CompanyAddressYearsController.onPageLoad(NormalMode)))
     val result = route(application, request).value
-        status(result) mustBe OK
-        contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
+    status(result) mustBe OK
+    contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
   }
 
   "redirect to the next page on a POST request" in {
-    running(_.overrides(modules(dataRetrieval)++
+    running(_.overrides(modules(dataRetrieval) ++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[FeatureToggleConnector].toInstance(defaultFeatureToggleConnector)
-      ):_*)) {
+        bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.disabled)
+      ): _*)) {
       app =>
         val controller = app.injector.instanceOf[CompanyAddressYearsController]
 
@@ -75,9 +66,8 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
     }
   }
 }
-object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSpec {
 
-  val companyName = "Test Company Name"
+object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSpec {
 
   val view: addressYears = app.injector.instanceOf[addressYears]
 
@@ -101,7 +91,8 @@ object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSp
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-      bind[MessagesControllerComponents].to(controllerComponents)
+      bind[MessagesControllerComponents].to(controllerComponents),
+      bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
     ).build()
 
 }

@@ -59,14 +59,13 @@
 
         @viewModel.psaName.map { psaName =>
             @components.return_link(psaName, mode)
-            @if(mode != UpdateMode){
+            @if(mode != UpdateMode) {
                 @viewModel.returnLink.map { returnLinkUrl =>
-                <p class="govuk-margin-top-5 govuk-body">
-                    <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to",psaName)</a>
-                </p>
+                    <p class="govuk-margin-top-5 govuk-body">
+                        <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", psaName)</a>
+                    </p>
                 }
             }
         }
-
     }
 }

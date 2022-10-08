@@ -17,14 +17,15 @@
 package controllers.register.adviser
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
@@ -37,9 +38,18 @@ class AdviserPhoneControllerSpec extends ControllerWithCommonBehaviour {
   val view: phone = app.injector.instanceOf[phone]
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new AdviserPhoneController(
-    new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
-    dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view)
+    new FakeNavigator(onwardRoute),
+    frontendAppConfig,
+    FakeUserAnswersCacheConnector,
+    FakeAuthAction,
+    FakeAllowAccessProvider(config = frontendAppConfig),
+    dataRetrievalAction,
+    new DataRequiredActionImpl,
+    formProvider,
+    controllerComponents,
+    view,
+    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+  )
 
   private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode), None)(fakeRequest, messages).toString
 
@@ -68,7 +78,8 @@ object AdviserPhoneControllerSpec {
       title = Message("phone.title", Message("theAdviser")),
       heading = Message("phone.title", adviserName),
       mode = mode,
-      entityName = adviserName
+      entityName = adviserName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }
 

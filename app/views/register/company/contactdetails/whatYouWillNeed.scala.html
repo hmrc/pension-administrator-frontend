@@ -23,7 +23,7 @@
     submit_button: components.submit_button
 )
 
-@(companyName: String)(implicit request: Request[_], messages: Messages)
+@(companyName: String, returnLinkCompanyName: Option[String])(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("contactDetails.whatYouWillNeed.title", companyName)) {
 
@@ -43,4 +43,9 @@
         @submit_button("site.continue")
 
     }
+
+    <p class="govuk-margin-top-8 govuk-body">
+        <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", companyName)</a>
+    </p>
+
 }

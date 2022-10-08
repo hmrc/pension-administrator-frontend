@@ -50,9 +50,8 @@ trait DOBController extends FrontendBaseController with I18nSupport with Variati
 
   private val form = new DOBFormProvider()()
 
-  def get[I <: TypedIdentifier[LocalDate]](
-                                            id: I, viewModel: CommonFormWithHintViewModel
-                                              )(implicit request: DataRequest[AnyContent]): Result = {
+  def get[I <: TypedIdentifier[LocalDate]](id: I, viewModel: CommonFormWithHintViewModel)
+                                          (implicit request: DataRequest[AnyContent]): Result = {
 
     val preparedForm = request.userAnswers.get(id) match {
       case None => form
@@ -63,10 +62,8 @@ trait DOBController extends FrontendBaseController with I18nSupport with Variati
 
   }
 
-  def post[I <: TypedIdentifier[LocalDate]](
-                                                 id: I,
-                                                 viewModel: CommonFormWithHintViewModel
-                                               )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  def post[I <: TypedIdentifier[LocalDate]](id: I, viewModel: CommonFormWithHintViewModel)
+                                           (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
       (formWithErrors: Form[_]) =>

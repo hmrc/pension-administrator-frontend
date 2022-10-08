@@ -19,7 +19,7 @@
     button_link: components.button_link
 )
 
-@(href: Call)(implicit request: Request[_], messages: Messages)
+@(href: Call, returnLinkCompanyName: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = messages("whatYouWillNeed.directorsOrPartners.title")) {
 
@@ -39,5 +39,9 @@
     </ul>
 
     @button_link("site.continue", href.url, "submit")
+
+    <p class="govuk-margin-top-8 govuk-body">
+        <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", returnLinkCompanyName)</a>
+    </p>
 
 }

@@ -22,6 +22,8 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressPostCodeLookupId}
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.{PersonName, _}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -30,7 +32,6 @@ import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -63,7 +64,8 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view
+      view,
+      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
     )
 
   private val testAnswer = "AB12 1AB"

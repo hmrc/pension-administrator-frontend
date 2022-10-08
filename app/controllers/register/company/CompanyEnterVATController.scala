@@ -18,22 +18,22 @@ package controllers.register.company
 
 import config.FrontendAppConfig
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.VATNumberController
 import forms.register.EnterVATFormProvider
-import identifiers.register.{BusinessNameId, EnterVATId}
+import identifiers.register.EnterVATId
 import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.{Navigator, UserAnswers}
 import utils.annotations.RegisterCompany
+import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterVAT
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
@@ -47,33 +47,37 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: enterVAT,
                                           featureToggleConnector: FeatureToggleConnector
-                                         )(implicit val executionContext: ExecutionContext) extends VATNumberController {
+                                         )(implicit val executionContext: ExecutionContext) extends VATNumberController with Retrievals {
 
   private def form(companyName: String)
                   (implicit request: DataRequest[AnyContent]): Form[String] = formProvider(companyName)
 
-  private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
+  private def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyEnterVATController.onSubmit(mode),
       title = Message("enterVAT.title", Message("theCompany")),
-      heading = Message("enterVAT.heading", entityName),
+      heading = Message("enterVAT.heading", companyName),
       mode = mode,
-      entityName = entityName
+      entityName = companyName,
+      returnLink = returnLink
     )
-
-  private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get(EnterVATId, form(entityName), viewModel(mode, entityName))
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        get(EnterVATId, form(companyName), viewModel(mode, returnLink))
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      form(entityName).bindFromRequest().fold(
+      form(companyName).bindFromRequest().fold(
         errors =>
-          Future.successful(BadRequest(view(errors, viewModel(mode, entityName)))),
+          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            Future.successful(BadRequest(view(errors, viewModel(mode, returnLink))))
+          },
         value =>
           for {
             featureToggle <- featureToggleConnector.get(PsaRegistration.asString)

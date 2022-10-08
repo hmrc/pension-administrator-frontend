@@ -47,5 +47,10 @@
 
         @submit_button("site.save_and_continue")
 
+        @viewModel.returnLink.map { returnLinkUrl =>
+            <p class="govuk-body govuk-margin-top-5">
+                <a class="govuk-link" id="return-link" href=@returnLinkUrl>@messages("site.return_to", viewModel.entityName)</a>
+            </p>
+        }
     }
 }

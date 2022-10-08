@@ -22,7 +22,6 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
-import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressYearsId
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
@@ -53,36 +52,35 @@ class CompanyAddressYearsController @Inject()(@RegisterCompany override val navi
                                               val view: addressYears,
                                               featureToggleConnector: FeatureToggleConnector
                                              )(implicit val executionContext: ExecutionContext)
-                                               extends AddressYearsController with I18nSupport with Retrievals {
+  extends AddressYearsController with I18nSupport with Retrievals {
 
-  private def form(companyName: String)
-                  (implicit request: DataRequest[AnyContent]): Form[AddressYears] = formProvider(companyName)
-
-  private def entityName(implicit request: DataRequest[AnyContent]): String =
-    request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
+  private def form(implicit request: DataRequest[AnyContent]): Form[AddressYears] = formProvider(companyName)
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(CompanyAddressYearsId, form(entityName), viewModel(mode, entityName), mode)
+        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+          get(CompanyAddressYearsId, form, viewModel(mode, returnLink), mode)
+        }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       featureToggleConnector.get(PsaRegistration.asString).flatMap {
-        case Enabled(_) =>
-          post(CompanyAddressYearsId, mode, form(entityName), viewModel(mode, entityName), Some(navigatorV2))
-        case _ => post(CompanyAddressYearsId, mode, form(entityName), viewModel(mode, entityName))
+        case Enabled(_) => post(CompanyAddressYearsId, mode, form, viewModel(mode, Some(companyTaskListUrl())), Some(navigatorV2))
+        case _ => post(CompanyAddressYearsId, mode, form, viewModel(mode))
       }
   }
 
-  private def viewModel(mode: Mode, companyName: String)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel = {
+  private def viewModel(mode: Mode, returnLink: Option[String] = None)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel = {
     AddressYearsViewModel(
       postCall = routes.CompanyAddressYearsController.onSubmit(mode),
       title = Message("addressYears.heading", Message("theCompany")),
       heading = Message("addressYears.heading", companyName),
       legend = Message("addressYears.heading", companyName),
-      psaName = psaName()
+      psaName = psaName(),
+      returnLink = returnLink
     )
   }
 }

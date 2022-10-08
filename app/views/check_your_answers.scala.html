@@ -27,7 +27,15 @@
     incomplete_alert: components.incomplete_alert
 )
 
-@(answerSections: Seq[Section], postUrl: Call, psaNameOpt: Option[String] = None, mode: Mode, isComplete: Boolean, businessNameId: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(
+    answerSections: Seq[Section],
+    postUrl: Call,
+    psaNameOpt: Option[String] = None,
+    mode: Mode,
+    isComplete: Boolean,
+    businessNameId: Option[String] = None,
+    returnLink: Option[String] = None
+)(implicit request: Request[_],messages: Messages)
 
 @layout(pageTitle = messages("checkYourAnswers.title")) {
 

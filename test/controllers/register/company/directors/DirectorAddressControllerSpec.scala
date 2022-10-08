@@ -20,14 +20,17 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.DirectorsOrPartnersChangedId
+import identifiers.register.{BusinessNameId, DirectorsOrPartnersChangedId, RegistrationInfoId}
 import identifiers.register.company.directors.DirectorNameId
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
+import models.RegistrationCustomerType.UK
+import models.RegistrationLegalStatus.LimitedCompany
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
@@ -44,6 +47,8 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
   private val jonathanDoe = PersonName("Jonathan", "Doe")
   private val joeBloggs = PersonName("Joe", "Bloggs")
 
+  val registrationInfo: RegistrationInfo = RegistrationInfo(LimitedCompany, "", noIdentifier=false, UK, Some(RegistrationIdType.Nino), Some("AB121212C"))
+
   private val directors = Json.obj(
     "directors" -> Json.arr(
       Json.obj(
@@ -52,7 +57,9 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       Json.obj(
         DirectorNameId.toString -> joeBloggs
       )
-    )
+    ),
+    RegistrationInfoId.toString -> registrationInfo,
+    BusinessNameId.toString -> companyName
   )
 
   private val data = new FakeDataRetrievalAction(Some(directors))
@@ -73,14 +80,17 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       formProvider,
       countryOptions,
       controllerComponents,
-      view
+      view,
+      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
     )
 
   private val viewModel = ManualAddressViewModel(
     routes.DirectorAddressController.onSubmit(NormalMode, firstIndex),
     countryOptions.options,
     Message("enter.address.heading", Message("theDirector")),
-    Message("enter.address.heading", jonathanDoe.fullName)
+    Message("enter.address.heading", jonathanDoe.fullName),
+    psaName = Some(companyName),
+    returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
   )
 
   private def viewAsString(form: Form[_] = form) =
