@@ -105,7 +105,7 @@ class CheckYourAnswersControllerSpec
       answer = Seq("test company")
     ),
     answerRow(
-      label = Message("utr.heading", Message("businessType.limitedCompany.lc"), Message("utr.company.hint")),
+      label = Message("utr.heading", Message("theCompany"), Message("utr.company.hint")),
       answer = Seq("1111111111")
     ),
     answerRow(

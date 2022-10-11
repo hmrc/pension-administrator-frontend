@@ -101,7 +101,7 @@ class CheckYourAnswersControllerSpec
       answer = Seq(defaultPartnership)
     ),
     answerRow(
-      label = Message("utr.heading", defaultPartnership, Message("utr.partnership.hint")),
+      label = Message("utr.heading", Message("thePartnership"), Message("utr.partnership.hint")),
       answer = Seq("1111111111")
     ),
     answerRow(
