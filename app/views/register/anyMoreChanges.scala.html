@@ -14,50 +14,53 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
 @import controllers.register.routes._
 @import utils.DateHelper._
 @import models.UpdateMode
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF,
-    appConfig: FrontendAppConfig
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    appConfig: FrontendAppConfig,
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
-@(
-    form: Form[_],
-    psaNameOpt: Option[String]
-)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("anyMoreChanges.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("anyMoreChanges.title"))) {
 
     @formHelper(action = AnyMoreChangesController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @components.error_summary(form.errors)
-
-        <div class="form-group @if(form.hasErrors){form-group--error}">
         @components.heading(messages("anyMoreChanges.heading"))
 
-        <p>@messages("anyMoreChanges.p1")</p>
-        <p>@messages("anyMoreChanges.p2")</p>
-        <p>@messages("anyMoreChanges.p3", dateAfterGivenDays(appConfig.daysDataSaved))</p>
+        @components.paragraph_text(messages("anyMoreChanges.p1"))
 
-        @components.input_yes_no(
+        @components.paragraph_text(messages("anyMoreChanges.p2"))
+
+        @components.paragraph_text(messages("anyMoreChanges.p3", dateAfterGivenDays(appConfig.daysDataSaved)))
+
+        @input_yes_no(
             field = form("value"),
-            label = messages("anyMoreChanges.title"),
-            labelClass = Some("visually-hidden")
+            label = messages("anyMoreChanges.heading"),
+            labelClass = Some("govuk-visually-hidden")
         )
-        </div>
-        @components.submit_button("site.save_and_continue")
+
+        @submit_button("site.save_and_continue")
+
         @psaNameOpt.map { psaName =>
             @components.return_link(psaName, UpdateMode)
         }
+
     }
 }

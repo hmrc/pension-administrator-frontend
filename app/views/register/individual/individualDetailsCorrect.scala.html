@@ -15,7 +15,6 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.individual.routes._
@@ -28,15 +27,22 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    submit_button: components_refactored.submit_button,
-    input_yes_no:  components_refactored.input_yes_no
+    submit_button: components.submit_button,
+    input_yes_no: components.input_yes_no
 )
 
 @(form: Form[_], mode: Mode, individual: TolerantIndividual, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("individualDetailsCorrect.title"))
-) {
+@hintHtml = {
+    <p class="govuk-!-margin-top-0" id="individual-value">@individual.fullName</p>
+    <p>
+        @for((line, i) <- address.lines(countryOptions).zipWithIndex) {
+        <span id="address-value-@i" class="govuk-!-display-block">@line</span>
+        }
+    </p>
+}
+
+@layout(pageTitle = titleWithErrors(form, messages("individualDetailsCorrect.title"))) {
 
     @formHelper(action = IndividualDetailsCorrectController.onSubmit(mode), 'autoComplete -> "off") {
 
@@ -44,20 +50,14 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("individualDetailsCorrect.heading")</h1>
-        <p class="govuk-body" id="individual-value">@individual.fullName</p>
-        <div class="govuk-body">
-            @for((line, i) <- address.lines(countryOptions).zipWithIndex) {
-            <div id="address-value-@i" class="address-multi-line">@line</div>
-            }
-        </div>
-
         @input_yes_no(
             field = form("value"),
             label = messages("individualDetailsCorrect.heading"),
-            labelClass = Some("govuk-visually-hidden"),
-            headingIsLegend = false
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
         )
+
         @submit_button("site.save_and_continue")
+
     }
 }

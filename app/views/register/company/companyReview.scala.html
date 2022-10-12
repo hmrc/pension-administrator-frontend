@@ -14,17 +14,13 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import models.{Mode, CheckMode}
 @import controllers.register.company.routes._
 
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components_refactored.submit_button
+    submit_button: components.submit_button
 )
 
 @(companyName: String, directors: Seq[String])(implicit request: Request[_], messages: Messages)
@@ -33,16 +29,16 @@
 
     @formHelper(action = CompanyReviewController.onSubmit, 'autoComplete -> "off") {
 
-        @components_refactored.heading(messages("companyReview.heading"))
+        @components.heading(messages("companyReview.heading"))
 
-        @components_refactored.review_section(
+        @components.review_section(
             heading = companyName,
             linkMessage = "companyReview.editLink",
             linkId = "edit-company-details",
             link = CheckYourAnswersController.onPageLoad
         )
 
-        @components_refactored.review_section(
+        @components.review_section(
             heading = messages("companyReview.directors.heading", companyName),
             linkMessage = "companyReview.directors.changeLink",
             linkId = "edit-director-details",

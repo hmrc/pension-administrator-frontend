@@ -17,23 +17,22 @@
 @import config.FrontendAppConfig
 
 @this(
-layout: templates.Layout,
-appConfig: FrontendAppConfig
+    layout: templates.Layout,
+    appConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-pageTitle = messages("submissionInvalid.title")
-) {
+@layout(pageTitle = messages("submissionInvalid.title")) {
 
-    <h1 class="govuk-heading-xl">@messages("submissionInvalid.heading")</h1>
+    @components.heading(messages("submissionInvalid.heading"))
 
-    <p class="govuk-body">@messages("submissionInvalid.body1")</p>
+    @components.paragraph_text(messages("submissionInvalid.body1"))
 
-    <p class="govuk-body">@Html(messages("submissionInvalid.body2"))</p>
+    @components.paragraph_text_to_html(messages("submissionInvalid.body2"))
 
     <p class="govuk-body">
         <a id="go-to-gov-uk" class="govuk-link" href="@appConfig.govUkUrl">@messages("exitToGovUK")</a>
     </p>
+
 }

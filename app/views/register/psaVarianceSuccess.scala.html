@@ -14,30 +14,26 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
-@import viewmodels.Message
-@import models.requests._
-
 @this(
-    main_template: main_template
+    layout: templates.Layout
 )
 
 @(psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
 
-@printThisPageLink = {<a id="print-this-page-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
+@printThisPageLink = {<a id="print-this-page-link" class="govuk-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}
 
-@main_template(
-   title = messages("psaVarianceSuccess.title")
-) {
+@layout(pageTitle = messages("psaVarianceSuccess.title")) {
 
-    <div class="govuk-box-highlight">
-        @components.heading(messages("psaVarianceSuccess.heading"))
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+            @messages("psaVarianceSuccess.heading")
+        </h1>
     </div>
 
-    <div class="print-page">@printThisPageLink</div>
+    <p class="govuk-body print-page">@printThisPageLink</p>
 
-   @psaNameOpt.map{ psaName =>
-     @components.return_link(psaName, UpdateMode)
-   }
+    @psaNameOpt.map{ psaName =>
+        @components.return_link(psaName, UpdateMode)
+    }
 
 }

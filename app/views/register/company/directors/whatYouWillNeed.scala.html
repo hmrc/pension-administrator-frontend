@@ -14,25 +14,18 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import viewmodels.Message
-
 @this(
     layout: templates.Layout,
-    button_link: components_refactored.button_link
+    button_link: components.button_link
 )
 
 @(href: Call, returnLinkCompanyName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("whatYouWillNeed.directorsOrPartners.title")
-) {
+@layout(pageTitle = messages("whatYouWillNeed.directorsOrPartners.title")) {
 
-    @components_refactored.heading(messages("whatYouWillNeed.directors.heading"), true)
+    @components.heading(messages("whatYouWillNeed.directors.heading"))
 
-    @components_refactored.paragraph_text(messages("whatYouWillNeed.directors.body.text"))
+    @components.paragraph_text(messages("whatYouWillNeed.directors.body.text"))
 
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("whatYouWillNeed.directorsOrPartners.body.item1")</li>

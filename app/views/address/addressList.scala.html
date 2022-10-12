@@ -15,61 +15,57 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import config.FrontendAppConfig
-@import models.Address
 @import models.Mode
 @import viewmodels.address.AddressListViewModel
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-layout: templates.Layout,
-formHelper: PlayFrontendFormWithCSRF,
-govukErrorSummary: GovukErrorSummary,
-govukRadios : GovukRadios,
-button: components_refactored.submit_button
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_radio: components.input_radio,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: AddressListViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-pageTitle = titleWithErrors(form, viewModel.title)
-) {
+@layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
-        @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
-                <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewModel.heading)</h1>
-                <p class="govuk-body">
-                    @messages(viewModel.selectAddress) <a id="manual-address-link" class="govuk-link" href="@viewModel.manualInputCall">@messages(viewModel.selectAddressLink)</a>
-                </p>
 
+        @components.heading(viewModel.heading, true)
 
-                    @govukRadios(Radios(
-                        items =
-                        for((address, i) <-  viewModel.addresses.zipWithIndex)
-                        yield {
-                            RadioItem(
-                                content = Text(address.print),
-                                value = Some(i.toString)
-                            )
-                        }
-                        ).withFormField(form("value"))
-                    )
-                    @button(messages("site.save_and_continue"))
-                    @viewModel.psaName.map { psaName =>
-                        @components_refactored.return_link(psaName, mode)
-                        @if(mode != UpdateMode){
-                            @viewModel.returnLink.map { returnLinkUrl =>
-                            <p class="govuk-margin-top-5 govuk-body">
-                                <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to",psaName)</a>
-                            </p>
-                            }
-                        }
-                    }
+        <p class="govuk-body">@messages(viewModel.selectAddress) <a id="manual-address-link" class="govuk-link" href="@viewModel.manualInputCall">@messages(viewModel.selectAddressLink)</a></p>
+
+        @input_radio(
+            field = form("value"),
+            legend = messages(viewModel.heading),
+            legendClass = Some("govuk-visually-hidden"),
+            inputs = for((address, i) <- viewModel.addresses.zipWithIndex) yield {
+                RadioItem(
+                    content = Text(address.print),
+                    value = Some(i.toString)
+                )
             }
+        )
+
+        @submit_button(messages("site.save_and_continue"))
+
+        @viewModel.psaName.map { psaName =>
+            @components.return_link(psaName, mode)
+            @if(mode != UpdateMode) {
+                @viewModel.returnLink.map { returnLinkUrl =>
+                    <p class="govuk-margin-top-5 govuk-body">
+                        <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", psaName)</a>
+                    </p>
+                }
+            }
+        }
+    }
 }

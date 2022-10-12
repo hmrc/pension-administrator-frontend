@@ -23,14 +23,14 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("agentCannotRegister.title")
-){
+@layout(pageTitle = messages("agentCannotRegister.title")){
 
-    <h1 class="govuk-heading-xl">@messages("agentCannotRegister.heading")</h1>
+    @components.heading(messages("agentCannotRegister.heading"))
 
-    <p class="govuk-body">@messages("agentCannotRegister.p1")</p>
-    <p class="govuk-body">@messages("agentCannotRegister.p2")</p>
+    @components.paragraph_text(messages("agentCannotRegister.p1"))
+
+    @components.paragraph_text(messages("agentCannotRegister.p2"))
 
     <p class="govuk-body"><a class="govuk-link" href="@appConfig.govUkUrl">@messages("site.exit")</a></p>
+
 }

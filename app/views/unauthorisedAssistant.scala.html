@@ -15,20 +15,17 @@
  *@
 
 @this(
-    main_template: main_template
+    layout: templates.Layout
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("unauthorised.assistant.title")
-) {
-    @components.back_link()
+@layout(pageTitle = messages("unauthorised.assistant.title")) {
 
     @components.heading(messages("unauthorised.assistant.heading"))
 
-    <p class="lede">@messages("unauthorised.assistant.lede")</p>
+    <p class="govuk-body-l">@messages("unauthorised.assistant.lede")</p>
 
-    <p>@messages("unauthorised.assistant.info")</p>
+    @components.paragraph_text(messages("unauthorised.assistant.info"))
 
 }

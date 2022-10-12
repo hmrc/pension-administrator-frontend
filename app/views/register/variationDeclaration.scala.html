@@ -14,26 +14,20 @@
  * limitations under the License.
  *@
 
-@import controllers.register.routes
-@import uk.gov.hmrc.play.views.html._
-
 @this(
-    main_template: main_template
+    layout: templates.Layout,
+    button_link: components.button_link
 )
 
 @(psaNameOpt: Option[String], isWorkingKnowldge:Boolean, href: Call)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("declaration.variations.title")
-) {
-
-    @components.back_link()
+@layout(pageTitle = messages("declaration.variations.title")) {
 
     @components.heading(messages("declaration.variations.heading"))
 
     @components.paragraph_text(messages("declaration.variations.statement0"))
 
-    <ol class="list list-bullet">
+    <ol class="govuk-list govuk-list--bullet">
         <li>
             @messages("declaration.variations.statement1")
         </li>
@@ -53,7 +47,7 @@
 
     </ol>
 
-    @components.button_link("site.agreeAndContinue", href.url, "submit")
+    @button_link("site.agreeAndContinue", href.url, "submit")
 
     @psaNameOpt.map { psaName =>
         @components.return_link(psaName, UpdateMode)

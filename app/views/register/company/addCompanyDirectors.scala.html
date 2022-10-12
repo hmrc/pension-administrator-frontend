@@ -15,7 +15,6 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.company.routes._
@@ -31,8 +30,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_yes_no: components_refactored.input_yes_no,
-    button: components_refactored.submit_button,
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button,
     appConfig: FrontendAppConfig
 )
 
@@ -42,9 +41,7 @@
     directors.exists(director => if(mode == NormalMode) !director.isComplete else director.isNew && !director.isComplete)
 }
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))) {
 
     @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
 
@@ -52,16 +49,16 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("addCompanyDirectors.heading"), true)
+        @components.heading(messages("addCompanyDirectors.heading"))
 
         @if(directors.isEmpty) {
 
-            @components_refactored.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
-            @button("addCompanyDirectors.addADirector")
+            @components.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
+            @submit_button("addCompanyDirectors.addADirector")
 
         } else {
 
-            @components_refactored.person_list(directors, mode)
+            @components.person_list(directors, mode)
 
             @if(directors.size < appConfig.maxDirectors) {
 
@@ -73,12 +70,13 @@
 
             } else {
 
-                @components_refactored.paragraph_text(messages("addCompanyDirectors.atMaximum"))
-                @components_refactored.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
+                @components.paragraph_text(messages("addCompanyDirectors.atMaximum"))
+
+                @components.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
 
             }
 
-            @button(disabled = disableSubmission)
+            @submit_button()
         }
 
         @psaNameOpt.map{ psaName =>

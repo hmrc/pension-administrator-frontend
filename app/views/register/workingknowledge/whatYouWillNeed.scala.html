@@ -14,31 +14,27 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
-@import viewmodels.Message
-
 @this(
-    main_template: main_template
+    layout: templates.Layout,
+    button_link: components.button_link
 )
 
 @(href: Call,psaName: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("whatYouWillNeed.workingKnowledge.title")
-) {
-    @components.back_link()
+@layout(pageTitle = messages("whatYouWillNeed.workingKnowledge.title")) {
 
-    @components.heading(headingKey = messages("whatYouWillNeed.workingKnowledge.title"))
+    @components.heading(messages("whatYouWillNeed.workingKnowledge.title"))
 
-    <p>@messages("whatYouWillNeed.workingKnowledge.heading")</p>
+    @components.paragraph_text(messages("whatYouWillNeed.workingKnowledge.heading"))
 
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("whatYouWillNeed.workingKnowledge.item1")</li>
         <li>@messages("whatYouWillNeed.workingKnowledge.item2")</li>
         <li>@messages("whatYouWillNeed.workingKnowledge.item3")</li>
         <li>@messages("whatYouWillNeed.workingKnowledge.item4")</li>
     </ul>
-    @components.button_link("site.continue", href.url, "submit")
+
+    @button_link("site.continue", href.url, "submit")
 
     @psaName.map { psaName =>
         @returnLink.map { returnLinkUrl =>
@@ -47,4 +43,5 @@
         </p>
         }
     }
+
 }

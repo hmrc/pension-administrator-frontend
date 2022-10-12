@@ -17,20 +17,20 @@
 @import config.FrontendAppConfig
 
 @this(
-layout: templates.Layout,
-appConfig: FrontendAppConfig
+    layout: templates.Layout,
+    appConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-pageTitle = messages("unableToStopBeingPsa.title")
-) {
+@layout(pageTitle = messages("unableToStopBeingPsa.title")) {
 
-    <h1 class="govuk-heading-xl">@messages("unableToStopBeingPsa.heading")</h1>
+    @components.heading(messages("unableToStopBeingPsa.heading"))
 
-    <p class="govuk-body">@messages("unableToStopBeingPsa.p1")</p>
+    @components.paragraph_text(messages("unableToStopBeingPsa.p1"))
 
-    <p class="govuk-body"><a id="return-link" href="@appConfig.managePensionsYourPensionSchemesUrl" class="govuk-link">@messages("unableToStopBeingPsa.continue.link")</a></p>
+    <p class="govuk-body">
+        <a id="return-link" href="@appConfig.managePensionsYourPensionSchemesUrl" class="govuk-link">@messages("unableToStopBeingPsa.continue.link")</a>
+    </p>
 
 }

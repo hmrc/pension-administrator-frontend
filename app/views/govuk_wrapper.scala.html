@@ -41,10 +41,8 @@
         mainContent: Html = HtmlFormat.empty,
         serviceInfoContent: Html = HtmlFormat.empty,
         scriptElem: Option[Html] = None
-)(implicit
-        request: Request[_],
-        messages: Messages
-)
+
+)(implicit request: Request[_], messages: Messages)
 
     @headTag = {
     @head(

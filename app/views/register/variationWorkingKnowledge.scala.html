@@ -14,51 +14,51 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import models.Mode
 @import models.{CheckUpdateMode, UpdateMode}
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("variationWorkingKnowledge.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("variationWorkingKnowledge.title"))) {
 
-    @components.back_link()
-
-    @components.error_summary(form.errors)
     @formHelper(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
-    <div class="form-group @if(form.hasErrors){form-group--error}">
-    @components.heading(messages("variationWorkingKnowledge.heading"))
 
-    <p>@messages("variationWorkingKnowledge.p1")</p>
-    <p>@messages("variationWorkingKnowledge.p2")</p>
-    <p>@messages("variationWorkingKnowledge.p3")</p>
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @components.input_yes_no(
+        @components.heading(messages("variationWorkingKnowledge.heading"), true)
+
+        @components.paragraph_text(messages("variationWorkingKnowledge.p1"))
+        @components.paragraph_text(messages("variationWorkingKnowledge.p2"))
+        @components.paragraph_text(messages("variationWorkingKnowledge.p3"))
+
+        @input_yes_no(
             field = form("value"),
             label = messages("variationWorkingKnowledge.heading"),
-            labelClass = Some("visually-hidden")
+            labelClass = Some("govuk-visually-hidden")
         )
-    </div>
-        @components.submit_button("site.save_and_continue")
 
-    @psaNameOpt.map{ psaName =>
-        @if(mode == UpdateMode | mode == CheckUpdateMode) {
-            <div class="grid-row">
-                <div class="column-two-thirds">
-                    <p class="govuk-margin-top-5">
-                        <a id="return-link" href="@controllers.routes.PsaDetailsController.onPageLoad().url">@messages("site.return.psa_details", psaName)</a>
-                    </p>
-                </div>
-            </div>
+        @submit_button("site.save_and_continue")
+
+        @psaNameOpt.map{ psaName =>
+            @if(mode == UpdateMode | mode == CheckUpdateMode) {
+                <p class="govuk-margin-top-7">
+                    <a id="return-link" href="@controllers.routes.PsaDetailsController.onPageLoad().url">@messages("site.return.psa_details", psaName)</a>
+                </p>
+            }
         }
-    }
     }
 }

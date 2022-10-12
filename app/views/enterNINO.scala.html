@@ -17,10 +17,6 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import config.FrontendAppConfig
-@import controllers.register.company.routes._
-@import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 @import utils.ViewHelper.titleWithErrors
 
@@ -28,8 +24,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_text: components_refactored.input_text,
-    submit_button: components_refactored.submit_button
+    input_text: components.input_text,
+    submit_button: components.submit_button
 )
 
 @(
@@ -49,9 +45,7 @@
 
         @input_text(
             field = form("value"),
-            label = viewModel.heading,
-            labelClass = Some("govuk-label--xl"),
-            inputClass = Some("govuk-!-width-one-half"),
+            label = messages(viewModel.heading),
             hint = viewModel.hint,
             headingIsLegend = true
         )
@@ -63,5 +57,6 @@
                 <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewModel.entityName)</a>
             </p>
         }
+
     }
 }

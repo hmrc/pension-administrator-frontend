@@ -394,7 +394,7 @@ hasPAYE.visuallyHidden.text = whether {0} has an employer PAYE reference
 
 enterPAYE.heading = What is {0}’s employer PAYE reference?
 enterPAYE.hint = For example, 123/AB456
-enterPAYE.p1 = You can tell us any employer PAYE reference if {0} has more then one.
+enterPAYE.p1 = You can tell us any employer PAYE reference if {0} has more than one.
 enterPAYE.error.invalid = Enter {0}’s employer PAYE reference in the correct format
 enterPAYE.error.length = Enter {0}’s employer PAYE reference using 16 characters or less
 enterPAYE.error.required = Enter an employer PAYE reference

@@ -23,13 +23,14 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("cannotDeregister.title")) {
+@layout(pageTitle = messages("cannotDeregister.title")) {
 
-    <h1 class="govuk-heading-xl">@messages("cannotDeregister.title")</h1>
+    @components.heading(messages("cannotDeregister.title"))
 
-    <p class="govuk-body">@messages("cannotDeregister.p1")</p>
+    @components.paragraph_text(messages("cannotDeregister.p1"))
 
-    <p class="govuk-body"><a id="return-to-schemes" class="govuk-link" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("schemesOverview.manage.link")</a></p>
+    <p class="govuk-body">
+        <a id="return-to-schemes" class="govuk-link" href="@appConfig.managePensionsYourPensionSchemesUrl">@messages("schemesOverview.manage.link")</a>
+    </p>
 
 }

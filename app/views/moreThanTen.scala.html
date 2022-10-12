@@ -17,7 +17,6 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import utils.FormHelpers
 @import models.Mode
 @import viewmodels.MoreThanTenViewModel
@@ -27,15 +26,13 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_yes_no: components_refactored.input_yes_no,
-    submit_button: components_refactored.submit_button
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewModel.title))
-) {
+@layout(pageTitle = titleWithErrors(form, messages(viewModel.title))) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
@@ -46,15 +43,15 @@
         @input_yes_no(
             field = form("value"),
             label = messages(viewModel.heading),
-            labelClass = Some("govuk-label--xl"),
             hint = Some(messages(viewModel.hint)),
             headingIsLegend = true
         )
 
         @submit_button("site.save_and_continue")
-    }
 
-    @viewModel.psaName.map { psaName =>
-        @components_refactored.return_link(psaName, mode)
+        @viewModel.psaName.map { psaName =>
+            @components.return_link(psaName, mode)
+        }
+
     }
 }

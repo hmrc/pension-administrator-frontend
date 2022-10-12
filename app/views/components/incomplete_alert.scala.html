@@ -14,13 +14,14 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Message
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(govukErrorSummary : GovukErrorSummary)
 
 @(alertMessage: String = "incomplete.alert.message")(implicit messages: Messages)
-<div class="error-summary error-summary--show" role="alert" aria-labelledby="error-summary-heading">
 
-    <h2 class="h2-heading error-summary-heading" id="alert-heading">
+<div class="govuk-error-summary govuk-error-summary--show" role="alert" aria-labelledby="error-summary-title" data-disable-auto-focus="true" data-module="govuk-error-summary">
+    <p class="govuk-error-message govuk-!-margin-bottom-0" id="error-summary-title">
         @messages(alertMessage)
-    </h2>
-
+    </p>
 </div>

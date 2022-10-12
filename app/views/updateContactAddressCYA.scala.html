@@ -15,38 +15,32 @@
  *@
 
 @import config.FrontendAppConfig
-@import models.Index
 @import play.api.mvc.Call
-@import uk.gov.hmrc.play.views.html._
-@import viewmodels.SuperSection
 
 @this(
-    main_template: main_template,
-    appConfig: FrontendAppConfig
+    layout: templates.Layout,
+    appConfig: FrontendAppConfig,
+    button_link: components.button_link,
+    super_section: components.super_section,
+    incomplete_alert: components.incomplete_alert
 )
-
 
 @(psaDetails: viewmodels.PsaViewDetailsViewModel, nextPage:Call)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages(psaDetails.title)
-    ) {
+@layout(pageTitle = messages(psaDetails.title)) {
 
-        @components.back_link()
-
-        @psaDetails.userAnswersIncompleteMessage.map { incompleteMessage =>
-            @components.incomplete_alert(incompleteMessage)
-        }
-
-        @components.heading(
-            headingKey=messages("updateContactAddressCYA.heading", psaDetails.header)
-        )
-
-        @for((section, i) <- psaDetails.superSections.zipWithIndex){
-            @{
-                components.super_section(section, i.toString)
-            }
-        }
-
-        @components.button_link("psaDetails.declaration.link.text", nextPage.url, "declaration-link")
+    @psaDetails.userAnswersIncompleteMessage.map { incompleteMessage =>
+        @incomplete_alert(incompleteMessage)
     }
+
+    @components.heading(messages("updateContactAddressCYA.heading", psaDetails.header))
+
+    @for((section, i) <- psaDetails.superSections.zipWithIndex){
+        @{
+            super_section(section, i.toString)
+        }
+    }
+
+    @button_link("psaDetails.declaration.link.text", nextPage.url, "declaration-link")
+
+}

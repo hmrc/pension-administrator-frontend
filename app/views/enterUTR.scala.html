@@ -17,10 +17,6 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import config.FrontendAppConfig
-@import controllers.register.company.routes._
-@import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 @import utils.ViewHelper.titleWithErrors
 
@@ -28,15 +24,18 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_text: components_refactored.input_text,
-    submit_button: components_refactored.submit_button
+    input_text: components.input_text,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, viewModel.title)
-) {
+@hintHtml = {
+    <p class="govuk-!-margin-top-0">@messages("utr.p1")</p>
+    <p>@messages("utr.p2")</p>
+}
+
+@layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
@@ -44,18 +43,12 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(viewModel.heading, true)
-
-        @components_refactored.paragraph_text(messages("utr.p1"))
-
-        @components_refactored.paragraph_text(messages("utr.p2"))
-
         @input_text(
             field = form("value"),
-            label = viewModel.heading,
-            labelClass = Some("govuk-visually-hidden"),
-            inputClass = Some("govuk-!-width-one-half"),
-            headingIsLegend = false
+            label = messages(viewModel.heading),
+            headingIsLegend = true,
+            numericField = true,
+            hint = Some(hintHtml.toString)
         )
 
         @submit_button("site.save_and_continue")
@@ -65,5 +58,6 @@
                 <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewModel.entityName)</a>
             </p>
         }
+
     }
 }

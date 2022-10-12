@@ -14,13 +14,9 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import controllers.routes._
-@import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 @import utils.ViewHelper.titleWithErrors
 
@@ -28,15 +24,13 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_textarea: components_refactored.input_textarea,
-    submit_button: components_refactored.submit_button
+    input_textarea: components.input_textarea,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, viewModel.title)
-) {
+@layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
@@ -46,8 +40,7 @@
 
         @input_textarea(
             field = form("value"),
-            label = viewModel.heading,
-            inputClass = Some("govuk-!-width-two-thirds"),
+            label = messages(viewModel.heading)
         )
 
         @submit_button("site.save_and_continue")
@@ -57,5 +50,6 @@
                 <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewModel.entityName)</a>
             </p>
         }
+
     }
 }

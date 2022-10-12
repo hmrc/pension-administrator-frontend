@@ -14,17 +14,14 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
-@import controllers.register.company.routes._
 @import models.Mode
 @import utils.FormHelpers
 @import models.requests.DataRequest
 @import play.api.mvc.AnyContent
-@import viewmodels.{Person,EntityViewModel}
+@import viewmodels.{EntityViewModel}
 @import config.FrontendAppConfig
 @import utils.ViewHelper.titleWithErrors
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 
@@ -32,10 +29,10 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios,
-    button: components_refactored.submit_button,
-    appConfig: FrontendAppConfig,
-    govukInsetText : GovukInsetText
+    input_yes_no: components.input_yes_no,
+    inset_text: components.inset_text,
+    submit_button: components.submit_button,
+    appConfig: FrontendAppConfig
 )
 
 @(form: Form[_], viewmodel: EntityViewModel, mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
@@ -43,79 +40,63 @@
 @entitiesIncomplete = @{ viewmodel.entities.filterNot(_.isComplete) }
 @entitiesComplete = @{ viewmodel.entities.filter(_.isComplete) }
 
+@layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewmodel.title))
-) {
-
-        @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
+    @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
+
+        @components.heading(messages(viewmodel.heading))
 
         @if(viewmodel.entities.isEmpty) {
+
             <p class="govuk-body">@messages("addEntity.addAnEntity.hint", viewmodel.entityType)</p>
-            @button(messages("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
+            @submit_button(messages("addEntity.addAnEntity", viewmodel.entityType.dropRight(1)))
+
         } else {
 
             @if(entitiesIncomplete.length > 0) {
-                <h1 class="govuk-heading-s">@messages("taskList.status.incomplete")</h1>
-                @components_refactored.person_list(entitiesIncomplete, mode)
+                <h2 class="govuk-heading-s">@messages("taskList.status.incomplete")</h2>
+                @components.person_list(entitiesIncomplete, mode)
             }
             @if(entitiesComplete.length > 0) {
-                <h1 class="govuk-heading-s">@messages("taskList.status.completed")</h1>
-                @components_refactored.person_list(entitiesComplete, mode)
+                <h2 class="govuk-heading-s">@messages("taskList.status.completed")</h2>
+                @components.person_list(entitiesComplete, mode)
             }
             @if(viewmodel.entities.size < viewmodel.maxLimit) {
-                @govukRadios(
-                    Radios(
-                        fieldset = Some(
-                            Fieldset(legend = Some(
-                                    Legend( content = Text(messages("addEntity.addYesNo", viewmodel.entityType.dropRight(1))),
-                                            classes = "govuk-fieldset__legend--m",
-                                            isPageHeading = false
-                                        )
-                                    )
-                                )
-                        ),
-                        items = Seq(
-                                RadioItem(
-                                    content = Text(messages("site.yes")),
-                                    value = Some(messages("site.true"))
-                                ),
-                                RadioItem(
-                                    content = Text(messages("site.no")),
-                                    value = Some(messages("site.false"))
-                                    )
-                                ),
-                    hint = viewmodel.hintText,
-                    classes = "govuk-radios--inline"
-                    ).withFormField(form("value"))
+
+                @input_yes_no(
+                    field = form("value"),
+                    label = messages("addEntity.addYesNo", viewmodel.entityType.dropRight(1)),
+                    labelClass = Some("govuk-fieldset__legend--m"),
+                    hint = Some(messages("viewmodel.hintText"))
                 )
-            @if(viewmodel.insetText.nonEmpty) {
 
-                    @govukInsetText(InsetText(
-                    content = Text(viewmodel.insetText.getOrElse(""))
-                    ))
-
+                @if(viewmodel.insetText.nonEmpty) {
+                    @inset_text(
+                        content = viewmodel.insetText.getOrElse("")
+                    )
                 }
 
             } else {
-            <p class="govuk-body">@messages("addEntity.atMaximum", viewmodel.entityType)</p>
-            <p class="govuk-body">@messages("addEntity.tellUsIfYouHaveMore")</p>
+
+                @components.paragraph_text(messages("addEntity.atMaximum", viewmodel.entityType))
+                @components.paragraph_text(messages("addEntity.tellUsIfYouHaveMore"))
+
             }
 
-            @button()
+            @submit_button()
         }
-            @viewmodel.psaName.map { psaName =>
-                    @viewmodel.returnLink.map { returnLinkName =>
-                    <p class="govuk-margin-top-5 govuk-body">
-                        <a id="return-link" class="govuk-link" href="@returnLinkName">@messages("site.return_to", psaName)</a>
-                    </p>
-                }
+
+        @viewmodel.psaName.map { psaName =>
+                @viewmodel.returnLink.map { returnLinkName =>
+                <p class="govuk-margin-top-5 govuk-body">
+                    <a id="return-link" class="govuk-link" href="@returnLinkName">@messages("site.return_to", psaName)</a>
+                </p>
             }
+        }
+
     }
 }
-

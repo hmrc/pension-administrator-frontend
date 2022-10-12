@@ -23,15 +23,15 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("youWillNeedToUpdate.title")
-) {
+@layout(pageTitle = messages("youWillNeedToUpdate.title")) {
 
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("youWillNeedToUpdate.heading")</h1>
+    @components.heading(messages("youWillNeedToUpdate.heading"))
+
     <p class="govuk-body">
         @messages("youWillNeedToUpdate.text")
         <a id="inform-hmrc-link" href="@appConfig.tellHMRCChangesUrl" class="govuk-link">
             @messages(s"youWillNeedToUpdate.link").
         </a>
     </p>
+
 }

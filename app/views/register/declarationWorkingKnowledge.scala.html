@@ -15,27 +15,23 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.routes._
 @import models.Mode
-@import models.register.DeclarationWorkingKnowledge
 @import utils.ViewHelper.titleWithErrors
 
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    submit_button: components_refactored.submit_button,
-    input_yes_no: components_refactored.input_yes_no
+    submit_button: components.submit_button,
+    input_yes_no: components.input_yes_no
 )
 
 @(form: Form[_], mode: Mode,psaName: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("declarationWorkingKnowledge.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("declarationWorkingKnowledge.title"))) {
 
     @formHelper(action = DeclarationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
 
@@ -43,11 +39,11 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("declarationWorkingKnowledge.heading"))
+        @components.heading(messages("declarationWorkingKnowledge.heading"))
 
-        @components_refactored.paragraph_text(messages("declarationWorkingKnowledge.p1"))
-        @components_refactored.paragraph_text(messages("declarationWorkingKnowledge.p2"))
-        @components_refactored.paragraph_text(messages("declarationWorkingKnowledge.p3"))
+        @components.paragraph_text(messages("declarationWorkingKnowledge.p1"))
+        @components.paragraph_text(messages("declarationWorkingKnowledge.p2"))
+        @components.paragraph_text(messages("declarationWorkingKnowledge.p3"))
 
         @input_yes_no(
             field = form("value"),
@@ -64,5 +60,6 @@
                 </p>
             }
         }
+
     }
 }

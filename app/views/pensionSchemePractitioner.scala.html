@@ -25,15 +25,13 @@
 
 @continueTpss() = {<a id="continueTpssLink" class="govuk-link" href="@appConfig.tpssUrl">@messages("pensionSchemePractitioner.link")</a>}
 
-@layout(
-    pageTitle = messages("pensionSchemePractitioner.title")
-) {
+@layout(pageTitle = messages("pensionSchemePractitioner.title")) {
 
-    <h1 class="govuk-heading-xl">@messages("pensionSchemePractitioner.heading")</h1>
+    @components.heading(messages("pensionSchemePractitioner.heading"))
 
     <p class="govuk-body-l">@messages("pensionSchemePractitioner.lede")</p>
 
-    <p class="govuk-body">@messages("pensionSchemePractitioner.explanation")</p>
+    @components.paragraph_text(messages("pensionSchemePractitioner.explanation"))
 
     <p class="govuk-body">@Html(messages("pensionSchemePractitioner.continue",continueTpss()))</p>
 

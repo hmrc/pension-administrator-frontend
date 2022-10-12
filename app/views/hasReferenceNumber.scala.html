@@ -16,9 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 @import utils.ViewHelper.titleWithErrors
 
@@ -26,70 +24,40 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    button: components_refactored.submit_button,
-    govukRadios : GovukRadios
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewmodel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
-@hint = @{
-    viewmodel.hint match {
-        case Some(hint) => Some(Hint(
-            content = Text(hint)))
-        case None =>None
-    }
-}
-
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewmodel.title))
-) {
-
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
+@layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
-        @govukRadios(
-            Radios(
-                fieldset = Some(
-                    Fieldset(
-                        legend = Some(
-                            Legend(
-                                content = Text(messages(viewmodel.heading)),
-                                classes = "govuk-fieldset__legend--xl",
-                                isPageHeading = true
-                            )
-                        )
-                    )
-                ),
-                hint = hint,
-                items = Seq(
-                    RadioItem(
-                        content = Text(messages("site.yes")),
-                        value = Some("true")
-                    ),
-                    RadioItem(
-                        content = Text(messages("site.no")),
-                        value = Some("false")
-                    )
-                ),
-                classes = "govuk-radios--inline"
-            ).withFormField(form(viewmodel.formFieldName.fold("value")(identity)))
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
+
+        @input_yes_no(
+            field = form("value"),
+            label = messages(viewmodel.heading),
+            headingIsLegend = true,
+            hint = viewmodel.hint
         )
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
 
         @if(viewmodel.displayReturnLink){
-            @components_refactored.return_link(viewmodel.entityName, viewmodel.mode)
+            @components.return_link(viewmodel.entityName, viewmodel.mode)
         }
 
         @if(viewmodel.mode != UpdateMode){
             @viewmodel.returnLink.map { returnLinkUrl =>
-            <p class="govuk-margin-top-5 govuk-body">
-                <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewmodel.entityName)</a>
-            </p>
+                <p class="govuk-margin-top-5 govuk-body">
+                    <a id="return-link" class="govuk-link" href="@returnLinkUrl">@messages("site.return_to", viewmodel.entityName)</a>
+                </p>
             }
         }
+
     }
 }

@@ -14,42 +14,34 @@
  * limitations under the License.
  *@
 
-
 @import config.FrontendAppConfig
 
 @this(
-    main_template: main_template,
-    appConfig: FrontendAppConfig
+    layout: templates.Layout,
+    appConfig: FrontendAppConfig,
+    button_link: components.button_link
 )
 
-@(
-        psaDetails: Option[viewmodels.PsaViewDetailsViewModel]
-)(
-        implicit request: Request[_],
-        messages: Messages
-)
+@(psaDetails: Option[viewmodels.PsaViewDetailsViewModel])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("yourActionWasNotProcessed.title")
-    ) {
+@layout(pageTitle = messages("yourActionWasNotProcessed.title")) {
 
-    @components.back_link()
+    @components.heading(messages("yourActionWasNotProcessed.heading"))
 
-    <h1 class="heading-xlarge">@messages("yourActionWasNotProcessed.heading")</h1>
+    @components.paragraph_text(messages("yourActionWasNotProcessed.guidance.p1"))
 
-    <p>@messages("yourActionWasNotProcessed.guidance.p1")</p>
+    @components.paragraph_text(messages("yourActionWasNotProcessed.guidance.p2"))
 
-    <p>@messages("yourActionWasNotProcessed.guidance.p2")</p>
-
-    <p>@messages("yourActionWasNotProcessed.guidance.p3")</p>
+    @components.paragraph_text(messages("yourActionWasNotProcessed.guidance.p3"))
 
     @psaDetails.map(
         details => {
-            components.button_link(
+            button_link(
                 messageKey = messages("site.return_to", details.header),
                 href = appConfig.schemesOverviewUrl,
                 id = "return"
             )
         }
     )
+
 }

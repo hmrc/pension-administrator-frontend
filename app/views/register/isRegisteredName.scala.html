@@ -14,12 +14,9 @@
  * limitations under the License.
  *@
 
-@import controllers.register.routes._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import models.Mode
 @import viewmodels.CommonFormViewModel
 @import utils.ViewHelper.titleWithErrors
 
@@ -27,8 +24,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_yes_no: components_refactored.input_yes_no,
-    submit_button: components_refactored.submit_button
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: CommonFormViewModel)(implicit request: Request[_], messages: Messages)
@@ -43,8 +40,7 @@
 
         @input_yes_no(
             field = form("value"),
-            label = viewModel.heading,
-            labelClass = Some("govuk-label--xl"),
+            label = messages(viewModel.heading),
             headingIsLegend = true
         )
 

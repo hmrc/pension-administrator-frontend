@@ -15,20 +15,18 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import models.{Mode, Index}
+@import models.{Mode}
 @import viewmodels.address.ManualAddressViewModel
-@import utils.InputOption
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-layout: templates.Layout,
-formHelper: PlayFrontendFormWithCSRF,
-govukErrorSummary: GovukErrorSummary,
-address: components_refactored.address,
-button: components_refactored.submit_button
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    address: components.address,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewmodel: ManualAddressViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -41,7 +39,7 @@ button: components_refactored.submit_button
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
+        @components.heading(viewmodel.heading)
 
         @viewmodel.hint.map{hintText =>
             <p class="govuk-body">@messages(hintText)</p>
@@ -49,10 +47,10 @@ button: components_refactored.submit_button
 
         @address(form, viewmodel.countryOptions)
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
 
         @viewmodel.psaName.map { psaName =>
-            @components_refactored.return_link(psaName, mode)
+            @components.return_link(psaName, mode)
             @if(mode != UpdateMode){
                 @viewmodel.returnLink.map { returnLinkUrl =>
                     <p class="govuk-margin-top-5 govuk-body">
@@ -61,6 +59,6 @@ button: components_refactored.submit_button
                 }
             }
         }
+
     }
 }
-

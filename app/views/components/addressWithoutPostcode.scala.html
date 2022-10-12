@@ -53,17 +53,11 @@
     ).withFormField(form("addressLine4"))
 )
 
-@govukInput(
-    Input(
-        label = Label(content = Text(messages("address.postcode"))),
-        classes = "govuk-!-width-one-quarter"
-    ).withFormField(form("postCode"))
-)
-
 <div class="govuk-!-width-two-thirds">
     @govukSelect(Select(
         id = "country",
         name = "country",
+        hint = Some(Hint(content = Text(messages("address.country.hint")))),
         classes = "govuk-!-width-two-thirds",
         items = Seq(SelectItem(value = Some(""))) ++
             options.map(valueOption =>
@@ -73,8 +67,8 @@
                 )
             ),
             label = Label(
-                content = Text(messages("address.country")
-            )
-        )).withFormField(form("country"))
+            content = Text(messages("address.country"))
+        )
+        ).withFormField(form("country"))
     )
 </div>

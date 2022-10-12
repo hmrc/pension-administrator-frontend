@@ -14,26 +14,23 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
 @import models.Mode
-@import viewmodels.Message
 
 @this(
-    main_template: main_template
+    layout: templates.Layout
 )
 
 @(psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(messages("incompleteChanges.title")) {
+@layout(pageTitle = messages("incompleteChanges.title")) {
 
-        @components.back_link()
+    @components.heading(messages("incompleteChanges.heading"))
 
-        @components.heading(messages("incompleteChanges.heading"))
+    @components.paragraph_text(messages("incompleteChanges.p1"))
 
-        <p>@messages("incompleteChanges.p1")</p>
+    @psaNameOpt.map{ psaName =>
+        @components.return_link(psaName, mode)
+    }
 
-        @psaNameOpt.map{ psaName =>
-            @components.return_link(psaName, mode)
-        }
 }

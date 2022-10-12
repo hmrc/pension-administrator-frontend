@@ -14,38 +14,36 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
-@import utils.FormHelpers
-@import models.Mode
-@import viewmodels.Message
-
 @this(
-    main_template: main_template
+    layout: templates.Layout,
+    button_link: components.button_link,
+    inset_text: components.inset_text,
 )
 
 @(address: Seq[String], continueUrl: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("updateContactAddress.title")
-) {
-    @components.back_link()
+@addressContent = {
+    @for(addressItem <- address) {
+        <span class="govuk-!-display-block">@addressItem</span>
+    }
+}
 
-    @components.heading(
-        headingKey=messages("updateContactAddress.heading")
+@layout(pageTitle = messages("updateContactAddress.title")) {
+
+    @components.heading(messages("updateContactAddress.heading"))
+
+    @components.paragraph_text(messages("updateContactAddress.p1"))
+
+    @inset_text(
+        content = addressContent.toString
     )
 
-    <p>@messages("updateContactAddress.p1")</p>
+    @components.paragraph_text(messages("updateContactAddress.p2"))
 
-    <p class="govuk-inset-text panel panel-border-wide">
-        @for(addressItem <- address) {
-            <span class="address-multi-line">@addressItem</span>
-        }
-    </p>
+    @components.paragraph_text(messages("updateContactAddress.p3"))
 
-    <p>@messages("updateContactAddress.p2")</p>
-    <p>@messages("updateContactAddress.p3")</p>
-    <p>@messages("updateContactAddress.p4")</p>
+    @components.paragraph_text(messages("updateContactAddress.p4"))
 
-    @components.button_link("site.continue", continueUrl, "submit")
+    @button_link("site.continue", continueUrl, "submit")
+
 }

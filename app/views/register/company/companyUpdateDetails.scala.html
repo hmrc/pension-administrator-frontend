@@ -14,9 +14,6 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import config.FrontendAppConfig
 @import viewmodels.Message
 
@@ -33,9 +30,9 @@
 
 @layout(pageTitle = messages("companyUpdateDetails.title")) {
 
-    @components_refactored.heading(messages("companyUpdateDetails.heading"))
+    @components.heading(messages("companyUpdateDetails.heading"))
 
-    @components_refactored.paragraph_text(messages("companyUpdateDetails.p1"))
+    @components.paragraph_text(messages("companyUpdateDetails.p1"))
 
     <ul class="govuk-list govuk-list--bullet">
         <li>@Html(Message("companyUpdateDetails.item1").withArgs(openLink1, closeLink))</li>

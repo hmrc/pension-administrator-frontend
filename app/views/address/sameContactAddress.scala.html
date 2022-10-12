@@ -14,14 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import utils.countryOptions.CountryOptions
 @import viewmodels.address.SameContactAddressViewModel
-@import models.Mode
 @import utils.FormHelpers
 @import utils.ViewHelper.titleWithErrors
 
@@ -29,72 +26,39 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    button: components_refactored.submit_button,
-    govukRadios : GovukRadios
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewmodel: SameContactAddressViewModel, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewmodel.title))
-) {
-
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
-
-
-    @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
-
-
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewmodel.heading)</h1>
-
-    @viewmodel.hint.map{hintText =>
-        <p class="govuk-body">@messages(hintText)</p>
-    }
-
-    <p class="govuk-body-l">
+@hintHtml = {
+    <p class="govuk-!-margin-top-0">
         @for((line, i) <- viewmodel.address.lines(countryOptions).zipWithIndex) {
             <span id="address-value-@i" class="govuk-!-display-block">@line</span>
         }
     </p>
+}
 
-     @govukRadios(
-            Radios(
-                fieldset = Some(
-                    Fieldset(
-                        legend = Some(
-                            Legend(
-                                content = Text(messages(viewmodel.heading)),
-                                classes = "govuk-fieldset__legend--xl govuk-visually-hidden",
-                                isPageHeading = false
-                            )
-                        )
-                    )
-                ),
-                items = Seq(
-                    RadioItem(
-                        content = Text(messages("site.yes")),
-                        value = Some("true")
-                    ),
-                    RadioItem(
-                        content = Text(messages("site.no")),
-                        value = Some("false")
-                    )
-                ),
-            classes = "govuk-radios--inline"
-            ).withFormField(form("value"))
-        )
+@layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
-        @button(messages("site.save_and_continue"))
-        @if(viewmodel.displayReturnLink){
-        @components_refactored.return_link(viewmodel.psaName, viewmodel.mode)
+    @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @if(viewmodel.displayPartnershipLink && viewmodel.mode != UpdateMode){
-            <p class="govuk-margin-top-5 govuk-body">
-                <a id="return-link" class="govuk-link" href="@controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", viewmodel.psaName)</a>
-            </p>
+        @input_yes_no(
+            field = form("value"),
+            label = messages(viewmodel.heading),
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
+        )
+
+        @submit_button(messages("site.save_and_continue"))
+
+        @if(viewmodel.displayReturnLink){
+            @components.return_link(viewmodel.psaName, viewmodel.mode)
         }
 
         @viewmodel.returnLink.map { returnLinkUrl =>

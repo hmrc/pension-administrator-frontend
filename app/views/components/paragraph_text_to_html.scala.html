@@ -14,15 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@(text: String, para_id: Option[String] = None)
+<p @if(para_id.nonEmpty) {id="@para_id"} class="govuk-body">@Html(text)</p>
 
-@this(govukButton: GovukButton)
 
-@(msg: String, idForButton: String = "submit")(implicit messages: Messages)
-
-@govukButton(Button(
-    attributes = Map("id" -> idForButton),
-   content = {
-     Text(messages(msg))
-   }
-))

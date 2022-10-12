@@ -14,39 +14,38 @@
 * limitations under the License.
 *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.company.contactdetails.routes.WhatYouWillNeedController
 
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components_refactored.submit_button
+    submit_button: components.submit_button
 )
 
 @(companyName: String, returnLinkCompanyName: Option[String])(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("contactDetails.whatYouWillNeed.title", companyName)
-) {
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("contactDetails.whatYouWillNeed.heading", companyName)</h1>
-
-    <p class="govuk-body">@messages("contactDetails.whatYouWillNeed.p1", companyName)</p>
-
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("contactDetails.whatYouWillNeed.li1")</li>
-        <li>@messages("contactDetails.whatYouWillNeed.li2")</li>
-        <li>@messages("contactDetails.whatYouWillNeed.li3")</li>
-        <li>@messages("contactDetails.whatYouWillNeed.li4")</li>
-    </ul>
+@layout(pageTitle = messages("contactDetails.whatYouWillNeed.title", companyName)) {
 
     @formHelper(action = WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
+
+        @components.heading(messages("contactDetails.whatYouWillNeed.heading", companyName))
+
+        <p class="govuk-body">@messages("contactDetails.whatYouWillNeed.p1", companyName)</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("contactDetails.whatYouWillNeed.li1")</li>
+            <li>@messages("contactDetails.whatYouWillNeed.li2")</li>
+            <li>@messages("contactDetails.whatYouWillNeed.li3")</li>
+            <li>@messages("contactDetails.whatYouWillNeed.li4")</li>
+        </ul>
+
         @submit_button("site.continue")
+
     }
 
     <p class="govuk-margin-top-8 govuk-body">
         <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", companyName)</a>
     </p>
+
 }

@@ -14,30 +14,76 @@
  * limitations under the License.
  *@
 
-@import viewmodels.AnswerSection
 @import viewmodels.SuperSection
-@import views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(
+    govukSummaryList : GovukSummaryList
+)
 
 @(superSection: SuperSection, idPath: String)(implicit messages: Messages)
 
 @if(superSection.headingKey.isDefined){
-<header class="page-heading">
-    <h2 id="supersection-@idPath-heading" class="heading-large">@messages(superSection.headingKey.get)</h2>
-</header>
+    <h2 id="supersection-@idPath-heading" class="govuk-heading-l">@messages(superSection.headingKey.get)</h2>
 }
 
 @superSection.addLink.map{ addLink =>
-   <a id="add-link" href='@{addLink.link.url}'>
-     <span aria-hidden="true">@messages(addLink.link.text)</span>
-     <span class="visually-hidden">@messages(addLink.link.text)</span>
-   </a>
+    <p class="govuk-body">
+        <a id="add-link" class="govuk-link" href='@{addLink.link.url}'>
+         <span aria-hidden="true">@messages(addLink.link.text)</span>
+         <span class="govuk-visually-hidden">@messages(addLink.link.text)</span>
+       </a>
+    </p>
     @addLink.additionalText.map{ text =>
-        <p>
+        <p class="govuk-body">
             @messages(text)
         </p>
     }
 }
 
-    @for((section, i) <- superSection.sections.zipWithIndex){
-        @components.answer_section(section, idPath + "-" + i.toString)
+@for((section, i) <- superSection.sections.zipWithIndex){
+
+    @if(section.headingKey.isDefined){
+        <h2 id="cya-@idPath-@i.toString-heading" class="govuk-heading-m">@messages(section.headingKey.get)</h2>
     }
+
+    @govukSummaryList(SummaryList(
+        rows = for((rowVal, indexVal) <- section.rows.zipWithIndex)
+        yield {
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages(rowVal.label))
+                ),
+                value = Value(
+                    content =
+                        if(rowVal.answerIsMessageKey){
+                            Text(messages(rowVal.answer.head))
+                        }else{
+                            HtmlContent((for((r, index2) <- rowVal.answer.zipWithIndex)
+                                    yield{
+                                        s"""<span id="cya-$idPath-$i-$indexVal-$index2-answer" class="govuk-!-display-block">$r</span>"""
+                                    }).mkString)
+                        }
+                    ),
+                actions = (rowVal.changeUrl match {
+                    case Some(changeUrlLink) =>
+                        Some(Actions(
+                            items = Seq(ActionItem(
+                                        href = changeUrlLink.url,
+                                        content = Text(messages(changeUrlLink.text)),
+                                        visuallyHiddenText =
+                                            rowVal.visuallyHiddenText match {
+                                                  case Some(hiddenLabel) =>  Some(messages(hiddenLabel))
+                                                  case _ =>  Some(messages("site.hidden-edit", messages(rowVal.label)))
+                                                },
+                                        attributes = Map("id" -> s"cya-$idPath-$i-$indexVal-change")
+                                    )
+                                )
+                            ))
+                    case _ => None
+                })
+            )
+        }
+    ))
+
+}

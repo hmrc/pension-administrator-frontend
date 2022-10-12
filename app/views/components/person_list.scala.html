@@ -19,30 +19,36 @@
 
 @(people: Seq[Person], mode: Mode)(implicit messages: Messages)
 
-<div class="form-group">
-    <ul id="people" class="govuk-check-your-answers form-group cya-questions-long">
+<div class="govuk-form-group">
+    <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short" id="people">
         @for(person <- people) {
-            <li>
-                <div class="cya-question">
-                    <h2 id="@person.id" class="bold std-text">@person.name</h2>
-                </div>
-
-            @if(mode != UpdateMode || person.isNew) {
-                <div>
-                    <a id="@person.editLinkId" href="@person.editLink" aria-label="@messages("site.change") @person.name">
-                        @messages("site.change")
-                    </a>
-                </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
+                @person.name
+            </dt>
+            @if(mode != UpdateMode || person.isNew || people.size > 1) {
+                <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
+                    <ul class="govuk-summary-list__actions-list">
+                        @if(mode != UpdateMode || person.isNew) {
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a class="govuk-link" id="@person.editLinkId" href="@person.editLink">
+                                    <span aria-hidden="true">@messages("site.change")</span>
+                                    <span class="govuk-visually-hidden">@messages("site.change") @person.name</span>
+                                </a>
+                            </li>
+                        }
+                        @if(mode != UpdateMode || people.size > 1) {
+                            <li class="govuk-summary-list__actions-list-item">
+                                <a id="@person.deleteLinkId" class="govuk-link" href="@person.deleteLink">
+                                    <span aria-hidden="true">@messages("site.delete")</span>
+                                    <span class="govuk-visually-hidden">@messages("site.delete") @person.name</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </dd>
             }
-
-                @if(mode != UpdateMode || people.size > 1) {
-                    <div>
-                        <a id="@person.deleteLinkId" href="@person.deleteLink" aria-label="@messages("site.delete") @person.name">
-                            @messages("site.delete")
-                        </a>
-                    </div>
-                }
-            </li>
-        }
-    </ul>
+        </div>
+       }
+    </dl>
 </div>

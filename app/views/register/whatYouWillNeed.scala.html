@@ -14,25 +14,17 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-
-
 @this(
     layout: templates.Layout,
-    govukButton: GovukButton,
-    govukInsetText : GovukInsetText
+    inset_text: components.inset_text,
+    button_link: components.button_link
 )
 
-@(ref: Call)(implicit request: Request[_], messages: Messages)
+@(href: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = s"${messages("whatYouWillNeed.main.title")}"
-) {
+@layout(pageTitle = s"${messages("whatYouWillNeed.main.title")}") {
 
-    <h1 class="govuk-heading-xl">@messages("whatYouWillNeed.main.heading")</h1>
+    @components.heading(messages("whatYouWillNeed.main.heading"))
 
     <p class="govuk-body">@messages("whatYouWillNeed.main.body.text")</p>
 
@@ -42,18 +34,10 @@
         <li>@messages("whatYouWillNeed.main.body.item3")</li>
     </ul>
 
-    @govukInsetText(InsetText(
-    content = Text(messages("whatYouWillNeed.main.body.hint.company"))
-    ))
+    @inset_text(
+        content = messages("whatYouWillNeed.main.body.hint.company")
+    )
 
-    <div>
-        @govukButton(Button(
-            href = Some(ref.url),
-            attributes = Map("id" -> "submit"),
-            content = {
-                Text(messages("site.continue"))
-            }
-            )
-        )
-    </div>
+    @button_link("site.continue", href.url, "submit")
+
 }

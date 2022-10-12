@@ -18,23 +18,24 @@
 @import utils.countryOptions.CountryOptions
 
 @(fieldName: String, address: TolerantAddress, countryOptions: CountryOptions)
-<div class="listAddress">
+
+<p class="govuk-body">
 @if(address.addressLine1.isDefined) {
-    <div id="@fieldName-addressLine1">@address.addressLine1</div>
+    <span id="@fieldName-addressLine1" class="govuk-!-display-block">@address.addressLine1</span>
 }
 @if(address.addressLine2.isDefined) {
-    <div id="@fieldName-addressLine2">@address.addressLine2</div>
+    <span id="@fieldName-addressLine2" class="govuk-!-display-block">@address.addressLine2</span>
 }
 @if(address.addressLine3.isDefined) {
-    <div id="@fieldName-addressLine3">@address.addressLine3</div>
+    <span id="@fieldName-addressLine3" class="govuk-!-display-block">@address.addressLine3</span>
 }
 @if(address.addressLine4.isDefined) {
-    <div id="@fieldName-addressLine4">@address.addressLine4</div>
+    <span id="@fieldName-addressLine4" class="govuk-!-display-block">@address.addressLine4</span>
 }
 @if(address.postcode.isDefined) {
-    <div id="@fieldName-postcode">@address.postcode</div>
+    <span id="@fieldName-postcode" class="govuk-!-display-block">@address.postcode</span>
 }
 @if(address.countryOpt.isDefined) {
-    <div id="@fieldName-country">@countryOptions.getCountryNameFromCode(address)</div>
+    <span id="@fieldName-country" class="govuk-!-display-block">@countryOptions.getCountryNameFromCode(address)</span>
 }
-</div>
+</p>

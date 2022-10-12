@@ -16,14 +16,10 @@
 
 @import play.api.data.Form
 @import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import views.html._
-@import viewmodels.Message
-@import models._
 @import utils.ViewHelper.titleWithErrors
 
 @this(
@@ -31,49 +27,34 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     appConfig: FrontendAppConfig,
-    button: components_refactored.submit_button,
-    govukRadios : GovukRadios
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], psaName: String)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("confirmStopBeingPsa.title"))
-) {
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
+@hintHtml = {
+    <p class="govuk-!-margin-top-0">@messages("confirmStopBeingPsa.p1")</p>
+    <p>@messages("confirmStopBeingPsa.p2")</p>
+}
+
+@layout(pageTitle = titleWithErrors(form, messages("confirmStopBeingPsa.title"))) {
+
     @formHelper(action = controllers.deregister.routes.ConfirmStopBeingPsaController.onSubmit(), 'autoComplete -> "off") {
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages("confirmStopBeingPsa.heading")</h1>
-        <p class="govuk-body">@messages("confirmStopBeingPsa.p1")</p>
-        <p class="govuk-body">@messages("confirmStopBeingPsa.p2")</p>
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @govukRadios(
-            Radios(
-                fieldset = Some(Fieldset(
-                                legend = Some(Legend(content = Text(messages("confirmStopBeingPsa.title")),
-                                classes = "govuk-fieldset__legend--xl govuk-visually-hidden",
-                                isPageHeading = false
-                                    )
-                                    )
-                    )
-                ),
-                items = Seq(
-                        RadioItem(
-                            content = Text(messages("site.yes")),
-                            value = Some("true")
-                        ),
-                        RadioItem(
-                            content = Text(messages("site.no")),
-                            value = Some("false")
-                        )
-                        ),
-                classes = "govuk-radios--inline"
-            ).withFormField(form("value"))
-          )
+        @input_yes_no(
+            field = form("value"),
+            label = messages("confirmStopBeingPsa.heading"),
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
+        )
 
-        @button(messages("site.continue"))
+        @submit_button(messages("site.continue"))
+
         <p class="govuk-margin-top-5 govuk-body">
             <a id="return-link" class="govuk-link" href="@{appConfig.schemesOverviewUrl}">@messages("site.return_to", psaName)</a>
         </p>

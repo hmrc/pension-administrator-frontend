@@ -14,8 +14,17 @@
  * limitations under the License.
  *@
 
-@(submitMessageKey: String = "site.continue", disabled: Boolean = false)(implicit messages: Messages)
-<div class="subsection">
-    <button id="submit" class="button" @if(disabled) {disabled}>@messages(submitMessageKey)</button>
-</div>
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@this(govukButton: GovukButton)
+
+@(submitMessageKey: String = "site.continue", disabled: Boolean = false, idForButton: String = "submit")(implicit messages: Messages)
+
+@govukButton(Button(
+   attributes = Map("id" -> idForButton),
+   disabled = disabled,
+   content = {
+     Text(messages(submitMessageKey))
+   }
+))
+
 

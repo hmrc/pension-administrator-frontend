@@ -15,43 +15,34 @@
 *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import utils.ViewHelper.titleWithErrors
 
 @this(
     layout: templates.Layout,
-    govukRadios : GovukRadios,
-    govukErrorSummary: GovukErrorSummary,
     formHelper: PlayFrontendFormWithCSRF,
-    button: components.govuk_button
+    govukErrorSummary: GovukErrorSummary,
+    input_radio: components.input_radio,
+    submit_button: components.submit_button,
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("continueWithRegistration.title"))
-) {
-
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
-
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(("continueWithRegistration.heading"))</h1>
-
-    <p class="govuk-body">@messages("continueWithRegistration.p1")</p>
+@layout(pageTitle = titleWithErrors(form, messages("continueWithRegistration.title"))) {
 
     @formHelper(action = controllers.register.routes.ContinueWithRegistrationController.onSubmit(), 'autoComplete -> "off") {
-        @govukRadios(Radios(
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                content = Text(messages("continueWithRegistration.heading")),
-                classes = "govuk-visually-hidden",
-                isPageHeading = false
-                ))
-            )),
-            items = Seq(
+
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
+
+        @input_radio(
+            field = form("value"),
+            legend = messages("continueWithRegistration.heading"),
+            legendAsHeading = true,
+            hint = Some(messages("continueWithRegistration.p1")),
+            inputs = Seq(
                 RadioItem(
                     content = Text(messages("continueWithRegistration.yes")),
                     value = Some(messages("site.true"))
@@ -62,8 +53,9 @@
                     hint = Some(Hint(content = Text(messages("continueWithRegistration.no.hint"))))
                 )
             )
-        ).withFormField(form("value")))
+        )
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
+
     }
 }

@@ -14,26 +14,20 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
 @import utils.FormHelpers
-@import models.Mode
 @import viewmodels.Message
 
 @this(
-    main_template: main_template
+    layout: templates.Layout,
+    button_link: components.button_link
 )
 
 @(continueCall: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = Message("adviser.alreadyDeleted.heading")
-) {
+@layout(pageTitle = Message("adviser.alreadyDeleted.heading")) {
 
-        @components.back_link()
+    @components.heading(messages("adviser.alreadyDeleted.heading"))
 
-        @components.heading(messages("adviser.alreadyDeleted.heading"))
-
-        @components.button_link("site.continue", continueCall, "return-to-list")
+    @button_link("site.continue", continueCall, "return-to-list")
 
 }

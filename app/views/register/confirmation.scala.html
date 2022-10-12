@@ -16,8 +16,6 @@
 
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import viewmodels.Message
 @import models.requests._
@@ -26,8 +24,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     appConfig: FrontendAppConfig,
-    govukPanel: GovukPanel,
-    submit_button: components_refactored.submit_button,
+    panel: components.panel,
+    submit_button: components.submit_button,
 )
 
 @(psaId: String, psaName: String, psaEmail: String,isPsaTypeCompany:Boolean)(implicit request: DataRequest[_], messages: Messages)
@@ -57,17 +55,13 @@
     <strong>@psaId</strong>
 }
 
-@layout(
-    pageTitle = if(request.user.isExistingPSA) messages("confirmation.existingPSA.title") else messages("confirmation.newPSA.title")
-) {
+@layout(pageTitle = if(request.user.isExistingPSA) messages("confirmation.existingPSA.title") else messages("confirmation.newPSA.title"),showBackLink = false) {
 
     @formHelper(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {
 
-        @govukPanel(
-            Panel(
-                title = Text(panelTitle),
-                content = HtmlContent(panelContent)
-            )
+        @panel(
+            panelTitle = panelTitle,
+            panelContent = panelContent.toString
         )
 
         <p class="govuk-body">

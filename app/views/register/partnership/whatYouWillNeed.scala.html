@@ -14,31 +14,25 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components_refactored.submit_button
+    submit_button: components.submit_button
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("whatYouWillNeed.partnership.title")
-) {
+@layout(pageTitle = messages("whatYouWillNeed.partnership.title")) {
 
     @formHelper(action = controllers.register.partnership.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
 
-        @components_refactored.heading(messages("whatYouWillNeed.partnership.heading"))
+        @components.heading(messages("whatYouWillNeed.partnership.heading"))
 
-        @components_refactored.paragraph_text(messages("whatYouWillNeed.partnership.body.text1"))
+        @components.paragraph_text(messages("whatYouWillNeed.partnership.body.text1"))
 
-        @components_refactored.paragraph_text(messages("whatYouWillNeed.partnership.body.text2"))
+        @components.paragraph_text(messages("whatYouWillNeed.partnership.body.text2"))
 
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages("whatYouWillNeed.partnership.body.item1")</li>
@@ -47,5 +41,6 @@
         </ul>
 
         @submit_button("site.continue")
+
     }
 }

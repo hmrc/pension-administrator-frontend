@@ -17,9 +17,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import controllers.register.partnership.routes._
-@import models.Mode
 @import utils.FormHelpers
 @import utils.countryOptions.CountryOptions
 @import utils.ViewHelper.titleWithErrors
@@ -28,15 +26,17 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_yes_no: components_refactored.input_yes_no,
-    submit_button: components_refactored.submit_button
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], name: String, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("confirmRegisteredAddress.title"))
-) {
+@hintHtml = {
+    @components.tolerant_address("partnershipAddress", address, countryOptions)
+}
+
+@layout(pageTitle = titleWithErrors(form, messages("confirmRegisteredAddress.title"))) {
 
     @formHelper(action = ConfirmPartnershipDetailsController.onSubmit(), 'autoComplete -> "off") {
 
@@ -44,14 +44,11 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(messages("confirmRegisteredAddress.heading", name))
-
-        @components_refactored.tolerant_address("partnershipAddress", address, countryOptions)
-
         @input_yes_no(
             field = form("value"),
-            label = messages("confirmRegisteredAddress.title"),
-            labelClass = Some("govuk-visually-hidden")
+            label = messages("confirmRegisteredAddress.heading", name),
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
         )
 
         @submit_button("site.save_and_continue")

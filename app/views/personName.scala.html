@@ -16,9 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import config.FrontendAppConfig
 @import utils.FormHelpers
 @import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
@@ -28,14 +26,13 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_text: components_refactored.input_text,
-    submit_button: components_refactored.submit_button
+    input_text: components.input_text,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewModel.title))) {
+@layout(pageTitle = titleWithErrors(form, messages(viewModel.title))) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
@@ -43,25 +40,21 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components_refactored.heading(viewModel.heading)
+        @components.heading(viewModel.heading, true)
 
         @input_text(
             field = form("firstName"),
             label = messages("personDetails.firstName"),
-            inputClass = Some("govuk-!-width-one-half"),
-            headingIsLegend = false
         )
 
         @input_text(
             field = form("lastName"),
             label = messages("personDetails.lastName"),
-            inputClass = Some("govuk-!-width-one-half"),
-            headingIsLegend = false
         )
 
         @submit_button("site.save_and_continue")
 
-        @components_refactored.return_link(viewModel.entityName, mode)
+        @components.return_link(viewModel.entityName, mode)
 
         @if(mode != UpdateMode){
              @viewModel.returnLink.map { returnLinkUrl =>
@@ -70,5 +63,6 @@
                 </p>
             }
         }
+
     }
 }

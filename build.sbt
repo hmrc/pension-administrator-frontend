@@ -55,9 +55,8 @@ lazy val appName: String = "pension-administrator-frontend"
       // concatenate js
       Concat.groups := Seq(
         "javascripts/pensionadministratorfrontend-app.js" -> group(Seq(
-          "javascripts/show-hide-content.js",
+          "javascripts/location-autocomplete.min.js",
           "javascripts/pensionadministratorfrontend.js"
-
         ))),
       // prevent removal of unused code which generates warning errors due to use of third-party libs
       uglifyCompressOptions := Seq("unused=false", "dead_code=false"),

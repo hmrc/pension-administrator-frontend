@@ -15,12 +15,9 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import utils.FormHelpers
-@import controllers.register.company.directors.routes._
-@import models.Mode
 @import viewmodels.PersonDetailsViewModel
 @import utils.ViewHelper.titleWithErrors
 
@@ -28,40 +25,33 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    submit_button: components_refactored.submit_button
+    input_text: components.input_text,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: PersonDetailsViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewModel.title))
-) {
+@layout(pageTitle = titleWithErrors(form, messages(viewModel.title))) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages(viewModel.heading)</h1>
+        @components.heading(messages(viewModel.heading), true)
 
-        @govukInput(
-            Input(
-                classes = "govuk-!-width-one-half",
-                label = Label(classes = "govuk-label--s", content = Text(messages("personDetails.firstName")),
-                isPageHeading = false)
-             ).withFormField(form("firstName"))
+        @input_text(
+            field = form("firstName"),
+            label = messages("personDetails.firstName")
         )
 
-        @govukInput(
-            Input(
-                classes = "govuk-!-width-one-half",
-                label = Label(classes = "govuk-label--s", content = Text(messages("personDetails.lastName")),
-                isPageHeading = false)
-            ).withFormField(form("lastName"))
+        @input_text(
+            field = form("lastName"),
+            label = messages("personDetails.lastName")
         )
 
         @submit_button("site.save_and_continue")
+
     }
 }

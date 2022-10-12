@@ -26,52 +26,42 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    button: components_refactored.submit_button,
+    input_radio: components.input_radio,
+    submit_button: components.submit_button,
     govukRadios : GovukRadios
 )
 
 @(form: Form[_], viewmodel: AddressYearsViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewmodel.title))
-) {
-
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
+@layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
     @formHelper(action = viewmodel.postCall, 'autoComplete -> "off") {
 
-        @govukRadios(
-            Radios(
-                fieldset = Some(
-                    Fieldset(
-                        legend = Some(
-                            Legend(
-                                content = Text(messages(viewmodel.heading)),
-                                classes = "govuk-fieldset__legend--xl",
-                                isPageHeading = true
-                            )
-                        )
-                    )
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
+
+        @input_radio(
+            field = form("value"),
+            legend = messages(viewmodel.heading),
+            legendAsHeading = true,
+            inline = true,
+            inputs = Seq(
+                RadioItem(
+                    content = Text(messages("site.yes")),
+                    value = Some("over_a_year")
                 ),
-                items = Seq(
-                    RadioItem(
-                        content = Text(messages("site.yes")),
-                        value = Some("over_a_year")
-                    ),
-                    RadioItem(
-                        content = Text(messages("site.no")),
-                        value = Some("under_a_year")
-                    )
-                ),
-                classes = "govuk-radios--inline"
-            ).withFormField(form("value"))
+                RadioItem(
+                    content = Text(messages("site.no")),
+                    value = Some("under_a_year")
+                )
+            )
         )
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
+
         @viewmodel.psaName.map { psaName =>
-            @components_refactored.return_link(psaName, mode)
+            @components.return_link(psaName, mode)
             @if(mode != UpdateMode){
                 @viewmodel.returnLink.map { returnLinkUrl =>
                 <p class="govuk-margin-top-5 govuk-body">
@@ -80,5 +70,6 @@
                 }
             }
         }
+
     }
 }

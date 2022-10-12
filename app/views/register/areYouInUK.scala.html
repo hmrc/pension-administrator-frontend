@@ -14,65 +14,45 @@
  * limitations under the License.
  *@
 
-@import controllers.register.routes._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import models.Mode
 @import viewmodels.AreYouInUKViewModel
 @import utils.ViewHelper.titleWithErrors
 
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    govukRadios : GovukRadios,
     govukErrorSummary: GovukErrorSummary,
-    button: components.govuk_button
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: AreYouInUKViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(
-pageTitle = titleWithErrors(form, viewModel.title)
-) {
+@hintHtml = {
+    @if(viewModel.mode == CheckMode){
+        <p class="govuk-!-margin-top-0">@viewModel.p1.map{p1 => @messages(p1)}</p>
+        <p>@viewModel.p2.map{p2 => @messages(p2)}</p>
+    }
+}
 
-        @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
+@layout(pageTitle = titleWithErrors(form, viewModel.title)) {
+
+    @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(viewModel.title)</h1>
-
-            @if(viewModel.mode == CheckMode){
-
-                @viewModel.p1.map{p1 => <p class="govuk-body">@messages(p1)</p>}
-                @viewModel.p2.map{p2 => <p class="govuk-body">@messages(p2)</p>}
-            }
-
-        @govukRadios(Radios(
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                content = Text(viewModel.heading),
-                classes = "govuk-visually-hidden",
-                isPageHeading = false
-                ))
-            )),
-            items = Seq(
-                RadioItem(
-                content = Text(messages("site.yes")),
-                value = Some(messages("site.true"))
-                ),
-            RadioItem(
-                content = Text(messages("site.no")),
-                value = Some(messages("site.false"))
-                )
-            ),
-            classes = "govuk-radios--inline"
-            ).withFormField(form("value"))
+        @input_yes_no(
+            field = form("value"),
+            label = viewModel.heading,
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
         )
 
-            @button(messages("site.save_and_continue"))
-        }
+        @submit_button(messages("site.save_and_continue"))
+
     }
+}

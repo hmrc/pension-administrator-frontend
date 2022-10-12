@@ -15,25 +15,16 @@
 *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
-@this(govukButton : GovukButton)
+@this(
+    govukInsetText : GovukInsetText
+)
 
-@(
-    messageKey: String = "",
-    href: String,
-    id: String,
-    disabled: Boolean = false,
-    classes: Option[String] = None
-)(implicit messages: Messages)
+@(content: String, id: Option[String] = None)(implicit messages: Messages)
 
-<p class="govuk-body">
-    @govukButton(Button(
-        content = Text(messages(messageKey)),
-        href = Some(href),
-        attributes = Map("id" -> id),
-        disabled = disabled,
-        classes = classes.fold("")(classes => classes),
-    ))
-</p>
+@govukInsetText(
+    InsetText(
+        content = HtmlContent(content),
+        id = id
+    )
+)

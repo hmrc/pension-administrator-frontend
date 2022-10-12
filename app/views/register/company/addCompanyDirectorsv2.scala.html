@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
 @import controllers.register.company.routes._
 @import models.Mode
 @import utils.FormHelpers
@@ -24,7 +23,6 @@
 @import config.FrontendAppConfig
 @import utils.ViewHelper.titleWithErrors
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 
@@ -32,8 +30,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios,
-    button: components_refactored.submit_button,
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button,
     appConfig: FrontendAppConfig
 )
 
@@ -45,68 +43,65 @@
     directors.exists(director => if(mode == NormalMode) !director.isComplete else director.isNew && !director.isComplete)
 }
 
-@layout(
-    pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))) {
 
-        @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages("addCompanyDirectors.heading")</h1>
+
+        @components.heading(messages("addCompanyDirectors.heading"))
 
         @if(directors.isEmpty) {
-            <p class="govuk-body">@messages("addCompanyDirectors.addADirector.hint")</p>
-            @button("addCompanyDirectors.addADirector")
+
+            @components.paragraph_text(messages("addCompanyDirectors.addADirector.hint"))
+
+            @submit_button("addCompanyDirectors.addADirector")
+
         } else {
 
             @if(directorsIncomplete.length > 0) {
-                <h2 class="govuk-heading-s">@messages("taskList.status.incomplete")</h2>
-                @components_refactored.person_list(directorsIncomplete, mode)
+
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-2">@messages("taskList.status.incomplete")</h2>
+
+                @components.person_list(directorsIncomplete, mode)
+
             }
             @if(directorsComplete.length > 0) {
-                <h2 class="govuk-heading-s">@messages("taskList.status.completed")</h2>
-                @components_refactored.person_list(directorsComplete, mode)
+
+                <h2 class="govuk-heading-s govuk-!-margin-bottom-2">@messages("taskList.status.completed")</h2>
+
+                @components.person_list(directorsComplete, mode)
+
             }
+
             @if(directors.size < appConfig.maxDirectors) {
-                @govukRadios(
-                    Radios(
-                        fieldset = Some(
-                            Fieldset(legend = Some(
-                                    Legend( content = Text(messages("addCompanyDirectors.addYesNo")),
-                                            classes = "govuk-fieldset__legend--m",
-                                            isPageHeading = false
-                                        )
-                                    )
-                                )
-                        ),
-                        items = Seq(
-                                RadioItem(
-                                    content = Text(messages("site.yes")),
-                                    value = Some(messages("site.true"))
-                                ),
-                                RadioItem(
-                                    content = Text(messages("site.no")),
-                                    value = Some(messages("site.false"))
-                                    )
-                                ),
-                    hint = Some(Hint(content = Text(messages("addCompanyDirectors.addADirector.hint")))),
-                    classes = "govuk-radios--inline"
-                    ).withFormField(form("value"))
+
+                @input_yes_no(
+                    field = form("value"),
+                    label = messages("addCompanyDirectors.addYesNo"),
+                    labelClass = Some("govuk-fieldset__legend--m"),
+                    hint = Some(messages("addCompanyDirectors.addADirector.hint"))
                 )
 
             } else {
-            <p class="govuk-body">@messages("addCompanyDirectors.atMaximum")</p>
-            <p class="govuk-body">@messages("addCompanyDirectors.tellUsIfYouHaveMore")</p>
+
+                @components.paragraph_text(messages("addCompanyDirectors.atMaximum"))
+
+                @components.paragraph_text(messages("addCompanyDirectors.tellUsIfYouHaveMore"))
+
             }
 
-            @button()
+            @submit_button()
+
         }
+
         @psaNameOpt.map{ psaName =>
-            <p class="govuk-margin-top-8 govuk-body">
+            <p class="govuk-margin-top-7 govuk-body">
                 <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", psaName)</a>
             </p>
         }
+
     }
 }

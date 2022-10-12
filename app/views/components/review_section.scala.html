@@ -15,28 +15,25 @@
  *@
 
 @(
-heading: String,
-linkMessage: String,
-linkId: String,
-link: Call,
-list: Option[Seq[String]] = None
+    heading: String,
+    linkMessage: String,
+    linkId: String,
+    link: Call,
+    list: Option[Seq[String]] = None
 )(implicit messages: Messages)
 
-<h2>@messages(heading)</h2>
-<p>
-    <a id="@linkId" href="@link">
+<h2 class="govuk-heading-l govuk-!-margin-bottom-3">@messages(heading)</h2>
+
+<p class="govuk-body">
+    <a id="@linkId" href="@link" class="govuk-link">
         @messages(linkMessage)
     </a>
 </p>
 
-<ul>
+<ul class="govuk-list govuk-list--bullet">
     @list.map { list =>
-    @for(listItem <- list){
-    <li>@listItem</li>
-    }
-
+        @for(listItem <- list){
+            <li>@listItem</li>
+        }
     }
 </ul>
-
-
-

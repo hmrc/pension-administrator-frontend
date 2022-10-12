@@ -14,41 +14,44 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import controllers.register.administratorPartnership.routes._
-@import models.Mode
 @import utils.FormHelpers
 @import utils.countryOptions.CountryOptions
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], name: String, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("confirmRegisteredAddress.title"))
-) {
+@hintHtml = {
+    @components.tolerant_address("partnershipAddress", address, countryOptions)
+}
+
+@layout(pageTitle = titleWithErrors(form, messages("confirmRegisteredAddress.title"))) {
 
     @formHelper(action = ConfirmPartnershipDetailsController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @components.error_summary(form.errors)
-
-        <div class="form-group @if(form.hasErrors){form-group--error}">
-        @components.heading(messages("confirmRegisteredAddress.heading", name))
-
-        <p>@components.tolerant_address("partnershipAddress", address, countryOptions)</p>
-
-        @components.input_yes_no(
+        @input_yes_no(
             field = form("value"),
-            label = messages("confirmRegisteredAddress.title"),
-            labelClass = Some("visually-hidden")
+            label = messages("confirmRegisteredAddress.heading", name),
+            headingIsLegend = true,
+            hint = Some(hintHtml.toString)
         )
-        </div>
-        @components.submit_button("site.save_and_continue")
+
+        @submit_button("site.save_and_continue")
+
     }
 }

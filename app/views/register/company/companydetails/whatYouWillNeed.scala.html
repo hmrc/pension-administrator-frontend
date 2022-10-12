@@ -14,24 +14,20 @@
 * limitations under the License.
 *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.company.companydetails.routes.WhatYouWillNeedController
 
 @this(
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
-    submit_button: components_refactored.submit_button
+    submit_button: components.submit_button
 )
 
 @(companyName: String, returnLinkCompanyName: Option[String])(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("companyDetails.whatYouWillNeed.title", companyName)
-) {
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-10">@messages("companyDetails.whatYouWillNeed.heading", companyName)</h1>
+@layout(pageTitle = messages("companyDetails.whatYouWillNeed.title", companyName)) {
+
+    @components.heading(messages("companyDetails.whatYouWillNeed.heading", companyName))
 
     <p class="govuk-body">@messages("companyDetails.whatYouWillNeed.p1", companyName)</p>
 
@@ -53,4 +49,5 @@
     <p class="govuk-margin-top-8 govuk-body">
         <a id="return-link" class="govuk-link" href="@controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url">@messages("site.return_to", companyName)</a>
     </p>
+
 }

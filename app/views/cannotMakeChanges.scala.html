@@ -14,23 +14,20 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
-
 @this(
     layout: templates.Layout
 )
 
 @(psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("cannotMakeChanges.title")
-) {
+@layout(pageTitle = messages("cannotMakeChanges.title")) {
 
-        <h1 class="govuk-heading-xl">@messages("cannotMakeChanges.heading")</h1>
+    @components.heading(messages("cannotMakeChanges.heading"))
 
-        @psaNameOpt.map{ psaName =>
-            <p class="govuk-body">@messages("cannotMakeChanges.p1", psaName)</p>
-            <p class="govuk-body">@messages("cannotMakeChanges.p2")</p>
-            @components_refactored.return_link(psaName, mode)
-        }
+    @psaNameOpt.map{ psaName =>
+        @components.paragraph_text(messages("cannotMakeChanges.p1", psaName))
+        @components.paragraph_text(messages("cannotMakeChanges.p2"))
+        @components.return_link(psaName, mode)
+    }
+
 }

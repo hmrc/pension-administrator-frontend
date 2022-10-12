@@ -14,25 +14,19 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-
 @this(
     layout: templates.Layout,
-    govukInsetText : GovukInsetText,
-    button_link: components_refactored.button_link
+    inset_text: components.inset_text,
+    button_link: components.button_link
 )
 
 @(href: Call)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = messages("whatYouWillNeed.directorsOrPartners.title")
-) {
+@layout(pageTitle = messages("whatYouWillNeed.directorsOrPartners.title")) {
 
-    @components_refactored.heading(messages("whatYouWillNeed.partners.heading"))
+    @components.heading(messages("whatYouWillNeed.partners.heading"))
 
-    @components_refactored.paragraph_text(messages("whatYouWillNeed.partners.body.text"))
+    @components.paragraph_text(messages("whatYouWillNeed.partners.body.text"))
 
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("whatYouWillNeed.directorsOrPartners.body.item1")</li>
@@ -45,9 +39,9 @@
         <li>@messages("whatYouWillNeed.directorsOrPartners.body.item8")</li>
     </ul>
 
-    @govukInsetText(InsetText(
-        content = Text(messages("whatYouWillNeed.directorsOrPartners.hint"))
-    ))
+    @inset_text(
+        content = messages("whatYouWillNeed.directorsOrPartners.hint")
+    )
 
     @button_link("site.continue", href.url, "submit")
 

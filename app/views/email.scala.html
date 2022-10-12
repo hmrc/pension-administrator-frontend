@@ -17,9 +17,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import utils.FormHelpers
-@import models.Mode
 @import viewmodels.CommonFormWithHintViewModel
 @import utils.ViewHelper.titleWithErrors
 
@@ -27,8 +25,8 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    input_text: components_refactored.input_text,
-    submit_button: components_refactored.submit_button
+    input_text: components.input_text,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], viewModel: CommonFormWithHintViewModel, psaNameOpt: Option[String])(implicit request: Request[_], messages: Messages)
@@ -45,8 +43,6 @@
             field = form("value"),
             label = messages(viewModel.heading),
             typeValue = "email",
-            inputClass = Some("govuk-!-width-one-half"),
-            labelClass = Some("govuk-label--xl"),
             hint = Some(messages("email.contact.body", viewModel.entityName)),
             headingIsLegend = true
         )
@@ -65,5 +61,6 @@
                 }
             }
         }
+
     }
 }

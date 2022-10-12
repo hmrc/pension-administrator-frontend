@@ -14,15 +14,20 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import controllers.register.routes._
 @import models.Mode
 @import models.register.DeclarationWorkingKnowledge
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(
@@ -32,35 +37,34 @@
     displayReturnLink: Boolean,
     personWithWorkingKnowledgeName:String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("stillUseAdviser.title"))
-) {
+@layout(pageTitle = titleWithErrors(form, messages("stillUseAdviser.title"))) {
 
     @formHelper(action = StillUseAdviserController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @components.error_summary(form.errors)
-
-        <div class="form-group @if(form.hasErrors){form-group--error}">
         @components.heading(messages("stillUseAdviser.heading", psaNameOpt.getOrElse(""), personWithWorkingKnowledgeName))
 
-        <p>@messages("stillUseAdviser.p1")</p>
-        <p>@messages("stillUseAdviser.p2", psaNameOpt.getOrElse(""), personWithWorkingKnowledgeName)</p>
+        @components.paragraph_text(messages("stillUseAdviser.p1"))
 
-        @components.input_yes_no(
+        @components.paragraph_text(messages("stillUseAdviser.p2", psaNameOpt.getOrElse(""), personWithWorkingKnowledgeName))
+
+        @input_yes_no(
             field = form("value"),
             label = messages("stillUseAdviser.heading"),
-            labelClass = Some("visually-hidden"),
+            labelClass = Some("govuk-visually-hidden"),
             secondaryLabel = None
         )
-        </div>
-        @components.submit_button("site.save_and_continue")
+
+        @submit_button("site.save_and_continue")
 
         @if(displayReturnLink){
             @psaNameOpt.map{psaName =>
                 @components.return_link(psaName, mode)
             }
         }
+
     }
 }

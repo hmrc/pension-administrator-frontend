@@ -15,66 +15,56 @@
  *@
 
 @import controllers.register.routes
-@import uk.gov.hmrc.play.views.html._
-@import models.Mode
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-    main_template: main_template,
-    formHelper: FormWithCSRF
+    layout: templates.Layout,
+    formHelper: PlayFrontendFormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    input_yes_no: components.input_yes_no,
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], psaNameOpt: Option[String], displayReturnLink: Boolean)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = titleWithErrors(form, messages("declarationFitAndProper.variations.title"))
-) {
-
-    @components.back_link()
-
-    @components.error_summary(form.errors)
+@layout(pageTitle = titleWithErrors(form, messages("declarationFitAndProper.variations.title"))) {
 
     @formHelper(action = routes.VariationDeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
 
-    <div class="form-group @if(form.hasErrors){form-group--error}">
-    @components.heading(messages("declarationFitAndProper.variations.heading", psaNameOpt.getOrElse("")))
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-    @components.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
+        @components.heading(messages("declarationFitAndProper.variations.heading", psaNameOpt.getOrElse("")))
 
-    <ul class="list list-bullet">
-        <li>
-            @messages("declarationFitAndProper.variations.statement1")
-        </li>
-        <li>
-            @messages("declarationFitAndProper.variations.statement2")
-        </li>
-        <li>
-            @messages("declarationFitAndProper.variations.statement3")
-        </li>
-        <li>
-            @messages("declarationFitAndProper.variations.statement4")
-        </li>
-        <li>
-            @messages("declarationFitAndProper.variations.statement5")
-        </li>
-        <li>
-            @messages("declarationFitAndProper.variations.statement6")
-        </li>
-    </ul>
+        @components.paragraph_text(messages("declarationFitAndProper.variations.declaration", psaNameOpt.getOrElse("")))
 
-        @components.input_yes_no(
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("declarationFitAndProper.variations.statement1")</li>
+            <li>@messages("declarationFitAndProper.variations.statement2")</li>
+            <li>@messages("declarationFitAndProper.variations.statement3")</li>
+            <li>@messages("declarationFitAndProper.variations.statement4")</li>
+            <li>@messages("declarationFitAndProper.variations.statement5")</li>
+            <li>@messages("declarationFitAndProper.variations.statement6")</li>
+        </ul>
+
+        @input_yes_no(
             field = form("value"),
             label = messages("declarationFitAndProper.variations.heading"),
-            labelClass = Some("visually-hidden"),
+            labelClass = Some("govuk-visually-hidden"),
             secondaryLabel = None
         )
-    </div>
-        @components.submit_button("site.agreeAndContinue")
+
+        @submit_button("site.agreeAndContinue")
 
         @if(displayReturnLink){
             @psaNameOpt.map{ psaName =>
                 @components.return_link(psaName, UpdateMode)
             }
         }
+
     }
 }

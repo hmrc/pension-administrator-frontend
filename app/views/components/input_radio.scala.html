@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,45 +14,45 @@
  * limitations under the License.
  *@
 
-@import utils.InputOption
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+
+@this(
+    govukRadios : GovukRadios
+)
 
 @(
-        field: Field,
-        legend: String,
-        legendClass: Option[String] = None,
-        hint: Option[String] = None,
-        trackGa: Boolean = false,
-        inputs: Seq[InputOption],
-        fieldsetClass: Option[String] = None,
-        headingIsLegend: Boolean = false
+    field: Field,
+    legend: String,
+    legendClass: Option[String] = None,
+    hint: Option[String] = None,
+    legendAsHeading: Boolean = false,
+    inline: Boolean = false,
+    inputs: Seq[RadioItem]
 )(implicit messages: Messages)
 
-@ariaDescribedBy = @{
-val errorId = if (field.hasErrors) Seq(s"error-message-${field.id}-input") else Seq.empty
-val hintId = if (hint.nonEmpty) Seq(s"${field.id}-radio-hint") else Seq.empty
-(hintId ++ errorId).mkString(" ")
+@cssAdjust = @{
+    if(legendAsHeading == true){
+        legendClass.fold("govuk-fieldset__legend--xl govuk-!-margin-bottom-5")(classes => classes)
+    } else {
+        legendClass.fold("govuk-fieldset__legend--m")(classes => classes)
+    }
 }
 
-
-<div class="form-group @if(field.hasErrors){form-field--error}">
-    <fieldset class="form-group @fieldsetClass" id="@{field.id}" @if(field.hasErrors || hint.nonEmpty){aria-describedby="@ariaDescribedBy"}>
-        <legend>
-            @if(headingIsLegend) {
-                <h1 class="heading-xlarge">@legend</h1>
-            } else {
-                <span class="bold-small @if(legendClass.nonEmpty){@{legendClass.get}}">@legend</span>
-            }
-
-        </legend>
-        @if(hint.nonEmpty){
-        <span id="@{field.id}-radio-hint" class="form-hint">@{hint.get}</span>
-        }
-        @field.errors.map { error =>
-        <span class="error-notification" id="error-message-@{field.id}-input">
-                    <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)</span>
-        }
-        @for(input <- inputs) {
-            @components.radio(field, input.label, input.value, input.dataTarget)
-        }
-    </fieldset>
-</div>
+@govukRadios(Radios(
+    name = field.name,
+    classes = if(inline) "govuk-radios--inline" else "",
+    errorMessage = field.error match {
+        case Some(e) => Some(ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
+        case None => None
+    },
+    hint = if(hint.isDefined) Some(Hint(content = Text(hint.get))) else None,
+    fieldset = Some(Fieldset(
+        legend = Some(Legend(
+            content = Text(legend),
+            isPageHeading = legendAsHeading,
+            classes = cssAdjust
+        )),
+    )),
+    items = inputs
+).withFormField(field))

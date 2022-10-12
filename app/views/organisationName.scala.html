@@ -16,7 +16,6 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import viewmodels.OrganisationNameViewModel
 @import utils.ViewHelper.titleWithErrors
@@ -25,34 +24,27 @@
     layout: templates.Layout,
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
-    button: components.govuk_button,
-    govukInput: GovukInput
+    submit_button: components.submit_button,
+    input_text: components.input_text
 )
 
 @(form: Form[_], viewModel: OrganisationNameViewModel)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle = titleWithErrors(form, messages(viewModel.title))
-) {
-
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
-    }
-
+@layout(pageTitle = titleWithErrors(form, messages(viewModel.title))) {
 
     @formHelper(action = viewModel.postCall, 'autoComplete -> "off") {
 
-            @govukInput(
-                Input( label =
-                    Label(
-                        classes = "govuk-label--xl",
-                        content = Text(messages(viewModel.heading)),
-                        isPageHeading = true
-                    ),
-                classes = "govuk-!-width-one-half"
-                ).withFormField(form("value"))
-            )
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
+        }
 
-        @button(messages("site.save_and_continue"))
+        @input_text(
+            field = form("value"),
+            label = messages(viewModel.heading),
+            headingIsLegend = true
+        )
+
+        @submit_button(messages("site.save_and_continue"))
+
     }
 }

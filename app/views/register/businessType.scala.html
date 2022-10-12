@@ -15,7 +15,6 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import controllers.register.routes._
@@ -25,43 +24,30 @@
 
 @this(
     layout: templates.Layout,
-    govukRadios : GovukRadios,
+    input_radio: components.input_radio,
     govukErrorSummary: GovukErrorSummary,
     formHelper: PlayFrontendFormWithCSRF,
-    button: components.govuk_button
+    submit_button: components.submit_button
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle  = titleWithErrors(form, messages("businessType.title"))
-) {
+@layout(pageTitle  = titleWithErrors(form, messages("businessType.title"))) {
+
+    @formHelper(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-    <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@messages(("businessType.heading"))</h1>
-
-    @formHelper(action = BusinessTypeController.onSubmit(mode), 'autoComplete -> "off") {
-
-        @govukRadios(
-            Radios(
-                fieldset = Some(
-                Fieldset(
-                    legend = Some(
-                        Legend(
-                            content = Text(messages("businessType.heading")),
-                            classes = "govuk-visually-hidden",
-                            isPageHeading = false
-                        )
-                    )
-                )
-            ),
-            items = BusinessType.radioOptions
-            ).withFormField(form("value"))
+        @input_radio(
+            field = form("value"),
+            legend = messages("businessType.heading"),
+            legendAsHeading = true,
+            inputs = BusinessType.radioOptions
         )
 
-        @button(messages("site.save_and_continue"))
+        @submit_button(messages("site.save_and_continue"))
+
     }
 }
