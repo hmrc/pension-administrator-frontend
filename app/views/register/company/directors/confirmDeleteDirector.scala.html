@@ -31,7 +31,7 @@
 
 @layout(pageTitle = messages("confirmDeleteDirector.title")) {
 
-    @formHelper(action = ConfirmDeleteDirectorController.onSubmit(mode, index), 'autoComplete -> "off") {
+    @formHelper(action = ConfirmDeleteDirectorController.onSubmit(mode, index), Symbol("autoComplete") -> "off") {
 
         @components.heading(messages("confirmDeleteDirector.heading", fullName))
 

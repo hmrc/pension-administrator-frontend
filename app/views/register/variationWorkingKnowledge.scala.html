@@ -33,7 +33,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("variationWorkingKnowledge.title"))) {
 
-    @formHelper(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = controllers.register.routes.VariationWorkingKnowledgeController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

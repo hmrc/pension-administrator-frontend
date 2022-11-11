@@ -39,7 +39,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("stillUseAdviser.title"))) {
 
-    @formHelper(action = StillUseAdviserController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = StillUseAdviserController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

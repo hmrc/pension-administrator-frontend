@@ -26,7 +26,7 @@
 
 @layout(pageTitle = messages("whatYouWillNeed.title")) {
 
-    @formHelper(action = controllers.register.company.routes.WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.register.company.routes.WhatYouWillNeedController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @components.heading(messages("whatYouWillNeed.heading"))
 

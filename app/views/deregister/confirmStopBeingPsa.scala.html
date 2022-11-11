@@ -31,7 +31,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], psaName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], psaName: String)(implicit messages: Messages)
 
 @hintHtml = {
     <p class="govuk-!-margin-top-0">@messages("confirmStopBeingPsa.p1")</p>
@@ -40,7 +40,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("confirmStopBeingPsa.title"))) {
 
-    @formHelper(action = controllers.deregister.routes.ConfirmStopBeingPsaController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.deregister.routes.ConfirmStopBeingPsaController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

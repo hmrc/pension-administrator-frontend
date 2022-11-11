@@ -38,7 +38,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("utr.title", businessType, hint))) {
 
-    @formHelper(action = href, 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = href, 'autoComplete -> "off", Symbol("novalidate") -> "novalidate") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

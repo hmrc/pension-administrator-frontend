@@ -35,7 +35,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("adviserName.title"))) {
 
-    @formHelper(action = AdviserNameController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = AdviserNameController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @input_text(
             field = form("adviserName"),

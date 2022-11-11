@@ -19,18 +19,14 @@ package connectors
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import models.MinimalPSA
-import models.MinimalPSA
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.JsError
-import play.api.libs.json.JsResultException
-import play.api.libs.json.JsSuccess
-import play.api.libs.json.Json
-import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.HttpClient
-import utils.HttpResponseHelper
+import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import scala.concurrent.{Future, ExecutionContext}
+import uk.gov.hmrc.http.{HttpClient, _}
+import utils.HttpResponseHelper
+
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
 @ImplementedBy(classOf[MinimalPsaConnectorImpl])

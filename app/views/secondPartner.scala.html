@@ -31,7 +31,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("secondPartner.heading"))) {
 
-    @formHelper(action = postCall, 'autoComplete -> "off") {
+    @formHelper(action = postCall, Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

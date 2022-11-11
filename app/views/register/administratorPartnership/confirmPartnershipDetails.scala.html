@@ -38,7 +38,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("confirmRegisteredAddress.title"))) {
 
-    @formHelper(action = ConfirmPartnershipDetailsController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = ConfirmPartnershipDetailsController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

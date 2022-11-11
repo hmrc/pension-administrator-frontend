@@ -42,7 +42,7 @@
         <li>@messages("companyDetails.whatYouWillNeed.li3")</li>
     </ul>
 
-    @formHelper(action = WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = WhatYouWillNeedController.onSubmit(), Symbol("autoComplete") -> "off") {
         @submit_button("site.continue")
     }
 

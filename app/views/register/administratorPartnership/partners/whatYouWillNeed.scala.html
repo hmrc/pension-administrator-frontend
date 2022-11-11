@@ -28,7 +28,7 @@
 
 @layout(pageTitle = messages("whatYouWillNeed.partners.heading")) {
 
-    @formHelper(action = href, 'autoComplete -> "off") {
+    @formHelper(action = href, Symbol("autoComplete") -> "off") {
 
         @components.heading(messages("whatYouWillNeed.partners.heading"))
 

@@ -31,7 +31,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("continueWithRegistration.title"))) {
 
-    @formHelper(action = controllers.register.routes.ContinueWithRegistrationController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.register.routes.ContinueWithRegistrationController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

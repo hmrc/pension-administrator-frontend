@@ -27,7 +27,7 @@
 
 @layout(pageTitle = messages("companyReview.title")) {
 
-    @formHelper(action = CompanyReviewController.onSubmit, 'autoComplete -> "off") {
+    @formHelper(action = CompanyReviewController.onSubmit, Symbol("autoComplete") -> "off") {
 
         @components.heading(messages("companyReview.heading"))
 

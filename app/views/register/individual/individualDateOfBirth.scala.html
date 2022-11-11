@@ -33,7 +33,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("individualDateOfBirth.heading"))) {
 
-    @formHelper(action = IndividualDateOfBirthController.onSubmit(mode), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = IndividualDateOfBirthController.onSubmit(mode), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

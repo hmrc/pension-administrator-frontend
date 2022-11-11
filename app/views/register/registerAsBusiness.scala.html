@@ -32,7 +32,7 @@
 
 @layout(pageTitle  = titleWithErrors(form, messages("registerAsBusiness.title"))) {
 
-    @formHelper(action = RegisterAsBusinessController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = RegisterAsBusinessController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

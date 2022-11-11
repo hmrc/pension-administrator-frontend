@@ -27,7 +27,7 @@
 
 @layout(pageTitle = messages("contactDetails.whatYouWillNeed.title", companyName)) {
 
-    @formHelper(action = WhatYouWillNeedController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = WhatYouWillNeedController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @components.heading(messages("contactDetails.whatYouWillNeed.heading", companyName))
 

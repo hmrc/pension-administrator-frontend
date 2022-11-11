@@ -41,10 +41,6 @@
     }
 }
 
-@viewOrAdd(isCompleted: Boolean) = @{
-    if(isCompleted) messages("site.view") else messages("site.add")
-}
-
 @layout(pageTitle = messages("taskList.title")) {
 
     @components.heading(messages(taskList.entityName))

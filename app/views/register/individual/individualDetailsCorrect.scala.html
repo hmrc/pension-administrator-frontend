@@ -44,7 +44,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("individualDetailsCorrect.title"))) {
 
-    @formHelper(action = IndividualDetailsCorrectController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = IndividualDetailsCorrectController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

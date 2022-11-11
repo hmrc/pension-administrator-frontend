@@ -32,7 +32,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("declarationFitAndProper.variations.title"))) {
 
-    @formHelper(action = routes.VariationDeclarationFitAndProperController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = routes.VariationDeclarationFitAndProperController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

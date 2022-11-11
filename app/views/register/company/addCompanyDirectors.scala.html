@@ -37,13 +37,9 @@
 
 @(form: Form[_], mode: Mode, directors: Seq[Person], psaNameOpt: Option[String])(implicit request: DataRequest[AnyContent], messages: Messages)
 
-@disableSubmission = @{
-    directors.exists(director => if(mode == NormalMode) !director.isComplete else director.isNew && !director.isComplete)
-}
-
 @layout(pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))) {
 
-    @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
