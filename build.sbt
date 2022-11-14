@@ -45,7 +45,7 @@ lazy val appName: String = "pension-administrator-frontend"
       ScoverageKeys.coverageHighlighting := true
     )
     .settings(
-      scalacOptions ++= Seq(/*"-Xfatal-warnings",*/ "-feature"),
+      scalacOptions ++= Seq("-Xfatal-warnings", "-feature"),
       libraryDependencies ++= AppDependencies(),
       retrieveManaged := true,
       update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)

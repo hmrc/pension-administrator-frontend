@@ -326,7 +326,7 @@ class MappingsSpec extends AnyWordSpecLike with Matchers with OptionValues with 
       )
 
       result.errors.size mustBe 3
-      result.errors must contain allOf(
+      result.errors must contain.allOf(
         FormError("date.day", "error.date.day_blank"),
         FormError("date.month", "error.date.month_blank"),
         FormError("date.year", "error.date.year_blank")
@@ -343,7 +343,7 @@ class MappingsSpec extends AnyWordSpecLike with Matchers with OptionValues with 
       )
 
       result.errors.size mustBe 3
-      result.errors must contain allOf(
+      result.errors must contain.allOf(
         FormError("date.day", "error.date.day_invalid"),
         FormError("date.month", "error.date.month_invalid"),
         FormError("date.year", "error.date.year_invalid")

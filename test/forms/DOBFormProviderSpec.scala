@@ -55,7 +55,7 @@ class DOBFormProviderSpec extends StringFieldBehaviours with Constraints {
           "value.month" -> "A",
           "value.year" -> "A"
         )
-      ).errors should contain allOf(
+      ).errors should contain.allOf(
         FormError("value.day", "error.date.day_invalid"),
         FormError("value.month", "error.date.month_invalid"),
         FormError("value.year", "error.date.year_invalid")

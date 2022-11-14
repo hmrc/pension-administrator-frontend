@@ -72,7 +72,7 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
         ))
 
       an[ConfigException.BadValue] shouldBe thrownBy {
-        new CountryOptions(builder.environment, builder.injector.instanceOf[FrontendAppConfig]).options
+        new CountryOptions(builder.environment, builder.injector().instanceOf[FrontendAppConfig]).options
       }
     }
   }
