@@ -39,10 +39,10 @@ trait Constraints {
   protected val postCodeRegex = """^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?[ ]?[0-9][A-Za-z]{2}$"""
   protected val postCodeNonUkRegex = """^([0-9]+-)*[0-9]+$"""
   protected val nameRegex = """^[a-zA-Z &`\-\'\.^]{1,35}$"""
-  protected val safeTextRegex = """^[a-zA-Z0-9\u00C0-\u00FF !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\u005C\u2014\u2013\u2010\u005F\u005E\u0060\u002d]{1,160}$"""
-  protected val addressLineRegex = """^[A-Za-z0-9 &!'‘’\"“”(),./\u2014\u2013\u2010\u002d]{1,35}$"""
+  protected val safeTextRegex = """^[a-zA-Z0-9À-ÿ !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\—–‐_^`-]{1,160}$"""
+  protected val addressLineRegex = """^[A-Za-z0-9 &!'‘’\"“”(),./—–‐-]{1,35}$"""
   protected val businessNameRegex = """^[a-zA-Z0-9- '&\\/]{1,105}$"""
-  protected val adviserNameRegex = """^[a-zA-Z &?*()\u005F\u00C0-\u00FF '‘’\u2014\u2013\u2010\u002d]{1,107}$"""
+  protected val adviserNameRegex = """^[a-zA-Z &?*()_À-ÿ '‘’—–‐-]{1,107}$"""
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
