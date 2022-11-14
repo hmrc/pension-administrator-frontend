@@ -26,9 +26,7 @@ import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode, TolerantAddress}
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.{ArgumentMatchers, MockitoSugar}
 import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -42,7 +40,7 @@ import scala.concurrent.Future
 
 class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
 
   private val formProvider = new PostCodeLookupFormProvider()
   private val form = formProvider()
@@ -156,7 +154,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -165,7 +163,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "return a Bad Request when post code lookup fails" in {

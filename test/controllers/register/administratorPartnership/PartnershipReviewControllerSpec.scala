@@ -24,13 +24,12 @@ import models.{NormalMode, PersonName}
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import views.html.register.partnership.partnershipReview
 
 class PartnershipReviewControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val partnershipName = "test partnership name"
   val partners: Seq[String] = Seq("partner a", "partner b", "partner c")

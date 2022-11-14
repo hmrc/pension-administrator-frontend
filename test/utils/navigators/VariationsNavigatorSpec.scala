@@ -17,19 +17,19 @@
 package utils.navigators
 
 import base.SpecBase
-import identifiers.{UpdateContactAddressId, Identifier}
 import identifiers.register._
-import identifiers.register.adviser.{ConfirmDeleteAdviserId, AdviserNameId}
+import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import identifiers.register.company.CompanyContactAddressId
 import identifiers.register.individual.{IndividualContactAddressId, IndividualDetailsId}
 import identifiers.register.partnership.PartnershipContactAddressId
+import identifiers.{Identifier, UpdateContactAddressId}
 import models._
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour, Navigator, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -170,9 +170,9 @@ object VariationsNavigatorSpec extends OptionValues {
   private val variationNoLongerFitAndProperPage: Call = controllers.register.routes.VariationNoLongerFitAndProperController.onPageLoad()
 
   private val variationSuccessPage: Call = controllers.register.routes.PSAVarianceSuccessController.onPageLoad()
-  private val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad
 
-  private val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
+  private val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad
 
   implicit val ex: IdentifiedRequest = new IdentifiedRequest() {
     val externalId: String = "test-external-id"

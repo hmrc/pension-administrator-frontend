@@ -32,7 +32,7 @@ class PartnerEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
 
   import PartnerEnterUTRControllerSpec._
   
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val utrForm = formProvider(partnerName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerEnterUTRController(

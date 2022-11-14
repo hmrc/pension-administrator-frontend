@@ -26,14 +26,13 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
 class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private val formProvider = new YesNoFormProvider()
   private val form = formProvider()

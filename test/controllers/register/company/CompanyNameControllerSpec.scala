@@ -28,7 +28,6 @@ import models.{PSAUser, UserType}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
-
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.businessName
 
@@ -41,7 +40,7 @@ class CompanyNameControllerSpec extends ControllerSpecBase with BusinessNameCont
       BusinessTypeId.toString -> BusinessType.LimitedCompany.toString
     ))
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
 
   override val view: businessName = app.injector.instanceOf[businessName]
 

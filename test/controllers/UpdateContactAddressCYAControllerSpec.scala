@@ -16,23 +16,20 @@
 
 package controllers
 
-import controllers.actions.{FakeAllowAccessProvider, AuthAction, DataRetrievalAction}
+import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProvider}
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
-import models.{UserType, PSAUser, UpdateMode}
+import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.ArgumentMatchers._
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.when
-import play.api.mvc.{Request, Result, AnyContent, BodyParser}
-import play.api.test.Helpers.{status, contentAsString, _}
+import play.api.mvc.{AnyContent, BodyParser, Request, Result}
+import play.api.test.Helpers.{contentAsString, status, _}
 import services.PsaDetailsService
-
 import utils.FakeNavigator
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels.{PsaViewDetailsViewModel, SuperSection}
 import views.html.updateContactAddressCYA
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class UpdateContactAddressCYAControllerSpec extends ControllerSpecBase {
 
@@ -64,7 +61,7 @@ class UpdateContactAddressCYAControllerSpec extends ControllerSpecBase {
       val result = controller(userType = UserType.Organisation, psaId = None).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 

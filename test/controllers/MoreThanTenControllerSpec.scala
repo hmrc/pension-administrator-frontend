@@ -47,7 +47,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
 
   val testId: TypedIdentifier[Boolean] = new TypedIdentifier[Boolean] {}
 
-  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   "MoreThanTenController" must {
 

@@ -16,18 +16,14 @@
 
 package controllers.register.individual
 
-import java.time.LocalDate
-
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.individual.CheckYourAnswersController.postUrl
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
-
 import utils._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
@@ -35,6 +31,7 @@ import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
@@ -81,7 +78,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
         val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
 
@@ -106,12 +103,12 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
         val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
   }
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val dob = LocalDate.now().minusYears(20)

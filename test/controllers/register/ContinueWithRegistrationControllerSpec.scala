@@ -21,8 +21,8 @@ import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, Fak
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.YesNoFormProvider
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
-import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import models._
+import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -55,7 +55,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
         val result = onPageLoadAction(getEmptyData, FakeUnAuthorisedAction())(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad.url)
       }
 
       "return 303 and redirect to 'what to register' if the user hasn't completed business matching" in {

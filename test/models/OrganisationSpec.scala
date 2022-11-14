@@ -17,9 +17,10 @@
 package models
 
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany, LimitedLiabilityPartnership, LimitedPartnership, OverseasCompany, UnlimitedCompany}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class OrganisationSpec extends FlatSpec with Matchers {
+class OrganisationSpec extends AsyncFlatSpec with Matchers {
 
   private val organisationName = "test-org-name"
 

@@ -37,7 +37,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
 // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case BusinessUTRId =>
-      routes.CompanyNameController.onPageLoad()
+      routes.CompanyNameController.onPageLoad
     case BusinessNameId =>
       regionBasedNameNavigation(ua)
     case IsRegisteredNameId =>
@@ -173,7 +173,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
       case Some(AddressYears.OverAYear) =>
         routes.CompanyEmailController.onPageLoad(NormalMode)
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -184,7 +184,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
       case Some(AddressYears.OverAYear) =>
         routes.CheckYourAnswersController.onPageLoad()
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -197,7 +197,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
       case (Some(false), _) =>
         routes.CompanyEmailController.onPageLoad(NormalMode)
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -210,7 +210,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
       case (Some(false), _) =>
         routes.CheckYourAnswersController.onPageLoad()
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -218,7 +218,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
     answers.get(CompanyAddressYearsId) match {
       case Some(AddressYears.UnderAYear) => routes.CompanyConfirmPreviousAddressController.onPageLoad()
       case Some(AddressYears.OverAYear) => anyMoreChanges
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
 
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Call = {
@@ -226,7 +226,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
       case (Some(true), _) => routes.CompanyAddressYearsController.onPageLoad(mode)
       case (Some(false), Some(false)) => routes.CompanyContactAddressController.onPageLoad(mode)
       case (Some(false), Some(true)) => routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -236,24 +236,24 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
         case UK => controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => routes.WhatYouWillNeedController.onPageLoad()
         case RestOfTheWorld => routes.OutsideEuEeaController.onPageLoad()
-        case _ => controllers.routes.SessionExpiredController.onPageLoad()
+        case _ => controllers.routes.SessionExpiredController.onPageLoad
       }
-    } getOrElse controllers.routes.SessionExpiredController.onPageLoad()
+    } getOrElse controllers.routes.SessionExpiredController.onPageLoad
   }
 
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call = {
     answers.get(CompanyConfirmPreviousAddressId) match {
       case Some(false) => routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
       case Some(true) => finishAmendmentNavigation(answers)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
   private def regionBasedNameNavigation(answers: UserAnswers): Call = {
     answers.get(AreYouInUKId) match {
       case Some(false) => routes.CompanyRegisteredAddressController.onPageLoad()
-      case Some(true) => routes.CompanyIsRegisteredNameController.onPageLoad()
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case Some(true) => routes.CompanyIsRegisteredNameController.onPageLoad
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 

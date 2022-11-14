@@ -26,7 +26,6 @@ import play.api.data.Form
 import play.api.libs.json.JsResult
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
@@ -35,7 +34,7 @@ import views.html.address.sameContactAddress
 
 class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val psa: String = "John Doe"
 
@@ -131,7 +130,7 @@ val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
       val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -139,7 +138,7 @@ val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
       val result = controller(dontGetAnyData).onSubmit(UpdateMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 

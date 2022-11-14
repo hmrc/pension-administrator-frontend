@@ -16,10 +16,10 @@
 
 package forms.register.individual
 
-import java.time.LocalDate
-
 import forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
+
+import java.time.LocalDate
 
 class IndividualDateOfBirthFormProviderSpec extends StringFieldBehaviours {
   val form = new IndividualDateOfBirthFormProvider()()

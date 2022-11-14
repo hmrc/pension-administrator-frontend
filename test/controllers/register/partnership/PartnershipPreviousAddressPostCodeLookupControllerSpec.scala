@@ -67,7 +67,7 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
     }
   }
 
-  private val onwardRoute = controllers.routes.SessionExpiredController.onPageLoad()
+  private val onwardRoute = controllers.routes.SessionExpiredController.onPageLoad
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
 

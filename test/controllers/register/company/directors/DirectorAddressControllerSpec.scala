@@ -20,8 +20,8 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import identifiers.register.{BusinessNameId, DirectorsOrPartnersChangedId, RegistrationInfoId}
 import identifiers.register.company.directors.DirectorNameId
+import identifiers.register.{BusinessNameId, DirectorsOrPartnersChangedId, RegistrationInfoId}
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
 import models.RegistrationCustomerType.UK
@@ -39,7 +39,7 @@ import views.html.address.manualAddress
 
 class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
 
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form: Form[Address] = formProvider()
@@ -139,14 +139,14 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
           val result = controller(dontGetAnyData).onPageLoad(NormalMode, firstIndex)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
         "POST" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
           val result = controller(dontGetAnyData).onSubmit(NormalMode, firstIndex)(postRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
     }

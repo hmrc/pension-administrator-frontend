@@ -18,10 +18,12 @@ package identifiers.register.partnership
 
 import models.AddressYears.{OverAYear, UnderAYear}
 import models.{Address, TolerantAddress}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import utils.UserAnswers
 
-class PartnershipAddressYearsIdSpec extends WordSpec with OptionValues with MustMatchers {
+class PartnershipAddressYearsIdSpec extends AnyWordSpecLike with OptionValues with Matchers {
 
   "Cleanup" when {
 

@@ -23,11 +23,13 @@ import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.register.NonUKBusinessType
 import models.register.NonUKBusinessType.{BusinessPartnership, Company}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class NonUKBusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class NonUKBusinessTypeIdSpec extends AnyWordSpecLike with Matchers with OptionValues with Enumerable.Implicits {
 
   import NonUKBusinessTypeIdSpec._
 

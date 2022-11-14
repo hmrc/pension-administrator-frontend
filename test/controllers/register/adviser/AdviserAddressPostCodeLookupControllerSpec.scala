@@ -25,8 +25,7 @@ import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -55,7 +54,7 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
     Some("ZZ1 1ZZ"),
     Some("GB")
   )
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad
 
   "AdviserAddressPostCodeLookup Controller" must {
 

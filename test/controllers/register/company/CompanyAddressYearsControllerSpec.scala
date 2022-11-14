@@ -23,7 +23,6 @@ import forms.address.AddressYearsFormProvider
 import identifiers.register.{BusinessNameId, BusinessUTRId}
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
-import controllers.register.company.routes.CompanyAddressYearsController
 import models.{AddressYears, NormalMode}
 import play.api.Application
 import play.api.inject.bind
@@ -43,7 +42,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
   import CompanyAddressYearsControllerSpec._
 
   "render the view correctly on a GET request" in {
-    val request = addCSRFToken(FakeRequest(CompanyAddressYearsController.onPageLoad(NormalMode)))
+    val request = addCSRFToken(FakeRequest(routes.CompanyAddressYearsController.onPageLoad(NormalMode)))
     val result = route(application, request).value
     status(result) mustBe OK
     contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messages).toString
@@ -76,7 +75,7 @@ object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSp
     .dataRetrievalAction
 
   val viewModel = AddressYearsViewModel(
-    CompanyAddressYearsController.onSubmit(NormalMode),
+    routes.CompanyAddressYearsController.onSubmit(NormalMode),
     title = Message("addressYears.heading", Message("theCompany")),
     heading = Message("addressYears.heading", companyName),
     legend = Message("addressYears.heading", companyName)

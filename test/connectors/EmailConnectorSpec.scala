@@ -16,15 +16,17 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import models.enumeration.JourneyType
-import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
+import org.scalatest.RecoverMethods
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
 import play.api.http.Status
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-class EmailConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
+class EmailConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
 
   override protected def portConfigKey: String = "microservice.services.email.port"
 

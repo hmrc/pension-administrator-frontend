@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
 import models.FeatureToggle.Enabled
@@ -34,7 +34,7 @@ class DirectorPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   import DirectorPhoneControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val view: phone = app.injector.instanceOf[phone]
 

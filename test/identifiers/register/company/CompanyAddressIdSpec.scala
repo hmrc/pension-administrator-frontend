@@ -18,10 +18,12 @@ package identifiers.register.company
 
 import models.TolerantAddress
 import org.scalatest._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class CompanyAddressIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class CompanyAddressIdSpec extends AnyWordSpecLike with Matchers with OptionValues with Enumerable.Implicits {
 
   "Cleanup" when {
 

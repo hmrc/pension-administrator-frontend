@@ -59,6 +59,6 @@ class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConf
       }
   }
 
-  def href: Call = routes.PartnershipUTRController.onSubmit()
+  def href: Call = routes.PartnershipUTRController.onSubmit
 
 }

@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EnterUTRFormProvider
 import models.FeatureToggle.Enabled
@@ -34,7 +34,7 @@ class DirectorEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
 
   import DirectorEnterUTRControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val utrForm = formProvider(directorName)
   val view: enterUTR = app.injector.instanceOf[enterUTR]
 

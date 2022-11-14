@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.{ControllerSpecBase, PersonNameControllerBehaviour}
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
@@ -50,7 +50,7 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
       val result = testController(dontGetAnyData).onPageLoad(NormalMode, 0)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -58,7 +58,7 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
       val result = testController(dontGetAnyData).onSubmit(NormalMode, 0)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
   }

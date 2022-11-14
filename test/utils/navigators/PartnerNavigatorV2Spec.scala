@@ -23,9 +23,9 @@ import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
 import models._
 import models.requests.IdentifiedRequest
+import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
@@ -156,8 +156,8 @@ class PartnerNavigatorV2Spec extends SpecBase with MockitoSugar with NavigatorBe
 
 object PartnerNavigatorV2Spec extends OptionValues {
 
-  private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  private lazy val anyMoreChangesPage = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad
+  private lazy val anyMoreChangesPage = controllers.register.routes.AnyMoreChangesController.onPageLoad
   private lazy val confirmPreviousAddress = routes.PartnerConfirmPreviousAddressController.onPageLoad(0)
 
   private def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(0, mode)

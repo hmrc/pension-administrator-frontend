@@ -19,7 +19,6 @@ package controllers.register.administratorPartnership.partners
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.ControllerWithCommonBehaviour
-import controllers.register.administratorPartnership.partners.PartnerEmailControllerSpec.psaName
 import forms.PhoneFormProvider
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
@@ -33,7 +32,7 @@ class PartnerPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   import PartnerPhoneControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerPhoneController(
     new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),

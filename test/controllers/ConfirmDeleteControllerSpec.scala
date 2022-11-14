@@ -26,7 +26,7 @@ import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.requests.DataRequest
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json

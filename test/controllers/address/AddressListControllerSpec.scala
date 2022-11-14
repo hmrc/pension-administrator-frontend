@@ -25,7 +25,8 @@ import forms.address.AddressListFormProvider
 import identifiers.TypedIdentifier
 import models._
 import models.requests.DataRequest
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
@@ -40,7 +41,7 @@ import views.html.address.addressList
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddressListControllerSpec extends WordSpec with Matchers {
+class AddressListControllerSpec extends Matchers with AnyWordSpecLike {
 
   import AddressListControllerSpec._
 
@@ -221,13 +222,13 @@ object AddressListControllerSpec extends SpecBase {
 
   }
 
-  val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val fakeAddressListId: TypedIdentifier[TolerantAddress] = new TypedIdentifier[TolerantAddress]() {}
   val fakeAddressId: TypedIdentifier[Address] = new TypedIdentifier[Address]() {}
 
-  private lazy val postCall = controllers.routes.IndexController.onPageLoad()
-  private lazy val manualInputCall = controllers.routes.SessionExpiredController.onPageLoad()
+  private lazy val postCall = controllers.routes.IndexController.onPageLoad
+  private lazy val manualInputCall = controllers.routes.SessionExpiredController.onPageLoad
 
   private val addresses = Seq(
     TolerantAddress(

@@ -24,7 +24,6 @@ import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.test.Helpers._
-
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
@@ -33,7 +32,7 @@ import views.html.address.manualAddress
 
 class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
 
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
@@ -120,7 +119,7 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
       val result = controller(dontGetAnyData).onPageLoad(NormalMode, index)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -128,7 +127,7 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
       val result = controller(dontGetAnyData).onSubmit(NormalMode, index)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 }

@@ -20,13 +20,15 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import connectors.cache.ICacheConnector
 import identifiers.TypedIdentifier
 import org.scalatest._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
 import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
-class ICacheConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues with RecoverMethods {
+class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with OptionValues with RecoverMethods {
 
   private object FakeIdentifier extends TypedIdentifier[String] {
     override def toString: String = "fake-identifier"

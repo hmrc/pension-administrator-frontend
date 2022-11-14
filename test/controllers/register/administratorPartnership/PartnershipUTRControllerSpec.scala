@@ -26,7 +26,6 @@ import models.{PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{SEE_OTHER, redirectLocation, status, _}
-
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.register.utr
 
@@ -45,7 +44,7 @@ class PartnershipUTRControllerSpec extends ControllerSpecBase with UTRController
       val result = testController(dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -53,7 +52,7 @@ class PartnershipUTRControllerSpec extends ControllerSpecBase with UTRController
       val result = testController(dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
   }

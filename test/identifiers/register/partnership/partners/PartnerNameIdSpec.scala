@@ -18,11 +18,13 @@ package identifiers.register.partnership.partners
 
 import identifiers.register.partnership.MoreThanTenPartnersId
 import models.PersonName
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import utils.UserAnswers
 
-class PartnerNameIdSpec extends WordSpec with OptionValues with MustMatchers {
+class PartnerNameIdSpec extends AnyWordSpecLike with OptionValues with Matchers {
 
   "Cleanup" when {
 

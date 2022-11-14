@@ -109,7 +109,7 @@ class PartnerNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
   private def anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
-  private def sessionExpired: Call = SessionExpiredController.onPageLoad()
+  private def sessionExpired: Call = SessionExpiredController.onPageLoad
 
   private def hasNino(answers: UserAnswers, index: Index): Boolean = answers.get(HasPartnerNINOId(index)).getOrElse(false)
 

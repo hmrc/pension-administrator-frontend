@@ -56,14 +56,14 @@ class ConfirmationController @Inject()(
               Future.successful(Ok(view(response.psaId, name, email,isPsaTypeCompany(request.userAnswers))))
             case (noPsaName, noEmail) =>
               logger.warn(s"No Psa Name $noPsaName Or Email $noEmail Found")
-              Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+              Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad))
           }
         }
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = authenticate {
-    _ => Redirect(controllers.routes.LogoutController.onPageLoad())
+    _ => Redirect(controllers.routes.LogoutController.onPageLoad)
   }
 
   def isPsaTypeCompany(userAnswers:UserAnswers): Boolean = {

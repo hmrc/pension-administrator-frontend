@@ -17,7 +17,7 @@
 package controllers.register.adviser
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, _}
+import controllers.actions._
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.adviser.ConfirmDeleteAdviserFormProvider
 import identifiers.register.DeclarationChangedId
@@ -26,7 +26,6 @@ import models.{NormalMode, UpdateMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
@@ -117,7 +116,7 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 }

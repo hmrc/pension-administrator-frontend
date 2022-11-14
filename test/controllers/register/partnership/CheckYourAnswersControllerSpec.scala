@@ -20,7 +20,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
@@ -40,7 +39,7 @@ class CheckYourAnswersControllerSpec
     when(mockDataCompletion.isPartnershipDetailsComplete(any())).thenReturn(true)
   }
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private val defaultPartnership = "limited partnership"
   private val vat = "test-vat"
@@ -258,7 +257,7 @@ class CheckYourAnswersControllerSpec
       "redirect to session expired page if no existing data" in {
         val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
 
@@ -284,7 +283,7 @@ class CheckYourAnswersControllerSpec
         val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
   }

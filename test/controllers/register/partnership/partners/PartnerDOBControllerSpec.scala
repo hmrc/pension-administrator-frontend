@@ -22,7 +22,6 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAll
 import controllers.routes._
 import models.NormalMode
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import views.html.dob
 
@@ -34,7 +33,7 @@ class PartnerDOBControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onPageLoad(NormalMode, 0)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -42,7 +41,7 @@ class PartnerDOBControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onSubmit(NormalMode, 0)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad.url)
     }
 
   }

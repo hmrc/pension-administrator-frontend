@@ -26,14 +26,13 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
-
 import utils.FakeNavigator
 import viewmodels.OrganisationNameViewModel
 import views.html.organisationName
 
 class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val formProvider = new BusinessNameFormProvider()
   val form: Form[String] = formProvider()
@@ -86,7 +85,7 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
         val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
 
@@ -116,7 +115,7 @@ class CompanyRegisteredNameControllerSpec extends ControllerSpecBase {
         val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
   }

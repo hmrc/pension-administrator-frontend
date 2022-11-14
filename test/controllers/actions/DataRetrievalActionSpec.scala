@@ -21,9 +21,8 @@ import connectors.cache.UserAnswersCacheConnector
 import models.requests.{AuthenticatedRequest, OptionalDataRequest}
 import models.{PSAUser, UserType}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global

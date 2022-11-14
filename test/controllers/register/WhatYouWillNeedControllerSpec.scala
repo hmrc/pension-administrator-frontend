@@ -21,7 +21,6 @@ import controllers.actions.{DataRetrievalAction, FakeAuthAction}
 import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import views.html.register.whatYouWillNeed
 

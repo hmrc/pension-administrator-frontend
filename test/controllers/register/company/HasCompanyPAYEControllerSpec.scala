@@ -36,7 +36,7 @@ import views.html.hasReferenceNumber
 
 class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("hasPAYE.error.required", companyName)
@@ -87,7 +87,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
             val result = controller.onPageLoad(NormalMode)(fakeRequest)
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+            redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
     }
@@ -130,7 +130,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
             val result = controller.onSubmit(NormalMode)(postRequest)
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+            redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
     }

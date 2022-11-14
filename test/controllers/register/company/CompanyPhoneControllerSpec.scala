@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
 import models.FeatureToggle.Enabled
@@ -26,16 +26,16 @@ import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
-import play.api.test.Helpers._
 
 class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   import CompanyPhoneControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val view: phone = app.injector.instanceOf[phone]
 

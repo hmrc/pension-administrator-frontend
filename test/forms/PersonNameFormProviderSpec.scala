@@ -19,11 +19,11 @@ package forms
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
 import models.PersonName
-import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import wolfendale.scalacheck.regexp.RegexpGen
 
-class PersonNameFormProviderSpec extends StringFieldBehaviours with Constraints with Matchers {
+class PersonNameFormProviderSpec extends StringFieldBehaviours with Constraints with AnyWordSpecLike {
 
   val form = new PersonNameFormProvider()()
 

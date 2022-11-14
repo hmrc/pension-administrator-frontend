@@ -32,7 +32,7 @@ import views.html.reason
 
 class DirectorNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val formProvider = new ReasonFormProvider()
   private val directorName = "test first name test last name"
   private val reasonForm = formProvider(directorName)

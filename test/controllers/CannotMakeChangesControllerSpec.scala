@@ -22,7 +22,6 @@ import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-
 import utils.UserAnswers
 import views.html.cannotMakeChanges
 
@@ -50,7 +49,7 @@ class CannotMakeChangesControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 

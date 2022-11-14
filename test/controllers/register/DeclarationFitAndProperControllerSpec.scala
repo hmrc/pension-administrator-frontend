@@ -22,16 +22,15 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register._
 import models._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.HeaderCarrier
-
 import utils.FakeNavigator
 import views.html.register.declarationFitAndProper
 
 class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val businessDetails: BusinessDetails = BusinessDetails("MyCompany", Some("1234567890"))
@@ -58,7 +57,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
         val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
 
@@ -69,7 +68,7 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
           val result = controller(dontGetAnyData).onClickAgree(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
 
       }

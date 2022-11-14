@@ -23,19 +23,18 @@ import identifiers.register.individual.IndividualDetailsId
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
-
 import utils.UserAnswers
 import views.html.register.psaVarianceSuccess
 
 import scala.concurrent.Future
 
-class PSAVarianceSuccessControllerSpec extends ControllerSpecBase {
+class PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val fakeUserAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
   val view: psaVarianceSuccess = inject[psaVarianceSuccess]
 
@@ -60,7 +59,7 @@ class PSAVarianceSuccessControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 

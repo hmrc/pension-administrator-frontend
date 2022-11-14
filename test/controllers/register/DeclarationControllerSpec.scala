@@ -23,7 +23,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.routes._
 import identifiers.register.partnership.PartnershipEmailId
-import identifiers.register.{BusinessNameId, PsaSubscriptionResponseId, RegistrationInfoId, _}
+import identifiers.register._
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
@@ -32,9 +32,8 @@ import models.enumeration.JourneyType
 import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse}
 import models.{BusinessDetails, NormalMode, RegistrationInfo, UserType}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.domain.PsaId
@@ -49,7 +48,7 @@ class DeclarationControllerSpec
     with MockitoSugar
     with BeforeAndAfterEach {
 
-  private val onwardRoute = IndexController.onPageLoad()
+  private val onwardRoute = IndexController.onPageLoad
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val businessDetails: BusinessDetails =
@@ -113,7 +112,7 @@ class DeclarationControllerSpec
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad.url)
     }
 
     "calling onSubmit" must {
@@ -168,7 +167,7 @@ class DeclarationControllerSpec
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
-          verify(mockEmailConnector, never()).sendEmail(eqTo(email), any(), any(), eqTo(PsaId("A0123456")), eqTo(JourneyType.PSA))(any(), any())
+          verify(mockEmailConnector, never).sendEmail(eqTo(email), any(), any(), eqTo(PsaId("A0123456")), eqTo(JourneyType.PSA))(any(), any())
         }
       }
 
@@ -177,7 +176,7 @@ class DeclarationControllerSpec
           val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad.url)
         }
 
         "known facts cannot be retrieved" in {
@@ -191,7 +190,7 @@ class DeclarationControllerSpec
           val result = controller().onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(SessionExpiredController.onPageLoad.url)
         }
 
         "enrolment is not successful" in {
@@ -276,7 +275,7 @@ class DeclarationControllerSpec
         val result = controller().onSubmit(NormalMode)(validRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(CannotRegisterAdministratorController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(CannotRegisterAdministratorController.onPageLoad.url)
       }
     }
   }

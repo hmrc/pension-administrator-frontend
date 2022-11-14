@@ -32,15 +32,15 @@ class FakeNavigator(val desiredRoute: Call, mode: Mode = NormalMode) extends Nav
   }
 
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
-    case _ => controllers.routes.IndexController.onPageLoad()
+    case _ => controllers.routes.IndexController.onPageLoad
   }
 
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
-    case _ => controllers.routes.IndexController.onPageLoad()
+    case _ => controllers.routes.IndexController.onPageLoad
   }
 
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
-    case _ => controllers.routes.IndexController.onPageLoad()
+    case _ => controllers.routes.IndexController.onPageLoad
   }
 }
 

@@ -16,14 +16,13 @@
 
 package forms
 
-import java.time.LocalDate
-
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
-import org.scalatest.Matchers
 import play.api.data.FormError
 
-class DOBFormProviderSpec extends StringFieldBehaviours with Constraints with Matchers {
+import java.time.LocalDate
+
+class DOBFormProviderSpec extends StringFieldBehaviours with Constraints {
 
   val form = new DOBFormProvider()()
 

@@ -17,11 +17,13 @@
 package identifiers.register.individual
 
 import models.Address
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class IndividualConfirmPreviousAddressIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class IndividualConfirmPreviousAddressIdSpec extends AnyWordSpecLike with Matchers with OptionValues with Enumerable.Implicits {
 
   "Cleanup" when {
 

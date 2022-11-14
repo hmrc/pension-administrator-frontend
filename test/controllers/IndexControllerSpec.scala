@@ -19,7 +19,6 @@ package controllers
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.FakeAuthAction
 import play.api.test.Helpers._
-
 import views.html.index
 
 class IndexControllerSpec extends ControllerSpecBase {

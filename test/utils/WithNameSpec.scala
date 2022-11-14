@@ -16,9 +16,10 @@
 
 package utils
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-class WithNameSpec extends WordSpec with MustMatchers {
+class WithNameSpec extends AnyWordSpecLike with Matchers {
 
   object Foo extends WithName("bar")
 

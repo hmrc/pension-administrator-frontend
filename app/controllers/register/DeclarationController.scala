@@ -109,9 +109,9 @@ class DeclarationController @Inject()(
             case ex: UpstreamErrorResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
               Future.successful(Redirect(DuplicateRegistrationController.onPageLoad()))
             case ex: UpstreamErrorResponse if ex.message.contains("ACTIVE_PSAID") =>
-              Future.successful(Redirect(CannotRegisterAdministratorController.onPageLoad()))
+              Future.successful(Redirect(CannotRegisterAdministratorController.onPageLoad))
             case _: KnownFactsRetrievalException =>
-              Future.successful(Redirect(SessionExpiredController.onPageLoad()))
+              Future.successful(Redirect(SessionExpiredController.onPageLoad))
             case _ =>
               Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
           }

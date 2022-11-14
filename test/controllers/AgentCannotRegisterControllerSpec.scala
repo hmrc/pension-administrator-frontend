@@ -18,7 +18,6 @@ package controllers
 
 import controllers.actions.FakeDataRetrievalAction
 import play.api.test.Helpers._
-
 import views.html.agentCannotRegister
 
 class AgentCannotRegisterControllerSpec extends ControllerSpecBase {

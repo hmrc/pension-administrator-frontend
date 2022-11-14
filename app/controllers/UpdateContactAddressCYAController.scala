@@ -50,7 +50,7 @@ class UpdateContactAddressCYAController @Inject()(appConfig: FrontendAppConfig,
           Ok(view(psaDetails, nextPage))
         }
       }.getOrElse(
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad))
       )
   }
 }

@@ -73,7 +73,7 @@ trait Retrievals {
   }
 
   private[controllers] def retrieve[A](id: TypedIdentifier[A],
-                                       failedCall: Call = controllers.routes.SessionExpiredController.onPageLoad())
+                                       failedCall: Call = controllers.routes.SessionExpiredController.onPageLoad)
                                       (f: A => Future[Result])
                                       (implicit request: DataRequest[AnyContent], r: Reads[A]): Future[Result] = {
     request.userAnswers.get(id).map(f).getOrElse {
@@ -115,7 +115,7 @@ trait Retrievals {
       implicit request =>
         request.userAnswers.get(id) match {
           case Some(value) => Right(value)
-          case None => Left(Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
+          case None => Left(Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad)))
         }
     }
 

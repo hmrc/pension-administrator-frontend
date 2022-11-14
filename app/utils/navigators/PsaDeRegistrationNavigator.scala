@@ -31,16 +31,16 @@ class PsaDeRegistrationNavigator @Inject()(config: FrontendAppConfig) extends Na
   }
 
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
-    case _ => controllers.routes.IndexController.onPageLoad()
+    case _ => controllers.routes.IndexController.onPageLoad
   }
 
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
-    case _ => controllers.routes.IndexController.onPageLoad()
+    case _ => controllers.routes.IndexController.onPageLoad
   }
 
   private def deregisterRoutes(answers: UserAnswers): Call = answers.get(ConfirmStopBeingPsaId) match {
     case Some(true) => controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad()
     case Some(false) => controllers.routes.PsaDetailsController.onPageLoad()
-    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad
   }
 }

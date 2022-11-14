@@ -31,7 +31,7 @@ import views.html.register.utr
 
 trait UTRControllerBehaviour extends ControllerSpecBase {
 
-  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   val entity: String = "limited company"
 
   val testUTR = "1234567890"

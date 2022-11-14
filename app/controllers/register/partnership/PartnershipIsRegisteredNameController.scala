@@ -64,7 +64,7 @@ class PartnershipIsRegisteredNameController @Inject()(override val appConfig: Fr
       name =>
         CommonFormViewModel(
           NormalMode,
-          routes.PartnershipIsRegisteredNameController.onSubmit(),
+          routes.PartnershipIsRegisteredNameController.onSubmit,
           Message("isRegisteredName.partnership.title", name),
           Message("isRegisteredName.partnership.heading", name)
         )

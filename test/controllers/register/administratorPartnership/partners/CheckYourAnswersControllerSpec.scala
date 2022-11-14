@@ -24,7 +24,6 @@ import identifiers.register.DirectorsOrPartnersChangedId
 import models.Mode.{checkMode, _}
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Call
 import play.api.test.Helpers._

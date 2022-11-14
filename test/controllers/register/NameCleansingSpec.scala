@@ -62,7 +62,7 @@ class NameCleansingSpec extends ControllerSpecBase {
       result.isLeft mustBe true
 
       result.left.toOption.map {
-        Await.result(_, Duration.Inf) mustBe Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+        Await.result(_, Duration.Inf) mustBe Redirect(controllers.routes.SessionExpiredController.onPageLoad)
       }
     }
 

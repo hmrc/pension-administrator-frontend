@@ -16,13 +16,15 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
-import org.scalatest.{AsyncWordSpec, MustMatchers, OptionValues}
+import com.github.tomakehurst.wiremock.client.WireMock._
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-class IdentityVerificationConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with OptionValues {
+class IdentityVerificationConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with OptionValues {
 
   import IdentityVerificationConnectorSpec._
 

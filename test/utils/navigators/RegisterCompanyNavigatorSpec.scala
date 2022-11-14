@@ -18,11 +18,11 @@ package utils.navigators
 
 import base.SpecBase
 import controllers.register.company.routes
-import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register._
+import identifiers.register.company._
 import identifiers.register.company.directors.DirectorNameId
-import identifiers.register.company.{CompanyPhoneId, _}
 import identifiers.register.partnership.ConfirmPartnershipDetailsId
+import identifiers.{Identifier, UpdateContactAddressId}
 import models._
 import models.register.BusinessType
 import org.scalatest.OptionValues
@@ -175,16 +175,16 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 object RegisterCompanyNavigatorSpec extends OptionValues {
   private def emailPage(mode: Mode): Call = routes.CompanyEmailController.onPageLoad(mode)
   private def phonePage(mode: Mode): Call = routes.CompanyPhoneController.onPageLoad(mode)
-  private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
-  private def anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad
+  private def anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad
   private def confirmPreviousAddressPage = routes.CompanyConfirmPreviousAddressController.onPageLoad()
   private lazy val updateContactAddressCYAPage:Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
 
   private val updatingContactAddressForRLS = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value
 
-  private def companyNamePage = routes.CompanyNameController.onPageLoad()
-  private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad()
+  private def companyNamePage = routes.CompanyNameController.onPageLoad
+  private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad
 
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
 

@@ -18,14 +18,14 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.Deregistration
-import org.scalatest.{AsyncFlatSpec, Matchers}
-import org.scalatestplus.scalacheck.Checkers
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
 import play.api.libs.json.{JsBoolean, JsResultException, JsString, Json}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
 import utils.WireMockHelper
 
-class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper with Checkers {
+class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper{
 
   import DeregistrationConnectorSpec._
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"

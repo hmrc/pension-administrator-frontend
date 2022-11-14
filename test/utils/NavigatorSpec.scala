@@ -20,13 +20,14 @@ import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnecto
 import identifiers.{Identifier, TypedIdentifier}
 import models._
 import models.requests.IdentifiedRequest
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 
 
 
-class NavigatorSpec extends WordSpec with MustMatchers {
+class NavigatorSpec extends AnyWordSpecLike with Matchers {
 
   import NavigatorSpec._
 
@@ -42,7 +43,7 @@ class NavigatorSpec extends WordSpec with MustMatchers {
       "go to Index from an identifier that doesn't exist in the route map" in {
         val fixture = testFixture()
         val result = fixture.navigator.nextPage(testNotExistId, NormalMode, UserAnswers())
-        result mustBe controllers.routes.IndexController.onPageLoad()
+        result mustBe controllers.routes.IndexController.onPageLoad
       }
     }
 
@@ -56,7 +57,7 @@ class NavigatorSpec extends WordSpec with MustMatchers {
       "go to Index from an identifier that doesn't exist in the edit route map" in {
         val fixture = testFixture()
         val result = fixture.navigator.nextPage(testNotExistId, CheckMode, UserAnswers())
-        result mustBe controllers.routes.IndexController.onPageLoad()
+        result mustBe controllers.routes.IndexController.onPageLoad
       }
     }
 
@@ -84,7 +85,7 @@ object NavigatorSpec {
     }
 
     override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
-      case _ => controllers.routes.IndexController.onPageLoad()
+      case _ => controllers.routes.IndexController.onPageLoad
     }
   }
 

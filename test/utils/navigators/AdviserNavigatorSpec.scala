@@ -109,10 +109,10 @@ object AdviserNavigatorSpec extends OptionValues {
   private def adviserAddressListPage(mode: Mode): Call = controllers.register.adviser.routes.AdviserAddressListController.onPageLoad(mode)
   private def checkYourAnswersPage(mode: Mode): Call = controllers.register.adviser.routes.CheckYourAnswersController.onPageLoad(mode)
   private val variationDeclarationFitAndProperPage: Call = controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
-  private val defaultPage: Call = controllers.routes.IndexController.onPageLoad()
+  private val defaultPage: Call = controllers.routes.IndexController.onPageLoad
 
   private val declarationFitAndProperPage: Call = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
-  private val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad
   private val psaDetailsPage: Call = controllers.routes.PsaDetailsController.onPageLoad()
 
 }

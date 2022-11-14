@@ -19,7 +19,7 @@ package utils.navigators
 import base.SpecBase
 import controllers.register.routes
 import identifiers.Identifier
-import identifiers.register.{BusinessNameId, _}
+import identifiers.register._
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
 import models.{CheckMode, NormalMode}
@@ -79,14 +79,14 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 object RegisterNavigatorSpec extends OptionValues {
 
   lazy val emptyAnswers: UserAnswers = UserAnswers(Json.obj())
-  lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
-  lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad()
-  lazy val partnershipUTRPage: Call = controllers.register.partnership.routes.PartnershipUTRController.onPageLoad()
+  lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad
+  lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad
+  lazy val partnershipUTRPage: Call = controllers.register.partnership.routes.PartnershipUTRController.onPageLoad
   lazy val declarationPage: Call = routes.DeclarationController.onPageLoad()
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
   lazy val adviserName: Call = controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
   lazy val confirmation: Call = routes.ConfirmationController.onPageLoad()
-  lazy val survey: Call = controllers.routes.LogoutController.onPageLoad()
+  lazy val survey: Call = controllers.routes.LogoutController.onPageLoad
   lazy val ukBusinessType: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
   lazy val nonUkBusinessType: Call = controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
   lazy val nonUkCompanyRegisteredName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad(NormalMode)

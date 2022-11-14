@@ -24,7 +24,6 @@ import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -32,7 +31,7 @@ import views.html.hasReferenceNumber
 class HasPartnerUTRControllerSpec extends ControllerWithCommonBehaviour {
   import HasPartnerUTRControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val hasReferenceNumberForm = formProvider("error.required", partnerName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasPartnerUTRController(

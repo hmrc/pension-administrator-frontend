@@ -21,11 +21,13 @@ import identifiers.register.company.directors.{DirectorEnterNINOId, DirectorNoNI
 import identifiers.register.{EnterVATId, HasVATId}
 import models._
 import models.register.DeclarationWorkingKnowledge
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import utils.UserAnswers
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
-class DataCompletionSpec extends WordSpec with MustMatchers with OptionValues {
+class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   val address = Address("Telford1", "Telford2", Some("Telford3"), Some("Telford4"), Some("TF3 4ER"), "GB")
 

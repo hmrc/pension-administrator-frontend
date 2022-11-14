@@ -19,15 +19,15 @@ package controllers.register.individual
 import connectors.RegistrationConnector
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions.{FakeRegistrationConnector, _}
+import controllers.actions._
 import forms.register.individual.IndividualDetailsCorrectFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
 import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.Individual
+import models._
 import models.requests.AuthenticatedRequest
-import models.{RegistrationInfo, _}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -42,7 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private val formProvider = new IndividualDetailsCorrectFormProvider()
   private val form = formProvider()
@@ -229,7 +229,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -237,7 +237,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST when invalid data is submitted and no individual details or address are found" in {
@@ -245,7 +245,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
   }

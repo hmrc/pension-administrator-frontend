@@ -19,15 +19,15 @@ package utils.navigators
 import base.SpecBase
 import controllers.register.partnership.routes
 import identifiers._
+import identifiers.register._
 import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerNameId
-import identifiers.register.{BusinessNameId, HasVATId, BusinessUTRId, IsRegisteredNameId, EnterVATId, _}
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour, Navigator, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -155,15 +155,15 @@ object PartnershipNavigatorSpec extends OptionValues {
     .set(UpdateContactAddressId)(true).asOpt.value
 
   private lazy val updateContactAddressCYAPage:Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
-  private lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
+  private lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad
 
-  private lazy val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
+  private lazy val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad
 
   private lazy val confirmPartnershipDetailsPage: Call = routes.ConfirmPartnershipDetailsController.onPageLoad()
 
-  private lazy val partnershipNamePage = routes.PartnershipNameController.onPageLoad()
+  private lazy val partnershipNamePage = routes.PartnershipNameController.onPageLoad
 
-  private lazy val partnershipIsRegisteredNamePage = routes.PartnershipIsRegisteredNameController.onPageLoad()
+  private lazy val partnershipIsRegisteredNamePage = routes.PartnershipIsRegisteredNameController.onPageLoad
 
   private lazy val sameContactAddressPage: Call = routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
 

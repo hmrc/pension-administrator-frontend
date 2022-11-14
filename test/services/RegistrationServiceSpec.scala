@@ -16,15 +16,16 @@
 
 package services
 
-import java.time.LocalDate
-
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.FakeRegistrationConnector
 import identifiers.register.RegistrationInfoId
 import models._
-import org.scalatest.{AsyncFlatSpec, Matchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class RegistrationServiceSpec extends AsyncFlatSpec with Matchers with OptionValues {

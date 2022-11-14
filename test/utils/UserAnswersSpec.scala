@@ -21,12 +21,14 @@ import identifiers.TypedIdentifier
 import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import models._
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsPath, JsResultException, Json}
 import utils.testhelpers.DataCompletionBuilder._
 import viewmodels.Person
 
-class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
+class UserAnswersSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   private val establishers = Json.obj(
     "establishers" -> Json.arr(

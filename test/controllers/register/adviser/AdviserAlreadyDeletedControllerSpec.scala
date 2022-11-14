@@ -20,7 +20,6 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.UpdateMode
 import play.api.test.Helpers._
-
 import views.html.alreadyDeletedAdviser
 
 class AdviserAlreadyDeletedControllerSpec extends ControllerSpecBase {

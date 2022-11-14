@@ -17,8 +17,8 @@
 package base
 
 import config.FrontendAppConfig
+import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterAll
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.i18n.{Messages, MessagesApi}

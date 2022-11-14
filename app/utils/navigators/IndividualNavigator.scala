@@ -55,7 +55,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualDateOfBirthId => countryBasedDobNavigation(ua)
 
     case CheckYourAnswersId => controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
-    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad
   }
 
   // scalastyle:off cyclomatic.complexity
@@ -70,7 +70,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualPreviousAddressId => checkYourAnswers
     case IndividualEmailId => checkYourAnswers
     case IndividualPhoneId => checkYourAnswers
-    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad
   }
 
   //noinspection ScalaStyle
@@ -83,7 +83,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case IndividualPreviousAddressId => finishAmendmentNavigation(ua)
     case IndividualEmailId => finishAmendmentNavigation(ua)
     case IndividualPhoneId => finishAmendmentNavigation(ua)
-    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad
   }
 
   private def checkYourAnswers: Call = CheckYourAnswersController.onPageLoad()
@@ -103,34 +103,34 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     answers.get(IndividualDetailsCorrectId) match {
       case Some(true) => IndividualDateOfBirthController.onPageLoad(NormalMode)
       case Some(false) => YouWillNeedToUpdateController.onPageLoad()
-      case None => SessionExpiredController.onPageLoad()
+      case None => SessionExpiredController.onPageLoad
     }
   }
 
   def addressYearsRoutes(answers: UserAnswers): Call =
     (answers.get(IndividualAddressYearsId), answers.get(AreYouInUKId)) match {
-      case (_, None) => SessionExpiredController.onPageLoad()
+      case (_, None) => SessionExpiredController.onPageLoad
       case (Some(AddressYears.UnderAYear), Some(false)) => IndividualPreviousAddressController.onPageLoad(NormalMode)
       case (Some(AddressYears.UnderAYear), Some(true)) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)
       case (Some(AddressYears.OverAYear), _) => IndividualEmailController.onPageLoad(NormalMode)
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
 
 
   def addressYearsRouteCheckMode(answers: UserAnswers): Call =
     (answers.get(IndividualAddressYearsId), answers.get(AreYouInUKId)) match {
-      case (_, None) => SessionExpiredController.onPageLoad()
+      case (_, None) => SessionExpiredController.onPageLoad
       case (Some(AddressYears.UnderAYear), Some(false)) => IndividualPreviousAddressController.onPageLoad(CheckMode)
       case (Some(AddressYears.UnderAYear), Some(true)) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(CheckMode)
       case (Some(AddressYears.OverAYear), _) => CheckYourAnswersController.onPageLoad()
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
 
   def addressYearsRoutesUpdateMode(answers: UserAnswers): Call =
     answers.get(IndividualAddressYearsId) match {
       case Some(AddressYears.UnderAYear) => IndividualConfirmPreviousAddressController.onPageLoad()
       case Some(AddressYears.OverAYear) => anyMoreChanges
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
 
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call =
@@ -138,16 +138,16 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
       case (Some(true),None) => anyMoreChanges
       case (Some(true), Some(_)) => updateContactAddressCYAPage()
       case (Some(false), _) => IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
 
   def contactAddressRoutes(answers: UserAnswers, mode: Mode): Call =
     (answers.get(IndividualSameContactAddressId), answers.get(AreYouInUKId)) match {
-      case (_, None) => SessionExpiredController.onPageLoad()
+      case (_, None) => SessionExpiredController.onPageLoad
       case (Some(false), Some(false)) => IndividualContactAddressController.onPageLoad(mode)
       case (Some(false), Some(true)) => IndividualContactAddressPostCodeLookupController.onPageLoad(mode)
       case (Some(true), _) => contactAddressCompletionBasedNav(answers, mode)
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
 
 
@@ -162,7 +162,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     answers.get(AreYouInUKId) match {
       case Some(false) => IndividualNameController.onPageLoad(NormalMode)
       case Some(true) => IndividualDetailsCorrectController.onPageLoad(NormalMode)
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
   }
 
@@ -173,24 +173,24 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
         case _ => IndividualRegisteredAddressController.onPageLoad(NormalMode)
       }
       case Some(true) => IndividualDetailsCorrectController.onPageLoad(NormalMode)
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
   }
 
   def countryBasedDobNavigation(answers: UserAnswers): Call =
     answers.get(AreYouInUKId) match {
       case Some(_) => IndividualSameContactAddressController.onPageLoad(NormalMode)
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
 
 
   private def regionBasedNavigation(answers: UserAnswers): Call = {
-    answers.get(IndividualAddressId).fold(SessionExpiredController.onPageLoad())(address =>
+    answers.get(IndividualAddressId).fold(SessionExpiredController.onPageLoad)(address =>
       countryOptions.regions(address.countryOpt.getOrElse("")) match {
         case UK => IndividualAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => IndividualDateOfBirthController.onPageLoad(NormalMode)
         case RestOfTheWorld => OutsideEuEeaController.onPageLoad()
-        case _ => SessionExpiredController.onPageLoad()
+        case _ => SessionExpiredController.onPageLoad
       }
     )
   }
@@ -201,7 +201,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
       case Some(true) => answers.get(IndividualDateOfBirthId).fold(
         IndividualDateOfBirthController.onPageLoad(NormalMode))(_ =>
         CheckYourAnswersController.onPageLoad())
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
 
 }

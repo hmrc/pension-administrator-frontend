@@ -37,11 +37,11 @@ class AllowAccessAction(
   protected def redirects(psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
     minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
       if (minimalPSA.isPsaSuspended) {
-        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
+        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad))
       } else if (minimalPSA.deceasedFlag) {
         Some(Redirect(config.youMustContactHMRCUrl))
       } else if (minimalPSA.rlsFlag) {
-        Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
+        Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad))
       } else {
         None
       }
@@ -60,7 +60,7 @@ class AllowAccessAction(
       case (Some(_), NormalMode | CheckMode) =>
         Future.successful(Some(Redirect( Call("GET", config.schemesOverviewUrl) )))
       case _ =>
-        Future.successful(Some(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
+        Future.successful(Some(Redirect(controllers.routes.SessionExpiredController.onPageLoad)))
     }
   }
 
@@ -79,7 +79,7 @@ class AllowAccessActionNoRLSCheck(
   override protected def redirects(psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
     minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
       if (minimalPSA.isPsaSuspended) {
-        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
+        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad))
       } else {
         None
       }
@@ -97,7 +97,7 @@ class AllowAccessActionNoSuspendedCheck(
       if (minimalPSA.deceasedFlag) {
         Some(Redirect(config.youMustContactHMRCUrl))
       } else if (minimalPSA.rlsFlag) {
-        Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad()))
+        Some(Redirect(controllers.routes.UpdateContactAddressController.onPageLoad))
       } else {
         None
       }

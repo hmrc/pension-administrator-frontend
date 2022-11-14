@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.register.NINOFormProvider
 import models.FeatureToggle.Enabled
@@ -34,7 +34,7 @@ class DirectorEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
 
   import DirectorEnterNINOControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val ninoForm = formProvider(directorName)
   val view: enterNINO = app.injector.instanceOf[enterNINO]
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEnterNINOController(

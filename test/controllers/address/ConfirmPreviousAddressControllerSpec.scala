@@ -27,8 +27,7 @@ import identifiers.register.individual.IndividualSameContactAddressId
 import models._
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -43,7 +42,7 @@ import views.html.address.sameContactAddress
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class ConfirmPreviousAddressControllerSpec extends SpecBase {
+class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar{
 
   import ConfirmPreviousAddressControllerSpec._
 

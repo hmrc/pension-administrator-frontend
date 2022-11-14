@@ -16,14 +16,16 @@
 
 package models.reads
 
-import java.time.LocalDate
-
 import models.PersonName
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json._
 
+import java.time.LocalDate
 
-class DirectorDetailsReadsSpec extends WordSpec with MustMatchers with OptionValues {
+
+class DirectorDetailsReadsSpec extends AnyWordSpecLike with Matchers with OptionValues {
   "Director Details json" should {
 
     "map correctly to director details" when {

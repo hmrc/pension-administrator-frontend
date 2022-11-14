@@ -38,7 +38,7 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig,
                                     dataCompletion: DataCompletion) extends Navigator with Enumerable.Implicits {
 
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
-    case _ => controllers.routes.IndexController.onPageLoad()
+    case _ => controllers.routes.IndexController.onPageLoad
   }
 
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
@@ -78,45 +78,45 @@ class VariationsNavigator @Inject()(config: FrontendAppConfig,
           case Partnership => controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode)
         }
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
   private def deleteAdviserRoute(ua: UserAnswers): Call = ua.get(ConfirmDeleteAdviserId) match {
     case Some(true) => controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode)
     case Some(false) => controllers.routes.PsaDetailsController.onPageLoad()
-    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad
   }
 
   private def anyMoreChangesRoute(ua: UserAnswers): Call = ua.get(AnyMoreChangesId) match {
     case Some(true) => controllers.routes.PsaDetailsController.onPageLoad()
     case Some(false) => declarationChange(ua)
-    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad
   }
 
   private def variationWorkingKnowledgeRoute(ua: UserAnswers): Call = ua.get(VariationWorkingKnowledgeId) match {
     case Some(true) => controllers.register.routes.AnyMoreChangesController.onPageLoad()
     case Some(false) => controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode)
-    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad
   }
 
   private def variationWorkingKnowledgeEditRoute(ua: UserAnswers): Call = ua.get(VariationWorkingKnowledgeId) match {
     case Some(true) => controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
     case Some(false) => controllers.register.adviser.routes.AdviserNameController.onPageLoad(UpdateMode)
-    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad
   }
 
   private def variationStillWorkingKnowledgeRoute(ua: UserAnswers): Call =
     ua.get(VariationStillDeclarationWorkingKnowledgeId) match {
       case Some(true) => controllers.register.routes.VariationDeclarationFitAndProperController.onPageLoad()
       case Some(false) => controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(CheckUpdateMode)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
 
   private def declarationFitAndProperRoute(ua: UserAnswers): Call = ua.get(DeclarationFitAndProperId) match {
     case Some(true) => controllers.register.routes.VariationDeclarationController.onPageLoad()
     case Some(false) => controllers.register.routes.VariationNoLongerFitAndProperController.onPageLoad()
-    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    case _ => controllers.routes.SessionExpiredController.onPageLoad
   }
 
   private def declarationChange(ua: UserAnswers): Call =

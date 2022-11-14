@@ -31,7 +31,7 @@ import views.html.enterNINO
 class PartnerEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
  import PartnerEnterNINOControllerSpec._
   
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val ninoForm = formProvider(partnerName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerEnterNINOController(

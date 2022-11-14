@@ -42,7 +42,7 @@
         serviceInfoContent: Html = HtmlFormat.empty,
         scriptElem: Option[Html] = None
 
-)(implicit messages: Messages)
+)(implicit request: Request[_], messages: Messages)
 
     @headTag = {
     @head(
@@ -83,6 +83,12 @@
     }
 
     @footerTop = {}
+
+    @footerLinks = {}
+
+    @phaseBanner = {
+        @components.phase_banner(appConfig)
+    }
 
     @serviceInformation = {
         @serviceInfo(

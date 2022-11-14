@@ -27,7 +27,7 @@ import views.html.register.administratorPartnership.partnershipDetails.whatYouWi
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
 
   val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
 

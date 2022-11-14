@@ -39,9 +39,9 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
 // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case BusinessUTRId =>
-      PartnershipNameController.onPageLoad()
+      PartnershipNameController.onPageLoad
     case BusinessNameId =>
-      PartnershipIsRegisteredNameController.onPageLoad()
+      PartnershipIsRegisteredNameController.onPageLoad
     case IsRegisteredNameId =>
       registeredNameRoutes(ua)
     case HasPAYEId if hasPaye(ua) =>
@@ -162,7 +162,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
       case Some(AddressYears.OverAYear) =>
         PartnershipEmailController.onPageLoad(NormalMode)
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -173,7 +173,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
       case Some(AddressYears.OverAYear) =>
         contactDetailsCYA
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -186,7 +186,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
       case (Some(false), _) =>
         PartnershipEmailController.onPageLoad(NormalMode)
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -199,7 +199,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
       case (Some(false), _) =>
         contactDetailsCYA
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -207,7 +207,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
     answers.get(PartnershipAddressYearsId) match {
       case Some(AddressYears.UnderAYear) => PartnershipConfirmPreviousAddressController.onPageLoad()
       case Some(AddressYears.OverAYear) => anyMoreChanges
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
 
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Call = {
@@ -215,7 +215,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
       case (Some(true), _) => PartnershipAddressYearsController.onPageLoad(mode)
       case (Some(false), Some(false)) => PartnershipContactAddressController.onPageLoad(mode)
       case (Some(false), Some(true)) => PartnershipContactAddressPostCodeLookupController.onPageLoad(mode)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -225,16 +225,16 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
         case UK => controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => controllers.register.administratorPartnership.partnershipDetails.routes.WhatYouWillNeedController.onPageLoad()
         case RestOfTheWorld => OutsideEuEeaController.onPageLoad()
-        case _ => controllers.routes.SessionExpiredController.onPageLoad()
+        case _ => controllers.routes.SessionExpiredController.onPageLoad
       }
-    } getOrElse controllers.routes.SessionExpiredController.onPageLoad()
+    } getOrElse controllers.routes.SessionExpiredController.onPageLoad
   }
 
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call = {
     answers.get(PartnershipConfirmPreviousAddressId) match {
       case Some(false) => PartnershipPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode)
       case Some(true) => finishAmendmentNavigation(answers)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 

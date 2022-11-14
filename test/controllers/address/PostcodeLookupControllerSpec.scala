@@ -24,13 +24,14 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.FakeAllowAccessProvider
 import forms.address.PostCodeLookupFormProvider
 import identifiers.TypedIdentifier
+import models._
 import models.requests.DataRequest
-import models.{NormalMode, TolerantAddress, _}
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar
+import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
@@ -39,7 +40,6 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
-
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -84,7 +84,7 @@ object PostcodeLookupControllerSpec extends SpecBase {
 
 }
 
-class PostcodeLookupControllerSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with OptionValues {
+class PostcodeLookupControllerSpec extends AnyWordSpecLike with Matchers with MockitoSugar with ScalaFutures with OptionValues {
 
   val viewmodel = PostcodeLookupViewModel(
     Call("GET", "www.example.com"),

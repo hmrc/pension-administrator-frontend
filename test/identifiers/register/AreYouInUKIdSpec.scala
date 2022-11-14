@@ -16,8 +16,6 @@
 
 package identifiers.register
 
-import java.time.LocalDate
-
 import identifiers.register.NonUKBusinessTypeIdSpec.{email, personName, phone}
 import identifiers.register.adviser._
 import identifiers.register.company._
@@ -27,11 +25,15 @@ import identifiers.register.partnership._
 import identifiers.register.partnership.partners.PartnerNameId
 import models._
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class AreYouInUKIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+import java.time.LocalDate
+
+class AreYouInUKIdSpec extends AnyWordSpecLike with Matchers with OptionValues with Enumerable.Implicits {
 
   import AreYouInUKIdSpec._
 

@@ -21,21 +21,20 @@ import controllers.actions._
 import identifiers.register.individual.{IndividualContactAddressId, IndividualDetailsId}
 import models._
 import models.requests.DataRequest
+import org.mockito.ArgumentMatchers._
+import org.mockito.MockitoSugar
+import org.scalatest.BeforeAndAfterEach
+import play.api.libs.json.{JsNull, Json}
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import services.PsaDetailsService
-
 import utils.countryOptions.CountryOptions
+import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import views.html.updateContactAddress
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.{Json, JsNull}
-import play.api.mvc.Call
-import utils.{FakeCountryOptions, UserAnswers, FakeNavigator}
 
 import scala.concurrent.Future
 
-class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
+class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar{
 
   import UpdateContactAddressControllerSpec._
 
@@ -75,7 +74,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
     )
 }
 
-object UpdateContactAddressControllerSpec extends ControllerSpecBase {
+object UpdateContactAddressControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val onwardRoute = "/url"
   private val navigator = new FakeNavigator(Call("GET", onwardRoute))

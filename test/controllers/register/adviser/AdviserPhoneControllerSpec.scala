@@ -17,7 +17,7 @@
 package controllers.register.adviser
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
 import models.FeatureToggle.Enabled
@@ -33,7 +33,7 @@ import views.html.phone
 class AdviserPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   import AdviserPhoneControllerSpec._
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val view: phone = app.injector.instanceOf[phone]
 

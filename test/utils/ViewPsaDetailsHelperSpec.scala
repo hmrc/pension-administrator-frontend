@@ -16,21 +16,22 @@
 
 package utils
 
-import java.time.LocalDate
 import base.{JsonFileReader, SpecBase}
 import controllers.register.company.routes._
 import controllers.register.partnership.routes._
 import identifiers.register.company.directors._
 import identifiers.register.partnership.partners._
 import models._
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.{JsBoolean, JsObject, Json}
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels._
 
-class ViewPsaDetailsHelperSpec extends SpecBase with MustMatchers {
+import java.time.LocalDate
+
+class ViewPsaDetailsHelperSpec extends SpecBase with Matchers {
 
   import ViewPsaDetailsHelperSpec._
 

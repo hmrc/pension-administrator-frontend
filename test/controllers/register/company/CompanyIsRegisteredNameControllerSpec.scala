@@ -25,7 +25,6 @@ import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
 import views.html.register.isRegisteredName
@@ -35,7 +34,7 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
 
   val viewModel: CommonFormViewModel = CommonFormViewModel(
     NormalMode,
-    routes.CompanyIsRegisteredNameController.onSubmit(),
+    routes.CompanyIsRegisteredNameController.onSubmit,
     Message("isRegisteredName.company.title", name),
     Message("isRegisteredName.company.heading", name)
   )
@@ -53,7 +52,7 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
       val result = testController(this, dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -61,7 +60,7 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
       val result = testController(this, dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
   }

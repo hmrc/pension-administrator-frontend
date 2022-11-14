@@ -22,13 +22,12 @@ import controllers.actions._
 import forms.register.AnyMoreChangesFormProvider
 import play.api.data.Form
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import views.html.register.anyMoreChanges
 
 
 class AnyMoreChangesControllerSpec extends ControllerSpecBase {
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
   val formProvider = new AnyMoreChangesFormProvider()
   val form: Form[Boolean] = formProvider()
 

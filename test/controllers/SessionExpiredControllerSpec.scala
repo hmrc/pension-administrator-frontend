@@ -17,7 +17,6 @@
 package controllers
 
 import play.api.test.Helpers._
-
 import views.html.session_expired
 
 class SessionExpiredControllerSpec extends ControllerSpecBase {

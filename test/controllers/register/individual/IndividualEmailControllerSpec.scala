@@ -25,7 +25,6 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
@@ -33,7 +32,7 @@ import views.html.email
 class IndividualEmailControllerSpec extends ControllerWithCommonBehaviour {
   import IndividualEmailControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val view: email = app.injector.instanceOf[email]
 

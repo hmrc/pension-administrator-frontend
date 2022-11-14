@@ -22,7 +22,6 @@ import controllers.actions._
 import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import models.{Address, CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._
@@ -80,7 +79,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to the next page on a POST request" in {
@@ -103,11 +102,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
   private def postCall = controllers.register.adviser.routes.CheckYourAnswersController.onSubmit(NormalMode)
 
   private val view: check_your_answers = app.injector.instanceOf[check_your_answers]

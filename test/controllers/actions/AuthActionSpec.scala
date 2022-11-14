@@ -18,17 +18,16 @@ package controllers.actions
 
 import base.SpecBase
 import config.FrontendAppConfig
-import connectors.{IdentityVerificationConnector, PersonalDetailsValidationConnector, SessionDataCacheConnector}
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.{IdentityVerificationConnector, PersonalDetailsValidationConnector, SessionDataCacheConnector}
 import controllers.routes
 import identifiers.{AdministratorOrPractitionerId, JourneyId, ValidationId}
 import models.FeatureToggleName.PsaFromIvToPdv
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -148,7 +147,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
           def controller = new Harness(authAction)
 
-          val res = controller.onPageLoad()(FakeRequest("GET", controllers.routes.IndexController.onPageLoad().url))
+          val res = controller.onPageLoad()(FakeRequest("GET", controllers.routes.IndexController.onPageLoad.url))
 
           ScalaFutures.whenReady(res.failed) { e =>
             e mustBe a[RuntimeException]
@@ -382,7 +381,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
       }
 
       "the user doesn't have sufficient confidence level" in {
@@ -392,7 +391,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
       }
 
       "the user used an unaccepted auth provider" in {
@@ -402,7 +401,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
       }
 
       "the user has an unsupported affinity group" in {
@@ -412,7 +411,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
       }
 
       "there is no affinity group" in {
@@ -424,7 +423,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
         val result = controller.onPageLoad()(FakeRequest("GET", "/foo"))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad.url)
       }
 
       "the user is not an authorised user" in {
@@ -434,7 +433,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
       }
     }
 
@@ -481,7 +480,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.AgentCannotRegisterController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.AgentCannotRegisterController.onPageLoad.url)
       }
     }
 
@@ -497,7 +496,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UseOrganisationCredentialsController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(routes.UseOrganisationCredentialsController.onPageLoad.url)
       }
     }
   }
@@ -521,7 +520,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
   }
 }
 
-object AuthActionSpec extends SpecBase with BeforeAndAfterEach {
+object AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
   private val psaId = "A0000000"
   private val startIVLink = "/start-iv-link"
   private val nino = domain.Nino("AB123456C")

@@ -18,8 +18,8 @@ package connectors
 
 import base.JsonFileReader
 import com.github.tomakehurst.wiremock.client.WireMock._
-import org.scalatest.{AsyncFlatSpec, Matchers}
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.http.Status._
 import play.api.libs.json.{JsResultException, JsValue, Json}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
@@ -29,8 +29,7 @@ import utils.{UserAnswers, WireMockHelper}
 class SubscriptionConnectorSpec
   extends AsyncFlatSpec
     with Matchers
-    with WireMockHelper
-    with ScalaCheckPropertyChecks {
+    with WireMockHelper {
 
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 

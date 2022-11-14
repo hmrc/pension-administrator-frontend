@@ -41,22 +41,22 @@ class RegisterNavigatorV2 @Inject()(appConfig: FrontendAppConfig
   }
 
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
-    case _ => controllers.routes.IndexController.onPageLoad()
+    case _ => controllers.routes.IndexController.onPageLoad
   }
 
   private def businessTypeRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(BusinessTypeId) match {
       case Some(BusinessType.UnlimitedCompany) =>
-        controllers.register.company.routes.CompanyUTRController.onPageLoad()
+        controllers.register.company.routes.CompanyUTRController.onPageLoad
       case Some(BusinessType.LimitedCompany) =>
-        controllers.register.company.routes.CompanyUTRController.onPageLoad()
+        controllers.register.company.routes.CompanyUTRController.onPageLoad
       case Some(BusinessType.LimitedLiabilityPartnership) =>
-        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad()
+        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad
       case Some(BusinessType.LimitedPartnership) =>
-        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad()
+        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad
       case Some(BusinessType.BusinessPartnership) =>
-        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad()
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -67,10 +67,10 @@ class RegisterNavigatorV2 @Inject()(appConfig: FrontendAppConfig
       case Some(DeclarationWorkingKnowledge.Adviser) =>
         controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
       case Some(DeclarationWorkingKnowledge.WhatYouWillNeed) =>
-        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad()
+        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
       case Some(DeclarationWorkingKnowledge.TaskList) =>
         controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
-      case None => controllers.routes.SessionExpiredController.onPageLoad()
+      case None => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -81,7 +81,7 @@ class RegisterNavigatorV2 @Inject()(appConfig: FrontendAppConfig
       case Some(true) =>
         controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 
@@ -94,12 +94,12 @@ class RegisterNavigatorV2 @Inject()(appConfig: FrontendAppConfig
           controllers.register.administratorPartnership.routes.PartnershipRegisteredAddressController.onPageLoad()
         case (Some(true), _, _) =>
           controllers.register.routes.RegisterAsBusinessController.onPageLoad()
-        case _ => controllers.routes.SessionExpiredController.onPageLoad()
+        case _ => controllers.routes.SessionExpiredController.onPageLoad
       }
 
   private def individualOrOganisationRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(RegisterAsBusinessId) match {
-      case None => controllers.routes.SessionExpiredController.onPageLoad()
+      case None => controllers.routes.SessionExpiredController.onPageLoad
       case Some(true) =>
         controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode)
       case _ =>
@@ -117,7 +117,7 @@ class RegisterNavigatorV2 @Inject()(appConfig: FrontendAppConfig
         controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad(NormalMode)
       case Some(NonUKBusinessType.BusinessPartnership) =>
         controllers.register.administratorPartnership.routes.PartnershipRegisteredNameController.onPageLoad()
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
 }

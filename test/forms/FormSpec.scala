@@ -17,7 +17,9 @@
 package forms
 
 import config.FrontendAppConfig
-import org.scalatest.{Matchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Environment
 import play.api.data.{Form, FormError}
@@ -26,7 +28,7 @@ import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 
-trait FormSpec extends WordSpec with OptionValues with Matchers with GuiceOneAppPerSuite {
+trait FormSpec extends AnyWordSpecLike with OptionValues with Matchers with GuiceOneAppPerSuite {
 
   def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]) = {
 

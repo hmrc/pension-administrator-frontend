@@ -24,17 +24,15 @@ import forms.register.VariationDeclarationFitAndProperFormProvider
 import identifiers.register._
 import models.UserType.UserType
 import models._
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.HeaderCarrier
-
 import utils.FakeNavigator
 import views.html.register.variationDeclarationFitAndProper
 
-class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
+class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val form: Form[_] = new VariationDeclarationFitAndProperFormProvider()()
 
@@ -66,7 +64,7 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
         val result = controller(dontGetAnyData).onPageLoad(UpdateMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
 

@@ -63,7 +63,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
       }
 
       request.user.nino match {
-        case None => Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
+        case None => Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad))
         case Some(nino) =>
           (request.userAnswers.get(IndividualDetailsId), request.userAnswers.get(IndividualAddressId), request.userAnswers.get(RegistrationInfoId)) match {
             case (Some(individual), Some(address), Some(info)) if info.idType.contains(Nino) && info.idNumber.contains(nino.value) =>

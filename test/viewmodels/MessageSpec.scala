@@ -17,9 +17,10 @@
 package viewmodels
 
 import base.SpecBase
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 
-class MessageSpec extends SpecBase with MustMatchers with OptionValues {
+class MessageSpec extends SpecBase with Matchers with OptionValues {
 
   "resolve" must {
 

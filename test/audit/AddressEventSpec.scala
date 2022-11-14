@@ -17,9 +17,10 @@
 package audit
 
 import models.{Address, TolerantAddress}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class AddressEventSpec extends FlatSpec with Matchers {
+class AddressEventSpec extends AsyncFlatSpec with Matchers {
 
   import AddressEventSpec._
 

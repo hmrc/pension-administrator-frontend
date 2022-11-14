@@ -16,16 +16,17 @@
 
 package forms.behaviours
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import forms.FormSpec
 import generators.Generators
 import org.scalacheck.Gen
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
 
-trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators {
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
+trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators with AnyWordSpecLike {
 
   def fieldThatBindsValidData(form: Form[_],
                               fieldName: String,

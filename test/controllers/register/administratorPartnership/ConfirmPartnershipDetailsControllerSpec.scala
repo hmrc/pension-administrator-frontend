@@ -22,13 +22,12 @@ import controllers.actions._
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
+import models._
 import models.register.BusinessType.BusinessPartnership
-import models.{BusinessDetails, _}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
-
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.administratorPartnership.confirmPartnershipDetails
@@ -185,7 +184,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
         "no business type data is found" in {
           val data = Json.obj(
@@ -196,14 +195,14 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
 
         "no existing data is found" in {
           val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
       "POST" when {
@@ -216,7 +215,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
         "no business type data is found" in {
           val data = Json.obj(
@@ -227,7 +226,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
 
         "no existing data is found" in {
@@ -235,7 +234,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
     }
