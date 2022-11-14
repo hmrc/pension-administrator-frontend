@@ -113,6 +113,22 @@ trait JsLens {
 
 object JsLens {
 
+  def fromPath(path: JsPath): JsLens = {
+
+    def toLens(node: PathNode): JsLens = {
+      node match {
+        case KeyPathNode(key) =>
+          JsLens.atKey(key)
+        case IdxPathNode(idx) =>
+          JsLens.atIndex(idx)
+        case RecursiveSearch(key) =>
+          JsLens.atAllIndices andThen JsLens.atKey(key)
+      }
+    }
+
+    path.path.map(toLens).reduceLeft(_ andThen _)
+  }
+
   def atKey(key: String): JsLens =
     new JsLens {
 
@@ -184,7 +200,7 @@ object JsLens {
       override def getAll(s: JsValue): JsResult[Seq[JsValue]] =
         s match {
           case JsArray(values) =>
-            JsSuccess(values)
+            JsSuccess(values.toSeq)
           case JsNull =>
             JsSuccess(Seq(JsNull))
           case _ =>
@@ -203,20 +219,5 @@ object JsLens {
 
       override def remove(s: JsValue): JsResult[JsValue] = ???
     }
-
-  def fromPath(path: JsPath): JsLens = {
-
-    def toLens(node: PathNode): JsLens = {
-      node match {
-        case KeyPathNode(key) =>
-          JsLens.atKey(key)
-        case IdxPathNode(idx) =>
-          JsLens.atIndex(idx)
-        case RecursiveSearch(key) =>
-          JsLens.atAllIndices andThen JsLens.atKey(key)
-      }
-    }
-
-    path.path.map(toLens).reduceLeft(_ andThen _)
-  }
 }
+
