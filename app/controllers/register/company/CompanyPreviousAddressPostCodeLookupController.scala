@@ -58,7 +58,7 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
+      BusinessNameId.retrieve.map { name =>
         featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
           val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
           get(viewModel(mode, name, returnLink), mode)
@@ -68,7 +68,7 @@ class CompanyPreviousAddressPostCodeLookupController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
+      BusinessNameId.retrieve.map { name =>
         featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
           val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
           post(CompanyPreviousAddressPostCodeLookupId, viewModel(mode, name, returnLink), mode)

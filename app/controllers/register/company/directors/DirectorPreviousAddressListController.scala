@@ -57,7 +57,7 @@ class DirectorPreviousAddressListController @Inject()(override val appConfig: Fr
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, index, returnLink).right.map(vm =>
+        viewModel(mode, index, returnLink).map(vm =>
           get(vm, mode, form(vm.addresses, entityName(index)))
         )
       }
@@ -67,7 +67,7 @@ class DirectorPreviousAddressListController @Inject()(override val appConfig: Fr
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, index, returnLink).right.map(vm =>
+        viewModel(mode, index, returnLink).map(vm =>
           post(vm, DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), DirectorPreviousAddressPostCodeLookupId(index),
             mode, form(vm.addresses, entityName(index)))
         )
@@ -76,7 +76,7 @@ class DirectorPreviousAddressListController @Inject()(override val appConfig: Fr
 
   private def viewModel(mode: Mode, index: Index, returnLink: Option[String])
                        (implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    DirectorPreviousAddressPostCodeLookupId(index).retrieve.right.map { addresses =>
+    DirectorPreviousAddressPostCodeLookupId(index).retrieve.map { addresses =>
       AddressListViewModel(
         postCall = routes.DirectorPreviousAddressListController.onSubmit(mode, index),
         manualInputCall = routes.DirectorPreviousAddressController.onPageLoad(mode, index),

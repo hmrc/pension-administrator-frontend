@@ -60,7 +60,7 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewmodel(mode, returnLink).right.map(vm =>
+        viewmodel(mode, returnLink).map(vm =>
           get(vm, mode, form(vm.addresses))
         )
       }
@@ -71,17 +71,17 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
 
       featureToggleConnector.get(PsaRegistration.asString).flatMap {
         case Enabled(_) =>
-          viewmodel(mode, Some(companyTaskListUrl())).right.map(vm =>
+          viewmodel(mode, Some(companyTaskListUrl())).map(vm =>
             post(vm, CompanyPreviousAddressId, CompanyAddressListId, CompanyContactAddressPostCodeLookupId, mode,
               form(vm.addresses), Some(navigatorV2))
           )
-        case _ => viewmodel(mode, Some(companyTaskListUrl())).right.map(vm =>
+        case _ => viewmodel(mode, Some(companyTaskListUrl())).map(vm =>
           post(vm, CompanyPreviousAddressId, CompanyAddressListId, CompanyContactAddressPostCodeLookupId, mode, form(vm.addresses)))
       }
   }
 
   def viewmodel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    CompanyPreviousAddressPostCodeLookupId.retrieve.right.map { addresses =>
+    CompanyPreviousAddressPostCodeLookupId.retrieve.map { addresses =>
       AddressListViewModel(
         postCall = routes.CompanyAddressListController.onSubmit(mode),
         manualInputCall = routes.CompanyPreviousAddressController.onPageLoad(mode),

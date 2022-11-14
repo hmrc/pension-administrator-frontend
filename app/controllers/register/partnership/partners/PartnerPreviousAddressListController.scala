@@ -53,8 +53,8 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      PartnerNameId(index).retrieve.right.flatMap { pn =>
-        viewModel(mode, index, pn.fullName).right.map { vm =>
+      PartnerNameId(index).retrieve.flatMap { pn =>
+        viewModel(mode, index, pn.fullName).map { vm =>
           get(vm, mode, form(vm.addresses, pn.fullName))
         }
       }
@@ -62,15 +62,15 @@ class PartnerPreviousAddressListController @Inject()(override val appConfig: Fro
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      PartnerNameId(index).retrieve.right.flatMap { pn =>
-        viewModel(mode, index, pn.fullName).right.map(vm =>
+      PartnerNameId(index).retrieve.flatMap { pn =>
+        viewModel(mode, index, pn.fullName).map(vm =>
           post(vm, PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index),
             PartnerPreviousAddressPostCodeLookupId(index), mode, form(vm.addresses, pn.fullName)))
       }
   }
 
   private def viewModel(mode: Mode, index: Index, name: String)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    PartnerPreviousAddressPostCodeLookupId(index).retrieve.right.map {
+    PartnerPreviousAddressPostCodeLookupId(index).retrieve.map {
       addresses =>
         AddressListViewModel(
           postCall = routes.PartnerPreviousAddressListController.onSubmit(mode, index),

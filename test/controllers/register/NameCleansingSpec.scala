@@ -69,7 +69,7 @@ class NameCleansingSpec extends ControllerSpecBase {
     "cleanse and bind when there are fields in body" in {
       val result = controller.cleanseAndBindOrRedirect(Some(dataBeforeBind), fieldName, form)
       result.isRight mustBe true
-      result.right.toOption.map( _.data mustBe dataAfterBind )
+      result.toOption.map( _.data mustBe dataAfterBind )
     }
 
   }

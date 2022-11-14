@@ -56,19 +56,19 @@ class PartnershipPreviousAddressListController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map { vm =>
+      viewmodel(mode).map { vm =>
         get(vm, mode, form(vm.addresses, entityName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).right.map(vm => post(vm, PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId, mode,
+      viewmodel(mode).map(vm => post(vm, PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId, mode,
         form(vm.addresses, entityName)))
   }
 
   private def viewmodel(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    PartnershipPreviousAddressPostCodeLookupId.retrieve.right.map { addresses =>
+    PartnershipPreviousAddressPostCodeLookupId.retrieve.map { addresses =>
       AddressListViewModel(
         postCall = routes.PartnershipPreviousAddressListController.onSubmit(mode),
         manualInputCall = routes.PartnershipPreviousAddressController.onPageLoad(mode),

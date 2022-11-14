@@ -56,7 +56,7 @@ class PartnershipConfirmPreviousAddressController @Inject()(val appConfig: Front
   private def viewmodel(mode: Mode) =
     Retrieval(
       implicit request =>
-        (BusinessNameId and ExistingCurrentAddressId).retrieve.right.map {
+        (BusinessNameId and ExistingCurrentAddressId).retrieve.map {
           case name ~ address =>
             SameContactAddressViewModel(
               postCall(),
@@ -73,14 +73,14 @@ class PartnershipConfirmPreviousAddressController @Inject()(val appConfig: Front
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map { vm =>
+      viewmodel(mode).retrieve.map { vm =>
         get(PartnershipConfirmPreviousAddressId, vm)
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map { vm =>
+      viewmodel(mode).retrieve.map { vm =>
         post(PartnershipConfirmPreviousAddressId, PartnershipPreviousAddressId, vm, mode)
       }
   }

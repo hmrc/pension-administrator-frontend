@@ -71,7 +71,7 @@ class DeclarationController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen allowDeclaration(mode) andThen requireData).async {
       implicit request =>
-        DeclarationWorkingKnowledgeId.retrieve.right.map {
+        DeclarationWorkingKnowledgeId.retrieve.map {
           workingKnowledge =>
             Future.successful(Ok(view(workingKnowledge.hasWorkingKnowledge)))
         }

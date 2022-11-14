@@ -53,7 +53,6 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                   (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised(User).retrieve(
         Retrievals.externalId and

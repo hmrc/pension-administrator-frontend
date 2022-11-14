@@ -60,7 +60,7 @@ class ConfirmDeletePartnerController @Inject()(val appConfig: FrontendAppConfig,
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
 
-      PartnerNameId(index).retrieve.right.map { details =>
+      PartnerNameId(index).retrieve.map { details =>
         get(viewModel(index, details.fullName, mode), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index), mode)
 
       }
@@ -68,7 +68,7 @@ class ConfirmDeletePartnerController @Inject()(val appConfig: FrontendAppConfig,
 
   def onSubmit(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      PartnerNameId(index).retrieve.right.map { details =>
+      PartnerNameId(index).retrieve.map { details =>
         post(viewModel(index, details.fullName, mode), PartnerNameId(index),
           controllers.register.partnership.routes.AddPartnerController.onPageLoad(mode), mode)
       }

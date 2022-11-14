@@ -68,7 +68,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
   private def viewmodel(mode: Mode, returnLink: Option[String]): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
-        (CompanyAddressId and BusinessNameId).retrieve.right.map {
+        (CompanyAddressId and BusinessNameId).retrieve.map {
           case address ~ name =>
             SameContactAddressViewModel(
               postCall(mode),
@@ -88,7 +88,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
     implicit request =>
       featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
         val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-        viewmodel(mode, returnLink).retrieve.right.map { vm =>
+        viewmodel(mode, returnLink).retrieve.map { vm =>
           get(CompanySameContactAddressId, vm, form(vm.psaName))
         }
       }
@@ -98,7 +98,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
     implicit request =>
       featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
         val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-        viewmodel(mode, returnLink).retrieve.right.map { vm =>
+        viewmodel(mode, returnLink).retrieve.map { vm =>
           post(CompanySameContactAddressId, CompanyAddressListId, CompanyContactAddressId, vm, mode, form(vm.psaName))
         }
       }

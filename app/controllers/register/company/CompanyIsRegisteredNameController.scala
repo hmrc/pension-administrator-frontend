@@ -50,17 +50,17 @@ class CompanyIsRegisteredNameController @Inject()(override val appConfig: Fronte
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel.retrieve.right.map(get(_))
+      viewmodel.retrieve.map(get(_))
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel.retrieve.right.map(post(_))
+      viewmodel.retrieve.map(post(_))
   }
 
   def viewmodel: Retrieval[CommonFormViewModel] = Retrieval {
     implicit request =>
-    BusinessNameId.retrieve.right.map {
+    BusinessNameId.retrieve.map {
       name =>
         CommonFormViewModel(
           NormalMode,

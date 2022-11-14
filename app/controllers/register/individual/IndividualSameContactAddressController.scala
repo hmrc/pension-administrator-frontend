@@ -61,7 +61,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
-        (IndividualDetailsId and IndividualAddressId).retrieve.right.map {
+        (IndividualDetailsId and IndividualAddressId).retrieve.map {
           case individual ~ address =>
             SameContactAddressViewModel(
               postCall(mode),
@@ -78,15 +78,15 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map { vm =>
-        get(IndividualSameContactAddressId, vm, form)
+      viewmodel(mode).retrieve.map { vm =>
+        get(IndividualSameContactAddressId, vm, form())
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map { vm =>
-        post(IndividualSameContactAddressId, IndividualContactAddressListId, IndividualContactAddressId, vm, mode, form)
+      viewmodel(mode).retrieve.map { vm =>
+        post(IndividualSameContactAddressId, IndividualContactAddressListId, IndividualContactAddressId, vm, mode, form())
       }
   }
 

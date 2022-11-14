@@ -86,7 +86,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          (IndividualDetailsId and IndividualAddressId).retrieve.right.map {
+          (IndividualDetailsId and IndividualAddressId).retrieve.map {
             case individual ~ address =>
               Future.successful(BadRequest(view(formWithErrors, mode, individual, address, countryOptions)))
           }

@@ -94,8 +94,8 @@ trait Retrievals {
       new Retrieval[A ~ B] {
         override def retrieve(implicit request: DataRequest[AnyContent]): Either[Future[Result], A ~ B] = {
           for {
-            a <- self.retrieve.right
-            b <- query.retrieve.right
+            a <- self.retrieve
+            b <- query.retrieve
           } yield new ~(a, b)
         }
       }

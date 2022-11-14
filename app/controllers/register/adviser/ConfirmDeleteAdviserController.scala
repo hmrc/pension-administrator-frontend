@@ -79,7 +79,7 @@ class ConfirmDeleteAdviserController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
-        AdviserNameId.retrieve.right.map { name =>
+        AdviserNameId.retrieve.map { name =>
           val form = formProvider(name)
           form.bindFromRequest().fold(
             (formWithErrors: Form[_]) =>

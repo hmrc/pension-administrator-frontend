@@ -57,7 +57,7 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
 
   def viewModel(mode: Mode, returnLink: Option[String]): Retrieval[PostcodeLookupViewModel] = Retrieval(
     implicit request =>
-      BusinessNameId.retrieve.right.map { businessName =>
+      BusinessNameId.retrieve.map { businessName =>
         PostcodeLookupViewModel(
           routes.CompanyContactAddressPostCodeLookupController.onSubmit(mode),
           routes.CompanyContactAddressController.onSubmit(mode),
@@ -78,7 +78,7 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, returnLink).retrieve.right.map(vm =>
+        viewModel(mode, returnLink).retrieve.map(vm =>
           get(vm, mode)
         )
       }
@@ -88,7 +88,7 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, returnLink).retrieve.right.map(vm =>
+        viewModel(mode, returnLink).retrieve.map(vm =>
           post(CompanyContactAddressPostCodeLookupId, vm, mode)
         )
       }

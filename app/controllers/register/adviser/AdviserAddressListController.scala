@@ -60,7 +60,7 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink).right.map { vm =>
+        viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink).map { vm =>
           get(vm, mode, form(vm.addresses, entityName))
         }
       }
@@ -70,14 +70,14 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink).right
+        viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink)
           .map(vm => post(vm, AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
       }
   }
 
   def viewModel(mode: Mode, displayReturnLink: Boolean, returnLink: Option[String])
                (implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    AdviserAddressPostCodeLookupId.retrieve.right.map {
+    AdviserAddressPostCodeLookupId.retrieve.map {
       addresses =>
         AddressListViewModel(
           postCall = routes.AdviserAddressListController.onSubmit(mode),

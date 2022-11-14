@@ -31,7 +31,7 @@ class SessionExpiredController @Inject()(val appConfig: FrontendAppConfig,
                                          view: session_expired
                                         )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
+  def onPageLoad: Action[AnyContent] = Action { implicit request =>
     Ok(view())
   }
 }

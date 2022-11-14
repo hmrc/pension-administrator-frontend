@@ -64,7 +64,7 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
+      BusinessNameId.retrieve.map { name =>
         featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
           val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
           Future.successful(get(id(index), viewModel(mode, index, name, returnLink), mode))
@@ -74,7 +74,7 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
+      BusinessNameId.retrieve.map { name =>
         featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
           val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
           post(id(index), viewModel(mode, index, name, returnLink), mode)

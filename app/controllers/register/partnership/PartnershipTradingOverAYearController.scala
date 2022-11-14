@@ -64,7 +64,7 @@ class PartnershipTradingOverAYearController @Inject()(override val appConfig: Fr
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        BusinessNameId.retrieve.right.map {
+        BusinessNameId.retrieve.map {
           name =>
             get(PartnershipTradingOverAYearId, form(name), viewModel(mode, name))
         }
@@ -73,7 +73,7 @@ class PartnershipTradingOverAYearController @Inject()(override val appConfig: Fr
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        BusinessNameId.retrieve.right.map {
+        BusinessNameId.retrieve.map {
           name =>
             post(PartnershipTradingOverAYearId, mode, form(name), viewModel(mode, name))
         }

@@ -63,14 +63,14 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      PartnerNameId(index).retrieve.right.map { pn =>
+      PartnerNameId(index).retrieve.map { pn =>
         get(PartnerAddressId(index), PartnerAddressListId(index), addressViewModel(mode, index, pn.fullName), mode)
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      PartnerNameId(index).retrieve.right.map { pn =>
+      PartnerNameId(index).retrieve.map { pn =>
         val vm = addressViewModel(mode, index, pn.fullName)
         post(PartnerAddressId(index), vm, mode)
       }
