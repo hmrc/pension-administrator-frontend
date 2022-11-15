@@ -112,7 +112,7 @@ object AdviserNavigatorSpec extends OptionValues {
   private val defaultPage: Call = controllers.routes.IndexController.onPageLoad
 
   private val declarationFitAndProperPage: Call = controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
-  private val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad
+  private val haveMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private val psaDetailsPage: Call = controllers.routes.PsaDetailsController.onPageLoad()
 
 }
