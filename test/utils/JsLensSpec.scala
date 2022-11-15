@@ -19,11 +19,11 @@ package utils
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json._
 
-class JsLensSpec extends AnyWordSpecLike with Matchers with ScalaCheckPropertyChecks with OptionValues {
+class JsLensSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
   val jsLeafGen: Gen[JsValue] = {
     Gen.frequency(
@@ -320,7 +320,7 @@ class JsLensSpec extends AnyWordSpecLike with Matchers with ScalaCheckPropertyCh
 
         val gen: Gen[(Int, JsArray)] = for {
           idx <- Gen.chooseNum(0, 50)
-          arr <- Gen.listOfN(idx - 1, jsLeafGen).map(JsArray(_))
+          arr <- Gen.listOfN(idx, jsLeafGen).map(JsArray(_))
         } yield (idx, arr)
 
         forAll(gen) {
