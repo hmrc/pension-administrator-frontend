@@ -44,7 +44,7 @@ class UserAnswersSpec extends AnyWordSpecLike with Matchers with OptionValues {
   "getAll" should {
     "get all matching recursive results" in {
       val userAnswers = UserAnswers(establishers)
-      userAnswers.getAll[String](JsPath \ "establishers" \\ "name").value must contain allOf("foo", "bar")
+      userAnswers.getAll[String](JsPath \ "establishers" \\ "name").value must contain(allOf("foo", "bar"))
     }
 
     "throw JsResultException if Js Value is not of correct type" in {

@@ -176,7 +176,7 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def emailPage(mode: Mode): Call = routes.CompanyEmailController.onPageLoad(mode)
   private def phonePage(mode: Mode): Call = routes.CompanyPhoneController.onPageLoad(mode)
   private def sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad
-  private def anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad
+  private def anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private def confirmPreviousAddressPage = routes.CompanyConfirmPreviousAddressController.onPageLoad()
   private lazy val updateContactAddressCYAPage:Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()

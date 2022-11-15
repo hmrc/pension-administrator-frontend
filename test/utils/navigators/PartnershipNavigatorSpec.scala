@@ -157,7 +157,7 @@ object PartnershipNavigatorSpec extends OptionValues {
   private lazy val updateContactAddressCYAPage:Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad
 
-  private lazy val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad
+  private lazy val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
   private lazy val confirmPartnershipDetailsPage: Call = routes.ConfirmPartnershipDetailsController.onPageLoad()
 

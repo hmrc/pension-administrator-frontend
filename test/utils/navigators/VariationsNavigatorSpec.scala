@@ -170,7 +170,7 @@ object VariationsNavigatorSpec extends OptionValues {
   private val variationNoLongerFitAndProperPage: Call = controllers.register.routes.VariationNoLongerFitAndProperController.onPageLoad()
 
   private val variationSuccessPage: Call = controllers.register.routes.PSAVarianceSuccessController.onPageLoad()
-  private val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad
+  private val anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
   private val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad
 

@@ -229,7 +229,7 @@ object RegisterPartnershipNavigatorV2Spec extends OptionValues {
 
   private def declarationWorkingKnowledgePage(mode: Mode): Call = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(mode)
 
-  private def anyMoreChanges: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad
+  private def anyMoreChanges: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
   private lazy val partnershipHasPayePage: Call = HasPartnershipPAYEController.onPageLoad(NormalMode)
 

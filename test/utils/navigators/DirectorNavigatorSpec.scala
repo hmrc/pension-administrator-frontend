@@ -165,7 +165,7 @@ object DirectorNavigatorSpec extends OptionValues {
 
   private val index = 0
   private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad
-  private lazy val anyMoreChangesPage = controllers.register.routes.AnyMoreChangesController.onPageLoad
+  private lazy val anyMoreChangesPage = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private lazy val confirmPreviousAddressPage = routes.DirectorConfirmPreviousAddressController.onPageLoad(index)
 
   private def checkYourAnswersPage(mode: Mode): Call = routes.CheckYourAnswersController.onPageLoad(mode, index)
