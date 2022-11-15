@@ -27,7 +27,7 @@
 
 @layout(pageTitle = messages("companyReview.title")) {
 
-    @formHelper(action = CompanyReviewController.onSubmit, Symbol("autoComplete") -> "off") {
+    @formHelper(action = CompanyReviewController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @components.heading(messages("companyReview.heading"))
 
@@ -35,7 +35,7 @@
             heading = companyName,
             linkMessage = "companyReview.editLink",
             linkId = "edit-company-details",
-            link = CheckYourAnswersController.onPageLoad
+            link = CheckYourAnswersController.onPageLoad()
         )
 
         @components.review_section(

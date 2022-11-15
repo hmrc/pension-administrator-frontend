@@ -72,7 +72,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
       implicit request =>
         viewmodel(mode).retrieve.map {
           vm =>
-            get(IndividualAddressYearsId, form, vm, mode)
+            get(IndividualAddressYearsId, form(), vm, mode)
         }
     }
 
@@ -80,7 +80,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
     implicit request =>
       viewmodel(mode).retrieve.map {
         vm =>
-          post(IndividualAddressYearsId, mode, form, vm)
+          post(IndividualAddressYearsId, mode, form(), vm)
       }
   }
 

@@ -111,7 +111,7 @@ class VariationDeclarationController @Inject()(appConfig: FrontendAppConfig,
 
   private def sendEmail(psaId: String)
                        (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[EmailStatus] =
-    (psaEmail, psaName) match {
+    (psaEmail, psaName()) match {
       case (Some(email), Some(name)) =>
         emailConnector
           .sendEmail(
