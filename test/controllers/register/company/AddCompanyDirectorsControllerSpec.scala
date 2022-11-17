@@ -19,16 +19,14 @@ package controllers.register.company
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.company.AddCompanyDirectorsControllerSpec.form
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.company.directors.DirectorNameId
 import models.FeatureToggle.{Disabled, Enabled}
 import models.FeatureToggleName.PsaRegistration
+import models._
 import models.requests.DataRequest
-import models.{NormalMode, PSAUser, PersonName, UpdateMode, UserType}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json._
@@ -224,7 +222,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAn
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -232,7 +230,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAn
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 
@@ -240,7 +238,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAn
 
 object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSpec {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
 
   private val formProvider = new AddCompanyDirectorsFormProvider()
   private val form = formProvider()

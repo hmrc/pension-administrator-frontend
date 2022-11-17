@@ -36,7 +36,7 @@ class CompanyEmailControllerSpec extends ControllerWithCommonBehaviour {
   private val emailForm = formProvider()
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   val view: email = app.injector.instanceOf[email]
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new CompanyEmailController(

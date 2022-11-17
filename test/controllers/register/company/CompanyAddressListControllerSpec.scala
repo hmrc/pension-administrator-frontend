@@ -33,7 +33,7 @@ import views.html.address.addressList
 
 class CompanyAddressListControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
 
   private val formProvider = new AddressListFormProvider()
   private val companyDetails = Json.obj(BusinessNameId.toString -> companyName)
@@ -151,7 +151,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
           val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
 
         "POST" in {
@@ -159,7 +159,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
           val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
     }

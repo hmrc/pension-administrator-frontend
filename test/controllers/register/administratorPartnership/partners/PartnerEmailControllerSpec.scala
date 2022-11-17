@@ -31,7 +31,7 @@ import views.html.email
 class PartnerEmailControllerSpec extends ControllerWithCommonBehaviour {
  import PartnerEmailControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerEmailController(
     new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),

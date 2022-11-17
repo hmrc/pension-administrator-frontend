@@ -56,8 +56,8 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
     implicit request =>
       val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       val preparedForm = request.userAnswers.get(VariationWorkingKnowledgeId) match {
-        case None => form
-        case Some(value) => form.fill(value)
+        case None => form()
+        case Some(value) => form().fill(value)
       }
       Ok(view(
         preparedForm,
@@ -69,7 +69,7 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
-      form.bindFromRequest().fold(
+      form().bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(
             formWithErrors,

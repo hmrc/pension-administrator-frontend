@@ -17,9 +17,8 @@
 package controllers.actions
 
 import config.FrontendAppConfig
-import models.MinimalPSA
 import models.requests.AuthenticatedRequest
-import models.{Mode, NormalMode}
+import models.{MinimalPSA, Mode, NormalMode}
 import play.api.mvc.Result
 
 import scala.concurrent.ExecutionContext.Implicits.global

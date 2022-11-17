@@ -35,7 +35,7 @@ import views.html.address.manualAddress
 
 class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
@@ -115,14 +115,14 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
           val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
         "POST" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody()
           val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
     }

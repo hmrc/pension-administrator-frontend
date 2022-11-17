@@ -17,10 +17,12 @@
 package identifiers.register.partnership
 
 import models.{Address, TolerantAddress}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import utils.UserAnswers
 
-class PartnershipSameContactAddressIdSpec extends WordSpec with OptionValues with MustMatchers {
+class PartnershipSameContactAddressIdSpec extends AnyWordSpecLike with OptionValues with Matchers {
 
   "Cleanup" when {
 

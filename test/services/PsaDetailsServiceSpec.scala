@@ -20,31 +20,30 @@ import base.SpecBase
 import connectors.SubscriptionConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
-import identifiers.register.company.{CompanyContactAddressId, CompanyPreviousAddressChangedId, CompanyContactDetailsChangedId, CompanyContactAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
+import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
-import identifiers.register.partnership.{PartnershipContactDetailsChangedId, PartnershipContactAddressChangedId, PartnershipPreviousAddressChangedId, PartnershipContactAddressId}
-import identifiers.register.{DirectorsOrPartnersChangedId, DeclarationChangedId, MoreThanTenDirectorsOrPartnersChangedId}
-import identifiers.{UpdateModeId, IndexId}
+import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId}
+import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId}
+import identifiers.{IndexId, UpdateModeId}
 import models.requests.OptionalDataRequest
-import models.{UserType, PSAUser, UpdateMode}
+import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{OptionValues, BeforeAndAfterEach}
-import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{Json, JsValue}
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results.Ok
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.ViewPsaDetailsHelperSpec.readJsonFromFile
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
-import utils.testhelpers.ViewPsaDetailsBuilder.{companyContactOnlyWithChangeLinks, individualContactOnlyWithChangeLinks, partnershipContactOnlyWithChangeLinks, companyWithChangeLinks, individualWithChangeLinks, partnershipWithChangeLinks}
+import utils.testhelpers.ViewPsaDetailsBuilder.{companyContactOnlyWithChangeLinks, companyWithChangeLinks, individualContactOnlyWithChangeLinks, individualWithChangeLinks, partnershipContactOnlyWithChangeLinks, partnershipWithChangeLinks}
 import utils.{FakeCountryOptions, UserAnswers}
-import viewmodels.{AnswerSection, PsaViewDetailsViewModel, SuperSection, AnswerRow}
+import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
@@ -66,109 +65,109 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
   private val titlePsaDataContactOnlyCompany = "updateContactAddressCYA.company.title"
   private val titlePsaDataContactOnlyPartnership = "updateContactAddressCYA.partnership.title"
 
-    "retrievePsaDataAndGenerateViewModel" must {
+  "retrievePsaDataAndGenerateViewModel" must {
 
-      "return the correct PSA individual view model with correct can de register flag and existing current address id" in {
-        val expectedAddress = UserAnswers(individualUserAnswers).get(IndividualContactAddressId).get.toTolerantAddress
+    "return the correct PSA individual view model with correct can de register flag and existing current address id" in {
+      val expectedAddress = UserAnswers(individualUserAnswers).get(IndividualContactAddressId).get.toTolerantAddress
 
-        when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-          .thenReturn(Future.successful(individualUserAnswers))
+      when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+        .thenReturn(Future.successful(individualUserAnswers))
 
-        val result = service().retrievePsaDataAndGenerateViewModel("123")
-        whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", isUserAnswerUpdated = false,
-            userAnswersIncompleteMessage = None, title = titlePsaDataFull)
-        }
-        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(ExistingCurrentAddressId).value mustBe expectedAddress
-        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
+      val result = service().retrievePsaDataAndGenerateViewModel("123")
+      whenReady(result) {
+        _ mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", isUserAnswerUpdated = false,
+          userAnswersIncompleteMessage = None, title = titlePsaDataFull)
+      }
+      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(ExistingCurrentAddressId).value mustBe expectedAddress
+      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
+    }
+
+    "return the correct PSA company view model, also verify the correct existing current address ids and flags, and adviser Add links" in {
+      val companyExpectedAddress = UserAnswers(companyUserAnswers).get(CompanyContactAddressId).get.toTolerantAddress
+      val directorExpectedAddress = UserAnswers(companyUserAnswers).get(DirectorAddressId(0)).get.toTolerantAddress
+
+      when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+        .thenReturn(Future.successful(companyUserAnswers))
+
+      val result = service().retrievePsaDataAndGenerateViewModel("123")
+      whenReady(result) {
+        _ mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false,
+          userAnswersIncompleteMessage = None, title = titlePsaDataFull)
       }
 
-      "return the correct PSA company view model, also verify the correct existing current address ids and flags, and adviser Add links" in {
-        val companyExpectedAddress = UserAnswers(companyUserAnswers).get(CompanyContactAddressId).get.toTolerantAddress
-        val directorExpectedAddress = UserAnswers(companyUserAnswers).get(DirectorAddressId(0)).get.toTolerantAddress
+      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe companyExpectedAddress
+      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(DirectorsExistingCurrentAddressId(0)).value mustBe directorExpectedAddress
+      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
+    }
 
-        when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-          .thenReturn(Future.successful(companyUserAnswers))
+    "return the correct PSA partnership view model, also correct existing current address ids and flags" in {
+      val partnershipExpectedAddress = UserAnswers(partnershipUserAnswers).get(PartnershipContactAddressId).get.toTolerantAddress
+      val partnerExpectedAddress = UserAnswers(partnershipUserAnswers).get(PartnerAddressId(0)).get.toTolerantAddress
 
-        val result = service().retrievePsaDataAndGenerateViewModel("123")
-        whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false,
-            userAnswersIncompleteMessage = None, title = titlePsaDataFull)
-        }
+      when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
+        .thenReturn(Future.successful(partnershipUserAnswers))
+      when(mockDataCompletion.psaUpdateDetailsInCompleteAlert(any())).thenReturn(Some("incomplete.alert.message"))
 
-        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe companyExpectedAddress
-        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(DirectorsExistingCurrentAddressId(0)).value mustBe directorExpectedAddress
-        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
+      val result = service().retrievePsaDataAndGenerateViewModel("123")
+      whenReady(result) {
+        _ mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name",
+          isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = titlePsaDataFull)
       }
+      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe partnershipExpectedAddress
+      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(PartnersExistingCurrentAddressId(0)).value mustBe partnerExpectedAddress
+      UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
+    }
 
-      "return the correct PSA partnership view model, also correct existing current address ids and flags" in {
-        val partnershipExpectedAddress = UserAnswers(partnershipUserAnswers).get(PartnershipContactAddressId).get.toTolerantAddress
-        val partnerExpectedAddress = UserAnswers(partnershipUserAnswers).get(PartnerAddressId(0)).get.toTolerantAddress
+    "call psa subscription details to fetch data if no data is available in user answers" in {
+      reset(mockUserAnswersConnector, mockSubscriptionConnector)
+      when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+      when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
-        when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any()))
-          .thenReturn(Future.successful(partnershipUserAnswers))
-        when(mockDataCompletion.psaUpdateDetailsInCompleteAlert(any())).thenReturn(Some("incomplete.alert.message"))
-
-        val result = service().retrievePsaDataAndGenerateViewModel("123")
-        whenReady(result) {
-          _ mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name",
-            isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = titlePsaDataFull)
-        }
-        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(CompanyExistingCurrentAddressId).value mustBe partnershipExpectedAddress
-        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(PartnersExistingCurrentAddressId(0)).value mustBe partnerExpectedAddress
-        UserAnswers(LocalFakeUserAnswersCacheConnector.lastUpsert.get).get(UpdateModeId).value mustBe true
+      val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel("123")
+      whenReady(result) { _ =>
+        verify(mockUserAnswersConnector, never).removeAll(any())(any(), any())
+        verify(mockSubscriptionConnector, times(1)).getSubscriptionDetails(any())(any(), any())
       }
+    }
 
-      "call psa subscription details to fetch data if no data is available in user answers" in {
-        reset(mockUserAnswersConnector, mockSubscriptionConnector)
-        when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(None))
-        when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-        when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
+    "remove the existing data and call psa subscription details to fetch data if data for index is available in user answers" in {
+      reset(mockUserAnswersConnector, mockSubscriptionConnector)
+      when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(Some(Json.obj(IndexId.toString -> "index"))))
+      when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+      when(mockUserAnswersConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(Ok))
+      when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
-        val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel("123")
-        whenReady(result) { _ =>
-          verify(mockUserAnswersConnector, never()).removeAll(any())(any(), any())
-          verify(mockSubscriptionConnector, times(1)).getSubscriptionDetails(any())(any(), any())
-        }
+      val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel("123")
+      whenReady(result) { _ =>
+        verify(mockUserAnswersConnector, times(1)).removeAll(any())(any(), any())
+        verify(mockSubscriptionConnector, times(1)).getSubscriptionDetails(any())(any(), any())
       }
+    }
 
-      "remove the existing data and call psa subscription details to fetch data if data for index is available in user answers" in {
-        reset(mockUserAnswersConnector, mockSubscriptionConnector)
-        when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(Some(Json.obj(IndexId.toString -> "index"))))
-        when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-        when(mockUserAnswersConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(Ok))
-        when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
+    "populate all the variations change flags when getUserAnswers is called when no user answers data" in {
+      reset(mockUserAnswersConnector, mockSubscriptionConnector)
 
-        val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel("123")
-        whenReady(result) { _ =>
-          verify(mockUserAnswersConnector, times(1)).removeAll(any())(any(), any())
-          verify(mockSubscriptionConnector, times(1)).getSubscriptionDetails(any())(any(), any())
-        }
+      when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
+
+      val result = service(mockUserAnswersConnector).getUserAnswers("123", request.externalId)
+      whenReady(result) { userAnswers =>
+        Seq(IndividualAddressChangedId,
+          IndividualPreviousAddressChangedId,
+          IndividualContactDetailsChangedId,
+          CompanyContactAddressChangedId,
+          CompanyPreviousAddressChangedId,
+          CompanyContactDetailsChangedId,
+          PartnershipContactAddressChangedId,
+          PartnershipPreviousAddressChangedId,
+          PartnershipContactDetailsChangedId,
+          DeclarationChangedId,
+          MoreThanTenDirectorsOrPartnersChangedId,
+          DirectorsOrPartnersChangedId
+        ).foreach(userAnswers.get(_) mustBe Some(false))
       }
-
-      "populate all the variations change flags when getUserAnswers is called when no user answers data" in {
-        reset(mockUserAnswersConnector, mockSubscriptionConnector)
-
-        when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(None))
-        when(mockSubscriptionConnector.getSubscriptionDetails(any())(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
-
-        val result = service(mockUserAnswersConnector).getUserAnswers("123", request.externalId)
-        whenReady(result) { userAnswers =>
-          Seq(IndividualAddressChangedId,
-            IndividualPreviousAddressChangedId,
-            IndividualContactDetailsChangedId,
-            CompanyContactAddressChangedId,
-            CompanyPreviousAddressChangedId,
-            CompanyContactDetailsChangedId,
-            PartnershipContactAddressChangedId,
-            PartnershipPreviousAddressChangedId,
-            PartnershipContactDetailsChangedId,
-            DeclarationChangedId,
-            MoreThanTenDirectorsOrPartnersChangedId,
-            DirectorsOrPartnersChangedId
-          ).foreach(userAnswers.get(_) mustBe Some(false))
-        }
-      }
+    }
   }
 
   "retrievePsaDataAndGenerateContactDetailsOnlyViewModel" must {
@@ -216,7 +215,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
       val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateContactDetailsOnlyViewModel("A2100005", mode)
       whenReady(result) { _ =>
-        verify(mockUserAnswersConnector, never()).removeAll(any())(any(), any())
+        verify(mockUserAnswersConnector, never).removeAll(any())(any(), any())
         verify(mockSubscriptionConnector, times(1)).getSubscriptionDetails(any())(any(), any())
       }
     }
@@ -240,10 +239,10 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
 object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
 
-  private val mockSubscriptionConnector = mock[SubscriptionConnector]
+  private val mockSubscriptionConnector: SubscriptionConnector = mock[SubscriptionConnector]
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  private val mockUserAnswersConnector = mock[UserAnswersCacheConnector]
-  private val mockDataCompletion = mock[DataCompletion]
+  private val mockUserAnswersConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private val mockDataCompletion: DataCompletion = mock[DataCompletion]
 
   object LocalFakeUserAnswersCacheConnector extends FakeUserAnswersCacheConnector {
     override def fetch(cacheId: String)(implicit

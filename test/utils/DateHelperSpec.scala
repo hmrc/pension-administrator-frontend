@@ -16,11 +16,12 @@
 
 package utils
 
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import java.time.LocalDate
 
-import uk.gov.hmrc.play.test.UnitSpec
-
-class DateHelperSpec extends UnitSpec {
+class DateHelperSpec extends Matchers with AnyWordSpecLike {
   def buildDateHelper: DateHelper = new DateHelper {
     override private[utils] def currentDate: LocalDate = LocalDate.parse("2019-01-02")
   }

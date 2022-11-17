@@ -16,13 +16,12 @@
 
 package controllers.actions
 
-import java.time.LocalDate
-
 import connectors.RegistrationConnector
-import models.{RegistrationLegalStatus, _}
+import models._
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 abstract class FakeRegistrationConnector extends RegistrationConnector {

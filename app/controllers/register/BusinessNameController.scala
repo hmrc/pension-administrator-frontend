@@ -51,7 +51,7 @@ trait BusinessNameController extends FrontendBaseController with I18nSupport wit
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
   implicit request =>
   val prepareForm = request.userAnswers.get(BusinessNameId).fold(form)(form.fill)
-    BusinessTypeId.retrieve.right.map { businessType =>
+    BusinessTypeId.retrieve.map { businessType =>
       Future.successful(Ok(view(prepareForm, toString(businessType), href)))
     }
 
@@ -61,7 +61,7 @@ trait BusinessNameController extends FrontendBaseController with I18nSupport wit
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          BusinessTypeId.retrieve.right.map { businessType =>
+          BusinessTypeId.retrieve.map { businessType =>
             Future.successful(BadRequest(view(formWithErrors, toString(businessType), href)))
           },
         value =>

@@ -20,13 +20,12 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import views.html.register.partnership.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
 
   val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
 

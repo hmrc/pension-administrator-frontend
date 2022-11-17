@@ -82,5 +82,5 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
     }
   }
 
-  private def sessionExpired:Result = Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+  private def sessionExpired:Result = Redirect(controllers.routes.SessionExpiredController.onPageLoad)
 }

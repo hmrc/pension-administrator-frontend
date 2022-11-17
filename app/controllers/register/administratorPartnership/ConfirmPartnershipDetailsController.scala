@@ -88,7 +88,7 @@ class ConfirmPartnershipDetailsController @Inject()(
   private def getPartnershipDetails(fn: OrganizationRegistration => Future[Result])
                                    (implicit request: DataRequest[AnyContent]): Either[Future[Result], Future[Result]] = {
 
-    (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.right.map {
+    (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.map {
       case name ~ utr ~ businessType =>
         val organisation = Organisation(name, businessType)
         val legalStatus = RegistrationLegalStatus.Partnership
@@ -120,7 +120,7 @@ class ConfirmPartnershipDetailsController @Inject()(
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          (BusinessNameId and PartnershipRegisteredAddressId).retrieve.right.map {
+          (BusinessNameId and PartnershipRegisteredAddressId).retrieve.map {
             case name ~ address =>
               Future.successful(BadRequest(view(
                 formWithErrors,

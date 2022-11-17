@@ -16,8 +16,6 @@
 
 package controllers.register.individual
 
-import java.time.LocalDate
-
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -26,17 +24,16 @@ import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
 import models._
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import services.RegistrationService
-
 import utils.{DateHelper, FakeNavigator}
 import views.html.register.individual.individualDateOfBirth
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with MockitoSugar {
@@ -91,7 +88,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-      verify(registrationService, never()).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
+      verify(registrationService, never).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
     }
 
     "call the registration and redirect to the next page when valid data is submitted for nonUK" in {
@@ -106,7 +103,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-      verify(registrationService, atLeastOnce()).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
+      verify(registrationService, atLeastOnce).registerWithNoIdIndividual(any(), any(), any(), any())(any(), any())
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -123,7 +120,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -131,11 +128,11 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   def getRequiredDataForRegistration(isUk : Boolean = false): FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(

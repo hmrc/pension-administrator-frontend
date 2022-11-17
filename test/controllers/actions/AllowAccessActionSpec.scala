@@ -84,7 +84,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       whenReady(futureResult) { result =>
 
         result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
 
@@ -113,7 +113,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       whenReady(futureResult) { result =>
 
         result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.CannotMakeChangesController.onPageLoad().url)
+        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.CannotMakeChangesController.onPageLoad.url)
       }
     }
 
@@ -142,7 +142,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
 
       whenReady(futureResult) { result =>
         result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad().url)
+        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad.url)
       }
     }
 

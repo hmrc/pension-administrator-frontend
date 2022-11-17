@@ -37,7 +37,7 @@ trait NameCleansing {
   private[controllers] def cleanseAndBindOrRedirect[A](data: Option[Map[String, Seq[String]]],
                                                        fieldName: String, form: Form[A]): Either[Future[Result], Form[A]] =
     data match {
-      case None => Left(Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
+      case None => Left(Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad)))
       case Some(requestData) => Right(form.bind(cleanse(requestData, fieldName)))
     }
 }

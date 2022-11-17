@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@
 
 @layout(pageTitle = if(request.user.isExistingPSA) messages("confirmation.existingPSA.title") else messages("confirmation.newPSA.title"),showBackLink = false) {
 
-    @formHelper(action = controllers.register.routes.ConfirmationController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.register.routes.ConfirmationController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @panel(
             panelTitle = panelTitle,

@@ -25,11 +25,13 @@ import models._
 import models.register.BusinessType._
 import models.register.NonUKBusinessType.Company
 import models.register.{BusinessType, NonUKBusinessType}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class BusinessTypeIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class BusinessTypeIdSpec extends AnyWordSpecLike with Matchers with OptionValues with Enumerable.Implicits {
   import BusinessTypeIdSpec._
   "BusinessTypeId" must {
     "remove the has company CRN id when the business type is changed to LTD company" in {

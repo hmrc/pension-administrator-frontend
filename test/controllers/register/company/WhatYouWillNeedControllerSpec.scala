@@ -21,13 +21,12 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAll
 import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import views.html.register.company.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
 

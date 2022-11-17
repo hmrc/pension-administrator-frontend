@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import java.time.LocalDate
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -35,6 +34,7 @@ import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
@@ -191,7 +191,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
         "no business type data is found" in {
           val data = Json.obj(
@@ -203,14 +203,14 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
 
         "no existing data is found" in {
           val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
       "POST" when {
@@ -223,7 +223,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
         "no business type data is found" in {
           val data = Json.obj(
@@ -235,7 +235,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
 
         "no existing data is found" in {
@@ -243,14 +243,14 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
     }
 
   }
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
 
 

@@ -20,7 +20,6 @@ import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.Helpers._
-
 import views.html.deregister.cannotDeregister
 
 class CannotDeregisterControllerSpec extends ControllerSpecBase with ScalaFutures {

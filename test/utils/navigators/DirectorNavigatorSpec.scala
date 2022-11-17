@@ -24,9 +24,9 @@ import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectors
 import models.Mode.checkMode
 import models._
 import models.requests.IdentifiedRequest
+import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
@@ -164,7 +164,7 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
 object DirectorNavigatorSpec extends OptionValues {
 
   private val index = 0
-  private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  private lazy val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad
   private lazy val anyMoreChangesPage = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private lazy val confirmPreviousAddressPage = routes.DirectorConfirmPreviousAddressController.onPageLoad(index)
 

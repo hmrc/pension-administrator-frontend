@@ -28,10 +28,10 @@ import identifiers.register.partnership.partners.PartnerAddressYearsId
 import models._
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar
+import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, OptionValues}
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.matchers.must.Matchers
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -75,7 +75,7 @@ object AddressYearsControllerSpec {
 
 }
 
-class AddressYearsControllerSpec extends SpecBase with MustMatchers with OptionValues with ScalaFutures with MockitoSugar {
+class AddressYearsControllerSpec extends SpecBase with Matchers with OptionValues with ScalaFutures with MockitoSugar {
 
   import AddressYearsControllerSpec._
 

@@ -65,7 +65,7 @@ class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppCo
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map {
+      BusinessNameId.retrieve.map {
         name =>
           get(
             PartnershipContactAddressId,
@@ -78,7 +78,7 @@ class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppCo
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map {
+      BusinessNameId.retrieve.map {
         name =>
           post(
             PartnershipContactAddressId,

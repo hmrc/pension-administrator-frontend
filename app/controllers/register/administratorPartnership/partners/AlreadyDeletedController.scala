@@ -48,7 +48,7 @@ class AlreadyDeletedController @Inject()(appConfig: FrontendAppConfig,
         controllers.register.administratorPartnership.routes.AddPartnerController.onPageLoad(NormalMode)
       )
 
-      PartnerNameId(index).retrieve.right.map { partnerDetails =>
+      PartnerNameId(index).retrieve.map { partnerDetails =>
         Future.successful(Ok(view(viewModel(partnerDetails.fullName))))
       }
 

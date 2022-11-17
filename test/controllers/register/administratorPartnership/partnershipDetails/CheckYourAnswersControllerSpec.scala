@@ -21,13 +21,12 @@ import controllers.actions._
 import controllers.register.administratorPartnership.partnershipDetails.routes._
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
+import utils.UserAnswers
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.UserAnswers
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 

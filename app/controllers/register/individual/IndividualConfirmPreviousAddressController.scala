@@ -57,7 +57,7 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
   private def viewmodel(mode: Mode) =
     Retrieval(
       implicit request =>
-        (IndividualDetailsId and ExistingCurrentAddressId).retrieve.right.map {
+        (IndividualDetailsId and ExistingCurrentAddressId).retrieve.map {
           case details ~ address =>
             SameContactAddressViewModel(
               postCall(),
@@ -74,14 +74,14 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map { vm =>
+      viewmodel(mode).retrieve.map { vm =>
         get(IndividualConfirmPreviousAddressId, vm)
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map { vm =>
+      viewmodel(mode).retrieve.map { vm =>
         post(IndividualConfirmPreviousAddressId, IndividualPreviousAddressId, vm, mode)
       }
   }

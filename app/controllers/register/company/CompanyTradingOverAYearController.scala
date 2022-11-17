@@ -68,7 +68,7 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        BusinessNameId.retrieve.right.map {
+        BusinessNameId.retrieve.map {
           companyName =>
             featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
               val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
@@ -80,7 +80,7 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        BusinessNameId.retrieve.right.map {
+        BusinessNameId.retrieve.map {
           companyName => {
             form(companyName).bindFromRequest().fold(
               (formWithErrors: Form[_]) =>

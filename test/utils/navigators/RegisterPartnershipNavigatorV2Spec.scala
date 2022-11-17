@@ -179,15 +179,15 @@ object RegisterPartnershipNavigatorV2Spec extends OptionValues {
   private lazy val updatingContactAddressForRLS = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value
 
   private lazy val updateContactAddressCYAPage: Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
-  private lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
+  private lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad
 
   private lazy val confirmPartnershipDetailsPage: Call = ConfirmPartnershipDetailsController.onPageLoad()
 
-  private lazy val partnershipNamePage = PartnershipNameController.onPageLoad()
+  private lazy val partnershipNamePage = PartnershipNameController.onPageLoad
 
   private lazy val companyUpdateDetailsPage = controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
 
-  private lazy val partnershipIsRegisteredNamePage = PartnershipIsRegisteredNameController.onPageLoad()
+  private lazy val partnershipIsRegisteredNamePage = PartnershipIsRegisteredNameController.onPageLoad
 
   private lazy val partnershipSameContactAddressPage: Call = PartnershipSameContactAddressController.onPageLoad(NormalMode)
 

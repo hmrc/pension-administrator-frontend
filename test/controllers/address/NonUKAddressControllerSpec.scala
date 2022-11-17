@@ -25,9 +25,10 @@ import forms.address.NonUKAddressFormProvider
 import identifiers.register.RegistrationInfoId
 import models._
 import models.requests.DataRequest
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.mockito.MockitoSugar
+import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject._
@@ -43,7 +44,7 @@ import views.html.address.nonukAddress
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class NonUKAddressControllerSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with OptionValues {
+class NonUKAddressControllerSpec extends AnyWordSpecLike with MockitoSugar with ScalaFutures with OptionValues {
 
   import NonUKAddressControllerSpec._
 

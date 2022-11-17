@@ -32,7 +32,7 @@ class PartnershipPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   import PartnershipPhoneControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val view: phone = app.injector.instanceOf[phone]
 

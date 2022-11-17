@@ -73,7 +73,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
           case Some(redirect) => Future.successful(redirect)
         }
       case _ =>
-        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
+        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
 
     } recover handleFailure
   }
@@ -246,9 +246,9 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     } else {
       affinityGroup match {
         case Agent =>
-          Some(Redirect(routes.AgentCannotRegisterController.onPageLoad()))
+          Some(Redirect(routes.AgentCannotRegisterController.onPageLoad))
         case Individual if !alreadyEnrolledInPODS(enrolments) =>
-          Some(Redirect(routes.UseOrganisationCredentialsController.onPageLoad()))
+          Some(Redirect(routes.UseOrganisationCredentialsController.onPageLoad))
         case _ =>
           None
       }
@@ -268,17 +268,17 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     case _: NoActiveSession =>
       Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
     case _: InsufficientEnrolments =>
-      Redirect(routes.UnauthorisedController.onPageLoad())
+      Redirect(routes.UnauthorisedController.onPageLoad)
     case _: InsufficientConfidenceLevel =>
-      Redirect(routes.UnauthorisedController.onPageLoad())
+      Redirect(routes.UnauthorisedController.onPageLoad)
     case _: UnsupportedAuthProvider =>
-      Redirect(routes.UnauthorisedController.onPageLoad())
+      Redirect(routes.UnauthorisedController.onPageLoad)
     case _: UnsupportedAffinityGroup =>
-      Redirect(routes.UnauthorisedController.onPageLoad())
+      Redirect(routes.UnauthorisedController.onPageLoad)
     case _: UnsupportedCredentialRole =>
       Redirect(routes.UnauthorisedAssistantController.onPageLoad())
     case _: UnauthorizedException =>
-      Redirect(routes.UnauthorisedController.onPageLoad())
+      Redirect(routes.UnauthorisedController.onPageLoad)
   }
 
   private def existingPSA(enrolments: Enrolments): Option[String] =

@@ -46,7 +46,7 @@ trait ControllerWithCommonBehaviour extends ControllerSpecBase with ScalaFutures
         val result = onPageLoadAction(dontGetAnyData)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
 
@@ -64,7 +64,7 @@ trait ControllerWithCommonBehaviour extends ControllerSpecBase with ScalaFutures
         val result = onSubmitAction(dontGetAnyData)(request)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
   }

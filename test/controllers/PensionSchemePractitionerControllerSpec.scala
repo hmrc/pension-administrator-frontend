@@ -18,7 +18,6 @@ package controllers
 
 import base.SpecBase
 import play.api.test.Helpers._
-
 import views.html.pensionSchemePractitioner
 
 class PensionSchemePractitionerControllerSpec extends SpecBase {

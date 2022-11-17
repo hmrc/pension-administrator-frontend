@@ -17,11 +17,13 @@
 package identifiers.register.partnership
 
 import models.{Address, TolerantAddress}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class PartnershipTradingOverAYearIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class PartnershipTradingOverAYearIdSpec extends AnyWordSpecLike with Matchers with OptionValues with Enumerable.Implicits {
 
   "Cleanup" when {
     "`PartnershipTradingOverAYearId` has been set to `true`" must {

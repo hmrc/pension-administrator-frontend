@@ -69,7 +69,7 @@ class IndividualDateOfBirthController @Inject()(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
-          (AreYouInUKId and IndividualDetailsId and IndividualAddressId).retrieve.right.map {
+          (AreYouInUKId and IndividualDetailsId and IndividualAddressId).retrieve.map {
             case false ~ individual ~ address =>
               registrationService.registerWithNoIdIndividual(request.externalId, individual, address.toAddress.get,
                 value).flatMap { _ =>

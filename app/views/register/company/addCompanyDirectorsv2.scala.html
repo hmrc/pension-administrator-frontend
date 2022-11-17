@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,13 +39,9 @@
 
 @directors = @{ directorsComplete ++ directorsIncomplete }
 
-@disableSubmission = @{
-    directors.exists(director => if(mode == NormalMode) !director.isComplete else director.isNew && !director.isComplete)
-}
-
 @layout(pageTitle = titleWithErrors(form, messages("addCompanyDirectors.title"))) {
 
-    @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = AddCompanyDirectorsController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

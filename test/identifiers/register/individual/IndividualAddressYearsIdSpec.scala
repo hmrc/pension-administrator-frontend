@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package identifiers.register.company.individual
+package identifiers.register.individual
 
-import identifiers.register.individual.{IndividualAddressYearsId, IndividualPreviousAddressId, IndividualPreviousAddressListId, IndividualPreviousAddressPostCodeLookupId}
 import models.{Address, AddressYears, TolerantAddress}
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class IndividualAddressYearsIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class IndividualAddressYearsIdSpec extends AnyWordSpecLike with Matchers with OptionValues with Enumerable.Implicits {
 
   "Cleanup" when {
 

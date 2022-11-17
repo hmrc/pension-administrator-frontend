@@ -23,7 +23,6 @@ import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipContactAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
-import org.scalatest.MustMatchers
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
@@ -37,7 +36,7 @@ import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-class PartnershipContactAddressListControllerSpec extends ControllerSpecBase with MustMatchers {
+class PartnershipContactAddressListControllerSpec extends ControllerSpecBase {
 
   val view: addressList = inject[addressList]
 

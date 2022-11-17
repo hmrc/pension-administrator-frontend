@@ -16,8 +16,6 @@
 
 package identifiers.register.company.directors
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models._
 import models.requests.DataRequest
@@ -26,6 +24,8 @@ import play.api.test.FakeRequest
 import utils.checkyouranswers.Ops._
 import utils.{DateHelper, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
+
+import java.time.LocalDate
 
 class DirectorDOBIdSpec extends SpecBase {
 

@@ -25,9 +25,9 @@ import forms.AddressFormProvider
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
 import models.{Address, NormalMode, TolerantAddress}
+import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers.{contentAsString, _}
@@ -143,19 +143,19 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
         val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
       "no existing data is found on a POST" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody()
         val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
   }
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 

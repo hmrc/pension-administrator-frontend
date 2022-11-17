@@ -17,15 +17,15 @@
 package controllers.register
 
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
-import models.FeatureToggleName.PsaRegistration
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
-import models.{FeatureToggle, NormalMode}
+import models.FeatureToggleName.PsaRegistration
 import models.register.DeclarationWorkingKnowledge
+import models.{FeatureToggle, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -35,15 +35,15 @@ import views.html.register.declarationWorkingKnowledge
 
 import scala.concurrent.Future
 
-class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
+class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val formProvider = new DeclarationWorkingKnowledgeFormProvider()
   val form: Form[Boolean] = formProvider()
 
   val defaultFeatureToggleConnector = {
-    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+    val mockFeatureToggleConnector:FeatureToggleConnector = mock[FeatureToggleConnector]
     when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Enabled(PsaRegistration)))
     mockFeatureToggleConnector
   }
@@ -107,7 +107,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -115,7 +115,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 }

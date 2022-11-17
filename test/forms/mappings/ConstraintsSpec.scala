@@ -16,15 +16,14 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
 import forms.FormSpec
-import org.scalatest.Matchers
 import play.api.data.validation.{Invalid, Valid}
 import utils.FakeCountryOptions
 import utils.countryOptions.CountryOptions
 
-class ConstraintsSpec extends FormSpec with Matchers with Constraints with RegexBehaviourSpec {
+import java.time.LocalDate
+
+class ConstraintsSpec extends FormSpec with Constraints with RegexBehaviourSpec {
 
   // scalastyle:off magic.number
 

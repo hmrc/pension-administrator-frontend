@@ -58,7 +58,7 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewmodel(mode, returnLink).right.map(vm =>
+        viewmodel(mode, returnLink).map(vm =>
           get(vm, mode, form(vm.addresses))
         )
       }
@@ -68,14 +68,14 @@ class CompanyContactAddressListController @Inject()(override val appConfig: Fron
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewmodel(mode, returnLink).right.map(vm =>
+        viewmodel(mode, returnLink).map(vm =>
           post(vm, CompanyContactAddressId, CompanyContactAddressListId, CompanyContactAddressPostCodeLookupId, mode, form(vm.addresses))
         )
       }
   }
 
   def viewmodel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    (BusinessNameId and CompanyContactAddressPostCodeLookupId).retrieve.right.map {
+    (BusinessNameId and CompanyContactAddressPostCodeLookupId).retrieve.map {
       case name ~ addresses =>
         AddressListViewModel(
           postCall = routes.CompanyContactAddressListController.onSubmit(mode),

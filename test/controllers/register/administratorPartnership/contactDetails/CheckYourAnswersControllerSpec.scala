@@ -20,7 +20,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
@@ -48,7 +47,7 @@ class CheckYourAnswersControllerSpec
   private val phone = "111"
   private val address = Address("Telford1", "Telford2", None, None, Some("TF3 4ER"), "Country of GB")
   private val view: check_your_answers = app.injector.instanceOf[check_your_answers]
-  private val mockDataCompletion = mock[DataCompletion]
+  private val mockDataCompletion: DataCompletion = mock[DataCompletion]
 
   def controller(dataRetrievalAction: DataRetrievalAction) =
     new CheckYourAnswersController(

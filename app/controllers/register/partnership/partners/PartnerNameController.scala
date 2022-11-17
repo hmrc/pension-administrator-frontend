@@ -61,14 +61,14 @@ class PartnerNameController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
+      BusinessNameId.retrieve.map { name =>
         Future.successful(get(id(index), viewModel(mode, index, name), mode))
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
+      BusinessNameId.retrieve.map { name =>
         post(id(index), viewModel(mode, index, name), mode)
       }
   }

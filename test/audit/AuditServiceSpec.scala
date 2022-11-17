@@ -17,9 +17,11 @@
 package audit
 
 import akka.stream.Materializer
-import org.scalatest.{AsyncFlatSpec, Inside, Matchers}
-import play.api.inject.{bind, ApplicationLifecycle}
+import org.scalatest.Inside
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.{ApplicationLifecycle, bind}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +46,7 @@ class AuditServiceSpec extends AsyncFlatSpec with Matchers with Inside {
     val sentEvent = FakeAuditConnector.lastSentEvent
 
     inside(sentEvent) {
-      case DataEvent(auditSource, auditType, _, _, detail, _) =>
+      case DataEvent(auditSource, auditType, _, _, detail, _, _, _) =>
         auditSource shouldBe appName
         auditType shouldBe "TestAuditEvent"
         detail should contain("payload" -> "test-audit-payload")
@@ -62,7 +64,7 @@ class AuditServiceSpec extends AsyncFlatSpec with Matchers with Inside {
     val sentEvent = FakeAuditConnector.lastSentEvent
 
     inside(sentEvent) {
-      case DataEvent(auditSource, auditType, _, _, detail, _) =>
+      case DataEvent(auditSource, auditType, _, _, detail, _, _, _) =>
         auditSource shouldBe appName
         auditType shouldBe "PSADeEnrolment"
         detail shouldBe Map("userId" -> "user-id", "psaId" -> "psa-id")

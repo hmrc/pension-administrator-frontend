@@ -20,7 +20,6 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction}
 import models.NormalMode
 import play.api.test.Helpers._
-
 import views.html.register.partnership.partners.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {

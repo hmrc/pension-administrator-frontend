@@ -30,7 +30,7 @@ import views.html.hasReferenceNumber
 
 class PartnershipTradingOverAYearControllerSpec extends ControllerWithCommonBehaviour {
 
-  override def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private val name = "Test Partnership Name"
   private val formProvider = new HasReferenceNumberFormProvider()

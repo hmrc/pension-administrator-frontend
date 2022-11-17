@@ -78,7 +78,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                  Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
               case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
                 Redirect(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
-              case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+              case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad)
               }
           case(false, true) => Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
           case(true, false) => cyaPage(mode, Some(companyTaskListUrl()))

@@ -56,7 +56,7 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
 
   def viewModel(mode: Mode): Retrieval[PostcodeLookupViewModel] = Retrieval(
     implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
+      BusinessNameId.retrieve.map { name =>
         PostcodeLookupViewModel(
           routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode),
           routes.PartnershipContactAddressController.onPageLoad(mode),
@@ -74,14 +74,14 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map{ vm =>
+      viewModel(mode).retrieve.map{ vm =>
         get(vm, mode)
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map { vm =>
+      viewModel(mode).retrieve.map { vm =>
         post(PartnershipContactAddressPostCodeLookupId, vm, mode)
       }
   }

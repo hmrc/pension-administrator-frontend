@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("adviserName.title"))) {
 
-    @formHelper(action = AdviserNameController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = AdviserNameController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @input_text(
             field = form("adviserName"),

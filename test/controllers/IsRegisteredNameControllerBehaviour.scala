@@ -92,7 +92,7 @@ trait IsRegisteredNameControllerBehaviour {
 
 object IsRegisteredNameControllerBehaviour extends SpecBase {
 
-  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val view: isRegisteredName = app.injector.instanceOf[isRegisteredName]
 

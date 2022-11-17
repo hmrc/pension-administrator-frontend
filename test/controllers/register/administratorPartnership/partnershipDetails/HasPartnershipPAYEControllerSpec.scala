@@ -32,7 +32,7 @@ class HasPartnershipPAYEControllerSpec extends ControllerWithCommonBehaviour {
 
   import HasPartnershipPAYEControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val hasReferenceNumberForm = formProvider("error.required", partnershipName)
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]

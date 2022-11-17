@@ -35,7 +35,7 @@ trait PersonNameControllerBehaviour extends ControllerSpecBase {
 
   val personNameView: personName = app.injector.instanceOf[personName]
 
-  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  lazy val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val testPersonName: PersonName =
     PersonName(

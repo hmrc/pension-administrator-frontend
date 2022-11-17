@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 
 @layout(pageTitle = messages("companyReview.title")) {
 
-    @formHelper(action = CompanyReviewController.onSubmit, 'autoComplete -> "off") {
+    @formHelper(action = CompanyReviewController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @components.heading(messages("companyReview.heading"))
 
@@ -35,7 +35,7 @@
             heading = companyName,
             linkMessage = "companyReview.editLink",
             linkId = "edit-company-details",
-            link = CheckYourAnswersController.onPageLoad
+            link = CheckYourAnswersController.onPageLoad()
         )
 
         @components.review_section(

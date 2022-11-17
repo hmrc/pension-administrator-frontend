@@ -24,7 +24,6 @@ import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterPAYE
@@ -35,7 +34,7 @@ class PartnershipEnterPAYEControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: enterPAYE = app.injector.instanceOf[enterPAYE]
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val payeForm = formProvider(partnershipName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnershipEnterPAYEController(

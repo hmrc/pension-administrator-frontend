@@ -18,15 +18,15 @@ package utils.navigators
 
 import base.SpecBase
 import controllers.register.individual.routes
-import identifiers.{UpdateContactAddressId, Identifier}
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
+import identifiers.{Identifier, UpdateContactAddressId}
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{NavigatorBehaviour, Navigator, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -153,7 +153,7 @@ object IndividualNavigatorSpec extends OptionValues {
 
   private lazy val updateContactAddressCYAPage:Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   lazy private val youWillNeedToUpdatePage = routes.YouWillNeedToUpdateController.onPageLoad()
-  lazy private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad()
+  lazy private val sessionExpiredPage = controllers.routes.SessionExpiredController.onPageLoad
   lazy private val individualDateOfBirthPage = routes.IndividualDateOfBirthController.onPageLoad(NormalMode)
   lazy private val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
   lazy private val declarationWorkingKnowledgePage = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)

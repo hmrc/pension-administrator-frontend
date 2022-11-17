@@ -68,14 +68,14 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
+      BusinessNameId.retrieve.map { name =>
         get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode)
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map { name =>
+      BusinessNameId.retrieve.map { name =>
         post(PartnershipPreviousAddressId, viewmodel(mode, name), mode)
       }
   }

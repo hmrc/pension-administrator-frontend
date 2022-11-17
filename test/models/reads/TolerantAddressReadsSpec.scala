@@ -17,11 +17,13 @@
 package models.reads
 
 import models.TolerantAddress
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json._
 
 
-class TolerantAddressReadsSpec extends WordSpec with MustMatchers with OptionValues {
+class TolerantAddressReadsSpec extends AnyWordSpecLike with Matchers with OptionValues {
   "A Postcode Lookup response payload" should {
     "map correctly to a tolerant addres" when {
       val payload = Json.obj("address" -> Json.obj("lines" -> JsArray(Seq(JsString("line1"), JsString("line2"), JsString("line3"), JsString("line4"))),

@@ -17,7 +17,7 @@
 package controllers.register.adviser
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
 import models.FeatureToggle.Enabled
@@ -33,7 +33,7 @@ import views.html.email
 class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
   import AdviserEmailControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   val view: email = app.injector.instanceOf[email]
   private def controller(dataRetrievalAction: DataRetrievalAction) = new AdviserEmailController(
     new FakeNavigator(onwardRoute),

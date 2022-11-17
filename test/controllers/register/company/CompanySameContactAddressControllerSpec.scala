@@ -18,7 +18,7 @@ package controllers.register.company
 
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{AuthAction, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import forms.address.SameContactAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressId

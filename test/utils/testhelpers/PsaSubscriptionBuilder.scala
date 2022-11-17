@@ -16,10 +16,10 @@
 
 package utils.testhelpers
 
-import java.time.LocalDate
-
 import models.PsaSubscription._
 import viewmodels.AnswerRow
+
+import java.time.LocalDate
 
 object PsaSubscriptionBuilder {
 

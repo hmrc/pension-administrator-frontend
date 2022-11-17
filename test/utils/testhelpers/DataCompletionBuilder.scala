@@ -16,11 +16,12 @@
 
 package utils.testhelpers
 
-import java.time.LocalDate
 import models._
 import models.register.BusinessType
 import org.scalatest.OptionValues
 import utils.UserAnswers
+
+import java.time.LocalDate
 
 object DataCompletionBuilder {
 

@@ -25,18 +25,18 @@ import controllers.actions._
 import forms.deregister.ConfirmStopBeingPsaFormProvider
 import models.register.KnownFacts
 import models.requests.DataRequest
-import models.{MinimalPSA, IndividualDetails, Deregistration}
+import models.{Deregistration, IndividualDetails, MinimalPSA}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
-import play.api.libs.json.{Writes, Json}
-import play.api.mvc.{RequestHeader, AnyContent, AnyContentAsFormUrlEncoded, Call}
+import play.api.libs.json.{Json, Writes}
+import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded, Call, RequestHeader}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{HttpResponse, HeaderCarrier}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import views.html.deregister.confirmStopBeingPsa
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFutures {
 
@@ -48,21 +48,21 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
       val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to CannotDeregister page if Psa can't be deregistered and no other PSAs are attached to Open schemes" in {
       val result = controller(canDeregister = Deregistration(canDeregister = false, isOtherPsaAttached = false)).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.deregister.routes.MustInviteOthersController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.deregister.routes.MustInviteOthersController.onPageLoad.url)
     }
 
     "redirect to CannotDeregister page if Psa can't be deregistered and other PSAs are attached to Open schemes" in {
       val result = controller(canDeregister = Deregistration(canDeregister = false, isOtherPsaAttached = true)).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.deregister.routes.CannotDeregisterController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.deregister.routes.CannotDeregisterController.onPageLoad.url)
     }
 
     "return OK and the correct view for a GET and ensure audit service is successfully called" in {
@@ -85,14 +85,14 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
       val result = controller(minimalPsaDetailsNoneSuspended).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad.url)
     }
 
     "return to update address page if psa RLS flag is set in minimal details" in {
       val result = controller(minimalPsaDetailsRLS).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad.url)
     }
 
     "return to update address page if psa deceased flag is set in minimal details" in {
@@ -106,7 +106,7 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
       val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "should display the errors if no selection made" in {

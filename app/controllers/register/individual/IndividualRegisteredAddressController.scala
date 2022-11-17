@@ -60,7 +60,7 @@ class IndividualRegisteredAddressController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      IndividualDetailsId.retrieve.right.map { individual =>
+      IndividualDetailsId.retrieve.map { individual =>
 
         val preparedForm = request.userAnswers.get(IndividualAddressId).fold(form)(v => form.fill(v.toPrepopAddress))
         val view = createView(appConfig, preparedForm, addressViewModel(individual.fullName, mode))
@@ -80,7 +80,7 @@ class IndividualRegisteredAddressController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      IndividualDetailsId.retrieve.right.map {
+      IndividualDetailsId.retrieve.map {
         individual =>
           form.bindFromRequest().fold(
             (formWithError: Form[_]) => {

@@ -16,14 +16,14 @@
 
 package utils
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import base.SpecBase
 import identifiers.register.company.MoreThanTenDirectorsId
 import identifiers.register.individual.IndividualDateOfBirthId
 import play.api.libs.json.{JsObject, Json}
 import viewmodels.{AnswerRow, Link, Message}
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class CheckYourAnswersHelperSpec extends SpecBase {
 

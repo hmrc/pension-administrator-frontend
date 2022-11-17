@@ -16,16 +16,18 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
 import generators.Generators
 import org.scalacheck.Gen
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import play.api.data.Forms._
 import play.api.data.{Form, FormError}
 import utils.Enumerable
 import wolfendale.scalacheck.regexp.RegexpGen
+
+import java.time.LocalDate
 
 object MappingsSpec {
 
@@ -47,7 +49,7 @@ object MappingsSpec {
 
 // scalastyle:off magic.number
 
-class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Mappings with ScalaCheckDrivenPropertyChecks with Generators {
+class MappingsSpec extends AnyWordSpecLike with Matchers with OptionValues with Mappings with ScalaCheckDrivenPropertyChecks with Generators {
 
   import MappingsSpec._
 
@@ -324,7 +326,7 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
       )
 
       result.errors.size mustBe 3
-      result.errors must contain allOf(
+      result.errors must contain.allOf(
         FormError("date.day", "error.date.day_blank"),
         FormError("date.month", "error.date.month_blank"),
         FormError("date.year", "error.date.year_blank")
@@ -341,7 +343,7 @@ class MappingsSpec extends WordSpec with MustMatchers with OptionValues with Map
       )
 
       result.errors.size mustBe 3
-      result.errors must contain allOf(
+      result.errors must contain.allOf(
         FormError("date.day", "error.date.day_invalid"),
         FormError("date.month", "error.date.month_invalid"),
         FormError("date.year", "error.date.year_invalid")

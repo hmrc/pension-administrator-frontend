@@ -16,12 +16,12 @@
 
 package connectors
 
-import java.time.LocalDate
-
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models._
 import models.registrationnoid.RegistrationNoIdIndividualRequest
 import org.scalatest._
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -30,6 +30,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.{UnrecognisedHttpResponseException, WireMockHelper}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
 class RegistrationConnectorSpec()

@@ -79,12 +79,12 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
         val result = createController(UserAnswers()).onPageLoad(fakeRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
   }
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
 
   private def businessType(answers: UserAnswers) = answers.get(BusinessTypeId).map {
     businessType =>

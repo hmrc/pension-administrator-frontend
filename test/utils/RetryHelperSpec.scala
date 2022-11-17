@@ -16,17 +16,16 @@
 
 package utils
 
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-
 import base.SpecBase
+import org.mockito.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Seconds, Span}
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HttpException, UpstreamErrorResponse}
 
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -54,6 +53,7 @@ class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with 
       val failedFunction = () => Future.failed(new HttpException("Bad Request", 503))
       whenReady(retryHelper.retryOnFailure(failedFunction, frontendAppConfig).failed, timeout(Span(TIMEOUT, Seconds))) {
         case e: HttpException => e.responseCode mustEqual SERVICE_UNAVAILABLE
+        case _ => fail()
       }
     }
 
@@ -73,6 +73,7 @@ class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with 
 
       whenReady(retryHelper.retryOnFailure(failedFunction, frontendAppConfig).failed, timeout(Span(TIMEOUT, Seconds))) {
         case e: UpstreamErrorResponse => e.statusCode mustEqual SERVICE_UNAVAILABLE
+        case _ => fail()
       }
 
       val endTime = LocalDateTime.now

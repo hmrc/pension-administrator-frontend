@@ -63,7 +63,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
       }
 
       request.user.nino match {
-        case None => Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad()))
+        case None => Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad))
         case Some(nino) =>
           (request.userAnswers.get(IndividualDetailsId), request.userAnswers.get(IndividualAddressId), request.userAnswers.get(RegistrationInfoId)) match {
             case (Some(individual), Some(address), Some(info)) if info.idType.contains(Nino) && info.idNumber.contains(nino.value) =>
@@ -86,7 +86,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          (IndividualDetailsId and IndividualAddressId).retrieve.right.map {
+          (IndividualDetailsId and IndividualAddressId).retrieve.map {
             case individual ~ address =>
               Future.successful(BadRequest(view(formWithErrors, mode, individual, address, countryOptions)))
           }

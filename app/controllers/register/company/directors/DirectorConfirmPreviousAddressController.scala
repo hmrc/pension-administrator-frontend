@@ -55,7 +55,7 @@ class DirectorConfirmPreviousAddressController @Inject()(val appConfig: Frontend
   private def viewmodel(mode: Mode, index: Index): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
-        (DirectorNameId(index) and directors.ExistingCurrentAddressId(index)).retrieve.right.map {
+        (DirectorNameId(index) and directors.ExistingCurrentAddressId(index)).retrieve.map {
           case details ~ address =>
             SameContactAddressViewModel(
               controllers.register.company.directors.routes.DirectorConfirmPreviousAddressController.onSubmit(index),
@@ -72,14 +72,14 @@ class DirectorConfirmPreviousAddressController @Inject()(val appConfig: Frontend
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode, index).retrieve.right.map { vm =>
+      viewmodel(mode, index).retrieve.map { vm =>
         get(DirectorConfirmPreviousAddressId(index), vm)
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode, index).retrieve.right.map { vm =>
+      viewmodel(mode, index).retrieve.map { vm =>
         post(DirectorConfirmPreviousAddressId(index), DirectorPreviousAddressId(index), vm, mode)
       }
   }

@@ -58,7 +58,7 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty).right.map{vm =>
+      viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty).map{vm =>
         get(vm, mode, form(vm.addresses))
       }
   }
@@ -66,13 +66,13 @@ class IndividualContactAddressListController @Inject()(@Individual override val 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty)
-        .right.map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressListId,
+        .map(vm => post(vm, IndividualContactAddressId, IndividualContactAddressListId,
         IndividualContactAddressPostCodeLookupId, mode, form(vm.addresses)))
   }
 
 
   private def viewmodel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
-    IndividualContactAddressPostCodeLookupId.retrieve.right.map {
+    IndividualContactAddressPostCodeLookupId.retrieve.map {
       addresses =>
         AddressListViewModel(
           postCall = routes.IndividualContactAddressListController.onSubmit(mode),

@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.HasReferenceNumberFormProvider
 import models.FeatureToggle.Enabled
@@ -33,7 +33,7 @@ import views.html.hasReferenceNumber
 class HasDirectorUTRControllerSpec extends ControllerWithCommonBehaviour {
   import HasDirectorUTRControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val hasReferenceNumberForm = formProvider("error.required", directorName)
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]

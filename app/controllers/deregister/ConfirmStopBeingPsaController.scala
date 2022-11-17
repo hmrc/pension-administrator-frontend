@@ -54,16 +54,16 @@ class ConfirmStopBeingPsaController @Inject()(
             minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalDetails =>
               getPsaName(minimalDetails) match {
                 case Some(psaName) => Ok(view(form, psaName))
-                case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+                case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad)
               }
             }
           case deregistration if deregistration.isOtherPsaAttached =>
-            Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad()))
+            Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad))
           case _ =>
-            Future.successful(Redirect(controllers.deregister.routes.MustInviteOthersController.onPageLoad()))
+            Future.successful(Redirect(controllers.deregister.routes.MustInviteOthersController.onPageLoad))
         }
       }.getOrElse(
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad))
       )
   }
 
@@ -92,11 +92,11 @@ class ConfirmStopBeingPsaController @Inject()(
                   }
                 )
               case _ =>
-                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+                Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad))
             }
         }
       }.getOrElse(
-        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad))
       )
 
 

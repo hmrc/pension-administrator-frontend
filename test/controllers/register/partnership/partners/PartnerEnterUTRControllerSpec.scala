@@ -24,7 +24,6 @@ import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterUTR
@@ -33,7 +32,7 @@ class PartnerEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
 
   import PartnerEnterUTRControllerSpec._
   
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val utrForm = formProvider(partnerName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerEnterUTRController(

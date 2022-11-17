@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@
 
 @layout(pageTitle = messages("checkYourAnswers.title")) {
 
-    @formHelper(action = postUrl, 'autoComplete -> "off") {
+    @formHelper(action = postUrl, Symbol("autoComplete") -> "off") {
 
         @if(!isComplete) {
             @incomplete_alert()
@@ -52,6 +52,7 @@
                 section match {
                     case a: AnswerSection => answer_section(a, i.toString, true)
                     case r: RepeaterAnswerSection => components.repeater_answer_section(r, i.toString)
+                    case _ => throw new RuntimeException(s"Invalid section $section")
                 }
             }
         }

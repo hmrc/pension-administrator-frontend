@@ -24,7 +24,7 @@ import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyRegistrationNumberId
 import models.NormalMode
 import play.api.data.Form
-import play.api.libs.json.{JsString, _}
+import play.api.libs.json._
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.FakeNavigator
@@ -33,7 +33,7 @@ import views.html.register.company.enterNumber
 
 class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val formProvider = new CompanyRegistrationNumberFormProvider()
   val form: Form[String] = formProvider()
@@ -118,7 +118,7 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -126,7 +126,7 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 }

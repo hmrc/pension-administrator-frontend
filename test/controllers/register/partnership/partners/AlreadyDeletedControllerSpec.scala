@@ -21,7 +21,6 @@ import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAll
 import models.NormalMode
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import viewmodels.{AlreadyDeletedViewModel, Message}
 import views.html.alreadyDeleted
 
@@ -63,7 +62,7 @@ class AlreadyDeletedControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onPageLoad(firstIndex, NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
   }

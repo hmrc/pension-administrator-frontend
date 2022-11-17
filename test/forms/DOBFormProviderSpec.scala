@@ -16,14 +16,13 @@
 
 package forms
 
-import java.time.LocalDate
-
 import forms.behaviours.StringFieldBehaviours
 import forms.mappings.Constraints
-import org.scalatest.Matchers
 import play.api.data.FormError
 
-class DOBFormProviderSpec extends StringFieldBehaviours with Constraints with Matchers {
+import java.time.LocalDate
+
+class DOBFormProviderSpec extends StringFieldBehaviours with Constraints {
 
   val form = new DOBFormProvider()()
 
@@ -56,7 +55,7 @@ class DOBFormProviderSpec extends StringFieldBehaviours with Constraints with Ma
           "value.month" -> "A",
           "value.year" -> "A"
         )
-      ).errors should contain allOf(
+      ).errors should contain.allOf(
         FormError("value.day", "error.date.day_invalid"),
         FormError("value.month", "error.date.month_invalid"),
         FormError("value.year", "error.date.year_invalid")

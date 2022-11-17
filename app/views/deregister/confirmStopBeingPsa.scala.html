@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("confirmStopBeingPsa.title"))) {
 
-    @formHelper(action = controllers.deregister.routes.ConfirmStopBeingPsaController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = controllers.deregister.routes.ConfirmStopBeingPsaController.onSubmit, Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

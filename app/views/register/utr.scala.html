@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@
 
 @layout(pageTitle = titleWithErrors(form, messages("utr.title", businessType, hint))) {
 
-    @formHelper(action = href, 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = href, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))

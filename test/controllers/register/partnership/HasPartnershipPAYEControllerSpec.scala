@@ -24,7 +24,6 @@ import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -33,7 +32,7 @@ class HasPartnershipPAYEControllerSpec extends ControllerWithCommonBehaviour {
 
   import HasPartnershipPAYEControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val hasReferenceNumberForm = formProvider("error.required", partnershipName)
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]

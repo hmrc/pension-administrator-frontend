@@ -32,7 +32,7 @@ class PartnerNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
 
   import PartnerNoUTRReasonControllerSpec._
   
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val reasonForm = formProvider(partnerName)
   
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnerNoUTRReasonController(

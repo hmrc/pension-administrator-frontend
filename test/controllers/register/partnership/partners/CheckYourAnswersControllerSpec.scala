@@ -16,8 +16,6 @@
 
 package controllers.register.partnership.partners
 
-import java.time.LocalDate
-
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -26,20 +24,20 @@ import identifiers.register.DirectorsOrPartnersChangedId
 import models.Mode.{checkMode, _}
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
+import java.time.LocalDate
+
 class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 
-  private val mockDataCompletion = mock[DataCompletion]
+  private val mockDataCompletion: DataCompletion = mock[DataCompletion]
   private val address = Address("line1", "line2", None, None, Some("zz11zz"), "country")
   private val email = "test@test.com"
   private val phone = "1234"

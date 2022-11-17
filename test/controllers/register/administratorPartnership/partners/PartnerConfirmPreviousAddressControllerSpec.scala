@@ -33,7 +33,7 @@ import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
 class PartnerConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val psa: String = "John Doe"
 
@@ -130,7 +130,7 @@ class PartnerConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onPageLoad(UpdateMode, 0)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -138,7 +138,7 @@ class PartnerConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onSubmit(UpdateMode, 0)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 }

@@ -24,16 +24,14 @@ import forms.address.NonUKAddressFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId}
 import models._
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.{atLeastOnce, verify, when}
+import org.mockito.{ArgumentMatchers, MockitoSugar}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
-
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
@@ -42,9 +40,9 @@ import views.html.address.nonukAddress
 
 import scala.concurrent.Future
 
-class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures with BeforeAndAfter{
+class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with ScalaFutures with BeforeAndAfter with MockitoSugar{
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
@@ -161,7 +159,7 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
 
       val result = controller(userAnswersCacheConnector = userAnswersCacheConnector).onSubmit(NormalMode)(postRequest)
       whenReady(result) {_=>
-        verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),ArgumentMatchers.eq(RegistrationInfoId))(any(),any())
+        verify(userAnswersCacheConnector, atLeastOnce).remove(any(),ArgumentMatchers.eq(RegistrationInfoId))(any(),any())
       }
     }
 
@@ -181,14 +179,14 @@ class IndividualRegisteredAddressControllerSpec extends ControllerSpecBase with 
           val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
         "POST" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody()
           val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
     }

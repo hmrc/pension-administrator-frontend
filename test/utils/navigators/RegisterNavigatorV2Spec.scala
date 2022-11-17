@@ -78,14 +78,14 @@ class RegisterNavigatorV2Spec extends SpecBase with NavigatorBehaviour {
 object RegisterNavigatorV2Spec extends OptionValues {
 
   lazy val emptyAnswers: UserAnswers = UserAnswers(Json.obj())
-  lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad()
-  lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad()
-  lazy val partnershipUTRPage: Call = controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad()
+  lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad
+  lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad
+  lazy val partnershipUTRPage: Call = controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad
   lazy val declarationPage: Call = routes.DeclarationController.onPageLoad()
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()
   lazy val adviserName: Call = controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
   lazy val confirmation: Call = routes.ConfirmationController.onPageLoad()
-  lazy val survey: Call = controllers.routes.LogoutController.onPageLoad()
+  lazy val survey: Call = controllers.routes.LogoutController.onPageLoad
   lazy val ukBusinessType: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
   lazy val nonUkBusinessType: Call = controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
   lazy val nonUkCompanyRegisteredName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad(NormalMode)

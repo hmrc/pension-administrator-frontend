@@ -44,7 +44,7 @@ class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.right.map { businessName =>
+      BusinessNameId.retrieve.map { businessName =>
         val directors = request.userAnswers.allDirectorsAfterDelete(mode).map(_.name)
         Future.successful(Ok(view(businessName, directors)))
       }

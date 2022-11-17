@@ -57,7 +57,7 @@ class PartnershipContactAddressListController @Inject()(
     formProvider(addresses, Message("select.address.required.error").withArgs(name))
 
   def viewModel(mode: Mode) = Retrieval { implicit request =>
-    PartnershipContactAddressPostCodeLookupId.retrieve.right map { addresses =>
+    PartnershipContactAddressPostCodeLookupId.retrieve map { addresses =>
       AddressListViewModel(
         routes.PartnershipContactAddressListController.onSubmit(mode),
         routes.PartnershipContactAddressController.onPageLoad(mode),
@@ -71,14 +71,14 @@ class PartnershipContactAddressListController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map { vm =>
+      viewModel(mode).retrieve.map { vm =>
         get(vm, mode, form(vm.addresses, entityName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      viewModel(mode).retrieve.right.map { vm =>
+      viewModel(mode).retrieve.map { vm =>
         post(vm, PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipContactAddressPostCodeLookupId, mode, form(vm.addresses, entityName))
       }
   }

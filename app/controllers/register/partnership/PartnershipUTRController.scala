@@ -46,7 +46,7 @@ class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConf
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      BusinessTypeId.retrieve.right.map { businessType =>
+      BusinessTypeId.retrieve.map { businessType =>
         get(BusinessUTRId, Message("thePartnership"), Message("utr.partnership.hint"), href)
       }
   }
@@ -54,11 +54,11 @@ class PartnershipUTRController @Inject()(override val appConfig: FrontendAppConf
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
 
-      BusinessTypeId.retrieve.right.map { businessType =>
+      BusinessTypeId.retrieve.map { businessType =>
         post(BusinessUTRId, Message("thePartnership"), Message("utr.partnership.hint"), href, NormalMode)
       }
   }
 
-  def href: Call = routes.PartnershipUTRController.onSubmit()
+  def href: Call = routes.PartnershipUTRController.onSubmit
 
 }

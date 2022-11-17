@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import com.google.inject.Inject
 import identifiers.TypedIdentifier
 import identifiers.register.partnership.partners.PartnerNameId
@@ -31,9 +29,9 @@ import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
 import utils.UserAnswers
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValues with ScalaFutures {
@@ -107,14 +105,14 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
 
       implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test" -> "result"))
 
-      testIdentifier.retrieve.right.value mustEqual "result"
+      testIdentifier.retrieve.value mustEqual "result"
     }
 
     "reach the intended result when identifier uses and to get the value from answers" in {
 
       implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test" -> "result", "second" -> "answer"))
 
-      (testIdentifier and secondIdentifier).retrieve.right.value mustEqual new ~("result", "answer")
+      (testIdentifier and secondIdentifier).retrieve.value mustEqual new ~("result", "answer")
     }
 
     "redirect to the session expired page when cant find identifier" in {
@@ -122,7 +120,7 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
       implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test1" -> "result"))
 
       whenReady(testIdentifier.retrieve.left.value) {
-        _ mustEqual Redirect(routes.SessionExpiredController.onPageLoad())
+        _ mustEqual Redirect(routes.SessionExpiredController.onPageLoad)
       }
     }
 
@@ -132,7 +130,7 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
 
       val result = controller.retrieve(testIdentifier)(success)
 
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
 
     }
 

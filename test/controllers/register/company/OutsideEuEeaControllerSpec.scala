@@ -23,7 +23,6 @@ import identifiers.register.company.CompanyAddressId
 import models.{Address, NormalMode}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-
 import utils.countryOptions.CountryOptions
 import views.html.register.outsideEuEea
 
@@ -73,7 +72,7 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 }

@@ -88,7 +88,7 @@ class ConfirmCompanyDetailsController @Inject()(
       implicit request =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-            (BusinessNameId and ConfirmCompanyAddressId).retrieve.right.map {
+            (BusinessNameId and ConfirmCompanyAddressId).retrieve.map {
               case name ~ address =>
                 Future.successful(BadRequest(view(formWithErrors, address, name, countryOptions)))
             },
@@ -112,7 +112,7 @@ class ConfirmCompanyDetailsController @Inject()(
 
   private def getCompanyDetails(fn: OrganizationRegistration => Future[Result])
                                (implicit request: DataRequest[AnyContent]): Either[Future[Result], Future[Result]] = {
-    (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.right.map {
+    (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.map {
       case businessName ~ utr ~ businessType =>
         val organisation = Organisation(businessName, businessType)
         val legalStatus = RegistrationLegalStatus.LimitedCompany

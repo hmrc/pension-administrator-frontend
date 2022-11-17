@@ -27,12 +27,10 @@ import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{atLeastOnce, never, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -128,7 +126,7 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
       val result = controller(registrationConnector = mockRegistrationConnector).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      verify(mockRegistrationConnector, never()).registerWithNoIdOrganisation(any(), any(), any())(any(), any())
+      verify(mockRegistrationConnector, never).registerWithNoIdOrganisation(any(), any(), any())(any(), any())
     }
 
 
@@ -155,7 +153,7 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
           .onSubmit(NormalMode)(postRequest)
 
         whenReady(result) { _ =>
-          verify(userAnswersCacheConnector, atLeastOnce()).remove(any(),ArgumentMatchers.eq(RegistrationInfoId))(any(),any())
+          verify(userAnswersCacheConnector, atLeastOnce).remove(any(),ArgumentMatchers.eq(RegistrationInfoId))(any(),any())
         }
       }
     }
@@ -175,7 +173,7 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
       val result = controller(registrationConnector = mockRegistrationConnector).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      verify(mockRegistrationConnector, atLeastOnce()).registerWithNoIdOrganisation(any(), any(), any())(any(), any())
+      verify(mockRegistrationConnector, atLeastOnce).registerWithNoIdOrganisation(any(), any(), any())(any(), any())
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -194,14 +192,14 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
           val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
         "POST" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody()
           val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
     }

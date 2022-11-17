@@ -21,12 +21,14 @@ import identifiers.TypedIdentifier
 import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
 import identifiers.register.company.{CompanyContactAddressId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
 import models._
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsPath, JsResultException, Json}
 import utils.testhelpers.DataCompletionBuilder._
 import viewmodels.Person
 
-class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
+class UserAnswersSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   private val establishers = Json.obj(
     "establishers" -> Json.arr(
@@ -42,7 +44,7 @@ class UserAnswersSpec extends WordSpec with MustMatchers with OptionValues {
   "getAll" should {
     "get all matching recursive results" in {
       val userAnswers = UserAnswers(establishers)
-      userAnswers.getAll[String](JsPath \ "establishers" \\ "name").value must contain allOf("foo", "bar")
+      userAnswers.getAll[String](JsPath \ "establishers" \\ "name").value mustBe Seq("foo", "bar")
     }
 
     "throw JsResultException if Js Value is not of correct type" in {

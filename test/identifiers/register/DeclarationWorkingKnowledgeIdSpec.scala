@@ -19,11 +19,13 @@ package identifiers.register
 import identifiers.register.adviser._
 import models.TolerantAddress
 import models.register.DeclarationWorkingKnowledge
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import utils.{Enumerable, UserAnswers}
 
-class DeclarationWorkingKnowledgeIdSpec extends WordSpec with MustMatchers with OptionValues with Enumerable.Implicits {
+class DeclarationWorkingKnowledgeIdSpec extends AnyWordSpecLike with Matchers with OptionValues with Enumerable.Implicits {
   "Cleanup" when {
 
     val address = TolerantAddress(Some("test-address-line1"),

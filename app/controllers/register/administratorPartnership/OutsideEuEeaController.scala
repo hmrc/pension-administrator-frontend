@@ -44,10 +44,10 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
 
-      (BusinessNameId and PartnershipRegisteredAddressId).retrieve.right.map {
+      (BusinessNameId and PartnershipRegisteredAddressId).retrieve.map {
         case name ~ address =>
           Future.successful(Ok(view(name, countryOptions.getCountryNameFromCode(address.toAddress.get), "partnerships")))
-      }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad())))
+      }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad)))
 
   }
 

@@ -30,7 +30,7 @@ import views.html.hasReferenceNumber
 
 class HasPartnershipVATControllerSpec extends ControllerWithCommonBehaviour {
 
-  override def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 

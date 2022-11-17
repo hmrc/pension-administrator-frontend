@@ -17,14 +17,13 @@
 package controllers
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRetrievalAction, _}
+import controllers.actions._
 import forms.register.YesNoFormProvider
 import models.UserType.Organisation
 import models.{PersonName, UpdateMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers._

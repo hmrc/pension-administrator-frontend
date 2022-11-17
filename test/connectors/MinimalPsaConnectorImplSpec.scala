@@ -18,8 +18,10 @@ package connectors
 
 import base.JsonFileReader
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.{MinimalPSA, IndividualDetails}
-import org.scalatest.{OptionValues, Matchers, AsyncFlatSpec}
+import models.{IndividualDetails, MinimalPSA}
+import org.scalatest.OptionValues
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder

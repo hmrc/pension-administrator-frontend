@@ -16,8 +16,6 @@
 
 package utils.checkyouranswers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import identifiers.TypedIdentifier
 import models._
@@ -27,6 +25,8 @@ import play.api.test.FakeRequest
 import utils.checkyouranswers.Ops._
 import utils.{DateHelper, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
+
+import java.time.LocalDate
 
 class CheckYourAnswersSpec extends SpecBase {
 

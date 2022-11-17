@@ -34,7 +34,7 @@ class PartnershipEnterPAYEControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: enterPAYE = app.injector.instanceOf[enterPAYE]
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val payeForm = formProvider(partnershipName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnershipEnterPAYEController(

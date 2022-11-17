@@ -17,7 +17,7 @@
 package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.ReasonFormProvider
 import models.FeatureToggle.Enabled
@@ -33,7 +33,7 @@ import views.html.reason
 class DirectorNoNINOReasonControllerSpec extends ControllerWithCommonBehaviour {
   import DirectorNoNINOReasonControllerSpec._
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private val reasonForm = formProvider(directorName)
 
   val view: reason = app.injector.instanceOf[reason]

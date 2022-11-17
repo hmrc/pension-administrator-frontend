@@ -42,7 +42,7 @@ class CompanyNameController @Inject()(override val appConfig: FrontendAppConfig,
                                       val view: businessName
                                      )(implicit val executionContext: ExecutionContext) extends BusinessNameController {
 
-  def href: Call = routes.CompanyNameController.onSubmit()
+  def href: Call = routes.CompanyNameController.onSubmit
 
   val form: Form[String] = formProvider()
 }

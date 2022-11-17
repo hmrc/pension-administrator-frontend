@@ -59,7 +59,7 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
-      Ok(view(form,
+      Ok(view(form(),
         mode,
         psaName(),
         displayReturnLink,
@@ -69,7 +69,7 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
-      form.bindFromRequest().fold(
+      form().bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors,
             mode,

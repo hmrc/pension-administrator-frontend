@@ -42,7 +42,7 @@ class PartnershipNameController @Inject()(
                                        val view: businessName
                                      )(implicit val executionContext: ExecutionContext) extends BusinessNameController {
 
-  def href: Call = routes.PartnershipNameController.onSubmit()
+  def href: Call = routes.PartnershipNameController.onSubmit
 
   override val form = formProvider(
     requiredKey = "partnershipName.error.required",

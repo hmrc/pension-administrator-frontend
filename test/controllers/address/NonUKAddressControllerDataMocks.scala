@@ -16,8 +16,6 @@
 
 package controllers.address
 
-import java.time.LocalDate
-
 import connectors.RegistrationConnector
 import controllers.ControllerSpecBase
 import controllers.actions.FakeRegistrationConnector
@@ -28,11 +26,12 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.FakeCountryOptions
 import utils.countryOptions.CountryOptions
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 trait NonUKAddressControllerDataMocks extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 

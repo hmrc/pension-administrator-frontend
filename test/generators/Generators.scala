@@ -16,14 +16,13 @@
 
 package generators
 
-import java.text.NumberFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Gen, Shrink}
 
+import java.text.NumberFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import scala.util.Random
 
 // scalastyle:off magic.number
@@ -59,7 +58,7 @@ trait Generators {
     arbitrary[BigDecimal]
       .suchThat(_.abs < Int.MaxValue)
       .suchThat(!_.isValidInt)
-      .map(_.formatted("%f"))
+      .map("%f".format(_))
 
   def intsBelowValue(value: Int): Gen[Int] =
     arbitrary[Int] suchThat (_ < value)

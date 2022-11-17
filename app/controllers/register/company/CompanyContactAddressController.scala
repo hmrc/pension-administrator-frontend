@@ -56,7 +56,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
   private def addressViewModel(mode: Mode, returnLink: Option[String]): Retrieval[ManualAddressViewModel] =
     Retrieval(
       implicit request =>
-        BusinessNameId.retrieve.right.map { companyName =>
+        BusinessNameId.retrieve.map { companyName =>
           ManualAddressViewModel(
             routes.CompanyContactAddressController.onSubmit(mode),
             countryOptions.options,
@@ -72,7 +72,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        addressViewModel(mode, returnLink).retrieve.right.map(vm =>
+        addressViewModel(mode, returnLink).retrieve.map(vm =>
           get(CompanyContactAddressId, CompanyContactAddressListId, vm, mode)
         )
       }
@@ -82,7 +82,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        addressViewModel(mode, returnLink).retrieve.right.map(vm =>
+        addressViewModel(mode, returnLink).retrieve.map(vm =>
           post(CompanyContactAddressId, vm, mode)
         )
       }

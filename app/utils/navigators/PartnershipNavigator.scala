@@ -41,7 +41,7 @@ class PartnershipNavigator @Inject()(
   //scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case BusinessUTRId =>
-      PartnershipNameController.onPageLoad()
+      PartnershipNameController.onPageLoad
     case BusinessNameId =>
       regionBasedNameNavigation(ua)
     case IsRegisteredNameId =>
@@ -146,10 +146,10 @@ class PartnershipNavigator @Inject()(
           case UpdateMode =>
             AnyMoreChangesController.onPageLoad()
           case _ =>
-            SessionExpiredController.onPageLoad()
+            SessionExpiredController.onPageLoad
         }
       case _ =>
-        SessionExpiredController.onPageLoad()
+        SessionExpiredController.onPageLoad
     }
   }
 
@@ -188,7 +188,7 @@ class PartnershipNavigator @Inject()(
             AnyMoreChangesController.onPageLoad()
         }
       case _ =>
-        SessionExpiredController.onPageLoad()
+        SessionExpiredController.onPageLoad
     }
   }
 
@@ -197,7 +197,7 @@ class PartnershipNavigator @Inject()(
       case (Some(true), _) => PartnershipAddressYearsController.onPageLoad(mode)
       case (Some(false), Some(false)) => PartnershipContactAddressController.onPageLoad(mode)
       case (Some(false), Some(true)) => PartnershipContactAddressPostCodeLookupController.onPageLoad(mode)
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
   }
 
@@ -205,8 +205,8 @@ class PartnershipNavigator @Inject()(
   private def regionBasedNameNavigation(answers: UserAnswers): Call = {
     answers.get(AreYouInUKId) match {
       case Some(false) => PartnershipRegisteredAddressController.onPageLoad()
-      case Some(true) => PartnershipIsRegisteredNameController.onPageLoad()
-      case _ => SessionExpiredController.onPageLoad()
+      case Some(true) => PartnershipIsRegisteredNameController.onPageLoad
+      case _ => SessionExpiredController.onPageLoad
     }
   }
 
@@ -216,16 +216,16 @@ class PartnershipNavigator @Inject()(
         case UK => BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => controllers.register.partnership.routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
         case RestOfTheWorld => OutsideEuEeaController.onPageLoad()
-        case _ => SessionExpiredController.onPageLoad()
+        case _ => SessionExpiredController.onPageLoad
       }
-    } getOrElse SessionExpiredController.onPageLoad()
+    } getOrElse SessionExpiredController.onPageLoad
   }
 
   private def variationManualPreviousAddressRoutes(answers: UserAnswers, mode: Mode): Call = {
     answers.get(PartnershipConfirmPreviousAddressId) match {
       case Some(false) => PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode)
       case Some(true) => finishAmendmentNavigation(answers)
-      case _ => SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad
     }
   }
 
@@ -239,7 +239,7 @@ class PartnershipNavigator @Inject()(
     case Some(true) => PartnershipEnterVATController.onPageLoad(mode)
     case Some(false) if mode == NormalMode => PartnershipSameContactAddressController.onPageLoad(NormalMode)
     case Some(false) if mode == CheckMode => CheckYourAnswersController.onPageLoad()
-    case _ => SessionExpiredController.onPageLoad()
+    case _ => SessionExpiredController.onPageLoad
   }
 
   private def partnerRoutes(answers: UserAnswers): Call =

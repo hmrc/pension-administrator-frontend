@@ -18,7 +18,7 @@ package controllers.register.company
 
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction, FakeFeatureToggleConnector}
+import controllers.actions._
 import controllers.register.company.routes._
 import forms.HasReferenceNumberFormProvider
 import models.{Mode, NormalMode}
@@ -31,7 +31,7 @@ import views.html.hasReferenceNumber
 
 class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("trading.error.required", companyName)
@@ -80,7 +80,7 @@ class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 

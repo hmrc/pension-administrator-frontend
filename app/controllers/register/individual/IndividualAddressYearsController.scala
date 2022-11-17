@@ -52,7 +52,7 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
   private def viewmodel(mode: Mode): Retrieval[AddressYearsViewModel] =
     Retrieval(
       implicit request =>
-        IndividualDetailsId.retrieve.right.map {
+        IndividualDetailsId.retrieve.map {
           details =>
             val questionText = "individualAddressYears.title"
             AddressYearsViewModel(
@@ -70,17 +70,17 @@ class IndividualAddressYearsController @Inject()(@Individual override val naviga
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        viewmodel(mode).retrieve.right.map {
+        viewmodel(mode).retrieve.map {
           vm =>
-            get(IndividualAddressYearsId, form, vm, mode)
+            get(IndividualAddressYearsId, form(), vm, mode)
         }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      viewmodel(mode).retrieve.right.map {
+      viewmodel(mode).retrieve.map {
         vm =>
-          post(IndividualAddressYearsId, mode, form, vm)
+          post(IndividualAddressYearsId, mode, form(), vm)
       }
   }
 

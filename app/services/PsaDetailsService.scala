@@ -16,7 +16,7 @@
 
 package services
 
-import com.google.inject.{Inject, ImplementedBy}
+import com.google.inject.{ImplementedBy, Inject}
 import connectors.SubscriptionConnector
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.register._
@@ -25,8 +25,8 @@ import identifiers.register.company.{ExistingCurrentAddressId => CompanyExisting
 import identifiers.register.individual._
 import identifiers.register.partnership.partners.{PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{ExistingCurrentAddressId => PartnershipExistingCurrentAddressId, _}
-import identifiers.{UpdateModeId, IndexId, TypedIdentifier}
-import models.RegistrationLegalStatus.{LimitedCompany, Partnership, Individual}
+import identifiers.{IndexId, TypedIdentifier, UpdateModeId}
+import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models._
 import models.requests.OptionalDataRequest
 import play.api.i18n.Messages
@@ -35,7 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import utils.{UserAnswers, ViewPsaDetailsHelper}
-import viewmodels.{PsaViewDetailsViewModel, SuperSection}
+import viewmodels.{Person, PsaViewDetailsViewModel, SuperSection}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -208,13 +208,14 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
         Map(IndividualContactAddressId -> ExistingCurrentAddressId)
 
       case Some(LimitedCompany) =>
-        val allDirectors = userAnswers.allDirectorsAfterDelete(UpdateMode)
-        val allDirectorsAddressIdMap = allDirectors.map { director =>
+        val allDirectors: Seq[Person] = userAnswers.allDirectorsAfterDelete(UpdateMode)
+        val allDirectorsAddressIdMap: Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]] = allDirectors.map { director =>
           val index = allDirectors.indexOf(director)
           (DirectorAddressId(index), DirectorsExistingCurrentAddressId(index))
         }.toMap
 
-        Map(CompanyContactAddressId -> CompanyExistingCurrentAddressId) ++ allDirectorsAddressIdMap
+        Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]](CompanyContactAddressId ->
+          CompanyExistingCurrentAddressId) ++ allDirectorsAddressIdMap
 
       case Some(Partnership) =>
         val allPartners = userAnswers.allPartnersAfterDelete(UpdateMode)
@@ -223,11 +224,13 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
           (PartnerAddressId(index), PartnersExistingCurrentAddressId(index))
         }.toMap
 
-        Map(PartnershipContactAddressId -> PartnershipExistingCurrentAddressId) ++ allPartnersAddressIds
+        Map[TypedIdentifier[Address], TypedIdentifier[TolerantAddress]](PartnershipContactAddressId ->
+          PartnershipExistingCurrentAddressId) ++ allPartnersAddressIds
 
       case _ =>
         Map.empty
     }
     userAnswers.setAllExistingAddress(mapOfAddressIds)
   }
+
 }

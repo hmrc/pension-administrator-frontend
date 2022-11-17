@@ -20,8 +20,8 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
-import identifiers.register.{BusinessNameId, BusinessTypeId, RegistrationInfoId}
 import identifiers.register.partnership.partners.{PartnerAddressYearsId, PartnerNameId}
+import identifiers.register.{BusinessNameId, BusinessTypeId, RegistrationInfoId}
 import models._
 import models.register.BusinessType
 import play.api.data.Form
@@ -34,7 +34,7 @@ import views.html.address.addressYears
 
 class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute = controllers.routes.IndexController.onPageLoad
 
   private val formProvider = new AddressYearsFormProvider()
   private val form = formProvider(Message("error.addressYears.required"))
@@ -131,7 +131,7 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onPageLoad(NormalMode, index)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -139,7 +139,7 @@ class PartnerAddressYearsControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onSubmit(NormalMode, index)(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 

@@ -24,7 +24,6 @@ import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
@@ -38,7 +37,7 @@ class PartnershipEmailControllerSpec extends ControllerWithCommonBehaviour {
   val view: email = app.injector.instanceOf[email]
 
 
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnershipEmailController(
     new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),

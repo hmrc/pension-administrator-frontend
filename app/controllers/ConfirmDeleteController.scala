@@ -77,7 +77,7 @@ trait ConfirmDeleteController extends FrontendBaseController with I18nSupport wi
       (formWithError: Form[_]) => Future.successful(BadRequest(view(formWithError, vm, mode))),
       {
         case true =>
-          id.retrieve.right.map { details =>
+          id.retrieve.map { details =>
             saveChangeFlags(id, mode).flatMap { _ =>
               cacheConnector.save(request.externalId, id, details.copy(isDeleted = true)) map { _ =>
                 Redirect(postUrl)

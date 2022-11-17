@@ -26,7 +26,7 @@ import models.FeatureToggle.{Disabled, Enabled}
 import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -37,7 +37,7 @@ import views.html.register.registerAsBusiness
 
 import scala.concurrent.Future
 
-class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours {
+class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours with MockitoSugar {
 
   val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 
@@ -51,7 +51,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
   val postRequestFalse: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", false.toString))
 
   private val defaultFeatureToggleConnector = {
-    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
+    val mockFeatureToggleConnector: FeatureToggleConnector = mock[FeatureToggleConnector]
     when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
     mockFeatureToggleConnector
   }

@@ -24,14 +24,13 @@ import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
 class HasPartnershipVATControllerSpec extends ControllerWithCommonBehaviour {
 
-  override def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  override def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 

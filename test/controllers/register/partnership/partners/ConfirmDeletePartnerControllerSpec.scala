@@ -18,7 +18,7 @@ package controllers.register.partnership.partners
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRetrievalAction, _}
+import controllers.actions._
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.partnership.partners.PartnerNameId
 import models.{Index, NormalMode, PersonName}

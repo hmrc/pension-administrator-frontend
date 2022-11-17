@@ -100,20 +100,20 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
           val result = controller(dontGetAnyData).onPageLoad(NormalMode, firstIndex)(fakeRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
         "POST" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("field1", "value 1"), ("field2", "value 2"))
           val result = controller(dontGetAnyData).onSubmit(NormalMode, firstIndex)(postRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
       }
     }
   }
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad()
+  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
 
   private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)

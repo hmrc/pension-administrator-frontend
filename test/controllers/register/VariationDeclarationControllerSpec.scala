@@ -24,19 +24,18 @@ import connectors.{EmailConnector, EmailSent, PensionAdministratorConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.routes._
+import identifiers.register._
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.PartnershipEmailId
-import identifiers.register._
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.Partnership
 import models.UserType.UserType
-import models.enumeration.JourneyType
 import models._
+import models.enumeration.JourneyType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, times, verify, when}
+import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
@@ -64,7 +63,7 @@ class VariationDeclarationControllerSpec
     )
 
   private val psaId = "A1212128"
-  private val onwardRoute = controllers.routes.IndexController.onPageLoad()
+  private val onwardRoute = controllers.routes.IndexController.onPageLoad
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val individual = UserAnswers(Json.obj())
     .set(IndividualDetailsId)(TolerantIndividual(Some("Mark"), None, Some("Wright"))).asOpt.value
@@ -131,7 +130,7 @@ class VariationDeclarationControllerSpec
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
 
@@ -208,7 +207,7 @@ class VariationDeclarationControllerSpec
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
   }

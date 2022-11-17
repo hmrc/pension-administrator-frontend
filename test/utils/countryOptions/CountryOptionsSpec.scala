@@ -20,7 +20,7 @@ import base.SpecBase
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
 import models.InternationalRegion._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import utils.InputOption
@@ -72,7 +72,7 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
         ))
 
       an[ConfigException.BadValue] shouldBe thrownBy {
-        new CountryOptions(builder.environment, builder.injector.instanceOf[FrontendAppConfig]).options
+        new CountryOptions(builder.environment, builder.injector().instanceOf[FrontendAppConfig]).options
       }
     }
   }

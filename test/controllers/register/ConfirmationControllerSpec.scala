@@ -24,7 +24,7 @@ import models._
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.MockitoSugar
 import play.api.mvc.Results._
 import play.api.test.Helpers._
 import utils.UserAnswers
@@ -32,13 +32,13 @@ import views.html.register.confirmation
 
 import scala.concurrent.Future
 
-class ConfirmationControllerSpec extends ControllerSpecBase {
+class ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val psaId: String = "A1234567"
   private val psaName: String = "psa name"
   private val psaEmail: String = "test@test.com"
-  private val fakeUserAnswersCacheConnector = mock[UserAnswersCacheConnector]
-  private def onwardRoute = controllers.routes.LogoutController.onPageLoad()
+  private val fakeUserAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
+  private def onwardRoute = controllers.routes.LogoutController.onPageLoad
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
 
   val view: confirmation = app.injector.instanceOf[confirmation]
@@ -82,7 +82,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to the next page on a successful POST" in {

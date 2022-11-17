@@ -110,7 +110,7 @@ class DirectorNavigator @Inject()(appConfig: FrontendAppConfig) extends Navigato
 
   private def anyMoreChangesPage: Call = controllers.register.routes.AnyMoreChangesController.onPageLoad()
 
-  private def sessionExpired: Call = controllers.routes.SessionExpiredController.onPageLoad()
+  private def sessionExpired: Call = controllers.routes.SessionExpiredController.onPageLoad
 
   private def hasUtr(answers: UserAnswers, index: Index): Boolean = answers.get(HasDirectorUTRId(index)).getOrElse(false)
 

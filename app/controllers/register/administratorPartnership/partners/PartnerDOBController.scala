@@ -63,7 +63,7 @@ class PartnerDOBController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      (BusinessNameId and PartnerNameId(index)).retrieve.right.map {
+      (BusinessNameId and PartnerNameId(index)).retrieve.map {
         case psaName ~ partnerName =>
           Future(get(id(index), viewModel(mode, index, psaName, partnerName.fullName)))
       }
@@ -71,7 +71,7 @@ class PartnerDOBController @Inject()(val appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      (BusinessNameId and PartnerNameId(index)).retrieve.right.map {
+      (BusinessNameId and PartnerNameId(index)).retrieve.map {
         case psaName ~ partnerName =>
           post(id(index), viewModel(mode, index, psaName, partnerName.fullName))
       }

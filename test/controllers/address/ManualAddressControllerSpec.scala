@@ -26,16 +26,17 @@ import identifiers.TypedIdentifier
 import identifiers.register.individual.{IndividualAddressChangedId, IndividualContactAddressId}
 import models._
 import models.requests.DataRequest
+import org.mockito.MockitoSugar
+import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject._
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-
 import utils._
 import utils.countryOptions.CountryOptions
 import viewmodels.address.ManualAddressViewModel
@@ -77,7 +78,7 @@ object ManualAddressControllerSpec extends SpecBase {
       get(fakeAddressId, fakeAddressListId, viewModel, NormalMode)(DataRequest(FakeRequest(), "cacheId", psaUser, answers))
 
     def onSubmit(viewModel: ManualAddressViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest(),
-                 mode:Mode = NormalMode, id: TypedIdentifier[Address] = fakeAddressId): Future[Result] =
+                 mode: Mode = NormalMode, id: TypedIdentifier[Address] = fakeAddressId): Future[Result] =
       post(id, viewModel, mode)(
         DataRequest(request, externalId, psaUser, answers))
 
@@ -88,7 +89,7 @@ object ManualAddressControllerSpec extends SpecBase {
 
 }
 
-class ManualAddressControllerSpec extends WordSpec with MustMatchers with MockitoSugar with ScalaFutures with OptionValues {
+class ManualAddressControllerSpec extends AnyWordSpecLike with Matchers with MockitoSugar with ScalaFutures with OptionValues {
 
   import ManualAddressControllerSpec._
 

@@ -112,7 +112,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
 
 
     }
@@ -146,7 +146,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
 
           status(result) mustBe SEE_OTHER
 
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
 
     }

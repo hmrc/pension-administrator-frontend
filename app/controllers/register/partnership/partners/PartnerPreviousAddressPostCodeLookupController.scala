@@ -56,14 +56,14 @@ class PartnerPreviousAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      PartnerNameId(index).retrieve.right.map { pn =>
+      PartnerNameId(index).retrieve.map { pn =>
         get(viewModel(mode, index, pn.fullName), mode)
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      PartnerNameId(index).retrieve.right.map { pn =>
+      PartnerNameId(index).retrieve.map { pn =>
         post(PartnerPreviousAddressPostCodeLookupId(index), viewModel(mode, index, pn.fullName), mode)
       }
   }

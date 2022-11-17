@@ -20,7 +20,6 @@ import base.SpecBase
 import models._
 import models.requests.OptionalDataRequest
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.Result
 import play.api.test.Helpers._

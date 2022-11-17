@@ -19,7 +19,6 @@ package controllers.register.partnership
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.partnership.routes.PartnershipAddressYearsController
 import forms.address.AddressYearsFormProvider
 import models.{AddressYears, NormalMode}
 import play.api.Application
@@ -43,7 +42,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
     .dataRetrievalAction
 
   val viewModel = AddressYearsViewModel(
-    PartnershipAddressYearsController.onSubmit(NormalMode),
+    routes.PartnershipAddressYearsController.onSubmit(NormalMode),
     Message("addressYears.heading", Message("thePartnership")),
     Message("addressYears.heading").withArgs(partnershipName),
     Message("addressYears.heading").withArgs(partnershipName)
@@ -54,7 +53,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
   val view: addressYears = app.injector.instanceOf[addressYears]
 
   "render the view correctly on a GET request" in {
-    val request = addCSRFToken(FakeRequest(PartnershipAddressYearsController.onPageLoad(NormalMode)))
+    val request = addCSRFToken(FakeRequest(routes.PartnershipAddressYearsController.onPageLoad(NormalMode)))
     val result = route(application, request).value
         status(result) mustBe OK
         contentAsString(result) mustBe view(form, viewModel, NormalMode)(request, messagesApi.preferred(fakeRequest)).toString

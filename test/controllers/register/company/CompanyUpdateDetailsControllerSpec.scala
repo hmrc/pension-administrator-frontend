@@ -20,7 +20,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
-
 import views.html.register.company.companyUpdateDetails
 
 class CompanyUpdateDetailsControllerSpec extends ControllerSpecBase {

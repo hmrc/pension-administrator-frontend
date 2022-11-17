@@ -20,7 +20,8 @@ import audit.testdoubles.StubSuccessfulAuditService
 import models.UserType.UserType
 import models.requests.OptionalDataRequest
 import models.{PSAUser, UserType}
-import org.scalatest.{AsyncFlatSpec, Matchers}
+import org.scalatest.flatspec.AsyncFlatSpec
+import org.scalatest.matchers.should.Matchers
 import play.api.test.FakeRequest
 
 import scala.concurrent.Future

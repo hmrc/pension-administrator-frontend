@@ -22,7 +22,9 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
 import models.{PSAUser, UserType}
-import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
+import org.scalatest.RecoverMethods
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.AnyContent
@@ -33,7 +35,7 @@ import utils.{UserAnswers, WireMockHelper}
 
 
 
-class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
+class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
 
   override protected def portConfigKey: String = "microservice.services.tax-enrolments.port"
 

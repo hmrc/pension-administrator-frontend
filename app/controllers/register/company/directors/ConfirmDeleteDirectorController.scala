@@ -66,7 +66,7 @@ class ConfirmDeleteDirectorController @Inject()(val appConfig: FrontendAppConfig
     implicit request =>
       featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
         val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-        DirectorNameId(index).retrieve.right.map { details =>
+        DirectorNameId(index).retrieve.map { details =>
           get(vm(index, details.fullName, mode, returnLink), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index), mode)
         }
       }
@@ -76,7 +76,7 @@ class ConfirmDeleteDirectorController @Inject()(val appConfig: FrontendAppConfig
     implicit request =>
       featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
         val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-        DirectorNameId(index).retrieve.right.map { details =>
+        DirectorNameId(index).retrieve.map { details =>
           post(vm(index, details.fullName, mode, returnLink), DirectorNameId(index), AddCompanyDirectorsController.onPageLoad(mode), mode)
         }
       }
