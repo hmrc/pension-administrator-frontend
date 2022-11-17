@@ -42,7 +42,7 @@ import views.html.address.sameContactAddress
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar{
+class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
 
   import ConfirmPreviousAddressControllerSpec._
 

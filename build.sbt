@@ -20,6 +20,9 @@ lazy val appName: String = "pension-administrator-frontend"
       scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
       scalacOptions += "-Wconf:src=routes/.*:s"
     )
+    .settings(
+      Test / parallelExecution := true
+    )
     .settings(majorVersion := 0)
     .settings(
       name := appName,
