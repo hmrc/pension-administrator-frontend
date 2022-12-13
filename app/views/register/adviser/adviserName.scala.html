@@ -14,21 +14,17 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import uk.gov.hmrc.play.views.html._
 @import controllers.register.adviser.routes._
 @import models.Mode
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF, _}
 @import utils.ViewHelper.titleWithErrors
 
 @this(
-
-    layout: templates.Layout,
-    formHelper: PlayFrontendFormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    submit_button: components.submit_button,
-    input_text: components.input_text
+        layout: templates.Layout,
+        formHelper: PlayFrontendFormWithCSRF,
+        govukErrorSummary: GovukErrorSummary,
+        submit_button: components.submit_button,
+        input_text: components.input_text
 )
 
 @(form: Form[_], mode: Mode, psaNameOpt: Option[String], returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)

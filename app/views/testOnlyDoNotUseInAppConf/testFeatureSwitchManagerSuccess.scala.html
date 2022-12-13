@@ -14,12 +14,7 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import uk.gov.hmrc.play.views.html._
-@import controllers.routes._
-@import models.Mode
-
-@(title:String, h2:String, p1:String, switches:Map[String,String])
+@(title: String, h2: String, p1: String, switches: Map[String, String])
 
 <h1>@title</h1>
 
@@ -28,12 +23,12 @@
 <h2>@h2</h2>
 
 <table>
- @switches.map{switch=>
-  <tr>
-   <td>@switch._1</td>
-   <td> : </td>
-   <td>@switch._2</td>
-  </tr>
- }
+@switches.map { switch =>
+    <tr>
+        <td>@switch._1</td>
+        <td> : </td>
+        <td>@switch._2</td>
+    </tr>
+}
 </table>
 
