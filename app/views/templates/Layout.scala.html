@@ -14,13 +14,12 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
-@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
-@import views.html.helper.CSPNonce
 @import config.FrontendAppConfig
 @import controllers.routes
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+@import views.html.helper.CSPNonce
 
 @this(
     appConfig: FrontendAppConfig,
@@ -48,7 +47,7 @@
     @if(timeoutEnabled) {
         @hmrcTimeoutDialogHelper(
             signOutUrl = routes.LogoutController.onPageLoad.url,
-            keepAliveUrl= Some(routes.LogoutController.keepAlive.url),
+            keepAliveUrl = Some(routes.LogoutController.keepAlive.url),
             timeout = Some(900),
             countdown = Some(120)
         )
@@ -59,7 +58,7 @@
 @beforeContentBlock = {
     @if(showBackLink) {
         @govukBackLink(BackLink(
-            attributes = Map("id" -> "back-link"), classes="js-enabled", href="javascript:history.back()", content = HtmlContent(messages("site.back"))
+            attributes = Map("id" -> "back-link"), classes = "js-enabled", href = "javascript:history.back()", content = HtmlContent(messages("site.back"))
         ))
     }
 }
@@ -68,14 +67,17 @@
     <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
     <script src='@controllers.routes.Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
     <script src='@routes.Assets.versioned("javascripts/pensionadministratorfrontend-app.js")'></script>
-    <script>window.GOVUKFrontend.initAll(); window.HMRCFrontend.initAll()</script>
+    <script>
+            window.GOVUKFrontend.initAll();
+            window.HMRCFrontend.initAll()
+    </script>
 }
 
 @mainContentWithGetHelp = {
     @mainContent
-    <div class="govuk-!-margin-top-8">
-        @hmrcReportTechnicalIssueHelper()
-    </div>
+        <div class="govuk-!-margin-top-8">
+            @hmrcReportTechnicalIssueHelper()
+        </div>
 }
 
 @govukLayout(
