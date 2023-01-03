@@ -16,23 +16,21 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import controllers.actions._
 import identifiers.register.individual.WhatYouWillNeedId
-import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Navigator
-import utils.annotations.{AuthWithNoIV, Individual}
+import utils.annotations.{AuthWithNoPDV, Individual}
 import views.html.register.individual.whatYouWillNeed
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                          @Individual val navigator: Navigator,
-                                          @AuthWithNoIV authenticate: AuthAction,
+class WhatYouWillNeedController @Inject()(@Individual val navigator: Navigator,
+                                          @AuthWithNoPDV authenticate: AuthAction,
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,

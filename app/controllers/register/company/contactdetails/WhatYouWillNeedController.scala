@@ -25,7 +25,7 @@ import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.AuthWithNoIV
+import utils.annotations.AuthWithNoPDV
 import viewmodels.Message
 import views.html.register.company.contactdetails
 
@@ -34,7 +34,7 @@ import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
-                                           @AuthWithNoIV authenticate: AuthAction,
+                                           @AuthWithNoPDV authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            whatYouWillNeedView: contactdetails.whatYouWillNeed,

@@ -16,14 +16,13 @@
 
 package controllers
 
-import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.FakeAuthAction
 import play.api.test.Helpers._
 
 
 class LoginControllerSpec extends ControllerSpecBase {
 
-  private def loginController = new LoginController(frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, controllerComponents)
+  private def loginController = new LoginController(FakeAuthAction, controllerComponents)
 
   "Login Controller" must {
 

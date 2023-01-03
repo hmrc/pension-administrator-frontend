@@ -16,24 +16,20 @@
 
 package controllers
 
-import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AuthAction
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.AuthWithNoIV
+import utils.annotations.AuthWithNoPDV
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class LoginController @Inject()(appConfig: FrontendAppConfig,
-                                dataCacheConnector: UserAnswersCacheConnector,
-                                @AuthWithNoIV authenticate: AuthAction,
-                                val controllerComponents: MessagesControllerComponents
-                               )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class LoginController @Inject()(@AuthWithNoPDV authenticate: AuthAction,
+                                val controllerComponents: MessagesControllerComponents)
+                               (implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = authenticate {
-      Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
+    Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
   }
 }

@@ -47,7 +47,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   val reportTechnicalIssues: ReportTechnicalIssue =
     ReportTechnicalIssue(serviceId = "PODS", baseUrl = Some(reportAProblemNonJSUrl))
 
-  lazy val manualIvUrl: String = loadConfig("urls.manualIvUrl")
   lazy val govUkUrl: String = loadConfig("urls.gov-uk")
   lazy val pensionAdministratorUrl: String = s"${servicesConfig.baseUrl("pension-administrator")}"
   lazy val loginUrl: String = loadConfig("urls.login")
@@ -97,13 +96,9 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
 
   lazy val addressLookUp: String = s"${servicesConfig.baseUrl("address-lookup")}"
 
-  lazy val identityVerification: String = s"${servicesConfig.baseUrl("identity-verification")}"
-
   lazy val personalDetailsValidation: String = s"${servicesConfig.baseUrl("personal-details-validation")}"
 
   lazy val personalDetailsValidationFrontEnd: String = loadConfig("microservice.services.personal-details-validation-frontend.url")
-
-  lazy val identityVerificationFrontend: String = s"${servicesConfig.baseUrl("identity-verification-frontend")}"
 
   lazy val registerWithIdOrganisationUrl: String = s"${
     servicesConfig.baseUrl("pension-administrator") +
@@ -157,9 +152,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   }"
 
   def emailUrl = s"${s"${servicesConfig.baseUrl("email")}/${runModeConfiguration.underlying.getString("urls.email")}"}"
-
-  def ivRegisterOrganisationAsIndividualUrl =
-    s"${s"${servicesConfig.baseUrl("identity-verification-proxy")}/${runModeConfiguration.underlying.getString("urls.ivRegisterOrganisationAsIndividual")}"}"
 
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
 

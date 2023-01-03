@@ -19,17 +19,15 @@ package controllers.register.company
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register._
 import identifiers.register.company.{CompanyContactAddressId, CompanyEmailId, CompanyPhoneId, MoreThanTenDirectorsId}
-import models.AddressYears.reads
 import models.register.{Task, TaskList}
 import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.AuthWithNoIV
-import utils.{DateHelper, UserAnswers}
-import identifiers.register.BusinessNameId
+import utils.annotations.AuthWithNoPDV
 import utils.dataCompletion.DataCompletion.isAdviserComplete
+import utils.{DateHelper, UserAnswers}
 import views.html.register.taskList
 
 import javax.inject.Inject
@@ -37,7 +35,7 @@ import scala.concurrent.Future
 
 class CompanyRegistrationTaskListController @Inject()(
                                                        val controllerComponents: MessagesControllerComponents,
-                                                       @AuthWithNoIV authenticate: AuthAction,
+                                                       @AuthWithNoPDV authenticate: AuthAction,
                                                        allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
@@ -73,7 +71,7 @@ class CompanyRegistrationTaskListController @Inject()(
     val isPAYECompleted = userAnswers.get(HasPAYEId).exists(if (_) userAnswers.get(EnterPAYEId).isDefined else true)
     val isVATCompleted = userAnswers.get(HasVATId).exists(if (_) userAnswers.get(EnterVATId).isDefined else true)
     val isCompleted = isPAYECompleted && isVATCompleted
-    val url: String = if(isCompleted){
+    val url: String = if (isCompleted) {
       companydetails.routes.CheckYourAnswersController.onPageLoad().url
     } else {
       companydetails.routes.WhatYouWillNeedController.onPageLoad().url
@@ -86,7 +84,7 @@ class CompanyRegistrationTaskListController @Inject()(
     val isEmailCompleted = userAnswers.get(CompanyEmailId).isDefined
     val isPhoneCompleted = userAnswers.get(CompanyPhoneId).isDefined
     val isCompleted = isContactAddressCompleted && isEmailCompleted && isPhoneCompleted
-    val url = if(isCompleted){
+    val url = if (isCompleted) {
       contactdetails.routes.CheckYourAnswersController.onPageLoad().url
     } else {
       contactdetails.routes.WhatYouWillNeedController.onPageLoad().url
@@ -95,7 +93,7 @@ class CompanyRegistrationTaskListController @Inject()(
   }
 
   private def buildWorkingKnowledgeTask(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
-    val isWorkingKnowledgeCompleted = isAdviserComplete(userAnswers,NormalMode)
+    val isWorkingKnowledgeCompleted = isAdviserComplete(userAnswers, NormalMode)
 
     val workingKnowledgeDetailsUrl = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode).url
     Task(messages("taskList.workingKnowledgeDetails"), isWorkingKnowledgeCompleted, workingKnowledgeDetailsUrl)
@@ -103,7 +101,7 @@ class CompanyRegistrationTaskListController @Inject()(
 
   private def buildDirectorDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
     val isDirectorsDetailsCompleted = userAnswers.allDirectorsAfterDelete(NormalMode).nonEmpty
-    val directorTaskUrl = if(isDirectorsDetailsCompleted){
+    val directorTaskUrl = if (isDirectorsDetailsCompleted) {
       controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode).url
     } else {
       controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad().url
@@ -118,6 +116,6 @@ class CompanyRegistrationTaskListController @Inject()(
     val allDirectorsCompleted = allDirectors.nonEmpty && allDirectors.forall(_.isComplete) &&
       (allDirectors.size < 10 || userAnswers.get(MoreThanTenDirectorsId).isDefined)
 
-      allDirectorsCompleted
+    allDirectorsCompleted
   }
 }

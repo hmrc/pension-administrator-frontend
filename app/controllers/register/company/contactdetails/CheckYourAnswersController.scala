@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
-import utils.annotations.AuthWithNoIV
+import utils.annotations.AuthWithNoPDV
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerSection, Link, Section}
 import views.html.check_your_answers
@@ -37,7 +37,7 @@ import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
-                                            @AuthWithNoIV authenticate: AuthAction,
+                                            @AuthWithNoPDV authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             checkYourAnswersView: check_your_answers,
