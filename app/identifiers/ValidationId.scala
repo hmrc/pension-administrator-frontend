@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package utils.annotations;
+package identifiers
 
-import com.google.inject.BindingAnnotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
-@BindingAnnotation
-public @interface AuthWithNoIV {
+object ValidationId extends TypedIdentifier[String] {
+  override def toString: String = "validationId"
 }

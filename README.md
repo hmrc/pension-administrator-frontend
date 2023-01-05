@@ -15,10 +15,8 @@ This service has a corresponding back-end service, namely pension-administrator 
 | Address Lookup                       | https://github.com/hmrc/address-lookup                        |
 | Email                                | https://github.com/hmrc/email                                 |
 | Auth                                 | https://github.com/hmrc/auth                                  |
-| Identity Verification                | https://github.com/hmrc/identity-verification                 |
 | Personal Details Validation          | https://github.com/hmrc/personal-details-validation           |
 | Personal Details Validation Frontend | https://github.com/hmrc/personal-details-validation-frontend  |
-| Identity Verification Proxy          | https://github.com/hmrc/identity-verification-proxy           |
 | Tax Enrolments                       | https://github.com/hmrc/tax-enrolments                        |
 origin	git@github.com:hmrc/personal-details-validation-frontend.git
 ### Endpoints used   
@@ -35,9 +33,7 @@ origin	git@github.com:hmrc/personal-details-validation-frontend.git
 | Pension Administrator                | GET        | /pension-administrator/psa-subscription-details                                 | Returns PSA Subscription Details                                                                          |
 | Pension Administrator                | GET        | /pension-administrator/get-minimal-psa                                          | Returns PSA minimal Details                                                                               |
 | Address Lookup                       | GET         | /v2/uk/addresses                                                                | Returns a list of addresses that match a given postcode                                                   | 
-| Email                                | POST        | /hmrc/email                                                                     | Sends an email to an email address                                                                        | 
-| Identity Verification Proxy          | POST        | /identity-verification-proxy/journey/start                                      | Store IV Journey Data and generates a link that can be used to start IV Process                           | 
-| Identity Verification                | GET        | /identity-verification/journey/:journeyId                                       | Return the journey data e.g NINO for the given journey id                                                 | 
+| Email                                | POST        | /hmrc/email                                                                     | Sends an email to an email address                                                                        |
 | Personal Details Validation          | GET        | /personal-details-validation/:validationId                                      | Return the validation results for the given validationId                                                  | 
 | Personal Details Validation Frontend | GET        | /personal-details-validation/start?completionUrl=:completionUrl&origin=test     | Start the PDV journey                                                                                     | 
 | Tax Enrolments                       | POST        | /tax-enrolments/service/:serviceName/enrolment                                  | Enrols a user synchronously for a given service name                                                      | 

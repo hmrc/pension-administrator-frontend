@@ -24,14 +24,14 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Navigator
-import utils.annotations.{AuthWithNoIV, PartnershipV2}
+import utils.annotations.{AuthWithNoPDV, PartnershipV2}
 import views.html.register.administratorPartnership.partnershipDetails.whatYouWillNeed
 
 import javax.inject.Inject
 
 class WhatYouWillNeedController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
-                                           @AuthWithNoIV authenticate: AuthAction,
+                                           @AuthWithNoPDV authenticate: AuthAction,
                                            @PartnershipV2 navigator: Navigator,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,

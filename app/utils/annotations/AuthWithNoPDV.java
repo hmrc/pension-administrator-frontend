@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package identifiers
+package utils.annotations;
 
-object JourneyId extends TypedIdentifier[String] {
-  override def toString: String = "journeyId"
-}
+import com.google.inject.BindingAnnotation;
 
-object ValidationId extends TypedIdentifier[String] {
-  override def toString: String = "validationId"
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface AuthWithNoPDV {
 }

@@ -18,13 +18,12 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.{IdentityVerificationConnector, PersonalDetailsValidationConnector, SessionDataCacheConnector}
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
+import connectors.{PersonalDetailsValidationConnector, SessionDataCacheConnector}
 import controllers.routes
 import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
-import identifiers.{AdministratorOrPractitionerId, JourneyId, TypedIdentifier, ValidationId}
+import identifiers.{AdministratorOrPractitionerId, TypedIdentifier, ValidationId}
 import models.AdministratorOrPractitioner.Practitioner
-import models.FeatureToggleName.PsaFromIvToPdv
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
@@ -45,18 +44,16 @@ import scala.concurrent.{ExecutionContext, Future}
 class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
                                    userAnswersCacheConnector: UserAnswersCacheConnector,
-                                   identityVerificationConnector: IdentityVerificationConnector,
                                    personalDetailsValidationConnector: PersonalDetailsValidationConnector,
                                    sessionDataCacheConnector: SessionDataCacheConnector,
-                                   val parser: BodyParsers.Default,
-                                   featureToggleConnector: FeatureToggleConnector)
+                                   val parser: BodyParsers.Default)
                                   (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised(User).retrieve(
-        Retrievals.externalId and
+      Retrievals.externalId and
         Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
         Retrievals.allEnrolments and
@@ -66,10 +63,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
       case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) =>
         checkForBothEnrolments(id, request, enrolments).flatMap {
           case None => redirectToInterceptPages(enrolments, affinityGroup).fold {
-              val authRequest = AuthenticatedRequest(request, id,
-                psaUser(affinityGroup, None, enrolments, credentials.providerId, groupIdentifier))
-              successRedirect(affinityGroup, cl, enrolments, authRequest, block)
-            } { result => Future.successful(result) }
+            val authRequest = AuthenticatedRequest(request, id,
+              psaUser(affinityGroup, None, enrolments, credentials.providerId, groupIdentifier))
+            successRedirect(affinityGroup, cl, enrolments, authRequest, block)
+          } { result => Future.successful(result) }
           case Some(redirect) => Future.successful(redirect)
         }
       case _ =>
@@ -89,18 +86,13 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
       case _ if alreadyEnrolledInPODS(enrolments) =>
         savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
       case Some(true) if affinityGroup == Organisation =>
-        featureToggleConnector.get(PsaFromIvToPdv.asString).map { toggle =>
-          toggle.isEnabled
-        }.flatMap {
-          case true => doManualPDVAndRetrieveNino(authRequest, block)
-          case false => doManualIVAndRetrieveNino(authRequest, block)
-        }
+        doManualPDVAndRetrieveNino(authRequest, block)
       case _ =>
         block(authRequest)
     }
   }
 
-  private def checkForBothEnrolments[A](id: String, request: Request[A], enrolments:Enrolments): Future[Option[Result]] = {
+  private def checkForBothEnrolments[A](id: String, request: Request[A], enrolments: Enrolments): Future[Option[Result]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     (enrolments.getEnrolment("HMRC-PODS-ORG"), enrolments.getEnrolment("HMRC-PODSPP-ORG")) match {
       case (Some(_), Some(_)) =>
@@ -130,28 +122,9 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     }
   }
 
-
-  private def doManualIVAndRetrieveNino[A](authRequest: AuthenticatedRequest[A],
-                                           block: AuthenticatedRequest[A] => Future[Result])
-                                          (implicit hc: HeaderCarrier): Future[Result] = {
-
-    val id = authRequest.request.getQueryString("journeyId")
-
-    getData(JourneyId, authRequest.externalId).flatMap {
-      case Some(journey) =>
-        getNinoAndUpdateAuthRequestIV(journey, block, authRequest)
-      case _ if id.nonEmpty =>
-        userAnswersCacheConnector.save(authRequest.externalId, JourneyId, id.getOrElse("")).flatMap(_ =>
-          getNinoAndUpdateAuthRequestIV(id.getOrElse(""), block, authRequest)
-        )
-      case _ =>
-        orgManualIV(authRequest.externalId, authRequest, block)
-    }
-  }
-
   private def doManualPDVAndRetrieveNino[A](authRequest: AuthenticatedRequest[A],
-                                      block: AuthenticatedRequest[A] => Future[Result])
-                                     (implicit hc: HeaderCarrier): Future[Result] = {
+                                            block: AuthenticatedRequest[A] => Future[Result])
+                                           (implicit hc: HeaderCarrier): Future[Result] = {
 
     val id = authRequest.request.getQueryString("validationId")
 
@@ -167,29 +140,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     }
   }
 
-  private def getNinoAndUpdateAuthRequestIV[A](journeyId: String,
-                                             block: AuthenticatedRequest[A] => Future[Result],
-                                             authRequest: AuthenticatedRequest[A])
-                                            (implicit hc: HeaderCarrier): Future[Result] = {
-    identityVerificationConnector.retrieveNinoFromIV(journeyId).flatMap {
-      case Some(nino) =>
-        val updatedAuth = AuthenticatedRequest(
-          request = authRequest.request,
-          externalId = authRequest.externalId,
-          user = authRequest.user.copy(nino = Some(nino))
-        )
-        block(updatedAuth)
-      case _ =>
-        userAnswersCacheConnector.remove(authRequest.externalId, JourneyId).flatMap(
-          _ => orgManualIV(authRequest.externalId, authRequest, block)
-        )
-    }
-  }
-
   private def getNinoAndUpdateAuthRequestPDV[A](validationId: String,
                                                 block: AuthenticatedRequest[A] => Future[Result],
                                                 authRequest: AuthenticatedRequest[A])
-                                            (implicit hc: HeaderCarrier): Future[Result] = {
+                                               (implicit hc: HeaderCarrier): Future[Result] = {
     personalDetailsValidationConnector.retrieveNino(validationId).flatMap {
       case Some(nino) =>
         val updatedAuth = AuthenticatedRequest(
@@ -205,28 +159,10 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     }
   }
 
-  private def orgManualIV[A](id: String,
-                             authRequest: AuthenticatedRequest[A],
-                             block: AuthenticatedRequest[A] => Future[Result])
-                            (implicit hc: HeaderCarrier): Future[Result] = {
-
-    getData(RegisterAsBusinessId, id).flatMap {
-      case Some(false) =>
-        identityVerificationConnector.startRegisterOrganisationAsIndividual(
-          config.ukJourneyContinueUrl,
-          s"${config.loginContinueUrl}/unauthorised"
-        ).map { link =>
-          Redirect(s"${config.manualIvUrl}$link")
-        }
-      case _ =>
-        block(authRequest)
-    }
-  }
-
   private def orgManualPDV[A](id: String,
-                             authRequest: AuthenticatedRequest[A],
-                             block: AuthenticatedRequest[A] => Future[Result])
-                            (implicit hc: HeaderCarrier): Future[Result] = {
+                              authRequest: AuthenticatedRequest[A],
+                              block: AuthenticatedRequest[A] => Future[Result])
+                             (implicit hc: HeaderCarrier): Future[Result] = {
 
     getData(RegisterAsBusinessId, id).flatMap {
       case Some(false) =>
@@ -309,7 +245,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                         enrolments: Enrolments,
                         userId: String,
                         groupIdentifier: String
-  ): PSAUser = {
+                       ): PSAUser = {
     val psa = existingPSA(enrolments)
     PSAUser(userType(affinityGroup), nino, psa.nonEmpty, psa, None, userId, groupIdentifier)
   }
@@ -321,17 +257,15 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
 trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
-class AuthenticationWithNoIV @Inject()(override val authConnector: AuthConnector,
-                                       config: FrontendAppConfig,
-                                       userAnswersCacheConnector: UserAnswersCacheConnector,
-                                       identityVerificationConnector: IdentityVerificationConnector,
-                                       personalDetailsValidationConnector: PersonalDetailsValidationConnector,
-                                       sessionDataCacheConnector: SessionDataCacheConnector,
-                                       parser: BodyParsers.Default,
-                                       featureToggleConnector: FeatureToggleConnector
+class AuthenticationWithNoPDV @Inject()(override val authConnector: AuthConnector,
+                                        config: FrontendAppConfig,
+                                        userAnswersCacheConnector: UserAnswersCacheConnector,
+                                        personalDetailsValidationConnector: PersonalDetailsValidationConnector,
+                                        sessionDataCacheConnector: SessionDataCacheConnector,
+                                        parser: BodyParsers.Default
                                       )(implicit executionContext: ExecutionContext) extends
-  FullAuthentication(authConnector, config, userAnswersCacheConnector, identityVerificationConnector,
-    personalDetailsValidationConnector, sessionDataCacheConnector, parser, featureToggleConnector)
+  FullAuthentication(authConnector, config, userAnswersCacheConnector,
+    personalDetailsValidationConnector, sessionDataCacheConnector, parser)
 
   with AuthorisedFunctions {
 
