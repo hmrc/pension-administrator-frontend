@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,8 +71,7 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
     Message("contactAddressPostCodeLookup.heading", Message("theCompany")),
     Message("contactAddressPostCodeLookup.heading").withArgs(companyName),
     Message("common.postcodeLookup.enterPostcode"),
-    Some(Message("common.postcodeLookup.enterPostcode.link")),
-    Message("address.postcode")
+    Some(Message("common.postcodeLookup.enterPostcode.link"))
   )
 
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
