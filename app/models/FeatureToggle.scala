@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ sealed trait FeatureToggle {
   def name: FeatureToggleName
 
   def isEnabled: Boolean
-
-  def isDisabled: Boolean = !isEnabled
 }
 
 sealed trait FeatureToggleName {
@@ -37,8 +35,6 @@ object FeatureToggleName {
   case object PsaRegistration extends FeatureToggleName {
     val asString = "psa-registration"
   }
-
-  val toggles: Seq[FeatureToggleName] = Seq(PsaRegistration)
 
   implicit val reads: Reads[FeatureToggleName] = Reads {
     case JsString(PsaRegistration.asString) => JsSuccess(PsaRegistration)

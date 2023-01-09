@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,7 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
     Message("postcode.lookup.heading", Message("thePartnership")),
     Message("postcode.lookup.heading").withArgs(partnershipName),
     Message("manual.entry.text"),
-    Some(Message("manual.entry.link")),
-    Message("postcode.lookup.form.label")
+    Some(Message("manual.entry.link"))
   )
   val dataRetrieval = new FakeDataRetrievalAction(Some(Json.obj(
     BusinessNameId.toString -> partnershipName

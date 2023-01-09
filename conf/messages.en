@@ -7,7 +7,6 @@ address.line.2 = Address Line 2
 address.line.3 = Address Line 3 (optional)
 address.line.4 = Address Line 4 (optional)
 
-address.postcode = Postcode
 address.country = Country
 address.country.select = Select a country
 address.country.hint = Enter text and then choose from the list
@@ -1128,7 +1127,6 @@ select.previous.address.heading = What was {0}’s previous address?
 enter.address.heading = Enter {0}’s address
 enter.previous.address.heading = Enter {0}’s previous address
 
-postcode.lookup.form.label = Postcode
 manual.entry.text = You can {0}
 manual.entry.link = enter the address manually.
 

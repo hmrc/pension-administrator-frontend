@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,8 +72,7 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       Message("previous.postcode.lookup.heading", Message("thePartner")),
       Message("previous.postcode.lookup.heading", "test first name test last name"),
       Message("manual.entry.text"),
-      Some(Message("manual.entry.link")),
-      Message("postcode.lookup.form.label")
+      Some(Message("manual.entry.link"))
     )
 
   private def viewAsString(form: Form[_] = form) =
