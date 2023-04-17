@@ -46,7 +46,9 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
 
       (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledge, declarationFitAndProperPage),
+      (DeclarationWorkingKnowledgeId, haveDeclarationWorkingKnowledgeToggleOn, declarationFitAndProperPage),
       (DeclarationWorkingKnowledgeId, haveAnAdviser, adviserName),
+      (DeclarationWorkingKnowledgeId, haveAnAdviserToggleOn, adviserName),
       (DeclarationWorkingKnowledgeId, emptyAnswers, sessionExpiredPage),
 
       (DeclarationFitAndProperId, emptyAnswers, declarationPage),
@@ -102,8 +104,15 @@ object RegisterNavigatorSpec extends OptionValues {
 
   val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value
+
+  val haveDeclarationWorkingKnowledgeToggleOn: UserAnswers = UserAnswers(Json.obj())
+    .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.TaskList).asOpt.value
+
   val haveAnAdviser: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.Adviser).asOpt.value
+
+  val haveAnAdviserToggleOn: UserAnswers = UserAnswers(Json.obj())
+    .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WhatYouWillNeed).asOpt.value
   val unlimitedCompany: UserAnswers = UserAnswers(Json.obj())
     .set(BusinessTypeId)(BusinessType.UnlimitedCompany).asOpt.value
   val limitedCompany: UserAnswers = UserAnswers(Json.obj())
