@@ -92,7 +92,7 @@ class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
         controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
       case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
         controllers.register.administratorPartnership.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
-      case None =>
+      case None => // Must be individual
         controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
       case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
