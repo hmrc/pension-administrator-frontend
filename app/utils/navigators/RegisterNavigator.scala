@@ -74,12 +74,14 @@ class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
     }
   }
 
-  private def declarationWorkingKnowledgeTaskListRoutes(userAnswers: UserAnswers) = {
+  private def declarationWorkingKnowledgeTaskListRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(BusinessTypeId) match {
       case Some(BusinessType.LimitedCompany) | Some(BusinessType.UnlimitedCompany) =>
         controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
       case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
         controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
+      case None => // Must be individual
+        controllers.register.routes.DeclarationFitAndProperController.onPageLoad()
       case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
@@ -90,6 +92,8 @@ class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
         controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
       case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
         controllers.register.administratorPartnership.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
+      case None => // Must be individual
+        controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
       case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
