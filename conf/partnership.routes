@@ -11,6 +11,9 @@ POST        /:mode/contact-address-1-year                 controllers.register.p
 GET         /confirm-partnership-address                  controllers.register.partnership.ConfirmPartnershipDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST        /confirm-partnership-address                  controllers.register.partnership.ConfirmPartnershipDetailsController.onSubmit(mode: Mode = NormalMode)
 
+GET         /update-missing-address-fields                controllers.register.partnership.AddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /update-missing-address-fields                controllers.register.partnership.AddressController.onSubmit(mode: Mode = NormalMode)
+
 GET         /select-contact-address                       controllers.register.partnership.PartnershipContactAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST        /select-contact-address                       controllers.register.partnership.PartnershipContactAddressListController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/select-contact-address                 controllers.register.partnership.PartnershipContactAddressListController.onPageLoad(mode: Mode)

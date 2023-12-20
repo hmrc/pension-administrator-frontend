@@ -19,6 +19,7 @@ package controllers.register.partnership
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
+import forms.AddressFormProvider
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
@@ -29,7 +30,7 @@ import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.countryOptions.CountryOptions
-import utils.{FakeNavigator, UserAnswers}
+import utils.{AddressHelper, FakeNavigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,7 +52,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     Some("Some Village"),
     Some("Some Town"),
     Some("ZZ1 1ZZ"),
-    Some("UK")
+    Some("GB")
   )
 
   private val validLimitedCompanyUtr = "1234567890"
@@ -71,10 +72,11 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
 
   val formProvider = new ConfirmPartnershipDetailsFormProvider
-
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
   val form: Form[Boolean] = formProvider()
 
-  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+  val addressFormProvider = new AddressFormProvider(countryOptions)
+  val addressHelper: AddressHelper = inject[AddressHelper]
 
   val regInfo: RegistrationInfo = RegistrationInfo(
     RegistrationLegalStatus.Partnership,
@@ -146,6 +148,15 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         "upsert address and organisation name from api response" in {
           val dataCacheConnector = FakeUserAnswersCacheConnector
 
+          val data = Json.obj(
+            BusinessTypeId.toString -> BusinessPartnership.toString,
+            BusinessNameId.toString -> partnershipName,
+            BusinessUTRId.toString -> validBusinessPartnershipUtr,
+            PartnershipRegisteredAddressId.toString -> testBusinessPartnershipAddress
+          )
+
+          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+
           val expectedJson =
             UserAnswers(data)
               .set(PartnershipRegisteredAddressId)(testBusinessPartnershipAddress)
@@ -161,6 +172,34 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
           dataCacheConnector.lastUpsert.value mustBe expectedJson
+        }
+        "redirects to address page when a field is missing" in {
+          val dataCacheConnector = FakeUserAnswersCacheConnector
+
+          val addressWithMissingField = TolerantAddress(
+            Some("Some Other Building"),
+            Some("2 Some Street"),
+            Some("Some Village"),
+            Some("Some Town"),
+            Some(""),
+            Some("GB")
+          )
+
+          val data = Json.obj(
+            BusinessTypeId.toString -> BusinessPartnership.toString,
+            BusinessNameId.toString -> partnershipName,
+            BusinessUTRId.toString -> validBusinessPartnershipUtr,
+            PartnershipRegisteredAddressId.toString -> addressWithMissingField
+          )
+
+          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+
+          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+          val result = controller(dataRetrievalAction, dataCacheConnector).onSubmit(NormalMode)(postRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.register.partnership.routes.AddressController.onPageLoad().url)
         }
       }
       "no" in {
@@ -273,9 +312,11 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       fakeRegistrationConnector,
       formProvider,
+      addressFormProvider,
       countryOptions,
       controllerComponents,
-      view
+      view,
+      addressHelper
     )
 
   private def viewAsString(partnershipName: String = partnershipName, address: TolerantAddress = testBusinessPartnershipAddress): String =

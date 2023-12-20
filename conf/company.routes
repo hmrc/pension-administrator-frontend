@@ -41,6 +41,9 @@ POST        /:mode/other-directors                        controllers.register.c
 GET         /confirm-address                              controllers.register.company.ConfirmCompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST        /confirm-address                              controllers.register.company.ConfirmCompanyDetailsController.onSubmit(mode: Mode = NormalMode)
 
+GET         /update-missing-address-fields                controllers.register.company.AddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /update-missing-address-fields                controllers.register.company.AddressController.onSubmit(mode: Mode = NormalMode)
+
 GET         /postcode                                     controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
 POST        /postcode                                     controllers.register.company.CompanyContactAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/postcode                               controllers.register.company.CompanyContactAddressPostCodeLookupController.onPageLoad(mode: Mode)

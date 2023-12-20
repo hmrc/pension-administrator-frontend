@@ -7,6 +7,7 @@ address.line.2 = Address Line 2
 address.line.3 = Address Line 3 (optional)
 address.line.4 = Address Line 4 (optional)
 
+address.postcode = Postcode
 address.country = Country
 address.country.select = Select a country
 address.country.hint = Enter text and then choose from the list
@@ -488,6 +489,9 @@ confirmCompanyAddress.title = Is this the registered address for the company?
 confirmRegisteredAddress.heading = Is this the registered address for {0}?
 confirmRegisteredAddress.title = Is this the registered address for the business?
 confirmRegisteredAddress.error.required = Select yes if this is the registered address
+
+enterMissingAddressFields.title = Enter address fields
+enterMissingAddressFields.heading = There are fields missing from your address
 
 whatYouWillNeed.title = What you will need
 whatYouWillNeed.heading = What you will need
