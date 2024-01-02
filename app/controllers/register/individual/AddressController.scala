@@ -87,7 +87,7 @@ class AddressController @Inject()(authenticate: AuthAction,
             address.addressLine3,
             address.addressLine4,
             address.postcode,
-            Some(address.country),
+            Some(address.country)
           )
           cacheConnector.save(request.externalId, IndividualAddressId, tolerantAddress).map { newCache =>
             Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode, UserAnswers(newCache)))
