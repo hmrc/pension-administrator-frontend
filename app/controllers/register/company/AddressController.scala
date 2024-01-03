@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import connectors.RegistrationConnector
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -48,7 +47,6 @@ class AddressController @Inject()(authenticate: AuthAction,
                                   getData: DataRetrievalAction,
                                   @RegisterCompany val navigator: Navigator,
                                   @RegisterCompanyV2 val navigatorV2: Navigator,
-                                  registrationConnector: RegistrationConnector,
                                   requireData: DataRequiredAction,
                                   val view: manualAddress,
                                   addressHelper: AddressHelper

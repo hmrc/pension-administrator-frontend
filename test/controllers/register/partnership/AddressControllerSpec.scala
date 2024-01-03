@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import connectors.RegistrationConnector
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -35,7 +34,6 @@ class AddressControllerSpec extends ControllerSpecBase {
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val formProvider = new AddressFormProvider(countryOptions)
 
-  val mockRegistrationConnector: RegistrationConnector = mock[RegistrationConnector]
   val partnershipNavigator: PartnershipNavigator = injector.instanceOf[PartnershipNavigator]
   val addressHelper: AddressHelper = inject[AddressHelper]
 
@@ -48,7 +46,6 @@ class AddressControllerSpec extends ControllerSpecBase {
       formProvider,
       dataRetrievalAction,
       partnershipNavigator,
-      mockRegistrationConnector,
       new DataRequiredActionImpl,
       view,
       addressHelper

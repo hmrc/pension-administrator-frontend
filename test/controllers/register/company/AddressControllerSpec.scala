@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import connectors.RegistrationConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -35,7 +34,6 @@ class AddressControllerSpec extends ControllerSpecBase {
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val formProvider = new AddressFormProvider(countryOptions)
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
-  val mockRegistrationConnector: RegistrationConnector = mock[RegistrationConnector]
   val addressHelper: AddressHelper = inject[AddressHelper]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
@@ -50,7 +48,6 @@ class AddressControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new FakeNavigator(desiredRoute = onwardRoute),
       new FakeNavigator(desiredRoute = onwardRoute),
-      mockRegistrationConnector,
       new DataRequiredActionImpl,
       view,
       addressHelper

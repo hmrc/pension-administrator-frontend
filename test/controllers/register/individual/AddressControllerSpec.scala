@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import connectors.RegistrationConnector
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAuthAction, FakeDataRetrievalAction}
@@ -25,9 +24,9 @@ import identifiers.register.individual.IndividualAddressId
 import models.{NormalMode, TolerantAddress}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.{AddressHelper, FakeCountryOptions}
 import utils.countryOptions.CountryOptions
 import utils.navigators.IndividualNavigator
+import utils.{AddressHelper, FakeCountryOptions}
 import views.html.address.manualAddress
 
 class AddressControllerSpec extends ControllerSpecBase {
@@ -35,7 +34,6 @@ class AddressControllerSpec extends ControllerSpecBase {
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
   val formProvider = new AddressFormProvider(countryOptions)
 
-  val mockRegistrationConnector: RegistrationConnector = mock[RegistrationConnector]
   val individualNavigator: IndividualNavigator = injector.instanceOf[IndividualNavigator]
   val addressHelper: AddressHelper = inject[AddressHelper]
 
@@ -48,7 +46,6 @@ class AddressControllerSpec extends ControllerSpecBase {
       formProvider,
       dataRetrievalAction,
       individualNavigator,
-      mockRegistrationConnector,
       new DataRequiredActionImpl,
       view,
       addressHelper

@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -28,9 +27,9 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{AddressHelper, UserAnswers}
 import utils.countryOptions.CountryOptions
 import utils.navigators.PartnershipNavigator
+import utils.{AddressHelper, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
@@ -45,7 +44,6 @@ class AddressController @Inject()(authenticate: AuthAction,
                                   val formProvider: AddressFormProvider,
                                   getData: DataRetrievalAction,
                                   val navigator: PartnershipNavigator,
-                                  registrationConnector: RegistrationConnector,
                                   requireData: DataRequiredAction,
                                   val view: manualAddress,
                                   addressHelper: AddressHelper
