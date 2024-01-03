@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,22 @@ import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
+import forms.AddressFormProvider
 import forms.register.individual.IndividualDetailsCorrectFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
-
-import javax.inject.Inject
-import models.Mode
 import models.RegistrationIdType.Nino
+import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.Individual
 import utils.countryOptions.CountryOptions
-import utils.{Navigator, UserAnswers}
+import utils.{AddressHelper, Navigator, UserAnswers}
 import views.html.register.individual.individualDetailsCorrect
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualDetailsCorrectController @Inject()(@Individual navigator: Navigator,
@@ -45,10 +45,12 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
                                                    formProvider: IndividualDetailsCorrectFormProvider,
+                                                   addressFormProvider: AddressFormProvider,
                                                    registrationConnector: RegistrationConnector,
                                                    countryOptions: CountryOptions,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   val view: individualDetailsCorrect
+                                                   val view: individualDetailsCorrect,
+                                                   addressHelper: AddressHelper
                                                   )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Retrievals {
 
@@ -91,10 +93,26 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
               Future.successful(BadRequest(view(formWithErrors, mode, individual, address, countryOptions)))
           }
         },
-        value =>
-          dataCacheConnector.save(request.externalId, IndividualDetailsCorrectId, value).map(cacheMap =>
-            Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode, UserAnswers(cacheMap))))
+        value => {
+          val invalidAddressFields = IndividualAddressId.retrieve.map { address =>
+            val addressFields = addressHelper.mapAddressFields(address)
+            val addressForm: Form[Address] = addressFormProvider()
+            val bind = addressForm.bind(addressFields)
+            bind.fold(
+              _ => true,
+              _ => false
+            )
+          }
+          invalidAddressFields.map { invalidFields =>
+            if (invalidFields) {
+              Future.successful(Redirect(routes.AddressController.onSubmit()))
+            } else {
+              dataCacheConnector.save(request.externalId, IndividualDetailsCorrectId, value).map(cacheMap =>
+                Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode, UserAnswers(cacheMap)))
+              )
+            }
+          }
+        }
       )
   }
-
 }

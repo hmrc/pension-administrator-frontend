@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import connectors.RegistrationConnector
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
+import forms.AddressFormProvider
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.company.ConfirmCompanyAddressId
@@ -36,7 +37,7 @@ import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
-import utils.{Navigator, UserAnswers}
+import utils.{AddressHelper, Navigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import javax.inject.Inject
@@ -51,10 +52,12 @@ class ConfirmCompanyDetailsController @Inject()(
                                                  requireData: DataRequiredAction,
                                                  registrationConnector: RegistrationConnector,
                                                  formProvider: CompanyAddressFormProvider,
+                                                 addressFormProvider: AddressFormProvider,
                                                  countryOptions: CountryOptions,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  val view: confirmCompanyDetails,
-                                                 featureToggleConnector: FeatureToggleConnector
+                                                 featureToggleConnector: FeatureToggleConnector,
+                                                 addressHelper: AddressHelper
                                                )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -94,12 +97,28 @@ class ConfirmCompanyDetailsController @Inject()(
             },
           {
             case true =>
-              featureToggleConnector.get(PsaRegistration.asString).map { featureToggle =>
-                if(featureToggle.isEnabled){
-                  Redirect(routes.CompanyRegistrationTaskListController.onPageLoad())
-                } else {
-                  Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, request.userAnswers))
-                }
+              val invalidAddressFields = ConfirmCompanyAddressId.retrieve.map { address =>
+                val addressFields = addressHelper.mapAddressFields(address)
+                val addressForm: Form[Address] = addressFormProvider()
+                val bind = addressForm.bind(addressFields)
+                bind.fold(
+                  _ => true,
+                  _ => false
+                )
+              }
+              invalidAddressFields.map {
+                invalidFields =>
+                  featureToggleConnector.get(PsaRegistration.asString).map { featureToggle =>
+                    if (invalidFields) {
+                      Redirect(routes.AddressController.onPageLoad())
+                    } else {
+                      if (featureToggle.isEnabled) {
+                        Redirect(routes.CompanyRegistrationTaskListController.onPageLoad())
+                      } else {
+                        Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, request.userAnswers))
+                      }
+                    }
+                  }
               }
             case false =>
               val updatedAnswers = request.userAnswers.removeAllOf(List(ConfirmCompanyAddressId, RegistrationInfoId)).asOpt.getOrElse(request.userAnswers)
@@ -139,5 +158,4 @@ class ConfirmCompanyDetailsController @Inject()(
         },
         userAnswers => fn(userAnswers)
       )
-
 }

@@ -4,7 +4,6 @@ import sbt.Keys._
 import sbt._
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings._
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 
 lazy val appName: String = "pension-administrator-frontend"
 
@@ -13,7 +12,6 @@ lazy val appName: String = "pension-administrator-frontend"
     .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
     .settings(scalaSettings: _*)
     .settings(defaultSettings(): _*)
-    .settings(publishingSettings: _*)
     .settings(inConfig(Test)(testSettings): _*)
     .settings(scalaVersion := "2.13.8")
     .settings(

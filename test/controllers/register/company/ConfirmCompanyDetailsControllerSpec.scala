@@ -19,6 +19,7 @@ package controllers.register.company
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
+import forms.AddressFormProvider
 import forms.register.company.CompanyAddressFormProvider
 import identifiers.register.company._
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
@@ -31,7 +32,7 @@ import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.countryOptions.CountryOptions
-import utils.{FakeNavigator, UserAnswers}
+import utils.{AddressHelper, FakeNavigator, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import java.time.LocalDate
@@ -65,7 +66,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
     Some("Some Village"),
     Some("Some Town"),
     Some("ZZ1 1ZZ"),
-    Some("UK")
+    Some("GB")
   )
 
   private val testBusinessPartnershipAddress = TolerantAddress(
@@ -74,7 +75,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
     Some("Some Village"),
     Some("Some Town"),
     Some("ZZ1 1ZZ"),
-    Some("UK")
+    Some("GB")
   )
 
   val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
@@ -100,6 +101,10 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
   val form: Form[Boolean] = formProvider()
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
+
+  val addressFormProvider = new AddressFormProvider(countryOptions)
+  val addressForm: Form[Address] = addressFormProvider()
+  val addressHelper: AddressHelper = inject[AddressHelper]
 
   "CompanyAddress Controller" must {
 
@@ -161,12 +166,38 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       "yes must redirect to next page" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
+          val result = controller(dataRetrievalActionForPost).onSubmit(NormalMode)(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
 
         }
+      "yes must redirect to the address page when a field is missing" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+        val testLimitedCompanyAddress = TolerantAddress(
+          Some("Some Building"),
+          Some("1 Some Street"),
+          Some("Some Village"),
+          Some("Some Town"),
+          Some("ZZ1 1ZZ"),
+          Some("")
+        )
+
+        val dataForPost = Json.obj(
+          BusinessTypeId.toString -> LimitedCompany.toString,
+          BusinessNameId.toString -> companyName,
+          ConfirmCompanyAddressId.toString -> testLimitedCompanyAddress,
+          RegistrationInfoId.toString -> regInfo
+        )
+
+        val dataRetrievalAction = new FakeDataRetrievalAction(Some(dataForPost))
+
+        val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.register.company.routes.AddressController.onPageLoad().toString)
+      }
 
       "no must remove saved data from address and registration info ids" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
@@ -299,10 +330,12 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       new DataRequiredActionImpl,
       fakeRegistrationConnector,
       formProvider,
+      addressFormProvider,
       countryOptions,
       controllerComponents,
       view,
-      featureToggleConnector
+      featureToggleConnector,
+      addressHelper
     )
 
   private def viewAsString(companyName: String = companyName, address: TolerantAddress = testLimitedCompanyAddress): String =

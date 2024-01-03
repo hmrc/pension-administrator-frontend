@@ -20,6 +20,7 @@ import connectors.RegistrationConnector
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
+import forms.AddressFormProvider
 import forms.register.individual.IndividualDetailsCorrectFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
@@ -34,7 +35,7 @@ import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.FakeNavigator
+import utils.{AddressHelper, FakeNavigator}
 import utils.countryOptions.CountryOptions
 import views.html.register.individual.individualDetailsCorrect
 
@@ -46,6 +47,11 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
   private val formProvider = new IndividualDetailsCorrectFormProvider()
   private val form = formProvider()
+
+  val countryOptions = new CountryOptions(environment, frontendAppConfig)
+  val addressFormProvider = new AddressFormProvider(countryOptions)
+  val addressForm: Form[Address] = addressFormProvider()
+  val addressHelper: AddressHelper = inject[AddressHelper]
 
   private val nino = Nino("AB123456C")
   private val sapNumber = "test-sap-number"
@@ -83,8 +89,8 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     Some("1 Main Street"),
     Some("Some Village"),
     Some("Some Town"),
-    Some("GB"),
-    Some("ZZ1 1ZZ")
+    Some("ZZ1 1ZZ"),
+    Some("GB")
   )
 
   private object FakeRegistrationConnector {
@@ -108,10 +114,12 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
+      addressFormProvider,
       registrationConnector,
-      new CountryOptions(environment, frontendAppConfig),
+      countryOptions,
       controllerComponents,
-      view
+      view,
+      addressHelper
     )
 
   val view: individualDetailsCorrect = app.injector.instanceOf[individualDetailsCorrect]
@@ -122,7 +130,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       NormalMode,
       individual,
       address,
-      new CountryOptions(environment, frontendAppConfig)
+      countryOptions
     )(fakeRequest, messages).toString
 
   "IndividualDetailsCorrectController" must {
@@ -193,12 +201,44 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     }
 
     "redirect to the next page when valid data is submitted" in {
+      val data = Json.obj(
+        IndividualDetailsId.toString -> individual,
+        IndividualAddressId.toString -> address
+      )
+
+      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+    "redirect to the address form page when a field is missing from address" in {
+      val address = TolerantAddress(
+        Some("Building Name"),
+        Some("1 Main Street"),
+        Some("Some Village"),
+        Some("Some Town"),
+        Some(""),
+        Some("GB")
+      )
+
+      val data = Json.obj(
+        IndividualDetailsId.toString -> individual,
+        IndividualAddressId.toString -> address
+      )
+
+      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+      val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.register.individual.routes.AddressController.onPageLoad().url)
     }
 
     "save the user answer when valid data is submitted" in {

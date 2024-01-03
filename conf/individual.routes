@@ -12,6 +12,9 @@ POST        /your-name-address                            controllers.register.i
 GET         /:mode/your-name-address                      controllers.register.individual.IndividualDetailsCorrectController.onPageLoad(mode: Mode)
 POST        /:mode/your-name-address                      controllers.register.individual.IndividualDetailsCorrectController.onSubmit(mode: Mode)
 
+GET         /update-missing-address-fields                controllers.register.individual.AddressController.onPageLoad(mode: Mode = NormalMode)
+POST        /update-missing-address-fields                controllers.register.individual.AddressController.onSubmit(mode: Mode = NormalMode)
+
 GET         /contact-address-year                         controllers.register.individual.IndividualAddressYearsController.onPageLoad(mode: Mode = NormalMode)
 POST        /contact-address-year                         controllers.register.individual.IndividualAddressYearsController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/contact-address-year                   controllers.register.individual.IndividualAddressYearsController.onPageLoad(mode: Mode)

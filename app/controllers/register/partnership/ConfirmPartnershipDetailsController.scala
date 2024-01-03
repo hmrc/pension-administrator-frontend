@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
+import forms.AddressFormProvider
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipRegisteredAddressId}
@@ -35,7 +36,7 @@ import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.Partnership
 import utils.countryOptions.CountryOptions
-import utils.{Navigator, UserAnswers}
+import utils.{AddressHelper, Navigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
 
 import javax.inject.Inject
@@ -50,9 +51,11 @@ class ConfirmPartnershipDetailsController @Inject()(
                                                      requireData: DataRequiredAction,
                                                      registrationConnector: RegistrationConnector,
                                                      formProvider: ConfirmPartnershipDetailsFormProvider,
+                                                     addressFormProvider: AddressFormProvider,
                                                      countryOptions: CountryOptions,
                                                      val controllerComponents: MessagesControllerComponents,
-                                                     val view: confirmPartnershipDetails
+                                                     val view: confirmPartnershipDetails,
+                                                     addressHelper: AddressHelper
                                                    )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -130,7 +133,22 @@ class ConfirmPartnershipDetailsController @Inject()(
           },
         {
           case true =>
-            Future.successful(Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, request.userAnswers)))
+            val invalidAddressFields = PartnershipRegisteredAddressId.retrieve.map { address =>
+              val addressFields = addressHelper.mapAddressFields(address)
+              val addressForm: Form[Address] = addressFormProvider()
+              val bind = addressForm.bind(addressFields)
+              bind.fold(
+                _ => true,
+                _ => false
+              )
+            }
+            invalidAddressFields.map { invalidFields =>
+              if (invalidFields) {
+                Future.successful(Redirect(routes.AddressController.onPageLoad()))
+              } else {
+                Future.successful(Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, request.userAnswers)))
+              }
+            }
           case false =>
             val updatedAnswers = request.userAnswers.removeAllOf(List(
               PartnershipRegisteredAddressId, RegistrationInfoId
