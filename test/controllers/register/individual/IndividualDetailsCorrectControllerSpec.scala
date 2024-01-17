@@ -93,14 +93,23 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
     Some("GB")
   )
 
+  private val addressDefaultCountryCode = TolerantAddress(
+    Some("Building Name 2"),
+    Some("2 Main Street"),
+    Some("Some Village"),
+    Some("Some Town"),
+    Some("ZZ1 1ZZ"),
+    Some("ZZ")
+  )
+
   private object FakeRegistrationConnector {
 
     def apply(individual: TolerantIndividual = individual,
-              address: TolerantAddress = address,
+              inputAddress: TolerantAddress = address,
               registrationInfo: RegistrationInfo = registrationInfo): FakeRegistrationConnector = new FakeRegistrationConnector {
       override def registerWithIdIndividual(nino: Nino)
                                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[IndividualRegistration] = {
-        Future.successful(IndividualRegistration(IndividualRegisterWithIdResponse(individual, address), registrationInfo))
+        Future.successful(IndividualRegistration(IndividualRegisterWithIdResponse(individual, inputAddress), registrationInfo))
       }
     }
   }
@@ -124,12 +133,12 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
   val view: individualDetailsCorrect = app.injector.instanceOf[individualDetailsCorrect]
 
-  private def viewAsString(form: Form[_] = form) =
+  private def viewAsString(form: Form[_] = form, inputAddress: TolerantAddress = address) =
     view(
       form,
       NormalMode,
       individual,
-      address,
+      inputAddress,
       countryOptions
     )(fakeRequest, messages).toString
 
@@ -139,7 +148,15 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      contentAsString(result) mustBe viewAsString(inputAddress = address)
+    }
+
+    "return OK and the correct view for a GET, hiding the country code row if the default ZZ code is present" in {
+      val result = controller(registrationConnector = FakeRegistrationConnector(inputAddress = addressDefaultCountryCode)).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString(inputAddress = addressDefaultCountryCode)
+      contentAsString(result) must not include "address-value-5"
     }
 
     "fetch and render the correct individual information if a different nino is provided from IV" in {

@@ -30,6 +30,8 @@ case class TolerantAddress(addressLine1: Option[String],
                            postcode: Option[String],
                            countryOpt: Option[String]) {
 
+  import TolerantAddress.withHideDefaultCode
+
   @Deprecated
   def lines: Seq[String] = {
     Seq(
@@ -46,7 +48,6 @@ case class TolerantAddress(addressLine1: Option[String],
   def print: String = {
     lines.mkString(", ")
   }
-
   def lines(countryOptions: CountryOptions): Seq[String] = {
     Seq(
       this.addressLine1,
@@ -54,7 +55,7 @@ case class TolerantAddress(addressLine1: Option[String],
       this.addressLine3,
       this.addressLine4,
       this.postcode,
-      countryOptions.getCountryNameFromCode(this)
+      withHideDefaultCode(countryOptions.getCountryNameFromCode(this))
     ).flatten(s => s)
   }
 
@@ -228,5 +229,9 @@ object TolerantAddress {
       Some(address.country)
     )
 
+  private val withHideDefaultCode: Option[String] => Option[String] = {
+    case Some("ZZ") => None
+    case maybeCountryName => maybeCountryName
+  }
 }
 
