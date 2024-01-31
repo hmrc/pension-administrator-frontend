@@ -105,7 +105,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
           }
           invalidAddressFields.map { invalidFields =>
             if (invalidFields) {
-              Future.successful(Redirect(routes.AddressController.onSubmit()))
+              Future.successful(Redirect(routes.AddressController.onPageLoad()))
             } else {
               dataCacheConnector.save(request.externalId, IndividualDetailsCorrectId, value).map(cacheMap =>
                 Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode, UserAnswers(cacheMap)))

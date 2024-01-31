@@ -19,7 +19,6 @@ package controllers.register.individual
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.register.partnership.routes
 import forms.AddressFormProvider
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId}
 import models.requests.DataRequest
@@ -88,7 +87,9 @@ class AddressController @Inject()(authenticate: AuthAction,
             Some(address.country)
           )
           cacheConnector.save(request.externalId, IndividualAddressId, tolerantAddress).map { newCache =>
-            Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode, UserAnswers(newCache)))
+            val ua = UserAnswers(newCache).set(IndividualDetailsCorrectId)(true).asOpt
+              .getOrElse(UserAnswers(newCache))
+            Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode, ua))
           }
         }
       )
