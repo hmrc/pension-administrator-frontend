@@ -89,7 +89,6 @@
         signOutUrl = if(canSignOut) Some(routes.LogoutController.onPageLoad.url) else None,
         phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl))
     )),
-    cspNonce = CSPNonce.get,
     beforeContentBlock = Some(beforeContentBlock),
     scriptsBlock = Some(scripts),
     mainContentLayout = if(fullWidthLayout) None else Some(defaultMainContentLayout(_)),
