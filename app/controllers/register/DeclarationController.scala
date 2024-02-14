@@ -32,7 +32,7 @@ import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
@@ -112,7 +112,11 @@ class DeclarationController @Inject()(
               Future.successful(Redirect(CannotRegisterAdministratorController.onPageLoad))
             case _: KnownFactsRetrievalException =>
               Future.successful(Redirect(SessionExpiredController.onPageLoad))
-            case _ =>
+            case e: HttpException =>
+              logger.error(s"Register PSA request responded with status code of ${e.responseCode} and message: ${e.message}", e)
+              Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
+            case e =>
+              logger.error("Declaration error message: s" + e.getMessage, e)
               Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
           }
         }
