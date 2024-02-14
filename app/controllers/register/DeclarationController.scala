@@ -116,7 +116,7 @@ class DeclarationController @Inject()(
               logger.error(s"Register PSA request responded with status code of ${e.responseCode} and message: ${e.message}", e)
               Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
             case e =>
-              logger.error("Declaration error message: s" + e.getMessage, e)
+              logger.error("Declaration error message: " + e.getMessage, e)
               Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
           }
         }
