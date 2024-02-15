@@ -16,8 +16,8 @@
 
 package utils
 
-import akka.actor.ActorSystem
-import akka.pattern.Patterns.after
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.pattern.Patterns.after
 import config.FrontendAppConfig
 import play.api.Logger
 import uk.gov.hmrc.http.HttpReads.is5xx
@@ -51,7 +51,7 @@ trait RetryHelper  {
           }
           logger.warn(s"Failure, retrying after $wait ms, attempt $currentAttempt")
           after(wait.milliseconds, as.scheduler, executionContext, call).flatMap { _ =>
-            retryWithBackOff(currentAttempt + 1, wait.toInt, f, config)
+            retryWithBackOff(currentAttempt + 1, wait, f, config)
           }
         } else {
           Future.failed(ex)
