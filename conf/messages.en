@@ -934,6 +934,13 @@ outsideEuEea.heading = You cannot register {0} as a PSA
 outsideEuEea.currentCountry.text = This is because {0} was registered in {1} and outside of the European Union and European Economic Area.
 outsideEuEea.body = Only {0} registered inside the European Union and European Economic Area can register as a PSA.
 
+nonUKAdministrator.title            = You cannot register as a scheme administrator
+nonUKAdministrator.heading          = You cannot register as a scheme administrator
+nonUKAdministrator.p1               = You must be a UK resident.
+nonUKAdministrator.p2.1             = To register, email
+nonUKAdministrator.p2.email         = administrationpensions@hmrc.gov.uk
+nonUKAdministrator.p2.2             = and include ‘Non-UK’ in the title.
+
 registerAsBusiness.title = What do you want to register as the scheme administrator?
 registerAsBusiness.heading = What do you want to register as the scheme administrator?
 registerAsBusiness.error.required = Select what you want to register as the scheme administrator

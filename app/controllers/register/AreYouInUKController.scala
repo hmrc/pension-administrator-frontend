@@ -68,4 +68,21 @@ trait AreYouInUKController extends FrontendBaseController with I18nSupport {
             Redirect(navigator.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap))))
         })
   }
+
+  def onSubmitIndividual(mode: Mode): Action[AnyContent] =
+    (authenticate andThen allowAccess(mode) andThen getData).async {
+      implicit request =>
+        form.bindFromRequest().fold((formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(view(formWithErrors, viewmodel(mode)))),
+          value => {
+            if (!value) {
+              dataCacheConnector.save(request.externalId, AreYouInUKId, value)
+                .map(_ => Redirect(controllers.register.individual.routes.NonUKAdministratorController.onPageLoad()))
+            } else {
+              dataCacheConnector.save(request.externalId, AreYouInUKId, value).map(cacheMap =>
+                Redirect(navigator.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap))))
+            }
+          }
+        )
+    }
 }
