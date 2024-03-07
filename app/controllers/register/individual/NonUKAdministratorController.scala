@@ -35,7 +35,7 @@ class NonUKAdministratorController @Inject()(
                                              val view: nonUKAdministrator
                                       ) extends FrontendBaseController with I18nSupport with Retrievals {
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
-    implicit _ =>
+    implicit request =>
       Future.successful(Ok(view()))
   }
 }
