@@ -939,7 +939,7 @@ nonUKAdministrator.heading          = You cannot register as a scheme administra
 nonUKAdministrator.p1               = You must be a UK resident.
 nonUKAdministrator.p2.1             = To register, email
 nonUKAdministrator.p2.email         = administrationpensions@hmrc.gov.uk
-nonUKAdministrator.p2.emailHref     = administrationpensions@hmrc.gov.uk?subject=Non-UK
+nonUKAdministrator.p2.emailSubject  = ?subject=Non-UK
 nonUKAdministrator.p2.2             = and include ‘Non-UK’ in the title.
 
 registerAsBusiness.title = What do you want to register as the scheme administrator?
