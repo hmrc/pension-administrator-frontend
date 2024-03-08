@@ -54,14 +54,13 @@ protected class FullAuthentication @Inject()(override val authConnector: AuthCon
 
     auth.retrieve(
       Retrievals.externalId and
-        Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
         Retrievals.allEnrolments and
         Retrievals.credentials and
         Retrievals.groupIdentifier and
         Retrievals.nino
     ) {
-      case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) ~ nino =>
+      case Some(id) ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) ~ nino =>
         checkForBothEnrolments(id, request, enrolments).flatMap {
           case None => redirectToInterceptPages(enrolments, affinityGroup).fold {
 
