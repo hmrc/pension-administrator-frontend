@@ -426,7 +426,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
           val retrievalResult = authRetrievals(ConfidenceLevel.L50, Some(AffinityGroup.Organisation))
           val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> false)
 
-          val authAction = new AuthenticationWithNoPDV(fakeAuthConnector(retrievalResult), frontendAppConfig,
+          val authAction = new AuthenticationWithNoIV(fakeAuthConnector(retrievalResult), frontendAppConfig,
             fakeUserAnswersCacheConnector(userAnswersData), fakePDVConnector(),
             mockSessionDataCacheConnector, app.injector.instanceOf[BodyParsers.Default])
           val controller = new Harness(authAction)

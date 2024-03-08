@@ -15,7 +15,7 @@
  */
 
 import com.google.inject.AbstractModule
-import controllers.actions.{FullAuthentication, AuthAction, _}
+import controllers.actions._
 import utils.Navigator
 import utils.annotations.PsaDeRegistration
 import utils.annotations._
@@ -28,11 +28,11 @@ class PODSModule extends AbstractModule {
   override def configure(): Unit = {
 
     bind(classOf[AuthAction])
-      .to(classOf[FullAuthentication])
+      .to(classOf[AuthenticationAction])
 
     bind(classOf[AuthAction])
-      .annotatedWith(classOf[AuthWithNoPDV])
-      .to(classOf[AuthenticationWithNoPDV])
+      .annotatedWith(classOf[AuthWithNoIV])
+      .to(classOf[AuthenticationWithNoIV])
 
     bind(classOf[Navigator])
       .annotatedWith(classOf[Register])

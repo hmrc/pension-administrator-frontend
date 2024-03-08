@@ -24,7 +24,7 @@ import javax.inject.Inject
 import models.Mode
 import play.api.mvc.MessagesControllerComponents
 import utils.Navigator
-import utils.annotations.{AuthWithNoPDV, Register}
+import utils.annotations.{AuthWithNoIV, Register}
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
@@ -34,7 +34,7 @@ class BusinessTypeAreYouInUKController @Inject()(override val appConfig: Fronten
                                                  override val dataCacheConnector: UserAnswersCacheConnector,
                                                  @Register override val navigator: Navigator,
                                                  override val allowAccess: AllowAccessActionProvider,
-                                                 @AuthWithNoPDV override val authenticate: AuthAction,
+                                                 @AuthWithNoIV override val authenticate: AuthAction,
                                                  override val getData: DataRetrievalAction,
                                                  override val requireData: DataRequiredAction,
                                                  override val formProvider: YesNoFormProvider,

@@ -52,6 +52,7 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   lazy val loginUrl: String = loadConfig("urls.login")
   lazy val serviceSignOut: String = loadConfig("urls.logout")
   lazy val loginContinueUrl: String = loadConfig("urls.loginContinue")
+  lazy val loginContinueUrlRelative: String = loadConfig("urls.loginContinueRelative")
   lazy val ukJourneyContinueUrl: String = loadConfig("urls.ukJourneyContinue")
   lazy val tellHMRCChangesUrl: String = loadConfig("urls.tellHMRCChanges")
   lazy val tellCompaniesHouseCompanyChangesUrl: String = loadConfig("urls.companyChangesCompaniesHouse")
@@ -169,5 +170,11 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   }"
 
   def featureToggleUrl(toggle: String): String = s"$pensionAdministratorUrl${runModeConfiguration.get[String]("urls.featureToggle").format(toggle)}"
+
+  def identityValidationFrontEndEntry(relativeCompletionURL: String, relativeFailureURL: String): String = {
+    val url = loadConfig("urls.iv-uplift-entry")
+    val query = s"?origin=pods&confidenceLevel=250&completionURL=$relativeCompletionURL&failureURL=$relativeFailureURL"
+    url + query
+  }
 
 }

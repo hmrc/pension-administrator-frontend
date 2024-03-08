@@ -18,77 +18,80 @@ package controllers.actions
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
-import connectors.{PersonalDetailsValidationConnector, SessionDataCacheConnector}
+import connectors.SessionDataCacheConnector
 import controllers.routes
-import identifiers.register.{AreYouInUKId, RegisterAsBusinessId}
-import identifiers.{AdministratorOrPractitionerId, TypedIdentifier, ValidationId}
+import identifiers.AdministratorOrPractitionerId
 import models.AdministratorOrPractitioner.Practitioner
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
-import play.api.libs.json.Reads
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.domain
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FullAuthentication @Inject()(override val authConnector: AuthConnector,
+protected class FullAuthentication @Inject()(override val authConnector: AuthConnector,
                                    config: FrontendAppConfig,
-                                   userAnswersCacheConnector: UserAnswersCacheConnector,
-                                   personalDetailsValidationConnector: PersonalDetailsValidationConnector,
                                    sessionDataCacheConnector: SessionDataCacheConnector,
-                                   val parser: BodyParsers.Default)
+                                   val parser: BodyParsers.Default,
+                                   minimalConfidenceLevel: Option[ConfidenceLevel])
                                   (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised(User).retrieve(
+    val auth = minimalConfidenceLevel.map(minimalConfidenceLevel =>
+      authorised(User and minimalConfidenceLevel)
+    ).getOrElse(authorised(User))
+
+    auth.retrieve(
       Retrievals.externalId and
         Retrievals.confidenceLevel and
         Retrievals.affinityGroup and
         Retrievals.allEnrolments and
         Retrievals.credentials and
-        Retrievals.groupIdentifier
+        Retrievals.groupIdentifier and
+        Retrievals.nino
     ) {
-      case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) =>
+      case Some(id) ~ cl ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) ~ nino =>
         checkForBothEnrolments(id, request, enrolments).flatMap {
           case None => redirectToInterceptPages(enrolments, affinityGroup).fold {
-            val authRequest = AuthenticatedRequest(request, id,
-              psaUser(affinityGroup, None, enrolments, credentials.providerId, groupIdentifier))
-            successRedirect(affinityGroup, cl, enrolments, authRequest, block)
+
+            val psa = existingPSA(enrolments)
+            val psaUser = PSAUser(
+              userType(affinityGroup),
+              nino.map(uk.gov.hmrc.domain.Nino(_)),
+              psa.nonEmpty,
+              psa,
+              None,
+              credentials.providerId, groupIdentifier)
+
+            val authRequest = AuthenticatedRequest(request, id, psaUser)
+            successRedirect(enrolments, authRequest, block)
           } { result => Future.successful(result) }
           case Some(redirect) => Future.successful(redirect)
         }
       case _ =>
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
 
-    } recover handleFailure
+    } recover handleFailure(request)
   }
 
 
-  def successRedirect[A](affinityGroup: AffinityGroup,
-                         cl: ConfidenceLevel,
-                         enrolments: Enrolments,
+  def successRedirect[A](enrolments: Enrolments,
                          authRequest: AuthenticatedRequest[A],
-                         block: AuthenticatedRequest[A] => Future[Result])
-                        (implicit hc: HeaderCarrier): Future[Result] = {
-    getData(AreYouInUKId, authRequest.externalId).flatMap {
-      case _ if alreadyEnrolledInPODS(enrolments) =>
-        savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
-      case Some(true) if affinityGroup == Organisation =>
-        doManualPDVAndRetrieveNino(authRequest, block)
-      case _ =>
-        block(authRequest)
+                         block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
+    if(alreadyEnrolledInPODS(enrolments)) {
+      savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
+    } else {
+      block(authRequest)
     }
   }
 
@@ -122,60 +125,6 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     }
   }
 
-  private def doManualPDVAndRetrieveNino[A](authRequest: AuthenticatedRequest[A],
-                                            block: AuthenticatedRequest[A] => Future[Result])
-                                           (implicit hc: HeaderCarrier): Future[Result] = {
-
-    val id = authRequest.request.getQueryString("validationId")
-
-    getData(ValidationId, authRequest.externalId).flatMap {
-      case Some(journey) =>
-        getNinoAndUpdateAuthRequestPDV(journey, block, authRequest)
-      case _ if id.nonEmpty =>
-        userAnswersCacheConnector.save(authRequest.externalId, ValidationId, id.getOrElse("")).flatMap(_ =>
-          getNinoAndUpdateAuthRequestPDV(id.getOrElse(""), block, authRequest)
-        )
-      case _ =>
-        orgManualPDV(authRequest.externalId, authRequest, block)
-    }
-  }
-
-  private def getNinoAndUpdateAuthRequestPDV[A](validationId: String,
-                                                block: AuthenticatedRequest[A] => Future[Result],
-                                                authRequest: AuthenticatedRequest[A])
-                                               (implicit hc: HeaderCarrier): Future[Result] = {
-    personalDetailsValidationConnector.retrieveNino(validationId).flatMap {
-      case Some(nino) =>
-        val updatedAuth = AuthenticatedRequest(
-          request = authRequest.request,
-          externalId = authRequest.externalId,
-          user = authRequest.user.copy(nino = Some(nino))
-        )
-        block(updatedAuth)
-      case _ =>
-        userAnswersCacheConnector.remove(authRequest.externalId, ValidationId).flatMap(
-          _ => orgManualPDV(authRequest.externalId, authRequest, block)
-        )
-    }
-  }
-
-  private def orgManualPDV[A](id: String,
-                              authRequest: AuthenticatedRequest[A],
-                              block: AuthenticatedRequest[A] => Future[Result])
-                             (implicit hc: HeaderCarrier): Future[Result] = {
-
-    getData(RegisterAsBusinessId, id).flatMap {
-      case Some(false) =>
-        val completionURL = config.ukJourneyContinueUrl
-        val failureURL = s"${config.loginContinueUrl}/unauthorised"
-        val url = s"${config.personalDetailsValidationFrontEnd}" +
-          s"/personal-details-validation/start?completionUrl=$completionURL&failureUrl=$failureURL"
-        Future.successful(SeeOther(url))
-      case _ =>
-        block(authRequest)
-    }
-  }
-
   private def redirectToInterceptPages(enrolments: Enrolments, affinityGroup: AffinityGroup): Option[Result] = {
     if (isPSP(enrolments) && !isPSA(enrolments)) {
       Some(Redirect(routes.PensionSchemePractitionerController.onPageLoad()))
@@ -191,22 +140,16 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     }
   }
 
-  private def getData[A](typedId: TypedIdentifier[A], id: String)(implicit hc: HeaderCarrier, rds: Reads[A]): Future[Option[A]] = {
-    userAnswersCacheConnector.fetch(id).map {
-      case Some(json) =>
-        UserAnswers(json).get(typedId)
-      case None =>
-        None
-    }
-  }
-
-  private def handleFailure: PartialFunction[Throwable, Result] = {
+  private def handleFailure(request: RequestHeader): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
       Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
     case _: InsufficientEnrolments =>
       Redirect(routes.UnauthorisedController.onPageLoad)
     case _: InsufficientConfidenceLevel =>
-      Redirect(routes.UnauthorisedController.onPageLoad)
+      val completionURL = request.uri
+      val failureURL = s"${config.loginContinueUrlRelative}/unauthorised"
+      val url = config.identityValidationFrontEndEntry(completionURL, failureURL)
+      SeeOther(url)
     case _: UnsupportedAuthProvider =>
       Redirect(routes.UnauthorisedController.onPageLoad)
     case _: UnsupportedAffinityGroup =>
@@ -226,7 +169,7 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
   private def isPSA(enrolments: Enrolments): Boolean =
     enrolments.getEnrolment(key = "HMRC-PSA-ORG").nonEmpty
 
-  protected def alreadyEnrolledInPODS(enrolments: Enrolments): Boolean =
+  private def alreadyEnrolledInPODS(enrolments: Enrolments): Boolean =
     enrolments.getEnrolment("HMRC-PODS-ORG").nonEmpty
 
   protected def userType(affinityGroup: AffinityGroup): UserType = {
@@ -240,16 +183,6 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
     }
   }
 
-  protected def psaUser(affinityGroup: AffinityGroup,
-                        nino: Option[domain.Nino],
-                        enrolments: Enrolments,
-                        userId: String,
-                        groupIdentifier: String
-                       ): PSAUser = {
-    val psa = existingPSA(enrolments)
-    PSAUser(userType(affinityGroup), nino, psa.nonEmpty, psa, None, userId, groupIdentifier)
-  }
-
   protected def getPSAId(enrolments: Enrolments): String =
     enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
       .getOrElse(throw new RuntimeException("PSA ID missing"))
@@ -257,21 +190,23 @@ class FullAuthentication @Inject()(override val authConnector: AuthConnector,
 
 trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
-class AuthenticationWithNoPDV @Inject()(override val authConnector: AuthConnector,
-                                        config: FrontendAppConfig,
-                                        userAnswersCacheConnector: UserAnswersCacheConnector,
-                                        personalDetailsValidationConnector: PersonalDetailsValidationConnector,
-                                        sessionDataCacheConnector: SessionDataCacheConnector,
-                                        parser: BodyParsers.Default
+class AuthenticationAction @Inject()(override val authConnector: AuthConnector,
+                                       config: FrontendAppConfig,
+                                       sessionDataCacheConnector: SessionDataCacheConnector,
+                                       parser: BodyParsers.Default
                                       )(implicit executionContext: ExecutionContext) extends
-  FullAuthentication(authConnector, config, userAnswersCacheConnector,
-    personalDetailsValidationConnector, sessionDataCacheConnector, parser)
+  FullAuthentication(authConnector, config, sessionDataCacheConnector, parser, Some(ConfidenceLevel.L250))
+
+class AuthenticationWithNoIV @Inject()(override val authConnector: AuthConnector,
+                                       config: FrontendAppConfig,
+                                       sessionDataCacheConnector: SessionDataCacheConnector,
+                                       parser: BodyParsers.Default
+                                      )(implicit executionContext: ExecutionContext) extends
+  FullAuthentication(authConnector, config, sessionDataCacheConnector, parser, None)
 
   with AuthorisedFunctions {
 
-  override def successRedirect[A](affinityGroup: AffinityGroup, cl: ConfidenceLevel,
-                                  enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
-                                  block: AuthenticatedRequest[A] => Future[Result])
-                                 (implicit hc: HeaderCarrier): Future[Result] =
+  override def successRedirect[A](enrolments: Enrolments, authRequest: AuthenticatedRequest[A],
+                                  block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
     savePsaIdAndReturnAuthRequest(enrolments, authRequest, block)
 }

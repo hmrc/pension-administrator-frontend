@@ -20,12 +20,12 @@ import controllers.actions.AuthAction
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.AuthWithNoPDV
+import utils.annotations.AuthWithNoIV
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class LoginController @Inject()(@AuthWithNoPDV authenticate: AuthAction,
+class LoginController @Inject()(@AuthWithNoIV authenticate: AuthAction,
                                 val controllerComponents: MessagesControllerComponents)
                                (implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
