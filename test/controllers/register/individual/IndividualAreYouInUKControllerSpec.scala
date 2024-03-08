@@ -39,7 +39,7 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
 
   def viewmodel(mode: Mode) =
     AreYouInUKViewModel(mode,
-      postCall = routes.IndividualAreYouInUKController.onSubmit(mode),
+      postCall = routes.IndividualAreYouInUKController.onSubmitIndividual(mode),
       title = Message("areYouInUKIndividual.title"),
       heading = Message("areYouInUKIndividual.heading")
     )
