@@ -21,8 +21,10 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.AreYouInUKController
 import forms.register.YesNoFormProvider
+
 import javax.inject.Inject
 import models.Mode
+import play.api.data.Form
 import play.api.mvc.MessagesControllerComponents
 import utils.Navigator
 import utils.annotations.{AuthWithNoPDV, Individual}
@@ -43,11 +45,11 @@ class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendA
                                                val view: areYouInUK
                                               )(implicit val executionContext: ExecutionContext) extends AreYouInUKController {
 
-  protected override val form = formProvider("areYouInUKIndividual.error.required")
+  protected override val form: Form[Boolean] = formProvider("areYouInUKIndividual.error.required")
 
-  protected def viewmodel(mode: Mode) =
+  protected def viewmodel(mode: Mode): AreYouInUKViewModel =
     AreYouInUKViewModel(mode,
-      postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmit(mode),
+      postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmitIndividual(mode),
       title = Message("areYouInUKIndividual.title"),
       heading = Message("areYouInUKIndividual.heading"),
       p1 = Some("areYouInUKIndividual.check.selectedUkAddress"),
