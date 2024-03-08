@@ -27,7 +27,7 @@ import models.Mode
 import play.api.data.Form
 import play.api.mvc.MessagesControllerComponents
 import utils.Navigator
-import utils.annotations.{AuthWithNoPDV, Individual}
+import utils.annotations.{AuthWithNoIV, Individual}
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
@@ -37,7 +37,7 @@ class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendA
                                                override val dataCacheConnector: UserAnswersCacheConnector,
                                                @Individual override val navigator: Navigator,
                                                override val allowAccess: AllowAccessActionProvider,
-                                               @AuthWithNoPDV override val authenticate: AuthAction,
+                                               @AuthWithNoIV override val authenticate: AuthAction,
                                                override val getData: DataRetrievalAction,
                                                override val requireData: DataRequiredAction,
                                                override val formProvider: YesNoFormProvider,

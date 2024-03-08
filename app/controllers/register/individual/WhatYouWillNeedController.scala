@@ -23,14 +23,14 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Navigator
-import utils.annotations.{AuthWithNoPDV, Individual}
+import utils.annotations.{AuthWithNoIV, Individual}
 import views.html.register.individual.whatYouWillNeed
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(@Individual val navigator: Navigator,
-                                          @AuthWithNoPDV authenticate: AuthAction,
+                                          @AuthWithNoIV authenticate: AuthAction,
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,

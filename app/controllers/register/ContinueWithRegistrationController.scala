@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.AuthWithNoPDV
+import utils.annotations.AuthWithNoIV
 import views.html.register.continueWithRegistration
 
 import javax.inject.Inject
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ContinueWithRegistrationController @Inject()(
                                                     val controllerComponents: MessagesControllerComponents,
-                                                    @AuthWithNoPDV authenticate: AuthAction,
+                                                    @AuthWithNoIV authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     continueWithRegistration: continueWithRegistration,
                                                     yesNoFormProvider: YesNoFormProvider,

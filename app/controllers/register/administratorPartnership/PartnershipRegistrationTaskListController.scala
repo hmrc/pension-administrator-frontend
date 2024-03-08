@@ -27,7 +27,7 @@ import play.api.i18n.{I18nSupport, Messages}
 import play.api.libs.json.Format.GenericFormat
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.AuthWithNoPDV
+import utils.annotations.AuthWithNoIV
 import utils.dataCompletion.DataCompletion.isAdviserComplete
 import utils.{DateHelper, UserAnswers}
 import views.html.register.taskList
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 class PartnershipRegistrationTaskListController @Inject()(
                                                            appConfig: FrontendAppConfig,
                                                            val controllerComponents: MessagesControllerComponents,
-                                                           @AuthWithNoPDV authenticate: AuthAction,
+                                                           @AuthWithNoIV authenticate: AuthAction,
                                                            allowAccess: AllowAccessActionProvider,
                                                            getData: DataRetrievalAction,
                                                            requireData: DataRequiredAction,
