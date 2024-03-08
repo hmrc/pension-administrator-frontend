@@ -32,6 +32,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
+import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
 
@@ -146,8 +147,8 @@ protected class FullAuthentication @Inject()(override val authConnector: AuthCon
     case _: InsufficientEnrolments =>
       Redirect(routes.UnauthorisedController.onPageLoad)
     case _: InsufficientConfidenceLevel =>
-      val completionURL = request.uri
-      val failureURL = s"${config.loginContinueUrlRelative}/unauthorised"
+      val completionURL = RedirectUrl(request.uri)
+      val failureURL = RedirectUrl(s"${config.loginContinueUrlRelative}/unauthorised")
       val url = config.identityValidationFrontEndEntry(completionURL, failureURL)
       SeeOther(url)
     case _: UnsupportedAuthProvider =>
