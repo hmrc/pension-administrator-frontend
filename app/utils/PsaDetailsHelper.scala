@@ -30,7 +30,6 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
       None,
       Seq(
         individualDateOfBirth,
-        individualNino,
         psaAddress("cya.label.address"),
         psaPreviousAddress,
         emailAddress("email.label"),
@@ -101,18 +100,6 @@ class PsaDetailsHelper(psaDetails: PsaSubscription, countryOptions: CountryOptio
 
   = psaDetails.individual map { ind =>
     AnswerRow("cya.label.dob", Seq(DateHelper.formatDateWithSlash(ind.dateOfBirth)), false, None)
-  }
-
-  private def individualNino: Option[AnswerRow]
-
-  = psaDetails.customerIdentification.typeOfId flatMap { id =>
-    if (id.equalsIgnoreCase("NINO")) {
-      psaDetails.customerIdentification.number map { nino =>
-        AnswerRow("common.nino", Seq(nino), false, None)
-      }
-    } else {
-      None
-    }
   }
 
   //Company or Partnership PSA
@@ -227,12 +214,6 @@ object PsaDetailsHelper {
   =
     Some(AnswerRow("cya.label.dob", Seq(person.dateOfBirth.toString), false, None))
 
-  private def directorOrPartnerNino(person: DirectorOrPartner): Option[AnswerRow]
-
-  =
-    person.nino map { nino =>
-      AnswerRow("common.nino", Seq(nino), false, None)
-    }
 
   private def directorOrPartnerUtr(person: DirectorOrPartner): Option[AnswerRow]
 
@@ -274,7 +255,6 @@ object PsaDetailsHelper {
   = AnswerSection(
     Some(person.fullName),
     Seq(directorOrPartnerDob(person),
-      directorOrPartnerNino(person),
       directorOrPartnerUtr(person),
       directorOrPartnerAddress(person, countryOptions),
       directorOrPartnerPrevAddress(person, countryOptions),

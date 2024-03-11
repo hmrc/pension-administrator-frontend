@@ -44,7 +44,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       None,
       Seq(
         individualDateOfBirth,
-        individualNino,
         individualAddress,
         individualPreviousAddress,
         individualEmailAddress,
@@ -61,7 +60,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Seq(
         psaIdAnswerRow(psaId),
         individualDateOfBirth,
-        individualNino,
         individualContactAddress,
         individualPreviousAddress,
         individualEmailAddress,
@@ -199,10 +197,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
   private def individualDateOfBirth: Option[AnswerRow] = userAnswers.get(IndividualDateOfBirthId) map { x =>
     AnswerRow("cya.label.dob", Seq(DateHelper.formatDateWithSlash(x)), answerIsMessageKey = false,
       None)
-  }
-
-  private def individualNino: Option[AnswerRow] = userAnswers.get(IndividualNinoId) map { nino =>
-    AnswerRow("common.nino", Seq(nino), answerIsMessageKey = false, None)
   }
 
   private def individualAddress: Option[AnswerRow] = userAnswers.get(IndividualContactAddressId) map { address =>
@@ -346,39 +340,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
           visuallyHiddenText = None
         )
     })
-
-  private def directorNino(index: Int): Option[AnswerRow] =
-    (
-      userAnswers.get(HasDirectorNINOId(index)),
-      userAnswers.get(DirectorEnterNINOId(index))
-    ) match {
-      case (_, Some(ReferenceValue(nino, false))) =>
-        Some(AnswerRow(
-          label = "common.nino",
-          answer = Seq(nino),
-          answerIsMessageKey = false,
-          changeUrl = None
-        ))
-      case (_, Some(ReferenceValue(nino, true))) =>
-        Some(AnswerRow(
-          label = "common.nino",
-          answer = Seq(nino),
-          answerIsMessageKey = false,
-          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url))
-        ))
-      case (Some(false), None) =>
-        directorNoNinoReason(index)
-      case (Some(true), None) =>
-        Some(AnswerRow(
-          label = "common.nino",
-          answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = false,
-          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
-          visuallyHiddenText = None
-        ))
-      case _ =>
-        None
-    }
 
   private def directorHasUtr(index: Index): Option[AnswerRow] =
     Some((
@@ -552,7 +513,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       rows = Seq(
         directorDob(i),
         directorHasNino(i),
-        directorNino(i),
         directorHasUtr(i),
         directorUtr(i),
         directorAddress(i, countryOptions),
@@ -688,39 +648,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
           visuallyHiddenText = None
         )
     })
-
-  private def partnerNino(index: Int): Option[AnswerRow] =
-    (
-      userAnswers.get(HasPartnerNINOId(index)),
-      userAnswers.get(PartnerEnterNINOId(index))
-    ) match {
-      case (_, Some(ReferenceValue(nino, false))) =>
-        Some(AnswerRow(
-          label = "common.nino",
-          answer = Seq(nino),
-          answerIsMessageKey = false,
-          changeUrl = None
-        ))
-      case (_, Some(ReferenceValue(nino, true))) =>
-        Some(AnswerRow(
-          label = "common.nino",
-          answer = Seq(nino),
-          answerIsMessageKey = false,
-          changeUrl = Some(Link(PartnerEnterNINOController.onPageLoad(UpdateMode, index).url))
-        ))
-      case (Some(false), None) =>
-        partnerNoNinoReason(index)
-      case (Some(true), None) =>
-        Some(AnswerRow(
-          label = "common.nino",
-          answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = false,
-          changeUrl = Some(Link(PartnerEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
-          visuallyHiddenText = None
-        ))
-      case _ =>
-        None
-    }
 
   private def partnerHasUtr(index: Index): Option[AnswerRow] =
     Some((
@@ -894,7 +821,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(person.name),
       Seq(partnerDob(i),
         partnerHasNino(i),
-        partnerNino(i),
         partnerHasUtr(i),
         partnerUtr(i),
         partnerAddress(i, countryOptions),

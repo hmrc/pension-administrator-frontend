@@ -273,7 +273,6 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
           None,
           Seq(
             AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None),
-            AnswerRow("common.nino", Seq("AA999999A"), false, None),
             AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false, None),
             AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false, None),
             AnswerRow("email.label", Seq("aaa@aa.com"), false, None),
@@ -310,7 +309,6 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
           Some("abcdef dfgdsfff dfgfdgfdg"),
           Seq(
             AnswerRow("cya.label.dob", Seq("1950-03-29"), false, None),
-            AnswerRow("common.nino", Seq("AA999999A"), false, None),
             AnswerRow("utr.label", Seq("1234567892"), false, None),
             AnswerRow("cya.label.address", Seq("addressline1,", "addressline2,", "addressline3,", "addressline4,", "B5 9EX,", "Country of GB"), false, None),
             AnswerRow("common.previousAddress.checkyouranswers", Seq("line1,", "line2,", "line3,", "line4,", "567253,", "Country of AD"), false, None),
@@ -320,7 +318,6 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
           Some("sdfdff sdfdsfsdf dfdsfsf"),
           Seq(
             AnswerRow("cya.label.dob", Seq("1950-07-29"), false, None),
-            AnswerRow("common.nino", Seq("AA999999A"), false, None),
             AnswerRow("utr.label", Seq("7897700000"), false, None),
             AnswerRow("cya.label.address", Seq("fgfdgdfgfd,", "dfgfdgdfg,", "fdrtetegfdgdg,", "dfgfdgdfg,", "56546,", "Country of AD"), false, None),
             AnswerRow("common.previousAddress.checkyouranswers", Seq("werrertqe,", "ereretfdg,", "asafafg,", "fgdgdasdf,", "23424,", "Country of AD"), false, None),
