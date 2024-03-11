@@ -106,7 +106,6 @@ common.selectAddress.heading = Select the address
 common.selectAddress.title = Select the address
 common.selectAddress.text = Select the address from the list below, or
 
-common.nino = National Insurance number
 common.nino.optional = National Insurance number (optional)
 common.enterNINO.hint = Example ’QQ 12 34 56 C’
 common.error.nino.required = Enter the National Insurance number

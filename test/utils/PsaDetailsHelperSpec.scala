@@ -90,8 +90,6 @@ object PsaDetailsHelperSpec extends SpecBase {
   private def psaDetailsHelper(psaSubscription: PsaSubscription) = new PsaDetailsHelper(psaSubscription, countryOptions)
 
   private val individualDateOfBirth = AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None)
-  private val individualNino = AnswerRow("common.nino", Seq("AA999999A"), false, None)
-
   private def psaAddress(addressLabelKey: String) = AnswerRow(addressLabelKey, addressAnswer(psaSubscriptionIndividual.address, countryOptions), false, None)
 
   private val psaPreviousAddress = AnswerRow("common.previousAddress.checkyouranswers",
@@ -111,8 +109,6 @@ object PsaDetailsHelperSpec extends SpecBase {
 
   private def directorOrPartnerDob =
     AnswerRow("cya.label.dob", Seq("1950-03-29"), false, None)
-
-  private def directorOrPartnerNino = AnswerRow("common.nino", Seq("AA999999A"), false, None)
 
   private def directorOrPartnerUtr = AnswerRow("utr.label", Seq("1234567892"), false, None)
 
@@ -135,7 +131,6 @@ object PsaDetailsHelperSpec extends SpecBase {
 
   private val individualExpectedAnswerRows = Seq(
     individualDateOfBirth,
-    individualNino,
     psaAddress("cya.label.address"),
     psaPreviousAddress,
     emailAddress("email.label"),
@@ -165,7 +160,6 @@ object PsaDetailsHelperSpec extends SpecBase {
 
   private val directorOrPartnerExpectedAnswerRows = Seq(
     directorOrPartnerDob,
-    directorOrPartnerNino,
     directorOrPartnerUtr,
     directorOrPartnerAddress,
     directorOrPartnerPrevAddress,

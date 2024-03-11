@@ -69,7 +69,5 @@ object PsaSubscriptionBuilder {
   val psaSubscriptionMinimum = PsaSubscription(isSuspended = false, customerId, None, None, address, contactDetails, isSameAddressForLast12Months = false,
     None, None, None)
 
-  val ninoAnswerRow = AnswerRow("common.nino", Seq("AA999999A"), answerIsMessageKey = false, None)
-
 
 }

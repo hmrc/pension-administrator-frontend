@@ -53,7 +53,6 @@ object ViewPsaDetailsBuilder extends SpecBase {
   def individualSeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false,
       None),
-    AnswerRow("common.nino", Seq("AA999999A"), false, None),
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
@@ -71,7 +70,6 @@ object ViewPsaDetailsBuilder extends SpecBase {
   def individualContactOnlySeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None),
-    AnswerRow("common.nino", Seq("AA999999A"), false, None),
     AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
@@ -139,12 +137,6 @@ object ViewPsaDetailsBuilder extends SpecBase {
       answer = Seq("Yes"),
       answerIsMessageKey = false,
       changeUrl = Some(Link(HasDirectorNINOController.onPageLoad(UpdateMode, 0).url))
-    ),
-    AnswerRow(
-      label = "common.nino",
-      answer = Seq("AA999999A"),
-      answerIsMessageKey = false,
-      changeUrl = None
     ),
     AnswerRow(
       label = "directorUniqueTaxReference.checkYourAnswersLabel",
@@ -237,12 +229,6 @@ object ViewPsaDetailsBuilder extends SpecBase {
       answer = Seq("Yes"),
       answerIsMessageKey = false,
       changeUrl = Some(Link(HasPartnerNINOController.onPageLoad(UpdateMode, 0).url))
-    ),
-    AnswerRow(
-      label = "common.nino",
-      answer = Seq("AA999999A"),
-      answerIsMessageKey = false,
-      changeUrl = None
     ),
     AnswerRow(
       label = "partnerUniqueTaxReference.checkYourAnswersLabel",
