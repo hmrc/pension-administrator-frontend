@@ -90,7 +90,7 @@ object RegisterNavigatorV2Spec extends OptionValues {
   lazy val nonUkBusinessType: Call = controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
   lazy val nonUkCompanyRegisteredName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad(NormalMode)
   lazy val registerAsBusiness: Call = controllers.register.routes.RegisterAsBusinessController.onPageLoad()
-  lazy val nonUkIndividualName: Call = controllers.register.individual.routes.IndividualNameController.onPageLoad(NormalMode)
+  lazy val nonUkIndividualName: Call = ???
   lazy val nonUkCompanyAddress: Call = controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad()
   lazy val nonUkPartnershipAddress: Call = controllers.register.administratorPartnership.routes.PartnershipRegisteredAddressController.onPageLoad()
   lazy val nonUkPartnershipRegisteredName: Call = controllers.register.administratorPartnership.routes.PartnershipRegisteredNameController.onPageLoad()

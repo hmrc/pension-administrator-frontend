@@ -39,14 +39,12 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
       ("Id", "User Answers", "Next Page"),
       (AreYouInUKId, emptyAnswers, sessionExpiredPage),
       (AreYouInUKId, uk, ukIndividualDetailsPage),
-      (AreYouInUKId, nonUk, nonUkIndividualNamePage),
-      (AreYouInUKId, nonUkNoIndividualDetails, nonUkIndividualNamePage),
+      (AreYouInUKId, nonUk, nonUkAdministratorPage),
+      (AreYouInUKId, nonUkNoIndividualDetails, nonUkAdministratorPage),
 
       (IndividualDetailsCorrectId, detailsCorrect, individualDateOfBirthPage),
       (IndividualDetailsCorrectId, detailsIncorrect, youWillNeedToUpdatePage),
       (IndividualDetailsCorrectId, emptyAnswers, sessionExpiredPage),
-
-      (IndividualDetailsId, emptyAnswers, nonUkIndividualAddressPage),
 
       (IndividualAddressId, nonUkEuAddress, individualDateOfBirthPage),
       (IndividualAddressId, nonUkButUKAddress, reconsiderAreYouInUk(CheckMode)),
@@ -90,8 +88,8 @@ class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
     def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
       ("Id", "User Answers", "Next Page"),
       (AreYouInUKId, emptyAnswers, sessionExpiredPage),
-      (AreYouInUKId, nonUk, nonUkIndividualAddressPage),
-      (AreYouInUKId, nonUkNoIndividualDetails, nonUkIndividualNamePage),
+      (AreYouInUKId, nonUk, nonUkAdministratorPage),
+      (AreYouInUKId, nonUkNoIndividualDetails, nonUkAdministratorPage),
 
       (IndividualDateOfBirthId, emptyAnswers, checkYourAnswersPage),
       (IndividualDateOfBirthId, nonUk, checkYourAnswersPage),
@@ -158,8 +156,8 @@ object IndividualNavigatorSpec extends OptionValues {
   lazy private val checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
   lazy private val declarationWorkingKnowledgePage = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
   lazy private val ukIndividualDetailsPage = routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
-  lazy private val nonUkIndividualNamePage = routes.IndividualNameController.onPageLoad(NormalMode)
-  lazy private val nonUkIndividualAddressPage = routes.IndividualRegisteredAddressController.onPageLoad(NormalMode)
+  lazy private val nonUkAdministratorPage = routes.NonUKAdministratorController.onPageLoad()
+
   private def reconsiderAreYouInUk(mode: Mode): Call = routes.IndividualAreYouInUKController.onPageLoad(mode)
   lazy private val outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
   lazy private val anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
