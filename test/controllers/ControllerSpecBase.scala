@@ -40,7 +40,7 @@ trait ControllerSpecBase extends SpecBase {
 
   val cacheMapId = "id"
 
-  val firstIndex = Index(0)
+  val firstIndex: Index = Index(0)
 
   val companyName = "Test Company Name"
 
@@ -53,6 +53,8 @@ trait ControllerSpecBase extends SpecBase {
       )
 
   def getEmptyData: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))
+
+  def getDataUKResident: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj(AreYouInUKId.toString -> true)))
 
   def dontGetAnyData: FakeDataRetrievalAction = new FakeDataRetrievalAction(None)
 
