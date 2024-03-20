@@ -20,6 +20,7 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
+import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
 import models.{AddressYears, NormalMode, TolerantIndividual}
 import play.api.data.Form
@@ -66,7 +67,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
   def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
 
   val validData: JsResult[UserAnswers] = UserAnswers()
-    .set(IndividualDetailsId)(individualDetails)
+    .set(IndividualDetailsId)(individualDetails).flatMap(_.set(AreYouInUKId)(true))
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
 

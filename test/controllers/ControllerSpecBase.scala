@@ -24,7 +24,7 @@ import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
-import identifiers.register.{BusinessNameId, BusinessTypeId, RegistrationInfoId}
+import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessTypeId, RegistrationInfoId}
 import models._
 import models.register.BusinessType
 import play.api.inject.bind
@@ -79,6 +79,15 @@ trait ControllerSpecBase extends SpecBase {
         RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None),
       IndividualDetailsId.toString ->
         TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName"))
+    )))
+
+  def getIndividualInUk: FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
+    Json.obj(
+      RegistrationInfoId.toString -> RegistrationInfo(
+        RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None),
+      IndividualDetailsId.toString ->
+        TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName")),
+      AreYouInUKId.toString -> true
     )))
 
   def getPartnership: DataRetrievalAction =
