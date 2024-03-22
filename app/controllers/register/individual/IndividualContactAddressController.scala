@@ -22,6 +22,7 @@ import controllers.actions._
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.UpdateContactAddressId
+import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId}
 
 import javax.inject.Inject
@@ -41,7 +42,7 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                    val cacheConnector: UserAnswersCacheConnector,
@@ -70,7 +71,11 @@ class IndividualContactAddressController @Inject()(val appConfig: FrontendAppCon
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      get( IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
+      request.userAnswers.get(AreYouInUKId) match {
+        case Some(true) => get(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
+        case _ => Future.successful(Redirect(controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(mode)))
+      }
+
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

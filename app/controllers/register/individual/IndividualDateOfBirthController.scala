@@ -56,11 +56,15 @@ class IndividualDateOfBirthController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(IndividualDateOfBirthId) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      request.userAnswers.get(AreYouInUKId) match {
+        case Some(true) =>
+          val preparedForm = request.userAnswers.get(IndividualDateOfBirthId) match {
+            case None => form
+            case Some(value) => form.fill(value)
+          }
+          Ok(view(preparedForm, mode))
+        case _ => Redirect(controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(mode))
       }
-      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

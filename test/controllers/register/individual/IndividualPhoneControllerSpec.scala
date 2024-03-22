@@ -48,7 +48,7 @@ class IndividualPhoneControllerSpec extends ControllerWithCommonBehaviour {
     behave like controllerWithCommonFunctions(
       onPageLoadAction = data => controller(data).onPageLoad(NormalMode),
       onSubmitAction = data => controller(data).onSubmit(NormalMode),
-      validData = getIndividual,
+      validData = getIndividualInUk,
       viewAsString = phoneView,
       form = phoneForm,
       request = postRequest

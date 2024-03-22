@@ -53,7 +53,7 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
     psaName = None
   )
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getDataUKResident) =
     new IndividualPreviousAddressController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,

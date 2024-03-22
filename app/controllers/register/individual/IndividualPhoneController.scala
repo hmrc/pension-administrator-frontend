@@ -22,17 +22,19 @@ import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.UpdateContactAddressId
+import identifiers.register.AreYouInUKId
 import identifiers.register.individual.IndividualPhoneId
+
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.{NoRLSCheck, Individual}
-import viewmodels.{Message, CommonFormWithHintViewModel}
+import utils.annotations.{Individual, NoRLSCheck}
+import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualPhoneController @Inject()(@Individual val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
@@ -51,7 +53,10 @@ class IndividualPhoneController @Inject()(@Individual val navigator: Navigator,
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(IndividualPhoneId, form, viewModel(mode))
+        request.userAnswers.get(AreYouInUKId) match {
+          case Some(true) => get(IndividualPhoneId, form, viewModel(mode))
+          case _ => Future.successful(Redirect(controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(mode)))
+        }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

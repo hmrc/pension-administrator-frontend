@@ -22,18 +22,20 @@ import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.UpdateContactAddressId
+import identifiers.register.AreYouInUKId
 import identifiers.register.individual.IndividualEmailId
+
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Individual
 import utils.annotations.NoRLSCheck
-import viewmodels.{Message, CommonFormWithHintViewModel}
+import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualEmailController @Inject()(@Individual val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
@@ -52,7 +54,11 @@ class IndividualEmailController @Inject()(@Individual val navigator: Navigator,
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(IndividualEmailId, form, viewModel(mode))
+        request.userAnswers.get(AreYouInUKId) match {
+          case Some(true) => get(IndividualEmailId, form, viewModel(mode))
+          case _ => Future.successful(Redirect(controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(mode)))
+        }
+
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

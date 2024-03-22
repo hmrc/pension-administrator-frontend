@@ -20,15 +20,17 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
+import identifiers.register.AreYouInUKId
 import models.{Address, NormalMode}
 import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
+import play.api.libs.json.JsResult
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator}
+import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
@@ -68,12 +70,16 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Moc
 
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
+  val validData: JsResult[UserAnswers] = UserAnswers()
+    .set(AreYouInUKId)(true)
+  val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
+
   def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
 
   "IndividualContactAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()

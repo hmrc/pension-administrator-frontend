@@ -65,16 +65,6 @@ POST        /are-you-uk-resident                          controllers.register.i
 GET         /:mode/are-you-uk-resident                    controllers.register.individual.IndividualAreYouInUKController.onPageLoad(mode: Mode)
 POST        /:mode/are-you-uk-resident                    controllers.register.individual.IndividualAreYouInUKController.onSubmitIndividual(mode: Mode)
 
-GET         /what-is-your-name                            controllers.register.individual.IndividualNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /what-is-your-name                            controllers.register.individual.IndividualNameController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/what-is-your-name                      controllers.register.individual.IndividualNameController.onPageLoad(mode: Mode)
-POST        /:mode/what-is-your-name                      controllers.register.individual.IndividualNameController.onSubmit(mode: Mode)
-
-GET         /address-manual                               controllers.register.individual.IndividualRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /address-manual                               controllers.register.individual.IndividualRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onPageLoad(mode: Mode)
-POST        /:mode/address-manual                         controllers.register.individual.IndividualRegisteredAddressController.onSubmit(mode: Mode)
-
 GET         /outside-eu-eea                               controllers.register.individual.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
 GET         /non-uk-administrator                         controllers.register.individual.NonUKAdministratorController.onPageLoad(mode: Mode = NormalMode)
 

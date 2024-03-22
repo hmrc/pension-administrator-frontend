@@ -62,14 +62,20 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
   "IndividualDateOfBirth Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val inUkData = Json.obj(AreYouInUKId.toString -> true)
+      val getRelevantData = new FakeDataRetrievalAction(Some(inUkData))
+
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Json.obj(IndividualDateOfBirthId.toString -> testAnswer)
+      val validData = Json.obj(
+        IndividualDateOfBirthId.toString -> testAnswer,
+        AreYouInUKId.toString -> true
+      )
       val getRelevantData = new FakeDataRetrievalAction(Some(validData))
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
