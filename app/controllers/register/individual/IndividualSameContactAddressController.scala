@@ -24,13 +24,14 @@ import controllers.register.individual.routes._
 import forms.address.SameContactAddressFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.individual._
+
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.Individual
+import utils.annotations.{AuthWithIV, Individual}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
@@ -41,7 +42,7 @@ import scala.concurrent.ExecutionContext
 class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                        val dataCacheConnector: UserAnswersCacheConnector,
                                                        @Individual val navigator: Navigator,
-                                                       authenticate: AuthAction,
+                                                       @AuthWithIV authenticate: AuthAction,
                                                        allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,

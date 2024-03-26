@@ -23,6 +23,7 @@ import controllers.actions._
 import forms.register.individual.IndividualDateOfBirthFormProvider
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
+
 import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
@@ -31,7 +32,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.RegistrationService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.Individual
+import utils.annotations.{AuthWithIV, Individual}
 import utils.{Navigator, UserAnswers}
 import views.html.register.individual.individualDateOfBirth
 
@@ -41,6 +42,7 @@ class IndividualDateOfBirthController @Inject()(
                                                  appConfig: FrontendAppConfig,
                                                  dataCacheConnector: UserAnswersCacheConnector,
                                                  @Individual navigator: Navigator,
+                                                 @AuthWithIV
                                                  authenticate: AuthAction,
                                                  allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,

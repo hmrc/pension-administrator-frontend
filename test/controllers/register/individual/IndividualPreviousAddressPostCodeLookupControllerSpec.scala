@@ -19,6 +19,7 @@ package controllers.register.individual
 import connectors.AddressLookupConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
+import controllers.actions.{AuthAction, FakeAuthAction}
 import forms.address.PostCodeLookupFormProvider
 import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
@@ -27,7 +28,7 @@ import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.annotations.Individual
+import utils.annotations.{AuthWithIV, Individual}
 import utils.{FakeNavigator, Navigator}
 import views.html.address.postcodeLookup
 
@@ -68,6 +69,7 @@ class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSp
       running(_.overrides(modules(getEmptyData)++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
           bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+          bind[AuthAction].qualifiedWith(classOf[AuthWithIV]).to(FakeAuthAction),
           bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
         ):_*)) {
         app =>
@@ -87,6 +89,7 @@ class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSp
       running(_.overrides(modules(getEmptyData)++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
           bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+          bind[AuthAction].qualifiedWith(classOf[AuthWithIV]).to(FakeAuthAction),
           bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
         ):_*)) {
         app =>

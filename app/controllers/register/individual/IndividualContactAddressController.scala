@@ -34,8 +34,7 @@ import play.api.mvc.Action
 import play.api.mvc.AnyContent
 import play.api.mvc.MessagesControllerComponents
 import utils.Navigator
-import utils.annotations.Individual
-import utils.annotations.NoRLSCheck
+import utils.annotations.{AuthWithIV, Individual, NoRLSCheck}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -46,7 +45,7 @@ import scala.concurrent.ExecutionContext
 class IndividualContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                                    val cacheConnector: UserAnswersCacheConnector,
                                                    @Individual val navigator: Navigator,
-                                                   authenticate: AuthAction,
+                                                   @AuthWithIV authenticate: AuthAction,
                                                    @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
