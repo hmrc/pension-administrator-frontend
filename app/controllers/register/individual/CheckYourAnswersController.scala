@@ -28,7 +28,7 @@ import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.Individual
+import utils.annotations.{AuthWithIV, Individual}
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
@@ -41,7 +41,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CheckYourAnswersController @Inject()(
                                             appConfig: FrontendAppConfig,
-                                            authenticate: AuthAction,
+                                            @AuthWithIV authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,

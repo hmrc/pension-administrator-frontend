@@ -195,6 +195,13 @@ class AuthenticationAction @Inject()(override val authConnector: AuthConnector,
                                        sessionDataCacheConnector: SessionDataCacheConnector,
                                        parser: BodyParsers.Default
                                       )(implicit executionContext: ExecutionContext) extends
+  FullAuthentication(authConnector, config, sessionDataCacheConnector, parser, None)
+
+class AuthenticationWithIV @Inject()(override val authConnector: AuthConnector,
+                                     config: FrontendAppConfig,
+                                     sessionDataCacheConnector: SessionDataCacheConnector,
+                                     parser: BodyParsers.Default
+                                    )(implicit executionContext: ExecutionContext) extends
   FullAuthentication(authConnector, config, sessionDataCacheConnector, parser, Some(ConfidenceLevel.L250))
 
 class AuthenticationWithNoIV @Inject()(override val authConnector: AuthConnector,

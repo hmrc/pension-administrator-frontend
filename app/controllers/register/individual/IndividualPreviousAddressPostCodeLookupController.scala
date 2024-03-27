@@ -20,16 +20,15 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.individual.IndividualPreviousAddressPostCodeLookupId
 import models.Mode
 import play.api.data.Form
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.Individual
-import utils.annotations.NoRLSCheck
+import utils.annotations.{AuthWithIV, Individual, NoRLSCheck}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -42,7 +41,7 @@ class IndividualPreviousAddressPostCodeLookupController @Inject()(
                                                                    override val appConfig: FrontendAppConfig,
                                                                    override val cacheConnector: UserAnswersCacheConnector,
                                                                    override val addressLookupConnector: AddressLookupConnector,
-                                                                   authenticate: AuthAction,
+                                                                   @AuthWithIV authenticate: AuthAction,
                                                                    @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                                    getData: DataRetrievalAction,
                                                                    requireData: DataRequiredAction,

@@ -23,9 +23,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-//TODO: This should be removed, since we don't require IV by default.
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
 @BindingAnnotation
-public @interface AuthWithNoIV {
+public @interface AuthWithIV {
 }

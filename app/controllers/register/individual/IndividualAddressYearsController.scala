@@ -22,15 +22,15 @@ import controllers.actions._
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
+
 import javax.inject.Inject
 import models.requests.DataRequest
-import models.{Mode, AddressYears}
+import models.{AddressYears, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.Individual
-import utils.annotations.NoRLSCheck
+import utils.annotations.{AuthWithIV, Individual, NoRLSCheck}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -40,7 +40,7 @@ import scala.concurrent.ExecutionContext
 class IndividualAddressYearsController @Inject()(@Individual override val navigator: Navigator,
                                                  override val appConfig: FrontendAppConfig,
                                                  override val cacheConnector: UserAnswersCacheConnector,
-                                                 authenticate: AuthAction,
+                                                 @AuthWithIV authenticate: AuthAction,
                                                  @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
