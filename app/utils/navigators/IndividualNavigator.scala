@@ -38,7 +38,6 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     case AreYouInUKId => countryOfRegistrationRoutes(ua)
 
     case IndividualDetailsCorrectId => detailsCorrect(ua)
-    case IndividualDetailsId => IndividualRegisteredAddressController.onPageLoad(NormalMode)
 
     case IndividualAddressId => regionBasedNavigation(ua)
     case WhatYouWillNeedId => IndividualAreYouInUKController.onPageLoad(NormalMode)
@@ -160,7 +159,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
 
   def countryOfRegistrationRoutes(answers: UserAnswers): Call = {
     answers.get(AreYouInUKId) match {
-      case Some(false) => IndividualNameController.onPageLoad(NormalMode)
+      case Some(false) => NonUKAdministratorController.onPageLoad()
       case Some(true) => IndividualDetailsCorrectController.onPageLoad(NormalMode)
       case _ => SessionExpiredController.onPageLoad
     }
@@ -168,11 +167,8 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
 
   def countryOfRegistrationEditRoutes(answers: UserAnswers): Call = {
     answers.get(AreYouInUKId) match {
-      case Some(false) => answers.get(IndividualDetailsId) match {
-        case None => IndividualNameController.onPageLoad(NormalMode)
-        case _ => IndividualRegisteredAddressController.onPageLoad(NormalMode)
-      }
       case Some(true) => IndividualDetailsCorrectController.onPageLoad(NormalMode)
+      case Some(false) => NonUKAdministratorController.onPageLoad()
       case _ => SessionExpiredController.onPageLoad
     }
   }

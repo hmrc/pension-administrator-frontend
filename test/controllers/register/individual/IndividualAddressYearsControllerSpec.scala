@@ -20,6 +20,7 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
+import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
 import models.{AddressYears, NormalMode, TolerantIndividual}
 import play.api.data.Form
@@ -38,9 +39,9 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
   val formProvider = new AddressYearsFormProvider()
   private val form = formProvider.applyIndividual()
   val questionText = "individualAddressYears.title"
-  val individualDetails = TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName"))
+  val individualDetails: TolerantIndividual = TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName"))
   val name: String = individualDetails.fullName
-  val viewmodel = AddressYearsViewModel(
+  val viewmodel: AddressYearsViewModel = AddressYearsViewModel(
     postCall = routes.IndividualAddressYearsController.onSubmit(NormalMode),
     title = Message(questionText, name),
     heading = Message(questionText, name),
@@ -65,7 +66,9 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
 
   def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
 
-  val validData: JsResult[UserAnswers] = UserAnswers()
+  val validJson: JsValue = Json.obj(AreYouInUKId.toString -> true)
+
+  val validData: JsResult[UserAnswers] = UserAnswers(json = validJson)
     .set(IndividualDetailsId)(individualDetails)
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))

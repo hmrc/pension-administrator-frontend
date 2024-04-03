@@ -20,10 +20,11 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.SameContactAddressFormProvider
+import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsId, IndividualSameContactAddressId}
 import models.{AddressYears, NormalMode, TolerantAddress, TolerantIndividual}
 import play.api.data.Form
-import play.api.libs.json.JsResult
+import play.api.libs.json.{JsResult, JsValue, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
@@ -37,9 +38,9 @@ class IndividualSameContactAddressControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val formProvider = new SameContactAddressFormProvider()
-  val form = formProvider("error.required")
+  val form: Form[Boolean] = formProvider("error.required")
 
-  val testAddress = TolerantAddress(
+  val testAddress: TolerantAddress = TolerantAddress(
     Some("address line 1"),
     Some("address line 2"),
     Some("test town"),
@@ -47,7 +48,7 @@ class IndividualSameContactAddressControllerSpec extends ControllerSpecBase {
     Some("test post code"), Some("GB")
   )
 
-  def viewmodel = SameContactAddressViewModel(
+  def viewmodel: SameContactAddressViewModel = SameContactAddressViewModel(
     postCall = routes.IndividualSameContactAddressController.onSubmit(NormalMode),
     title = Message("individual.same.contact.address.title"),
     heading = Message("individual.same.contact.address.heading"),
@@ -84,7 +85,9 @@ class IndividualSameContactAddressControllerSpec extends ControllerSpecBase {
       countryOptions
     )(fakeRequest, messages).toString
 
-  val validData: JsResult[UserAnswers] = UserAnswers()
+  val validJson: JsValue = Json.obj(AreYouInUKId.toString -> true)
+
+  val validData: JsResult[UserAnswers] = UserAnswers(validJson)
     .set(IndividualAddressId)(testAddress).flatMap(_.set(IndividualDetailsId)(TolerantIndividual(Some("First"), Some("Middle"), Some("Last"))))
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
