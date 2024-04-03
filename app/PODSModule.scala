@@ -34,6 +34,10 @@ class PODSModule extends AbstractModule {
       .annotatedWith(classOf[AuthWithNoIV])
       .to(classOf[AuthenticationWithNoIV])
 
+    bind(classOf[AuthAction])
+      .annotatedWith(classOf[AuthWithIV])
+      .to(classOf[AuthenticationWithIV])
+
     bind(classOf[Navigator])
       .annotatedWith(classOf[Register])
       .to(classOf[RegisterNavigator])

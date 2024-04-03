@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.Individual
+import utils.annotations.{AuthWithIV, Individual}
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, Navigator, UserAnswers}
 import views.html.register.individual.individualDetailsCorrect
@@ -40,6 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualDetailsCorrectController @Inject()(@Individual navigator: Navigator,
                                                    dataCacheConnector: UserAnswersCacheConnector,
+                                                   @AuthWithIV
                                                    authenticate: AuthAction,
                                                    allowAccess: AllowAccessActionProvider,
                                                    getData: DataRetrievalAction,

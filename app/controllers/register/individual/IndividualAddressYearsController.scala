@@ -31,8 +31,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.Individual
-import utils.annotations.NoRLSCheck
+import utils.annotations.{AuthWithIV, Individual, NoRLSCheck}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -42,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IndividualAddressYearsController @Inject()(@Individual override val navigator: Navigator,
                                                  override val appConfig: FrontendAppConfig,
                                                  override val cacheConnector: UserAnswersCacheConnector,
-                                                 authenticate: AuthAction,
+                                                 @AuthWithIV authenticate: AuthAction,
                                                  @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,

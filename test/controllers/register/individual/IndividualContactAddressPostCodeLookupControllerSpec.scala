@@ -29,7 +29,7 @@ import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.Helpers._
 import play.api.test._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.annotations.Individual
+import utils.annotations.{AuthWithIV, Individual}
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -57,6 +57,7 @@ class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpe
     running(_.overrides(modules(getEmptyData)++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
+        bind[AuthAction].qualifiedWith(classOf[AuthWithIV]).to(FakeAuthAction),
         bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
       ):_*)) {
       app =>
@@ -100,7 +101,7 @@ class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpe
 
   def application: Application = new GuiceApplicationBuilder()
     .overrides(
-      bind[AuthAction].to(FakeAuthAction),
+      bind[AuthAction].qualifiedWith(classOf[AuthWithIV]).to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(getEmptyData),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
       bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),

@@ -24,22 +24,21 @@ import forms.PhoneFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual.IndividualPhoneId
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.{Individual, NoRLSCheck}
+import utils.annotations.{AuthWithIV, Individual, NoRLSCheck}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualPhoneController @Inject()(@Individual val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
-                                       authenticate: AuthAction,
+                                       @AuthWithIV authenticate: AuthAction,
                                        @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
