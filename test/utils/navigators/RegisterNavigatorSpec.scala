@@ -55,7 +55,7 @@ class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (DeclarationId, emptyAnswers, confirmation),
 
       (AreYouInUKId, inUk, ukBusinessType),
-      (AreYouInUKId, notInUk, nonUkBusinessType),
+      (AreYouInUKId, notInUk, nonUkAdministrator),
 
       (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, businessWynPage),
       (RegisterAsBusinessId, registerAsBusinessIdIndividual, individualWynPage),
@@ -90,7 +90,7 @@ object RegisterNavigatorSpec extends OptionValues {
   lazy val confirmation: Call = routes.ConfirmationController.onPageLoad()
   lazy val survey: Call = controllers.routes.LogoutController.onPageLoad
   lazy val ukBusinessType: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
-  lazy val nonUkBusinessType: Call = controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
+  lazy val nonUkAdministrator: Call = controllers.register.routes.NonUKAdministratorController.onPageLoad()
   lazy val nonUkCompanyRegisteredName: Call = controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad(NormalMode)
   lazy val registerAsBusiness: Call = controllers.register.routes.RegisterAsBusinessController.onPageLoad()
   lazy val nonUkCompanyAddress: Call = controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad()
