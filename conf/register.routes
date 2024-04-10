@@ -65,3 +65,5 @@ GET         /what-you-will-need                             controllers.register
 
 GET         /continue-with-registration                     controllers.register.ContinueWithRegistrationController.onPageLoad()
 POST        /continue-with-registration                     controllers.register.ContinueWithRegistrationController.onSubmit()
+
+GET         /non-uk-administrator                           controllers.register.NonUKAdministratorController.onPageLoad(mode: Mode = NormalMode)

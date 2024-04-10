@@ -101,7 +101,7 @@ class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
   private def countryOfRegistrationRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(AreYouInUKId) match {
       case Some(false) =>
-        controllers.register.routes.NonUKBusinessTypeController.onPageLoad()
+        controllers.register.routes.NonUKAdministratorController.onPageLoad()
       case Some(true) =>
         controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
       case _ =>
