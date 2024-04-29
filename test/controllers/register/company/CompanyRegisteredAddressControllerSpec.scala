@@ -21,7 +21,7 @@ import connectors.RegistrationConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.address.NonUKAddressControllerDataMocks
-import forms.address.NonUKAddressFormProvider
+import forms.UKAddressFormProvider
 import identifiers.register.company.CompanyAddressId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
@@ -40,7 +40,7 @@ import scala.concurrent.Future
 
 class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 
-  val formProvider = new NonUKAddressFormProvider(countryOptions)
+  val formProvider = new UKAddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
 

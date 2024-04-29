@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
 import models._
@@ -41,7 +41,7 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
 
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
-  val formProvider = new AddressFormProvider(countryOptions)
+  val formProvider = new UKAddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider("error.country.invalid")
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =

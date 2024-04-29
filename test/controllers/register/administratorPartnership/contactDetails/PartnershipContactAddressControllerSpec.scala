@@ -19,7 +19,7 @@ package controllers.register.administratorPartnership.contactDetails
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import models._
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -45,7 +45,7 @@ class PartnershipContactAddressControllerSpec
   private val view: manualAddress = app.injector.instanceOf[manualAddress]
 
   private val messagePrefix = "enter.address"
-  private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
+  private val formProvider = new UKAddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form: Form[Address] = formProvider("error.country.invalid")
 
   private def viewModel = ManualAddressViewModel(

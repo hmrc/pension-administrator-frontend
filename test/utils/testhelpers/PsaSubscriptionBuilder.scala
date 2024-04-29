@@ -17,7 +17,6 @@
 package utils.testhelpers
 
 import models.PsaSubscription._
-import viewmodels.AnswerRow
 
 import java.time.LocalDate
 

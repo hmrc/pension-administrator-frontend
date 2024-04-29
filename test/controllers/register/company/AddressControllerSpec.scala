@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import identifiers.register.company.ConfirmCompanyAddressId
 import models.{NormalMode, TolerantAddress}
 import play.api.libs.json.Json
@@ -32,7 +32,7 @@ import views.html.address.manualAddress
 class AddressControllerSpec extends ControllerSpecBase {
   val view: manualAddress = inject[manualAddress]
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  val formProvider = new AddressFormProvider(countryOptions)
+  val formProvider = new UKAddressFormProvider(countryOptions)
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   val addressHelper: AddressHelper = inject[AddressHelper]
 
