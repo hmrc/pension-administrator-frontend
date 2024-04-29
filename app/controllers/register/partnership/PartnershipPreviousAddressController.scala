@@ -21,7 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
 import controllers.register.partnership.routes._
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId}
 
@@ -48,7 +48,7 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
-                                                     formProvider: AddressFormProvider,
+                                                     formProvider: UKAddressFormProvider,
                                                      val countryOptions: CountryOptions,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      val view: manualAddress

@@ -19,7 +19,7 @@ package controllers.register.company
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import identifiers.register.company.ConfirmCompanyAddressId
 import models.FeatureToggleName.PsaRegistration
 import models._
@@ -43,7 +43,7 @@ class AddressController @Inject()(authenticate: AuthAction,
                                   val controllerComponents: MessagesControllerComponents,
                                   val countryOptions: CountryOptions,
                                   featureToggleConnector: FeatureToggleConnector,
-                                  val formProvider: AddressFormProvider,
+                                  val formProvider: UKAddressFormProvider,
                                   getData: DataRetrievalAction,
                                   @RegisterCompany val navigator: Navigator,
                                   @RegisterCompanyV2 val navigatorV2: Navigator,

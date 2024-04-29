@@ -19,7 +19,7 @@ package controllers.register.partnership
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipRegisteredAddressId}
 import models._
 import models.requests.DataRequest
@@ -41,7 +41,7 @@ class AddressController @Inject()(authenticate: AuthAction,
                                   val cacheConnector: UserAnswersCacheConnector,
                                   val controllerComponents: MessagesControllerComponents,
                                   val countryOptions: CountryOptions,
-                                  val formProvider: AddressFormProvider,
+                                  val formProvider: UKAddressFormProvider,
                                   getData: DataRetrievalAction,
                                   val navigator: PartnershipNavigator,
                                   requireData: DataRequiredAction,

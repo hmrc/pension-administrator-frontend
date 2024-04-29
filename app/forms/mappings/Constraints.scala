@@ -167,6 +167,15 @@ trait Constraints {
           .getOrElse(Invalid(errorKey))
     }
 
+  protected def countryIsUK(errorKey: String): Constraint[String] =
+    Constraint {
+      code =>
+        code match {
+          case _ if code != "GB" => Invalid(errorKey)
+          case _ => Valid
+        }
+    }
+
   protected def nonFutureDate(errorKey: String): Constraint[LocalDate] =
     Constraint {
       case date if !LocalDate.now().isBefore(date) => Valid

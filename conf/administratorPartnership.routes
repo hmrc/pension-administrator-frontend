@@ -115,7 +115,6 @@ POST        /vat-registration-number                      controllers.register.a
 GET         /:mode/vat-registration-number                controllers.register.administratorPartnership.partnershipDetails.PartnershipEnterVATController.onPageLoad(mode: Mode)
 POST        /:mode/vat-registration-number                controllers.register.administratorPartnership.partnershipDetails.PartnershipEnterVATController.onSubmit(mode: Mode)
 
-
 GET         /task-list                                    controllers.register.administratorPartnership.PartnershipRegistrationTaskListController.onPageLoad(mode: Mode = NormalMode)
 
 GET         /business-matching/check-your-answers         controllers.register.administratorPartnership.BusinessMatchingCheckYourAnswersController.onPageLoad()

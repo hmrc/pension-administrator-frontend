@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId}
 import models.FeatureToggleName.PsaRegistration
@@ -46,7 +46,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
                                                  @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
-                                                 formProvider: AddressFormProvider,
+                                                 formProvider: UKAddressFormProvider,
                                                  val countryOptions: CountryOptions,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  val view: manualAddress,
