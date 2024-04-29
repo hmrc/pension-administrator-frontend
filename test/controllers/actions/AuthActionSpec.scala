@@ -232,9 +232,9 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val result = controller.onPageLoad()(FakeRequest("GET", "/test"))
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(
-          """
-            |http://localhost:9938/mdtp/uplift?origin=pods&confidenceLevel=250&completionURL=/test&failureURL=/register-as-pension-scheme-administrator/unauthorised
-            |""".stripMargin)
+          "http://localhost:9938/" +
+            "mdtp/uplift?origin=pods&confidenceLevel=250&completionURL=/test&failureURL=/register-as-pension-scheme-administrator/unauthorised"
+        )
       }
 
       "the user used an unaccepted auth provider" in {

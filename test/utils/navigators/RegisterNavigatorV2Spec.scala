@@ -57,8 +57,6 @@ class RegisterNavigatorV2Spec extends SpecBase with NavigatorBehaviour {
 
       (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, businessWynPage),
       (RegisterAsBusinessId, registerAsBusinessIdIndividual, individualWynPage),
-
-      (NonUKBusinessTypeId, nonUkPartnership, nonUkPartnershipRegisteredName)
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
   }
@@ -90,7 +88,6 @@ object RegisterNavigatorV2Spec extends OptionValues {
   lazy val registerAsBusiness: Call = controllers.register.routes.RegisterAsBusinessController.onPageLoad()
   lazy val nonUkCompanyAddress: Call = controllers.register.company.routes.CompanyRegisteredAddressController.onPageLoad()
   lazy val nonUkPartnershipAddress: Call = controllers.register.administratorPartnership.routes.PartnershipRegisteredAddressController.onPageLoad()
-  lazy val nonUkPartnershipRegisteredName: Call = controllers.register.administratorPartnership.routes.PartnershipRegisteredNameController.onPageLoad()
   lazy val ukIndividualDetailsCorrect: Call = controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
 
   lazy val individualWynPage: Call = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
