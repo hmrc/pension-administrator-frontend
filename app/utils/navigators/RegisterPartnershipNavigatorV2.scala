@@ -35,55 +35,63 @@ import utils.{Navigator, UserAnswers}
 @Singleton
 class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Navigator {
 
+  private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
+    ua.get(AreYouInUKId) match {
+      case Some(true) => call
+      case _ => controllers.register.routes.NonUKAdministratorController.onPageLoad()
+    }
+
 //  scalastyle:off cyclomatic.complexity
 // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
-    case BusinessUTRId =>
-      PartnershipNameController.onPageLoad
-    case BusinessNameId =>
-      PartnershipIsRegisteredNameController.onPageLoad
-    case IsRegisteredNameId =>
-      registeredNameRoutes(ua)
-    case HasPAYEId if hasPaye(ua) =>
-      PartnershipEnterPAYEController.onPageLoad(NormalMode)
-    case HasPAYEId =>
-      HasPartnershipVATController.onPageLoad(NormalMode)
-    case EnterPAYEId =>
-      HasPartnershipVATController.onPageLoad(NormalMode)
-    case HasVATId if hasVat(ua) =>
-      PartnershipEnterVATController.onPageLoad(NormalMode)
-    case HasVATId =>
-      detailsCYA
-    case EnterVATId =>
-      detailsCYA
-    case PartnershipSameContactAddressId =>
-      sameContactAddress(NormalMode, ua)
-    case PartnershipContactAddressPostCodeLookupId =>
-      PartnershipContactAddressListController.onPageLoad(NormalMode)
-    case PartnershipContactAddressId =>
-      PartnershipAddressYearsController.onPageLoad(NormalMode)
-    case PartnershipAddressYearsId =>
-      partnershipAddressYearsIdRoutes(ua)
-    case PartnershipTradingOverAYearId =>
-      hasBeenTradingIdRoutes(ua)
-    case PartnershipPreviousAddressPostCodeLookupId =>
-      PartnershipPreviousAddressListController.onPageLoad(NormalMode)
-    case PartnershipPreviousAddressId =>
-      PartnershipEmailController.onPageLoad(NormalMode)
-    case PartnershipEmailId =>
-      PartnershipPhoneController.onPageLoad(NormalMode)
+
+    case BusinessUTRId => nextPageOrNonUkRedirect(ua, PartnershipNameController.onPageLoad)
+
+    case BusinessNameId => nextPageOrNonUkRedirect(ua, PartnershipIsRegisteredNameController.onPageLoad)
+
+    case IsRegisteredNameId => nextPageOrNonUkRedirect(ua, registeredNameRoutes(ua))
+
+    case HasPAYEId if hasPaye(ua) => nextPageOrNonUkRedirect(ua, PartnershipEnterPAYEController.onPageLoad(NormalMode))
+
+    case HasPAYEId => nextPageOrNonUkRedirect(ua, HasPartnershipVATController.onPageLoad(NormalMode))
+
+    case EnterPAYEId => nextPageOrNonUkRedirect(ua, HasPartnershipVATController.onPageLoad(NormalMode))
+
+    case HasVATId if hasVat(ua) => nextPageOrNonUkRedirect(ua, PartnershipEnterVATController.onPageLoad(NormalMode))
+
+    case HasVATId => nextPageOrNonUkRedirect(ua, detailsCYA)
+
+    case EnterVATId => nextPageOrNonUkRedirect(ua, detailsCYA)
+
+    case PartnershipSameContactAddressId => nextPageOrNonUkRedirect(ua, sameContactAddress(NormalMode, ua))
+
+    case PartnershipContactAddressPostCodeLookupId => nextPageOrNonUkRedirect(ua, PartnershipContactAddressListController.onPageLoad(NormalMode))
+
+    case PartnershipContactAddressId => nextPageOrNonUkRedirect(ua, PartnershipAddressYearsController.onPageLoad(NormalMode))
+
+    case PartnershipAddressYearsId => nextPageOrNonUkRedirect(ua, partnershipAddressYearsIdRoutes(ua))
+
+    case PartnershipTradingOverAYearId => nextPageOrNonUkRedirect(ua, hasBeenTradingIdRoutes(ua))
+
+    case PartnershipPreviousAddressPostCodeLookupId => nextPageOrNonUkRedirect(ua, PartnershipPreviousAddressListController.onPageLoad(NormalMode))
+
+    case PartnershipPreviousAddressId => nextPageOrNonUkRedirect(ua, PartnershipEmailController.onPageLoad(NormalMode))
+
+    case PartnershipEmailId => nextPageOrNonUkRedirect(ua, PartnershipPhoneController.onPageLoad(NormalMode))
+
     case PartnershipPhoneId =>
-      controllers.register.administratorPartnership.contactDetails.routes.CheckYourAnswersController.onPageLoad()
-    case CheckYourAnswersId =>
-      partnerRoutes(ua, NormalMode)
-    case PartnershipReviewId =>
-      controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
-    case PartnershipAddressId =>
-      regionBasedNavigation(ua)
-    case WhatYouWillNeedId =>
-      PartnershipSameContactAddressController.onPageLoad(NormalMode)
-    case WhatYouWillNeedIdV2 =>
-      HasPartnershipPAYEController.onPageLoad(NormalMode)
+      nextPageOrNonUkRedirect(ua, controllers.register.administratorPartnership.contactDetails.routes.CheckYourAnswersController.onPageLoad())
+
+    case CheckYourAnswersId => nextPageOrNonUkRedirect(ua, partnerRoutes(ua, NormalMode))
+
+    case PartnershipReviewId => nextPageOrNonUkRedirect(ua, controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
+
+    case PartnershipAddressId => nextPageOrNonUkRedirect(ua, regionBasedNavigation(ua))
+
+    case WhatYouWillNeedId => nextPageOrNonUkRedirect(ua, PartnershipSameContactAddressController.onPageLoad(NormalMode))
+
+    case WhatYouWillNeedIdV2 => nextPageOrNonUkRedirect(ua, HasPartnershipPAYEController.onPageLoad(NormalMode))
+
   }
 
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {

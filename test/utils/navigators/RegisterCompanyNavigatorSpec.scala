@@ -41,61 +41,53 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
     // scalastyle:off method.length
     def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
       ("Id", "User Answers", "Next Page"),
-      (BusinessUTRId, emptyAnswers, companyNamePage),
+      (BusinessUTRId, uk, companyNamePage),
       (BusinessNameId, uk, companyIsRegisteredNamePage),
-      (BusinessNameId, nonUk, nonUkAddress),
-      (IsRegisteredNameId, isRegisteredNameTrue, confirmCompanyDetailsPage),
-      (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate),
+      (IsRegisteredNameId, isRegisteredNameTrue.areYouInUk(true), confirmCompanyDetailsPage),
+      (IsRegisteredNameId, isRegisteredNameFalse.areYouInUk(true), companyUpdate),
 
       (ConfirmCompanyAddressId, confirmAddressTrueLimitedCompany, companyRegistrationNumberPage(NormalMode)),
-      (ConfirmCompanyAddressId, confirmAddressTrueUnlimitedCompany, hasCRNPage(NormalMode)),
+      (ConfirmCompanyAddressId, confirmAddressTrueUnlimitedCompany.areYouInUk(true), hasCRNPage(NormalMode)),
 
-      (HasCompanyCRNId, hasCRN(true), companyRegistrationNumberPage(NormalMode)),
-      (HasCompanyCRNId, hasCRN(false), hasPayePage),
-      (CompanyRegistrationNumberId, emptyAnswers, hasPayePage),
+      (HasCompanyCRNId, hasCRN(true).areYouInUk(true), companyRegistrationNumberPage(NormalMode)),
+      (HasCompanyCRNId, hasCRN(false).areYouInUk(true), hasPayePage),
+      (CompanyRegistrationNumberId, uk, hasPayePage),
 
-      (HasPAYEId, hasPAYEYes, payePage()),
-      (HasPAYEId, hasPAYENo, hasVatPage),
-      (EnterPAYEId, emptyAnswers, hasVatPage),
+      (HasPAYEId, hasPAYEYes.areYouInUk(true), payePage()),
+      (HasPAYEId, hasPAYENo.areYouInUk(true), hasVatPage),
+      (EnterPAYEId, uk, hasVatPage),
 
-      (HasVATId, hasVATYes, vatPage()),
-      (HasVATId, hasVATNo, sameContactAddress(NormalMode)),
+      (HasVATId, hasVATYes.areYouInUk(true), vatPage()),
+      (HasVATId, hasVATNo.areYouInUk(true), sameContactAddress(NormalMode)),
 
-      (EnterVATId, emptyAnswers, sameContactAddress(NormalMode)),
+      (EnterVATId, uk, sameContactAddress(NormalMode)),
 
       (CompanySameContactAddressId, isSameContactAddress, companyAddressYearsPage(NormalMode)),
-      (CompanySameContactAddressId, notSameContactAddressUk, contactAddressPostCode(NormalMode)),
-      (CompanySameContactAddressId, notSameContactAddressNonUk, contactAddress(NormalMode)),
-      (CompanySameContactAddressId, emptyAnswers, sessionExpiredPage),
+      (CompanySameContactAddressId, notSameContactAddressUk.areYouInUk(true), contactAddressPostCode(NormalMode)),
+      (CompanySameContactAddressId, uk, sessionExpiredPage),
 
-      (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(NormalMode)),
-      (CompanyContactAddressId, emptyAnswers, companyAddressYearsPage(NormalMode)),
+      (CompanyContactAddressPostCodeLookupId, uk, contactAddressList(NormalMode)),
+      (CompanyContactAddressId, uk, companyAddressYearsPage(NormalMode)),
 
       (CompanyAddressYearsId, addressYearsOverAYear, emailPage(NormalMode)),
-      (CompanyAddressYearsId, addressYearsUnderAYear, hasBeenTradingPage(NormalMode)),
-      (CompanyAddressYearsId, emptyAnswers, sessionExpiredPage),
+      (CompanyAddressYearsId, addressYearsUnderAYear.areYouInUk(true), hasBeenTradingPage(NormalMode)),
+      (CompanyAddressYearsId, uk, sessionExpiredPage),
 
-      (CompanyTradingOverAYearId, tradingOverAYearUk, paPostCodePage(NormalMode)),
-      (CompanyTradingOverAYearId, tradingOverAYearNonUk, previousAddressPage(NormalMode)),
-      (CompanyTradingOverAYearId, tradingUnderAYear, emailPage(NormalMode)),
+      (CompanyTradingOverAYearId, tradingOverAYearUk.areYouInUk(true), paPostCodePage(NormalMode)),
+      (CompanyTradingOverAYearId, tradingUnderAYear.areYouInUk(true), emailPage(NormalMode)),
 
-      (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(NormalMode)),
-      (CompanyPreviousAddressId, emptyAnswers, emailPage(NormalMode)),
+      (CompanyPreviousAddressPostCodeLookupId, uk, paAddressListPage(NormalMode)),
+      (CompanyPreviousAddressId, uk, emailPage(NormalMode)),
 
-      (CompanyEmailId, emptyAnswers, phonePage(NormalMode)),
+      (CompanyEmailId, uk, phonePage(NormalMode)),
       (CompanyPhoneId, uk, checkYourAnswersPage),
-      (CompanyPhoneId, nonUk, checkYourAnswersPage),
 
-      (CheckYourAnswersId, emptyAnswers, whatYouWillNeedDirectorPage),
+      (CheckYourAnswersId, uk, whatYouWillNeedDirectorPage),
       (CheckYourAnswersId, hasDirector, addCompanyDirectors(NormalMode)),
 
-      (CompanyReviewId, emptyAnswers, declarationWorkingKnowledgePage(NormalMode)),
+      (CompanyReviewId, uk, declarationWorkingKnowledgePage(NormalMode)),
 
-      (CompanyAddressId, nonUkEuAddress, whatYouWillNeedPage),
-      (CompanyAddressId, nonUkButUKAddress, reconsiderAreYouInUk),
-      (CompanyAddressId, nonUkNonEuAddress, outsideEuEea),
-
-      (WhatYouWillNeedId, emptyAnswers, sameContactAddress(NormalMode))
+      (WhatYouWillNeedId, uk, sameContactAddress(NormalMode))
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
   }
@@ -236,23 +228,20 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def addCompanyDirectors(mode: Mode) = routes.AddCompanyDirectorsController.onPageLoad(mode)
 
-  private def nonUkAddress = routes.CompanyRegisteredAddressController.onPageLoad()
-
-  private def reconsiderAreYouInUk = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
-
-  private def outsideEuEea = routes.OutsideEuEeaController.onPageLoad()
-
   private def companyUpdate = routes.CompanyUpdateDetailsController.onPageLoad()
 
-  private val addressYearsOverAYear = UserAnswers(Json.obj())
+
+  protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
+  protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
+  private val addressYearsOverAYear = UserAnswers(uk.json)
     .set(CompanyAddressYearsId)(AddressYears.OverAYear).asOpt.value
-  private val addressYearsUnderAYear = UserAnswers().set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
+  private val addressYearsUnderAYear = uk.set(CompanyAddressYearsId)(AddressYears.UnderAYear).asOpt.value
   private val tradingOverAYearUk = UserAnswers(Json.obj()).areYouInUk(true)
     .set(CompanyTradingOverAYearId)(true).asOpt.value
   private val tradingOverAYearNonUk = UserAnswers(Json.obj()).areYouInUk(false)
     .set(CompanyTradingOverAYearId)(true).asOpt.value
   private val tradingUnderAYear = UserAnswers().set(CompanyTradingOverAYearId)(false).asOpt.value
-  private val isSameContactAddress = UserAnswers().companySameContactAddress(true)
+  private val isSameContactAddress = UserAnswers(uk.json).companySameContactAddress(true)
   private val notSameContactAddressUk = UserAnswers().areYouInUk(true).companySameContactAddress(false)
   private val notSameContactAddressNonUk = UserAnswers().areYouInUk(false).companySameContactAddress(false)
 
@@ -262,27 +251,19 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private val hasVATYes = UserAnswers().set(HasVATId)(value = true).asOpt.value
   private val hasVATNo = UserAnswers().set(HasVATId)(value = false).asOpt.value
 
-  private val nonUkEuAddress = UserAnswers().nonUkCompanyAddress(address("AT"))
-  private val nonUkButUKAddress = UserAnswers().nonUkCompanyAddress(address("GB"))
-  private val nonUkNonEuAddress = UserAnswers().nonUkCompanyAddress(address("AF"))
-
-  protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
-  protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)
   protected val isRegisteredNameTrue: UserAnswers = UserAnswers().isRegisteredName(true)
   protected val isRegisteredNameFalse: UserAnswers = UserAnswers().isRegisteredName(false)
-
-  private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)
 
   val unlimitedCompany: UserAnswers = UserAnswers(Json.obj())
     .set(BusinessTypeId)(BusinessType.UnlimitedCompany).asOpt.value
   val limitedCompany: UserAnswers = UserAnswers(Json.obj())
     .set(BusinessTypeId)(BusinessType.LimitedCompany).asOpt.value
-  val hasDirector: UserAnswers = UserAnswers(Json.obj())
+  val hasDirector: UserAnswers = UserAnswers(uk.json)
     .set(DirectorNameId(0))(PersonName("first", "last")).asOpt.value
   def hasCRN(b:Boolean): UserAnswers = UserAnswers(Json.obj())
     .set(HasCompanyCRNId)(b).asOpt.value
 
-  private val confirmAddressTrueLimitedCompany = UserAnswers(Json.obj()).set(BusinessTypeId)(BusinessType.LimitedCompany).flatMap(
+  private val confirmAddressTrueLimitedCompany = uk.set(BusinessTypeId)(BusinessType.LimitedCompany).flatMap(
     _.set(ConfirmPartnershipDetailsId)(true)).asOpt.value
   private val confirmAddressTrueUnlimitedCompany = UserAnswers(Json.obj()).set(BusinessTypeId)(BusinessType.UnlimitedCompany).flatMap(
     _.set(ConfirmPartnershipDetailsId)(true)).asOpt.value

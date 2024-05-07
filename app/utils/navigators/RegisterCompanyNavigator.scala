@@ -33,61 +33,66 @@ import utils.{Navigator, UserAnswers}
 class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
                                          appConfig: FrontendAppConfig) extends Navigator {
 
-//  scalastyle:off cyclomatic.complexity
+  private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
+    ua.get(AreYouInUKId) match {
+      case Some(true) => call
+      case _ => controllers.register.routes.NonUKAdministratorController.onPageLoad()
+    }
+
+// scalastyle:off cyclomatic.complexity
 // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
-    case BusinessUTRId =>
-      routes.CompanyNameController.onPageLoad
-    case BusinessNameId =>
-      regionBasedNameNavigation(ua)
-    case IsRegisteredNameId =>
-      registeredNameRoutes(ua)
-    case ConfirmCompanyAddressId =>
-      crnNavigation(ua)
-    case HasCompanyCRNId if hasCrn(ua) =>
-      routes.CompanyRegistrationNumberController.onPageLoad(NormalMode)
-    case HasCompanyCRNId =>
-      routes.HasCompanyPAYEController.onPageLoad(NormalMode)
-    case CompanyRegistrationNumberId =>
-      routes.HasCompanyPAYEController.onPageLoad(NormalMode)
-    case HasPAYEId if hasPaye(ua) =>
-      routes.CompanyEnterPAYEController.onPageLoad(NormalMode)
-    case HasPAYEId =>
-      routes.HasCompanyVATController.onPageLoad(NormalMode)
-    case EnterPAYEId =>
-      routes.HasCompanyVATController.onPageLoad(NormalMode)
-    case HasVATId if hasVat(ua) =>
-      routes.CompanyEnterVATController.onPageLoad(NormalMode)
-    case HasVATId =>
-      routes.CompanySameContactAddressController.onPageLoad(NormalMode)
-    case EnterVATId =>
-      routes.CompanySameContactAddressController.onPageLoad(NormalMode)
-    case CompanySameContactAddressId =>
-      sameContactAddress(NormalMode, ua)
-    case CompanyContactAddressPostCodeLookupId =>
-      routes.CompanyContactAddressListController.onPageLoad(NormalMode)
-    case CompanyContactAddressId =>
-      routes.CompanyAddressYearsController.onPageLoad(NormalMode)
-    case CompanyAddressYearsId =>
-      companyAddressYearsIdRoutes(ua)
-    case CompanyTradingOverAYearId =>
-      hasBeenTradingIdRoutes(ua)
-    case CompanyPreviousAddressPostCodeLookupId =>
-      routes.CompanyAddressListController.onPageLoad(NormalMode)
-    case CompanyPreviousAddressId =>
-      routes.CompanyEmailController.onPageLoad(NormalMode)
-    case CompanyEmailId =>
-      routes.CompanyPhoneController.onPageLoad(NormalMode)
-    case CompanyPhoneId =>
-      routes.CheckYourAnswersController.onPageLoad()
-    case CheckYourAnswersId =>
-      directorRoutes(ua, NormalMode)
-    case CompanyReviewId =>
-      controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode)
-    case CompanyAddressId =>
-      regionBasedNavigation(ua)
-    case WhatYouWillNeedId =>
-      routes.CompanySameContactAddressController.onPageLoad(NormalMode)
+    case BusinessUTRId => nextPageOrNonUkRedirect(ua, routes.CompanyNameController.onPageLoad)
+
+    case BusinessNameId => nextPageOrNonUkRedirect(ua, regionBasedNameNavigation(ua))
+
+    case IsRegisteredNameId => nextPageOrNonUkRedirect(ua, registeredNameRoutes(ua))
+
+    case ConfirmCompanyAddressId => nextPageOrNonUkRedirect(ua, crnNavigation(ua))
+
+    case HasCompanyCRNId if hasCrn(ua) => nextPageOrNonUkRedirect(ua, routes.CompanyRegistrationNumberController.onPageLoad(NormalMode))
+
+    case HasCompanyCRNId => nextPageOrNonUkRedirect(ua, routes.HasCompanyPAYEController.onPageLoad(NormalMode))
+
+    case CompanyRegistrationNumberId => nextPageOrNonUkRedirect(ua, routes.HasCompanyPAYEController.onPageLoad(NormalMode))
+
+    case HasPAYEId if hasPaye(ua) => nextPageOrNonUkRedirect(ua, routes.CompanyEnterPAYEController.onPageLoad(NormalMode))
+
+    case HasPAYEId => nextPageOrNonUkRedirect(ua, routes.HasCompanyVATController.onPageLoad(NormalMode))
+
+    case EnterPAYEId => nextPageOrNonUkRedirect(ua, routes.HasCompanyVATController.onPageLoad(NormalMode))
+
+    case HasVATId if hasVat(ua) => nextPageOrNonUkRedirect(ua, routes.CompanyEnterVATController.onPageLoad(NormalMode))
+
+    case HasVATId => nextPageOrNonUkRedirect(ua, routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+
+    case EnterVATId => nextPageOrNonUkRedirect(ua, routes.CompanySameContactAddressController.onPageLoad(NormalMode))
+
+    case CompanySameContactAddressId => nextPageOrNonUkRedirect(ua, sameContactAddress(NormalMode, ua))
+
+    case CompanyContactAddressPostCodeLookupId => nextPageOrNonUkRedirect(ua, routes.CompanyContactAddressListController.onPageLoad(NormalMode))
+
+    case CompanyContactAddressId => nextPageOrNonUkRedirect(ua, routes.CompanyAddressYearsController.onPageLoad(NormalMode))
+
+    case CompanyAddressYearsId => nextPageOrNonUkRedirect(ua, companyAddressYearsIdRoutes(ua))
+
+    case CompanyTradingOverAYearId => nextPageOrNonUkRedirect(ua, hasBeenTradingIdRoutes(ua))
+
+    case CompanyPreviousAddressPostCodeLookupId => nextPageOrNonUkRedirect(ua, routes.CompanyAddressListController.onPageLoad(NormalMode))
+
+    case CompanyPreviousAddressId => nextPageOrNonUkRedirect(ua, routes.CompanyEmailController.onPageLoad(NormalMode))
+
+    case CompanyEmailId => nextPageOrNonUkRedirect(ua, routes.CompanyPhoneController.onPageLoad(NormalMode))
+
+    case CompanyPhoneId => nextPageOrNonUkRedirect(ua, routes.CheckYourAnswersController.onPageLoad())
+
+    case CheckYourAnswersId => nextPageOrNonUkRedirect(ua, directorRoutes(ua, NormalMode))
+
+    case CompanyReviewId => nextPageOrNonUkRedirect(ua, controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(NormalMode))
+
+    case CompanyAddressId => nextPageOrNonUkRedirect(ua, regionBasedNavigation(ua))
+
+    case WhatYouWillNeedId => nextPageOrNonUkRedirect(ua, routes.CompanySameContactAddressController.onPageLoad(NormalMode))
   }
 
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
