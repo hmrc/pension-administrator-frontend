@@ -50,14 +50,15 @@ class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
       Some("Address 2 Line 3"),
       Some("Address 2 Line 4"),
       Some("123"),
-      Some("FR")
+      Some("GB")
     )
   )
 
   val view: addressList = app.injector.instanceOf[addressList]
 
   private val data =
-    UserAnswers(Json.obj())
+    UserAnswers()
+      .areYouInUk(true)
     .businessName("Test Partnership Name")
       .set(PartnershipPreviousAddressPostCodeLookupId)(addresses)
       .asOpt.map(_.json)
