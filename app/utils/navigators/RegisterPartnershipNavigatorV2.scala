@@ -219,10 +219,9 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
     }
 
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Call = {
-    (answers.get(PartnershipSameContactAddressId), answers.get(AreYouInUKId)) match {
-      case (Some(true), _) => PartnershipAddressYearsController.onPageLoad(mode)
-      case (Some(false), Some(false)) => PartnershipContactAddressController.onPageLoad(mode)
-      case (Some(false), Some(true)) => PartnershipContactAddressPostCodeLookupController.onPageLoad(mode)
+    answers.get(PartnershipSameContactAddressId) match {
+      case Some(true) => PartnershipAddressYearsController.onPageLoad(mode)
+      case Some(false) => PartnershipContactAddressController.onPageLoad(mode)
       case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
