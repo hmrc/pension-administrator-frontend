@@ -34,7 +34,6 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
-import uk.gov.hmrc.domain
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import utils.UserAnswers
 
@@ -123,7 +122,6 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
     "called for already enrolled User" must {
       val enrolmentPODS = Enrolments(Set(Enrolment("HMRC-PODS-ORG", Seq(EnrolmentIdentifier("PSAID", psaId)), "")))
       val retrievalResult = authRetrievals(enrolments = enrolmentPODS)
-      val fakeUserAnswersConnector = fakeUserAnswersCacheConnector()
 
       "return OK" when {
         val authAction = new AuthenticationAction(fakeAuthConnector(retrievalResult), frontendAppConfig,
@@ -233,7 +231,10 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("GET", "/test"))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("http://localhost:9938/mdtp/uplift?origin=pods&confidenceLevel=250&completionURL=/test&failureURL=/register-as-pension-scheme-administrator/unauthorised")
+        redirectLocation(result) mustBe Some(
+          "http://localhost:9938/" +
+            "mdtp/uplift?origin=pods&confidenceLevel=250&completionURL=/test&failureURL=/register-as-pension-scheme-administrator/unauthorised"
+        )
       }
 
       "the user used an unaccepted auth provider" in {
@@ -348,7 +349,6 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
       "return OK and able to view the page and not redirect to IV" when {
         "they want to register as Individual" in {
           val retrievalResult = authRetrievals(Some(AffinityGroup.Organisation))
-          val userAnswersData = Json.obj("areYouInUK" -> true, "registerAsBusiness" -> false)
 
           val authAction = new AuthenticationWithNoIV(fakeAuthConnector(retrievalResult), frontendAppConfig,
             mockSessionDataCacheConnector, app.injector.instanceOf[BodyParsers.Default])
@@ -363,7 +363,6 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
 object AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
   private val psaId = "A0000000"
-  private val nino = domain.Nino("AB123456C")
 
   private val mockSessionDataCacheConnector = mock[SessionDataCacheConnector]
 

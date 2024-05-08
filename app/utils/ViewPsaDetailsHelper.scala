@@ -19,7 +19,6 @@ package utils
 import controllers.register.company.directors.routes._
 import controllers.register.company.routes._
 import controllers.register.partnership.partners.routes._
-import identifiers.TypedIdentifier
 import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import identifiers.register.company._
 import identifiers.register.company.directors._
@@ -321,26 +320,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
         )
     })
 
-  private def directorNoNinoReason(index: Index): Option[AnswerRow] =
-    Some(userAnswers.get(DirectorNoNINOReasonId(index)) match {
-      case Some(reason) =>
-        AnswerRow(
-          label = "directorNino.checkYourAnswersLabel.reason",
-          answer = Seq(reason),
-          answerIsMessageKey = false,
-          changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, index).url)),
-          visuallyHiddenText = None
-        )
-      case _ =>
-        AnswerRow(
-          label = "directorNino.checkYourAnswersLabel.reason",
-          answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = false,
-          changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, index).url, "site.add")),
-          visuallyHiddenText = None
-        )
-    })
-
   private def directorHasUtr(index: Index): Option[AnswerRow] =
     Some((
       userAnswers.get(HasDirectorUTRId(index)),
@@ -629,25 +608,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
         )
     })
 
-  private def partnerNoNinoReason(index: Index): Option[AnswerRow] =
-    Some(userAnswers.get(PartnerNoNINOReasonId(index)) match {
-      case Some(reason) =>
-        AnswerRow(
-          label = "partnerNino.checkYourAnswersLabel.reason",
-          answer = Seq(reason),
-          answerIsMessageKey = false,
-          changeUrl = Some(Link(PartnerNoNINOReasonController.onPageLoad(UpdateMode, index).url)),
-          visuallyHiddenText = None
-        )
-      case _ =>
-        AnswerRow(
-          label = "partnerNino.checkYourAnswersLabel.reason",
-          answer = Seq(messages("site.not_entered")),
-          answerIsMessageKey = false,
-          changeUrl = Some(Link(PartnerNoNINOReasonController.onPageLoad(UpdateMode, index).url, "site.add")),
-          visuallyHiddenText = None
-        )
-    })
 
   private def partnerHasUtr(index: Index): Option[AnswerRow] =
     Some((
@@ -912,12 +872,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
 
   def partnershipContactOnlySections(psaId: String): Seq[SuperSection] = Seq(partnershipDetailsContactOnlySection(psaId))
 
-  def addressYearsAnswer(userAnswers: UserAnswers, id: TypedIdentifier[AddressYears]): String = {
-    userAnswers.get(id) match {
-      case Some(AddressYears.UnderAYear) => s"sameAddress.label.true"
-      case _ => s"sameAddress.label.false"
-    }
-  }
 
   def addressAnswer(address: Address, countryOptions: CountryOptions): Seq[String] = {
     val country = countryOptions.options

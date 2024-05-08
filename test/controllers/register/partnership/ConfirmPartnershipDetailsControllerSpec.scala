@@ -19,7 +19,7 @@ package controllers.register.partnership
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
@@ -75,7 +75,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
   val form: Form[Boolean] = formProvider()
 
-  val addressFormProvider = new AddressFormProvider(countryOptions)
+  val addressFormProvider = new UKAddressFormProvider(countryOptions)
   val addressHelper: AddressHelper = inject[AddressHelper]
 
   val regInfo: RegistrationInfo = RegistrationInfo(

@@ -19,7 +19,7 @@ package controllers.register.partnership
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import models.{NormalMode, TolerantAddress}
 import play.api.libs.json.Json
@@ -32,7 +32,7 @@ import views.html.address.manualAddress
 class AddressControllerSpec extends ControllerSpecBase {
   val view: manualAddress = inject[manualAddress]
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-  val formProvider = new AddressFormProvider(countryOptions)
+  val formProvider = new UKAddressFormProvider(countryOptions)
 
   val partnershipNavigator: PartnershipNavigator = injector.instanceOf[PartnershipNavigator]
   val addressHelper: AddressHelper = inject[AddressHelper]
@@ -51,7 +51,7 @@ class AddressControllerSpec extends ControllerSpecBase {
       addressHelper
     )
 
-  val testAddress = TolerantAddress(
+  val testAddress: TolerantAddress = TolerantAddress(
     Some("Some Building"),
     Some("1 Some Street"),
     Some("Some Village"),

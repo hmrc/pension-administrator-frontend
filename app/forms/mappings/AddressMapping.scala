@@ -120,6 +120,15 @@ trait AddressMapping extends Mappings with Transforms {
       .verifying(country(countryOptions, keyInvalid))
   }
 
+  def ukCountryMapping(countryOptions: CountryOptions, keyRequired: String, keyInvalid: String): Mapping[String] = {
+    text(keyRequired).verifying(
+      firstError(
+        country(countryOptions, keyInvalid),
+        countryIsUK(keyInvalid)
+      )
+    )
+  }
+
 }
 
 object AddressMapping {

@@ -21,7 +21,7 @@ import connectors.RegistrationConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.address.NonUKAddressControllerDataMocks
-import forms.address.NonUKAddressFormProvider
+import forms.UKAddressFormProvider
 import identifiers.register.company.CompanyAddressId
 import identifiers.register.{BusinessNameId, RegistrationInfoId}
 import models._
@@ -40,7 +40,7 @@ import scala.concurrent.Future
 
 class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 
-  val formProvider = new NonUKAddressFormProvider(countryOptions)
+  val formProvider = new UKAddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider("error.country.invalid")
   val fakeAuditService = new StubSuccessfulAuditService()
 
@@ -102,78 +102,14 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
       val postRequest = fakeRequest.withFormUrlEncodedBody(
         ("addressLine1", "value 1"),
         ("addressLine2", "value 2"),
-        "country" -> "IN"
+        ("postCode", "zz11zz"),
+        "country" -> "GB"
       )
 
       val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "for non EEA country not call the register without id method" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("addressLine1", "value 1"),
-        ("addressLine2", "value 2"),
-        "country" -> "IN"
-      )
-
-      val mockRegistrationConnector = mock[RegistrationConnector]
-
-      when(mockRegistrationConnector.registerWithNoIdOrganisation(any(),any(),any())(any(),any()))
-        .thenReturn(Future.successful(registrationInfo))
-
-      val result = controller(registrationConnector = mockRegistrationConnector).onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      verify(mockRegistrationConnector, never).registerWithNoIdOrganisation(any(), any(), any())(any(), any())
-    }
-
-
-    "delete the registrationInfo data" when {
-      "we have changed the contact address to NON EEA" in {
-
-        val userAnswersCacheConnector = mock[UserAnswersCacheConnector]
-
-        val postRequest = fakeRequest.withFormUrlEncodedBody(
-          ("addressLine1", "value 1"),
-          ("addressLine2", "value 2"),
-          "country" -> "IN"
-        )
-
-        val validConnectorCallResult = Json.obj("test" -> "test")
-        val mockRegistrationConnector = mock[RegistrationConnector]
-
-        when(mockRegistrationConnector.registerWithNoIdOrganisation(any(),any(),any())(any(),any()))
-          .thenReturn(Future.successful(registrationInfo))
-        when(userAnswersCacheConnector.remove(any(),any())(any(),any())).thenReturn(Future.successful(validConnectorCallResult))
-        when(userAnswersCacheConnector.save(any(),any(), any())(any(),any(), any())).thenReturn(Future.successful(validConnectorCallResult))
-
-        val result = controller(registrationConnector = mockRegistrationConnector,userAnswersCacheConnector = userAnswersCacheConnector)
-          .onSubmit(NormalMode)(postRequest)
-
-        whenReady(result) { _ =>
-          verify(userAnswersCacheConnector, atLeastOnce).remove(any(),ArgumentMatchers.eq(RegistrationInfoId))(any(),any())
-        }
-      }
-    }
-
-    "for EEA country call the register without id method" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("addressLine1", "value 1"),
-        ("addressLine2", "value 2"),
-        "country" -> "ES"
-      )
-
-      val mockRegistrationConnector = mock[RegistrationConnector]
-
-      when(mockRegistrationConnector.registerWithNoIdOrganisation(any(),any(),any())(any(),any()))
-        .thenReturn(Future.successful(registrationInfo))
-
-      val result = controller(registrationConnector = mockRegistrationConnector).onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      verify(mockRegistrationConnector, atLeastOnce).registerWithNoIdOrganisation(any(), any(), any())(any(), any())
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

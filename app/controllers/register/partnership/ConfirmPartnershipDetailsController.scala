@@ -20,7 +20,7 @@ import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.partnership.{ConfirmPartnershipDetailsId, PartnershipRegisteredAddressId}
@@ -51,7 +51,7 @@ class ConfirmPartnershipDetailsController @Inject()(
                                                      requireData: DataRequiredAction,
                                                      registrationConnector: RegistrationConnector,
                                                      formProvider: ConfirmPartnershipDetailsFormProvider,
-                                                     addressFormProvider: AddressFormProvider,
+                                                     addressFormProvider: UKAddressFormProvider,
                                                      countryOptions: CountryOptions,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      val view: confirmPartnershipDetails,

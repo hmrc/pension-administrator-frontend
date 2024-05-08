@@ -38,47 +38,42 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
   "PartnershipNavigator in NormalMode" must {
     def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
       ("Id", "User Answers", "Next Page"),
-      (BusinessUTRId, emptyAnswers, partnershipNamePage),
+      (BusinessUTRId, uk, partnershipNamePage),
       (BusinessNameId, uk, partnershipIsRegisteredNamePage),
-      (BusinessNameId, nonUk, nonUkAddress),
-      (IsRegisteredNameId, isRegisteredNameTrue, confirmPartnershipDetailsPage),
-      (IsRegisteredNameId, isRegisteredNameFalse, companyUpdate),
-      (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue, hasPayePage),
+      (IsRegisteredNameId, isRegisteredNameTrue.areYouInUk(true), confirmPartnershipDetailsPage),
+      (IsRegisteredNameId, isRegisteredNameFalse.areYouInUk(true), companyUpdate),
+      (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue.areYouInUk(true), hasPayePage),
 
-      (HasPAYEId, hasPAYEYes, payePage(NormalMode)),
-      (HasPAYEId, hasPAYENo, hasVatPage),
-      (EnterPAYEId, emptyAnswers, hasVatPage),
-      (HasVATId, hasVatYes, enterVatPage(NormalMode)),
-      (HasVATId, hasVatNo, sameContactAddressPage),
-      (EnterVATId, emptyAnswers, sameContactAddressPage),
+      (HasPAYEId, hasPAYEYes.areYouInUk(true), payePage(NormalMode)),
+      (HasPAYEId, hasPAYENo.areYouInUk(true), hasVatPage),
+      (EnterPAYEId, uk, hasVatPage),
+      (HasVATId, hasVatYes.areYouInUk(true), enterVatPage(NormalMode)),
+      (HasVATId, hasVatNo.areYouInUk(true), sameContactAddressPage),
+      (EnterVATId, uk, sameContactAddressPage),
 
       (PartnershipSameContactAddressId, isSameContactAddress, addressYearsPage(NormalMode)),
       (PartnershipSameContactAddressId, notSameContactAddressUk, contactPostcodePage(NormalMode)),
-      (PartnershipSameContactAddressId, notSameContactAddressNonUk, contactAddressPage(NormalMode)),
 
-      (PartnershipContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode)),
-      (PartnershipContactAddressId, emptyAnswers, addressYearsPage(NormalMode)),
+      (PartnershipContactAddressPostCodeLookupId, uk, contactAddressListPage(NormalMode)),
+      (PartnershipContactAddressId, uk, addressYearsPage(NormalMode)),
 
       (PartnershipAddressYearsId, addressYearsOverAYear, emailPage),
       (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(NormalMode)),
 
       (PartnershipTradingOverAYearId, tradingOverAYearUk, contactPreviousPostCodePage(NormalMode)),
-      (PartnershipTradingOverAYearId, tradingOverAYearNonUk, contactPreviousAddressPage(NormalMode)),
       (PartnershipTradingOverAYearId, tradingUnderAYear, emailPage),
 
-      (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(NormalMode)),
-      (PartnershipPreviousAddressId, emptyAnswers, emailPage),
+      (PartnershipPreviousAddressPostCodeLookupId, uk, contactPreviousAddressListPage(NormalMode)),
+      (PartnershipPreviousAddressId, uk, emailPage),
 
-      (PartnershipEmailId, emptyAnswers, phonePage),
-      (PartnershipPhoneId, emptyAnswers, checkYourAnswersPage),
+      (PartnershipEmailId, uk, phonePage),
+      (PartnershipPhoneId, uk, checkYourAnswersPage),
 
-      (CheckYourAnswersId, emptyAnswers, wynPage),
+      (CheckYourAnswersId, uk, wynPage),
       (CheckYourAnswersId, hasPartner, addPartnersPage()),
-      (PartnershipReviewId, emptyAnswers, declarationWorkingKnowledgePage(NormalMode)),
+      (PartnershipReviewId, uk, declarationWorkingKnowledgePage(NormalMode)),
 
-      (PartnershipRegisteredAddressId, nonUkEuAddress, sameContactAddressPage),
       (PartnershipRegisteredAddressId, uKAddress, reconsiderAreYouInUk),
-      (PartnershipRegisteredAddressId, nonUkNonEuAddress, outsideEuEea)
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
   }
@@ -105,7 +100,6 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (PartnershipAddressYearsId, addressYearsUnderAYear, tradingOverAYearPage(CheckMode)),
 
       (PartnershipTradingOverAYearId, tradingOverAYearUk, contactPreviousPostCodePage(CheckMode)),
-      (PartnershipTradingOverAYearId, tradingOverAYearNonUk, contactPreviousAddressPage(CheckMode)),
       (PartnershipTradingOverAYearId, tradingUnderAYear, checkYourAnswersPage),
 
       (PartnershipPreviousAddressPostCodeLookupId, emptyAnswers, contactPreviousAddressListPage(CheckMode)),
@@ -197,11 +191,8 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private lazy val confirmPreviousAddressPage: Call = routes.PartnershipConfirmPreviousAddressController.onPageLoad()
 
-  private def contactPreviousAddressPage(mode: Mode): Call = routes.PartnershipPreviousAddressController.onPageLoad(mode)
-
   private def declarationWorkingKnowledgePage(mode: Mode): Call = controllers.register.routes.DeclarationWorkingKnowledgeController.onPageLoad(mode)
 
-  private lazy val nonUkAddress: Call = routes.PartnershipRegisteredAddressController.onPageLoad()
 
   private lazy val hasPayePage: Call = routes.HasPartnershipPAYEController.onPageLoad(NormalMode)
 
@@ -209,7 +200,6 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private lazy val reconsiderAreYouInUk: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
 
-  private lazy val outsideEuEea: Call = routes.OutsideEuEeaController.onPageLoad()
 
   private lazy val companyUpdate = controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
 
@@ -227,20 +217,17 @@ object PartnershipNavigatorSpec extends OptionValues {
   private val varianceConfirmPreviousAddressYes = UserAnswers().set(PartnershipConfirmPreviousAddressId)(true).asOpt.get
   private val varianceConfirmPreviousAddressNo = UserAnswers().set(PartnershipConfirmPreviousAddressId)(false).asOpt.get
 
-  private val nonUkEuAddress = UserAnswers().nonUkPartnershipAddress(address("AT"))
-  private val uKAddress = UserAnswers().nonUkPartnershipAddress(address("GB"))
-  private val nonUkNonEuAddress = UserAnswers().nonUkPartnershipAddress(address("AF"))
+  private val uKAddress = uk.nonUkPartnershipAddress(address("GB"))
 
   private val notSameContactAddressUk = UserAnswers().areYouInUk(true).partnershipSameContactAddress(false)
   private val notSameContactAddressNonUk = UserAnswers().areYouInUk(false).partnershipSameContactAddress(false)
-  private val isSameContactAddress = UserAnswers().partnershipSameContactAddress(true)
+  private val isSameContactAddress = uk.partnershipSameContactAddress(true)
 
-  private val addressYearsUnderAYear = UserAnswers().partnershipAddressYears(AddressYears.UnderAYear)
-  private val tradingUnderAYear = UserAnswers().set(PartnershipTradingOverAYearId)(false).asOpt.value
+  private val addressYearsUnderAYear = uk.partnershipAddressYears(AddressYears.UnderAYear)
+  private val tradingUnderAYear = uk.set(PartnershipTradingOverAYearId)(false).asOpt.value
   private val tradingOverAYearUk = UserAnswers(Json.obj()).areYouInUk(true).set(PartnershipTradingOverAYearId)(true).asOpt.value
-  private val tradingOverAYearNonUk = UserAnswers(Json.obj()).areYouInUk(false).set(PartnershipTradingOverAYearId)(true).asOpt.value
-  private val addressYearsOverAYear = UserAnswers().partnershipAddressYears(AddressYears.OverAYear)
-  val hasPartner: UserAnswers = UserAnswers(Json.obj())
+  private val addressYearsOverAYear = uk.partnershipAddressYears(AddressYears.OverAYear)
+  val hasPartner: UserAnswers = uk
     .set(PartnerNameId(0))(PersonName("first", "last")).asOpt.value
 
   private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode)

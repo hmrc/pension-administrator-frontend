@@ -19,7 +19,7 @@ package controllers.register.partnership
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import models.{Address, NormalMode}
 import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
@@ -38,7 +38,7 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
   val messagePrefix = "enter.previous.address"
-  val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
+  val formProvider = new UKAddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   val form: Form[Address] = formProvider("error.country.invalid")
 
   val viewmodel = ManualAddressViewModel(

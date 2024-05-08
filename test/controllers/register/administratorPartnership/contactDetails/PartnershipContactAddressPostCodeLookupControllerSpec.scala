@@ -31,7 +31,7 @@ import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.annotations.Partnership
+import utils.annotations.PartnershipV2
 import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
@@ -45,7 +45,7 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
   private val partnershipName = "PartnershipName"
 
   val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
-  def viewModel = PostcodeLookupViewModel(
+  def viewModel: PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode),
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
     Message("postcode.lookup.heading", Message("thePartnership")),
@@ -86,11 +86,11 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
   }
 
   "redirect to the next page on a POST request" in {
-    running(_.overrides(modules(dataRetrieval)++
-      Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(onwardRoute)),
+    running(_.overrides(modules(dataRetrieval) ++
+      Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[PartnershipV2]).toInstance(new FakeNavigator(onwardRoute)),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
-      ):_*)) {
+      ): _*)) {
       app =>
         val controller = app.injector.instanceOf[PartnershipContactAddressPostCodeLookupController]
 
@@ -108,7 +108,7 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
       bind[AllowAccessActionProvider].to(FakeAllowAccessProvider(config = frontendAppConfig)),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector),
-      bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(onwardRoute)),
+      bind[Navigator].qualifiedWith(classOf[PartnershipV2]).toInstance(new FakeNavigator(onwardRoute)),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     ).build()
 }

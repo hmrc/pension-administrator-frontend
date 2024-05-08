@@ -34,7 +34,6 @@ class RegisterNavigatorV2 @Inject()(appConfig: FrontendAppConfig
     case AreYouInUKId => countryOfRegistrationRoutes(ua)
     case RegisterAsBusinessId => individualOrOganisationRoutes(ua)
     case BusinessTypeId => businessTypeRoutes(ua)
-    case NonUKBusinessTypeId => nonUkBusinessTypeRoutes(ua)
     case DeclarationWorkingKnowledgeId => declarationWorkingKnowledgeRoutes(ua)
     case DeclarationFitAndProperId => controllers.register.routes.DeclarationController.onPageLoad()
     case DeclarationId => controllers.register.routes.ConfirmationController.onPageLoad()
@@ -109,15 +108,5 @@ class RegisterNavigatorV2 @Inject()(appConfig: FrontendAppConfig
 
   override protected def editRouteMap(ua: UserAnswers, mode: Mode): PartialFunction[Identifier, Call] = {
     case AreYouInUKId => countryOfRegistrationEditRoutes(ua)
-  }
-
-  private def nonUkBusinessTypeRoutes(userAnswers: UserAnswers): Call = {
-    userAnswers.get(NonUKBusinessTypeId) match {
-      case Some(NonUKBusinessType.Company) =>
-        controllers.register.company.routes.CompanyRegisteredNameController.onPageLoad(NormalMode)
-      case Some(NonUKBusinessType.BusinessPartnership) =>
-        controllers.register.administratorPartnership.routes.PartnershipRegisteredNameController.onPageLoad()
-      case _ => controllers.routes.SessionExpiredController.onPageLoad
-    }
   }
 }

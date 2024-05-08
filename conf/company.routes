@@ -74,11 +74,6 @@ POST        /select-contact-address                       controllers.register.c
 GET         /:mode/select-contact-address                 controllers.register.company.CompanyContactAddressListController.onPageLoad(mode: Mode)
 POST        /:mode/select-contact-address                 controllers.register.company.CompanyContactAddressListController.onSubmit(mode: Mode)
 
-GET         /non-uk-company-name                          controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /non-uk-company-name                          controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode = NormalMode)
-GET         /:mode/non-uk-company-name                    controllers.register.company.CompanyRegisteredNameController.onPageLoad(mode: Mode)
-POST        /:mode/non-uk-company-name                    controllers.register.company.CompanyRegisteredNameController.onSubmit(mode: Mode)
-
 GET         /enter-registered-address                     controllers.register.company.CompanyRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /enter-registered-address                     controllers.register.company.CompanyRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
 

@@ -22,7 +22,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.NonUKAddressController
-import forms.address.NonUKAddressFormProvider
+import forms.UKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressId
 import javax.inject.Inject
@@ -50,7 +50,7 @@ class CompanyRegisteredAddressController @Inject()(
                                                     allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
-                                                    formProvider: NonUKAddressFormProvider,
+                                                    formProvider: UKAddressFormProvider,
                                                     val countryOptions: CountryOptions,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: nonukAddress

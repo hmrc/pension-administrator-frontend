@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
-import forms.AddressFormProvider
+import forms.UKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId}
 import models.requests.DataRequest
@@ -46,7 +46,7 @@ class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppCo
                                                     authenticate: AuthAction,
                                                     getData: DataRetrievalAction,
                                                     requireData: DataRequiredAction,
-                                                    formProvider: AddressFormProvider,
+                                                    formProvider: UKAddressFormProvider,
                                                     val countryOptions: CountryOptions,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: manualAddress
