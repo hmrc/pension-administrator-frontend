@@ -23,7 +23,6 @@ import forms.address.AddressListFormProvider
 import identifiers.register.partnership.PartnershipPreviousAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
