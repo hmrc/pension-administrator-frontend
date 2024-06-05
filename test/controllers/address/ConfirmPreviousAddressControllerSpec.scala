@@ -32,7 +32,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc._
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, Navigator, UserAnswers}

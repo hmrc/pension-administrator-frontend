@@ -24,7 +24,7 @@ import identifiers.register.partnership.PartnershipPreviousAddressPostCodeLookup
 import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
 import play.api.test.CSRFTokenHelper.addCSRFToken
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Partnership
 import utils.{FakeNavigator, Navigator, UserAnswers}

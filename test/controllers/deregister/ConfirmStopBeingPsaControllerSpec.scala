@@ -30,7 +30,7 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded, Call, RequestHeader}
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}

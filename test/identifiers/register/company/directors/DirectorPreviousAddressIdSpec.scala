@@ -21,7 +21,7 @@ import controllers.register.company.directors._
 import models._
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, UserAnswers}

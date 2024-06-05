@@ -20,7 +20,7 @@ import base.SpecBase
 import models._
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import utils.checkyouranswers.Ops._
 import utils.{DateHelper, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}

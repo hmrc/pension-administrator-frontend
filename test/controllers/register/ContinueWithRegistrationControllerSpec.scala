@@ -25,7 +25,7 @@ import models._
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import utils.UserAnswers
 import utils.testhelpers.DataCompletionBuilder._

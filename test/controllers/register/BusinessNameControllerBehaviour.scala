@@ -23,7 +23,7 @@ import models.requests.DataRequest
 import models.{PSAUser, UserType}
 import play.api.data.Form
 import play.api.mvc.{AnyContent, Call}
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import utils.UserAnswers
 import views.html.register.businessName

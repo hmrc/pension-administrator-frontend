@@ -22,7 +22,7 @@ import models.requests.OptionalDataRequest
 import models.{PSAUser, UserType}
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
-import play.api.test.FakeRequest
+import utils.FakeRequest
 
 import scala.concurrent.Future
 

@@ -27,7 +27,7 @@ import models.{NormalMode, PSAUser, UserType}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers.{contentAsString, redirectLocation, status, _}
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}

@@ -25,7 +25,7 @@ import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.CSRFTokenHelper.addCSRFToken
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.{AuthWithIV, Individual}

@@ -29,7 +29,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers.{status, _}
 import utils.testhelpers.DataCompletionBuilder._
 import utils.{Navigator, UserAnswers}

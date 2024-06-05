@@ -37,7 +37,7 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
 import play.api.libs.json.Json
 import play.api.mvc._
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpException
 import utils.{FakeNavigator, Navigator, UserAnswers}

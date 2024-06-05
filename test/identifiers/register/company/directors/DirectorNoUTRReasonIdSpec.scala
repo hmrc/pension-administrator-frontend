@@ -20,7 +20,7 @@ import base.SpecBase
 import models.requests.DataRequest
 import models.{PSAUser, PersonName, UserType}
 import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import utils.UserAnswers
 import utils.checkyouranswers.Ops._
 import viewmodels.{AnswerRow, Link, Message}

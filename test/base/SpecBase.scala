@@ -25,8 +25,9 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
-import play.api.test.{FakeRequest, Injecting}
+import play.api.test.Injecting
 import play.api.{Application, Environment}
+import utils.FakeRequest
 
 trait SpecBase
   extends PlaySpec

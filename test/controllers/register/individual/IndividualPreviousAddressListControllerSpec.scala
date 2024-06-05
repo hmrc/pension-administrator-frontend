@@ -25,7 +25,7 @@ import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.test.CSRFTokenHelper.addCSRFToken
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Individual
 import utils.{FakeNavigator, Navigator, UserAnswers}

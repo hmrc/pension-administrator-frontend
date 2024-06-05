@@ -23,7 +23,7 @@ import forms.register.IsRegisteredNameFormProvider
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
