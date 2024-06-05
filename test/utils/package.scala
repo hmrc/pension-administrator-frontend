@@ -27,17 +27,18 @@ import models.register.{BusinessType, DeclarationWorkingKnowledge}
 import org.scalatest.OptionValues
 import play.api.mvc.AnyContentAsEmpty
 import play.api.mvc.request.RequestAttrKey
-import play.api.test.FakeRequest
+import play.api.test.{FakeRequest => FR}
 
 import java.time.LocalDate
 
 
 package object utils {
 
-  def FakeRequest(method: String = "GET", uri:String = "/"): FakeRequest[AnyContentAsEmpty.type] =
-    play.api.test.FakeRequest(method, uri)
-    .addAttr(RequestAttrKey.CSPNonce,  "a-nonce")
-    .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+  object FakeRequest {
+    def apply(method: String = "GET", uri: String = "/"): FR[AnyContentAsEmpty.type] = FR(method, uri)
+      .addAttr(RequestAttrKey.CSPNonce,  "a-nonce")
+      .asInstanceOf[FR[AnyContentAsEmpty.type]]
+  }
 
   //scalastyle:off number.of.methods
   implicit class UserAnswerOps(answers: UserAnswers) extends OptionValues {
