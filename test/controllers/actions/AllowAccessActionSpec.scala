@@ -22,7 +22,7 @@ import models._
 import models.requests.AuthenticatedRequest
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.{Call, Result}
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global

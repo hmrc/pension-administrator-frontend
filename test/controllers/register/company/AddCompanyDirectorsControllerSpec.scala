@@ -31,7 +31,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeNavigator, UserAnswers}

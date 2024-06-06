@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Call
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}

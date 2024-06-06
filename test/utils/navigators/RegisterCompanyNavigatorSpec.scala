@@ -180,7 +180,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
 
-  private def whatYouWillNeedPage = routes.WhatYouWillNeedController.onPageLoad()
 
   private def whatYouWillNeedDirectorPage = controllers.register.company.directors.routes.WhatYouWillNeedController.onPageLoad()
 

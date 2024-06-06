@@ -24,7 +24,7 @@ import identifiers.register.BusinessUTRId
 import models.requests.DataRequest
 import models.{PSAUser, UserType}
 import play.api.mvc.AnyContent
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers.{SEE_OTHER, redirectLocation, status, _}
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.register.utr

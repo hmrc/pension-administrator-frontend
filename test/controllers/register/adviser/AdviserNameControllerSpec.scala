@@ -27,7 +27,7 @@ import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.LimitedCompany
 import models.{NormalMode, RegistrationIdType, RegistrationInfo}
 import play.api.data.Form
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.adviser.adviserName
 

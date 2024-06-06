@@ -28,7 +28,7 @@ import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.CSRFTokenHelper.addCSRFToken
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.{Partnership, PartnershipPartner}
 import utils.{FakeNavigator, Navigator}

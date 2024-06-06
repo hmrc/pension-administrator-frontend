@@ -25,11 +25,26 @@ import identifiers.register.partnership.partners._
 import models._
 import models.register.{BusinessType, DeclarationWorkingKnowledge}
 import org.scalatest.OptionValues
+import play.api.mvc.{AnyContentAsEmpty, Call}
+import play.api.mvc.request.RequestAttrKey
+import play.api.test.{FakeRequest => FR}
 
 import java.time.LocalDate
 
 
 package object utils {
+
+  type FakeRequest[A] = FR[A]
+
+  object FakeRequest {
+
+    private def addNonce[A](fakeRequest: FR[A]) = fakeRequest.addAttr(RequestAttrKey.CSPNonce,  "a-nonce")
+      .asInstanceOf[FR[AnyContentAsEmpty.type]]
+
+    def apply(method: String = "GET", uri: String = "/"): FR[AnyContentAsEmpty.type] = addNonce(FR(method, uri))
+    def apply(call: Call): FR[AnyContentAsEmpty.type] = addNonce(FR(call))
+
+  }
 
   //scalastyle:off number.of.methods
   implicit class UserAnswerOps(answers: UserAnswers) extends OptionValues {

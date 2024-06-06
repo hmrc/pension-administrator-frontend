@@ -23,10 +23,8 @@ import controllers.actions._
 import controllers.address.NonUKAddressControllerDataMocks
 import forms.UKAddressFormProvider
 import identifiers.register.company.CompanyAddressId
-import identifiers.register.{BusinessNameId, RegistrationInfoId}
+import identifiers.register.BusinessNameId
 import models._
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -35,8 +33,6 @@ import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
-
-import scala.concurrent.Future
 
 class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataMocks with ScalaFutures {
 

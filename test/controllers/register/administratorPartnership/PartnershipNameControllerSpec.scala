@@ -28,7 +28,7 @@ import models.{PSAUser, UserType}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
-import play.api.test.FakeRequest
+import utils.FakeRequest
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.businessName
 

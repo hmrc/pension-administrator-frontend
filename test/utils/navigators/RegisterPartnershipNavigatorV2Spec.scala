@@ -186,9 +186,11 @@ object RegisterPartnershipNavigatorV2Spec extends OptionValues {
 
   private lazy val partnershipSameContactAddressPage: Call = PartnershipSameContactAddressController.onPageLoad(NormalMode)
 
-  private lazy val checkYourAnswersContactDetailsPage: Call = controllers.register.administratorPartnership.contactDetails.routes.CheckYourAnswersController.onPageLoad()
+  private lazy val checkYourAnswersContactDetailsPage: Call =
+    controllers.register.administratorPartnership.contactDetails.routes.CheckYourAnswersController.onPageLoad()
 
-  private lazy val checkYourAnswersPartnershipDetailsPage: Call = controllers.register.administratorPartnership.partnershipDetails.routes.CheckYourAnswersController.onPageLoad()
+  private lazy val checkYourAnswersPartnershipDetailsPage: Call =
+    controllers.register.administratorPartnership.partnershipDetails.routes.CheckYourAnswersController.onPageLoad()
 
   private lazy val partnershipEmailPage: Call = PartnershipEmailController.onPageLoad(NormalMode)
 
@@ -202,9 +204,8 @@ object RegisterPartnershipNavigatorV2Spec extends OptionValues {
 
   private lazy val wynPage: Call = controllers.register.partnership.partners.routes.WhatYouWillNeedController.onPageLoad()
 
-  private lazy val partnershipDetailsWynPage = controllers.register.administratorPartnership.partnershipDetails.routes.WhatYouWillNeedController.onPageLoad()
 
-  private def addPartnersPage(mode: Mode): Call = AddPartnerController.onPageLoad(NormalMode)
+  private def addPartnersPage(mode: Mode): Call = AddPartnerController.onPageLoad(mode)
 
   private def partnershipAddressYearsPage(mode: Mode): Call = PartnershipAddressYearsController.onPageLoad(mode)
 
@@ -232,7 +233,6 @@ object RegisterPartnershipNavigatorV2Spec extends OptionValues {
 
   private lazy val reconsiderAreYouInUk: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
 
-  private lazy val outsideEuEea: Call = OutsideEuEeaController.onPageLoad()
 
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
 
@@ -268,6 +268,7 @@ object RegisterPartnershipNavigatorV2Spec extends OptionValues {
   val hasPartner: UserAnswers = uk
     .set(PartnerNameId(0))(PersonName("first", "last")).asOpt.value
 
-  private def address(countryCode: String) = Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode).toTolerantAddress
+  private def address(countryCode: String) =
+    Address("addressLine1", "addressLine2", Some("addressLine3"), Some("addressLine4"), Some("NE11AA"), countryCode).toTolerantAddress
 
 }
