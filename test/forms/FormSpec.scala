@@ -26,7 +26,7 @@ import play.api.data.{Form, FormError}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
-import utils.FakeRequest
+import play.api.test.FakeRequest
 
 trait FormSpec extends AnyWordSpecLike with OptionValues with Matchers with GuiceOneAppPerSuite {
 

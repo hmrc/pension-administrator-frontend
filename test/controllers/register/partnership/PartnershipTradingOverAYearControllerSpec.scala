@@ -24,7 +24,7 @@ import forms.HasReferenceNumberFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber

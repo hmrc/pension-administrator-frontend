@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.MoreThanTenViewModel

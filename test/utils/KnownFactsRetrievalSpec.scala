@@ -25,7 +25,7 @@ import models.register.{KnownFact, KnownFacts}
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
 
 class KnownFactsRetrievalSpec extends SpecBase {

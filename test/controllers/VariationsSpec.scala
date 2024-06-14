@@ -25,7 +25,7 @@ import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import utils.UserAnswers
 
 import scala.concurrent.duration.Duration

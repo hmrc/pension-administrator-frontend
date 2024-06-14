@@ -31,7 +31,7 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.ConfirmDeleteViewModel
