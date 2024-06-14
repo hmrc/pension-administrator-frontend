@@ -22,7 +22,7 @@ import controllers.{ControllerSpecBase, PersonNameControllerBehaviour}
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import views.html.personName

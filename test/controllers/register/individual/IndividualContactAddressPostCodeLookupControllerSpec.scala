@@ -27,9 +27,10 @@ import play.api.inject._
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.Helpers._
+import play.api.test._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.annotations.{AuthWithIV, Individual}
-import utils.{FakeNavigator, FakeRequest, Navigator}
+import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup

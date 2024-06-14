@@ -20,7 +20,7 @@ import base.SpecBase
 import models.requests.DataRequest
 import models.{Address, AddressYears, PSAUser, UserType}
 import play.api.mvc.AnyContent
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, UserAnswers}

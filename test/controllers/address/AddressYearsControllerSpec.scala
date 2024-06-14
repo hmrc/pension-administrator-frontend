@@ -36,7 +36,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
 import play.api.mvc._
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.AddressYearsViewModel

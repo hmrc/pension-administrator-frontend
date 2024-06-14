@@ -29,7 +29,7 @@ import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.mvc.MessagesControllerComponents
 import play.api.test.CSRFTokenHelper.addCSRFToken
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}

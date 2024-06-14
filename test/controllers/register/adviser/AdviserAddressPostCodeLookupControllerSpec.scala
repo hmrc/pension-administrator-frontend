@@ -30,7 +30,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.CSRFTokenHelper.addCSRFToken
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.Adviser
 import utils.{FakeNavigator, Navigator}

@@ -26,7 +26,7 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
-import utils.FakeRequest
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
