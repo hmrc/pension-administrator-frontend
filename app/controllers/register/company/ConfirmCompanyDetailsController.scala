@@ -33,7 +33,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
@@ -70,7 +69,8 @@ class ConfirmCompanyDetailsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        getCompanyDetails { registration =>
+        getCompanyDetails {
+          case registration@(_: OrganizationRegistration) =>
           upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
             upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
               upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
@@ -83,6 +83,7 @@ class ConfirmCompanyDetailsController @Inject()(
               }
             }
           }
+          case _ => Future.successful(Redirect(routes.CompanyNotFoundController.onPageLoad()))
         }
     }
 
@@ -129,17 +130,15 @@ class ConfirmCompanyDetailsController @Inject()(
         )
     }
 
-  private def getCompanyDetails(fn: OrganizationRegistration => Future[Result])
+  private def getCompanyDetails(fn: OrganizationRegistrationStatus => Future[Result])
                                (implicit request: DataRequest[AnyContent]): Either[Future[Result], Future[Result]] = {
     (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.map {
       case businessName ~ utr ~ businessType =>
         val organisation = Organisation(businessName, businessType)
         val legalStatus = RegistrationLegalStatus.LimitedCompany
         registrationConnector.registerWithIdOrganisation(utr, organisation, legalStatus).flatMap {
-          registration =>
-            fn(registration)
-        } recoverWith {
-          case _: NotFoundException =>
+          case registration@(_: OrganizationRegistration) => fn(registration)
+          case _ =>
             Future.successful(Redirect(routes.CompanyNotFoundController.onPageLoad()))
         }
     }

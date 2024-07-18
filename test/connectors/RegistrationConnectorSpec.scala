@@ -66,8 +66,8 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithIdOrganisation(utr, organisation, legalStatus).map { registration =>
-      registration.response.address shouldBe expectedAddress(true)
+    connector.registerWithIdOrganisation(utr, organisation, legalStatus).map {
+      case registration@(_: OrganizationRegistration) => registration.response.address shouldBe expectedAddress(true)
     }
 
   }
@@ -94,8 +94,8 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithIdOrganisation(utr, organisation, legalStatus).map { registration =>
-      registration.info shouldBe info
+    connector.registerWithIdOrganisation(utr, organisation, legalStatus).map {
+      case registration@(_: OrganizationRegistration) => registration.info shouldBe info
     }
 
   }
@@ -122,8 +122,8 @@ class RegistrationConnectorSpec()
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    connector.registerWithIdOrganisation(utr, organisation, legalStatus).map { registration =>
-      registration.info shouldBe info
+    connector.registerWithIdOrganisation(utr, organisation, legalStatus).map {
+      case registration@(_: OrganizationRegistration) => registration.info shouldBe info
     }
 
   }

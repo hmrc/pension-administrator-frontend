@@ -32,7 +32,6 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.PartnershipV2
 import utils.countryOptions.CountryOptions
@@ -66,8 +65,9 @@ class ConfirmPartnershipDetailsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        getPartnershipDetails { registration =>
-          upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
+        getPartnershipDetails {
+          case registration@(_: OrganizationRegistration) =>
+            upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
             upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
               upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
                 dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
@@ -82,10 +82,11 @@ class ConfirmPartnershipDetailsController @Inject()(
               }
             }
           }
+          case _ => Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
         }
     }
 
-  private def getPartnershipDetails(fn: OrganizationRegistration => Future[Result])
+  private def getPartnershipDetails(fn: OrganizationRegistrationStatus => Future[Result])
                                    (implicit request: DataRequest[AnyContent]): Either[Future[Result], Future[Result]] = {
 
     (BusinessNameId and BusinessUTRId and BusinessTypeId).retrieve.map {
@@ -93,10 +94,8 @@ class ConfirmPartnershipDetailsController @Inject()(
         val organisation = Organisation(name, businessType)
         val legalStatus = RegistrationLegalStatus.Partnership
         registrationConnector.registerWithIdOrganisation(utr, organisation, legalStatus).flatMap {
-          registration =>
-            fn(registration)
-        } recoverWith {
-          case _: NotFoundException =>
+          case registration@(_: OrganizationRegistration) => fn(registration)
+          case _ =>
             Future.successful(Redirect(controllers.register.administratorPartnership.routes.PartnershipCompanyNotFoundController.onPageLoad()))
         }
     }
