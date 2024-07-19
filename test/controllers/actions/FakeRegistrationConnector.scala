@@ -28,7 +28,7 @@ abstract class FakeRegistrationConnector extends RegistrationConnector {
 
   override def registerWithIdOrganisation
   (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[OrganizationRegistration] = ???
+  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[OrganizationRegistrationStatus] = ???
 
   override def registerWithNoIdOrganisation
   (name: String, address: Address, legalStatus: RegistrationLegalStatus)

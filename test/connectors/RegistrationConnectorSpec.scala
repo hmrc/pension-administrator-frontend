@@ -27,7 +27,7 @@ import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException}
 import utils.{UnrecognisedHttpResponseException, WireMockHelper}
 
 import java.time.LocalDate
@@ -153,13 +153,30 @@ class RegistrationConnectorSpec()
       post(urlEqualTo(organizationPath))
         .willReturn(
           aResponse()
+            .withStatus(Status.BAD_REQUEST)
+        )
+    )
+
+    val connector = injector.instanceOf[RegistrationConnector]
+    recoverToSucceededIf[BadRequestException] {
+      connector.registerWithIdOrganisation(utr, organisation, legalStatus)
+    }
+
+  }
+
+  it should "return a result of type OrganizationRegistrationStatus if details not found" in {
+
+    server.stubFor(
+      post(urlEqualTo(organizationPath))
+        .willReturn(
+          aResponse()
             .withStatus(Status.NOT_FOUND)
         )
     )
 
     val connector = injector.instanceOf[RegistrationConnector]
-    recoverToSucceededIf[NotFoundException] {
-      connector.registerWithIdOrganisation(utr, organisation, legalStatus)
+    connector.registerWithIdOrganisation(utr, organisation, legalStatus).map { result =>
+      result shouldBe a[OrganizationRegistrationStatus]
     }
 
   }

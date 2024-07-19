@@ -288,7 +288,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[OrganizationRegistration] = {
+    (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[OrganizationRegistrationStatus] = {
 
       val info = RegistrationInfo(
         RegistrationLegalStatus.LimitedCompany,
@@ -306,7 +306,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), info))
       }
       else {
-        Future.failed(new NotFoundException(s"Unknown UTR: $utr"))
+        Future.successful(OrganisationNotFound)
       }
     }
 
