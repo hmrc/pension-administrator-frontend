@@ -42,7 +42,7 @@ trait RegistrationConnector {
                                 )(
                                   implicit hc: HeaderCarrier,
                                   ec: ExecutionContext
-                                ): Future[OrganizationRegistration]
+                                ): Future[OrganizationRegistrationStatus]
 
   def registerWithIdIndividual(
                                 nino: Nino
@@ -87,7 +87,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
                                          )(
                                            implicit hc: HeaderCarrier,
                                            ec: ExecutionContext
-                                         ): Future[OrganizationRegistration] = {
+                                         ): Future[OrganizationRegistrationStatus] = {
 
     val url = config.registerWithIdOrganisationUrl
 
@@ -116,6 +116,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
             case JsError(errors) =>
               throw JsResultException(errors)
           }
+        case NOT_FOUND => OrganisationNotFound
         case _ =>
           handleErrorResponse("POST", url)(response)
       }

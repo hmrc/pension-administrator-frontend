@@ -25,7 +25,10 @@ case class OrganizationRegisterWithIdResponse(organisation: Organisation, addres
 
 case class IndividualRegisterWithIdResponse(individual: TolerantIndividual, address: TolerantAddress) extends RegisterWithIdResponse(address)
 
-case class OrganizationRegistration(response: OrganizationRegisterWithIdResponse, info: RegistrationInfo)
+sealed trait OrganizationRegistrationStatus
+case class OrganizationRegistration(response: OrganizationRegisterWithIdResponse, info: RegistrationInfo) extends OrganizationRegistrationStatus
+
+object OrganisationNotFound extends OrganizationRegistrationStatus
 
 case class IndividualRegistration(response: IndividualRegisterWithIdResponse, info: RegistrationInfo)
 

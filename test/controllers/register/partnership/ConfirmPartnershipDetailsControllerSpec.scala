@@ -28,7 +28,7 @@ import models.register.BusinessType.BusinessPartnership
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, FakeNavigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
@@ -285,7 +285,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
     override def registerWithIdOrganisation
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistration] = {
+    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistrationStatus] = {
 
       if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), regInfo))
@@ -294,7 +294,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), regInfo))
       }
       else {
-        Future.failed(new NotFoundException(s"Unknown UTR: $utr"))
+        Future.successful(OrganisationNotFound)
       }
     }
   }
