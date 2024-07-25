@@ -27,7 +27,7 @@ import models.register.BusinessType.BusinessPartnership
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.administratorPartnership.confirmPartnershipDetails
