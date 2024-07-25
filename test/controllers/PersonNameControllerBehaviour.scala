@@ -22,6 +22,7 @@ import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, PersonName, UserType}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -97,7 +98,7 @@ trait PersonNameControllerBehaviour extends ControllerSpecBase {
     "return Bad Request and errors when invalid data is submitted" in {
       val fixture = testFixture(createController)
       val request = testRequest(personDetails = Some(invalidPersonName))
-      val formWithErrors = testForm().bind(Map("value" -> "invalid"))
+      val formWithErrors = testForm().bind(Map("firstName" -> "", "lastName" -> ""))
 
       val result = fixture.controller.post(id, viewModel, NormalMode)(request, messages)
 
