@@ -103,7 +103,7 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
       "return the Bad Request when invalid data is submitted" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "")
-        val boundForm = form.withError(FormError("value", "error.postcode.required"))
+        val boundForm = form.bind(Map("value" -> ""))
         val result = controller().onSubmit(NormalMode, firstIndex)(postRequest)
 
         status(result) mustBe BAD_REQUEST

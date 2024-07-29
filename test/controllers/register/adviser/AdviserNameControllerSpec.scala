@@ -27,6 +27,7 @@ import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.LimitedCompany
 import models.{NormalMode, RegistrationIdType, RegistrationInfo}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import utils.{FakeNavigator, UserAnswers}
 import views.html.register.adviser.adviserName
@@ -71,7 +72,7 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
 
   behave like controllerWithOnPageLoadMethod(onPageLoadAction, emptyUserAnswer.dataRetrievalAction, validUserAnswer.dataRetrievalAction, form, form.fill("test"), viewAsString)
 
-  behave like controllerWithOnSubmitMethod(onSubmitAction, validUserAnswer.dataRetrievalAction, form.bind(Map(AdviserNameId.toString -> "")), viewAsString, postRequest)
+  behave like controllerWithOnSubmitMethod(onSubmitAction, validUserAnswer.dataRetrievalAction, form.bind(Json.obj(), 0), viewAsString, postRequest)
 
 }
 
