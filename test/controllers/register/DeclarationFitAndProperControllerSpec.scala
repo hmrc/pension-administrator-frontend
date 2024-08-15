@@ -33,7 +33,6 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
   private val onwardRoute = controllers.routes.IndexController.onPageLoad
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-  val businessDetails: BusinessDetails = BusinessDetails("MyCompany", Some("1234567890"))
   val email = "test@test.com"
   val businessName = "MyCompany"
 

@@ -17,9 +17,7 @@
 import com.google.inject.AbstractModule
 import controllers.actions._
 import utils.Navigator
-import utils.annotations.PsaDeRegistration
 import utils.annotations._
-import utils.countryOptions.{CountryOptions, CountryOptionsEUAndEEA}
 import utils.navigators._
 
 class PODSModule extends AbstractModule {
@@ -86,10 +84,6 @@ class PODSModule extends AbstractModule {
       .annotatedWith(classOf[PartnershipPartnerV2])
       .to(classOf[PartnerNavigatorV2])
 
-    bind(classOf[CountryOptions])
-      .annotatedWith(classOf[EUAndEEA])
-      .to(classOf[CountryOptionsEUAndEEA])
-
     bind(classOf[Navigator])
       .annotatedWith(classOf[Variations])
       .to(classOf[VariationsNavigator])
@@ -107,10 +101,5 @@ class PODSModule extends AbstractModule {
 
     bind(classOf[AllowDeclarationActionProvider])
       .to(classOf[AllowDeclarationActionProviderImpl])
-
-
-    bind(classOf[Navigator])
-      .annotatedWith(classOf[PsaDeRegistration])
-      .to(classOf[PsaDeRegistrationNavigator])
   }
 }

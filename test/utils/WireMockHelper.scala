@@ -23,6 +23,9 @@ import play.api.Application
 import play.api.inject.Injector
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
+
 trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach {
   this: Suite =>
 
@@ -56,6 +59,7 @@ trait WireMockHelper extends BeforeAndAfterAll with BeforeAndAfterEach {
 
   override def afterAll(): Unit = {
     super.afterAll()
+    Await.result(app.stop(), 5.seconds)
     server.stop()
   }
 }
