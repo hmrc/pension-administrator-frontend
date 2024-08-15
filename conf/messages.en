@@ -154,14 +154,8 @@ commom.error.paye.required = Enter the PAYE employer reference number
 common.error.paye.length = The PAYE number cannot be more than 16 characters
 common.error.paye.invalid = Enter a valid PAYE number
 common.error.paye.required = Enter the PAYE employer reference number
-common.utr.text = Unique Taxpayer Reference number
-common.utr.hint = A Unique Taxpayer Reference number is made up of 10 or 13 numbers. It may also start or end with the letter ‘k’.
 common.error.utr.required = Enter the Unique Taxpayer Reference (UTR)
 common.error.utr.invalid = Enter the Unique Taxpayer Reference (UTR) in the correct format
-common.error.utr.reason.length = The reason cannot be more than 160 characters
-common.error.utr.length = The utr cannot be more than 10 characters
-common.error.utr.exactLength = Unique Taxpayer Reference (UTR) must be 10 numbers
-common.declaration.legend = Check this box if you agree to the declaration
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
@@ -224,20 +218,6 @@ adviser.phone.title = What is the adviser's phone number?
 phone.visuallyHidden.text = {0}’s phone number
 
 individualPreviousAddress.visuallyHidden.text = your previous address
-
-businessDetails.title = What are your business details?
-businessDetails.heading = What are your business details?
-businessDetails.companyName = Registered company name
-businessDetails.utr = Unique Taxpayer Reference number
-businessDetails.utr.hint = This can usually be found in the header of letters issued by HMRC next to headings such as ’Tax Reference’. ’UTR’ or ’Official Use’
-businessDetails.companyName.hint = This is the registered name on your company’s incorporation certificate.
-businessDetails.checkYourAnswersLabel = What are your business details?
-businessDetails.error.companyName.required = Enter the registered company name
-businessDetails.error.utr.required = Enter the Unique Taxpayer Reference number
-businessDetails.error.companyName.invalid = Enter a valid registered company name
-businessDetails.error.utr.invalid = Enter a valid Unique Taxpayer Reference number
-businessDetails.error.utr.length = The Unique Taxpayer Reference number cannot be more than 10 characters
-businessDetails.error.companyName.length = The name cannot be more than 105 characters
 
 companyRegistrationNumber.heading = What is {0}’s company number?
 companyRegistrationNumber.visuallyHidden.text = {0}’s company number
@@ -737,21 +717,6 @@ partnership.partner.contactDetails.heading = Enter the partner’s contact detai
 
 partnershipContactDetails.title = Enter the partnership’s contact details
 partnershipContactDetails.heading = Enter the partnership’s contact details
-
-partnershipBusinessDetails.title = What are your partnership details?
-partnershipBusinessDetails.heading = What are your partnership details?
-partnershipBusinessDetails.partnershipName = Registered partnership name
-partnershipBusinessDetails.partnershipName.hint = This is the registered name on self assessment letters issued by HMRC
-partnershipBusinessDetails.utr = Partnership Self Assessment Unique Taxpayer Reference (UTR) number
-partnershipBusinessDetails.utr.hint = This can usually be found in the header of letters issued by HMRC next to headings such as ’Tax Reference’, ’UTR’ or ’Offical Use’
-
-partnershipBusinessDetails.error.partnershipName.required = Enter the registered partner name
-partnershipBusinessDetails.error.partnershipName.length = The name cannot be more than 105 characters
-partnershipBusinessDetails.error.partnershipName.invalid = Enter a valid registered partner name
-
-partnershipBusinessDetails.error.utr.required = Enter the Partnership Self Assessment Unique Taxpayer Reference number
-partnershipBusinessDetails.error.utr.invalid = Enter a valid Partnership Self Assessment Unique Taxpayer
-partnershipBusinessDetails.error.utr.length = The Partnership Self Assessment Unique Taxpayer Reference number cannot be more than 10 or 13 numbers. It may also start or end with the letter ‘k’.
 
 partnershipPaye.title = Does the partnership have a PAYE employer reference number?
 partnershipPaye.heading = Does the partnership have a PAYE employer reference number?

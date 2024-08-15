@@ -39,6 +39,11 @@ class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with 
   val retryHelper = new RetryHelperClass()
   val TIMEOUT = 5
 
+  override def afterAll(): Unit = {
+    retryHelper.as.terminate()
+    super.afterAll()
+  }
+
   "RetryHelper" must {
 
     "return a successful Future" in {

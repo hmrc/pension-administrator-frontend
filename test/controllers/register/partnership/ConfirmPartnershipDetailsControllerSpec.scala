@@ -256,17 +256,6 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
         }
-        "no business type data is found" in {
-          val data = Json.obj(
-            BusinessNameId.toString -> BusinessDetails("MyPartnership", Some(validBusinessPartnershipUtr))
-          )
-
-          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
-        }
 
         "no existing data is found" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))

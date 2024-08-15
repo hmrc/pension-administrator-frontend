@@ -241,7 +241,7 @@ class ViewPsaDetailsHelperSpec extends SpecBase with Matchers {
   }
 }
 
-object ViewPsaDetailsHelperSpec extends SpecBase with JsonFileReader {
+object ViewPsaDetailsHelperSpec extends JsonFileReader {
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   private def psaDetailsHelper(userAnswers: UserAnswers) = new ViewPsaDetailsHelper(userAnswers, countryOptions)

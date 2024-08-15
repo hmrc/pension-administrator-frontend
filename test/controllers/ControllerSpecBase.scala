@@ -44,6 +44,10 @@ trait ControllerSpecBase extends SpecBase {
 
   val companyName = "Test Company Name"
 
+  override def afterAll(): Unit = {
+    super.afterAll()
+  }
+
   protected def applicationBuilder(data: DataRetrievalAction = new FakeDataRetrievalAction(Some(Json.obj()))): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(

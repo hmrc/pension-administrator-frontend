@@ -38,6 +38,10 @@ trait SpecBase
   override lazy val app: Application =
     new GuiceApplicationBuilder().build()
 
+  override def afterAll(): Unit = {
+    System.gc()
+    super.afterAll()
+  }
   def injector: Injector = app.injector
 
   def frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
@@ -51,8 +55,6 @@ trait SpecBase
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
   implicit def messages: Messages = controllerComponents.messagesApi.preferred(fakeRequest)
-
-  def appRunning(): Unit = app
 }
 
 object SpecBase extends SpecBase

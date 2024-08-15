@@ -30,7 +30,7 @@ import models.RegistrationLegalStatus.Partnership
 import models.UserType.UserType
 import models.enumeration.JourneyType
 import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse}
-import models.{BusinessDetails, NormalMode, RegistrationInfo, UserType}
+import models.{NormalMode, RegistrationInfo, UserType}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
@@ -51,11 +51,6 @@ class DeclarationControllerSpec
   private val onwardRoute = IndexController.onPageLoad
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
-  val businessDetails: BusinessDetails =
-    BusinessDetails(
-      companyName = "MyCompany",
-      uniqueTaxReferenceNumber = Some("1234567890")
-    )
   val email = "test@test.com"
   val businessName = "MyCompany"
   val registrationInfo: RegistrationInfo =

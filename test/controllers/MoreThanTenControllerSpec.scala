@@ -36,7 +36,7 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
@@ -106,7 +106,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       val fixture = testFixture(this)
       val request = testRequest(answers = UserAnswers(before), moreThanTen = Some(true.toString))
 
-      Await.result(fixture.controller.post(viewModel(MoreThanTenDirectorsId), UpdateMode)(request), Duration.Inf)
+      Await.result(fixture.controller.post(viewModel(MoreThanTenDirectorsId), UpdateMode)(request), 2.seconds)
       fixture.dataCacheConnector.verify(MoreThanTenDirectorsId, true)
       fixture.dataCacheConnector.verify(MoreThanTenDirectorsOrPartnersChangedId, true)
     }
@@ -118,7 +118,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       val fixture = testFixture(this)
       val request = testRequest(answers = UserAnswers(before), moreThanTen = Some(false.toString))
 
-      Await.result(fixture.controller.post(viewModel(MoreThanTenDirectorsId), UpdateMode)(request), Duration.Inf)
+      Await.result(fixture.controller.post(viewModel(MoreThanTenDirectorsId), UpdateMode)(request), 2.seconds)
       fixture.dataCacheConnector.verify(MoreThanTenDirectorsId, false)
       fixture.dataCacheConnector.verify(MoreThanTenDirectorsOrPartnersChangedId, true)
     }
@@ -130,7 +130,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       val fixture = testFixture(this)
       val request = testRequest(answers = UserAnswers(before), moreThanTen = Some(true.toString))
 
-      Await.result(fixture.controller.post(viewModel(MoreThanTenDirectorsId), UpdateMode)(request), Duration.Inf)
+      Await.result(fixture.controller.post(viewModel(MoreThanTenDirectorsId), UpdateMode)(request), 2.seconds)
       fixture.dataCacheConnector.verify(MoreThanTenDirectorsId, true)
       fixture.dataCacheConnector.verifyNot(MoreThanTenDirectorsOrPartnersChangedId)
     }
