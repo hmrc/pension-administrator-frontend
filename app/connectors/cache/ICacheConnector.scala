@@ -21,10 +21,8 @@ import config.FrontendAppConfig
 import identifiers.TypedIdentifier
 import play.api.http.Status._
 import play.api.libs.json._
-import play.api.libs.ws.WSClient
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
-import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http._
 import utils.UserAnswers
 
@@ -32,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ICacheConnector @Inject()(
                                  config: FrontendAppConfig,
-                                 http: WSClient
+                                 http: HttpClient
                                ) extends UserAnswersCacheConnector {
 
   protected def url(id: String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/psa/$id"
@@ -46,52 +44,45 @@ class ICacheConnector @Inject()(
     modify(cacheId, _.set(id)(value))
   }
 
-  def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
-                                     (implicit
-                                      executionContext: ExecutionContext,
-                                      hc: HeaderCarrier
-                                     ): Future[JsValue] = {
+  def remove[I <: TypedIdentifier[_]](cacheId: String, id: I
+                                     )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     modify(cacheId, _.remove(id))
   }
 
-  override def upsert(cacheId: String, value: JsValue)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
+  override def upsert(cacheId: String, value: JsValue
+                     )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     modify(cacheId, _ => JsSuccess(UserAnswers(value)))
   }
 
-  private[connectors] def modify(cacheId: String, modification: UserAnswers => JsResult[UserAnswers])
-                                (implicit
-                                 executionContext: ExecutionContext,
-                                 hc: HeaderCarrier
-                                ): Future[JsValue] = {
+  private[connectors] def modify(cacheId: String,
+                                 modification: UserAnswers => JsResult[UserAnswers]
+                                )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     fetch(cacheId).flatMap {
       json =>
         modification(UserAnswers(json.getOrElse(Json.obj()))) match {
           case JsSuccess(UserAnswers(updatedJson), _) =>
-            http.url(url(cacheId))
-              .withHttpHeaders(CacheConnector.headers(hc): _*)
-              .post(PlainText(Json.stringify(updatedJson)).value).flatMap {
-              response =>
-                response.status match {
-                  case OK =>
-                    Future.successful(updatedJson)
-                  case _ =>
-                    Future.failed(new HttpException(response.body, response.status))
+            updatedJson match {
+              case obj: JsObject =>
+                http.POST[JsObject, HttpResponse](url(cacheId), obj)(implicitly, implicitly, hc, implicitly).map {
+                  response =>
+                    response.status match {
+                      case OK => obj
+                      case  _ => throw new HttpException(response.body, response.status)
+                    }
                 }
+              case _ =>
+                Future.failed(new IllegalArgumentException("Updated JSON is not a JsObject"))
             }
+
           case JsError(errors) =>
             Future.failed(JsResultException(errors))
         }
     }
   }
 
-  override def fetch(id: String)(implicit
-                                 executionContext: ExecutionContext,
-                                 hc: HeaderCarrier
-  ): Future[Option[JsValue]] = {
-
-    http.url(url(id))
-      .withHttpHeaders(CacheConnector.headers(hc): _*)
-      .get()
+  override def fetch(id: String
+                    )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] = {
+    http.GET[HttpResponse](url(id))
       .flatMap {
         response =>
           response.status match {
@@ -106,8 +97,9 @@ class ICacheConnector @Inject()(
   }
 
   override def removeAll(id: String)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
-    http.url(url(id))
-      .withHttpHeaders(CacheConnector.headers(hc): _*)
-      .delete().map(_ => Ok)
+    http.DELETE[HttpResponse](url(id)).map { _ =>
+      Ok
+    }
   }
+
 }
