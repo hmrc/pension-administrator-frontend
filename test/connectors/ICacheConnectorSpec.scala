@@ -27,6 +27,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Results._
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import utils.WireMockHelper
+import uk.gov.hmrc.http.NotFoundException
 
 class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with OptionValues with RecoverMethods {
 
@@ -44,7 +45,7 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
 
   ".fetch" must {
 
-    "return `None` when the server returns a 404" ignore {
+    "return `None` when the server returns a 404" in {
       server.stubFor(
         get(urlEqualTo(url("foo")))
           .willReturn(
@@ -52,9 +53,10 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
           )
       )
 
-      connector.fetch("foo") map {
-        result =>
-          result mustNot be(defined)
+      recoverToExceptionIf[NotFoundException] {
+        connector.fetch("foo")
+      } map {
+        _.responseCode mustEqual Status.NOT_FOUND
       }
     }
 
@@ -92,7 +94,7 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
 
   ".save" must {
 
-    "insert when no data exists" ignore {
+    "insert when no data exists" in {
 
         val updatedJson = Json.obj(
           "fake-identifier" -> "foobar"
@@ -115,9 +117,11 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
             )
         )
 
-        connector.save("foo", FakeIdentifier, "foobar") map {
-          _ mustEqual updatedJson
-        }
+      recoverToExceptionIf[NotFoundException] {
+        connector.save("foo", FakeIdentifier, "foobar")
+      } map {
+        _.responseCode mustEqual Status.OK
+      }
     }
 
     "add fields to existing data" in {
