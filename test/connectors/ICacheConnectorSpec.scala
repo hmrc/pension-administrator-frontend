@@ -25,7 +25,7 @@ import org.scalatest.wordspec.AsyncWordSpec
 import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.mvc.Results._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import utils.WireMockHelper
 
 class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with OptionValues with RecoverMethods {
@@ -81,10 +81,10 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
           )
       )
 
-      recoverToExceptionIf[HttpException] {
+      recoverToExceptionIf[UpstreamErrorResponse] {
         connector.fetch("foo")
       } map {
-        _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
+        _.statusCode mustEqual Status.INTERNAL_SERVER_ERROR
       }
 
     }
@@ -215,11 +215,10 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
           )
       )
 
-
-      recoverToExceptionIf[HttpException] {
+      recoverToExceptionIf[UpstreamErrorResponse] {
         connector.save("foo", FakeIdentifier, "foobar")
       } map {
-        _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
+        _.statusCode mustEqual Status.INTERNAL_SERVER_ERROR
       }
 
     }

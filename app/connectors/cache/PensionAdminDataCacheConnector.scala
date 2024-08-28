@@ -18,11 +18,11 @@ package connectors.cache
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import play.api.libs.ws.WSClient
+import uk.gov.hmrc.http.HttpClient
 
 class PensionAdminDataCacheConnector @Inject()(
                                                 config: FrontendAppConfig,
-                                                http: WSClient
+                                                http: HttpClient
                                               ) extends ICacheConnector(config, http) {
 
   override protected def url(id: String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/psa-data/$id"
