@@ -83,15 +83,15 @@ class ICacheConnector @Inject()(
   override def fetch(id: String
                     )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] = {
     http.GET[HttpResponse](url(id))
-      .flatMap {
-        response =>
+      .recoverWith(mapExceptionsToStatus)
+      .map{ response =>
           response.status match {
             case NOT_FOUND =>
-              Future.successful(None)
+              None
             case OK =>
-              Future.successful(Some(Json.parse(response.body)))
+              Some(Json.parse(response.body))
             case _ =>
-              Future.failed(new HttpException(response.body, response.status))
+              throw new HttpException(response.body, response.status)
           }
       }
   }
@@ -100,6 +100,11 @@ class ICacheConnector @Inject()(
     http.DELETE[HttpResponse](url(id)).map { _ =>
       Ok
     }
+  }
+
+  private def mapExceptionsToStatus: PartialFunction[Throwable, Future[HttpResponse]] = {
+    case _: NotFoundException =>
+      Future.successful(HttpResponse(NOT_FOUND, "Not found"))
   }
 
 }
