@@ -272,6 +272,20 @@ class DeclarationControllerSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(CannotRegisterAdministratorController.onPageLoad.url)
       }
+      "redirect to Can not Registration Administrator if PsaId is invalid" in {
+        when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
+          .thenReturn(Future.failed(
+            UpstreamErrorResponse(
+              message = "INVALID_PSAID",
+              statusCode = FORBIDDEN,
+              reportAs = FORBIDDEN
+            )
+          ))
+        val result = controller().onSubmit(NormalMode)(validRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(CannotRegisterAdministratorController.onPageLoad.url)
+      }
     }
   }
 

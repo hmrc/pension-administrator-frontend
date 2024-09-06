@@ -30,7 +30,7 @@ import models.requests.DataRequest
 import models.{ExistingPSA, Mode, NormalMode}
 import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -103,24 +103,27 @@ class DeclarationController @Inject()(
             _           <- sendEmail(psaResponse.psaId)
           } yield {
               Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
-          }) recoverWith {
-            case _: BadRequestException =>
-              Future.successful(Redirect(SubmissionInvalidController.onPageLoad()))
-            case ex: UpstreamErrorResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
-              Future.successful(Redirect(DuplicateRegistrationController.onPageLoad()))
-            case ex: UpstreamErrorResponse if ex.message.contains("ACTIVE_PSAID") =>
-              Future.successful(Redirect(CannotRegisterAdministratorController.onPageLoad))
-            case _: KnownFactsRetrievalException =>
-              Future.successful(Redirect(SessionExpiredController.onPageLoad))
-            case e: HttpException =>
-              logger.error(s"Register PSA request responded with status code of ${e.responseCode} and message: ${e.message}", e)
-              Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
-            case e =>
-              logger.error("Declaration error message: " + e.getMessage, e)
-              Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
-          }
+          }) recoverWith handleOnSubmitErrors
         }
     }
+
+  // Handle errors during the process
+  private def handleOnSubmitErrors: PartialFunction[Throwable, Future[Result]] = {
+    case _: BadRequestException =>
+      Future.successful(Redirect(SubmissionInvalidController.onPageLoad()))
+    case ex: UpstreamErrorResponse if ex.message.contains("INVALID_BUSINESS_PARTNER") =>
+      Future.successful(Redirect(DuplicateRegistrationController.onPageLoad()))
+    case ex: UpstreamErrorResponse if ex.message.contains("ACTIVE_PSAID") || ex.message.contains("INVALID_PSAID") =>
+      Future.successful(Redirect(CannotRegisterAdministratorController.onPageLoad))
+    case _: KnownFactsRetrievalException =>
+      Future.successful(Redirect(SessionExpiredController.onPageLoad))
+    case e: HttpException =>
+      logger.error(s"Register PSA request responded with status code ${e.responseCode} and message: ${e.message}", e)
+      Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
+    case e =>
+      logger.error("Declaration error message: " + e.getMessage, e)
+      Future.successful(Redirect(YourActionWasNotProcessedController.onPageLoad()))
+  }
 
   private def sendEmail(psaId: String)
                        (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[EmailStatus] =
