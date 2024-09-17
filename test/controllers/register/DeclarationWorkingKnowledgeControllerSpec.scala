@@ -16,15 +16,13 @@
 
 package controllers.register
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
-import models.FeatureToggleName.PsaRegistration
+import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
-import models.{FeatureToggle, NormalMode}
-import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json._
@@ -33,20 +31,12 @@ import play.api.test.Helpers._
 import utils.FakeNavigator
 import views.html.register.declarationWorkingKnowledge
 
-import scala.concurrent.Future
-
 class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   val formProvider = new DeclarationWorkingKnowledgeFormProvider()
   val form: Form[Boolean] = formProvider()
-
-  val defaultFeatureToggleConnector = {
-    val mockFeatureToggleConnector:FeatureToggleConnector = mock[FeatureToggleConnector]
-    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(FeatureToggle.Enabled(PsaRegistration)))
-    mockFeatureToggleConnector
-  }
 
   val view: declarationWorkingKnowledge = app.injector.instanceOf[declarationWorkingKnowledge]
 
@@ -60,8 +50,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase with 
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      defaultFeatureToggleConnector
+      view
     )
 
   def viewAsString(form: Form[_] = form): String = view(form, NormalMode)(fakeRequest, messages).toString

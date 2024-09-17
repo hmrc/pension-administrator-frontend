@@ -171,8 +171,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
     }"
   }"
 
-  def featureToggleUrl(toggle: String): String = s"$pensionAdministratorUrl${runModeConfiguration.get[String]("urls.featureToggle").format(toggle)}"
-
   def identityValidationFrontEndEntry(relativeCompletionURL: RedirectUrl, relativeFailureURL: RedirectUrl): String = {
     val url = loadConfig("urls.iv-uplift-entry")
     val query = s"?origin=pods&confidenceLevel=250&completionURL=${relativeCompletionURL.get(OnlyRelative).url}&failureURL=${relativeFailureURL.get(OnlyRelative).url}"

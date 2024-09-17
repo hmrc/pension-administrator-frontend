@@ -17,15 +17,14 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.company.directors.routes._
 import controllers.{Retrievals, Variations}
 import identifiers.register.company.directors._
-import models.FeatureToggleName.PsaRegistration
 import models.Mode.checkMode
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -51,8 +50,7 @@ class CheckYourAnswersController @Inject()(
                                             override val cacheConnector: UserAnswersCacheConnector,
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: check_your_answers,
-                                            featureToggleConnector: FeatureToggleConnector
+                                            view: check_your_answers
                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
   with Retrievals with Variations with I18nSupport with Enumerable.Implicits {
 
@@ -93,24 +91,14 @@ class CheckYourAnswersController @Inject()(
           DirectorPhoneId(index).row(Some(Link(DirectorPhoneController.onPageLoad(checkMode(mode), index).url)))
       ))
 
-    featureToggleConnector.enabled(PsaRegistration).ifA(
-      ifTrue =
-        Ok(view(
-          answersSection,
-          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
-          psaName(),
-          mode,
-          dataCompletion.isDirectorComplete(request.userAnswers, index),
-          returnLink = taskListReturnLinkUrl()
-        )),
-      ifFalse =
-        Ok(view(
-          answersSection,
-          controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
-          None,
-          mode,
-          dataCompletion.isDirectorComplete(request.userAnswers, index)
-        ))
-    )
+    Future.successful(Ok(view(
+        answersSection,
+        controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
+        psaName(),
+        mode,
+        dataCompletion.isDirectorComplete(request.userAnswers, index),
+        returnLink = taskListReturnLinkUrl()
+      )))
+
   }
 }

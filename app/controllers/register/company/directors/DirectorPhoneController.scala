@@ -17,12 +17,11 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorPhoneId}
-import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,8 +42,7 @@ class DirectorPhoneController @Inject()(@CompanyDirector val navigator: Navigato
                                         requireData: DataRequiredAction,
                                         formProvider: PhoneFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        val view: phone,
-                                        featureToggleConnector: FeatureToggleConnector
+                                        val view: phone
                                       )(implicit val executionContext: ExecutionContext) extends PhoneController {
 
   private val form = formProvider()
@@ -52,18 +50,12 @@ class DirectorPhoneController @Inject()(@CompanyDirector val navigator: Navigato
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
-          val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-          get(DirectorPhoneId(index), form, viewModel(mode, index, entityName(index), returnLink))
-        }
+        get(DirectorPhoneId(index), form, viewModel(mode, index, entityName(index), Some(companyTaskListUrl())))
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
-        val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-        post(DirectorPhoneId(index), mode, form, viewModel(mode, index, entityName(index), returnLink))
-      }
+        post(DirectorPhoneId(index), mode, form, viewModel(mode, index, entityName(index), Some(companyTaskListUrl())))
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =

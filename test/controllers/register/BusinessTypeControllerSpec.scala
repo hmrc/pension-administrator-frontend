@@ -16,23 +16,18 @@
 
 package controllers.register
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.BusinessTypeFormProvider
 import identifiers.register.BusinessTypeId
-import models.FeatureToggle.Disabled
-import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
 import models.register.BusinessType
-import org.mockito.ArgumentMatchers.any
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
 import utils.FakeNavigator
 import views.html.register.businessType
-
-import scala.concurrent.Future
 
 class BusinessTypeControllerSpec extends ControllerSpecBase {
 
@@ -44,14 +39,7 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
 
   val view: businessType = app.injector.instanceOf[businessType]
 
-  private val defaultFeatureToggleConnector = {
-    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
-    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
-    mockFeatureToggleConnector
-  }
-
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
-                         featureToggleConnector: FeatureToggleConnector = defaultFeatureToggleConnector,
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData
                         ) =
     new BusinessTypeController(
       frontendAppConfig,
@@ -64,7 +52,6 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      featureToggleConnector,
       view
     )
 

@@ -18,13 +18,12 @@ package controllers.register.adviser
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.register.adviser.AdviserNameFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.AdviserNameId
-import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -34,7 +33,7 @@ import utils.annotations.Adviser
 import utils.{Navigator, UserAnswers}
 import views.html.register.adviser.adviserName
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdviserNameController @Inject()(
                                        appConfig: FrontendAppConfig,
@@ -45,8 +44,7 @@ class AdviserNameController @Inject()(
                                        formProvider: AdviserNameFormProvider,
                                        dataCacheConnector: UserAnswersCacheConnector,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: adviserName,
-                                       featureToggleConnector: FeatureToggleConnector
+                                       val view: adviserName
                                      )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   val form: Form[String] = formProvider()
@@ -57,37 +55,27 @@ class AdviserNameController @Inject()(
         case None => form
         case Some(value) => form.fill(value)
       }
-
       val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
-
-      featureToggleConnector.enabled(PsaRegistration).map { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-
-        Ok(view(
-          preparedForm,
-          mode,
-          if (displayReturnLink) psaName() else None,
-          returnLink
-        ))
-      }
+      Future.successful(Ok(view(
+        preparedForm,
+        mode,
+        if (displayReturnLink) psaName() else None,
+        Some(companyTaskListUrl())
+      )))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requiredData).async {
     implicit request =>
-
       val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
-
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          featureToggleConnector.enabled(PsaRegistration).map { featureEnabled =>
-            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-            BadRequest(view(
-              formWithErrors,
-              mode,
-              if (displayReturnLink) psaName() else None,
-              returnLink
-            ))
-          },
+        (formWithErrors: Form[_]) =>{
+          Future.successful(BadRequest(view(
+            formWithErrors,
+            mode,
+            if (displayReturnLink) psaName() else None,
+            Some(companyTaskListUrl())
+          )))
+        },
         value => {
           dataCacheConnector.save(request.externalId, AdviserNameId, value).map(
             cacheMap =>

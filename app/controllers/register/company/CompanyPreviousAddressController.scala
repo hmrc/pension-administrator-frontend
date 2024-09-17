@@ -18,20 +18,18 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.UKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.{CompanyAddressListId, CompanyPreviousAddressId}
-import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.NoRLSCheck
-import utils.annotations.RegisterCompany
+import utils.annotations.{NoRLSCheck, RegisterCompany}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -49,8 +47,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
                                                  formProvider: UKAddressFormProvider,
                                                  val countryOptions: CountryOptions,
                                                  val controllerComponents: MessagesControllerComponents,
-                                                 val view: manualAddress,
-                                                 featureToggleConnector: FeatureToggleConnector
+                                                 val view: manualAddress
                                                 )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
@@ -67,20 +64,14 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.map { name =>
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode, name, returnLink), mode)
-        }
+        get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode, name, Some(companyTaskListUrl())), mode)
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.map { name =>
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          post(CompanyPreviousAddressId, addressViewModel(mode, name, returnLink), mode)
-        }
+        post(CompanyPreviousAddressId, addressViewModel(mode, name, Some(companyTaskListUrl())), mode)
       }
   }
 

@@ -23,8 +23,6 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode, TolerantAddress}
 import org.mockito.{ArgumentMatchers, MockitoSugar}
 import play.api.data.{Form, FormError}
@@ -60,8 +58,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view
     )
 
   private def viewAsString(form: Form[_] = form) =

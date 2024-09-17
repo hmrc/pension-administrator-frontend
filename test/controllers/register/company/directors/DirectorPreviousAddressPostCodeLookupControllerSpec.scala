@@ -22,8 +22,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressPostCodeLookupId}
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models._
 import org.mockito.{ArgumentMatchers, MockitoSugar}
 import play.api.data.Form
@@ -62,8 +60,7 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view
     )
 
   private val testAnswer = "AB12 1AB"

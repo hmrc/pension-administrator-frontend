@@ -18,13 +18,12 @@ package controllers.register.company.directors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressListId, CompanyDirectorAddressPostCodeLookupId, DirectorAddressId, DirectorNameId}
-import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Index, Mode, TolerantAddress}
 import play.api.data.Form
@@ -46,8 +45,7 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
                                                      requireData: DataRequiredAction,
                                                      formProvider: AddressListFormProvider,
                                                      val controllerComponents: MessagesControllerComponents,
-                                                     val view: addressList,
-                                                     featureToggleConnector: FeatureToggleConnector
+                                                     val view: addressList
                                                     )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
@@ -55,23 +53,17 @@ class CompanyDirectorAddressListController @Inject()(override val appConfig: Fro
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, index, returnLink).map(vm =>
-          get(vm, mode, form(vm.addresses, entityName(index)))
-        )
-      }
+      viewModel(mode, index, Some(companyTaskListUrl())).map(vm =>
+        get(vm, mode, form(vm.addresses, entityName(index)))
+      )
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, index, returnLink).map(vm =>
-          post(vm, DirectorAddressId(index), CompanyDirectorAddressListId(index), CompanyDirectorAddressPostCodeLookupId(index), mode,
-            form(vm.addresses, entityName(index)))
-        )
-      }
+      viewModel(mode, index, Some(companyTaskListUrl())).map(vm =>
+        post(vm, DirectorAddressId(index), CompanyDirectorAddressListId(index), CompanyDirectorAddressPostCodeLookupId(index), mode,
+          form(vm.addresses, entityName(index)))
+      )
   }
 
   private def viewModel(mode: Mode, index: Index, returnLink: Option[String])

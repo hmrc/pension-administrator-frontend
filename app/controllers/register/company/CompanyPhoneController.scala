@@ -17,24 +17,23 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.company.CompanyPhoneId
-import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import utils.Navigator
 import utils.annotations.{NoRLSCheck, RegisterCompany}
-import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator,
                                        val appConfig: FrontendAppConfig,
@@ -45,8 +44,7 @@ class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator
                                        requireData: DataRequiredAction,
                                        formProvider: PhoneFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: phone,
-                                       featureToggleConnector: FeatureToggleConnector
+                                       val view: phone
                                       )(implicit val executionContext: ExecutionContext) extends PhoneController {
 
   private val form = formProvider()
@@ -54,31 +52,20 @@ class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          get(CompanyPhoneId, form, viewModel(mode, returnLink))
-        }
+        get(CompanyPhoneId, form, viewModel(mode, Some(companyTaskListUrl())))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          featureToggleConnector.enabled(PsaRegistration).map { featureEnabled =>
-            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-            BadRequest(view(formWithErrors, viewModel(mode, returnLink), psaName()))
-          },
+          Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl())), psaName()))),
         value => {
           for {
-            cacheMap <- cacheConnector.save(request.externalId, CompanyPhoneId, value)
-            featureToggle <- featureToggleConnector.get(PsaRegistration.asString)
+            _ <- cacheConnector.save(request.externalId, CompanyPhoneId, value)
             _ <- saveChangeFlag(mode, CompanyPhoneId)
           } yield {
-            if(featureToggle.isEnabled){
               Redirect(contactdetails.routes.CheckYourAnswersController.onPageLoad())
-            } else {
-              Redirect(navigator.nextPage(CompanyPhoneId, mode, UserAnswers(cacheMap)))
-            }
           }
         }
       )

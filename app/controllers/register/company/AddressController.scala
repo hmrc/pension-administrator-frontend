@@ -16,12 +16,11 @@
 
 package controllers.register.company
 
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.UKAddressFormProvider
 import identifiers.register.company.ConfirmCompanyAddressId
-import models.FeatureToggleName.PsaRegistration
 import models._
 import models.requests.DataRequest
 import play.api.data.Form
@@ -30,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.{RegisterCompany, RegisterCompanyV2}
 import utils.countryOptions.CountryOptions
-import utils.{AddressHelper, Navigator, UserAnswers}
+import utils.{AddressHelper, Navigator}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
@@ -42,7 +41,6 @@ class AddressController @Inject()(authenticate: AuthAction,
                                   val cacheConnector: UserAnswersCacheConnector,
                                   val controllerComponents: MessagesControllerComponents,
                                   val countryOptions: CountryOptions,
-                                  featureToggleConnector: FeatureToggleConnector,
                                   val formProvider: UKAddressFormProvider,
                                   getData: DataRetrievalAction,
                                   @RegisterCompany val navigator: Navigator,
@@ -89,14 +87,9 @@ class AddressController @Inject()(authenticate: AuthAction,
             address.postcode, Some(address.country)
           )
           for {
-            isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
-            newCache <- cacheConnector.save(request.externalId, ConfirmCompanyAddressId, tolerantAddress)
+            _ <- cacheConnector.save(request.externalId, ConfirmCompanyAddressId, tolerantAddress)
           } yield {
-            if (isFeatureEnabled) {
               Redirect(routes.CompanyRegistrationTaskListController.onPageLoad())
-            } else {
-              Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, UserAnswers(newCache)))
-            }
           }
         }
       )
