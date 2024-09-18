@@ -34,7 +34,7 @@ class WhatYouWillNeedController @Inject()(
                                            @AuthWithNoIV authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           whatYouWillNeedView: contactdetails.whatYouWillNeed,
+                                           whatYouWillNeedView: contactdetails.whatYouWillNeed
                                          ) extends FrontendBaseController with I18nSupport {
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) { implicit request =>
       Ok(whatYouWillNeedView(companyName, Some(companyName)))
