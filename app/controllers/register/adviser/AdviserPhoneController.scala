@@ -17,15 +17,12 @@
 package controllers.register.adviser
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.{AdviserNameId, AdviserPhoneId}
-import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,6 +31,7 @@ import utils.annotations.{Adviser, NoRLSCheck}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AdviserPhoneController @Inject()(@Adviser val navigator: Navigator,
@@ -45,8 +43,7 @@ class AdviserPhoneController @Inject()(@Adviser val navigator: Navigator,
                                        requireData: DataRequiredAction,
                                        formProvider: PhoneFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: phone,
-                                       featureToggleConnector: FeatureToggleConnector
+                                       val view: phone
                                       )(implicit val executionContext: ExecutionContext) extends PhoneController {
 
   private val form = formProvider()
@@ -54,18 +51,12 @@ class AdviserPhoneController @Inject()(@Adviser val navigator: Navigator,
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          get(AdviserPhoneId, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink))
-        }
+        get(AdviserPhoneId, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, Some(companyTaskListUrl())))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        post(AdviserPhoneId, mode, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink))
-      }
+      post(AdviserPhoneId, mode, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, Some(companyTaskListUrl())))
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =

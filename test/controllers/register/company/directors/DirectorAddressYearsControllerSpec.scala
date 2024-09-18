@@ -22,8 +22,6 @@ import controllers.actions._
 import forms.address.AddressYearsFormProvider
 import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.company.directors.{DirectorAddressYearsId, DirectorNameId}
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models._
 import play.api.data.Form
 import play.api.libs.json._
@@ -69,8 +67,7 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view
     )
 
   private lazy val viewModel =

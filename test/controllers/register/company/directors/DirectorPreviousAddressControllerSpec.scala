@@ -22,8 +22,6 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -61,8 +59,7 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
       new FakeCountryOptions(environment, frontendAppConfig),
       auditService,
       controllerComponents,
-      view,
-      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view
     )
 
   private val viewModel =

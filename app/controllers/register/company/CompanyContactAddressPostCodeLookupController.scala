@@ -19,20 +19,18 @@ package controllers.register.company
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyContactAddressPostCodeLookupId
-import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.NoRLSCheck
-import utils.annotations.RegisterCompany
+import utils.annotations.{NoRLSCheck, RegisterCompany}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
@@ -50,8 +48,7 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
                                                                requireData: DataRequiredAction,
                                                                formProvider: PostCodeLookupFormProvider,
                                                                val controllerComponents: MessagesControllerComponents,
-                                                               val view: postcodeLookup,
-                                                               featureToggleConnector: FeatureToggleConnector
+                                                               val view: postcodeLookup
                                                              )(implicit val executionContext: ExecutionContext)
   extends PostcodeLookupController with Retrievals {
 
@@ -75,21 +72,15 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, returnLink).retrieve.map(vm =>
-          get(vm, mode)
-        )
-      }
+      viewModel(mode, Some(companyTaskListUrl())).retrieve.map(vm =>
+        get(vm, mode)
+      )
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, returnLink).retrieve.map(vm =>
-          post(CompanyContactAddressPostCodeLookupId, vm, mode)
-        )
-      }
+      viewModel(mode, Some(companyTaskListUrl())).retrieve.map(vm =>
+        post(CompanyContactAddressPostCodeLookupId, vm, mode)
+      )
   }
 }

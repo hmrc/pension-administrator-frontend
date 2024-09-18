@@ -17,13 +17,12 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.company.directors.routes.HasDirectorUTRController
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.company.directors.{DirectorNameId, HasDirectorUTRId}
-import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -46,8 +45,7 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
                                          requireData: DataRequiredAction,
                                          formProvider: HasReferenceNumberFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         val view: hasReferenceNumber,
-                                         featureToggleConnector: FeatureToggleConnector
+                                         val view: hasReferenceNumber
                                          )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController with I18nSupport {
 
   private def viewModel(mode: Mode, entityName: String, index: Index, returnLink: Option[String])
@@ -72,20 +70,13 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          get(HasDirectorUTRId(index), form(directorName), viewModel(mode, directorName, index, returnLink))
-        }
-
+        get(HasDirectorUTRId(index), form(directorName), viewModel(mode, directorName, index, Some(companyTaskListUrl())))
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          post(HasDirectorUTRId(index), mode, form(directorName), viewModel(mode, directorName, index, returnLink))
-        }
+        post(HasDirectorUTRId(index), mode, form(directorName), viewModel(mode, directorName, index, Some(companyTaskListUrl())))
     }
 }

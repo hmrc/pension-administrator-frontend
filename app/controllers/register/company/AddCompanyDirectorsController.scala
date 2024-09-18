@@ -17,28 +17,24 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.FeatureToggleConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
-import models.{FeatureToggle, Mode, NormalMode, UpdateMode}
+import models.{Mode, NormalMode, UpdateMode}
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.JsResultException
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Navigator, UserAnswers}
 import utils.annotations.CompanyDirector
+import utils.{Navigator, UserAnswers}
 import viewmodels.Person
-import views.html.register.company.addCompanyDirectors
-import views.html.register.company.addCompanyDirectorsv2
+import views.html.register.company.{addCompanyDirectors, addCompanyDirectorsv2}
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AddCompanyDirectorsController @Inject()(
                                                appConfig: FrontendAppConfig,
@@ -50,8 +46,7 @@ class AddCompanyDirectorsController @Inject()(
                                                formProvider: AddCompanyDirectorsFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: addCompanyDirectors,
-                                               val viewv2: addCompanyDirectorsv2,
-                                               featureToggleConnector: FeatureToggleConnector
+                                               val viewv2: addCompanyDirectorsv2
                                              )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
     with I18nSupport
@@ -62,38 +57,29 @@ class AddCompanyDirectorsController @Inject()(
   private val form: Form[Boolean] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
-    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
       implicit request =>
         val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete(mode)
-
-        featureToggleConnector.get(PsaRegistration.asString).map {
-          case Enabled(_) =>
-            val directorsComplete = directors.filter(_.isComplete)
-            val directorsIncomplete = directors.filterNot(_.isComplete)
-            Ok(viewv2(form, mode, directorsComplete,directorsIncomplete, psaName()))
-          case _ => Ok(view(form, mode, directors, psaName()))
-          }
+        val directorsComplete = directors.filter(_.isComplete)
+        val directorsIncomplete = directors.filterNot(_.isComplete)
+        Ok(viewv2(form, mode, directorsComplete,directorsIncomplete, psaName()))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
-    (authenticate andThen getData andThen requireData).async {
+    (authenticate andThen getData andThen requireData) {
       implicit request =>
         val directors: Seq[Person] = request.userAnswers.allDirectorsAfterDelete(mode)
 
         if (directors.isEmpty || directors.lengthCompare(appConfig.maxDirectors) >= 0) {
-          Future.successful(Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers)))
+          Redirect(navigator.nextPage(AddCompanyDirectorsId, mode, request.userAnswers))
         }
         else {
-          featureToggleConnector.get(PsaRegistration.asString).map { featureToggle =>
             form.bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
-                if(featureToggle.isEnabled){
-                  val directorsComplete = directors.filter(_.isComplete)
-                  val directorsIncomplete = directors.filterNot(_.isComplete)
-                  BadRequest(viewv2(formWithErrors, mode, directorsComplete,directorsIncomplete, psaName()))
-                }else{
-                  BadRequest(view(formWithErrors, mode, directors, psaName()))
-                },
+              (formWithErrors: Form[_]) =>{
+                val directorsComplete = directors.filter(_.isComplete)
+                val directorsIncomplete = directors.filterNot(_.isComplete)
+                BadRequest(viewv2(formWithErrors, mode, directorsComplete, directorsIncomplete, psaName()))
+              },
               value =>
                 request.userAnswers.set(AddCompanyDirectorsId)(value).fold(
                   errors => {
@@ -101,24 +87,20 @@ class AddCompanyDirectorsController @Inject()(
                     (InternalServerError)
                   },
                   userAnswers => {
-                    addCompanyDirectorNavigation(mode, userAnswers, featureToggle)
+                    addCompanyDirectorNavigation(mode, userAnswers)
                   }
                 )
             )
-          }
+
         }
     }
 
-  private def addCompanyDirectorNavigation(mode: Mode, userAnswers: UserAnswers, featureToggle: FeatureToggle):Result = {
-    (featureToggle.isEnabled, userAnswers.get(AddCompanyDirectorsId)) match {
-      case (true, Some(false)) if mode == NormalMode =>
+  private def addCompanyDirectorNavigation(mode: Mode, userAnswers: UserAnswers):Result = {
+    userAnswers.get(AddCompanyDirectorsId) match {
+      case Some(false) if mode == NormalMode =>
         Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
-      case (true, Some(false)) if mode == UpdateMode =>
+      case Some(false) if mode == UpdateMode =>
         Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
-      case (false, Some(false)) if mode == NormalMode =>
-        Redirect(controllers.register.company.routes.CompanyReviewController.onPageLoad())
-      case (false, Some(false)) if mode == UpdateMode =>
-        Redirect(controllers.register.routes.AnyMoreChangesController.onPageLoad())
       case _ =>
         val index = userAnswers.allDirectorsAfterDelete(mode).length
         maxDirectorNavigation(mode, userAnswers, index)

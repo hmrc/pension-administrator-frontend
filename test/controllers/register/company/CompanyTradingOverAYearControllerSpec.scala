@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes._
@@ -31,7 +31,7 @@ import views.html.hasReferenceNumber
 
 class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  def onwardRoute: Call = routes.CompanyRegistrationTaskListController.onPageLoad()
 
   private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("trading.error.required", companyName)
@@ -45,11 +45,11 @@ class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
       heading = Message("trading.title", companyName),
       mode = NormalMode,
       hint = None,
-      entityName = companyName
+      entityName = companyName,
+      returnLink = Some(routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany,
-                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyTradingOverAYearController(frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -60,8 +60,7 @@ class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      featureToggleConnector
+      view
     )
 
   private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =

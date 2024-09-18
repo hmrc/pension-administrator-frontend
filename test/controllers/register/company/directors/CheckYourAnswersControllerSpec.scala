@@ -21,8 +21,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.directors.routes._
 import identifiers.register.DirectorsOrPartnersChangedId
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.Mode.{checkMode, _}
 import models._
 import org.mockito.ArgumentMatchers.any
@@ -63,8 +61,7 @@ class CheckYourAnswersControllerSpec
       FakeUserAnswersCacheConnector,
       countryOptions,
       controllerComponents,
-      view,
-      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view
     )
 
   private def testRenderedView(

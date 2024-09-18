@@ -17,15 +17,11 @@
 package controllers.register.adviser
 
 import config.FrontendAppConfig
-import connectors.cache.FeatureToggleConnector
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessTypeId
 import identifiers.register.adviser._
-import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode
 import models.Mode._
 import models.register.BusinessType
@@ -41,6 +37,7 @@ import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
@@ -51,44 +48,34 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
                                            dataCompletion: DataCompletion,
                                            implicit val countryOptions: CountryOptions,
                                            val controllerComponents: MessagesControllerComponents,
-                                           val view: check_your_answers,
-                                           featureToggleConnector: FeatureToggleConnector
+                                           val view: check_your_answers
                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       retrieveAdviserName(mode) { _ =>
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          Future.successful(cyaPage(mode, returnLink))
-        }
+        Future.successful(cyaPage(mode, Some(companyTaskListUrl())))
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val isDataComplete = dataCompletion.isAdviserComplete(request.userAnswers, mode)
-      for {
-        isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
-      } yield {
-        (isFeatureEnabled, isDataComplete) match {
-          case(true, true) =>
-            request.userAnswers.get(BusinessTypeId) match {
-               case Some(BusinessType.LimitedCompany) | Some(BusinessType.UnlimitedCompany) =>
-                 Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
-              case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
-                Redirect(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
-               case None => // Must be individual
-                 Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
-              case _ =>
-                Redirect(controllers.routes.SessionExpiredController.onPageLoad)
-              }
-          case(false, true) => Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
-          case(true, false) => cyaPage(mode, Some(companyTaskListUrl()))
-          case(false, false) => cyaPage(mode, None)
-        }
-      }
 
+      isDataComplete match {
+        case true =>
+          request.userAnswers.get(BusinessTypeId) match {
+             case Some(BusinessType.LimitedCompany) | Some(BusinessType.UnlimitedCompany) =>
+               Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
+            case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
+              Redirect(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
+             case None => // Must be individual
+               Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+            case _ =>
+              Redirect(controllers.routes.SessionExpiredController.onPageLoad)
+            }
+        case false => cyaPage(mode, Some(companyTaskListUrl()))
+      }
   }
 
   private def cyaPage(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): Result = {

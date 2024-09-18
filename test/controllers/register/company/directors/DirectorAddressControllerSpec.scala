@@ -22,8 +22,6 @@ import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.{BusinessNameId, DirectorsOrPartnersChangedId, RegistrationInfoId}
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.LimitedCompany
 import models._
@@ -80,8 +78,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
       formProvider,
       countryOptions,
       controllerComponents,
-      view,
-      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view
     )
 
   private val viewModel = ManualAddressViewModel(

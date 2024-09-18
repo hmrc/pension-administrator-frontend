@@ -16,17 +16,14 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.AddCompanyDirectorsFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.company.directors.DirectorNameId
-import models.FeatureToggle.{Disabled, Enabled}
-import models.FeatureToggleName.PsaRegistration
 import models._
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json._
@@ -38,15 +35,9 @@ import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Person
 import views.html.register.company.{addCompanyDirectors, addCompanyDirectorsv2}
 
-import scala.concurrent.Future
-
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 
   import AddCompanyDirectorsControllerSpec._
-
-  override def beforeEach(): Unit = {
-    when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
-  }
 
   override def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "/")
   "AddCompanyDirectors Controller" must {
@@ -55,27 +46,10 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAn
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
-    }
-
-    "return OK and the correct view for a GET when toggle on" in {
-      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe OK
       contentAsString(result) mustBe viewAsStringV2()
     }
 
     "not populate the view on a GET when the question has previously been answered" in {
-      val directors = Seq(Person(0, "first0 last0", deleteLink(0), editLink(0), isDeleted = false, isComplete = true))
-      val getRelevantData = UserAnswers().completeDirector(index = 0).dataRetrievalAction
-
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-      contentAsString(result) mustBe viewAsString(form, directors)
-    }
-
-    "not populate the view on a GET when the question has previously been answered when toggle on" in {
-      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
       val directors = Seq(Person(0, "first0 last0", deleteLink(0), editLink(0), isDeleted = false, isComplete = true))
       val getRelevantData = UserAnswers().completeDirector(index = 0).dataRetrievalAction
 
@@ -90,31 +64,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAn
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
-    "redirect to the next page when less than maximum directors exist and valid data is submitted if PSA registration toggle is off" in {
-      val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe): _*)
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
-
-      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some("/register-as-pension-scheme-administrator/register/company/review")
-    }
-
-    "redirect to the next page when less than maximum directors exist with UpdateMode and valid data is submitted if PSA registration toggle is off" in {
-      val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe): _*)
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
-
-      val result = controller(getRelevantData).onSubmit(UpdateMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some("/register-as-pension-scheme-administrator/register/make-more-changes")
-    }
-
     "redirect to the task list page when less than maximum directors exist and valid data is submitted if PSA registration toggle is on" in {
-      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
-
       val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe): _*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
@@ -126,22 +76,6 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAn
     }
 
     "return a Bad Request and errors when less than maximum directors exist and invalid data is submitted" in {
-
-      val getRelevantData = UserAnswers().completeDirector(index = 0).completeDirector(1).dataRetrievalAction
-      val directorAsPerson = Seq(person(0), person(1))
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
-      val result = controller(getRelevantData).onSubmit(NormalMode)(postRequest)
-
-      status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(boundForm, directorAsPerson)
-    }
-
-    "return a Bad Request and errors when less than maximum directors exist and invalid data is submitted when toggle on" in {
-      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
-
       val getRelevantData = UserAnswers().completeDirector(index = 0).completeDirector(1).dataRetrievalAction
       val directorAsPerson = Seq(person(0), person(1))
 
@@ -191,27 +125,10 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAn
       val getRelevantData = UserAnswers().completeDirector(index = 0).completeDirector(index = 1).dataRetrievalAction
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form, directorsAsPerson)
-    }
-
-    "populate the view with directors when they exist when toggle on" in {
-      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
-      val directorsAsPerson = Seq(person(0), person(1))
-      val getRelevantData = UserAnswers().completeDirector(index = 0).completeDirector(index = 1).dataRetrievalAction
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-
       contentAsString(result) mustBe viewAsStringV2(form, directorsAsPerson)
     }
 
     "exclude the deleted directors from the list" in {
-      val getRelevantData = UserAnswers().completeDirector(0).completeDirector(1, isDeleted = true).dataRetrievalAction
-      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form, Seq(person(0)))
-    }
-
-    "exclude the deleted directors from the list  when toggle on" in {
-      when(defaultFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
       val getRelevantData = UserAnswers().completeDirector(0).completeDirector(1, isDeleted = true).dataRetrievalAction
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
@@ -247,12 +164,6 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
 
   protected def fakeNavigator() = new FakeNavigator(desiredRoute = onwardRoute)
 
-  private val defaultFeatureToggleConnector = {
-    val mockFeatureToggleConnector = mock[FeatureToggleConnector]
-    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
-    mockFeatureToggleConnector
-  }
-
   protected def controller(
                             dataRetrievalAction: DataRetrievalAction = getEmptyData,
                             navigator: FakeNavigator = fakeNavigator()
@@ -267,15 +178,11 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
       formProvider,
       controllerComponents,
       view,
-      viewv2,
-      defaultFeatureToggleConnector
+      viewv2
     )
 
   val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None), UserAnswers(Json.obj()))
-
-  private def viewAsString(form: Form[_] = form, directors: Seq[Person] = Nil) =
-    view(form, NormalMode, directors, None)(request, messages).toString
 
   private def viewAsStringV2(form: Form[_] = form, directorsComplete: Seq[Person] = Nil, directorsInComplete: Seq[Person] = Nil) =
     viewv2(form, NormalMode, directorsComplete,directorsInComplete, None)(request, messages).toString

@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.company.CompanyRegistrationNumberFormProvider
@@ -40,8 +40,7 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
 
   val view: enterNumber = app.injector.instanceOf[enterNumber]
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getCompany,
-                 featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyRegistrationNumberController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
@@ -53,8 +52,7 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      featureToggleConnector
+      view
     )
 
   private def viewModel: CommonFormWithHintViewModel =
@@ -64,7 +62,8 @@ class CompanyRegistrationNumberControllerSpec extends ControllerSpecBase {
       heading = Message("companyRegistrationNumber.heading", companyName),
       hint = Some(Message("companyRegistrationNumber.hint")),
       mode = NormalMode,
-      entityName = companyName
+      entityName = companyName,
+      returnLink = Some(routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 
   def viewAsString(form: Form[_] = form): String = view(

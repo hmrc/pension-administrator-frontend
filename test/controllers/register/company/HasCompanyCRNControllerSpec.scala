@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
@@ -50,8 +50,7 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
       entityName = companyName
     )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany,
-                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new HasCompanyCRNController(frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -62,8 +61,7 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      featureToggleConnector
+      view
     )
 
   private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =

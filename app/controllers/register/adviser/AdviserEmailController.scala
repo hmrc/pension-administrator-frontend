@@ -17,24 +17,21 @@
 package controllers.register.adviser
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.{AdviserEmailId, AdviserNameId}
-import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.Adviser
-import utils.annotations.NoRLSCheck
+import utils.annotations.{Adviser, NoRLSCheck}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AdviserEmailController @Inject()(@Adviser val navigator: Navigator,
@@ -46,8 +43,7 @@ class AdviserEmailController @Inject()(@Adviser val navigator: Navigator,
                                        requireData: DataRequiredAction,
                                        formProvider: EmailFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: email,
-                                       featureToggleConnector: FeatureToggleConnector
+                                       val view: email
                                       )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
   private val form = formProvider()
@@ -55,18 +51,12 @@ class AdviserEmailController @Inject()(@Adviser val navigator: Navigator,
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          get(AdviserEmailId, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink))
-        }
+        get(AdviserEmailId, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, Some(companyTaskListUrl())))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        post(AdviserEmailId, mode, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink))
-      }
+      post(AdviserEmailId, mode, form, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, Some(companyTaskListUrl())))
   }
 
   private def entityName(implicit request: DataRequest[AnyContent]): String =

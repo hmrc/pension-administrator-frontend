@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.UKAddressFormProvider
@@ -36,14 +36,12 @@ class AddressControllerSpec extends ControllerSpecBase {
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   val addressHelper: AddressHelper = inject[AddressHelper]
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
-                 featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new AddressController(
       FakeAuthAction,
       FakeUserAnswersCacheConnector,
       controllerComponents,
       countryOptions,
-      featureToggleConnector,
       formProvider,
       dataRetrievalAction,
       new FakeNavigator(desiredRoute = onwardRoute),

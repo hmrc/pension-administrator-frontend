@@ -17,12 +17,9 @@
 package controllers.register.adviser
 
 import connectors.AddressLookupConnector
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.FakeFeatureToggleConnector
 import forms.address.PostCodeLookupFormProvider
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
@@ -77,8 +74,7 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
       running(_.overrides(modules(getEmptyData)++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(onwardRoute)),
           bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-          bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
-          bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
+          bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
         ):_*)) {
         app =>
           when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())) thenReturn Future.successful(Seq(address))
@@ -110,7 +106,6 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
   override lazy val app: Application =
     applicationBuilder(getCompanyAndAdvisor).overrides(
       bind[AddressLookupConnector].toInstance(mockAddressLookupConnector),
-      bind[Navigator].qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(onwardRoute)),
-      bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
+      bind[Navigator].qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(onwardRoute))
     ).build()
 }

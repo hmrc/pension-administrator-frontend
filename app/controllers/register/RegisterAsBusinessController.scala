@@ -19,11 +19,10 @@ package controllers.register
 import audit.{AuditService, PSAStartEvent}
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.{BusinessTypeId, RegisterAsBusinessId, RegistrationInfoId}
-import models.FeatureToggleName.PsaRegistration
 import models.RegistrationCustomerType.UK
 import models.{Mode, NormalMode}
 import play.api.data.Form
@@ -41,7 +40,6 @@ class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
                                              allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              cache: UserAnswersCacheConnector,
-                                             featureToggleConnector: FeatureToggleConnector,
                                              auditService: AuditService,
                                              val controllerComponents: MessagesControllerComponents,
                                              val view: registerAsBusiness
@@ -68,12 +66,10 @@ class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
           for {
             _ <- cache.save(request.externalId, RegisterAsBusinessId, isBusiness)
             _ = PSAStartEvent.sendEvent(auditService)
-            isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
           } yield {
-            (isBusiness, isFeatureEnabled) match {
-              case (false, _) => Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())
-              case (true, false) => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
-              case (true, true) =>
+            isBusiness match {
+              case false => Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())
+              case true =>
                 val businessType = request.userAnswers.flatMap(_.get(BusinessTypeId))
                 val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
                 (businessType, customerType) match {

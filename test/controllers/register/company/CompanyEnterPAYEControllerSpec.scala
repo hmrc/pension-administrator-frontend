@@ -16,13 +16,10 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions.FakeFeatureToggleConnector
 import forms.EnterPAYEFormProvider
 import identifiers.register.EnterPAYEId
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
 import play.api.data.Form
 import play.api.inject.bind
@@ -37,7 +34,7 @@ import views.html.enterPAYE
 
 class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private def onwardRoute: Call = controllers.register.routes.NonUKAdministratorController.onPageLoad()
 
   private val formProvider = new EnterPAYEFormProvider()
   private val form = formProvider(companyName)
@@ -67,7 +64,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
     "on a GET" must {
       "return OK and the correct view for a GET" in {
         running(_.overrides(modules(UserAnswers().businessName(companyName).dataRetrievalAction)
-          ++ Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))): _*
+          ++ Seq[GuiceableModule](): _*
         )) {
           app =>
             val controller = app.injector.instanceOf[CompanyEnterPAYEController]
@@ -96,7 +93,6 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
       "return a redirect when the submitted data is valid" in {
         running(_.overrides(modules(UserAnswers().businessName().dataRetrievalAction) ++
           Seq[GuiceableModule](bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-            bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.disabled),
             bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute))): _*
         )) {
           app =>
@@ -113,7 +109,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
       "redirect to Session Expired if no existing data is found" in {
         running(
           _.overrides(modules(dontGetAnyData) ++
-            Seq[GuiceableModule](bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.disabled)): _*)
+            Seq[GuiceableModule](): _*)
         ) {
           app =>
             val request = FakeRequest().withFormUrlEncodedBody(("value", payeNumber))

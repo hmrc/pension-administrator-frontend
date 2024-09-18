@@ -19,13 +19,12 @@ package controllers.register.company.directors
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorNameId}
-import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -49,8 +48,7 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
                                                                 requireData: DataRequiredAction,
                                                                 formProvider: PostCodeLookupFormProvider,
                                                                 val controllerComponents: MessagesControllerComponents,
-                                                                val view: postcodeLookup,
-                                                                featureToggleConnector: FeatureToggleConnector
+                                                                val view: postcodeLookup
                                                               )(implicit val executionContext: ExecutionContext)
                                                                 extends PostcodeLookupController with Retrievals {
 
@@ -58,18 +56,12 @@ class CompanyDirectorAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        get(viewModel(mode, index, returnLink), mode)
-      }
+      get(viewModel(mode, index, Some(companyTaskListUrl())), mode)
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        post(CompanyDirectorAddressPostCodeLookupId(index), viewModel(mode, index, returnLink), mode)
-      }
+      post(CompanyDirectorAddressPostCodeLookupId(index), viewModel(mode, index, Some(companyTaskListUrl())), mode)
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =

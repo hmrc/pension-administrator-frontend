@@ -17,15 +17,12 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
 import controllers.register.company.directors.routes.DirectorNoUTRReasonController
 import forms.ReasonFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorNoUTRReasonId}
-import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -35,6 +32,7 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Navigator,
@@ -46,8 +44,7 @@ class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Na
                                               requireData: DataRequiredAction,
                                               formProvider: ReasonFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
-                                              val view: reason,
-                                              featureToggleConnector: FeatureToggleConnector
+                                              val view: reason
                                              )(implicit val executionContext: ExecutionContext) extends ReasonController {
 
   private def form(directorName: String)
@@ -57,19 +54,13 @@ class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Na
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         val directorName = entityName(index)
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          get(DirectorNoUTRReasonId(index), viewModel(mode, index, returnLink), form(directorName))
-        }
+        get(DirectorNoUTRReasonId(index), viewModel(mode, index, Some(companyTaskListUrl())), form(directorName))
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val directorName = entityName(index)
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        post(DirectorNoUTRReasonId(index), mode, viewModel(mode, index, returnLink), form(directorName))
-      }
+      post(DirectorNoUTRReasonId(index), mode, viewModel(mode, index, Some(companyTaskListUrl())), form(directorName))
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =

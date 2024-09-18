@@ -17,19 +17,18 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.VATNumberController
 import forms.register.EnterVATFormProvider
 import identifiers.register.EnterVATId
-import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import utils.Navigator
 import utils.annotations.RegisterCompany
-import utils.{Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterVAT
 
@@ -45,8 +44,7 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
                                           requireData: DataRequiredAction,
                                           formProvider: EnterVATFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
-                                          val view: enterVAT,
-                                          featureToggleConnector: FeatureToggleConnector
+                                          val view: enterVAT
                                          )(implicit val executionContext: ExecutionContext) extends VATNumberController with Retrievals {
 
   private def form(companyName: String)
@@ -64,30 +62,19 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        get(EnterVATId, form(companyName), viewModel(mode, returnLink))
-      }
+      get(EnterVATId, form(companyName), viewModel(mode, Some(companyTaskListUrl())))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form(companyName).bindFromRequest().fold(
         errors =>
-          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-            Future.successful(BadRequest(view(errors, viewModel(mode, returnLink))))
-          },
+          Future.successful(BadRequest(view(errors, viewModel(mode, Some(companyTaskListUrl()))))),
         value =>
           for {
-            featureToggle <- featureToggleConnector.get(PsaRegistration.asString)
-            newCache <- cacheConnector.save(request.externalId, EnterVATId, value)
+            _ <- cacheConnector.save(request.externalId, EnterVATId, value)
           } yield {
-            if (featureToggle.isEnabled) {
-              Redirect(companydetails.routes.CheckYourAnswersController.onPageLoad())
-            } else {
-              Redirect(navigator.nextPage(EnterVATId, mode, UserAnswers(newCache)))
-            }
+            Redirect(companydetails.routes.CheckYourAnswersController.onPageLoad())
           }
       )
   }

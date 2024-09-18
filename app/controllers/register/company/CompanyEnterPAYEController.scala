@@ -18,13 +18,12 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.EnterPAYEController
 import forms.EnterPAYEFormProvider
 import identifiers.register.EnterPAYEId
-import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -46,8 +45,7 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
                                            requireData: DataRequiredAction,
                                            formProvider: EnterPAYEFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           val view: enterPAYE,
-                                           featureToggleConnector: FeatureToggleConnector
+                                           val view: enterPAYE
                                           )(implicit val executionContext: ExecutionContext) extends EnterPAYEController with Retrievals {
 
   protected def form(companyName: String)
@@ -66,30 +64,19 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        get(EnterPAYEId, form(companyName), viewModel(mode, returnLink))
-      }
+      get(EnterPAYEId, form(companyName), viewModel(mode, Some(companyTaskListUrl())))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form(companyName).bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-            Future.successful(BadRequest(view(formWithErrors, viewModel(mode, returnLink))))
-          },
+          Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl()))))),
         value =>
           for {
-            isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
             newCache <- cacheConnector.save(request.externalId, EnterPAYEId, value)
           } yield {
-            if (isFeatureEnabled) {
               Redirect(navigatorV2.nextPage(EnterPAYEId, mode, UserAnswers(newCache)))
-            } else {
-              Redirect(navigator.nextPage(EnterPAYEId, mode, UserAnswers(newCache)))
-            }
           }
       )
   }

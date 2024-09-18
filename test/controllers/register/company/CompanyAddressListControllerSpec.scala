@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressListFormProvider
@@ -58,8 +58,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
 
   val form: Form[Int] = formProvider(Seq(0), "error.required")
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
-                 featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyAddressListController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
@@ -71,8 +70,7 @@ class CompanyAddressListControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      featureToggleConnector
+      view
     )
 
   private lazy val viewModel = AddressListViewModel(

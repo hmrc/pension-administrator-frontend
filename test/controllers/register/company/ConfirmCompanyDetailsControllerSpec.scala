@@ -16,7 +16,7 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
@@ -281,7 +281,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
   }
 
-  private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private def onwardRoute: Call = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
 
 
 
@@ -318,8 +318,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
   private def controller(
     dataRetrievalAction: DataRetrievalAction,
-    dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
-    featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled
+    dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   ) =
     new ConfirmCompanyDetailsController(
       dataCacheConnector,
@@ -334,7 +333,6 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       countryOptions,
       controllerComponents,
       view,
-      featureToggleConnector,
       addressHelper
     )
 

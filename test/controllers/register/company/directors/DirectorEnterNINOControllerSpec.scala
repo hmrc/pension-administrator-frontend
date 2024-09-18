@@ -20,8 +20,6 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.register.NINOFormProvider
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
@@ -47,8 +45,7 @@ class DirectorEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
     new DataRequiredActionImpl,
     formProvider,
     controllerComponents,
-    view,
-    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+    view
   )
 
   private def enterNINOView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString

@@ -17,27 +17,24 @@
 package controllers.register.adviser
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.adviser._
-import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
-import utils.annotations.Adviser
-import utils.annotations.NoRLSCheck
+import utils.annotations.{Adviser, NoRLSCheck}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdviserAddressListController @Inject()(override val appConfig: FrontendAppConfig,
@@ -49,8 +46,7 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
                                              requireData: DataRequiredAction,
                                              formProvider: AddressListFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             val view: addressList,
-                                             featureToggleConnector: FeatureToggleConnector
+                                             val view: addressList
                                             )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
@@ -58,21 +54,15 @@ class AdviserAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink).map { vm =>
-          get(vm, mode, form(vm.addresses, entityName))
-        }
+      viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, Some(companyTaskListUrl())).map { vm =>
+        get(vm, mode, form(vm.addresses, entityName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink)
-          .map(vm => post(vm, AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
-      }
+      viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, Some(companyTaskListUrl()))
+        .map(vm => post(vm, AdviserAddressId, AdviserAddressListId, AdviserAddressPostCodeLookupId, mode, form(vm.addresses, entityName)))
   }
 
   def viewModel(mode: Mode, displayReturnLink: Boolean, returnLink: Option[String])

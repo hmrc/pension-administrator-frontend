@@ -16,18 +16,16 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.AddressYearsFormProvider
 import identifiers.register.{BusinessNameId, BusinessUTRId}
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{AddressYears, NormalMode}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{Call, MessagesControllerComponents}
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -51,8 +49,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
   "redirect to the next page on a POST request" in {
     running(_.overrides(modules(dataRetrieval) ++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
-        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-        bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.disabled)
+        bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
       ): _*)) {
       app =>
         val controller = app.injector.instanceOf[CompanyAddressYearsController]
@@ -61,7 +58,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 
         val result = controller.onSubmit(NormalMode)(request)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(FakeNavigator.desiredRoute.url)
+        redirectLocation(result) mustBe Some(onwardRoute.url)
     }
   }
 }
@@ -78,11 +75,12 @@ object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSp
     routes.CompanyAddressYearsController.onSubmit(NormalMode),
     title = Message("addressYears.heading", Message("theCompany")),
     heading = Message("addressYears.heading", companyName),
-    legend = Message("addressYears.heading", companyName)
+    legend = Message("addressYears.heading", companyName),
+    returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
   )
 
   val form = new AddressYearsFormProvider()(companyName)
-
+  private def onwardRoute: Call = controllers.register.company.routes.CompanyEmailController.onPageLoad(NormalMode)
   def application: Application = new GuiceApplicationBuilder()
     .overrides(
       bind[AuthAction].to(FakeAuthAction),
@@ -90,8 +88,7 @@ object CompanyAddressYearsControllerSpec extends CompanyAddressYearsControllerSp
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
       bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-      bind[MessagesControllerComponents].to(controllerComponents),
-      bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
+      bind[MessagesControllerComponents].to(controllerComponents)
     ).build()
 
 }

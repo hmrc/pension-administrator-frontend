@@ -19,8 +19,6 @@ package controllers.register.company.directors
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
 import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator}
@@ -67,8 +65,7 @@ class DirectorDOBControllerSpec extends ControllerSpecBase {
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
       controllerComponents = controllerComponents,
-      view = view,
-      featureToggleConnector = FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view = view
     )
 
 }

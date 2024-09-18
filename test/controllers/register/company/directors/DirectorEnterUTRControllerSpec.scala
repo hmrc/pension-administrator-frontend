@@ -20,8 +20,6 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EnterUTRFormProvider
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
@@ -48,8 +46,7 @@ class DirectorEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
     new DataRequiredActionImpl,
     formProvider,
     controllerComponents,
-    view,
-    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+    view
   )
 
   private def enterUTRView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString

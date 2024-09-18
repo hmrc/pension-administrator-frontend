@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import connectors.RegistrationConnector
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import forms.AddressFormProvider
@@ -25,7 +25,6 @@ import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.company.ConfirmCompanyAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
-import models.FeatureToggleName.PsaRegistration
 import models._
 import models.requests.DataRequest
 import play.api.Logger
@@ -55,7 +54,6 @@ class ConfirmCompanyDetailsController @Inject()(
                                                  countryOptions: CountryOptions,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  val view: confirmCompanyDetails,
-                                                 featureToggleConnector: FeatureToggleConnector,
                                                  addressHelper: AddressHelper
                                                )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController
@@ -109,16 +107,10 @@ class ConfirmCompanyDetailsController @Inject()(
               }
               invalidAddressFields.map {
                 invalidFields =>
-                  featureToggleConnector.get(PsaRegistration.asString).map { featureToggle =>
-                    if (invalidFields) {
-                      Redirect(routes.AddressController.onPageLoad())
-                    } else {
-                      if (featureToggle.isEnabled) {
-                        Redirect(routes.CompanyRegistrationTaskListController.onPageLoad())
-                      } else {
-                        Redirect(navigator.nextPage(ConfirmCompanyAddressId, mode, request.userAnswers))
-                      }
-                    }
+                  if (invalidFields) {
+                    Future.successful(Redirect(routes.AddressController.onPageLoad()))
+                  } else {
+                    Future.successful(Redirect(routes.CompanyRegistrationTaskListController.onPageLoad()))
                   }
               }
             case false =>

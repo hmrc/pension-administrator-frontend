@@ -17,12 +17,11 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{DOBController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorDOBId, DirectorNameId}
-import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
@@ -41,8 +40,7 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
                                       getData: DataRetrievalAction,
                                       requireData: DataRequiredAction,
                                       val controllerComponents: MessagesControllerComponents,
-                                      val view: dob,
-                                      featureToggleConnector: FeatureToggleConnector
+                                      val view: dob
                                      )(implicit val executionContext: ExecutionContext) extends DOBController with Retrievals {
 
   private[directors] def viewModel(mode: Mode,
@@ -68,10 +66,7 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
     implicit request =>
       (BusinessNameId and DirectorNameId(index)).retrieve.map {
         case psaName ~ directorName =>
-          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-            Future(get(id(index), viewModel(mode, index, psaName, directorName.fullName, returnLink)))
-          }
+          Future(get(id(index), viewModel(mode, index, psaName, directorName.fullName, Some(companyTaskListUrl()))))
       }
   }
 
@@ -79,10 +74,7 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
     implicit request =>
       (BusinessNameId and DirectorNameId(index)).retrieve.map {
         case psaName ~ directorName =>
-          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-            post(id(index), viewModel(mode, index, psaName, directorName.fullName, returnLink))
-          }
+          post(id(index), viewModel(mode, index, psaName, directorName.fullName, Some(companyTaskListUrl())))
       }
   }
 }
