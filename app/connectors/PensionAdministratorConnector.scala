@@ -62,7 +62,7 @@ class PensionAdministratorConnectorImpl @Inject()(http: HttpClient, config: Fron
                 throw JsResultException(errors)
             }
           case _ =>
-            logger.error("Unable to register PSA")
+            logger.warn("Unable to register PSA")
             handleErrorResponse("POST", url)(response)
         }
     }
