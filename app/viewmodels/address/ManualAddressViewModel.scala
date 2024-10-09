@@ -21,14 +21,14 @@ import utils.InputOption
 import viewmodels.Message
 
 case class ManualAddressViewModel(
-                                   postCall: Call,
+                                   postCall: Call, //
                                    countryOptions: Seq[InputOption],
-                                   title: Message,
-                                   heading: Message,
-                                   hint: Option[Message] = None,
-                                   psaName: Option[String] = None,
+                                   title: Message, //
+                                   heading: Message, //
+                                   hint: Option[Message] = None, //
+                                   psaName: Option[String] = None, //
                                    partnershipName: Option[String] = None,
-                                   returnLink : Option[String] = None
+                                   returnLink : Option[String] = None //
                                  ) {
 
 }
