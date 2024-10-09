@@ -24,8 +24,10 @@ import controllers.Retrievals
 import controllers.actions._
 import controllers.register.routes._
 import controllers.routes._
-import identifiers.register.{DeclarationId, _}
+import identifiers.register._
 import models.enumeration.JourneyType
+import models.register.BusinessType._
+import models.register.RegistrationStatus
 import models.requests.DataRequest
 import models.{ExistingPSA, Mode, NormalMode}
 import play.api.Logger
@@ -43,24 +45,21 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeclarationController @Inject()(
-                                       appConfig: FrontendAppConfig,
-                                       authenticate: AuthAction,
-                                       allowAccess: AllowAccessActionProvider,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       allowDeclaration: AllowDeclarationActionProvider,
-                                       @Register navigator: Navigator,
-                                       dataCacheConnector: UserAnswersCacheConnector,
-                                       pensionAdministratorConnector: PensionAdministratorConnector,
-                                       knownFactsRetrieval: KnownFactsRetrieval,
-                                       enrolments: TaxEnrolmentsConnector,
-                                       emailConnector: EmailConnector,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val view: declaration
-                                     )(implicit val executionContext: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport
-    with Retrievals {
+    appConfig: FrontendAppConfig,
+    authenticate: AuthAction,
+    allowAccess: AllowAccessActionProvider,
+    getData: DataRetrievalAction,
+    requireData: DataRequiredAction,
+    allowDeclaration: AllowDeclarationActionProvider,
+    @Register navigator: Navigator,
+    dataCacheConnector: UserAnswersCacheConnector,
+    pensionAdministratorConnector: PensionAdministratorConnector,
+    knownFactsRetrieval: KnownFactsRetrieval,
+    enrolments: TaxEnrolmentsConnector,
+    emailConnector: EmailConnector,
+    val controllerComponents: MessagesControllerComponents,
+    val view: declaration
+)(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val logger = Logger(classOf[DeclarationController])
 
@@ -100,9 +99,15 @@ class DeclarationController @Inject()(
             psaResponse <- pensionAdministratorConnector.registerPsa(answers)
             cacheMap    <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
             _           <- enrol(psaResponse.psaId)
-            _           <- sendEmail(psaResponse.psaId)
+            emailStatus <- sendEmail(psaResponse.psaId)
           } yield {
+            if (emailStatus != EmailNotSent) {
+              Redirect(controllers.register.routes.InvalidEmailAddressController.onPageLoad(
+                getBusinessType(UserAnswers(cacheMap)))
+              )
+            } else {
               Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
+            }
           }) recoverWith handleOnSubmitErrors
         }
     }
@@ -159,6 +164,18 @@ class DeclarationController @Inject()(
   }
 
   case class PSANameNotFoundException() extends Exception("Could not retrieve PSA Name")
+
+  private def getBusinessType(cacheMap: UserAnswers): RegistrationStatus = {
+    if (cacheMap.get(RegisterAsBusinessId).getOrElse(false)) {
+      cacheMap.get(BusinessTypeId).map {
+        case LimitedCompany | UnlimitedCompany => RegistrationStatus.LimitedCompany
+        case BusinessPartnership | LimitedPartnership | LimitedLiabilityPartnership => RegistrationStatus.Partnership
+        case _ => throw new IllegalArgumentException("Invalid business type")
+      }.getOrElse(throw new IllegalArgumentException("Business type not found"))
+    } else {
+      RegistrationStatus.Individual
+    }
+  }
 
 }
 
