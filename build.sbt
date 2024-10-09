@@ -29,7 +29,8 @@ lazy val appName: String = "pension-administrator-frontend"
         "models.CheckMode",
         "models.NormalMode",
         "models.UpdateMode",
-        "models.Index"
+        "models.Index",
+        "models.register._"
       ),
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",

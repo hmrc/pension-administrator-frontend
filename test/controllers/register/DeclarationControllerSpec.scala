@@ -18,24 +18,26 @@ package controllers.register
 
 import config.FrontendAppConfig
 import connectors._
+import controllers.register.routes.InvalidEmailAddressController
+import controllers.routes._
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.routes._
 import identifiers.register.partnership.PartnershipEmailId
 import identifiers.register._
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
-import models.RegistrationLegalStatus.Partnership
+import models.RegistrationLegalStatus.{Individual, Partnership}
 import models.UserType.UserType
 import models.enumeration.JourneyType
-import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse}
-import models.{NormalMode, RegistrationInfo, UserType}
+import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse, RegistrationStatus}
+import models.{CheckMode, NormalMode, RegistrationInfo, UserType}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, JsString, Json}
-import play.api.test.Helpers.{contentAsString, _}
+import play.api.mvc.Call
+import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http._
 import utils.{FakeNavigator, KnownFactsRetrieval}
@@ -48,7 +50,8 @@ class DeclarationControllerSpec
     with MockitoSugar
     with BeforeAndAfterEach {
 
-  private val onwardRoute = IndexController.onPageLoad
+  private val onwardRoute: Call = IndexController.onPageLoad
+
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val email = "test@test.com"
@@ -161,7 +164,7 @@ class DeclarationControllerSpec
             fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(onwardRoute.url)
+          redirectLocation(result) mustBe Some(InvalidEmailAddressController.onPageLoad(RegistrationStatus.Individual).url)
           verify(mockEmailConnector, never).sendEmail(eqTo(email), any(), any(), eqTo(PsaId("A0123456")), eqTo(JourneyType.PSA))(any(), any())
         }
       }
@@ -272,6 +275,7 @@ class DeclarationControllerSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(CannotRegisterAdministratorController.onPageLoad.url)
       }
+
       "redirect to Can not Registration Administrator if PsaId is invalid" in {
         when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
           .thenReturn(Future.failed(
@@ -287,6 +291,52 @@ class DeclarationControllerSpec
         redirectLocation(result) mustBe Some(CannotRegisterAdministratorController.onPageLoad.url)
       }
     }
+
+    "redirect to invalidEmailAddress page when PSA enters invalid email address" must {
+      "on a valid request and not send the email" in {
+
+        val registrationInfo: RegistrationInfo =
+          RegistrationInfo(
+            legalStatus = Individual,
+            sapNumber = "",
+            noIdentifier = false,
+            customerType = UK,
+            idType = Some(UTR),
+            idNumber = Some("")
+          )
+
+        val data = Json.obj(
+          RegistrationInfoId.toString -> registrationInfo,
+          BusinessNameId.toString -> businessName
+        )
+
+        when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
+          .thenReturn(Future.successful(validPsaResponse))
+        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+          .thenReturn(Future.successful(data))
+        when(mockKnownFactsRetrieval.retrieve(any())(any()))
+          .thenReturn(knownFacts)
+        when(mockTaxEnrolmentsConnector.enrol(any(), any())(any(), any(), any(), any()))
+          .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
+        when(mockEmailConnector.sendEmail(
+          eqTo(email),
+          any(),
+          eqTo(Map("psaName" -> businessName)),
+          eqTo(PsaId("A0123456")),
+          eqTo(JourneyType.PSA)
+        )(any(), any()))
+          .thenReturn(Future.successful(EmailNotSent))
+
+        val result = controller(dataRetrievalAction = new FakeDataRetrievalAction(Some(data)),
+          fakeUserAnswersCacheConnector = mockUserAnswersCacheConnector).onSubmit(NormalMode)(validRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(InvalidEmailAddressController.onPageLoad(RegistrationStatus.Individual).url)
+        verify(mockEmailConnector, never).sendEmail(eqTo(email), any(), any(), eqTo(PsaId("A0123456")), eqTo(JourneyType.PSA))(any(), any())
+      }
+
+    }
+
   }
 
   private def controller(
