@@ -49,7 +49,7 @@ trait RetryHelper  {
           val call: Callable[Future[Int]] = new Callable[Future[Int]](){
             def call(): Future[Int] = Future.successful(1)
           }
-          logger.info(s"Failure, retrying after $wait ms, attempt $currentAttempt")
+          logger.warn(s"Failure, retrying after $wait ms, attempt $currentAttempt")
           after(wait.milliseconds, as.scheduler, executionContext, call).flatMap { _ =>
             retryWithBackOff(currentAttempt + 1, wait, f, config)
           }

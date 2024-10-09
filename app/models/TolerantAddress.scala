@@ -120,7 +120,7 @@ object TolerantAddress {
     val addressLines: (Option[String], Option[String], Option[String], Option[String]) = {
       lines.size match {
         case 0 =>
-          logger.info(s"[NoAddressLinesFoundException]-$postCode,$countryCode")
+          logger.warn(s"[NoAddressLinesFoundException]-$postCode,$countryCode")
           (None, None, None, None)
         case 1 =>
           val townOrCounty = getTownOrCounty(town, county, lines)
