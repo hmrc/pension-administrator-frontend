@@ -22,7 +22,7 @@ import play.api.data.Forms._
 import play.api.mvc.Results.Redirect
 
 import scala.concurrent.Await
-import scala.concurrent.duration.{Duration, DurationInt}
+import scala.concurrent.duration.DurationInt
 
 class NameCleansingSpec extends ControllerSpecBase {
   private val nameWithInvalidCharacters = """abcdefgh~|ijklmnopqrstu!vw"xyz£01$%2^3()+-456@:;7#,.89 '&\/"""

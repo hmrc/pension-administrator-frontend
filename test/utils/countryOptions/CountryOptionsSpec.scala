@@ -23,7 +23,6 @@ import models.InternationalRegion._
 import org.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import utils.InputOption
 
 class CountryOptionsSpec extends SpecBase with MockitoSugar {
 

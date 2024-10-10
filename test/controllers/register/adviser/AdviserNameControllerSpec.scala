@@ -20,7 +20,6 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.adviser.AdviserNameFormProvider
-import identifiers.register.adviser.AdviserNameId
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
 import models.RegistrationCustomerType.UK

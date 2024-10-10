@@ -28,7 +28,7 @@ import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.FakeRequest
 import utils.UserAnswers
 
-import scala.concurrent.duration.{Duration, DurationInt}
+import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, ExecutionContext}
 
 class VariationsSpec extends ControllerSpecBase {

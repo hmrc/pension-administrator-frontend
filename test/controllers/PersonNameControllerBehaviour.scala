@@ -22,7 +22,6 @@ import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, PersonName, UserType}
 import play.api.data.Form
-import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
