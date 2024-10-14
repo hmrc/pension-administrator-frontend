@@ -66,3 +66,5 @@ GET         /continue-with-registration                     controllers.register
 POST        /continue-with-registration                     controllers.register.ContinueWithRegistrationController.onSubmit()
 
 GET         /non-uk-administrator                           controllers.register.NonUKAdministratorController.onPageLoad(mode: Mode = NormalMode)
+
+GET         /:status/invalid-email-address                  controllers.register.InvalidEmailAddressController.onPageLoad(status: RegistrationStatus)
