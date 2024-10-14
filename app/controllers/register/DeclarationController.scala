@@ -101,7 +101,7 @@ class DeclarationController @Inject()(
             _           <- enrol(psaResponse.psaId)
             emailStatus <- sendEmail(psaResponse.psaId)
           } yield {
-            if (emailStatus != EmailNotSent) {
+            if (emailStatus == EmailNotSent) {
               Redirect(controllers.register.routes.InvalidEmailAddressController.onPageLoad(
                 getBusinessType(UserAnswers(cacheMap)))
               )

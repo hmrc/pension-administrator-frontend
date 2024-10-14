@@ -117,7 +117,7 @@ class DeclarationControllerSpec
 
       "redirect to the next page" when {
 
-        "on a valid request and send the email" ignore {
+        "on a valid request and send the email" in {
           val validData = data ++ Json.obj(
             "partnershipContactDetails" -> Json.obj(
               PartnershipEmailId.toString -> email
@@ -150,7 +150,7 @@ class DeclarationControllerSpec
             eqTo(Map("psaName" -> businessName)), eqTo(PsaId("A0123456")), eqTo(JourneyType.PSA))(any(), any())
         }
 
-        "on a valid request and not send the email" ignore {
+        "on a valid request and not send the email" in {
           when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
             .thenReturn(Future.successful(validPsaResponse))
           when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
@@ -293,7 +293,7 @@ class DeclarationControllerSpec
     }
 
     "redirect to invalidEmailAddress page when PSA enters invalid email address" must {
-      "on a valid request and not send the email" ignore {
+      "on a valid request and not send the email" in {
 
         val registrationInfo: RegistrationInfo =
           RegistrationInfo(
