@@ -45,9 +45,10 @@ class MinimalPsaConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: Fron
 
   override def getMinimalPsaDetails(psaId: String)
                                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = {
-    val psaHc = hc.withExtraHeaders("psaId" -> psaId)
+    val headers: Seq[(String, String)] = Seq(("psaId", psaId))
 
     httpV2Client.get(url"${config.minimalPsaDetailsUrl}")
+      .setHeader(headers: _*)
       .execute[HttpResponse] map { response =>
 
       response.status match {

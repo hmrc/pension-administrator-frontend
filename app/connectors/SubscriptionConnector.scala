@@ -62,11 +62,10 @@ class SubscriptionConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: Fr
   override def getSubscriptionDetails(psaId: String)
                                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
 
-    val psaIdHC = hc.withExtraHeaders("psaId" -> psaId)
-
+    val headers: Seq[(String, String)] = Seq(("psaId", psaId))
     val url = url"${config.subscriptionDetailsUrl}"
 
-    httpV2Client.get(url).setHeader(psaIdHC) map { response =>
+    httpV2Client.get(url).setHeader(headers: _*).execute[HttpResponse] map { response =>
 
       response.status match {
         case OK => response.json

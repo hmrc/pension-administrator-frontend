@@ -66,17 +66,18 @@ class TaxEnrolmentsConnectorImpl @Inject()(
                      hc: HeaderCarrier,
                      executionContext: ExecutionContext,
                      request: DataRequest[AnyContent]): Future[HttpResponse] = {
-    retryOnFailure(() => enrolmentRequest(enrolmentKey, knownFacts), config)
+    retryOnFailure(() => enrolmentRequest(enrolmentKey, knownFacts)(w, hc, executionContext, request), config)
   } andThen {
     logExceptions(knownFacts)
   }
 
-  private def enrolmentRequest(enrolmentKey: String, knownFacts: KnownFacts)
-                              (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext,
+  private def enrolmentRequest(enrolmentKey: String, knownFacts: KnownFacts
+                              )(implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext,
                                request: DataRequest[AnyContent]): Future[HttpResponse] = {
 
-    httpV2Client.put(url).withBody(knownFacts).execute[HttpResponse] flatMap {
-      response =>
+    httpV2Client.put(url)
+      .withBody(knownFacts)
+      .execute[HttpResponse] flatMap { response =>
         response.status match {
           case NO_CONTENT =>
             auditService.sendEvent(PSAEnrolmentEvent(request.externalId, enrolmentKey))
