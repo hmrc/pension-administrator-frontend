@@ -23,8 +23,8 @@ import play.api.Logger
 import play.api.http.Status.OK
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, StringContextOps}
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.{HttpResponseHelper, UserAnswers}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +40,7 @@ trait PensionAdministratorConnector {
 }
 
 @Singleton
-class PensionAdministratorConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+class PensionAdministratorConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends PensionAdministratorConnector
     with HttpResponseHelper {
 
@@ -48,9 +48,9 @@ class PensionAdministratorConnectorImpl @Inject()(http: HttpClient, config: Fron
 
   def registerPsa(answers: UserAnswers)
                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {
-    val url = config.registerPsaUrl
+    val url = url"${config.registerPsaUrl}"
 
-    http.POST[JsValue, HttpResponse](url, answers.json).map {
+    httpV2Client.post(url).withBody(answers.json).execute[HttpResponse] map {
       response =>
 
         response.status match {
@@ -63,15 +63,15 @@ class PensionAdministratorConnectorImpl @Inject()(http: HttpClient, config: Fron
             }
           case _ =>
             logger.error("Unable to register PSA")
-            handleErrorResponse("POST", url)(response)
+            handleErrorResponse("POST", url.toString)(response)
         }
     }
   }
 
   def updatePsa(psaId: String, answers: UserAnswers)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
-    val url = config.updatePsaUrl(psaId)
+    val url = url"${config.updatePsaUrl(psaId)}"
 
-    http.POST[JsValue, HttpResponse](url, answers.json)
+    httpV2Client.post(url).withBody(answers.json).execute[HttpResponse]
   }
 }

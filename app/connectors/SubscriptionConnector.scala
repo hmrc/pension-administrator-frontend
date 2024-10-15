@@ -22,10 +22,11 @@ import models.PsaSubscription.PsaSubscription
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, JsValue}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, StringContextOps}
 import utils.{HttpResponseHelper, UserAnswers}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.client.HttpClientV2
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
@@ -52,7 +53,7 @@ trait SubscriptionConnector {
                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
 }
 
-class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+class SubscriptionConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends SubscriptionConnector
     with HttpResponseHelper {
 
@@ -63,9 +64,9 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
     val psaIdHC = hc.withExtraHeaders("psaId" -> psaId)
 
-    val url = config.subscriptionDetailsUrl
+    val url = url"${config.subscriptionDetailsUrl}"
 
-    http.GET[HttpResponse](url)(implicitly, psaIdHC, implicitly) map { response =>
+    httpV2Client.get(url).setHeader(psaIdHC) map { response =>
 
       response.status match {
         case OK => response.json
@@ -90,9 +91,9 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
   def updateSubscriptionDetails(answers: UserAnswers)
                                (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
-    val url = config.updateSubscriptionDetailsUrl
+    val url = url"${config.updateSubscriptionDetailsUrl}"
 
-    http.PUT[JsValue, HttpResponse](url, answers.json) map { response =>
+    httpV2Client.put(url).withBody(answers.json).execute[HttpResponse] map { response =>
       response.status match {
         case OK => ()
         case BAD_REQUEST if response.body.contains("INVALID_PAYLOAD") => throw InvalidSubscriptionPayloadException()

@@ -19,6 +19,7 @@ package connectors
 import audit.{AuditService, DeregisterEvent, PSAEnrolmentEvent}
 import com.google.inject.{ImplementedBy, Singleton}
 import config.FrontendAppConfig
+
 import javax.inject.Inject
 import models.register.KnownFacts
 import models.requests.DataRequest
@@ -29,8 +30,10 @@ import play.api.mvc.{AnyContent, RequestHeader}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.{HttpResponseHelper, RetryHelper}
 
+import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 
@@ -46,7 +49,7 @@ trait TaxEnrolmentsConnector {
 
 @Singleton
 class TaxEnrolmentsConnectorImpl @Inject()(
-                                            val http: HttpClient,
+                                            val httpV2Client: HttpClientV2,
                                             config: FrontendAppConfig,
                                             auditService: AuditService
                                           )
@@ -56,7 +59,7 @@ class TaxEnrolmentsConnectorImpl @Inject()(
 
   private val logger = Logger(classOf[TaxEnrolmentsConnectorImpl])
 
-  def url: String = config.taxEnrolmentsUrl("HMRC-PODS-ORG")
+  def url: URL = url"${config.taxEnrolmentsUrl("HMRC-PODS-ORG")}"
 
   override def enrol(enrolmentKey: String, knownFacts: KnownFacts)
                     (implicit w: Writes[KnownFacts],
@@ -72,7 +75,7 @@ class TaxEnrolmentsConnectorImpl @Inject()(
                               (implicit w: Writes[KnownFacts], hc: HeaderCarrier, executionContext: ExecutionContext,
                                request: DataRequest[AnyContent]): Future[HttpResponse] = {
 
-    http.PUT[KnownFacts, HttpResponse](url, knownFacts) flatMap {
+    httpV2Client.put(url).withBody(knownFacts).execute[HttpResponse] flatMap {
       response =>
         response.status match {
           case NO_CONTENT =>
@@ -80,7 +83,7 @@ class TaxEnrolmentsConnectorImpl @Inject()(
             Future.successful(response)
           case _ =>
             if (response.body.contains("INVALID_JSON")) logger.warn(s"INVALID_JSON returned from call to $url")
-            handleErrorResponse("PUT", url)(response)
+            handleErrorResponse("PUT", url.toString)(response)
         }
     }
   }
@@ -104,9 +107,9 @@ class TaxEnrolmentsConnectorImpl @Inject()(
                                 (implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader): Future[HttpResponse] = {
 
     val enrolmentKey = s"HMRC-PODS-ORG~PSAID~$psaId"
-    val deEnrolmentUrl = config.taxDeEnrolmentUrl.format(groupId, enrolmentKey)
+    val deEnrolmentUrl = url"${config.taxDeEnrolmentUrl.format(groupId, enrolmentKey)}"
     logger.debug(s"Calling de-enrol URL:$deEnrolmentUrl")
-    http.DELETE[HttpResponse](deEnrolmentUrl) flatMap {
+    httpV2Client.delete(deEnrolmentUrl).execute[HttpResponse] flatMap {
       case response if response.status equals NO_CONTENT =>
         auditService.sendEvent(DeregisterEvent(userId, psaId))
         Future.successful(response)

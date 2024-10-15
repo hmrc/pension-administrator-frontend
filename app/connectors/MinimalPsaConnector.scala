@@ -23,9 +23,11 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.HttpResponseHelper
 
+import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
@@ -35,7 +37,7 @@ trait MinimalPsaConnector {
                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA]
 }
 
-class MinimalPsaConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+class MinimalPsaConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends MinimalPsaConnector
     with HttpResponseHelper {
 
@@ -45,7 +47,8 @@ class MinimalPsaConnectorImpl @Inject()(http: HttpClient, config: FrontendAppCon
                                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = {
     val psaHc = hc.withExtraHeaders("psaId" -> psaId)
 
-    http.GET[HttpResponse](config.minimalPsaDetailsUrl)(implicitly, psaHc, implicitly) map { response =>
+    httpV2Client.get(url"${config.minimalPsaDetailsUrl}")
+      .execute[HttpResponse] map { response =>
 
       response.status match {
         case OK =>
