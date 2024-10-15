@@ -751,6 +751,7 @@ addEntity.tellUsIfYouHaveMore = You can tell us on the next page if you have mor
 addPartners.title = Partners
 addPartners.heading = Partners
 addPartners.entityType = partners
+addPartners.hintText = You must tell us about all your partners. You can add up to 10 using this service.
 
 partnershipVat.title = Does the partnership have a VAT registration number?
 partnershipVat.heading = Does the partnership have a VAT registration number?
