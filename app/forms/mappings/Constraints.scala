@@ -36,7 +36,7 @@ trait Constraints {
   protected val phoneNumberRegex = """^[0-9 ()+--]{1,24}$"""
   protected val vatRegex = """^\d{9}$"""
   protected val payeRegex = """^[0-9]{3}[0-9A-Za-z]{1,13}$"""
-  protected val postCodeRegex = """^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?\s?[0-9][A-Za-z]{2}$"""
+  protected val postCodeRegex = """^[A-Za-z]{1,2}[0-9][0-9A-Za-z]?[ ]?[0-9][A-Za-z]{2}$"""
   protected val postCodeNonUkRegex = """^([0-9]+-)*[0-9]+$"""
   protected val nameRegex = """^[a-zA-Z &`\-\'\.^]{1,35}$"""
   protected val safeTextRegex = """^[a-zA-Z0-9À-ÿ !#$%&'‘’"“”«»()*+,./:;=?@\\\[\]|~£€¥\—–‐_^`-]{1,160}$"""
