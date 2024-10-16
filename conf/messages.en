@@ -1207,3 +1207,11 @@ whatYouWillNeed.workingKnowledge.item3 = phone number
 whatYouWillNeed.workingKnowledge.item4 = address
 
 addPartner.insetText = You will need to tell us details for at least two partners. You can add up to 10 using the digital service
+
+invlidEmailAddress.title = The email address provided has not been recognised and registration cannot be completed
+invlidEmailAddress.heading = The email address provided has not been recognised and registration cannot be completed
+invlidEmailAddress.p1 = This may be because the email address does not exist or there is a problem with it.
+invlidEmailAddress.p2 = To complete registration we require a valid and recognised email address.
+invlidEmailAddress.p3 = You can return to the earlier screen and
+invlidEmailAddress.p4 = re-enter the email address
+invlidEmailAddress.p5 = The details entered for this registration have been saved.
