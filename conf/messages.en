@@ -47,7 +47,7 @@ error.country.invalid.eueea = Pension Scheme Administrators must be resident in 
 error.addressYears.required = Select yes if {0} has used this contact address for at least 1 year
 error.individual.addressYears.required = Select yes if you have used this contact address for at least 1 year
 
-error.postcode.required = Enter a postcode
+error.postcode.required = Enter a full UK postcode
 error.postcode.length = The postcode cannot be more than 8 characters
 error.postcode.nonUK.length = The postcode cannot be more than 10 characters
 error.postcode.failed = There is a problem with the address finder. Try again or enter the address manually
