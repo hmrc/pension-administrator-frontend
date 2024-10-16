@@ -51,7 +51,7 @@ error.postcode.required = Enter a postcode
 error.postcode.length = The postcode cannot be more than 8 characters
 error.postcode.nonUK.length = The postcode cannot be more than 10 characters
 error.postcode.failed = There is a problem with the address finder. Try again or enter the address manually
-error.postcode.invalid = Enter a postcode in the correct format
+error.postcode.invalid = Enter a full UK postcode
 error.postcode.noResults = Postcode cannot be found
 
 index.title = Pension Scheme Registrations
