@@ -64,6 +64,13 @@
                 <h2 class="govuk-heading-s">@messages("taskList.status.completed")</h2>
                 @components.person_list(entitiesComplete, mode)
             }
+
+            @if(viewmodel.insetText.nonEmpty) {
+                @inset_text(
+                    content = viewmodel.insetText.getOrElse("")
+                )
+            }
+
             @if(viewmodel.entities.size < viewmodel.maxLimit) {
 
                 @input_yes_no(
@@ -72,13 +79,6 @@
                     labelClass = Some("govuk-fieldset__legend--m"),
                     hint = Some(messages("addPartners.hintText"))
                 )
-
-                @if(viewmodel.insetText.nonEmpty) {
-                    @inset_text(
-                        content = viewmodel.insetText.getOrElse("")
-                    )
-                }
-
             } else {
 
                 @components.paragraph_text(messages("addEntity.atMaximum", viewmodel.entityType))
