@@ -751,6 +751,7 @@ addEntity.tellUsIfYouHaveMore = You can tell us on the next page if you have mor
 addPartners.title = Partners
 addPartners.heading = Partners
 addPartners.entityType = partners
+addPartners.hintText = You must tell us about all your partners. You can add up to 10 using the digital service.
 
 partnershipVat.title = Does the partnership have a VAT registration number?
 partnershipVat.heading = Does the partnership have a VAT registration number?
@@ -1206,7 +1207,7 @@ whatYouWillNeed.workingKnowledge.item2 = email address
 whatYouWillNeed.workingKnowledge.item3 = phone number
 whatYouWillNeed.workingKnowledge.item4 = address
 
-addPartner.insetText = You will need to tell us details for at least two partners. You can add up to 10 using the digital service
+addPartner.insetText = You will need to tell us details for at least two partners.
 
 invlidEmailAddress.title = The email address provided has not been recognised and registration cannot be completed
 invlidEmailAddress.heading = The email address provided has not been recognised and registration cannot be completed
