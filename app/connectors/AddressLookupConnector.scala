@@ -35,13 +35,15 @@ class AddressLookupConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: F
 
   override def addressLookupByPostCode(postcode: String)
                                       (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
-    val schemeHc = hc.withExtraHeaders("X-Hmrc-Origin" -> "PODS")
+    val schemeHeaders = Seq(("X-Hmrc-Origin", "PODS"))
     val addressLookupUrl = url"${config.addressLookUp}/lookup"
 
     implicit val reads: Reads[Seq[TolerantAddress]] = TolerantAddress.postCodeLookupReads
 
     val lookupAddressByPostcode =Json.obj("postcode"->postcode)
-    httpV2Client.post(addressLookupUrl).withBody(lookupAddressByPostcode).execute[HttpResponse] flatMap {
+    httpV2Client.post(addressLookupUrl)
+      .setHeader(schemeHeaders: _*)
+      .withBody(lookupAddressByPostcode).execute[HttpResponse] flatMap {
       case response if response.status equals OK => Future.successful {
         response.json.as[Seq[TolerantAddress]]
           .filterNot(a => a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.addressLine3.isEmpty && a.addressLine4.isEmpty)
