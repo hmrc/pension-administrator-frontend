@@ -23,7 +23,8 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, StringContextOps}
 import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +39,7 @@ trait DeregistrationConnector {
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration]
 }
 
-class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+class DeregistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends DeregistrationConnector
     with HttpResponseHelper {
 
@@ -47,15 +48,15 @@ class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
   override def stopBeingPSA(psaId: String)
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
-    val deregisterUrl = config.deregisterPsaUrl.format(psaId)
+    val deregisterUrl = url"${config.deregisterPsaUrl.format(psaId)}"
 
-    http.DELETE[HttpResponse](deregisterUrl) map {
+    httpV2Client.delete(deregisterUrl).execute[HttpResponse] map {
       response =>
         response.status match {
           case NO_CONTENT =>
             response
           case _ =>
-            handleErrorResponse("DELETE", deregisterUrl)(response)
+            handleErrorResponse("DELETE", deregisterUrl.toString)(response)
         }
     } andThen {
       case Failure(t: Throwable) =>
@@ -66,9 +67,9 @@ class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
   override def canDeRegister(psaId: String)
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = {
 
-    val url = config.canDeRegisterPsaUrl(psaId)
+    val url = url"${config.canDeRegisterPsaUrl(psaId)}"
 
-    http.GET[HttpResponse](url).map {
+    httpV2Client.get(url).execute[HttpResponse].map {
       response =>
         response.status match {
           case OK => response.json.validate[Deregistration] match {
@@ -78,7 +79,7 @@ class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
               throw JsResultException(errors)
           }
           case _ =>
-            handleErrorResponse("GET", url)(response)
+            handleErrorResponse("GET", url.toString)(response)
         }
     } andThen {
       case Failure(t: Throwable) =>
