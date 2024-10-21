@@ -18,7 +18,7 @@ package controllers.register.administratorPartnership.partners
 
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
-import controllers.behaviours.ControllerWithCommonBehaviour
+import controllers.behaviours.NoNINOReasonControllerWithCommonBehaviour
 import forms.ReasonFormProvider
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
@@ -28,7 +28,7 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
 
-class PartnerNoNINOReasonControllerSpec extends ControllerWithCommonBehaviour {
+class PartnerNoNINOReasonControllerSpec extends NoNINOReasonControllerWithCommonBehaviour {
  import PartnerNoNINOReasonControllerSpec._
   
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
