@@ -27,7 +27,6 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.client.HttpClientV2
 import utils.HttpResponseHelper
 
-import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
