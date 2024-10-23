@@ -21,10 +21,10 @@ import config.FrontendAppConfig
 import models.TolerantAddress
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{JsObject, Json, Reads}
+import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HttpClient, HttpException, _}
+import uk.gov.hmrc.http._
 
 import scala.concurrent.{ExecutionContext, Future}
 

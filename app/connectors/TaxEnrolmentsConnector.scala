@@ -19,8 +19,6 @@ package connectors
 import audit.{AuditService, DeregisterEvent, PSAEnrolmentEvent}
 import com.google.inject.{ImplementedBy, Singleton}
 import config.FrontendAppConfig
-
-import javax.inject.Inject
 import models.register.KnownFacts
 import models.requests.DataRequest
 import play.api.Logger
@@ -29,11 +27,11 @@ import play.api.libs.json.{Json, Writes}
 import play.api.mvc.{AnyContent, RequestHeader}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.http.client.HttpClientV2
 import utils.{HttpResponseHelper, RetryHelper}
 
 import java.net.URL
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Try}
 

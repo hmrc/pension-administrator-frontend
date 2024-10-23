@@ -18,12 +18,11 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import play.api.libs.json._
-import uk.gov.hmrc.http._
 import play.api.http.Status._
-import play.api.mvc.Results._
+import play.api.libs.json._
 import play.api.mvc.Result
-import uk.gov.hmrc.http
+import play.api.mvc.Results._
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.client.HttpClientV2
 
 import scala.concurrent.{ExecutionContext, Future}
