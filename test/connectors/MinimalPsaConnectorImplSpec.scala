@@ -26,7 +26,7 @@ import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException}
 import utils.WireMockHelper
 
 class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
