@@ -32,7 +32,7 @@ class PartnershipUpdateDetailsControllerSpec extends ControllerSpecBase {
       dataRetrievalAction, new DataRequiredActionImpl,
       controllerComponents, view)
 
-  def viewAsString(): String = view("company")(fakeRequest, messages).toString
+  def viewAsString(): String = view("partnership")(fakeRequest, messages).toString
 
   "PartnershipUpdateDetails Controller" must {
 
