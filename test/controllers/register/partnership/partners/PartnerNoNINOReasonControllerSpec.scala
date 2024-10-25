@@ -19,7 +19,7 @@ package controllers.register.partnership.partners
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import controllers.behaviours.NoNINOReasonControllerWithCommonBehaviour
-import forms.ReasonFormProvider
+import forms.NINOReasonFormProvider
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
@@ -59,7 +59,7 @@ class PartnerNoNINOReasonControllerSpec extends NoNINOReasonControllerWithCommon
 }
 
 object PartnerNoNINOReasonControllerSpec {
-  private val formProvider = new ReasonFormProvider()
+  private val formProvider = new NINOReasonFormProvider()
   private val index = 0
   private val partnerName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test reason"))

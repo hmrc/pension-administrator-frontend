@@ -74,7 +74,7 @@ trait NoUTRReasonControllerWithCommonBehaviour extends ControllerSpecBase with S
         status(result) mustBe BAD_REQUEST
         redirectLocation(result) mustBe None
 
-        contentAsString(result) must include(messages("whyNoNINO.error.required", name))
+        contentAsString(result) must include(messages("whyNoUTR.error.required", name))
       }
 
       "display the same page with BAD Request and maxLength error when input exceeds 160 chars" in {
@@ -83,7 +83,7 @@ trait NoUTRReasonControllerWithCommonBehaviour extends ControllerSpecBase with S
         val result = onSubmitAction(validData)(requestWithLongString)
 
         status(result) mustBe BAD_REQUEST
-        contentAsString(result) must include(messages("whyNoNINO.error.length"))
+        contentAsString(result) must include(messages("whyNoUTR.error.length"))
       }
 
       "display the same page with BAD Request and invalid chars error when input contains invalid characters" in {
@@ -92,7 +92,7 @@ trait NoUTRReasonControllerWithCommonBehaviour extends ControllerSpecBase with S
         val result = onSubmitAction(validData)(requestWithInvalidChars)
 
         status(result) mustBe BAD_REQUEST
-        contentAsString(result) must include(messages("whyNoNINO.error.invalid"))
+        contentAsString(result) must include(messages("whyNoUTR.error.invalid"))
       }
     }
   }
