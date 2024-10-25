@@ -21,6 +21,7 @@ import javax.inject.Inject
 import play.api.data.Form
 
 class BusinessNameFormProvider @Inject() extends BusinessNameMapping {
+  val companyNameLength: Int = 160
 
   def apply(
             requiredKey: String = "businessName.error.required",
@@ -28,6 +29,15 @@ class BusinessNameFormProvider @Inject() extends BusinessNameMapping {
             lengthKey: String = "businessName.error.length"
            ): Form[String] =
 
-    Form("value" -> nameMapping(requiredKey, invalidKey, lengthKey))
-
+    Form(
+      "value" -> text(requiredKey)
+        .verifying(
+          firstError(
+            maxLength(
+              companyNameLength,
+              errorKey = lengthKey
+            ),
+            safeText(errorKey = invalidKey)
+          )
+        ) )
 }
