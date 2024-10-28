@@ -18,8 +18,8 @@ package controllers.register.partnership.partners
 
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
-import controllers.behaviours.ControllerWithCommonBehaviour
-import forms.ReasonFormProvider
+import controllers.behaviours.NoUTRReasonControllerWithCommonBehaviour
+import forms.UTRReasonFormProvider
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
@@ -28,7 +28,7 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
 
-class PartnerNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
+class PartnerNoUTRReasonControllerSpec extends NoUTRReasonControllerWithCommonBehaviour {
 
   import PartnerNoUTRReasonControllerSpec._
   
@@ -58,7 +58,7 @@ class PartnerNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
   }
 }
 object PartnerNoUTRReasonControllerSpec {
-  private val formProvider = new ReasonFormProvider()
+  private val formProvider = new UTRReasonFormProvider()
   private val index = 0
   private val partnerName = "test first name test last name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test reason"))

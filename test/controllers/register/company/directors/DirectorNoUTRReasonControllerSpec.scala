@@ -18,8 +18,8 @@ package controllers.register.company.directors
 
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
-import controllers.behaviours.ControllerWithCommonBehaviour
-import forms.ReasonFormProvider
+import controllers.behaviours.NoUTRReasonControllerWithCommonBehaviour
+import forms.UTRReasonFormProvider
 import models.FeatureToggle.Enabled
 import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
@@ -30,10 +30,10 @@ import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
 
-class DirectorNoUTRReasonControllerSpec extends ControllerWithCommonBehaviour {
+class DirectorNoUTRReasonControllerSpec extends NoUTRReasonControllerWithCommonBehaviour {
 
   override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
-  private val formProvider = new ReasonFormProvider()
+  private val formProvider = new UTRReasonFormProvider()
   private val directorName = "test first name test last name"
   private val reasonForm = formProvider(directorName)
   val view: reason = app.injector.instanceOf[reason]

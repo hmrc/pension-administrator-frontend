@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
-import forms.ReasonFormProvider
+import forms.NINOReasonFormProvider
 import identifiers.register.partnership.partners.{PartnerNameId, PartnerNoNINOReasonId}
 
 import javax.inject.Inject
@@ -43,7 +43,7 @@ class PartnerNoNINOReasonController @Inject()(@PartnershipPartner val navigator:
                                               @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
-                                              formProvider: ReasonFormProvider,
+                                              formProvider: NINOReasonFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               val view: reason
                                              )(implicit val executionContext: ExecutionContext) extends ReasonController with I18nSupport {

@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.ReasonController
 import controllers.actions._
-import forms.ReasonFormProvider
+import forms.NINOReasonFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorNoNINOReasonId}
 import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
@@ -42,7 +42,7 @@ class DirectorNoNINOReasonController @Inject()(@CompanyDirector val navigator: N
                                                val allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
-                                               formProvider: ReasonFormProvider,
+                                               formProvider: NINOReasonFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: reason,
                                                val featureToggleConnector: FeatureToggleConnector
