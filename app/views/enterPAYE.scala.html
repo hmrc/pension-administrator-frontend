@@ -38,16 +38,14 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components.heading(messages(viewModel.heading), true)
-
-        @components.paragraph_text(messages("enterPAYE.p1", viewModel.entityName))
-
         @input_text(
             field = form("value"),
             label = messages(viewModel.heading),
             hint = viewModel.hint,
-            labelClass = Some("govuk-visually-hidden")
+            headingIsLegend = true
         )
+
+        @components.paragraph_text(messages("enterPAYE.p1", viewModel.entityName))
 
         @submit_button("site.save_and_continue")
 
