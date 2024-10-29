@@ -41,7 +41,7 @@ class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (BusinessUTRId, uk, partnershipNamePage),
       (BusinessNameId, uk, partnershipIsRegisteredNamePage),
       (IsRegisteredNameId, isRegisteredNameTrue.areYouInUk(true), confirmPartnershipDetailsPage),
-      (IsRegisteredNameId, isRegisteredNameFalse.areYouInUk(true), companyUpdate),
+      (IsRegisteredNameId, isRegisteredNameFalse.areYouInUk(true), updateDetails),
       (ConfirmPartnershipDetailsId, confirmPartnershipDetailsTrue.areYouInUk(true), hasPayePage),
 
       (HasPAYEId, hasPAYEYes.areYouInUk(true), payePage(NormalMode)),
@@ -201,7 +201,7 @@ object PartnershipNavigatorSpec extends OptionValues {
   private lazy val reconsiderAreYouInUk: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
 
 
-  private lazy val companyUpdate = controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
+  private lazy val updateDetails = controllers.register.partnership.routes.PartnershipUpdateDetailsController.onPageLoad()
 
   protected val uk: UserAnswers = UserAnswers().areYouInUk(true)
   protected val nonUk: UserAnswers = UserAnswers().areYouInUk(false)

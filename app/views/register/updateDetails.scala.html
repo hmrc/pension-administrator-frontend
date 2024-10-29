@@ -22,21 +22,21 @@
     appConfig: FrontendAppConfig
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(entity: String)(implicit request: Request[_], messages: Messages)
 
 @openLink1 = {<a class="govuk-link" id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}
 @openLink2 = {<a class="govuk-link" id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}
 @closeLink = {</a>}
 
-@layout(pageTitle = messages("companyUpdateDetails.title")) {
+@layout(pageTitle = messages("updateDetails.title", entity)) {
 
-    @components.heading(messages("companyUpdateDetails.heading"))
+    @components.heading(messages("updateDetails.heading", entity))
 
-    @components.paragraph_text(messages("companyUpdateDetails.p1"))
+    @components.paragraph_text(messages("updateDetails.p1"))
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>@Html(Message("companyUpdateDetails.item1").withArgs(openLink1, closeLink))</li>
-        <li>@Html(Message("companyUpdateDetails.item2").withArgs(openLink2, closeLink))</li>
+        <li>@Html(Message("updateDetails.item1").withArgs(openLink1, closeLink))</li>
+        <li>@Html(Message("updateDetails.item2").withArgs(openLink2, closeLink))</li>
     </ul>
 
 }

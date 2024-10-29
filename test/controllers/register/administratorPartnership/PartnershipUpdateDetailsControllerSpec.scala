@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.register.company
+package controllers.register.administratorPartnership
 
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -22,19 +22,19 @@ import models.NormalMode
 import play.api.test.Helpers._
 import views.html.register.updateDetails
 
-class CompanyUpdateDetailsControllerSpec extends ControllerSpecBase {
+class PartnershipUpdateDetailsControllerSpec extends ControllerSpecBase {
 
   val view: updateDetails = app.injector.instanceOf[updateDetails]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyUpdateDetailsController(frontendAppConfig, FakeAuthAction,
+    new PartnershipUpdateDetailsController(frontendAppConfig, FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction, new DataRequiredActionImpl,
       controllerComponents, view)
 
-  def viewAsString(): String = view("company")(fakeRequest, messages).toString
+  def viewAsString(): String = view("partnership")(fakeRequest, messages).toString
 
-  "CompanyUpdateDetails Controller" must {
+  "PartnershipUpdateDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)

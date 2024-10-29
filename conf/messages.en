@@ -545,11 +545,11 @@ companyAddress.heading = Company address
 companyAddress.error.required = Select yes if this is the registered address
 companyAddress.checkYourAnswersLabel = Address
 
-companyUpdateDetails.title = You need to update the company՚s details before registering
-companyUpdateDetails.heading = You need to update the company՚s details before registering
-companyUpdateDetails.p1 = You need to tell:
-companyUpdateDetails.item1 = {0}HMRC about changes to your business{1}, like changing the business address
-companyUpdateDetails.item2 = {0}Companies House{1} if it's a limited company or Limited Liability Partnership (LLP)
+updateDetails.title = You need to update the {0}՚s details before registering
+updateDetails.heading = You need to update the {0}՚s details before registering
+updateDetails.p1 = You need to tell:
+updateDetails.item1 = {0}HMRC about changes to your business{1}, like changing the business address
+updateDetails.item2 = {0}Companies House{1} if it's a limited company or Limited Liability Partnership (LLP)
 
 companyNotFound.title = Business details not found
 companyNotFound.heading = Business details not found
