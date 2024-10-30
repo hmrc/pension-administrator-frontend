@@ -131,7 +131,7 @@ class ManualAddressControllerSpec extends AnyWordSpecLike with Matchers with Moc
             val result = controller.onPageLoad(viewModel, UserAnswers())
 
             status(result) mustEqual OK
-            contentAsString(result) mustEqual view(formProvider(), viewModel, NormalMode)(request, messages).toString
+            contentAsString(result) mustEqual view(formProvider(), viewModel, NormalMode, false)(request, messages).toString
 
         }
       }
@@ -230,7 +230,7 @@ class ManualAddressControllerSpec extends AnyWordSpecLike with Matchers with Moc
           val result = controller.onSubmit(viewModel, UserAnswers(), request.withFormUrlEncodedBody())
 
           status(result) mustEqual BAD_REQUEST
-          contentAsString(result) mustEqual view(form, viewModel, NormalMode)(request, messages).toString
+          contentAsString(result) mustEqual view(form, viewModel, NormalMode, false)(request, messages).toString
       }
 
     }

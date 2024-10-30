@@ -50,7 +50,7 @@ class AddressController @Inject()(authenticate: AuthAction,
                                  )(implicit val ec: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
 
   protected val form: Form[Address] = formProvider()
-
+  private val isUkHintText = false
   def viewModel(): ManualAddressViewModel =
     ManualAddressViewModel(
       postCall = routes.AddressController.onSubmit(),
@@ -67,7 +67,8 @@ class AddressController @Inject()(authenticate: AuthAction,
         Future.successful(Ok(view(
           filledForm,
           viewModel(),
-          mode
+          mode,
+          isUkHintText
         )))
         validateForm(filledForm, formData, mode)
       }
@@ -76,7 +77,7 @@ class AddressController @Inject()(authenticate: AuthAction,
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, viewModel(), mode))),
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, viewModel(), mode, isUkHintText))),
         address => {
           val tolerantAddress = TolerantAddress(
             Some(address.addressLine1),
@@ -97,7 +98,7 @@ class AddressController @Inject()(authenticate: AuthAction,
 
   def validateForm(form: Form[Address], formData: Map[String, String], mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bind(formData).fold(
-      (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, viewModel(), mode))),
+      (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, viewModel(), mode, isUkHintText))),
       _ => Future.successful(Redirect(routes.AddressController.onSubmit()))
     )
   }

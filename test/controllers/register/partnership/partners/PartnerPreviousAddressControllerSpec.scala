@@ -55,7 +55,7 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     )
 
   val view: manualAddress = app.injector.instanceOf[manualAddress]
-
+  private val isUkHintText = false
   private val viewModel =
     ManualAddressViewModel(
       routes.PartnerPreviousAddressController.onSubmit(NormalMode, index),
@@ -69,7 +69,8 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     view(
       form,
       viewModel,
-      NormalMode
+      NormalMode,
+      isUkHintText
     )(fakeRequest, messages).toString
 
   "PartnerPreviousAddress Controller" must {

@@ -38,7 +38,7 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
   private val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form = formProvider()
   private val index = Index(0)
-
+  private val isUkHintText = false
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new PartnerPreviousAddressController(
       frontendAppConfig,
@@ -69,7 +69,8 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     view(
       form,
       viewModel,
-      NormalMode
+      NormalMode,
+      isUkHintText
     )(fakeRequest, messages).toString
 
   "PartnerPreviousAddress Controller" must {

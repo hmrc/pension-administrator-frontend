@@ -56,7 +56,7 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
                                         )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   protected val form: Form[Address] = formProvider()
-
+  private val isUkHintText = false
   private def addressViewModel(mode: Mode, displayReturnLink: Boolean, returnLink: Option[String])
                               (implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.AdviserAddressController.onSubmit(mode),
@@ -74,7 +74,7 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        get(AdviserAddressId, AdviserAddressListId, addressViewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink), mode)
+        get(AdviserAddressId, AdviserAddressListId, addressViewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink), mode, isUkHintText)
       }
   }
 
@@ -82,7 +82,7 @@ class AdviserAddressController @Inject()(override val appConfig: FrontendAppConf
     implicit request =>
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        post(AdviserAddressId, addressViewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink), mode)
+        post(AdviserAddressId, addressViewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink), mode, isUkHintText)
       }
   }
 }
