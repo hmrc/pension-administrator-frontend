@@ -37,6 +37,8 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   val betaFeedbackUnauthenticatedUrl: String =
     loadConfig("microservice.services.contact-frontend.beta-feedback-url.unauthenticated")
 
+  lazy val timeoutSeconds: Int = runModeConfiguration.getOptional[Int]("hmrc-timeout-dialog.timeoutSeconds").getOrElse(900)
+  lazy val countdownInSeconds: Int = runModeConfiguration.getOptional[Int]("hmrc-timeout-dialog.countdownInSeconds").getOrElse(120)
   lazy val govUkUrl: String = loadConfig("urls.gov-uk")
   lazy val pensionAdministratorUrl: String = s"${servicesConfig.baseUrl("pension-administrator")}"
   lazy val loginUrl: String = loadConfig("urls.login")

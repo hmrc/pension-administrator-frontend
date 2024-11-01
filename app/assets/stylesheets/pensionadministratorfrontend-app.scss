@@ -1,5 +1,6 @@
 @import "lib/govuk-frontend/dist/govuk/base";
 @import 'location-autocomplete.min';
+@import "_timeout-dialog.scss";
 
 .autocomplete__wrapper ul, .autocomplete__wrapper li {
   font-family: "nta",Arial,sans-serif;
