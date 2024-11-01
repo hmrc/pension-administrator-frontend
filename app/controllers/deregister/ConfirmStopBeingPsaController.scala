@@ -28,6 +28,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.deregister.confirmStopBeingPsa
+import utils.PSAConstants.PSA_ACTIVE_RELATIONSHIP_EXISTS
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -80,12 +81,18 @@ class ConfirmStopBeingPsaController @Inject()(
                   value => {
                     if (value) {
                       for {
-                        _ <- deregistrationConnector.stopBeingPSA(psaId)
-                        _ <- enrolments.deEnrol(request.user.groupIdentifier, psaId, request.externalId)
-                        _ <- dataCacheConnector.removeAll(request.externalId)
-                      } yield {
-                        Redirect(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad())
-                      }
+                        response <- deregistrationConnector.stopBeingPSA(psaId)
+                        result <- if (response.status == FORBIDDEN && response.body.contains(PSA_ACTIVE_RELATIONSHIP_EXISTS)) {
+                          Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad))
+                        } else {
+                          for {
+                            _ <- enrolments.deEnrol(request.user.groupIdentifier, psaId, request.externalId)
+                            _ <- dataCacheConnector.removeAll(request.externalId)
+                          } yield {
+                            Redirect(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad())
+                          }
+                        }
+                      } yield result
                     } else {
                       Future.successful(Redirect(Call("GET", appConfig.schemesOverviewUrl)))
                     }
@@ -98,8 +105,6 @@ class ConfirmStopBeingPsaController @Inject()(
       }.getOrElse(
         Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad))
       )
-
-
 
   }
 

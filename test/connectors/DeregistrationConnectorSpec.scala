@@ -17,13 +17,19 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import config.FrontendAppConfig
 import models.Deregistration
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
+import play.api.http.Status.FORBIDDEN
 import play.api.libs.json.{JsBoolean, JsResultException, JsString, Json}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
-import utils.WireMockHelper
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse, UpstreamErrorResponse}
+import utils.PSAConstants.PSA_ACTIVE_RELATIONSHIP_EXISTS
+import utils.{PsaActiveRelationshipExistsException, WireMockHelper}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper{
 
@@ -107,6 +113,40 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
     recoverToSucceededIf[UpstreamErrorResponse] {
       connector.canDeRegister(psaId)
+    }
+  }
+
+  it should "throw a UpstreamErrorResponse if service returns 404 (forbidden) response" in {
+    server.stubFor(
+      get(urlEqualTo(canRegisterUrl))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.FORBIDDEN)
+        )
+    )
+    val connector = injector.instanceOf[DeregistrationConnector]
+
+    recoverToSucceededIf[UpstreamErrorResponse] {
+      connector.canDeRegister(psaId)
+    }
+  }
+
+  "Delete" should "return FORBIDDEN with PSA_ACTIVE_RELATIONSHIP_EXISTS when PsaActiveRelationshipExistsException is thrown" in {
+    val mockHttpClient = injector.instanceOf[HttpClientV2]
+    val mockConfig = injector.instanceOf[FrontendAppConfig]
+    val connector = new DeregistrationConnectorImpl(httpV2Client = mockHttpClient, config = mockConfig) {
+      override def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+        Future.failed(new PsaActiveRelationshipExistsException("PSA active relationship exists"))
+          .recover {
+            case _: PsaActiveRelationshipExistsException =>
+              HttpResponse(FORBIDDEN, PSA_ACTIVE_RELATIONSHIP_EXISTS)
+          }(ec)
+      }
+    }
+
+    connector.stopBeingPSA(psaId).map { response =>
+      response.status shouldBe FORBIDDEN
+      response.body shouldBe PSA_ACTIVE_RELATIONSHIP_EXISTS
     }
   }
 }

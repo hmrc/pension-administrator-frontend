@@ -18,6 +18,7 @@ package utils
 
 import play.api.http.Status._
 import uk.gov.hmrc.http._
+import utils.PSAConstants.PSA_ACTIVE_RELATIONSHIP_EXISTS
 
 trait HttpResponseHelper extends HttpErrorFunctions {
 
@@ -27,6 +28,8 @@ trait HttpResponseHelper extends HttpErrorFunctions {
         throw new BadRequestException(badRequestMessage(httpMethod, url, response.body))
       case NOT_FOUND =>
         throw new NotFoundException(notFoundMessage(httpMethod, url, response.body))
+      case FORBIDDEN if response.body.contains(PSA_ACTIVE_RELATIONSHIP_EXISTS) =>
+        throw new PsaActiveRelationshipExistsException(forbiddenMessage(httpMethod, url, response.body))
       case status if is4xx(status) =>
         throw UpstreamErrorResponse(upstreamResponseMessage(httpMethod, url, status, response.body), status, status, response.headers)
       case status if is5xx(status) =>
@@ -35,7 +38,11 @@ trait HttpResponseHelper extends HttpErrorFunctions {
         throw new UnrecognisedHttpResponseException(httpMethod, url, response)
     }
 
+    private def forbiddenMessage(httpMethod: String, url: String, responseBody: String): String =
+      s"$httpMethod to $url returned 403. Response body: '$responseBody'"
 }
+
+class PsaActiveRelationshipExistsException(message: String) extends Exception(message)
 
 class UnrecognisedHttpResponseException(method: String, url: String, response: HttpResponse)
   extends Exception(s"$method to $url failed with status ${response.status}. Response body: '${response.body}'")

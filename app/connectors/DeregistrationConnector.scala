@@ -25,7 +25,8 @@ import play.api.libs.json.{JsError, JsResultException, JsSuccess}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import utils.HttpResponseHelper
+import utils.{HttpResponseHelper, PsaActiveRelationshipExistsException}
+import utils.PSAConstants.PSA_ACTIVE_RELATIONSHIP_EXISTS
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
@@ -58,6 +59,9 @@ class DeregistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: 
           case _ =>
             handleErrorResponse("DELETE", deregisterUrl.toString)(response)
         }
+    } recover {
+      case _: PsaActiveRelationshipExistsException =>
+        HttpResponse(FORBIDDEN, PSA_ACTIVE_RELATIONSHIP_EXISTS)
     } andThen {
       case Failure(t: Throwable) =>
         logger.warn("Unable to deregister PSA", t)
