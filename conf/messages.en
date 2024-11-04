@@ -1049,7 +1049,7 @@ utr.company.hint = Corporation Tax
 utr.partnership.hint = Self Assessment
 utr.p1 = This is a 10-digit or 13-digit number. For example, 12345 67890. It may also start or end with the letter ‘k’.
 utr.p2 = You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
-
+utr.combined = This is a 10-digit or 13-digit number. For example, 12345 67890. It may also start or end with the letter ‘k’. <br><br> You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 
 isRegisteredName.company.error = Select yes if this is the registered name of the company
 isRegisteredName.company.title = Is this the registered name of the company?
