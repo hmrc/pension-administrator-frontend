@@ -54,7 +54,6 @@ class HasPartnerUTRController @Inject()(override val appConfig: FrontendAppConfi
       title = Message("hasUTR.heading", Message("thePartner")),
       heading = Message("hasUTR.heading", entityName),
       mode = mode,
-      hint = Some(Message("utr.p1")),
       entityName = entityName
     )
 

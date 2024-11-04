@@ -30,6 +30,11 @@
 
 @(form: Form[_], viewmodel: CommonFormWithHintViewModel)(implicit request: Request[_], messages: Messages)
 
+@hintHtml = {
+<p class="govuk-!-margin-top-0">@messages("utr.p1")</p>
+<p>@messages("utr.p2")</p>
+}
+
 @layout(pageTitle = titleWithErrors(form, messages(viewmodel.title))) {
 
     @formHelper(action = viewmodel.postCall, Symbol("autoComplete") -> "off") {
@@ -42,7 +47,7 @@
             field = form("value"),
             label = messages(viewmodel.heading),
             headingIsLegend = true,
-            hint = viewmodel.hint
+            hint = Some(hintHtml.toString)
         )
 
         @submit_button(messages("site.save_and_continue"))
