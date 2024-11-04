@@ -52,7 +52,7 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
                                                     )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = routes.PartnershipPreviousAddressController.onSubmit _
-
+  private val isUkHintText = true
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
   private def viewmodel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
@@ -68,14 +68,14 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.map { name =>
-        get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode)
+        get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode, isUkHintText)
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.map { name =>
-        post(PartnershipPreviousAddressId, viewmodel(mode, name), mode)
+        post(PartnershipPreviousAddressId, viewmodel(mode, name), mode, isUkHintText)
       }
   }
 

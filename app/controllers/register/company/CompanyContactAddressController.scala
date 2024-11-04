@@ -52,7 +52,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
                                                )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
-
+  private val isUkHintText = true
   private def addressViewModel(mode: Mode, returnLink: Option[String]): Retrieval[ManualAddressViewModel] =
     Retrieval(
       implicit request =>
@@ -73,7 +73,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
         addressViewModel(mode, returnLink).retrieve.map(vm =>
-          get(CompanyContactAddressId, CompanyContactAddressListId, vm, mode)
+          get(CompanyContactAddressId, CompanyContactAddressListId, vm, mode, isUkHintText)
         )
       }
   }
@@ -83,7 +83,7 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
       featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
         val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
         addressViewModel(mode, returnLink).retrieve.map(vm =>
-          post(CompanyContactAddressId, vm, mode)
+          post(CompanyContactAddressId, vm, mode, isUkHintText)
         )
       }
   }

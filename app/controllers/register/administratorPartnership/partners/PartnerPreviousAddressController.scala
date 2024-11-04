@@ -51,11 +51,11 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
                                                 )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals {
 
   override protected val form: Form[Address] = formProvider()
-
+  private val isUkHintText = false
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.map { pn =>
-        get(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), addressViewModel(mode, index, pn.fullName), mode)
+        get(PartnerPreviousAddressId(index), PartnerPreviousAddressListId(index), addressViewModel(mode, index, pn.fullName), mode, isUkHintText)
       }
   }
 
@@ -63,7 +63,7 @@ class PartnerPreviousAddressController @Inject()(override val appConfig: Fronten
     implicit request =>
       PartnerNameId(index).retrieve.map { pn =>
         val vm = addressViewModel(mode, index, pn.fullName)
-        post(PartnerPreviousAddressId(index), vm, mode)
+        post(PartnerPreviousAddressId(index), vm, mode, isUkHintText)
       }
   }
 

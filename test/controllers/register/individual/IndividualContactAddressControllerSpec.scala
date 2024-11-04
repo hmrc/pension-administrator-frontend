@@ -67,14 +67,14 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Moc
       controllerComponents,
       view
     )
-
+  private val isUkHintText = false
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
   val validData: JsResult[UserAnswers] = UserAnswers()
     .set(AreYouInUKId)(true)
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
 
-  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 
   "IndividualContactAddress Controller" must {
 

@@ -54,6 +54,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
                                                 )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
+  private val isUkHintText = true
 
   private def addressViewModel(mode: Mode, name: String, returnLink: Option[String])(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.CompanyPreviousAddressController.onSubmit(mode),
@@ -69,7 +70,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
       BusinessNameId.retrieve.map { name =>
         featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
           val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode, name, returnLink), mode)
+          get(CompanyPreviousAddressId, CompanyAddressListId, addressViewModel(mode, name, returnLink), mode, isUkHintText)
         }
       }
   }
@@ -79,7 +80,7 @@ class CompanyPreviousAddressController @Inject()(override val appConfig: Fronten
       BusinessNameId.retrieve.map { name =>
         featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
           val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          post(CompanyPreviousAddressId, addressViewModel(mode, name, returnLink), mode)
+          post(CompanyPreviousAddressId, addressViewModel(mode, name, returnLink), mode, isUkHintText)
         }
       }
   }

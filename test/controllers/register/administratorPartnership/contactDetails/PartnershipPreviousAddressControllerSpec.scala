@@ -104,7 +104,7 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-
+  private val isUkHintText = true
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipPreviousAddressController(
       frontendAppConfig,
@@ -120,5 +120,5 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
       view
     )
 
-  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 }

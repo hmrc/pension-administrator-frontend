@@ -67,10 +67,10 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
       controllerComponents,
       view
     )
-
+  private val isUkHintText = false
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
-  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 
   "IndividualPreviousAddress Controller" must {
 

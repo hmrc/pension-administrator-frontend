@@ -51,7 +51,8 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
                      id: TypedIdentifier[Address],
                      selectedId: TypedIdentifier[TolerantAddress],
                      viewModel: ManualAddressViewModel,
-                     mode: Mode
+                     mode: Mode,
+                     isUkHintText: Boolean = false
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val preparedForm = request.userAnswers.get(id) match {
       case None => request.userAnswers.get(selectedId) match {
@@ -60,16 +61,17 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
       }
       case Some(value) => form.fill(value)
     }
-    Future.successful(Ok(view(preparedForm, viewModel, mode)))
+    Future.successful(Ok(view(preparedForm, viewModel, mode, isUkHintText)))
   }
 
   protected def post(
                       id: TypedIdentifier[Address],
                       viewModel: ManualAddressViewModel,
-                      mode: Mode
+                      mode: Mode,
+                      isUkHintText: Boolean = false
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
-      (formWithError: Form[_]) => Future.successful(BadRequest(view(formWithError, viewModel, mode))),
+      (formWithError: Form[_]) => Future.successful(BadRequest(view(formWithError, viewModel, mode, isUkHintText))),
       address => {
         cacheConnector.save(request.externalId, id, address).flatMap { userAnswersJson =>
           saveChangeFlag(mode, id)

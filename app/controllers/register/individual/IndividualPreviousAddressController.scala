@@ -55,7 +55,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
                                                    )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualPreviousAddressController.onSubmit _
-
+  private val isUkHintText = false
   protected val form: Form[Address] = formProvider("error.country.invalid")
 
   private def viewmodel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
@@ -69,7 +69,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(AreYouInUKId) match {
-        case Some(true) => get(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
+        case Some(true) => get(IndividualPreviousAddressId, IndividualPreviousAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText)
         case _ => Future.successful(Redirect(controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(mode)))
       }
 
@@ -77,7 +77,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualPreviousAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode)
+      post(IndividualPreviousAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText)
   }
 
 }

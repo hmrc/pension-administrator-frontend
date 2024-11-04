@@ -43,6 +43,7 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
 
   val formProvider = new UKAddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider("error.country.invalid")
+  private val isUkHintText = true
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyContactAddressController(
@@ -73,7 +74,8 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
     view(
       form,
       viewModel,
-      NormalMode
+      NormalMode,
+      isUkHintText
     )(fakeRequest, messages).toString()
 
   "CompanyContactAddress Controller" must {
