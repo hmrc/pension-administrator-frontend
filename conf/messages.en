@@ -389,7 +389,7 @@ hasNINO.error.required = Select yes if {0} has a National Insurance number
 hasNINO.visuallyHidden.text = whether {0} has a National Insurance number
 
 enterNINO.heading = What is {0}’s National Insurance number?
-enterNINO.hint = For example, QQ 12 34 56 C
+enterNINO.hint = It’s on your National Insurance card, benefit letter, payslip or P60 – for example, ‘QQ 12 34 56 C’
 enterNINO.error.invalid = Enter {0}’s National Insurance number in the correct format
 enterNINO.error.required = Enter a National Insurance number
 enterNINO.visuallyHidden.text = {0}’s National Insurance number
@@ -404,11 +404,11 @@ hasUTR.heading = Does {0} have a Unique Taxpayer Reference (UTR)?
 hasUTR.error.required = Select yes if {0} has a Unique Taxpayer Reference (UTR)
 hasUTR.visuallyHidden.text = whether {0} has a Unique Taxpayer Reference (UTR)
 
-enterUTR.heading = What is {0}’s UTR?
-enterUTR.error.invalid = Enter {0}’s UTR in the correct format
+enterUTR.heading = What is {0}’s Unique Taxpayer Reference (UTR)?
+enterUTR.error.invalid = Enter {0}’s Unique Taxpayer Reference (UTR) in the correct format
 enterUTR.visuallyHidden.text = {0}’s Unique Taxpayer Reference (UTR)
 
-whyNoUTR.heading = Why does {0} not have a UTR?
+whyNoUTR.heading = Why does {0} not have a Unique Taxpayer Reference (UTR)?
 whyNoUTR.error.invalid = Reason must only include letters, numbers and punctuation marks
 whyNoUTR.error.length = Reason must be 160 characters or less
 whyNoUTR.error.required = Enter a reason why {0} does not have a Unique Taxpayer Reference (UTR)
