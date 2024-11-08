@@ -71,7 +71,7 @@ object HasPartnerUTRControllerSpec {
       postCall = routes.HasPartnerUTRController.onSubmit(mode, index),
       title = Message("hasUTR.heading", Message("thePartner")),
       heading = Message("hasUTR.heading", partnerName),
-      hint = Some(Message("utr.p1")),
+      hint = Some(Message("utr.combined")),
       mode = mode,
       entityName = psaName,
       returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
