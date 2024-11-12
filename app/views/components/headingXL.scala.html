@@ -17,8 +17,8 @@
 @(
     headingKey: String,
     headingClass: Boolean = false,
-    headingSize: String = "govuk-heading-l govuk-!-margin-top-0",
-    headingSizeAlt: String = "govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-4"
+    headingSize: String = "govuk-heading-xl govuk-!-margin-top-0",
+    headingSizeAlt: String = "govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-5"
 )
 
 <h1 class="@if(headingClass == true) {@headingSizeAlt} else {@headingSize}">@Html(headingKey)</h1>
