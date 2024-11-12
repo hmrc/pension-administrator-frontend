@@ -180,7 +180,7 @@ object RegisterPartnershipNavigatorV2Spec extends OptionValues {
 
   private lazy val partnershipNamePage = PartnershipNameController.onPageLoad
 
-  private lazy val companyUpdateDetailsPage = controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
+  private lazy val companyUpdateDetailsPage = controllers.register.administratorPartnership.routes.PartnershipUpdateDetailsController.onPageLoad()
 
   private lazy val partnershipIsRegisteredNamePage = PartnershipIsRegisteredNameController.onPageLoad
 

@@ -53,7 +53,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
                                          )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals with Variations {
 
   override protected val form: Form[Address] = formProvider()
-
+  private val isUkHintText = false
   private def addressViewModel(mode: Mode, index: Index, directorName: String, returnLink: Option[String])
                               (implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.DirectorAddressController.onSubmit(mode, index),
@@ -70,7 +70,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
         directorName =>
           featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
             val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-            get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName, returnLink), mode)
+            get(DirectorAddressId(index), CompanyDirectorAddressListId(index), addressViewModel(mode, index, directorName, returnLink), mode, isUkHintText)
           }
       }
   }
@@ -81,7 +81,7 @@ class DirectorAddressController @Inject()(override val appConfig: FrontendAppCon
         directorName =>
           featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
             val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-            post(DirectorAddressId(index), addressViewModel(mode, index, directorName, returnLink), mode)
+            post(DirectorAddressId(index), addressViewModel(mode, index, directorName, returnLink), mode, isUkHintText)
           }
       }
   }

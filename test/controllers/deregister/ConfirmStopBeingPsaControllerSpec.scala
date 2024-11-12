@@ -34,6 +34,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.PSAConstants.PSA_ACTIVE_RELATIONSHIP_EXISTS
 import views.html.deregister.confirmStopBeingPsa
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -138,6 +139,36 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(overviewPage)
+    }
+
+    "redirect to CannotDeregisterController if response status is FORBIDDEN and body contains PSA_ACTIVE_RELATIONSHIP_EXISTS" in {
+      val request = FakeRequest().withFormUrlEncodedBody("value" -> "true")
+
+      val mockDeregistrationConnector = new DeregistrationConnector {
+        override def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+          Future.successful(HttpResponse(FORBIDDEN, Json.obj("reason" -> PSA_ACTIVE_RELATIONSHIP_EXISTS).toString))
+
+        override def canDeRegister(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] =
+          Future.successful(Deregistration(canDeregister = true, isOtherPsaAttached = false))
+      }
+
+      val controller = new ConfirmStopBeingPsaController(
+        frontendAppConfig,
+        FakeAuthAction(),
+        formProvider,
+        fakeMinimalPsaConnector(minimalPsaDetailsIndividual),
+        mockDeregistrationConnector,
+        fakeTaxEnrolmentsConnector,
+        fakeAllowAccess(fakeMinimalPsaConnector(minimalPsaDetailsIndividual), frontendAppConfig),
+        FakeUserAnswersCacheConnector,
+        controllerComponents,
+        view
+      )
+
+      val result = controller.onSubmit()(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.deregister.routes.CannotDeregisterController.onPageLoad.url)
     }
   }
 

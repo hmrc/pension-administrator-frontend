@@ -17,20 +17,21 @@
 package forms
 
 import forms.mappings.{Mappings, Transforms}
-import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.Messages
 import viewmodels.Message
 
-class ReasonFormProvider @Inject() extends Mappings with Transforms {
+import javax.inject.Inject
+
+class UTRReasonFormProvider @Inject() extends Mappings with Transforms {
 
   def apply(name: String)(implicit messages: Messages): Form[String] =
     Form(
-      "value" -> text(Message("whyNoNINO.error.required").withArgs(name))
+      "value" -> text(Message("whyNoUTR.error.required").withArgs(name))
         .transform(standardTextTransform, noTransform)
         .verifying(firstError(
-          maxLength(reasonMaxLength, errorKey = "whyNoNINO.error.length"),
-          safeText(errorKey = "whyNoNINO.error.invalid")
+          maxLength(reasonMaxLength, errorKey = "whyNoUTR.error.length"),
+          safeText(errorKey = "whyNoUTR.error.invalid")
         ))
     )
 

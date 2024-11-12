@@ -69,7 +69,7 @@ object HasPartnerUTRControllerSpec {
       postCall = routes.HasPartnerUTRController.onSubmit(mode, index),
       title = Message("hasUTR.heading", Message("thePartner")),
       heading = Message("hasUTR.heading", partnerName),
-      hint = Some(Message("utr.p1")),
+      hint = Some(Message("utr.combined")),
       mode = mode,
       entityName = partnerName
     )

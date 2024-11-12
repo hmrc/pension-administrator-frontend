@@ -21,26 +21,29 @@ import config.FrontendAppConfig
 import models.TolerantAddress
 import play.api.Logger
 import play.api.http.Status._
-import play.api.libs.json.{JsObject, Json, Reads}
+import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HttpClient, HttpException, _}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+class AddressLookupConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends AddressLookupConnector {
 
   private val logger = Logger(classOf[AddressLookupConnectorImpl])
 
   override def addressLookupByPostCode(postcode: String)
                                       (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[Seq[TolerantAddress]] = {
-    val schemeHc = hc.withExtraHeaders("X-Hmrc-Origin" -> "PODS")
-    val addressLookupUrl = s"${config.addressLookUp}/lookup"
+    val schemeHeaders = Seq(("X-Hmrc-Origin", "PODS"))
+    val addressLookupUrl = url"${config.addressLookUp}/lookup"
 
     implicit val reads: Reads[Seq[TolerantAddress]] = TolerantAddress.postCodeLookupReads
 
     val lookupAddressByPostcode =Json.obj("postcode"->postcode)
-    http.POST[JsObject , HttpResponse](addressLookupUrl , lookupAddressByPostcode)(implicitly , implicitly, schemeHc, implicitly) flatMap {
+    httpV2Client.post(addressLookupUrl)
+      .setHeader(schemeHeaders: _*)
+      .withBody(lookupAddressByPostcode).execute[HttpResponse] flatMap {
       case response if response.status equals OK => Future.successful {
         response.json.as[Seq[TolerantAddress]]
           .filterNot(a => a.addressLine1.isEmpty && a.addressLine2.isEmpty && a.addressLine3.isEmpty && a.addressLine4.isEmpty)
@@ -49,6 +52,7 @@ class AddressLookupConnectorImpl @Inject()(http: HttpClient, config: FrontendApp
         val message = s"Address Lookup failed with status ${response.status} Response body :${response.body}"
         Future.failed(new HttpException(message, response.status))
     } recoverWith logExceptions
+
   }
 
 

@@ -16,7 +16,10 @@
 
 package models.register
 
+import models.register.KnownFacts
+import org.apache.pekko.util.ByteString
 import play.api.libs.json.{Format, Json}
+import play.api.libs.ws.{BodyWritable, InMemoryBody}
 
 case class KnownFact(key: String, value: String)
 
@@ -28,4 +31,6 @@ case class KnownFacts(identifiers: Set[KnownFact], verifiers: Set[KnownFact])
 
 object KnownFacts {
   implicit val format: Format[KnownFacts] = Json.format[KnownFacts]
+  implicit val knownFactsBodyWritable: BodyWritable[KnownFacts] = BodyWritable(a => InMemoryBody(ByteString(Json.toJson(a).toString())), "application/json")
+
 }

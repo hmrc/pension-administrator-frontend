@@ -29,7 +29,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], viewmodel: ManualAddressViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], viewmodel: ManualAddressViewModel, mode: Mode, isUkHintText: Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleWithErrors(form, viewmodel.title)) {
 
@@ -45,7 +45,7 @@
             <p class="govuk-body">@messages(hintText)</p>
         }
 
-        @address(form, viewmodel.countryOptions)
+        @address(form, viewmodel.countryOptions, isUkHintText)
 
         @submit_button(messages("site.save_and_continue"))
 

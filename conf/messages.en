@@ -42,16 +42,16 @@ error.address_line_3.invalid = The third line of the address must only include l
 error.address_line_4.invalid = The fourth line of the address must only include letters, spaces, ampersands (&), apostrophes, hyphens and full stops
 error.country.required = Enter a country
 error.country.invalid = Enter a valid country
-error.country.invalid.uk = The address must be based in the UK
+error.country.invalid.uk = The address must be in the UK
 error.country.invalid.eueea = Pension Scheme Administrators must be resident in the UK, EU or EEA
 error.addressYears.required = Select yes if {0} has used this contact address for at least 1 year
 error.individual.addressYears.required = Select yes if you have used this contact address for at least 1 year
 
-error.postcode.required = Enter a postcode
+error.postcode.required = Enter the postcode
 error.postcode.length = The postcode cannot be more than 8 characters
 error.postcode.nonUK.length = The postcode cannot be more than 10 characters
 error.postcode.failed = There is a problem with the address finder. Try again or enter the address manually
-error.postcode.invalid = Enter a postcode in the correct format
+error.postcode.invalid = Enter a full UK postcode
 error.postcode.noResults = Postcode cannot be found
 
 index.title = Pension Scheme Registrations
@@ -389,7 +389,7 @@ hasNINO.error.required = Select yes if {0} has a National Insurance number
 hasNINO.visuallyHidden.text = whether {0} has a National Insurance number
 
 enterNINO.heading = What is {0}’s National Insurance number?
-enterNINO.hint = For example, QQ 12 34 56 C
+enterNINO.hint = It’s on your National Insurance card, benefit letter, payslip or P60 – for example, ‘QQ 12 34 56 C’
 enterNINO.error.invalid = Enter {0}’s National Insurance number in the correct format
 enterNINO.error.required = Enter a National Insurance number
 enterNINO.visuallyHidden.text = {0}’s National Insurance number
@@ -404,11 +404,11 @@ hasUTR.heading = Does {0} have a Unique Taxpayer Reference (UTR)?
 hasUTR.error.required = Select yes if {0} has a Unique Taxpayer Reference (UTR)
 hasUTR.visuallyHidden.text = whether {0} has a Unique Taxpayer Reference (UTR)
 
-enterUTR.heading = What is {0}’s UTR?
-enterUTR.error.invalid = Enter {0}’s UTR in the correct format
+enterUTR.heading = What is {0}’s Unique Taxpayer Reference (UTR)?
+enterUTR.error.invalid = Enter {0}’s Unique Taxpayer Reference (UTR) in the correct format
 enterUTR.visuallyHidden.text = {0}’s Unique Taxpayer Reference (UTR)
 
-whyNoUTR.heading = Why does {0} not have a UTR?
+whyNoUTR.heading = Why does {0} not have a Unique Taxpayer Reference (UTR)?
 whyNoUTR.error.invalid = Reason must only include letters, numbers and punctuation marks
 whyNoUTR.error.length = Reason must be 160 characters or less
 whyNoUTR.error.required = Enter a reason why {0} does not have a Unique Taxpayer Reference (UTR)
@@ -545,11 +545,11 @@ companyAddress.heading = Company address
 companyAddress.error.required = Select yes if this is the registered address
 companyAddress.checkYourAnswersLabel = Address
 
-companyUpdateDetails.title = You need to update the company՚s details before registering
-companyUpdateDetails.heading = You need to update the company՚s details before registering
-companyUpdateDetails.p1 = You need to tell:
-companyUpdateDetails.item1 = {0}HMRC about changes to your business{1}, like changing the business address
-companyUpdateDetails.item2 = {0}Companies House{1} if it's a limited company or Limited Liability Partnership (LLP)
+updateDetails.title = You need to update the {0}՚s details before registering
+updateDetails.heading = You need to update the {0}՚s details before registering
+updateDetails.p1 = You need to tell:
+updateDetails.item1 = {0}HMRC about changes to your business{1}, like changing the business address
+updateDetails.item2 = {0}Companies House{1} if it's a limited company or Limited Liability Partnership (LLP)
 
 companyNotFound.title = Business details not found
 companyNotFound.heading = Business details not found
@@ -751,6 +751,7 @@ addEntity.tellUsIfYouHaveMore = You can tell us on the next page if you have mor
 addPartners.title = Partners
 addPartners.heading = Partners
 addPartners.entityType = partners
+addPartners.hintText = You must tell us about all your partners. You can add up to 10 using the digital service.
 
 partnershipVat.title = Does the partnership have a VAT registration number?
 partnershipVat.heading = Does the partnership have a VAT registration number?
@@ -1035,11 +1036,11 @@ businessName.title = What is the name of the {0} you want to register?
 businessName.heading = What is the name of the {0} you want to register?
 businessName.p1 = This is the name registered with Companies House.
 businessName.error.required = Enter a company name
-businessName.error.invalid = Company name must only include letters, numbers, dashes, spaces, apostrophes, ampersands and slashes
+businessName.error.invalid = The name must only include letters, numbers, spaces, ampersands (&), apostrophes, hyphens and full stops
 businessName.error.length = Company name must be 105 characters or fewer
 
 partnershipName.error.required = Enter a partnership name
-partnershipName.error.invalid = Partnership name must only include letters, numbers and the characters ’, &, \ and /
+partnershipName.error.invalid = The name must only include letters, numbers, spaces, ampersands (&), apostrophes, hyphens and full stops
 partnershipName.error.length = Partnership name must be 105 characters or fewer
 
 utr.title = What is {0}’s {1} Unique Taxpayer Reference (UTR)?
@@ -1048,7 +1049,7 @@ utr.company.hint = Corporation Tax
 utr.partnership.hint = Self Assessment
 utr.p1 = This is a 10-digit or 13-digit number. For example, 12345 67890. It may also start or end with the letter ‘k’.
 utr.p2 = You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
-
+utr.combined = This is a 10-digit or 13-digit number. For example, 12345 67890. It may also start or end with the letter ‘k’. <br><br> You can find it on tax returns and other documents from HMRC. It might be called ‘reference’, ‘UTR’ or ‘official use’.
 
 isRegisteredName.company.error = Select yes if this is the registered name of the company
 isRegisteredName.company.title = Is this the registered name of the company?
@@ -1206,7 +1207,7 @@ whatYouWillNeed.workingKnowledge.item2 = email address
 whatYouWillNeed.workingKnowledge.item3 = phone number
 whatYouWillNeed.workingKnowledge.item4 = address
 
-addPartner.insetText = You will need to tell us details for at least two partners. You can add up to 10 using the digital service
+addPartner.insetText = You will need to tell us details for at least two partners.
 
 invlidEmailAddress.title = The email address provided has not been recognised and registration cannot be completed
 invlidEmailAddress.heading = The email address provided has not been recognised and registration cannot be completed

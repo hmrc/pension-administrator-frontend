@@ -23,7 +23,7 @@
     govukSelect : GovukSelect
 )
 
-@(form: Form[_], options: Seq[InputOption])(implicit messages: Messages)
+@(form: Form[_], options: Seq[InputOption], isUkHintText: Boolean)(implicit messages: Messages)
 
 @govukInput(
     Input(
@@ -60,6 +60,16 @@
     ).withFormField(form("postCode"))
 )
 
+@if(isUkHintText == true){
+    <p class="govuk-body">@messages("error.country.invalid.uk")</p>
+    <p class="govuk-body">
+        @messages("nonUKAdministrator.p2.1")
+        <a href = "mailto: @messages("nonUKAdministrator.p2.email")@messages("nonUKAdministrator.p2.emailSubject")">
+        @messages("nonUKAdministrator.p2.email")
+        </a>
+        @messages("nonUKAdministrator.p2.2")
+    </p>
+}
 <div class="govuk-!-width-two-thirds">
     @govukSelect(Select(
         id = "country",

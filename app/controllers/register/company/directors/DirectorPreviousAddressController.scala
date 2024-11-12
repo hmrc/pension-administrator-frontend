@@ -54,14 +54,14 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
                                                  )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   override protected val form: Form[Address] = formProvider()
-
+  private val isUkHintText = false
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(mode, index) {
         directorName =>
           featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
             val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-            get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName, returnLink), mode)
+            get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName, returnLink), mode, isUkHintText)
           }
       }
   }
@@ -72,7 +72,7 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
         directorName =>
           featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
             val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-            post(DirectorPreviousAddressId(index), addressViewModel(mode, index, directorName, returnLink), mode)
+            post(DirectorPreviousAddressId(index), addressViewModel(mode, index, directorName, returnLink), mode, isUkHintText)
           }
       }
   }

@@ -117,7 +117,7 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
 
 
   private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-
+  private val isUkHintText = false
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new PartnerAddressController(
       frontendAppConfig,
@@ -137,7 +137,8 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
     view(
       form,
       viewModel,
-      NormalMode
+      NormalMode,
+      isUkHintText
     )(fakeRequest, messages).toString
 
 }

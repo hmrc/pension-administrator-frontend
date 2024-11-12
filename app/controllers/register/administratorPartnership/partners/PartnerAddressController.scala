@@ -51,7 +51,7 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
                                         )(implicit val executionContext: ExecutionContext) extends ManualAddressController with Retrievals {
 
   override protected val form: Form[Address] = formProvider()
-
+  private val isUkHintText = false
   private def addressViewModel(mode: Mode, index: Index, name:String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.PartnerAddressController.onSubmit(mode, index),
     countryOptions.options,
@@ -64,7 +64,7 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PartnerNameId(index).retrieve.map { pn =>
-        get(PartnerAddressId(index), PartnerAddressListId(index), addressViewModel(mode, index, pn.fullName), mode)
+        get(PartnerAddressId(index), PartnerAddressListId(index), addressViewModel(mode, index, pn.fullName), mode, isUkHintText)
       }
   }
 
@@ -72,7 +72,7 @@ class PartnerAddressController @Inject()(override val appConfig: FrontendAppConf
     implicit request =>
       PartnerNameId(index).retrieve.map { pn =>
         val vm = addressViewModel(mode, index, pn.fullName)
-        post(PartnerAddressId(index), vm, mode)
+        post(PartnerAddressId(index), vm, mode, isUkHintText)
       }
   }
 

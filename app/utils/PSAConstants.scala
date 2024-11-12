@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package connectors.cache
+package utils
 
-import uk.gov.hmrc.http.HeaderCarrier
-
-object CacheConnector {
-  val names: HeaderCarrier => Seq[String] =
-    hc =>
-      Seq(hc.names.authorisation, hc.names.xRequestId, hc.names.xSessionId)
-
-  val headers: HeaderCarrier => Seq[(String, String)] =
-    hc => hc.headers(names(hc)) ++ hc.withExtraHeaders(
-      ("content-type", "application/json")
-    ).extraHeaders
+object PSAConstants {
+  val PSA_ACTIVE_RELATIONSHIP_EXISTS = "PSA_ACTIVE_RELATIONSHIP_EXISTS"
 }

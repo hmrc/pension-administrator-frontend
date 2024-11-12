@@ -16,28 +16,23 @@
 
 package forms
 
-import forms.mappings.BusinessNameMapping
+import forms.mappings.{Mappings, Transforms}
 import javax.inject.Inject
 import play.api.data.Form
+import play.api.i18n.Messages
+import viewmodels.Message
 
-class BusinessNameFormProvider @Inject() extends BusinessNameMapping {
-  val companyNameLength: Int = 160
+class NINOReasonFormProvider @Inject() extends Mappings with Transforms {
 
-  def apply(
-            requiredKey: String = "businessName.error.required",
-            invalidKey: String = "businessName.error.invalid",
-            lengthKey: String = "businessName.error.length"
-           ): Form[String] =
-
+  def apply(name: String)(implicit messages: Messages): Form[String] =
     Form(
-      "value" -> text(requiredKey)
-        .verifying(
-          firstError(
-            maxLength(
-              companyNameLength,
-              errorKey = lengthKey
-            ),
-            safeText(errorKey = invalidKey)
-          )
-        ) )
+      "value" -> text(Message("whyNoNINO.error.required").withArgs(name))
+        .transform(standardTextTransform, noTransform)
+        .verifying(firstError(
+          maxLength(reasonMaxLength, errorKey = "whyNoNINO.error.length"),
+          safeText(errorKey = "whyNoNINO.error.invalid")
+        ))
+    )
+
+  private val reasonMaxLength = 160
 }
