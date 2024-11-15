@@ -24,6 +24,7 @@ import play.api.mvc.Result
 import play.api.mvc.Results._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 import scala.concurrent.{ExecutionContext, Future}
 
