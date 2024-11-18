@@ -12,7 +12,7 @@
 - [Endpoints](#endpoints)
 - [License](#license)
 
-## Overview  [↥ Back to Top](#pension-administrator-frontend)
+## Overview
 
 This is the repository for Pension Administrator Frontend. This service allows a user to register and perform duties as a pension administrator. The pension administrator is the person or organisation responsible for the overall management of a pension scheme. A user registers to become a pension scheme administrator. As a pension scheme administrator they can invite others to and remove others from a scheme. 
 
@@ -23,8 +23,7 @@ This service has a corresponding back-end microservice, namely pension-administr
 **Stubs:** https://github.com/hmrc/pensions-scheme-stubs
 
 
-
-## Requirements  [↥ Back to Top](#pension-administrator-frontend)
+## Requirements 
 This service is written in Scala and Play, so needs at least a [JRE] to run.
 
 **Node version:** 16.20.2
@@ -34,7 +33,7 @@ This service is written in Scala and Play, so needs at least a [JRE] to run.
 **Scala version:** 2.13.14
 
 
-## Running the Service  [↥ Back to Top](#pension-administrator-frontend)
+## Running the Service
 **Service Manager Profile:** PODS_ALL
 
 **Port:** 8201
@@ -51,7 +50,7 @@ In your terminal, navigate to the relevant directory and enter `sbt run`.
 Access the Authority Wizard and login with the relevant enrolment details [here](http://localhost:9949/auth-login-stub/gg-sign-in)
 
 
-## Enrolments  [↥ Back to Top](#pension-administrator-frontend)
+## Enrolments 
 There are several different options for enrolling through the auth login stub. In order to enrol as a dummy user to access the platform for local development and testing purposes, the following details must be entered on the auth login page.
 
 
@@ -120,7 +119,7 @@ To access the **Scheme Registration journey**, enter the following information:
 ---
 
 
-## Compile & Test  [↥ Back to Top](#pension-administrator-frontend)
+## Compile & Test 
 **To compile:** Run `sbt compile`
 
 **To test:** Use `sbt test`
@@ -134,7 +133,7 @@ For Journey Tests, visit the [Journey Test Repository](| Journey tests(https://g
 View the prototype [here](https://pods-event-reporting-prototype.herokuapp.com/).
 
 
-## Identity verification testing  [↥ Back to Top](#pension-administrator-frontend)
+## Identity verification testing
 
 Additional services required to test IV uplift: KEYSTORE, PLATFORM_ANALYTICS, IV_CALLVALIDATE_PROXY, IV_TEST_DATA, IDENTITY_VERIFICATION_FRONTEND  
 
@@ -151,18 +150,18 @@ Eventually we might want to move to iv-stubs, but currently
 they don't support organisations. identity_verification_stub repository.
 
 
-## Navigation and Dependent Services  [↥ Back to Top](#pension-administrator-frontend)
+## Navigation and Dependent Services 
 The Pension Administrator Frontend integrates with the Manage Pension Schemes (MPS) service and uses various stubs available on [GitHub](https://github.com/hmrc/pensions-scheme-stubs). From the Authority Wizard page you will be redirected to the dashboard. Navigate to the appropriate area by accessing items listed within the service-specific tiles on the dashboard. On the Pension Administrator frontend, an administrator can change their details, stop being an administrator and check for invitations, explore Penalties & Charges, manage and migrate pension schemes.
 
 
 There are numerous APIs implemented throughout the MPS architecture, and the relevant endpoints are illustrated below. For an overview of all PODS APIs, refer to the [PODS API Documentation](https://confluence.tools.tax.service.gov.uk/display/PODSP/PODS+API+Latest+Version).
 
 
-## Service Documentation  [↥ Back to Top](#pension-administrator-frontend)
+## Service Documentation 
 [To Do]
 Include relevant links or details to any additional, service-specific documents (e.g., stubs, testing protocols) when available. 
 
-## Endpoints  [↥ Back to Top](#pension-administrator-frontend)
+## Endpoints 
 
  
 ### Dependencies
@@ -197,7 +196,7 @@ origin	git@github.com:hmrc/personal-details-validation-frontend.git
 | Personal Details Validation Frontend | GET        | /personal-details-validation/start?completionUrl=:completionUrl&origin=test     | Start the PDV journey                                                                                     | 
 | Tax Enrolments                       | POST        | /tax-enrolments/service/:serviceName/enrolment                                  | Enrols a user synchronously for a given service name                                                      | 
 
-## License  [↥ Back to Top](#pension-administrator-frontend)
+## License 
 This code is open source software Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at:
 
 [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
