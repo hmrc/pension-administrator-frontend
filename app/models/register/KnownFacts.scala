@@ -16,7 +16,6 @@
 
 package models.register
 
-import models.register.KnownFacts
 import org.apache.pekko.util.ByteString
 import play.api.libs.json.{Format, Json}
 import play.api.libs.ws.{BodyWritable, InMemoryBody}

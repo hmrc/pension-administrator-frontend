@@ -28,6 +28,7 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 class ICacheConnector @Inject()(
                                  config: FrontendAppConfig,
