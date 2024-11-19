@@ -81,7 +81,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
     val connector = injector.instanceOf[DeregistrationConnector]
 
-    connector.canDeRegister(psaId).map(response =>
+    connector.canDeRegister.map(response =>
       response shouldBe Deregistration(canDeregister = true, isOtherPsaAttached = false)
     )
   }
@@ -97,7 +97,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     val connector = injector.instanceOf[DeregistrationConnector]
 
     recoverToSucceededIf[JsResultException] {
-      connector.canDeRegister(psaId)
+      connector.canDeRegister
     }
   }
 
@@ -112,7 +112,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     val connector = injector.instanceOf[DeregistrationConnector]
 
     recoverToSucceededIf[UpstreamErrorResponse] {
-      connector.canDeRegister(psaId)
+      connector.canDeRegister
     }
   }
 
@@ -127,7 +127,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     val connector = injector.instanceOf[DeregistrationConnector]
 
     recoverToSucceededIf[UpstreamErrorResponse] {
-      connector.canDeRegister(psaId)
+      connector.canDeRegister
     }
   }
 
@@ -157,7 +157,7 @@ object DeregistrationConnectorSpec {
 
   private val psaId = "238DAJFASS"
   private val deregisterUrl = s"/pension-administrator/deregister-psa/$psaId"
-  private val canRegisterUrl = s"/pension-administrator/can-deregister/$psaId"
+  private val canRegisterUrl = s"/pension-administrator/can-deregister-self"
 
   def errorResponse(code: String): String = {
     Json.stringify(

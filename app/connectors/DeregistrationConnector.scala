@@ -36,7 +36,7 @@ trait DeregistrationConnector {
   def stopBeingPSA(psaId: String)
                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 
-  def canDeRegister(psaId: String)
+  def canDeRegister
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration]
 }
 
@@ -68,10 +68,10 @@ class DeregistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: 
     }
   }
 
-  override def canDeRegister(psaId: String)
+  override def canDeRegister
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = {
 
-    val url = url"${config.canDeRegisterPsaUrl(psaId)}"
+    val url = url"${config.canDeRegisterPsaUrl}"
 
     httpV2Client.get(url).execute[HttpResponse].map {
       response =>
