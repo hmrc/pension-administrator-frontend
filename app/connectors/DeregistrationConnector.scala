@@ -50,6 +50,7 @@ class DeregistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: 
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
     val deregisterUrl = url"${config.deregisterPsaSelfUrl}"
+
     httpV2Client.delete(deregisterUrl).execute[HttpResponse] map {
       response =>
         response.status match {
