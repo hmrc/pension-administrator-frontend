@@ -71,7 +71,7 @@ class DeregistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: 
   override def canDeRegister
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = {
 
-    val url = url"${config.canDeRegisterPsaUrl}"
+    val url = url"${config.canDeRegisterPsaSelfUrl}"
 
     httpV2Client.get(url).execute[HttpResponse].map {
       response =>
