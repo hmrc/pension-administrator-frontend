@@ -38,7 +38,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
   "Delete" should "return successful following a successful deletion" in {
     server.stubFor(
-      delete(urlEqualTo(deregisterUrl))
+      delete(urlEqualTo(deregisterSelfUrl))
         .willReturn(
           aResponse()
             .withStatus(Status.NO_CONTENT)
@@ -48,14 +48,14 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
     val connector = injector.instanceOf[DeregistrationConnector]
 
     connector.stopBeingPSA(psaId).map {
-      _ => server.findAll(deleteRequestedFor(urlEqualTo(deregisterUrl))).size() shouldBe 1
+      _ => server.findAll(deleteRequestedFor(urlEqualTo(deregisterSelfUrl))).size() shouldBe 1
     }
   }
 
   it should "throw BadRequestException for a 400 INVALID_PAYLOAD response" in {
 
     server.stubFor(
-      delete(urlEqualTo(deregisterUrl))
+      delete(urlEqualTo(deregisterSelfUrl))
         .willReturn(
           badRequest
             .withHeader("Content-Type", "application/json")
@@ -156,7 +156,7 @@ object DeregistrationConnectorSpec {
   implicit val hc : HeaderCarrier = HeaderCarrier()
 
   private val psaId = "238DAJFASS"
-  private val deregisterUrl = s"/pension-administrator/deregister-psa/$psaId"
+  private val deregisterSelfUrl = s"/pension-administrator/deregister-psa-self"
   private val canRegisterUrl = s"/pension-administrator/can-deregister-self"
 
   def errorResponse(code: String): String = {

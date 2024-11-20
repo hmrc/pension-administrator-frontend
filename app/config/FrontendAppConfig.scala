@@ -67,9 +67,9 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
         .underlying.getString("urls.pension-administrator.subscriptionDetails")
     }"
   }"
-  lazy val deregisterPsaUrl: String = s"${servicesConfig.baseUrl("pension-administrator")}${
+  lazy val deregisterPsaSelfUrl: String = s"${servicesConfig.baseUrl("pension-administrator")}${
     runModeConfiguration
-      .underlying.getString("urls.pension-administrator.deregisterPsa")
+      .underlying.getString("urls.pension-administrator.deregisterPsaSelf")
   }"
 
   lazy val updateSubscriptionDetailsUrl: String = s"${

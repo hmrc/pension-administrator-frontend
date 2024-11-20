@@ -27,6 +27,7 @@ import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 class IFeatureToggleConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig)
   extends FeatureToggleConnector with HttpResponseHelper {
