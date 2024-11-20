@@ -110,9 +110,9 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
       runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")
   }"
 
-  def updatePsaUrl(psaId: String): String = s"${
+  def updatePsaSelfUrl: String = s"${
     servicesConfig.baseUrl("pension-administrator") +
-      runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsa").format(psaId)
+      runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsaSelf")
   }"
 
   def canDeRegisterPsaUrl: String = s"${

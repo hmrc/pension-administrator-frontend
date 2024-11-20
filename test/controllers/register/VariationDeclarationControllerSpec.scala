@@ -137,7 +137,7 @@ class VariationDeclarationControllerSpec
     "calling onAgreeAndContinue" must {
 
       "save the answer and redirect to the next page" in {
-        when(mockConnector.updatePsa(any(), any())(any(), any()))
+        when(mockConnector.updatePsa(any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200, "")))
         when(mockEmailConnector.sendEmail(
           eqTo(email),
@@ -158,7 +158,7 @@ class VariationDeclarationControllerSpec
       }
 
       "call the update psa method on the pensions connector with correct psa ID and user answers data" in {
-        when(mockConnector.updatePsa(any(), any())(any(), any()))
+        when(mockConnector.updatePsa(any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200, "")))
         when(mockEmailConnector.sendEmail(
           eqTo(email),
@@ -184,7 +184,7 @@ class VariationDeclarationControllerSpec
 
         status(result) mustBe SEE_OTHER
 
-        verify(mockConnector, times(1)).updatePsa(eqTo(psaId), eqTo(answers))(any(), any())
+        verify(mockConnector, times(1)).updatePsa(eqTo(answers))(any(), any())
        verify(mockEmailConnector, times(1))
         .sendEmail(eqTo(email), any(),
           eqTo(Map("psaName" -> businessName)), eqTo(PsaId("A1212128")),eqTo(JourneyType.VARIATION))(any(), any())
@@ -192,7 +192,7 @@ class VariationDeclarationControllerSpec
       }
 
       "redirect to Your Action Was Not Processed if ETMP call fails" in {
-        when(mockConnector.updatePsa(any(), any())(any(), any()))
+        when(mockConnector.updatePsa(any())(any(), any()))
           .thenReturn(Future.failed(new Exception))
 
         val result = controller().onClickAgree(NormalMode)(fakeRequest)
