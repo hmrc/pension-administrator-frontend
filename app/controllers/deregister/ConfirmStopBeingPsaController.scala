@@ -50,7 +50,7 @@ class ConfirmStopBeingPsaController @Inject()(
   def onPageLoad: Action[AnyContent] = (auth andThen allowAccess).async {
     implicit request =>
       request.user.alreadyEnrolledPsaId.map { psaId =>
-        deregistrationConnector.canDeRegister(psaId).flatMap {
+        deregistrationConnector.canDeRegister.flatMap {
           case deregistration if deregistration.canDeregister =>
             minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalDetails =>
               getPsaName(minimalDetails) match {

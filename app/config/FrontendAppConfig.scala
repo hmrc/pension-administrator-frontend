@@ -115,9 +115,9 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
       runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsa").format(psaId)
   }"
 
-  def canDeRegisterPsaUrl(psaId: String): String = s"${
+  def canDeRegisterPsaUrl: String = s"${
     servicesConfig.baseUrl("pension-administrator") +
-      runModeConfiguration.underlying.getString("urls.pension-administrator.canDeRegister").format(psaId)
+      runModeConfiguration.underlying.getString("urls.pension-administrator.canDeRegister")
   }"
 
   def psaEmailCallback(encryptedPsaId: String, journeyType: String) = s"${
