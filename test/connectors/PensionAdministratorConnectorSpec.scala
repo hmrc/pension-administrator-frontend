@@ -140,7 +140,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
   "updatePsa" should "return without exceptions for a valid request/response" in {
     val psaId = "testpsa"
     server.stubFor(
-      post(urlEqualTo(updatePsaUrl(psaId = psaId)))
+      post(urlEqualTo(updatePsaSelfUrl))
         .withHeader("Content-Type", equalTo("application/json"))
         .withRequestBody(equalToJson(Json.stringify(userAnswers.json)))
         .willReturn(
@@ -152,14 +152,14 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
     noException shouldBe thrownBy {
-      connector.updatePsa(psaId, userAnswers)
+      connector.updatePsa(userAnswers)
     }
   }
 
   it should "return BAD_REQUEST where invalid psaid response is received" in {
     val psaId = "testpsa"
     server.stubFor(
-      post(urlEqualTo(updatePsaUrl(psaId = psaId)))
+      post(urlEqualTo(updatePsaSelfUrl))
         .willReturn(
           badRequest
             .withHeader("Content-Type", "application/json")
@@ -169,7 +169,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
 
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
-    connector.updatePsa(psaId, userAnswers) map {
+    connector.updatePsa(userAnswers) map {
       response =>
         response.status shouldBe BAD_REQUEST
     }
@@ -179,7 +179,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
   it should "return NOT_FOUND where 404 response is received" in {
     val psaId = "testpsa"
     server.stubFor(
-      post(urlEqualTo(updatePsaUrl(psaId = psaId)))
+      post(urlEqualTo(updatePsaSelfUrl))
         .willReturn(
           notFound()
         )
@@ -187,7 +187,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
 
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
-    connector.updatePsa(psaId, userAnswers) map {
+    connector.updatePsa(userAnswers) map {
       response =>
         response.status shouldBe NOT_FOUND
     }
@@ -196,7 +196,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
   it should "return BAD_REQUEST where 400 response is received" in {
     val psaId = "testpsa"
     server.stubFor(
-      post(urlEqualTo(updatePsaUrl(psaId = psaId)))
+      post(urlEqualTo(updatePsaSelfUrl))
         .willReturn(
           badRequest()
         )
@@ -204,7 +204,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
 
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
-    connector.updatePsa(psaId, userAnswers) map {
+    connector.updatePsa(userAnswers) map {
       response =>
         response.status shouldBe BAD_REQUEST
     }
@@ -213,7 +213,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
   it should "return UpstreamErrorResponse where 500 response is received" in {
     val psaId = "testpsa"
     server.stubFor(
-      post(urlEqualTo(updatePsaUrl(psaId = psaId)))
+      post(urlEqualTo(updatePsaSelfUrl))
         .willReturn(
           serverError()
         )
@@ -221,7 +221,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
 
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
-    connector.updatePsa(psaId, userAnswers) map {
+    connector.updatePsa(userAnswers) map {
       response =>
         response.status shouldBe INTERNAL_SERVER_ERROR
     }
@@ -232,7 +232,7 @@ object PensionAdministratorConnectorSpec extends OptionValues {
 
   private val registerPsaUrl = "/pension-administrator/register-psa"
 
-  private def updatePsaUrl(psaId: String) = "/pension-administrator/psa-variation/%s".format(psaId)
+  private val updatePsaSelfUrl = "/pension-administrator/psa-variation-self"
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
