@@ -49,7 +49,7 @@ class DeregistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: 
   override def stopBeingPSA(psaId: String)
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
-    val deregisterUrl = url"${config.deregisterPsaUrl.format(psaId)}"
+    val deregisterUrl = url"${config.deregisterPsaSelfUrl}"
 
     httpV2Client.delete(deregisterUrl).execute[HttpResponse] map {
       response =>
