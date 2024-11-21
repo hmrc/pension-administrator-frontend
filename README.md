@@ -161,10 +161,8 @@ There are numerous APIs implemented throughout the MPS architecture, and the rel
 [To Do]
 Include relevant links or details to any additional, service-specific documents (e.g., stubs, testing protocols) when available. 
 
-## Endpoints 
-
- 
 ### Dependencies
+There are multiple microservices that this service depends on. These are:
 
 | Service                              | Link                                                          |
 |--------------------------------------|---------------------------------------------------------------|
@@ -176,25 +174,6 @@ Include relevant links or details to any additional, service-specific documents 
 | Personal Details Validation          | https://github.com/hmrc/personal-details-validation           |
 | Personal Details Validation Frontend | https://github.com/hmrc/personal-details-validation-frontend  |
 | Tax Enrolments                       | https://github.com/hmrc/tax-enrolments                        |
-origin	git@github.com:hmrc/personal-details-validation-frontend.git
-### Endpoints used   
-
-| Service                              | HTTP Method | Route                                                                           | Purpose                                                                                                   
-|--------------------------------------|-------------|---------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| Pension Administrator                | POST        | /pension-administrator/register-with-id/organisation                            | Returns the Business Partner Record for an organisation from ETMP based on the UTR                        |
-| Pension Administrator                | POST        | /pension-administrator/register-with-id/individual                              | Returns the Business Partner Record for an individual based on the NINO/UTR from ETMP                     |
-| Pension Administrator                | POST        | /pension-administrator/register-with-no-id/organisation                         | Registers an organisation on ETMP who does not have a UTR. Typically this will be a non- UK organisation  |
-| Pension Administrator                | POST        | /pension-administrator/register-with-no-id/individual                           | Registers an individual on ETMP who does not have a UTR/NINO. Typically this will be a non- UK individual |
-| Pension Administrator                | POST        | /pension-administrator/register-psa                                             | Subscribe a pension scheme administrator                                                                  |
-| Pension Administrator                | POST        | /pension-administrator/psa-variation/:id                                        | Update PSA Subscription Details                                                                           |
-| Pension Administrator                | GET        | /pension-administrator/can-deregister/:id                                       | Can de register a PSA                                                                                     |
-| Pension Administrator                | GET        | /pension-administrator/psa-subscription-details                                 | Returns PSA Subscription Details                                                                          |
-| Pension Administrator                | GET        | /pension-administrator/get-minimal-psa                                          | Returns PSA minimal Details                                                                               |
-| Address Lookup                       | GET         | /v2/uk/addresses                                                                | Returns a list of addresses that match a given postcode                                                   | 
-| Email                                | POST        | /hmrc/email                                                                     | Sends an email to an email address                                                                        |
-| Personal Details Validation          | GET        | /personal-details-validation/:validationId                                      | Return the validation results for the given validationId                                                  | 
-| Personal Details Validation Frontend | GET        | /personal-details-validation/start?completionUrl=:completionUrl&origin=test     | Start the PDV journey                                                                                     | 
-| Tax Enrolments                       | POST        | /tax-enrolments/service/:serviceName/enrolment                                  | Enrols a user synchronously for a given service name                                                      | 
 
 ## License 
 This code is open source software Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at:
