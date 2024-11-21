@@ -7,7 +7,7 @@
 - [Enrolments](#enrolments)
 - [Compile & Test](#compile--test)
 - [Identity Verification Testing](#identity-verification-testing)
-- [Navigation and Dependent Services](#navigation-and-dependent-services)
+- [Navigation](#navigation)
 - [Service Documentation](#service-documentation)
 - [Dependencies](#dependencies)
 - [License](#license)
@@ -150,7 +150,7 @@ Eventually we might want to move to iv-stubs, but currently
 they don't support organisations. identity_verification_stub repository.
 
 
-## Navigation and Dependent Services 
+## Navigation
 The Pension Administrator Frontend integrates with the Manage Pension Schemes (MPS) service and uses various stubs available on [GitHub](https://github.com/hmrc/pensions-scheme-stubs). From the Authority Wizard page you will be redirected to the dashboard. Navigate to the appropriate area by accessing items listed within the service-specific tiles on the dashboard. On the Pension Administrator frontend, an administrator can change their details, stop being an administrator and check for invitations, explore Penalties & Charges, manage and migrate pension schemes.
 
 
