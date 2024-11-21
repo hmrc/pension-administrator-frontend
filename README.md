@@ -8,8 +8,8 @@
 - [Compile & Test](#compile--test)
 - [Identity Verification Testing](#identity-verification-testing)
 - [Navigation](#navigation)
-- [Service Documentation](#service-documentation)
 - [Dependencies](#dependencies)
+- [Service Documentation](#service-documentation)
 - [License](#license)
 
 ## Overview
@@ -152,10 +152,6 @@ they don't support organisations. identity_verification_stub repository.
 ## Navigation
 The Pension Administrator Frontend integrates with the Manage Pension Schemes (MPS) service and uses various stubs available on [GitHub](https://github.com/hmrc/pensions-scheme-stubs). From the Authority Wizard page you will be redirected to the dashboard. Navigate to the appropriate area by accessing items listed within the service-specific tiles on the dashboard. On the Pension Administrator frontend, an administrator can change their details, stop being an administrator and check for invitations, explore Penalties & Charges, manage and migrate pension schemes.
 
-## Service Documentation 
-[To Do]
-Include relevant links or details to any additional, service-specific documents (e.g., stubs, testing protocols) when available. 
-
 ## Dependencies
 There are multiple microservices that this service depends on. These are:
 
@@ -169,6 +165,10 @@ There are multiple microservices that this service depends on. These are:
 | Personal Details Validation          | https://github.com/hmrc/personal-details-validation           |
 | Personal Details Validation Frontend | https://github.com/hmrc/personal-details-validation-frontend  |
 | Tax Enrolments                       | https://github.com/hmrc/tax-enrolments                        |
+
+## Service Documentation 
+[To Do]
+Include relevant links or details to any additional, service-specific documents (e.g., stubs, testing protocols) when available. 
 
 ## License 
 This code is open source software Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at:
