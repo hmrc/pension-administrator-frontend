@@ -1,6 +1,5 @@
 # Pension Administrator Frontend
 
-## Contents
 - [Overview](#overview)
 - [Requirements](#requirements)
 - [Running the Service](#running-the-service)
