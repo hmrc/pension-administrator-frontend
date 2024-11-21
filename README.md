@@ -9,7 +9,7 @@
 - [Identity Verification Testing](#identity-verification-testing)
 - [Navigation and Dependent Services](#navigation-and-dependent-services)
 - [Service Documentation](#service-documentation)
-- [Endpoints](#endpoints)
+- [Dependencies](#dependencies)
 - [License](#license)
 
 ## Overview
@@ -161,7 +161,7 @@ There are numerous APIs implemented throughout the MPS architecture, and the rel
 [To Do]
 Include relevant links or details to any additional, service-specific documents (e.g., stubs, testing protocols) when available. 
 
-### Dependencies
+## Dependencies
 There are multiple microservices that this service depends on. These are:
 
 | Service                              | Link                                                          |
