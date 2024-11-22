@@ -48,7 +48,7 @@ class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireM
 
     server.stubFor(
       get(urlEqualTo(minimalPsaDetailsUrl))
-        .withHeader("psaId", equalTo(psaId))
+        .withHeader("loggedInAsPsa", equalTo("true"))
         .willReturn(
           aResponse()
             .withStatus(Status.OK)
@@ -59,7 +59,7 @@ class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireM
 
     val connector = injector.instanceOf[MinimalPsaConnector]
 
-    connector.getMinimalPsaDetails(psaId).map(psa =>
+    connector.getMinimalPsaDetails().map(psa =>
       psa shouldBe expectedResponse
     )
 
@@ -69,7 +69,7 @@ class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireM
 
     server.stubFor(
       get(urlEqualTo(minimalPsaDetailsUrl))
-        .withHeader("psaId", equalTo(psaId))
+        .withHeader("loggedInAsPsa", equalTo("true"))
         .willReturn(
           badRequest
             .withHeader("Content-Type", "application/json")
@@ -79,7 +79,7 @@ class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireM
 
     val connector = injector.instanceOf[MinimalPsaConnector]
     recoverToSucceededIf[BadRequestException] {
-      connector.getMinimalPsaDetails(psaId)
+      connector.getMinimalPsaDetails()
     }
   }
 
@@ -96,14 +96,14 @@ class MinimalPsaConnectorImplSpec extends AsyncFlatSpec with Matchers with WireM
     val connector = injector.instanceOf[MinimalPsaConnector]
 
     recoverToSucceededIf[BadRequestException] {
-      connector.getMinimalPsaDetails(psaId)
+      connector.getMinimalPsaDetails()
     }
   }
 }
 
 object MinimalPsaConnectorImplSpec extends OptionValues with JsonFileReader {
 
-  private val minimalPsaDetailsUrl = "/pension-administrator/get-minimal-psa"
+  private val minimalPsaDetailsUrl = "/pension-administrator/get-minimal-details-self"
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 

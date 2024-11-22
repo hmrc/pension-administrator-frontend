@@ -34,8 +34,8 @@ class AllowAccessAction(
                          config: FrontendAppConfig
                        )(implicit val executionContext: ExecutionContext) extends ActionFilter[AuthenticatedRequest] {
 
-  protected def redirects(psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
-    minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
+  protected def redirects()(implicit hc: HeaderCarrier):Future[Option[Result]] = {
+    minimalPsaConnector.getMinimalPsaDetails().map { minimalPSA =>
       if (minimalPSA.isPsaSuspended) {
         Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad))
       } else if (minimalPSA.deceasedFlag) {
@@ -53,8 +53,8 @@ class AllowAccessAction(
     (request.user.alreadyEnrolledPsaId, mode) match {
       case (None, NormalMode | CheckMode) =>
         Future.successful(None)
-      case (Some(psaId), UpdateMode | CheckUpdateMode) =>
-        redirects(psaId)
+      case (Some(_), UpdateMode | CheckUpdateMode) =>
+        redirects()
       case (Some(_), NormalMode) if pagesAfterEnrolment(request) =>
         Future.successful(None)
       case (Some(_), NormalMode | CheckMode) =>
@@ -76,8 +76,8 @@ class AllowAccessActionNoRLSCheck(
   minimalPsaConnector: MinimalPsaConnector,
   config: FrontendAppConfig
 )(implicit override val executionContext: ExecutionContext) extends AllowAccessAction(mode, minimalPsaConnector, config) {
-  override protected def redirects(psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
-    minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
+  override protected def redirects()(implicit hc: HeaderCarrier):Future[Option[Result]] = {
+    minimalPsaConnector.getMinimalPsaDetails().map { minimalPSA =>
       if (minimalPSA.isPsaSuspended) {
         Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad))
       } else {
@@ -92,8 +92,8 @@ class AllowAccessActionNoSuspendedCheck(
   minimalPsaConnector: MinimalPsaConnector,
   config: FrontendAppConfig
 )(implicit override val executionContext: ExecutionContext) extends AllowAccessAction(mode, minimalPsaConnector, config) {
-  override protected def redirects(psaId:String)(implicit hc: HeaderCarrier):Future[Option[Result]] = {
-    minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
+  override protected def redirects()(implicit hc: HeaderCarrier):Future[Option[Result]] = {
+    minimalPsaConnector.getMinimalPsaDetails().map { minimalPSA =>
       if (minimalPSA.deceasedFlag) {
         Some(Redirect(config.youMustContactHMRCUrl))
       } else if (minimalPSA.rlsFlag) {
