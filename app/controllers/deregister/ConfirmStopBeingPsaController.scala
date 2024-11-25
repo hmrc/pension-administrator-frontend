@@ -49,10 +49,10 @@ class ConfirmStopBeingPsaController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (auth andThen allowAccess).async {
     implicit request =>
-      request.user.alreadyEnrolledPsaId.map { psaId =>
+      request.user.alreadyEnrolledPsaId.map { _ =>
         deregistrationConnector.canDeRegister.flatMap {
           case deregistration if deregistration.canDeregister =>
-            minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalDetails =>
+            minimalPsaConnector.getMinimalPsaDetails().map { minimalDetails =>
               getPsaName(minimalDetails) match {
                 case Some(psaName) => Ok(view(form, psaName))
                 case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad)
@@ -71,7 +71,7 @@ class ConfirmStopBeingPsaController @Inject()(
   def onSubmit: Action[AnyContent] = auth.async {
     implicit request =>
       request.user.alreadyEnrolledPsaId.map { psaId =>
-        minimalPsaConnector.getMinimalPsaDetails(psaId).flatMap {
+        minimalPsaConnector.getMinimalPsaDetails().flatMap {
           minimalDetails =>
             getPsaName(minimalDetails) match {
               case Some(psaName) =>
