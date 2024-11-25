@@ -138,7 +138,6 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
   }
 
   "updatePsa" should "return without exceptions for a valid request/response" in {
-    val psaId = "testpsa"
     server.stubFor(
       post(urlEqualTo(updatePsaSelfUrl))
         .withHeader("Content-Type", equalTo("application/json"))
@@ -157,7 +156,6 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
   }
 
   it should "return BAD_REQUEST where invalid psaid response is received" in {
-    val psaId = "testpsa"
     server.stubFor(
       post(urlEqualTo(updatePsaSelfUrl))
         .willReturn(
@@ -177,7 +175,6 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
 
 
   it should "return NOT_FOUND where 404 response is received" in {
-    val psaId = "testpsa"
     server.stubFor(
       post(urlEqualTo(updatePsaSelfUrl))
         .willReturn(
@@ -194,7 +191,6 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
   }
 
   it should "return BAD_REQUEST where 400 response is received" in {
-    val psaId = "testpsa"
     server.stubFor(
       post(urlEqualTo(updatePsaSelfUrl))
         .willReturn(
@@ -211,7 +207,6 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
   }
 
   it should "return UpstreamErrorResponse where 500 response is received" in {
-    val psaId = "testpsa"
     server.stubFor(
       post(urlEqualTo(updatePsaSelfUrl))
         .willReturn(
