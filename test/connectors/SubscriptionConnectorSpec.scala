@@ -40,25 +40,24 @@ class SubscriptionConnectorSpec
   "calling getSubscriptionDetails" should "return 200" in {
 
     server.stubFor(
-      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+      get(urlEqualTo(subscriptionDetailsSelfUrl))
         .willReturn(
           aResponse()
             .withStatus(OK).withBody(Json.toJson(individualJsonResponse).toString())
         )
     )
 
-    connector.getSubscriptionDetails(psaId).map {
+    connector.getSubscriptionDetailsSelf().map {
       result =>
         result shouldBe individualJsonResponse
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
     }
 
   }
 
   it should "throw badrequest if INVALID_PSAID" in {
     server.stubFor(
-      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+      get(urlEqualTo(subscriptionDetailsSelfUrl))
         .willReturn(
           aResponse()
             .withStatus(400).withBody("INVALID_PSAID")
@@ -66,17 +65,16 @@ class SubscriptionConnectorSpec
     )
 
     recoverToExceptionIf[PsaIdInvalidSubscriptionException] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionDetailsSelf()
     } map {
       _ =>
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
     }
   }
 
   it should "throw badrequest if INVALID_CORRELATIONID" in {
     server.stubFor(
-      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+      get(urlEqualTo(subscriptionDetailsSelfUrl))
         .willReturn(
           aResponse()
             .withStatus(400).withBody("INVALID_CORRELATIONID")
@@ -84,80 +82,75 @@ class SubscriptionConnectorSpec
     )
 
     recoverToExceptionIf[CorrelationIdInvalidSubscriptionException] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionDetailsSelf()
     } map {
       _ =>
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
     }
   }
 
   it should "throw Not Found" in {
     server.stubFor(
-      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+      get(urlEqualTo(subscriptionDetailsSelfUrl))
         .willReturn(
           notFound()
         )
     )
 
     recoverToExceptionIf[PsaIdNotFoundSubscriptionException] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionDetailsSelf()
     } map {
       _ =>
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
     }
   }
 
   it should "throw UpstreamErrorResponse for internal server error" in {
     server.stubFor(
-      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+      get(urlEqualTo(subscriptionDetailsSelfUrl))
         .willReturn(
           serverError()
         )
     )
 
     recoverToExceptionIf[UpstreamErrorResponse] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionDetailsSelf()
     } map {
       _ =>
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
     }
   }
 
   it should "throw Generic exception for all others" in {
     server.stubFor(
-      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+      get(urlEqualTo(subscriptionDetailsSelfUrl))
         .willReturn(
           serverError()
         )
     )
 
     recoverToExceptionIf[Exception] {
-      connector.getSubscriptionDetails(psaId)
+      connector.getSubscriptionDetailsSelf()
     } map {
       _ =>
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
     }
   }
 
   "getSubscriptionModel" should "return 200" in {
 
     server.stubFor(
-      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+      get(urlEqualTo(subscriptionDetailsSelfUrl))
         .willReturn(
           aResponse()
             .withStatus(OK).withBody(Json.toJson(psaSubscriptionIndividual).toString())
         )
     )
 
-    connector.getSubscriptionModel(psaId).map {
+    connector.getSubscriptionModel().map {
       result =>
         result shouldBe psaSubscriptionIndividual
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
     }
 
   }
@@ -165,7 +158,7 @@ class SubscriptionConnectorSpec
   it should "throw exception if failed to parse the json" in {
 
     server.stubFor(
-      get(urlEqualTo(subscriptionDetailsUrl)).withHeader("psaId", equalTo(psaId))
+      get(urlEqualTo(subscriptionDetailsSelfUrl))
         .willReturn(
           aResponse()
             .withStatus(OK).withBody(invalidResponse)
@@ -173,11 +166,10 @@ class SubscriptionConnectorSpec
     )
 
     recoverToExceptionIf[JsResultException] {
-      connector.getSubscriptionModel(psaId)
+      connector.getSubscriptionModel()
     } map {
       _ =>
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsUrl))
-          .withHeader("psaId", equalTo(psaId))).size() shouldBe 1
+        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
     }
 
   }
@@ -266,7 +258,7 @@ object SubscriptionConnectorSpec extends JsonFileReader {
 
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
   val psaId = "A1234567"
-  val subscriptionDetailsUrl = s"/pension-administrator/psa-subscription-details"
+  val subscriptionDetailsSelfUrl = s"/pension-administrator/psa-subscription-details-self"
   private val updateSubscriptionDetailsUrl = "/pension-administrator/update-psa-subscription-details"
 
   val psaIdJson: String = Json.stringify(
