@@ -565,6 +565,7 @@ companyNotFound.utrDoesntMatch.description = Your Unique Taxpayer Reference is m
 
 declarationWorkingKnowledge.title = Do you have working knowledge of pensions and pensions tax legislation?
 declarationWorkingKnowledge.heading = Do you have working knowledge of pensions and pensions tax legislation?
+declarationWorkingKnowledge.h1 = Working knowledge of pensions
 declarationWorkingKnowledge.workingKnowledge = I declare that I have a working knowledge of pension scheme administrator duties and liabilities.
 declarationWorkingKnowledge.adviser = I declare that I don’t have a working knowledge of pension scheme administrator duties and liabilities. I have appointed an adviser who does have that knowledge.
 declarationWorkingKnowledge.checkYourAnswersLabel = Do you have a working knowledge of pension scheme administrator duties?
