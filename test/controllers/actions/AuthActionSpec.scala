@@ -75,7 +75,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
       "have access to PSA page when he has chosen to act as a PSA" in {
         val optionUAJson = UserAnswers()
           .set(AdministratorOrPractitionerId)(AdministratorOrPractitioner.Administrator).asOpt.map(_.json)
-        when(mockSessionDataCacheConnector.fetch(any())(any(), any())).thenReturn(Future.successful(optionUAJson))
+        when(mockSessionDataCacheConnector.fetch()(any(), any())).thenReturn(Future.successful(optionUAJson))
         val retrievalResult = authRetrievals(enrolments = bothEnrolments)
         val authAction = new AuthenticationAction(fakeAuthConnector(retrievalResult), frontendAppConfig,
            mockSessionDataCacheConnector,
@@ -90,7 +90,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
       "redirect to cannot access as practitioner when trying to access PSA page when chosen to act as a PSP" in {
         val optionUAJson = UserAnswers()
           .set(AdministratorOrPractitionerId)(AdministratorOrPractitioner.Practitioner).asOpt.map(_.json)
-        when(mockSessionDataCacheConnector.fetch(any())(any(), any())).thenReturn(Future.successful(optionUAJson))
+        when(mockSessionDataCacheConnector.fetch()(any(), any())).thenReturn(Future.successful(optionUAJson))
         val retrievalResult = authRetrievals(enrolments = bothEnrolments)
         val authAction = new AuthenticationAction(fakeAuthConnector(retrievalResult), frontendAppConfig,
            mockSessionDataCacheConnector,
@@ -105,7 +105,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
       "redirect to administrator or practitioner page when trying to access PSA page when not chosen a role" in {
         val optionUAJson = Some(Json.obj())
-        when(mockSessionDataCacheConnector.fetch(any())(any(), any())).thenReturn(Future.successful(optionUAJson))
+        when(mockSessionDataCacheConnector.fetch()(any(), any())).thenReturn(Future.successful(optionUAJson))
         val retrievalResult = authRetrievals(enrolments = bothEnrolments)
         val authAction = new AuthenticationAction(fakeAuthConnector(retrievalResult), frontendAppConfig,
            mockSessionDataCacheConnector,

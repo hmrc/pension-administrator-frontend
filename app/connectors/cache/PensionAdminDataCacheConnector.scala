@@ -25,5 +25,5 @@ class PensionAdminDataCacheConnector @Inject()(
                                                 http: HttpClientV2
                                               ) extends ICacheConnector(config, http) {
 
-  override protected def url(id: String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/psa-data/$id"
+  override protected def url(id: String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/psa-data-self"
 }
