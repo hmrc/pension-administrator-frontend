@@ -61,7 +61,7 @@ protected class FullAuthentication @Inject()(override val authConnector: AuthCon
         Retrievals.nino
     ) {
       case Some(id) ~ Some(affinityGroup) ~ enrolments ~ Some(credentials) ~ Some(groupIdentifier) ~ nino =>
-        checkForBothEnrolments(id, request, enrolments).flatMap {
+        checkForBothEnrolments(request, enrolments).flatMap {
           case None => redirectToInterceptPages(enrolments, affinityGroup).fold {
 
             val psa = existingPSA(enrolments)
@@ -95,11 +95,11 @@ protected class FullAuthentication @Inject()(override val authConnector: AuthCon
     }
   }
 
-  private def checkForBothEnrolments[A](id: String, request: Request[A], enrolments: Enrolments): Future[Option[Result]] = {
+  private def checkForBothEnrolments[A](request: Request[A], enrolments: Enrolments): Future[Option[Result]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     (enrolments.getEnrolment("HMRC-PODS-ORG"), enrolments.getEnrolment("HMRC-PODSPP-ORG")) match {
       case (Some(_), Some(_)) =>
-        sessionDataCacheConnector.fetch(id).flatMap { optionJsValue =>
+        sessionDataCacheConnector.fetch().flatMap { optionJsValue =>
           optionJsValue.map(UserAnswers).flatMap(_.get(AdministratorOrPractitionerId)) match {
             case None => Future.successful(Some(Redirect(config.administratorOrPractitionerUrl)))
             case Some(Practitioner) =>
