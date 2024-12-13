@@ -100,7 +100,7 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
-    "redirect to the task list page when the feature toggle is enabled" in {
+    "redirect to the task list page" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
       val result = controller().onSubmit(NormalMode)(postRequest)
 
