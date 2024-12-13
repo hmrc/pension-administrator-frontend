@@ -42,6 +42,7 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
   val formProvider = new AddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider()
   val name = "Test Adviser Name"
+  private val isUkHintText = false
 
   val addressViewModel: ManualAddressViewModel = ManualAddressViewModel(
     postCall = routes.AdviserAddressController.onSubmit(NormalMode),
@@ -173,5 +174,5 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
       view
     )
 
-  def viewAsString(form: Form[_] = form): String = view(form, addressViewModel, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[_] = form): String = view(form, addressViewModel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 }

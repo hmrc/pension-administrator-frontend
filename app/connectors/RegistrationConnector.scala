@@ -25,7 +25,8 @@ import play.api.http.Status._
 import play.api.libs.json._
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, StringContextOps}
 import utils.HttpResponseHelper
 
 import java.time.LocalDate
@@ -72,7 +73,7 @@ trait RegistrationConnector {
 }
 
 @Singleton
-class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+class RegistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends RegistrationConnector
     with HttpResponseHelper {
 
@@ -89,7 +90,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
                                            ec: ExecutionContext
                                          ): Future[OrganizationRegistrationStatus] = {
 
-    val url = config.registerWithIdOrganisationUrl
+    val url = url"${config.registerWithIdOrganisationUrl}"
 
     val body = Json.obj(
       "utr" -> utr,
@@ -97,7 +98,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
       "organisationType" -> organisation.organisationType.toString
     )
 
-    http.POST[JsObject, HttpResponse](url, body) map { response =>
+    httpV2Client.post(url).withBody(body).execute[HttpResponse] map { response =>
       response.status match {
         case OK =>
           val json = Json.parse(response.body)
@@ -118,7 +119,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
           }
         case NOT_FOUND => OrganisationNotFound
         case _ =>
-          handleErrorResponse("POST", url)(response)
+          handleErrorResponse("POST", url.toString)(response)
       }
 
     } andThen {
@@ -138,8 +139,9 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
                                          ec: ExecutionContext
                                        ): Future[IndividualRegistration] = {
 
-    val url = config.registerWithIdIndividualUrl
-    http.POST[JsObject, HttpResponse](url, Json.obj("nino" -> nino)) map {
+    val url = url"${config.registerWithIdIndividualUrl}"
+
+    httpV2Client.post(url).withBody(Json.obj("nino" -> nino)).execute[HttpResponse] map {
       response =>
         response.status match {
           case OK =>
@@ -162,7 +164,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
                 throw JsResultException(errors)
             }
           case _ =>
-            handleErrorResponse("POST", url)(response)
+            handleErrorResponse("POST", url.toString)(response)
         }
     } andThen {
       case Failure(ex: NotFoundException) =>
@@ -185,8 +187,9 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
                                   ): Future[RegistrationInfo] = {
 
     val organisationRegistrant = OrganisationRegistrant(OrganisationName(name), address)
-    val url = config.registerWithNoIdOrganisationUrl
-    http.POST[JsValue, HttpResponse](url, Json.toJson(organisationRegistrant)) map {
+    val url = url"${config.registerWithNoIdOrganisationUrl}"
+
+    httpV2Client.post(url).withBody(Json.toJson(organisationRegistrant)).execute[HttpResponse] map {
       response =>
         response.status match {
           case OK =>
@@ -199,7 +202,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
               noIdentifier = true
             )
           case _ =>
-            handleErrorResponse("POST", url)(response)
+            handleErrorResponse("POST", url.toString)(response)
         }
     } andThen {
       case Failure(ex) =>
@@ -219,8 +222,8 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
                                 ): Future[RegistrationInfo] = {
 
     val registrant = RegistrationNoIdIndividualRequest(firstName, lastName, dateOfBirth, address)
-    val url = config.registerWithNoIdIndividualUrl
-    http.POST[JsValue, HttpResponse](url, Json.toJson(registrant)) map { response =>
+    val url = url"${config.registerWithNoIdIndividualUrl}"
+    httpV2Client.post(url).withBody(Json.toJson(registrant)).execute[HttpResponse] map { response =>
       response.status match {
         case OK =>
           registrationInfo(
@@ -232,7 +235,7 @@ class RegistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
             noIdentifier = true
           )
         case _ =>
-          handleErrorResponse("POST", url)(response)
+          handleErrorResponse("POST", url.toString)(response)
       }
     } andThen {
       case Failure(ex) =>

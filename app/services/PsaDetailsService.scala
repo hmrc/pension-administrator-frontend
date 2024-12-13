@@ -92,12 +92,12 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
 
   def getUserAnswers(psaId: String, externalId: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[UserAnswers] =
     userAnswersCacheConnector.fetch(externalId).flatMap {
-      case None => subscriptionConnector.getSubscriptionDetails(psaId).flatMap { getUpdatedUserAnswers }
+      case None => subscriptionConnector.getSubscriptionDetailsSelf().flatMap { getUpdatedUserAnswers }
       case Some(data) =>
         (UserAnswers(data).get(IndexId), UserAnswers(data).get(RegistrationInfoId)) match {
           case (Some(_), None) =>
             userAnswersCacheConnector.removeAll(externalId).flatMap { _ =>
-              subscriptionConnector.getSubscriptionDetails(psaId).flatMap { getUpdatedUserAnswers }
+              subscriptionConnector.getSubscriptionDetailsSelf().flatMap { getUpdatedUserAnswers }
             }
           case _ =>
             Future(UserAnswers(data))

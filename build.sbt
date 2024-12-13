@@ -29,7 +29,8 @@ lazy val appName: String = "pension-administrator-frontend"
         "models.CheckMode",
         "models.NormalMode",
         "models.UpdateMode",
-        "models.Index"
+        "models.Index",
+        "models.register._"
       ),
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
@@ -49,8 +50,7 @@ lazy val appName: String = "pension-administrator-frontend"
     .settings(
       scalacOptions ++= Seq("-feature"),
       libraryDependencies ++= AppDependencies(),
-      retrieveManaged := true,
-      update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+      retrieveManaged := true
     )
     .settings(resolvers ++= Seq(
       Resolver.jcenterRepo

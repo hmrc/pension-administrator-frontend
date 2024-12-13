@@ -239,7 +239,7 @@ class PartnershipNavigator @Inject()(
   private def registeredNameRoutes(answers: UserAnswers): Call =
     answers.get(IsRegisteredNameId) match {
       case Some(true) => ConfirmPartnershipDetailsController.onPageLoad()
-      case _ => controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
+      case _ => controllers.register.partnership.routes.PartnershipUpdateDetailsController.onPageLoad()
     }
 
   private def vatNavigation(userAnswers: UserAnswers, mode: Mode): Call = userAnswers.get(HasVATId) match {

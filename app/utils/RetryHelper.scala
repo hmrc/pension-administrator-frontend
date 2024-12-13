@@ -20,7 +20,7 @@ import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.pattern.Patterns.after
 import config.FrontendAppConfig
 import play.api.Logger
-import uk.gov.hmrc.http.HttpReads.is5xx
+import uk.gov.hmrc.http.HttpErrorFunctions.is5xx
 import uk.gov.hmrc.http.UpstreamErrorResponse
 
 import java.util.concurrent.Callable

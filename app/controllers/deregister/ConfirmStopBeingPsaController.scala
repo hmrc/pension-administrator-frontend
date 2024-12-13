@@ -28,6 +28,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.deregister.confirmStopBeingPsa
+import utils.PSAConstants.PSA_ACTIVE_RELATIONSHIP_EXISTS
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,10 +49,10 @@ class ConfirmStopBeingPsaController @Inject()(
 
   def onPageLoad: Action[AnyContent] = (auth andThen allowAccess).async {
     implicit request =>
-      request.user.alreadyEnrolledPsaId.map { psaId =>
-        deregistrationConnector.canDeRegister(psaId).flatMap {
+      request.user.alreadyEnrolledPsaId.map { _ =>
+        deregistrationConnector.canDeRegister.flatMap {
           case deregistration if deregistration.canDeregister =>
-            minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalDetails =>
+            minimalPsaConnector.getMinimalPsaDetails().map { minimalDetails =>
               getPsaName(minimalDetails) match {
                 case Some(psaName) => Ok(view(form, psaName))
                 case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad)
@@ -70,7 +71,7 @@ class ConfirmStopBeingPsaController @Inject()(
   def onSubmit: Action[AnyContent] = auth.async {
     implicit request =>
       request.user.alreadyEnrolledPsaId.map { psaId =>
-        minimalPsaConnector.getMinimalPsaDetails(psaId).flatMap {
+        minimalPsaConnector.getMinimalPsaDetails().flatMap {
           minimalDetails =>
             getPsaName(minimalDetails) match {
               case Some(psaName) =>
@@ -80,12 +81,18 @@ class ConfirmStopBeingPsaController @Inject()(
                   value => {
                     if (value) {
                       for {
-                        _ <- deregistrationConnector.stopBeingPSA(psaId)
-                        _ <- enrolments.deEnrol(request.user.groupIdentifier, psaId, request.externalId)
-                        _ <- dataCacheConnector.removeAll(request.externalId)
-                      } yield {
-                        Redirect(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad())
-                      }
+                        response <- deregistrationConnector.stopBeingPSA(psaId)
+                        result <- if (response.status == FORBIDDEN && response.body.contains(PSA_ACTIVE_RELATIONSHIP_EXISTS)) {
+                          Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad))
+                        } else {
+                          for {
+                            _ <- enrolments.deEnrol(request.user.groupIdentifier, psaId, request.externalId)
+                            _ <- dataCacheConnector.removeAll(request.externalId)
+                          } yield {
+                            Redirect(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad())
+                          }
+                        }
+                      } yield result
                     } else {
                       Future.successful(Redirect(Call("GET", appConfig.schemesOverviewUrl)))
                     }
@@ -98,8 +105,6 @@ class ConfirmStopBeingPsaController @Inject()(
       }.getOrElse(
         Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad))
       )
-
-
 
   }
 

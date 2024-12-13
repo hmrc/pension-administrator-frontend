@@ -17,11 +17,8 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import controllers.routes
-import models.ReportTechnicalIssue
 import play.api.i18n.Lang
-import play.api.mvc.Call
-import play.api.{Configuration, Environment, Mode}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
 import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -30,32 +27,23 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environment: Environment, servicesConfig: ServicesConfig) {
   def localFriendlyUrl(uri: String): String = loadConfig("host") + uri
 
-  protected def mode: Mode = environment.mode
-
   private def loadConfig(key: String) = runModeConfiguration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
-
-  lazy val timeout: String = loadConfig("session._timeoutSeconds")
-  lazy val countdown: String = loadConfig("session._CountdownInSeconds")
 
   lazy val administratorOrPractitionerUrl: String = loadConfig("urls.manage-pensions-frontend.administratorOrPractitioner")
 
   def cannotAccessPageAsPractitionerUrl(continueUrl: String): String =
     loadConfig("urls.manage-pensions-frontend.cannotAccessPageAsPractitioner").format(continueUrl)
 
-  val reportAProblemNonJSUrl: String =
-    loadConfig("microservice.services.contact-frontend.report-problem-url.non-js")
   val betaFeedbackUnauthenticatedUrl: String =
     loadConfig("microservice.services.contact-frontend.beta-feedback-url.unauthenticated")
-  val reportTechnicalIssues: ReportTechnicalIssue =
-    ReportTechnicalIssue(serviceId = "PODS", baseUrl = Some(reportAProblemNonJSUrl))
 
+  lazy val timeoutSeconds: Int = runModeConfiguration.getOptional[Int]("hmrc-timeout-dialog.timeoutSeconds").getOrElse(900)
+  lazy val countdownInSeconds: Int = runModeConfiguration.getOptional[Int]("hmrc-timeout-dialog.countdownInSeconds").getOrElse(120)
   lazy val govUkUrl: String = loadConfig("urls.gov-uk")
   lazy val pensionAdministratorUrl: String = s"${servicesConfig.baseUrl("pension-administrator")}"
   lazy val loginUrl: String = loadConfig("urls.login")
   lazy val serviceSignOut: String = loadConfig("urls.logout")
   lazy val loginContinueUrl: String = loadConfig("urls.loginContinue")
-  lazy val loginContinueUrlRelative: String = loadConfig("urls.loginContinueRelative")
-  lazy val ukJourneyContinueUrl: String = loadConfig("urls.ukJourneyContinue")
   lazy val tellHMRCChangesUrl: String = loadConfig("urls.tellHMRCChanges")
   lazy val tellCompaniesHouseCompanyChangesUrl: String = loadConfig("urls.companyChangesCompaniesHouse")
   lazy val tellHMRCCompanyChangesUrl: String = loadConfig("urls.companyChangesHMRC")
@@ -73,15 +61,15 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   lazy val emailSendForce: Boolean = runModeConfiguration.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val tpssUrl: String = loadConfig("urls.tpss")
   lazy val contactHmrcUrl: String = loadConfig("urls.contactHmrcLink")
-  lazy val subscriptionDetailsUrl: String = s"${
+  lazy val subscriptionDetailsSelfUrl: String = s"${
     s"${servicesConfig.baseUrl("pension-administrator")}${
       runModeConfiguration
-        .underlying.getString("urls.pension-administrator.subscriptionDetails")
+        .underlying.getString("urls.pension-administrator.subscriptionDetailsSelf")
     }"
   }"
-  lazy val deregisterPsaUrl: String = s"${servicesConfig.baseUrl("pension-administrator")}${
+  lazy val deregisterPsaSelfUrl: String = s"${servicesConfig.baseUrl("pension-administrator")}${
     runModeConfiguration
-      .underlying.getString("urls.pension-administrator.deregisterPsa")
+      .underlying.getString("urls.pension-administrator.deregisterPsaSelf")
   }"
 
   lazy val updateSubscriptionDetailsUrl: String = s"${
@@ -95,13 +83,7 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy"))
 
-  def routeToSwitchLanguage: String => Call = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
-
   lazy val addressLookUp: String = s"${servicesConfig.baseUrl("address-lookup")}"
-
-  lazy val personalDetailsValidation: String = s"${servicesConfig.baseUrl("personal-details-validation")}"
-
-  lazy val personalDetailsValidationFrontEnd: String = loadConfig("microservice.services.personal-details-validation-frontend.url")
 
   lazy val registerWithIdOrganisationUrl: String = s"${
     servicesConfig.baseUrl("pension-administrator") +
@@ -128,14 +110,14 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
       runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")
   }"
 
-  def updatePsaUrl(psaId: String): String = s"${
+  def updatePsaSelfUrl: String = s"${
     servicesConfig.baseUrl("pension-administrator") +
-      runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsa").format(psaId)
+      runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsaSelf")
   }"
 
-  def canDeRegisterPsaUrl(psaId: String): String = s"${
+  def canDeRegisterPsaUrl: String = s"${
     servicesConfig.baseUrl("pension-administrator") +
-      runModeConfiguration.underlying.getString("urls.pension-administrator.canDeRegister").format(psaId)
+      runModeConfiguration.underlying.getString("urls.pension-administrator.canDeRegister")
   }"
 
   def psaEmailCallback(encryptedPsaId: String, journeyType: String) = s"${
@@ -157,8 +139,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   def emailUrl = s"${s"${servicesConfig.baseUrl("email")}/${runModeConfiguration.underlying.getString("urls.email")}"}"
 
   lazy val appName: String = runModeConfiguration.underlying.getString("appName")
-
-  lazy val languageTranslationEnabled: Boolean = runModeConfiguration.getOptional[Boolean]("features.welsh-translation").getOrElse(true)
 
   lazy val retryAttempts: Int = runModeConfiguration.getOptional[Int]("retry.max.attempts").getOrElse(1)
   lazy val retryWaitMs: Int = runModeConfiguration.getOptional[Int]("retry.initial.wait.ms").getOrElse(1)

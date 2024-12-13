@@ -23,7 +23,8 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.HttpResponseHelper
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,21 +32,21 @@ import scala.util.Failure
 
 @ImplementedBy(classOf[MinimalPsaConnectorImpl])
 trait MinimalPsaConnector {
-  def getMinimalPsaDetails(psaId: String)
-                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA]
+  def getMinimalPsaDetails()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA]
 }
 
-class MinimalPsaConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+class MinimalPsaConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends MinimalPsaConnector
     with HttpResponseHelper {
 
   private val logger = Logger(classOf[MinimalPsaConnectorImpl])
 
-  override def getMinimalPsaDetails(psaId: String)
-                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = {
-    val psaHc = hc.withExtraHeaders("psaId" -> psaId)
+  override def getMinimalPsaDetails()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = {
+    val headers: Seq[(String, String)] = Seq(("loggedInAsPsa", "true"))
 
-    http.GET[HttpResponse](config.minimalPsaDetailsUrl)(implicitly, psaHc, implicitly) map { response =>
+    httpV2Client.get(url"${config.minimalPsaDetailsUrl}")
+      .setHeader(headers: _*)
+      .execute[HttpResponse] map { response =>
 
       response.status match {
         case OK =>

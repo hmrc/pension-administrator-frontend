@@ -18,23 +18,26 @@ package connectors
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import play.api.libs.json._
-import uk.gov.hmrc.http._
 import play.api.http.Status._
-import play.api.mvc.Results._
+import play.api.libs.json._
 import play.api.mvc.Result
+import play.api.mvc.Results._
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SessionDataCacheConnector @Inject()(
                                            config: FrontendAppConfig,
-                                           http: HttpClient
+                                           httpV2Client: HttpClientV2
                                          ) {
-  private def url(cacheId: String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/session-data/$cacheId"
+  private def url() = url"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/session-data-self"
 
-  def fetch(id: String)
+  def fetch()
            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[JsValue]] = {
-    http.GET[HttpResponse](url(id))
+
+    httpV2Client.get(url()).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map{ response =>
         response.status match {
@@ -49,9 +52,9 @@ class SessionDataCacheConnector @Inject()(
       }
   }
 
-  def removeAll(id: String)
+  def removeAll()
                (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
-    http.DELETE[HttpResponse](url(id)).map { _ =>
+    httpV2Client.delete(url()).execute[HttpResponse].map { _ =>
       Ok
     }
   }

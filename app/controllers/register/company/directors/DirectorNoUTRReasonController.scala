@@ -21,7 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
 import controllers.register.company.directors.routes.DirectorNoUTRReasonController
-import forms.ReasonFormProvider
+import forms.UTRReasonFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorNoUTRReasonId}
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -42,7 +42,7 @@ class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Na
                                               val allowAccess: AllowAccessActionProvider,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
-                                              formProvider: ReasonFormProvider,
+                                              formProvider: UTRReasonFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               val view: reason
                                              )(implicit val executionContext: ExecutionContext) extends ReasonController {

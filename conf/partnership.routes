@@ -86,6 +86,8 @@ POST        /:mode/add-partners                           controllers.register.p
 GET         /review                                       controllers.register.partnership.PartnershipReviewController.onPageLoad(mode: Mode = NormalMode)
 POST        /review                                       controllers.register.partnership.PartnershipReviewController.onSubmit(mode: Mode = NormalMode)
 
+GET         /update-partnership-details                   controllers.register.partnership.PartnershipUpdateDetailsController.onPageLoad(mode: Mode = NormalMode)
+
 GET         /outside-eu-eea                               controllers.register.partnership.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
 
 GET         /enter-registered-address                     controllers.register.partnership.PartnershipRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)

@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
-import forms.ReasonFormProvider
+import forms.NINOReasonFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorNoNINOReasonId}
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -41,7 +41,7 @@ class DirectorNoNINOReasonController @Inject()(@CompanyDirector val navigator: N
                                                val allowAccess: AllowAccessActionProvider,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
-                                               formProvider: ReasonFormProvider,
+                                               formProvider: NINOReasonFormProvider,
                                                val controllerComponents: MessagesControllerComponents,
                                                val view: reason
                                               )(implicit val executionContext: ExecutionContext) extends ReasonController {

@@ -61,7 +61,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
   )
 
   private val data = new FakeDataRetrievalAction(Some(directors))
-
+  private val isUkHintText = false
   private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   val view: manualAddress = app.injector.instanceOf[manualAddress]
@@ -94,7 +94,8 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
     view(
       form,
       viewModel,
-      NormalMode
+      NormalMode,
+      isUkHintText
     )(fakeRequest, messages).toString
 
   "directorAddress Controller" must {

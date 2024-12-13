@@ -23,8 +23,10 @@ import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import utils.HttpResponseHelper
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import utils.{HttpResponseHelper, PsaActiveRelationshipExistsException}
+import utils.PSAConstants.PSA_ACTIVE_RELATIONSHIP_EXISTS
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
@@ -34,11 +36,11 @@ trait DeregistrationConnector {
   def stopBeingPSA(psaId: String)
                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 
-  def canDeRegister(psaId: String)
+  def canDeRegister
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration]
 }
 
-class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+class DeregistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends DeregistrationConnector
     with HttpResponseHelper {
 
@@ -47,28 +49,31 @@ class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
   override def stopBeingPSA(psaId: String)
                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
-    val deregisterUrl = config.deregisterPsaUrl.format(psaId)
+    val deregisterUrl = url"${config.deregisterPsaSelfUrl}"
 
-    http.DELETE[HttpResponse](deregisterUrl) map {
+    httpV2Client.delete(deregisterUrl).execute[HttpResponse] map {
       response =>
         response.status match {
           case NO_CONTENT =>
             response
           case _ =>
-            handleErrorResponse("DELETE", deregisterUrl)(response)
+            handleErrorResponse("DELETE", deregisterUrl.toString)(response)
         }
+    } recover {
+      case _: PsaActiveRelationshipExistsException =>
+        HttpResponse(FORBIDDEN, PSA_ACTIVE_RELATIONSHIP_EXISTS)
     } andThen {
       case Failure(t: Throwable) =>
         logger.warn("Unable to deregister PSA", t)
     }
   }
 
-  override def canDeRegister(psaId: String)
+  override def canDeRegister
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = {
 
-    val url = config.canDeRegisterPsaUrl(psaId)
+    val url = url"${config.canDeRegisterPsaUrl}"
 
-    http.GET[HttpResponse](url).map {
+    httpV2Client.get(url).execute[HttpResponse].map {
       response =>
         response.status match {
           case OK => response.json.validate[Deregistration] match {
@@ -78,7 +83,7 @@ class DeregistrationConnectorImpl @Inject()(http: HttpClient, config: FrontendAp
               throw JsResultException(errors)
           }
           case _ =>
-            handleErrorResponse("GET", url)(response)
+            handleErrorResponse("GET", url.toString)(response)
         }
     } andThen {
       case Failure(t: Throwable) =>

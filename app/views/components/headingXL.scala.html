@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package connectors.cache
+@(
+    headingKey: String,
+    headingClass: Boolean = false,
+    headingSize: String = "govuk-heading-xl govuk-!-margin-top-0",
+    headingSizeAlt: String = "govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-5"
+)
 
-import uk.gov.hmrc.http.HeaderCarrier
-
-object CacheConnector {
-  val names: HeaderCarrier => Seq[String] =
-    hc =>
-      Seq(hc.names.authorisation, hc.names.xRequestId, hc.names.xSessionId)
-
-  val headers: HeaderCarrier => Seq[(String, String)] =
-    hc => hc.headers(names(hc)) ++ hc.withExtraHeaders(
-      ("content-type", "application/json")
-    ).extraHeaders
-}
+<h1 class="@if(headingClass == true) {@headingSizeAlt} else {@headingSize}">@Html(headingKey)</h1>

@@ -21,7 +21,7 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
 import controllers.register.administratorPartnership.partners.routes.PartnerNoUTRReasonController
-import forms.ReasonFormProvider
+import forms.UTRReasonFormProvider
 import identifiers.register.partnership.partners.{PartnerNameId, PartnerNoUTRReasonId}
 import models.requests.DataRequest
 import models.{Index, Mode}
@@ -42,7 +42,7 @@ class PartnerNoUTRReasonController @Inject()(@PartnershipPartnerV2 val navigator
                                              @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
-                                             formProvider: ReasonFormProvider,
+                                             formProvider: UTRReasonFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              val view: reason
                                             )(implicit val executionContext: ExecutionContext) extends ReasonController {

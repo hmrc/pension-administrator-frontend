@@ -76,7 +76,7 @@ object HasDirectorUTRControllerSpec {
       postCall = routes.HasDirectorUTRController.onSubmit(mode, index),
       title = Message("hasUTR.heading", Message("theDirector")),
       heading = Message("hasUTR.heading", directorName),
-      hint = Some(Message("utr.p1")),
+      hint = Some(Message("utr.combined")),
       mode = mode,
       entityName = companyName,
       returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)

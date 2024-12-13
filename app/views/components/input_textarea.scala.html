@@ -27,11 +27,11 @@
     labelClass: Option[String] = None,
     hint: Option[String] = None,
     headingIsLegend: Boolean = true,
-)
+)(implicit messages: Messages)
 
 @cssAdjust = @{
     if(headingIsLegend == true){
-        labelClass.fold("govuk-label--xl govuk-!-margin-bottom-5")(classes => classes)
+        labelClass.fold("govuk-label--l govuk-!-margin-bottom-4")(classes => classes)
     } else {
         labelClass.fold("govuk-label--m")(classes => classes)
     }
@@ -49,5 +49,5 @@
     ),
     hint = hint.map(hintValue => Hint(content = Text(hintValue))),
     classes = inputClass.fold("govuk-!-width-two-thirds")(classes => classes),
-    errorMessage = field.error.map(errorValue => ErrorMessage(content = Text(errorValue.message)))
+    errorMessage = field.error.map(errorValue => ErrorMessage(content = Text(messages(errorValue.message))))
 ))

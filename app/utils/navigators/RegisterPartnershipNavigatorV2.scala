@@ -249,7 +249,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
   private def registeredNameRoutes(answers: UserAnswers): Call =
     answers.get(IsRegisteredNameId) match {
       case Some(true) => ConfirmPartnershipDetailsController.onPageLoad()
-      case _ => controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()
+      case _ => controllers.register.administratorPartnership.routes.PartnershipUpdateDetailsController.onPageLoad()
     }
 
   private def partnerRoutes(answers: UserAnswers, mode: Mode): Call =

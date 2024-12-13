@@ -18,12 +18,13 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.UKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company._
+import models.FeatureToggleName.PsaRegistration
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,11 +47,12 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
                                                 formProvider: UKAddressFormProvider,
                                                 val countryOptions: CountryOptions,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                val view: manualAddress
+                                                val view: manualAddress,
+                                                featureToggleConnector: FeatureToggleConnector
                                                )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   override protected val form: Form[Address] = formProvider("error.country.invalid")
-
+  private val isUkHintText = true
   private def addressViewModel(mode: Mode, returnLink: Option[String]): Retrieval[ManualAddressViewModel] =
     Retrieval(
       implicit request =>
@@ -68,15 +70,21 @@ class CompanyContactAddressController @Inject()(override val appConfig: Frontend
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      addressViewModel(mode, Some(companyTaskListUrl())).retrieve.map(vm =>
-        get(CompanyContactAddressId, CompanyContactAddressListId, vm, mode)
-      )
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        addressViewModel(mode, returnLink).retrieve.map(vm =>
+          get(CompanyContactAddressId, CompanyContactAddressListId, vm, mode, isUkHintText)
+        )
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      addressViewModel(mode, Some(companyTaskListUrl())).retrieve.map(vm =>
-        post(CompanyContactAddressId, vm, mode)
-      )
+      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+        addressViewModel(mode, returnLink).retrieve.map(vm =>
+          post(CompanyContactAddressId, vm, mode, isUkHintText)
+        )
+      }
   }
 }

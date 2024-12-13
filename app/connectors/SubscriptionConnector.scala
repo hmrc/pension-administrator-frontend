@@ -22,10 +22,11 @@ import models.PsaSubscription.PsaSubscription
 import play.api.Logger
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, JsValue}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
-import utils.{HttpResponseHelper, UserAnswers}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import utils.{HttpResponseHelper, UserAnswers}
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
@@ -42,37 +43,30 @@ case class InvalidSubscriptionPayloadException() extends SubscriptionException
 @ImplementedBy(classOf[SubscriptionConnectorImpl])
 trait SubscriptionConnector {
 
-  def getSubscriptionDetails(psaId: String)
-                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue]
+  def getSubscriptionDetailsSelf()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue]
 
-  def getSubscriptionModel(psaId: String)
-                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription]
+  def getSubscriptionModel()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription]
 
-  def updateSubscriptionDetails(answers: UserAnswers)
-                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
+  def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
 }
 
-class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppConfig)
+class SubscriptionConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends SubscriptionConnector
     with HttpResponseHelper {
 
   private val logger = Logger(classOf[SubscriptionConnectorImpl])
 
-  override def getSubscriptionDetails(psaId: String)
-                                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
+  override def getSubscriptionDetailsSelf()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
 
-    val psaIdHC = hc.withExtraHeaders("psaId" -> psaId)
+    val subscriptionDetailsSelfUrl = url"${config.subscriptionDetailsSelfUrl}"
 
-    val url = config.subscriptionDetailsUrl
-
-    http.GET[HttpResponse](url)(implicitly, psaIdHC, implicitly) map { response =>
-
+    httpV2Client.get(subscriptionDetailsSelfUrl).execute[HttpResponse] map { response =>
       response.status match {
         case OK => response.json
         case BAD_REQUEST if response.body.contains("INVALID_PSAID") => throw new PsaIdInvalidSubscriptionException
         case BAD_REQUEST if response.body.contains("INVALID_CORRELATIONID") => throw new CorrelationIdInvalidSubscriptionException
         case NOT_FOUND => throw new PsaIdNotFoundSubscriptionException
-        case _ => handleErrorResponse("GET", config.subscriptionDetailsUrl)(response)
+        case _ => handleErrorResponse("GET", subscriptionDetailsSelfUrl.toString)(response)
       }
     } andThen {
       case Failure(t: Throwable) => logger.warn("Unable to get PSA subscription details", t)
@@ -80,19 +74,17 @@ class SubscriptionConnectorImpl @Inject()(http: HttpClient, config: FrontendAppC
 
   }
 
-  override def getSubscriptionModel(psaId: String)
-                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription] = {
-    getSubscriptionDetails(psaId).map(_.validate[PsaSubscription] match {
+  override def getSubscriptionModel()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription] = {
+    getSubscriptionDetailsSelf().map(_.validate[PsaSubscription] match {
       case JsSuccess(value, _) => value
       case JsError(errors) => throw JsResultException(errors)
     })
   }
 
-  def updateSubscriptionDetails(answers: UserAnswers)
-                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
-    val url = config.updateSubscriptionDetailsUrl
+  def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+    val url = url"${config.updateSubscriptionDetailsUrl}"
 
-    http.PUT[JsValue, HttpResponse](url, answers.json) map { response =>
+    httpV2Client.put(url).withBody(answers.json).execute[HttpResponse] map { response =>
       response.status match {
         case OK => ()
         case BAD_REQUEST if response.body.contains("INVALID_PAYLOAD") => throw InvalidSubscriptionPayloadException()

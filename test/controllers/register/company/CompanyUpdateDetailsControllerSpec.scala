@@ -20,11 +20,11 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models.NormalMode
 import play.api.test.Helpers._
-import views.html.register.company.companyUpdateDetails
+import views.html.register.updateDetails
 
 class CompanyUpdateDetailsControllerSpec extends ControllerSpecBase {
 
-  val view: companyUpdateDetails = app.injector.instanceOf[companyUpdateDetails]
+  val view: updateDetails = app.injector.instanceOf[updateDetails]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new CompanyUpdateDetailsController(frontendAppConfig, FakeAuthAction,
@@ -32,7 +32,7 @@ class CompanyUpdateDetailsControllerSpec extends ControllerSpecBase {
       dataRetrievalAction, new DataRequiredActionImpl,
       controllerComponents, view)
 
-  def viewAsString(): String = view()(fakeRequest, messages).toString
+  def viewAsString(): String = view("company")(fakeRequest, messages).toString
 
   "CompanyUpdateDetails Controller" must {
 

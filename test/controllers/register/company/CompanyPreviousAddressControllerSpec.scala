@@ -41,7 +41,7 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
 
   val formProvider = new UKAddressFormProvider(countryOptions)
   val form: Form[Address] = formProvider("error.country.invalid")
-
+  private val isUkHintText = true
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyPreviousAddressController(
       frontendAppConfig,
@@ -70,7 +70,8 @@ class CompanyPreviousAddressControllerSpec extends ControllerSpecBase with Scala
     view(
       form,
       viewModel,
-      NormalMode
+      NormalMode,
+      isUkHintText
     )(fakeRequest, messages).toString()
 
   "CompanyPreviousAddress Controller" must {

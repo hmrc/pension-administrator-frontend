@@ -24,13 +24,15 @@ import play.api.libs.json._
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
 import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 class ICacheConnector @Inject()(
                                  config: FrontendAppConfig,
-                                 http: HttpClient
+                                 http: HttpClientV2
                                ) extends UserAnswersCacheConnector {
 
   protected def url(id: String) = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/psa/$id"
@@ -63,7 +65,7 @@ class ICacheConnector @Inject()(
           case JsSuccess(UserAnswers(updatedJson), _) =>
             updatedJson match {
               case obj: JsObject =>
-                http.POST[JsObject, HttpResponse](url(cacheId), obj)(implicitly, implicitly, hc, implicitly).map {
+                http.post(url"${url(cacheId)}").withBody(obj).execute[HttpResponse] map {
                   response =>
                     response.status match {
                       case OK => obj
@@ -82,9 +84,8 @@ class ICacheConnector @Inject()(
 
   override def fetch(id: String
                     )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] = {
-    http.GET[HttpResponse](url(id))
-      .recoverWith(mapExceptionsToStatus)
-      .map{ response =>
+    http.get(url"${url(id)}").execute[HttpResponse]
+      .recoverWith(mapExceptionsToStatus) map{ response =>
           response.status match {
             case NOT_FOUND =>
               None
@@ -97,7 +98,7 @@ class ICacheConnector @Inject()(
   }
 
   override def removeAll(id: String)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
-    http.DELETE[HttpResponse](url(id)).map { _ =>
+    http.delete(url"${url(id)}").execute[HttpResponse] map { _ =>
       Ok
     }
   }

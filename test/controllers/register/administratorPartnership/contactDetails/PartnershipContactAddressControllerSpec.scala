@@ -47,7 +47,7 @@ class PartnershipContactAddressControllerSpec
   private val messagePrefix = "enter.address"
   private val formProvider = new UKAddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
   private val form: Form[Address] = formProvider("error.country.invalid")
-
+  private val isUkHintText = true
   private def viewModel = ManualAddressViewModel(
     postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
@@ -73,7 +73,7 @@ class PartnershipContactAddressControllerSpec
     )
 
   private def viewAsString(form: Form[_] = form): String =
-    view(form, viewModel, NormalMode)(fakeRequest, messages).toString
+    view(form, viewModel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 
   "PartnershipContactAddress Controller" must {
 

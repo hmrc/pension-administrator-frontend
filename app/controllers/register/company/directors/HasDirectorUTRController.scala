@@ -55,7 +55,7 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
       title = Message("hasUTR.heading", Message("theDirector")),
       heading = Message("hasUTR.heading", entityName),
       mode = mode,
-      hint = Some(Message("utr.p1")),
+      hint = Some(Message("utr.combined")),
       entityName = companyName,
       returnLink = returnLink
     )

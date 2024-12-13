@@ -20,6 +20,8 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.adviser.AdviserNameFormProvider
+import models.FeatureToggle.Enabled
+import models.FeatureToggleName.PsaRegistration
 import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.LimitedCompany
 import models.{NormalMode, RegistrationIdType, RegistrationInfo}
@@ -44,7 +46,8 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
     new AdviserNameController(
       frontendAppConfig, fakeAuth, new FakeNavigator(onwardRoute), dataRetrievalAction,
       requiredDataAction, formProvider, FakeUserAnswersCacheConnector,
-      controllerComponents, view
+      controllerComponents, view,
+      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
     ).onPageLoad(NormalMode)
   }
 
@@ -54,7 +57,8 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
     new AdviserNameController(
       frontendAppConfig, fakeAuth, navigator, dataRetrievalAction,
       requiredDataAction, formProvider, FakeUserAnswersCacheConnector,
-      controllerComponents, view
+      controllerComponents, view,
+      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
     ).onSubmit(NormalMode)
   }
 

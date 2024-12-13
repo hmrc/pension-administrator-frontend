@@ -19,11 +19,12 @@ package controllers.register.company.directors
 import audit.AuditService
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
+import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.register.company.directors.{DirectorPreviousAddressId, DirectorPreviousAddressListId}
+import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Address, Index, Mode}
 import play.api.data.Form
@@ -48,17 +49,20 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
                                                   countryOptions: CountryOptions,
                                                   val auditService: AuditService,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  val view: manualAddress
+                                                  val view: manualAddress,
+                                                  featureToggleConnector: FeatureToggleConnector
                                                  )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
   override protected val form: Form[Address] = formProvider()
-
+  private val isUkHintText = false
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       retrieveDirectorName(mode, index) {
         directorName =>
-          get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index),
-            addressViewModel(mode, index, directorName, Some(companyTaskListUrl())), mode)
+          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            get(DirectorPreviousAddressId(index), DirectorPreviousAddressListId(index), addressViewModel(mode, index, directorName, returnLink), mode, isUkHintText)
+          }
       }
   }
 
@@ -66,7 +70,10 @@ class DirectorPreviousAddressController @Inject()(override val appConfig: Fronte
     implicit request =>
       retrieveDirectorName(mode, index) {
         directorName =>
-          post(DirectorPreviousAddressId(index), addressViewModel(mode, index, directorName, Some(companyTaskListUrl())), mode)
+          featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
+            val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
+            post(DirectorPreviousAddressId(index), addressViewModel(mode, index, directorName, returnLink), mode, isUkHintText)
+          }
       }
   }
 
