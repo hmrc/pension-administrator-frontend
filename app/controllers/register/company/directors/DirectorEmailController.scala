@@ -17,15 +17,12 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.{DirectorEmailId, DirectorNameId}
-import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,6 +31,7 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.email
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigator,
@@ -45,8 +43,7 @@ class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigato
                                         requireData: DataRequiredAction,
                                         formProvider: EmailFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        val view: email,
-                                        featureToggleConnector: FeatureToggleConnector
+                                        val view: email
                                        )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
   private val form = formProvider()
@@ -54,18 +51,12 @@ class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigato
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
-          val returnLinkCompanyName = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-          get(DirectorEmailId(index), form, viewModel(mode, index, entityName(index), returnLinkCompanyName))
-        }
+        get(DirectorEmailId(index), form, viewModel(mode, index, entityName(index), Some(companyTaskListUrl()) ))
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
-        val returnLinkCompanyName = if (feature.isEnabled) Some(companyName) else None
-        post(DirectorEmailId(index), mode, form, viewModel(mode, index, entityName(index), returnLinkCompanyName))
-      }
+      post(DirectorEmailId(index), mode, form, viewModel(mode, index, entityName(index), Some(companyName)))
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =

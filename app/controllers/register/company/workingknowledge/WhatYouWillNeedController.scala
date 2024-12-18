@@ -16,10 +16,8 @@
 
 package controllers.register.company.workingknowledge
 
-import connectors.cache.FeatureToggleConnector
 import controllers.Retrievals
 import controllers.actions._
-import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,22 +25,18 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.workingknowledge.whatYouWillNeed
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class WhatYouWillNeedController @Inject()(authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           val controllerComponents: MessagesControllerComponents,
-                                          view: whatYouWillNeed,
-                                          featureToggleConnector: FeatureToggleConnector
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                          view: whatYouWillNeed
+                                         ) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val href = controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        Future.successful(Ok(view(href, psaName(), returnLink)))
-      }
+        Future.successful(Ok(view(href, psaName(), Some(companyTaskListUrl()))))
   }
 }

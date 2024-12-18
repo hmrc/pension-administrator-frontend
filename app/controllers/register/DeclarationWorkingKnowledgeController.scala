@@ -16,12 +16,11 @@
 
 package controllers.register
 
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
-import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.register.DeclarationWorkingKnowledge
 import play.api.data.Form
@@ -43,8 +42,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
                                                        requireData: DataRequiredAction,
                                                        formProvider: DeclarationWorkingKnowledgeFormProvider,
                                                        val controllerComponents: MessagesControllerComponents,
-                                                       val view: declarationWorkingKnowledge,
-                                                       featureToggleConnector: FeatureToggleConnector
+                                                       val view: declarationWorkingKnowledge
                                                      )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Enumerable.Implicits with Retrievals {
 
@@ -66,9 +64,8 @@ class DeclarationWorkingKnowledgeController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode, psaName(), taskListReturnLinkUrl()))),
         value => {
           for {
-            isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
             cacheMap <- dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId,
-              DeclarationWorkingKnowledge.declarationWorkingKnowledge(value, isFeatureEnabled))
+              DeclarationWorkingKnowledge.declarationWorkingKnowledge(value, isRegistrationToggleEnabled = true))
           } yield {
               Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap)))
           }

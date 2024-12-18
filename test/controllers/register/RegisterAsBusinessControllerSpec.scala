@@ -17,15 +17,12 @@
 package controllers.register
 
 import audit.testdoubles.StubSuccessfulAuditService
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.RegisterAsBusinessId
-import models.FeatureToggle.{Disabled, Enabled}
-import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
-import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
@@ -34,8 +31,6 @@ import play.api.test.Helpers.{status, _}
 import utils.testhelpers.DataCompletionBuilder._
 import utils.{Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
-
-import scala.concurrent.Future
 
 class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours with MockitoSugar {
 
@@ -49,12 +44,6 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
 
   val postRequestTrue: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", true.toString))
   val postRequestFalse: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", false.toString))
-
-  private val defaultFeatureToggleConnector = {
-    val mockFeatureToggleConnector: FeatureToggleConnector = mock[FeatureToggleConnector]
-    when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Disabled(PsaRegistration)))
-    mockFeatureToggleConnector
-  }
 
   "RegisterAsBusinessController" must {
 
@@ -114,15 +103,12 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
         auditService.verifyNothingSent() mustBe false
       }
 
-      "when feature toggle is enabled and the registration is for a company / partnership" must {
+      "when the registration is for a company / partnership" must {
 
         "route to 'continue with registration' page when the registration is for a UK company or partnership" in {
-          val mockFeatureToggleConnector = mock[FeatureToggleConnector]
-          when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
-
           val userAnswers = validData.completeCompanyDetailsUK
 
-          val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector, mockFeatureToggleConnector).
+          val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
             onSubmit(NormalMode)(postRequestTrue)
 
           status(result) mustBe SEE_OTHER
@@ -130,12 +116,9 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
         }
 
         "route to the company 'before you start' page when the registration is for a non-UK company" in {
-          val mockFeatureToggleConnector = mock[FeatureToggleConnector]
-          when(mockFeatureToggleConnector.get(any())(any(), any())).thenReturn(Future.successful(Enabled(PsaRegistration)))
-
           val userAnswers = validData.completeCompanyDetailsNonUKCustomer
 
-          val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector, mockFeatureToggleConnector).
+          val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
             onSubmit(NormalMode)(postRequestTrue)
 
           status(result) mustBe SEE_OTHER
@@ -160,8 +143,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
   private def controller(
     dataRetrievalAction: DataRetrievalAction = getEmptyData,
     authAction: AuthAction = FakeAuthAction,
-    cache: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
-    featureToggleConnector: FeatureToggleConnector = defaultFeatureToggleConnector
+    cache: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   ): RegisterAsBusinessController =
     new RegisterAsBusinessController(
       frontendAppConfig,
@@ -170,7 +152,6 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       cache,
-      featureToggleConnector,
       auditService,
       controllerComponents,
       view

@@ -16,13 +16,11 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.register.EnterVATFormProvider
 import identifiers.register.{BusinessNameId, EnterVATId}
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
 import play.api.data.Form
 import play.api.libs.json.{JsString, Json}
@@ -34,15 +32,14 @@ import views.html.enterVAT
 
 class CompanyEnterVATControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  def onwardRoute: Call = companydetails.routes.CheckYourAnswersController.onPageLoad()
 
   val view: enterVAT = app.injector.instanceOf[enterVAT]
 
   val formProvider = new EnterVATFormProvider()
   val form: Form[String] = formProvider(companyName)
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getCompany,
-                 featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyEnterVATController(
       frontendAppConfig,
       FakeUserAnswersCacheConnector,
@@ -53,8 +50,7 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      featureToggleConnector
+      view
     )
 
   private def viewModel: CommonFormWithHintViewModel =
@@ -63,7 +59,8 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
       title = Message("enterVAT.title", Message("theCompany")),
       heading = Message("enterVAT.heading", companyName),
       mode = NormalMode,
-      entityName = companyName
+      entityName = companyName,
+      returnLink =  Some(routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 
   def viewAsString(form: Form[_] = form): String = view(
@@ -103,10 +100,9 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
-    "redirect to the task list page when the feature toggle is enabled" in {
+    "redirect to the task list page" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testAnswer))
-      val featureToggleConnector = FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
-      val result = controller(featureToggleConnector = featureToggleConnector).onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(companydetails.routes.CheckYourAnswersController.onPageLoad().url)

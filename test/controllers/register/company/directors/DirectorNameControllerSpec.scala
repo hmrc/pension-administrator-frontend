@@ -19,8 +19,6 @@ package controllers.register.company.directors
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions._
 import controllers.{ControllerSpecBase, PersonNameControllerBehaviour}
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
@@ -81,8 +79,7 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
       getData = dataRetrievalAction,
       requireData = new DataRequiredActionImpl(),
       controllerComponents = controllerComponents,
-      view = view,
-      featureToggleConnector = FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view = view
     )
   }
 

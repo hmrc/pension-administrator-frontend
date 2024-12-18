@@ -22,8 +22,6 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{Address, NormalMode, TolerantAddress}
 import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
@@ -173,8 +171,7 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
       countryOptions,
       fakeAuditService,
       controllerComponents,
-      view,
-      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view
     )
 
   def viewAsString(form: Form[_] = form): String = view(form, addressViewModel, NormalMode, isUkHintText)(fakeRequest, messages).toString

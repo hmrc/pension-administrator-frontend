@@ -17,7 +17,7 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
 import controllers.register.company.routes.CompanySameContactAddressController
@@ -25,9 +25,6 @@ import forms.address.SameContactAddressFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.company._
-import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.{Inject, Singleton}
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -40,6 +37,7 @@ import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton()
@@ -54,8 +52,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
                                                     formProvider: SameContactAddressFormProvider,
                                                     val countryOptions: CountryOptions,
                                                     val controllerComponents: MessagesControllerComponents,
-                                                    val view: sameContactAddress,
-                                                    featureToggleConnector: FeatureToggleConnector
+                                                    val view: sameContactAddress
                                                    )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
   def form(name: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
@@ -86,21 +83,15 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
-        val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-        viewmodel(mode, returnLink).retrieve.map { vm =>
-          get(CompanySameContactAddressId, vm, form(vm.psaName))
-        }
+      viewmodel(mode, Some(companyTaskListUrl())).retrieve.map { vm =>
+        get(CompanySameContactAddressId, vm, form(vm.psaName))
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
-        val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-        viewmodel(mode, returnLink).retrieve.map { vm =>
-          post(CompanySameContactAddressId, CompanyAddressListId, CompanyContactAddressId, vm, mode, form(vm.psaName))
-        }
+      viewmodel(mode, Some(companyTaskListUrl())).retrieve.map { vm =>
+        post(CompanySameContactAddressId, CompanyAddressListId, CompanyContactAddressId, vm, mode, form(vm.psaName))
       }
   }
 }

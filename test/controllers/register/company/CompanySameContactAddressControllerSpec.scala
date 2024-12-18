@@ -16,14 +16,12 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.SameContactAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressId
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{NormalMode, TolerantAddress}
 import play.api.Application
 import play.api.inject.bind
@@ -78,7 +76,6 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
   "redirect to the next page on a POST request" in {
     running(_.overrides(modules(dataRetrieval) ++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(postCall)),
-        bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
       ): _*)) {
       app =>
@@ -98,8 +95,7 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
       bind[AuthAction].to(FakeAuthAction),
       bind[DataRetrievalAction].toInstance(dataRetrieval),
       bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(postCall)),
-      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-      bind[FeatureToggleConnector].toInstance(FakeFeatureToggleConnector.returns(Enabled(PsaRegistration)))
+      bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
     ).build()
 
 }

@@ -18,26 +18,23 @@ package controllers.register.adviser
 
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.PostcodeLookupController
 import forms.address.PostCodeLookupFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.{AdviserAddressPostCodeLookupId, AdviserNameId}
-import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.Adviser
-import utils.annotations.NoRLSCheck
+import utils.annotations.{Adviser, NoRLSCheck}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AdviserAddressPostCodeLookupController @Inject()(
@@ -51,8 +48,7 @@ class AdviserAddressPostCodeLookupController @Inject()(
                                                         requireData: DataRequiredAction,
                                                         formProvider: PostCodeLookupFormProvider,
                                                         val controllerComponents: MessagesControllerComponents,
-                                                        val view: postcodeLookup,
-                                                        featureToggleConnector: FeatureToggleConnector
+                                                        val view: postcodeLookup
                                                       )(implicit val executionContext: ExecutionContext) extends PostcodeLookupController {
 
   override protected def form: Form[String] = formProvider()
@@ -74,18 +70,12 @@ class AdviserAddressPostCodeLookupController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        get(viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink), mode)
-      }
+      get(viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, Some(companyTaskListUrl())), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        post(AdviserAddressPostCodeLookupId, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, returnLink), mode)
-      }
+      post(AdviserAddressPostCodeLookupId, viewModel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty, Some(companyTaskListUrl())), mode)
   }
 }
 

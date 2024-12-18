@@ -16,10 +16,8 @@
 
 package controllers.register.company.contactdetails
 
-import connectors.cache.FeatureToggleConnector
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.BusinessNameId
-import models.FeatureToggleName.PsaRegistration
 import models.NormalMode
 import models.requests.DataRequest
 import play.api.i18n.I18nSupport
@@ -30,21 +28,16 @@ import viewmodels.Message
 import views.html.register.company.contactdetails
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class WhatYouWillNeedController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            @AuthWithNoIV authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
-                                           whatYouWillNeedView: contactdetails.whatYouWillNeed,
-                                           featureToggleConnector: FeatureToggleConnector
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async { implicit request =>
-    featureToggleConnector.get(PsaRegistration.asString).map { feature =>
-      val returnLinkCompanyName = if (feature.isEnabled) Some(companyName) else None
-      Ok(whatYouWillNeedView(companyName, returnLinkCompanyName))
-    }
+                                           whatYouWillNeedView: contactdetails.whatYouWillNeed
+                                         ) extends FrontendBaseController with I18nSupport {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) { implicit request =>
+      Ok(whatYouWillNeedView(companyName, Some(companyName)))
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>

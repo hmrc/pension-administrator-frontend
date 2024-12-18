@@ -16,13 +16,11 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.{BusinessNameId, HasVATId}
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json._
@@ -34,7 +32,7 @@ import views.html.hasReferenceNumber
 
 class HasCompanyVATControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  def onwardRoute: Call = routes.CompanyRegistrationTaskListController.onPageLoad()
 
   private val formProvider = new HasReferenceNumberFormProvider()
   private val form = formProvider("hasVAT.error.required", companyName)
@@ -48,11 +46,11 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
       heading = Message("hasVAT.heading", companyName),
       mode = NormalMode,
       hint = None,
-      entityName = companyName
+      entityName = companyName,
+      returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany,
-                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new HasCompanyVATController(frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -62,8 +60,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      featureToggleConnector
+      view
     )
 
   private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =
@@ -102,8 +99,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
     "redirect to the 'company task list' page when user selection is no and feature flag is enabled" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
-      val enabledFeatureFlag = FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
-      val result = controller(featureToggleConnector = enabledFeatureFlag).onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(companydetails.routes.CheckYourAnswersController.onPageLoad().url)

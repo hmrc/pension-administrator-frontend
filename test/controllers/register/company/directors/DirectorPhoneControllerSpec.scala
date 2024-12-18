@@ -20,8 +20,6 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{Index, Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
@@ -41,8 +39,7 @@ class DirectorPhoneControllerSpec extends ControllerWithCommonBehaviour {
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorPhoneController(
     new FakeNavigator(onwardRoute), frontendAppConfig, FakeUserAnswersCacheConnector, FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
-    controllerComponents, view,
-    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+    controllerComponents, view
   )
 
   private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString

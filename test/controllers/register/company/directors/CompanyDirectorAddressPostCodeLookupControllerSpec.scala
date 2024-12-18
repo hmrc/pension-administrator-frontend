@@ -22,8 +22,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorNameId}
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models._
 import org.mockito.{ArgumentMatchers, MockitoSugar}
 import play.api.data.{Form, FormError}
@@ -71,8 +69,7 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view
     )
 
   private lazy val viewModel = PostcodeLookupViewModel(

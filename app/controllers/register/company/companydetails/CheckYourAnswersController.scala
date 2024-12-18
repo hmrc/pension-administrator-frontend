@@ -16,13 +16,11 @@
 
 package controllers.register.company.companydetails
 
-import connectors.cache.FeatureToggleConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.company
 import identifiers.register.company.{CompanyRegistrationNumberId, HasCompanyCRNId}
 import identifiers.register.{EnterPAYEId, EnterVATId, HasPAYEId, HasVATId}
-import models.FeatureToggleName.PsaRegistration
 import models.{CheckMode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,18 +30,16 @@ import viewmodels.{AnswerSection, Link, Section}
 import views.html.check_your_answers
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             @AuthWithNoIV authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            checkYourAnswersView: check_your_answers,
-                                            featureToggleConnector: FeatureToggleConnector
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                            checkYourAnswersView: check_your_answers
+                                          ) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val sections: Seq[Section] = Seq(
         AnswerSection(None,
@@ -58,10 +54,7 @@ class CheckYourAnswersController @Inject()(
         )
       )
       val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
-      featureToggleConnector.enabled(PsaRegistration).ifA (
-        ifTrue = Ok(checkYourAnswersView(sections, nextPage, Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl())),
-        ifFalse = Ok(checkYourAnswersView(sections, nextPage, None, NormalMode, isComplete = true))
-      )
+      Ok(checkYourAnswersView(sections, nextPage, Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl()))
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>
