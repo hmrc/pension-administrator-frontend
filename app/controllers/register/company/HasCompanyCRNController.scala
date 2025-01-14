@@ -17,14 +17,13 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import controllers.register.company.routes._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.HasCompanyCRNId
-import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -47,8 +46,7 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
                                         requireData: DataRequiredAction,
                                         formProvider: HasReferenceNumberFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        val view: hasReferenceNumber,
-                                        featureToggleConnector: FeatureToggleConnector
+                                        val view: hasReferenceNumber
                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String): CommonFormWithHintViewModel =
@@ -82,14 +80,9 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
             Future.successful(BadRequest(view(formWithErrors, viewModel(mode, companyName)))),
           value =>
             for {
-              isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
               newCache <- dataCacheConnector.save(request.externalId, HasCompanyCRNId, value)
             } yield {
-              if (isFeatureEnabled) {
-                Redirect(navigatorV2.nextPage(HasCompanyCRNId, mode, UserAnswers(newCache)))
-              } else {
-                Redirect(navigator.nextPage(HasCompanyCRNId, mode, UserAnswers(newCache)))
-              }
+              Redirect(navigatorV2.nextPage(HasCompanyCRNId, mode, UserAnswers(newCache)))
             }
         )
     }

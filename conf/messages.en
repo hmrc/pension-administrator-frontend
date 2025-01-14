@@ -565,6 +565,7 @@ companyNotFound.utrDoesntMatch.description = Your Unique Taxpayer Reference is m
 
 declarationWorkingKnowledge.title = Do you have working knowledge of pensions and pensions tax legislation?
 declarationWorkingKnowledge.heading = Do you have working knowledge of pensions and pensions tax legislation?
+declarationWorkingKnowledge.h1 = Working knowledge of pensions
 declarationWorkingKnowledge.workingKnowledge = I declare that I have a working knowledge of pension scheme administrator duties and liabilities.
 declarationWorkingKnowledge.adviser = I declare that I don’t have a working knowledge of pension scheme administrator duties and liabilities. I have appointed an adviser who does have that knowledge.
 declarationWorkingKnowledge.checkYourAnswersLabel = Do you have a working knowledge of pension scheme administrator duties?
@@ -993,6 +994,7 @@ confirmDelete.adviser.required = Select yes to delete {0}
 
 variationWorkingKnowledge.title = Do you have working knowledge of pensions and pensions tax legislation?
 variationWorkingKnowledge.heading = Do you have working knowledge of pensions and pensions tax legislation?
+variationWorkingKnowledge.h1 = Working knowledge of pensions
 variationWorkingKnowledge.p1 = There needs to be someone with working knowledge of pensions and pensions tax legislation involved with pension scheme administration. This could be either you as scheme administrator or a pension practitioner or provider who is helping you.
 variationWorkingKnowledge.p2 = For example, if you are an employer, or a director of an employer, who is administering pension schemes, you might not have working knowledge of pensions and pensions tax legislation.
 variationWorkingKnowledge.p3 = If you do not have that knowledge, you must be helped by a pension practitioner or provider who has the knowledge. You will need to tell HMRC who that is.

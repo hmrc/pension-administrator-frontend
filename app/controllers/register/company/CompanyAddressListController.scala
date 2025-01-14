@@ -18,15 +18,13 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.company.{CompanyAddressListId, CompanyContactAddressPostCodeLookupId,
   CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
@@ -49,8 +47,7 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
                                              requireData: DataRequiredAction,
                                              formProvider: AddressListFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
-                                             val view: addressList,
-                                             featureToggleConnector: FeatureToggleConnector
+                                             val view: addressList
                                             )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress])(implicit request: DataRequest[AnyContent]): Form[Int] =
@@ -58,29 +55,20 @@ class CompanyAddressListController @Inject()(override val appConfig: FrontendApp
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-        val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-        viewmodel(mode, returnLink).map(vm =>
-          get(vm, mode, form(vm.addresses))
-        )
-      }
+      viewModel(mode, Some(companyTaskListUrl())).map(vm =>
+        get(vm, mode, form(vm.addresses))
+      )
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-
-      featureToggleConnector.get(PsaRegistration.asString).flatMap {
-        case Enabled(_) =>
-          viewmodel(mode, Some(companyTaskListUrl())).map(vm =>
-            post(vm, CompanyPreviousAddressId, CompanyAddressListId, CompanyContactAddressPostCodeLookupId, mode,
-              form(vm.addresses), Some(navigatorV2))
-          )
-        case _ => viewmodel(mode, Some(companyTaskListUrl())).map(vm =>
-          post(vm, CompanyPreviousAddressId, CompanyAddressListId, CompanyContactAddressPostCodeLookupId, mode, form(vm.addresses)))
-      }
+      viewModel(mode, Some(companyTaskListUrl())).map(vm =>
+          post(vm, CompanyPreviousAddressId, CompanyAddressListId, CompanyContactAddressPostCodeLookupId, mode,
+            form(vm.addresses), Some(navigatorV2))
+        )
   }
 
-  def viewmodel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
+  def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): Either[Future[Result], AddressListViewModel] = {
     CompanyPreviousAddressPostCodeLookupId.retrieve.map { addresses =>
       AddressListViewModel(
         postCall = routes.CompanyAddressListController.onSubmit(mode),

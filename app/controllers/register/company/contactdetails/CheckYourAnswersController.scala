@@ -16,12 +16,10 @@
 
 package controllers.register.company.contactdetails
 
-import connectors.cache.FeatureToggleConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.company
 import identifiers.register.company._
-import models.FeatureToggleName.PsaRegistration
 import models.{CheckMode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,27 +31,22 @@ import viewmodels.{AnswerSection, Link, Section}
 import views.html.check_your_answers
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             @AuthWithNoIV authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            checkYourAnswersView: check_your_answers,
-                                            featureToggleConnector: FeatureToggleConnector
+                                            checkYourAnswersView: check_your_answers
                                           )
-                                          (implicit countryOptions: CountryOptions, ec: ExecutionContext) extends FrontendBaseController
+                                          (implicit countryOptions: CountryOptions) extends FrontendBaseController
   with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
-      featureToggleConnector.enabled(PsaRegistration).ifA (
-        ifTrue = Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage,
-          Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl())),
-        ifFalse = Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage, None, NormalMode, isComplete = true))
-      )
+      Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage,
+        Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl()))
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>

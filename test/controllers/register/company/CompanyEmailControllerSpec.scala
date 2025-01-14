@@ -20,8 +20,6 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
@@ -50,8 +48,7 @@ class CompanyEmailControllerSpec extends ControllerWithCommonBehaviour {
     new DataRequiredActionImpl,
     formProvider,
     controllerComponents,
-    view,
-    FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+    view
   )
 
   private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode), Some(companyName))(fakeRequest, messages).toString

@@ -61,15 +61,15 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
   lazy val emailSendForce: Boolean = runModeConfiguration.getOptional[Boolean]("email.force").getOrElse(false)
   lazy val tpssUrl: String = loadConfig("urls.tpss")
   lazy val contactHmrcUrl: String = loadConfig("urls.contactHmrcLink")
-  lazy val subscriptionDetailsUrl: String = s"${
+  lazy val subscriptionDetailsSelfUrl: String = s"${
     s"${servicesConfig.baseUrl("pension-administrator")}${
       runModeConfiguration
-        .underlying.getString("urls.pension-administrator.subscriptionDetails")
+        .underlying.getString("urls.pension-administrator.subscriptionDetailsSelf")
     }"
   }"
-  lazy val deregisterPsaUrl: String = s"${servicesConfig.baseUrl("pension-administrator")}${
+  lazy val deregisterPsaSelfUrl: String = s"${servicesConfig.baseUrl("pension-administrator")}${
     runModeConfiguration
-      .underlying.getString("urls.pension-administrator.deregisterPsa")
+      .underlying.getString("urls.pension-administrator.deregisterPsaSelf")
   }"
 
   lazy val updateSubscriptionDetailsUrl: String = s"${
@@ -110,14 +110,14 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
       runModeConfiguration.underlying.getString("urls.pension-administrator.registerPsa")
   }"
 
-  def updatePsaUrl(psaId: String): String = s"${
+  def updatePsaSelfUrl: String = s"${
     servicesConfig.baseUrl("pension-administrator") +
-      runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsa").format(psaId)
+      runModeConfiguration.underlying.getString("urls.pension-administrator.updatePsaSelf")
   }"
 
-  def canDeRegisterPsaUrl(psaId: String): String = s"${
+  def canDeRegisterPsaUrl: String = s"${
     servicesConfig.baseUrl("pension-administrator") +
-      runModeConfiguration.underlying.getString("urls.pension-administrator.canDeRegister").format(psaId)
+      runModeConfiguration.underlying.getString("urls.pension-administrator.canDeRegister")
   }"
 
   def psaEmailCallback(encryptedPsaId: String, journeyType: String) = s"${
@@ -150,8 +150,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environme
       runModeConfiguration.underlying.getString("urls.pension-administrator.minimalPsaDetails")
     }"
   }"
-
-  def featureToggleUrl(toggle: String): String = s"$pensionAdministratorUrl${runModeConfiguration.get[String]("urls.featureToggle").format(toggle)}"
 
   def identityValidationFrontEndEntry(relativeCompletionURL: RedirectUrl, relativeFailureURL: RedirectUrl): String = {
     val url = loadConfig("urls.iv-uplift-entry")

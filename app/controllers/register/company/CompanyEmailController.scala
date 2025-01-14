@@ -17,13 +17,11 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
 import forms.EmailFormProvider
 import identifiers.register.company.CompanyEmailId
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,8 +43,7 @@ class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator
                                        requireData: DataRequiredAction,
                                        formProvider: EmailFormProvider,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: email,
-                                       featureToggleConnector: FeatureToggleConnector
+                                       val view: email
                                       )(implicit val executionContext: ExecutionContext) extends EmailAddressController {
 
   private val form = formProvider()
@@ -54,18 +51,12 @@ class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          get(CompanyEmailId, form, viewModel(mode, returnLink))
-        }
+        get(CompanyEmailId, form, viewModel(mode, Some(companyTaskListUrl())))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.get(PsaRegistration.asString).flatMap {
-        case Enabled(_) => post(CompanyEmailId, mode, form, viewModel(mode, Some(companyTaskListUrl())), Some(navigatorV2))
-        case _ => post(CompanyEmailId, mode, form, viewModel(mode))
-      }
+      post(CompanyEmailId, mode, form, viewModel(mode, Some(companyTaskListUrl())), Some(navigatorV2))
   }
 
   private def viewModel(mode: Mode, returnLink: Option[String] = None)(implicit request: DataRequest[AnyContent]) =

@@ -17,13 +17,12 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.register.EnterNumberController
 import forms.register.company.CompanyRegistrationNumberFormProvider
 import identifiers.register.company.CompanyRegistrationNumberId
-import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -46,8 +45,7 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
                                                     requireData: DataRequiredAction,
                                                     formProvider: CompanyRegistrationNumberFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
-                                                    val view: enterNumber,
-                                                    featureToggleConnector: FeatureToggleConnector
+                                                    val view: enterNumber
                                                    )(implicit val executionContext: ExecutionContext) extends EnterNumberController with Retrievals {
 
   private val form = formProvider()
@@ -65,10 +63,7 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
-        val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-        get(CompanyRegistrationNumberId, form, viewModel(mode, returnLink))
-      }
+      get(CompanyRegistrationNumberId, form, viewModel(mode, Some(companyTaskListUrl())))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -76,20 +71,12 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          featureToggleConnector.get(PsaRegistration.asString).flatMap { feature =>
-            val returnLink = if (feature.isEnabled) Some(companyTaskListUrl()) else None
-            Future.successful(BadRequest(view(formWithErrors, viewModel(mode, returnLink))))
-          },
+          Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl()))))),
         value =>
           for {
-            isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
             newCache <- cacheConnector.save(request.externalId, CompanyRegistrationNumberId, value)
           } yield {
-            if (isFeatureEnabled) {
-              Redirect(navigatorV2.nextPage(CompanyRegistrationNumberId, mode, UserAnswers(newCache)))
-            } else {
-              Redirect(navigator.nextPage(CompanyRegistrationNumberId, mode, UserAnswers(newCache)))
-            }
+            Redirect(navigatorV2.nextPage(CompanyRegistrationNumberId, mode, UserAnswers(newCache)))
           }
       )
   }

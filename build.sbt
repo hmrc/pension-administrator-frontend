@@ -50,8 +50,7 @@ lazy val appName: String = "pension-administrator-frontend"
     .settings(
       scalacOptions ++= Seq("-feature"),
       libraryDependencies ++= AppDependencies(),
-      retrieveManaged := true,
-      update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+      retrieveManaged := true
     )
     .settings(resolvers ++= Seq(
       Resolver.jcenterRepo

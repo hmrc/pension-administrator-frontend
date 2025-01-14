@@ -17,14 +17,12 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.company.CompanyAddressYearsId
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.requests.DataRequest
 import models.{AddressYears, Mode}
 import play.api.data.Form
@@ -49,8 +47,7 @@ class CompanyAddressYearsController @Inject()(@RegisterCompany override val navi
                                               requireData: DataRequiredAction,
                                               formProvider: AddressYearsFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
-                                              val view: addressYears,
-                                              featureToggleConnector: FeatureToggleConnector
+                                              val view: addressYears
                                              )(implicit val executionContext: ExecutionContext)
   extends AddressYearsController with I18nSupport with Retrievals {
 
@@ -59,18 +56,12 @@ class CompanyAddressYearsController @Inject()(@RegisterCompany override val navi
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          get(CompanyAddressYearsId, form, viewModel(mode, returnLink), mode)
-        }
+        get(CompanyAddressYearsId, form, viewModel(mode, Some(companyTaskListUrl())), mode)
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureToggleConnector.get(PsaRegistration.asString).flatMap {
-        case Enabled(_) => post(CompanyAddressYearsId, mode, form, viewModel(mode, Some(companyTaskListUrl())), Some(navigatorV2))
-        case _ => post(CompanyAddressYearsId, mode, form, viewModel(mode))
-      }
+      post(CompanyAddressYearsId, mode, form, viewModel(mode, Some(companyTaskListUrl())), Some(navigatorV2))
   }
 
   private def viewModel(mode: Mode, returnLink: Option[String] = None)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel = {

@@ -16,12 +16,10 @@
 
 package controllers.register.company
 
-import connectors.cache.{FakeUserAnswersCacheConnector, FeatureToggleConnector}
+import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.PhoneFormProvider
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
@@ -34,13 +32,11 @@ import views.html.phone
 class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   import CompanyPhoneControllerSpec._
-
-  override val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  override def onwardRoute: Call = controllers.register.company.contactdetails.routes.CheckYourAnswersController.onPageLoad()
 
   val view: phone = app.injector.instanceOf[phone]
 
-  private def controller(dataRetrievalAction: DataRetrievalAction,
-                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+  private def controller(dataRetrievalAction: DataRetrievalAction) =
     new CompanyPhoneController(
       new FakeNavigator(onwardRoute),
       frontendAppConfig,
@@ -51,11 +47,10 @@ class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
       new DataRequiredActionImpl,
       formProvider,
       controllerComponents,
-      view,
-      featureToggleConnector
+      view
     )
 
-  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode), Some("psaName"))(fakeRequest, messages).toString
+  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode), Some("Test Company Name"))(fakeRequest, messages).toString
 
   "CompanyPhoneController" must {
 
@@ -68,11 +63,11 @@ class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
       request = postRequest
     )
 
-    "redirect to the task list page if feature toggle is enabled" in {
-      val featureToggle = FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
-      val result = controller(getCompany, featureToggle).onSubmit(NormalMode)(postRequest)
+    "redirect to the task list page" in {
+      val result = controller(getCompany).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
+
       redirectLocation(result) mustBe Some(contactdetails.routes.CheckYourAnswersController.onPageLoad().url)
     }
   }
@@ -91,7 +86,8 @@ object CompanyPhoneControllerSpec {
       title = Message("phone.title", Message("theCompany")),
       heading = Message("phone.title", companyName),
       mode = mode,
-      entityName = companyName
+      entityName = companyName,
+      returnLink = Some(routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 }
 

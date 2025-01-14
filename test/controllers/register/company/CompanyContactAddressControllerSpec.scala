@@ -20,8 +20,6 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.UKAddressFormProvider
-import models.FeatureToggle.Enabled
-import models.FeatureToggleName.PsaRegistration
 import models._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -57,8 +55,7 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
       formProvider,
       countryOptions,
       controllerComponents,
-      view,
-      FakeFeatureToggleConnector.returns(Enabled(PsaRegistration))
+      view
     )
 
   private lazy val viewModel = ManualAddressViewModel(

@@ -16,7 +16,6 @@
 
 package controllers.register.adviser
 
-import connectors.cache.FeatureToggleConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
@@ -36,8 +35,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private def sections: Seq[AnswerSection] = Seq(AnswerSection(None, adviserDetails))
 
   private val mockDataCompletion = mock[DataCompletion]
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData,
-                         featureToggleConnector: FeatureToggleConnector = FakeFeatureToggleConnector.disabled) =
+  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
 
     new CheckYourAnswersController(
       frontendAppConfig,
@@ -48,8 +46,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       mockDataCompletion,
       countryOptions,
       controllerComponents,
-      view,
-      featureToggleConnector
+      view
     )
 
   private def viewAsString(isComplete: Boolean = true): String =

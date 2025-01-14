@@ -35,7 +35,7 @@ trait PensionAdministratorConnector {
   def registerPsa(answers: UserAnswers)
                  (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse]
 
-  def updatePsa(psaId: String, answers: UserAnswers)
+  def updatePsa(answers: UserAnswers)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse]
 }
 
@@ -68,9 +68,9 @@ class PensionAdministratorConnectorImpl @Inject()(httpV2Client: HttpClientV2, co
     }
   }
 
-  def updatePsa(psaId: String, answers: UserAnswers)
+  def updatePsa(answers: UserAnswers)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
-    val url = url"${config.updatePsaUrl(psaId)}"
+    val url = url"${config.updatePsaSelfUrl}"
 
     httpV2Client.post(url).withBody(answers.json).execute[HttpResponse]
   }

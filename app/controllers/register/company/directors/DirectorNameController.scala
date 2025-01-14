@@ -17,14 +17,11 @@
 package controllers.register.company.directors
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{PersonNameController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.company.directors.DirectorNameId
-import models.FeatureToggleName.PsaRegistration
-
-import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,6 +30,7 @@ import utils.annotations.CompanyDirector
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.personName
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
@@ -43,8 +41,7 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       val view: personName,
-                                       featureToggleConnector: FeatureToggleConnector
+                                       val view: personName
                                       )(implicit val executionContext: ExecutionContext) extends PersonNameController with Retrievals with I18nSupport {
 
   private[directors] def viewModel(mode: Mode, index: Index, name: String, returnLink: Option[String]) =
@@ -65,20 +62,14 @@ class DirectorNameController @Inject()(val appConfig: FrontendAppConfig,
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.map { name =>
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          Future.successful(get(id(index), viewModel(mode, index, name, returnLink), mode))
-        }
+        Future.successful(get(id(index), viewModel(mode, index, name, Some(companyTaskListUrl())), mode))
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.map { name =>
-        featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-          val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-          post(id(index), viewModel(mode, index, name, returnLink), mode)
-        }
+        post(id(index), viewModel(mode, index, name, Some(companyTaskListUrl())), mode)
       }
   }
 }

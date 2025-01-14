@@ -35,8 +35,8 @@ class AllowAccessForNonSuspendedUsersAction @Inject()(minimalPsaConnector: Minim
 
     request.user.alreadyEnrolledPsaId match {
       case None => Future.successful(None)
-      case Some(psaId) =>
-        minimalPsaConnector.getMinimalPsaDetails(psaId).map { minimalPSA =>
+      case Some(_) =>
+        minimalPsaConnector.getMinimalPsaDetails().map { minimalPSA =>
             if(minimalPSA.isPsaSuspended) {
               Some(Redirect(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad))
             } else if (minimalPSA.deceasedFlag) {

@@ -26,6 +26,7 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     submit_button: components.submit_button,
+    inset_text: components.inset_text,
     input_yes_no: components.input_yes_no
 )
 
@@ -39,16 +40,16 @@
             @govukErrorSummary(ErrorSummary().withFormErrorsAsText(form))
         }
 
-        @components.heading(messages("declarationWorkingKnowledge.heading"))
+        @components.heading(messages("declarationWorkingKnowledge.h1"))
 
         @components.paragraph_text(messages("declarationWorkingKnowledge.p1"))
         @components.paragraph_text(messages("declarationWorkingKnowledge.p2"))
-        @components.paragraph_text(messages("declarationWorkingKnowledge.p3"))
+        @inset_text(messages("declarationWorkingKnowledge.p3"))
 
         @input_yes_no(
             field = form("value"),
             label = messages("declarationWorkingKnowledge.heading"),
-            labelClass = Some("govuk-visually-hidden")
+            labelClass = Some("govuk-fieldset__legend--m")
         )
 
         @submit_button("site.save_and_continue")

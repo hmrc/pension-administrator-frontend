@@ -24,6 +24,7 @@ import play.api.mvc.Result
 import play.api.mvc.Results._
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,12 +32,12 @@ class SessionDataCacheConnector @Inject()(
                                            config: FrontendAppConfig,
                                            httpV2Client: HttpClientV2
                                          ) {
-  private def url(cacheId: String) = url"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/session-data/$cacheId"
+  private def url() = url"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/session-data-self"
 
-  def fetch(id: String)
+  def fetch()
            (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[JsValue]] = {
 
-    httpV2Client.get(url(id)).execute[HttpResponse]
+    httpV2Client.get(url()).execute[HttpResponse]
       .recoverWith(mapExceptionsToStatus)
       .map{ response =>
         response.status match {
@@ -51,9 +52,9 @@ class SessionDataCacheConnector @Inject()(
       }
   }
 
-  def removeAll(id: String)
+  def removeAll()
                (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
-    httpV2Client.delete(url(id)).execute[HttpResponse].map { _ =>
+    httpV2Client.delete(url()).execute[HttpResponse].map { _ =>
       Ok
     }
   }

@@ -92,7 +92,7 @@ class VariationDeclarationController @Inject()(appConfig: FrontendAppConfig,
           .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.declarationWorkingKnowledge(workingKnowledge, isRegistrationToggleEnabled = false))
           .asOpt.getOrElse(UserAnswers(json))
 
-        pensionAdministratorConnector.updatePsa(psaId, answers).flatMap { psaResponse =>
+        pensionAdministratorConnector.updatePsa(answers).flatMap { psaResponse =>
           sendEmail(psaId).map { _ =>
             if (psaResponse.status == 200) {
               Redirect(navigator.nextPage(DeclarationId, mode, UserAnswers(json)))

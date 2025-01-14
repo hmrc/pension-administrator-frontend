@@ -148,7 +148,7 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
         override def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
           Future.successful(HttpResponse(FORBIDDEN, Json.obj("reason" -> PSA_ACTIVE_RELATIONSHIP_EXISTS).toString))
 
-        override def canDeRegister(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] =
+        override def canDeRegister(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] =
           Future.successful(Deregistration(canDeregister = true, isOtherPsaAttached = false))
       }
 
@@ -208,11 +208,11 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
     override def stopBeingPSA(psaId: String)(
       implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT, ""))
 
-    override def canDeRegister(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = Future.successful(deregistration)
+    override def canDeRegister(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = Future.successful(deregistration)
   }
 
   private def fakeMinimalPsaConnector(minimalPsaDetailsIndividual: MinimalPSA): MinimalPsaConnector = new MinimalPsaConnector {
-    override def getMinimalPsaDetails(psaId: String)(
+    override def getMinimalPsaDetails()(
       implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = Future.successful(minimalPsaDetailsIndividual)
   }
 

@@ -17,14 +17,13 @@
 package controllers.register.company
 
 import config.FrontendAppConfig
-import connectors.cache.{FeatureToggleConnector, UserAnswersCacheConnector}
+import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.company.routes._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyTradingOverAYearId
-import models.FeatureToggleName.PsaRegistration
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -47,8 +46,7 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
                                                   requireData: DataRequiredAction,
                                                   formProvider: HasReferenceNumberFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  val view: hasReferenceNumber,
-                                                  featureToggleConnector: FeatureToggleConnector
+                                                  val view: hasReferenceNumber
                                                  )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
@@ -70,10 +68,7 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
       implicit request =>
         BusinessNameId.retrieve.map {
           companyName =>
-            featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-              val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-              get(CompanyTradingOverAYearId, form(companyName), viewModel(mode, returnLink))
-            }
+            get(CompanyTradingOverAYearId, form(companyName), viewModel(mode, Some(companyTaskListUrl())))
         }
     }
 
@@ -84,20 +79,12 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
           companyName => {
             form(companyName).bindFromRequest().fold(
               (formWithErrors: Form[_]) =>
-                featureToggleConnector.enabled(PsaRegistration).flatMap { featureEnabled =>
-                  val returnLink = if (featureEnabled) Some(companyTaskListUrl()) else None
-                  Future.successful(BadRequest(view(formWithErrors, viewModel(mode, returnLink))))
-                },
+                Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl()))))),
               value => {
                 for {
-                  isFeatureEnabled <- featureToggleConnector.get(PsaRegistration.asString).map(_.isEnabled)
                   newCache <- dataCacheConnector.save(request.externalId, CompanyTradingOverAYearId, value)
                 } yield {
-                  if (isFeatureEnabled) {
-                    Redirect(navigatorV2.nextPage(CompanyTradingOverAYearId, mode, UserAnswers(newCache)))
-                  } else {
-                    Redirect(navigator.nextPage(CompanyTradingOverAYearId, mode, UserAnswers(newCache)))
-                  }
+                  Redirect(navigatorV2.nextPage(CompanyTradingOverAYearId, mode, UserAnswers(newCache)))
                 }
               }
             )
