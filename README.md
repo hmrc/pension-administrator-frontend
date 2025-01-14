@@ -165,10 +165,6 @@ There are multiple microservices that this service depends on. These are:
 | Personal Details Validation Frontend | https://github.com/hmrc/personal-details-validation-frontend  |
 | Tax Enrolments                       | https://github.com/hmrc/tax-enrolments                        |
 
-## Service Documentation 
-[To Do]
-Include relevant links or details to any additional, service-specific documents (e.g., stubs, testing protocols) when available. 
-
 ## Note on terminology
 The terms scheme reference number and submission reference number (SRN) are interchangeable within the PODS codebase; some downstream APIs use scheme reference number, some use submission reference number, probably because of oversight on part of the technical teams who developed these APIs. This detail means the same thing, the reference number that was returned from ETMP when the scheme details were submitted.
 
