@@ -212,6 +212,7 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
   }
 
   private def fakeMinimalPsaConnector(minimalPsaDetailsIndividual: MinimalPSA): MinimalPsaConnector = new MinimalPsaConnector {
+    @annotation.nowarn
     override def getMinimalPsaDetails()(
       implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = Future.successful(minimalPsaDetailsIndividual)
   }
