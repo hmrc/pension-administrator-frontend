@@ -1,3 +1,6 @@
+$govuk-assets-path: "/register-as-pension-scheme-administrator/assets/lib/govuk-frontend/dist/govuk/assets/";
+$hmrc-assets-path: "/register-as-pension-scheme-administrator/assets/lib/hmrc-frontend/hmrc/assets";
+
 @import "lib/govuk-frontend/dist/govuk/base";
 @import 'location-autocomplete.min';
 @import "_timeout-dialog.scss";
