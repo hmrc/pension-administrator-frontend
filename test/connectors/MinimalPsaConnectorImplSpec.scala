@@ -107,17 +107,15 @@ object MinimalPsaConnectorImplSpec extends OptionValues with JsonFileReader {
 
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
-  private val psaId = "test-psa-id"
-
-
-    def errorResponse(code: String): String = {
-      Json.stringify(
-        Json.obj(
-          "code" -> code,
-          "reason" -> s"Reason for $code"
-        )
+  def errorResponse(code: String): String = {
+    Json.stringify(
+      Json.obj(
+        "code" -> code,
+        "reason" -> s"Reason for $code"
       )
-    }
+    )
+  }
+
   private val validMinimalPsaDetailsResponse = readJsonFromFile("/data/validMinimalPsaDetails.json").toString()
   private val email = "test@test.com"
   private val expectedResponse = MinimalPSA(email,isPsaSuspended = false,None,Some(IndividualDetails("First",Some("Middle"),"Last")),

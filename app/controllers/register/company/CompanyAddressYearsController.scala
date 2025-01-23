@@ -64,7 +64,7 @@ class CompanyAddressYearsController @Inject()(@RegisterCompany override val navi
       post(CompanyAddressYearsId, mode, form, viewModel(mode, Some(companyTaskListUrl())), Some(navigatorV2))
   }
 
-  private def viewModel(mode: Mode, returnLink: Option[String] = None)(implicit request: DataRequest[AnyContent]): AddressYearsViewModel = {
+  private def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): AddressYearsViewModel = {
     AddressYearsViewModel(
       postCall = routes.CompanyAddressYearsController.onSubmit(mode),
       title = Message("addressYears.heading", Message("theCompany")),

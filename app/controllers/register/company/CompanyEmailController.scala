@@ -59,7 +59,7 @@ class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator
       post(CompanyEmailId, mode, form, viewModel(mode, Some(companyTaskListUrl())), Some(navigatorV2))
   }
 
-  private def viewModel(mode: Mode, returnLink: Option[String] = None)(implicit request: DataRequest[AnyContent]) =
+  private def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.CompanyEmailController.onSubmit(mode),
       title = Message("email.title", Message("theCompany")),
