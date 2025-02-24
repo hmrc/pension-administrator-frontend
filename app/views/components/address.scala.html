@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-@import utils.InputOption
+@import _root_.utils.InputOption
 
 @this(
     govukInput: GovukInput,
@@ -60,7 +60,7 @@
     ).withFormField(form("postCode"))
 )
 
-@if(isUkHintText == true){
+@if(isUkHintText){
     <p class="govuk-body">@messages("error.country.invalid.uk")</p>
     <p class="govuk-body">
         @messages("nonUKAdministrator.p2.1")
