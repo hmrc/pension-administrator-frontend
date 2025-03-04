@@ -904,7 +904,7 @@ outsideEuEea.body = Only {0} registered inside the European Union and European E
 nonUKAdministrator.title            = You cannot register as a scheme administrator
 nonUKAdministrator.heading          = You cannot register as a scheme administrator
 nonUKAdministrator.p1               = You must be a UK resident.
-nonUKAdministrator.p2.1             = To register, email
+nonUKAdministrator.p2.1             = Please email
 nonUKAdministrator.p2.email         = administrationpensions@hmrc.gov.uk
 nonUKAdministrator.p2.emailSubject  = ?subject=Non-UK
 nonUKAdministrator.p2.2             = and include ‘Non-UK’ in the title.
