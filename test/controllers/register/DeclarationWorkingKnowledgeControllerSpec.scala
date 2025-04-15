@@ -53,7 +53,7 @@ class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase with 
       view
     )
 
-  def viewAsString(form: Form[_] = form): String = view(form, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = form): String = view(form, NormalMode)(fakeRequest, messages).toString
 
   "DeclarationWorkingKnowledge Controller" must {
 

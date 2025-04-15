@@ -53,7 +53,7 @@ class PartnerConfirmPreviousAddressController @Inject()(val appConfig: FrontendA
   private def viewModel(mode: Mode, index: Index) =
     Retrieval(
       implicit request =>
-        (PartnerNameId(index) and ExistingCurrentAddressId(index)).retrieve.map {
+        PartnerNameId(index).and(ExistingCurrentAddressId(index)).retrieve.map {
           case details ~ address =>
             SameContactAddressViewModel(
               controllers.register.administratorPartnership.partners.routes.PartnerConfirmPreviousAddressController.onSubmit(index),

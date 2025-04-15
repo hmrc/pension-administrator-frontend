@@ -48,6 +48,6 @@ object RegisterWithIdResponse {
   implicit lazy val formatsIndividualRegisterWithIdResponse: Format[IndividualRegisterWithIdResponse] = (
     (JsPath \ "individual").format[TolerantIndividual] and
       (JsPath \ "address").format[TolerantAddress]
-    ) (IndividualRegisterWithIdResponse.apply, unlift(IndividualRegisterWithIdResponse.unapply))
+    ) (IndividualRegisterWithIdResponse.apply, unlift(o => Some(Tuple.fromProductTyped(o))))
 
 }

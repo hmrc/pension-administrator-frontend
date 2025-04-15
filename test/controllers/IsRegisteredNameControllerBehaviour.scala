@@ -133,7 +133,7 @@ object IsRegisteredNameControllerBehaviour extends SpecBase {
   def testForm(): Form[Boolean] =
     new IsRegisteredNameFormProvider()(requiredKey)
 
-  def viewAsString(base: ControllerSpecBase, form: Form[_], viewModel: CommonFormViewModel): String =
+  def viewAsString(base: ControllerSpecBase, form: Form[?], viewModel: CommonFormViewModel): String =
     view(form, viewModel)(base.fakeRequest, base.messages).toString()
 
 }

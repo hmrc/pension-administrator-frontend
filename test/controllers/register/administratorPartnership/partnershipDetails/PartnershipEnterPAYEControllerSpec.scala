@@ -42,7 +42,7 @@ class PartnershipEnterPAYEControllerSpec extends ControllerWithCommonBehaviour {
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     controllerComponents, view)
 
-  private def enterPAYEView(form: Form[_]): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
+  private def enterPAYEView(form: Form[?]): String = view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "PartnershipEnterPAYEController" must {
 

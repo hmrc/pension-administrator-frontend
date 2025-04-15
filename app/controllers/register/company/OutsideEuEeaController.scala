@@ -43,7 +43,7 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      (BusinessNameId and CompanyAddressId).retrieve.map {
+      BusinessNameId.and(CompanyAddressId).retrieve.map {
         case name ~ address =>
           Future.successful(Ok(view(name, countryOptions.getCountryNameFromCode(address.toAddress.get), "companies")))
       }.left.map(_ =>

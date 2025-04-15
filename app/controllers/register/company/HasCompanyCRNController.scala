@@ -76,7 +76,7 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         form(companyName).bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             Future.successful(BadRequest(view(formWithErrors, viewModel(mode, companyName)))),
           value =>
             for {

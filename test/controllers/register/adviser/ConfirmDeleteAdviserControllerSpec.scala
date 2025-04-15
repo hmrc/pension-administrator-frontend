@@ -60,7 +60,7 @@ class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehav
       view = view
     )
 
-  def viewAsString(form: Form[_] = form): String = view(form, viewModel(adviserName), NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = form): String = view(form, viewModel(adviserName), NormalMode)(fakeRequest, messages).toString
 
   "ConfirmDeleteAdviserController" must {
 

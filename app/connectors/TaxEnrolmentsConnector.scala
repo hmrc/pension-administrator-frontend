@@ -109,7 +109,7 @@ class TaxEnrolmentsConnectorImpl @Inject()(
     val deEnrolmentUrl = url"${config.taxDeEnrolmentUrl.format(groupId, enrolmentKey)}"
     logger.debug(s"Calling de-enrol URL:$deEnrolmentUrl")
     httpV2Client.delete(deEnrolmentUrl).execute[HttpResponse] flatMap {
-      case response if response.status equals NO_CONTENT =>
+      case response if response.status.equals(NO_CONTENT) =>
         auditService.sendEvent(DeregisterEvent(userId, psaId))
         Future.successful(response)
       case response =>

@@ -82,7 +82,7 @@ class ConfirmDeleteAdviserController @Inject()(
         AdviserNameId.retrieve.map { name =>
           val form = formProvider(name)
           form.bindFromRequest().fold(
-            (formWithErrors: Form[_]) =>
+            (formWithErrors: Form[?]) =>
               Future.successful(BadRequest(view(formWithErrors, viewModel(name), mode))),
             value => {
               cacheConnector.save(request.externalId, ConfirmDeleteAdviserId, value) flatMap {

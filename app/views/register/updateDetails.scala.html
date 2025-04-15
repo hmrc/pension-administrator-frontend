@@ -22,7 +22,7 @@
     appConfig: FrontendAppConfig
 )
 
-@(entity: String)(implicit request: Request[_], messages: Messages)
+@(entity: String)(implicit request: Request[?], messages: Messages)
 
 @openLink1 = {<a class="govuk-link" id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}
 @openLink2 = {<a class="govuk-link" id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}

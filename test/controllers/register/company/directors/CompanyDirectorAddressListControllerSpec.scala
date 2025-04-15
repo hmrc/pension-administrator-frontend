@@ -91,7 +91,7 @@ class CompanyDirectorAddressListControllerSpec extends ControllerSpecBase {
       Message("manual.entry.link")
     )
 
-  def viewAsString(form: Form[_] = form): String =
+  def viewAsString(form: Form[?] = form): String =
     view(
       form,
       viewModel,

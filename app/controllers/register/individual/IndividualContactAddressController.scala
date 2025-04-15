@@ -56,7 +56,7 @@ class IndividualContactAddressController @Inject()(val appConfig: FrontendAppCon
                                                    val view: manualAddress
                                                   )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
-  private[controllers] val postCall = routes.IndividualContactAddressController.onSubmit _
+  private[controllers] val postCall = routes.IndividualContactAddressController.onSubmit
   private val isUkHintText = false
   protected val form: Form[Address] = formProvider("error.country.invalid")
 

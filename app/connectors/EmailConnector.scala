@@ -21,11 +21,12 @@ import config.FrontendAppConfig
 import models.SendEmailRequest
 import models.enumeration.JourneyType
 import play.api.Logger
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
@@ -73,7 +74,7 @@ class EmailConnectorImpl @Inject()(
 
     val jsonData = Json.toJson(sendEmailReq)
 
-    httpV2Client.post(emailServiceUrl).withBody(jsonData).execute[HttpResponse] map { response =>
+    (httpV2Client.post(emailServiceUrl).withBody(jsonData).execute[HttpResponse] map { response =>
       response.status match {
         case ACCEPTED =>
           EmailSent
@@ -81,7 +82,7 @@ class EmailConnectorImpl @Inject()(
           logger.warn(s"Sending Email failed with response status $status")
           EmailNotSent
       }
-    } recoverWith logExceptions
+    }).recoverWith(logExceptions)
   }
 
   private def logExceptions: PartialFunction[Throwable, Future[EmailStatus]] = {

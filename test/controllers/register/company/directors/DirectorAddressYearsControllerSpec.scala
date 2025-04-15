@@ -78,7 +78,7 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
       legend = Message("addressYears.heading", directorName)
     )
 
-  private def viewAsString(form: Form[_] = form) =
+  private def viewAsString(form: Form[?] = form) =
     view(
       form,
       viewModel,

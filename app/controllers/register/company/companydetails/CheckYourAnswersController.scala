@@ -39,7 +39,7 @@ class CheckYourAnswersController @Inject()(
                                             checkYourAnswersView: check_your_answers
                                           ) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val sections: Seq[Section] = Seq(
         AnswerSection(None,

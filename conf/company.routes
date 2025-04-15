@@ -92,11 +92,11 @@ POST        /is-vat-registered                            controllers.register.c
 GET         /:mode/is-vat-registered                      controllers.register.company.HasCompanyVATController.onPageLoad(mode: Mode)
 POST        /:mode/is-vat-registered                      controllers.register.company.HasCompanyVATController.onSubmit(mode: Mode)
 
-GET         /company-name                                 controllers.register.company.CompanyNameController.onPageLoad
-POST        /company-name                                 controllers.register.company.CompanyNameController.onSubmit
+GET         /company-name                                 controllers.register.company.CompanyNameController.onPageLoad()
+POST        /company-name                                 controllers.register.company.CompanyNameController.onSubmit()
 
-GET         /unique-taxpayer-reference                    controllers.register.company.CompanyUTRController.onPageLoad
-POST        /unique-taxpayer-reference                    controllers.register.company.CompanyUTRController.onSubmit
+GET         /unique-taxpayer-reference                    controllers.register.company.CompanyUTRController.onPageLoad()
+POST        /unique-taxpayer-reference                    controllers.register.company.CompanyUTRController.onSubmit()
 
 GET         /vat-registration-number                      controllers.register.company.CompanyEnterVATController.onPageLoad(mode: Mode = NormalMode)
 POST        /vat-registration-number                      controllers.register.company.CompanyEnterVATController.onSubmit(mode: Mode = NormalMode)
@@ -113,8 +113,8 @@ POST        /paye-reference                               controllers.register.c
 GET         /:mode/paye-reference                         controllers.register.company.CompanyEnterPAYEController.onPageLoad(mode: Mode)
 POST        /:mode/paye-reference                         controllers.register.company.CompanyEnterPAYEController.onSubmit(mode: Mode)
 
-GET         /confirm-name                                 controllers.register.company.CompanyIsRegisteredNameController.onPageLoad
-POST        /confirm-name                                 controllers.register.company.CompanyIsRegisteredNameController.onSubmit
+GET         /confirm-name                                 controllers.register.company.CompanyIsRegisteredNameController.onPageLoad()
+POST        /confirm-name                                 controllers.register.company.CompanyIsRegisteredNameController.onSubmit()
 
 GET         /contact-email-address                        controllers.register.company.CompanyEmailController.onPageLoad(mode: Mode = NormalMode)
 POST        /contact-email-address                        controllers.register.company.CompanyEmailController.onSubmit(mode: Mode = NormalMode)
@@ -133,8 +133,8 @@ POST        /:mode/trading-time                           controllers.register.c
 
 GET         /task-list                                    controllers.register.company.CompanyRegistrationTaskListController.onPageLoad(mode: Mode = NormalMode)
 
-GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad
-GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad
+GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad()
+GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad()
 
 GET         /business-matching/check-your-answers         controllers.register.company.BusinessMatchingCheckYourAnswersController.onPageLoad()
 POST        /business-matching/check-your-answers         controllers.register.company.BusinessMatchingCheckYourAnswersController.onSubmit()

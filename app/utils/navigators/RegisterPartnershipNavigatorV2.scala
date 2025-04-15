@@ -45,9 +45,9 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
 // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
 
-    case BusinessUTRId => nextPageOrNonUkRedirect(ua, PartnershipNameController.onPageLoad)
+    case BusinessUTRId => nextPageOrNonUkRedirect(ua, PartnershipNameController.onPageLoad())
 
-    case BusinessNameId => nextPageOrNonUkRedirect(ua, PartnershipIsRegisteredNameController.onPageLoad)
+    case BusinessNameId => nextPageOrNonUkRedirect(ua, PartnershipIsRegisteredNameController.onPageLoad())
 
     case IsRegisteredNameId => nextPageOrNonUkRedirect(ua, registeredNameRoutes(ua))
 

@@ -46,9 +46,9 @@ class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
   private def businessTypeRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(BusinessTypeId) match {
       case Some(BusinessType.UnlimitedCompany) =>
-        controllers.register.company.routes.CompanyUTRController.onPageLoad
+        controllers.register.company.routes.CompanyUTRController.onPageLoad()
       case Some(BusinessType.LimitedCompany) =>
-        controllers.register.company.routes.CompanyUTRController.onPageLoad
+        controllers.register.company.routes.CompanyUTRController.onPageLoad()
       case Some(BusinessType.LimitedLiabilityPartnership) =>
         controllers.register.partnership.routes.PartnershipUTRController.onPageLoad
       case Some(BusinessType.LimitedPartnership) =>
@@ -88,9 +88,9 @@ class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
   private def declarationWorkingKnowledgeWhatYouWillRoutes(userAnswers: UserAnswers) = {
     userAnswers.get(BusinessTypeId) match {
       case Some(BusinessType.LimitedCompany) | Some(BusinessType.UnlimitedCompany) =>
-        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
+        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad()
       case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
-        controllers.register.administratorPartnership.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
+        controllers.register.administratorPartnership.workingknowledge.routes.WhatYouWillNeedController.onPageLoad()
       case None => // Must be individual
         controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
       case _ => controllers.routes.SessionExpiredController.onPageLoad

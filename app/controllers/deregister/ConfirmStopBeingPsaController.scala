@@ -59,16 +59,16 @@ class ConfirmStopBeingPsaController @Inject()(
               }
             }
           case deregistration if deregistration.isOtherPsaAttached =>
-            Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad))
+            Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad()))
           case _ =>
-            Future.successful(Redirect(controllers.deregister.routes.MustInviteOthersController.onPageLoad))
+            Future.successful(Redirect(controllers.deregister.routes.MustInviteOthersController.onPageLoad()))
         }
       }.getOrElse(
         Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad))
       )
   }
 
-  def onSubmit: Action[AnyContent] = auth.async {
+  def onSubmit(): Action[AnyContent] = auth.async {
     implicit request =>
       request.user.alreadyEnrolledPsaId.map { psaId =>
         minimalPsaConnector.getMinimalPsaDetails().flatMap {
@@ -83,7 +83,7 @@ class ConfirmStopBeingPsaController @Inject()(
                       for {
                         response <- deregistrationConnector.stopBeingPSA(psaId)
                         result <- if (response.status == FORBIDDEN && response.body.contains(PSA_ACTIVE_RELATIONSHIP_EXISTS)) {
-                          Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad))
+                          Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad()))
                         } else {
                           for {
                             _ <- enrolments.deEnrol(request.user.groupIdentifier, psaId, request.externalId)

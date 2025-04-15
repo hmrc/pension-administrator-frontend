@@ -75,7 +75,7 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(onwardRoute)),
           bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
           bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
-        ):_*)) {
+        )*)) {
         app =>
           when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())) thenReturn Future.successful(Seq(address))
           val controller = app.injector.instanceOf[AdviserAddressPostCodeLookupController]

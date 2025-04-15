@@ -64,7 +64,7 @@ class CompanyIsRegisteredNameController @Inject()(override val appConfig: Fronte
       name =>
         CommonFormViewModel(
           NormalMode,
-          routes.CompanyIsRegisteredNameController.onSubmit,
+          routes.CompanyIsRegisteredNameController.onSubmit(),
           Message("isRegisteredName.company.title", name),
           Message("isRegisteredName.company.heading", name)
         )

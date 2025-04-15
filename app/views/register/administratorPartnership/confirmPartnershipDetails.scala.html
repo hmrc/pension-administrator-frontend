@@ -29,7 +29,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], name: String, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], name: String, address: TolerantAddress, countryOptions: CountryOptions)(implicit request: Request[?], messages: Messages)
 
 @hintHtml = {
     @components.tolerant_address("partnershipAddress", address, countryOptions)

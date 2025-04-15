@@ -25,7 +25,7 @@ object ReferenceValue {
   implicit val reads: Reads[ReferenceValue] =
     ((JsPath \ "value").read[String] and
       ((JsPath \ "isEditable").read[Boolean] orElse Reads.pure(false))
-      ) (ReferenceValue.apply _)
+      ) (ReferenceValue.apply)
 
   implicit val writes: Writes[ReferenceValue] = Json.writes[ReferenceValue]
 

@@ -55,7 +55,7 @@ class DirectorConfirmPreviousAddressController @Inject()(val appConfig: Frontend
   private def viewmodel(mode: Mode, index: Index): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
-        (DirectorNameId(index) and directors.ExistingCurrentAddressId(index)).retrieve.map {
+        DirectorNameId(index).and(directors.ExistingCurrentAddressId(index)).retrieve.map {
           case details ~ address =>
             SameContactAddressViewModel(
               controllers.register.company.directors.routes.DirectorConfirmPreviousAddressController.onSubmit(index),

@@ -30,7 +30,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], psaNameOpt: Option[String], mode : Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], psaNameOpt: Option[String], mode : Mode)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = titleWithErrors(form, messages("variationWorkingKnowledge.title"))) {
 

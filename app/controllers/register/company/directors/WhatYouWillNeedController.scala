@@ -36,7 +36,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
                                           view: whatYouWillNeed
                                          ) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val href = routes.DirectorNameController.onPageLoad(NormalMode, request.userAnswers.directorsCount)
       Future.successful(Ok(view(href, companyName)))

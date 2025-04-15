@@ -22,7 +22,7 @@
     button_link: components.button_link
 )
 
-@(psaDetails: Option[viewmodels.PsaViewDetailsViewModel])(implicit request: Request[_], messages: Messages)
+@(psaDetails: Option[viewmodels.PsaViewDetailsViewModel])(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("yourActionWasNotProcessed.title")) {
 

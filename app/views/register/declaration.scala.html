@@ -19,7 +19,7 @@
     button_link: components.button_link
 )
 
-@(workingKnowledge: Boolean)(implicit request: Request[_], messages: Messages)
+@(workingKnowledge: Boolean)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("declaration.title")) {
 

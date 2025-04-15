@@ -23,7 +23,7 @@
     submit_button: components.submit_button
 )
 
-@(companyName: String, directors: Seq[String])(implicit request: Request[_], messages: Messages)
+@(companyName: String, directors: Seq[String])(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("companyReview.title")) {
 

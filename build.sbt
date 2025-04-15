@@ -10,14 +10,16 @@ lazy val appName: String = "pension-administrator-frontend"
   lazy val root =  (project in file("."))
     .disablePlugins(JUnitXmlReportPlugin)
     .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
-    .settings(scalaSettings: _*)
-    .settings(defaultSettings(): _*)
-    .settings(inConfig(Test)(testSettings): _*)
-    .settings(scalaVersion := "2.13.12")
+    .settings(scalaSettings*)
+    .settings(defaultSettings()*)
+    .settings(inConfig(Test)(testSettings)*)
+    .settings(scalaVersion := "3.6.2")
     .settings(
       scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-      scalacOptions += "-Wconf:src=routes/.*:s"
+      scalacOptions += "-Wconf:src=routes/.*:s",
+      scalacOptions += "-Wconf:msg=Flag.*repeatedly:s"
     )
+    .settings(scalacOptions ++= Seq("-Wconf:msg=Flag.*repeatedly:s"))
     .settings(
       Test / parallelExecution := true
     )
@@ -74,7 +76,7 @@ lazy val appName: String = "pension-administrator-frontend"
       uglify / includeFilter := GlobFilter("pensionadministratorfrontend-*.js")
     )
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork        := true,
   javaOptions ++= Seq(
     "-Dconfig.resource=test.application.conf"

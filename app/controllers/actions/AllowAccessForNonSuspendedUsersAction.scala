@@ -38,7 +38,7 @@ class AllowAccessForNonSuspendedUsersAction @Inject()(minimalPsaConnector: Minim
       case Some(_) =>
         minimalPsaConnector.getMinimalPsaDetails().map { minimalPSA =>
             if(minimalPSA.isPsaSuspended) {
-              Some(Redirect(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad))
+              Some(Redirect(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad()))
             } else if (minimalPSA.deceasedFlag) {
               Some(Redirect(config.youMustContactHMRCUrl))
             } else if (minimalPSA.rlsFlag) {

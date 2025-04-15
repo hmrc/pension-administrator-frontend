@@ -118,7 +118,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
     "redirect to the next page on POST of valid data" in {
       running(_.overrides(modules(dataRetrievalAction)++
         Seq[GuiceableModule](
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))*)) {
         app =>
           val controller = app.injector.instanceOf[AdviserAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
@@ -134,7 +134,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
     "redirect to Session Expired controller when no session data exists on a POST request" in {
       running(_.overrides(modules(dontGetAnyData)++
         Seq[GuiceableModule](
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))*)) {
         app =>
           val controller = app.injector.instanceOf[AdviserAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
@@ -150,7 +150,7 @@ class AdviserAddressListControllerSpec extends ControllerSpecBase {
     "redirect to Adviser Address Post Code Lookup if no address data on a POST request" in {
       running(_.overrides(modules(getEmptyData)++
         Seq[GuiceableModule](
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))*)) {
         app =>
           val controller = app.injector.instanceOf[AdviserAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")

@@ -64,7 +64,7 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      (BusinessNameId and DirectorNameId(index)).retrieve.map {
+      BusinessNameId.and(DirectorNameId(index)).retrieve.map {
         case psaName ~ directorName =>
           Future(get(id(index), viewModel(mode, index, psaName, directorName.fullName, Some(companyTaskListUrl()))))
       }
@@ -72,7 +72,7 @@ class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      (BusinessNameId and DirectorNameId(index)).retrieve.map {
+      BusinessNameId.and(DirectorNameId(index)).retrieve.map {
         case psaName ~ directorName =>
           post(id(index), viewModel(mode, index, psaName, directorName.fullName, Some(companyTaskListUrl())))
       }

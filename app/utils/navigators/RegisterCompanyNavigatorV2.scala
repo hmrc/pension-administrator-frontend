@@ -41,7 +41,7 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
   // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
 
-    case BusinessUTRId => nextPageOrNonUkRedirect(ua, routes.CompanyNameController.onPageLoad)
+    case BusinessUTRId => nextPageOrNonUkRedirect(ua, routes.CompanyNameController.onPageLoad())
 
     case BusinessNameId => nextPageOrNonUkRedirect(ua, regionBasedNameNavigation(ua))
 
@@ -259,7 +259,7 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
   private def regionBasedNameNavigation(answers: UserAnswers): Call = {
     answers.get(AreYouInUKId) match {
       case Some(false) => routes.CompanyRegisteredAddressController.onPageLoad()
-      case Some(true) => routes.CompanyIsRegisteredNameController.onPageLoad
+      case Some(true) => routes.CompanyIsRegisteredNameController.onPageLoad()
       case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }

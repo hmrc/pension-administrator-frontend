@@ -63,7 +63,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
     running(_.overrides(modules(dataRetrieval)++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-      ):_*)) {
+      )*)) {
       app =>
         val controller = app.injector.instanceOf[PartnershipAddressYearsController]
 

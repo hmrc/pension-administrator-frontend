@@ -28,7 +28,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], psaNameOpt: Option[String], displayReturnLink: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], psaNameOpt: Option[String], displayReturnLink: Boolean)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = titleWithErrors(form, messages("declarationFitAndProper.variations.title"))) {
 

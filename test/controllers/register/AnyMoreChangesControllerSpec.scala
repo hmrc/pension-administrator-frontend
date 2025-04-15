@@ -47,7 +47,7 @@ class AnyMoreChangesControllerSpec extends ControllerSpecBase {
       view
     )
 
-  private def viewAsString(form: Form[_] = form) = view(form, None)(fakeRequest, messages).toString
+  private def viewAsString(form: Form[?] = form) = view(form, None)(fakeRequest, messages).toString
 
   "AnyMoreChangesController" must {
 

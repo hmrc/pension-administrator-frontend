@@ -57,7 +57,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
 
   def form(name: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
 
-  private[controllers] val postCall = CompanySameContactAddressController.onSubmit _
+  private[controllers] val postCall = CompanySameContactAddressController.onSubmit
   private[controllers] val title: Message = "company.same.contact.address.title"
   private[controllers] val heading: Message = "company.same.contact.address.heading"
   private[controllers] val confirmText: Message = "same.contact.address.confirm.text"
@@ -65,7 +65,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
   private def viewmodel(mode: Mode, returnLink: Option[String]): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
-        (CompanyAddressId and BusinessNameId).retrieve.map {
+        CompanyAddressId.and(BusinessNameId).retrieve.map {
           case address ~ name =>
             SameContactAddressViewModel(
               postCall(mode),

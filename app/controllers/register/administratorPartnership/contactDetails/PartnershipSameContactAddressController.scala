@@ -73,7 +73,7 @@ class PartnershipSameContactAddressController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      (PartnershipRegisteredAddressId and BusinessNameId).retrieve.map {
+      PartnershipRegisteredAddressId.and(BusinessNameId).retrieve.map {
         case address ~ name =>
           get(PartnershipSameContactAddressId, viewmodel(mode, address, name), form(name))
       }
@@ -81,7 +81,7 @@ class PartnershipSameContactAddressController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      (PartnershipRegisteredAddressId and BusinessNameId).retrieve.map {
+      PartnershipRegisteredAddressId.and(BusinessNameId).retrieve.map {
         case address ~ name =>
           post(
             PartnershipSameContactAddressId,

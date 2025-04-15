@@ -46,15 +46,15 @@ class RegisterNavigatorV2 @Inject()(appConfig: FrontendAppConfig
   private def businessTypeRoutes(userAnswers: UserAnswers): Call = {
     userAnswers.get(BusinessTypeId) match {
       case Some(BusinessType.UnlimitedCompany) =>
-        controllers.register.company.routes.CompanyUTRController.onPageLoad
+        controllers.register.company.routes.CompanyUTRController.onPageLoad()
       case Some(BusinessType.LimitedCompany) =>
-        controllers.register.company.routes.CompanyUTRController.onPageLoad
+        controllers.register.company.routes.CompanyUTRController.onPageLoad()
       case Some(BusinessType.LimitedLiabilityPartnership) =>
-        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad
+        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad()
       case Some(BusinessType.LimitedPartnership) =>
-        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad
+        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad()
       case Some(BusinessType.BusinessPartnership) =>
-        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad
+        controllers.register.administratorPartnership.routes.PartnershipUTRController.onPageLoad()
       case _ => controllers.routes.SessionExpiredController.onPageLoad
     }
   }
@@ -66,7 +66,7 @@ class RegisterNavigatorV2 @Inject()(appConfig: FrontendAppConfig
       case Some(DeclarationWorkingKnowledge.Adviser) =>
         controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
       case Some(DeclarationWorkingKnowledge.WhatYouWillNeed) =>
-        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
+        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad()
       case Some(DeclarationWorkingKnowledge.TaskList) =>
         controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
       case None => controllers.routes.SessionExpiredController.onPageLoad

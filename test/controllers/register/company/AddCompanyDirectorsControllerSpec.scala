@@ -65,7 +65,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAn
     }
 
     "redirect to the task list page when less than maximum directors exist and valid data is submitted if PSA registration toggle is on" in {
-      val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe): _*)
+      val getRelevantData = dataRetrievalAction(Seq.fill(maxDirectors - 1)(johnDoe)*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
@@ -112,7 +112,7 @@ class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAn
     "redirect to the next page when maximum active directors exist and the user submits" in {
       val directorDetails = Seq.fill(maxDirectors)(johnDoe) ++ Seq(joeBloggs.copy(isDeleted = true))
 
-      val getRelevantData = dataRetrievalAction(directorDetails: _*)
+      val getRelevantData = dataRetrievalAction(directorDetails*)
 
       val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
 
@@ -184,7 +184,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
   val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None), UserAnswers(Json.obj()))
 
-  private def viewAsStringV2(form: Form[_] = form, directorsComplete: Seq[Person] = Nil, directorsInComplete: Seq[Person] = Nil) =
+  private def viewAsStringV2(form: Form[?] = form, directorsComplete: Seq[Person] = Nil, directorsInComplete: Seq[Person] = Nil) =
     viewv2(form, NormalMode, directorsComplete,directorsInComplete, None)(request, messages).toString
 
   // scalastyle:off magic.number

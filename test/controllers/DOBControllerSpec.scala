@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DOBControllerSpec extends ControllerSpecBase {
   private val dobView: dob = app.injector.instanceOf[dob]
 
-  private def viewAsString(form: Form[_] = form): String =
+  private def viewAsString(form: Form[?] = form): String =
     dobView(
       form,
       viewModel

@@ -51,7 +51,7 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
                                                      val view: manualAddress
                                                     )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
-  private[controllers] val postCall = routes.PartnershipPreviousAddressController.onSubmit _
+  private[controllers] val postCall = routes.PartnershipPreviousAddressController.onSubmit
   private val isUkHintText = true
   protected val form: Form[Address] = formProvider("error.country.invalid")
 

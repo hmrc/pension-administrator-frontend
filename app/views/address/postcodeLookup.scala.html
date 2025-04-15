@@ -29,7 +29,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @link = {
     <a href="@viewmodel.manualInputCall.url" class="govuk-link" target="_self" data-sso="false">

@@ -42,7 +42,7 @@ class CheckYourAnswersController @Inject()(
                                           (implicit countryOptions: CountryOptions) extends FrontendBaseController
   with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
       Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage,

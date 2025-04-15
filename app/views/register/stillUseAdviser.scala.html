@@ -31,11 +31,11 @@
 )
 
 @(
-    form: Form[_],
+    form: Form[?],
     mode: Mode,
     psaNameOpt:Option[String],
     displayReturnLink: Boolean,
-    personWithWorkingKnowledgeName:String)(implicit request: Request[_], messages: Messages)
+    personWithWorkingKnowledgeName:String)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = titleWithErrors(form, messages("stillUseAdviser.title"))) {
 

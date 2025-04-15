@@ -51,7 +51,7 @@ class DeregistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: 
 
     val deregisterUrl = url"${config.deregisterPsaSelfUrl}"
 
-    httpV2Client.delete(deregisterUrl).execute[HttpResponse] map {
+    (httpV2Client.delete(deregisterUrl).execute[HttpResponse] map {
       response =>
         response.status match {
           case NO_CONTENT =>
@@ -62,10 +62,10 @@ class DeregistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: 
     } recover {
       case _: PsaActiveRelationshipExistsException =>
         HttpResponse(FORBIDDEN, PSA_ACTIVE_RELATIONSHIP_EXISTS)
-    } andThen {
+    }).andThen({
       case Failure(t: Throwable) =>
         logger.warn("Unable to deregister PSA", t)
-    }
+    })
   }
 
   override def canDeRegister

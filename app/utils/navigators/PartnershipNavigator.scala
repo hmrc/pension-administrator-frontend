@@ -47,7 +47,7 @@ class PartnershipNavigator @Inject()(
   //scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
 
-    case BusinessUTRId => nextPageOrNonUkRedirect(ua, PartnershipNameController.onPageLoad)
+    case BusinessUTRId => nextPageOrNonUkRedirect(ua, PartnershipNameController.onPageLoad())
 
     case BusinessNameId => nextPageOrNonUkRedirect(ua, regionBasedNameNavigation(ua))
 
@@ -212,7 +212,7 @@ class PartnershipNavigator @Inject()(
   private def regionBasedNameNavigation(answers: UserAnswers): Call = {
     answers.get(AreYouInUKId) match {
       case Some(false) => PartnershipRegisteredAddressController.onPageLoad()
-      case Some(true) => PartnershipIsRegisteredNameController.onPageLoad
+      case Some(true) => PartnershipIsRegisteredNameController.onPageLoad()
       case _ => SessionExpiredController.onPageLoad
     }
   }

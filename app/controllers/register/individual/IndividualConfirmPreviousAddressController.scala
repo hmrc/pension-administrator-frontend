@@ -50,17 +50,17 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
                                                       )(implicit val executionContext: ExecutionContext)
                                                         extends ConfirmPreviousAddressController with I18nSupport {
 
-  private[controllers] val postCall = IndividualConfirmPreviousAddressController.onSubmit _
+  private[controllers] val postCall = IndividualConfirmPreviousAddressController.onSubmit()
   private[controllers] val title: Message = "confirmPreviousAddress.title"
   private[controllers] val heading: Message = "confirmPreviousAddress.heading"
 
   private def viewmodel(mode: Mode) =
     Retrieval(
       implicit request =>
-        (IndividualDetailsId and ExistingCurrentAddressId).retrieve.map {
+        IndividualDetailsId.and(ExistingCurrentAddressId).retrieve.map {
           case details ~ address =>
             SameContactAddressViewModel(
-              postCall(),
+              postCall,
               title = Message(title),
               heading = Message(heading, details.fullName),
               hint = None,

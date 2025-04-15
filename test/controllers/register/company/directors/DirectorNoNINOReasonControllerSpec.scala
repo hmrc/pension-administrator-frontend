@@ -49,7 +49,7 @@ class DirectorNoNINOReasonControllerSpec extends NoNINOReasonControllerWithCommo
     view
   )
 
-  private def reasonView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def reasonView(form: Form[?]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "DirectorNoNINOReasonController" must {
 

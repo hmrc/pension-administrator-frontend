@@ -50,7 +50,7 @@ class SecondPartnerControllerSpec extends ControllerSpecBase with MockitoSugar w
       FakeAllowAccessProvider(config = frontendAppConfig), dataRetrievalAction, formProvider, mockPsaDetailsService,
       FakeUserAnswersCacheConnector, controllerComponents, view)
 
-  def viewAsString(form: Form[_] = form): String = view(form, Some(partnerName), postCall)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = form): String = view(form, Some(partnerName), postCall)(fakeRequest, messages).toString
 
   override protected def beforeEach(): Unit = {
     reset(mockPsaDetailsService)

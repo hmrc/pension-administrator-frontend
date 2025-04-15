@@ -30,14 +30,14 @@ POST        /use-as-contact-address                       controllers.register.a
 GET         /:mode/use-as-contact-address                 controllers.register.administratorPartnership.contactDetails.PartnershipSameContactAddressController.onPageLoad(mode: Mode)
 POST        /:mode/use-as-contact-address                 controllers.register.administratorPartnership.contactDetails.PartnershipSameContactAddressController.onSubmit(mode: Mode)
 
-GET         /partnership-name                             controllers.register.administratorPartnership.PartnershipNameController.onPageLoad
-POST        /partnership-name                             controllers.register.administratorPartnership.PartnershipNameController.onSubmit
+GET         /partnership-name                             controllers.register.administratorPartnership.PartnershipNameController.onPageLoad()
+POST        /partnership-name                             controllers.register.administratorPartnership.PartnershipNameController.onSubmit()
 
-GET         /unique-taxpayer-reference                    controllers.register.administratorPartnership.PartnershipUTRController.onPageLoad
-POST        /unique-taxpayer-reference                    controllers.register.administratorPartnership.PartnershipUTRController.onSubmit
+GET         /unique-taxpayer-reference                    controllers.register.administratorPartnership.PartnershipUTRController.onPageLoad()
+POST        /unique-taxpayer-reference                    controllers.register.administratorPartnership.PartnershipUTRController.onSubmit()
 
-GET         /confirm-partnership-name                     controllers.register.administratorPartnership.PartnershipIsRegisteredNameController.onPageLoad
-POST        /confirm-partnership-name                     controllers.register.administratorPartnership.PartnershipIsRegisteredNameController.onSubmit
+GET         /confirm-partnership-name                     controllers.register.administratorPartnership.PartnershipIsRegisteredNameController.onPageLoad()
+POST        /confirm-partnership-name                     controllers.register.administratorPartnership.PartnershipIsRegisteredNameController.onSubmit()
 
 GET         /previous-postcode                            controllers.register.administratorPartnership.contactDetails.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)
 POST        /previous-postcode                            controllers.register.administratorPartnership.contactDetails.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode: Mode = NormalMode)
@@ -132,7 +132,7 @@ POST        /contact-what-you-will-need                   controllers.register.a
 GET         /contact-check-your-answers                   controllers.register.administratorPartnership.contactDetails.CheckYourAnswersController.onPageLoad()
 POST        /contact-check-your-answers                   controllers.register.administratorPartnership.contactDetails.CheckYourAnswersController.onSubmit()
 
-GET         /pensionadvisor/what-you-will-need            controllers.register.administratorPartnership.workingknowledge.WhatYouWillNeedController.onPageLoad
-GET         /pensionadvisor/what-you-will-need            controllers.register.administratorPartnership.workingknowledge.WhatYouWillNeedController.onPageLoad
+GET         /pensionadvisor/what-you-will-need            controllers.register.administratorPartnership.workingknowledge.WhatYouWillNeedController.onPageLoad()
+GET         /pensionadvisor/what-you-will-need            controllers.register.administratorPartnership.workingknowledge.WhatYouWillNeedController.onPageLoad()
 
 GET         /update-administrator-partnership-details     controllers.register.administratorPartnership.PartnershipUpdateDetailsController.onPageLoad(mode: Mode = NormalMode)

@@ -31,7 +31,7 @@ class SuccessfulDeregistrationController @Inject()(appConfig: FrontendAppConfig,
                                                    view: successful_deregistration
                                       )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = Action.async {
+  def onPageLoad: Action[AnyContent] = Action.async {
     implicit request =>
         Future.successful(Ok(view()))
   }

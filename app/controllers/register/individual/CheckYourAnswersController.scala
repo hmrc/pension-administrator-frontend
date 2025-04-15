@@ -20,16 +20,16 @@ import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.register.individual.routes._
-import identifiers.register.individual._
+import controllers.register.individual.routes.*
+import identifiers.register.individual.*
 import models.Mode
 import models.Mode.checkMode
 import models.requests.DataRequest
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.{AuthWithIV, Individual}
-import utils.checkyouranswers.Ops._
+import utils.checkyouranswers.Ops.*
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import utils.{Enumerable, Navigator}
@@ -51,15 +51,16 @@ class CheckYourAnswersController @Inject()(
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: check_your_answers
-                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with
-  Retrievals with I18nSupport with Enumerable.Implicits {
+                                          )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
-  import CheckYourAnswersController._
+  import CheckYourAnswersController.*
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val ua = request.userAnswers
-      (ua.get(IndividualDetailsId), ua.get(IndividualAddressId)) match {
+      
+        (ua.get(IndividualDetailsId), ua.get(IndividualAddressId)) match {
         case (Some(_), Some(_)) =>
           loadCyaPage(mode)
         case _ =>

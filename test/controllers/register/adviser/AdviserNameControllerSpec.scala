@@ -58,7 +58,7 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
     ).onSubmit(NormalMode)
   }
 
-  private def viewAsString(form: Form[_]) = view(
+  private def viewAsString(form: Form[?]) = view(
     form,
     NormalMode,
     Some(companyName),

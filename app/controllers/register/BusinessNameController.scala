@@ -60,7 +60,7 @@ trait BusinessNameController extends FrontendBaseController with I18nSupport wit
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           BusinessTypeId.retrieve.map { businessType =>
             Future.successful(BadRequest(view(formWithErrors, toString(businessType), href)))
           },

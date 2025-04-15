@@ -20,7 +20,7 @@
     inset_text: components.inset_text,
 )
 
-@(address: Seq[String], continueUrl: String)(implicit request: Request[_], messages: Messages)
+@(address: Seq[String], continueUrl: String)(implicit request: Request[?], messages: Messages)
 
 @addressContent = {
     @for(addressItem <- address) {

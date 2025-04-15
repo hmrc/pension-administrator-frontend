@@ -36,7 +36,7 @@ class BusinessMatchingCheckYourAnswersController @Inject()(
                                                             checkYourAnswersView: check_your_answers
                                                           ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       val sections: Seq[Section] = Seq(
         AnswerSection(None,
@@ -46,9 +46,8 @@ class BusinessMatchingCheckYourAnswersController @Inject()(
       )
 
       val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
-
-
-  Ok(checkYourAnswersView(sections, routes.PartnershipRegistrationTaskListController.onPageLoad(), None, NormalMode, isComplete = true, Some(partnershipName)))
+      
+      Ok(checkYourAnswersView(sections, routes.PartnershipRegistrationTaskListController.onPageLoad(), None, NormalMode, isComplete = true, Some(partnershipName)))
 
 
   }

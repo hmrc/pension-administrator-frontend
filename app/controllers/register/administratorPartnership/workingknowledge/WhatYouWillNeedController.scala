@@ -34,7 +34,7 @@ class WhatYouWillNeedController @Inject()(authenticate: AuthAction,
                                           view: whatYouWillNeed
                                          ) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val href = controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
       Future.successful(Ok(view(href ,

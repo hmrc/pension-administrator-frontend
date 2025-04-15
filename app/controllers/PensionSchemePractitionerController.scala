@@ -29,7 +29,7 @@ class PensionSchemePractitionerController @Inject()(
                                                      val view: pensionSchemePractitioner
                                                    ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = Action {
+  def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
       Ok(view())
   }

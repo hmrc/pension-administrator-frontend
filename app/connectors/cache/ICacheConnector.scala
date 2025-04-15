@@ -19,16 +19,17 @@ package connectors.cache
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import identifiers.TypedIdentifier
-import play.api.http.Status._
-import play.api.libs.json._
+import play.api.http.Status.*
+import play.api.libs.json.*
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 class ICacheConnector @Inject()(
                                  config: FrontendAppConfig,
@@ -46,7 +47,7 @@ class ICacheConnector @Inject()(
     modify(cacheId, _.set(id)(value))
   }
 
-  def remove[I <: TypedIdentifier[_]](cacheId: String, id: I
+  def remove[I <: TypedIdentifier[?]](cacheId: String, id: I
                                      )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     modify(cacheId, _.remove(id))
   }

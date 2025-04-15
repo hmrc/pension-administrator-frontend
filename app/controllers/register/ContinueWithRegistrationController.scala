@@ -43,7 +43,7 @@ class ContinueWithRegistrationController @Inject()(
                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   val form: Form[Boolean] = yesNoFormProvider()
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData).async { implicit request =>
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData).async { implicit request =>
     val finishedBusinessMatching = request.userAnswers.flatMap(_.get(RegistrationInfoId)).isDefined
     if (finishedBusinessMatching) {
       Future.successful(Ok(continueWithRegistration(form)))

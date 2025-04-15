@@ -45,7 +45,7 @@ class MinimalPsaConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: Fron
     val headers: Seq[(String, String)] = Seq(("loggedInAsPsa", "true"))
 
     httpV2Client.get(url"${config.minimalPsaDetailsUrl}")
-      .setHeader(headers: _*)
+      .setHeader(headers*)
       .execute[HttpResponse] map { response =>
 
       response.status match {

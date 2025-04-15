@@ -21,7 +21,7 @@
     layout: templates.Layout
 )
 
-@(taskList: TaskList, expiryDate: String)(implicit request: Request[_], messages: Messages)
+@(taskList: TaskList, expiryDate: String)(implicit request: Request[?], messages: Messages)
 
 @isCompleted(isCompleted: Boolean, id: String) = {
     <span class="hmrc-status-tag" id="@id">

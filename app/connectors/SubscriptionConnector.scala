@@ -20,9 +20,10 @@ import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import models.PsaSubscription.PsaSubscription
 import play.api.Logger
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, JsValue}
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.{HttpResponseHelper, UserAnswers}

@@ -53,7 +53,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
                                                        val view: sameContactAddress
                                                       )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
-  private[controllers] val postCall = IndividualSameContactAddressController.onSubmit _
+  private[controllers] val postCall = IndividualSameContactAddressController.onSubmit
   private[controllers] val title: Message = "individual.same.contact.address.title"
   private[controllers] val heading: Message = "individual.same.contact.address.heading"
 
@@ -63,7 +63,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
   private def viewmodel(mode: Mode): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
-        (IndividualDetailsId and IndividualAddressId).retrieve.map {
+        IndividualDetailsId.and(IndividualAddressId).retrieve.map {
           case individual ~ address =>
             SameContactAddressViewModel(
               postCall(mode),

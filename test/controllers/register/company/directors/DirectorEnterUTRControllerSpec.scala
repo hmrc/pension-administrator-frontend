@@ -49,7 +49,7 @@ class DirectorEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
     view
   )
 
-  private def enterUTRView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def enterUTRView(form: Form[?]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "DirectorEnterUTRController" must {
 

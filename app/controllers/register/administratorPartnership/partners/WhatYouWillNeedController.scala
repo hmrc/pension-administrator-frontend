@@ -36,7 +36,7 @@ class WhatYouWillNeedController @Inject()(
                                            val view: whatYouWillNeed
                                          ) extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       val partnershipName = request.userAnswers.getOrException(BusinessNameId)
       val href = routes.PartnerNameController.onPageLoad(NormalMode, request.userAnswers.partnersCount)

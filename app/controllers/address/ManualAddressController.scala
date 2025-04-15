@@ -71,7 +71,7 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
                       isUkHintText: Boolean = false
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
-      (formWithError: Form[_]) => Future.successful(BadRequest(view(formWithError, viewModel, mode, isUkHintText))),
+      (formWithError: Form[?]) => Future.successful(BadRequest(view(formWithError, viewModel, mode, isUkHintText))),
       address => {
         cacheConnector.save(request.externalId, id, address).flatMap { userAnswersJson =>
           saveChangeFlag(mode, id)

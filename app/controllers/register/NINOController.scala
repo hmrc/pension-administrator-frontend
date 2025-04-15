@@ -55,7 +55,7 @@ trait NINOController extends FrontendBaseController with Retrievals with I18nSup
   def post(id: TypedIdentifier[ReferenceValue], mode: Mode, form: Form[ReferenceValue], viewmodel: CommonFormWithHintViewModel)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
-      (formWithErrors: Form[_]) =>
+      (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewmodel))),
       value =>
         cacheConnector.save(request.externalId, id, value.copy(isEditable = true)).flatMap(

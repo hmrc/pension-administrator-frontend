@@ -55,7 +55,7 @@ class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppCo
   protected val form: Form[Address] = formProvider("error.country.invalid")
   private val isUkHintText = true
 
-  def viewmodel(mode: Mode, partnershipName: String)(implicit request: DataRequest[AnyContent]) =
+  def viewmodel(mode: Mode, partnershipName: String)(implicit request: DataRequest[AnyContent]): ManualAddressViewModel =
     ManualAddressViewModel(
       postCall = routes.PartnershipContactAddressController.onSubmit(mode),
       countryOptions = countryOptions.options,

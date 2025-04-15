@@ -19,7 +19,7 @@
     button_link: components.button_link
 )
 
-@(href: Call, returnLinkCompanyName: String)(implicit request: Request[_], messages: Messages)
+@(href: Call, returnLinkCompanyName: String)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("whatYouWillNeed.directorsOrPartners.title")) {
 

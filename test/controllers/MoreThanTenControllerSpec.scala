@@ -186,7 +186,7 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
       errorKey = "moreThanTenDirectors.error.required"
     )
 
-  def viewAsString(base: SpecBase, form: Form[_] = form): String =
+  def viewAsString(base: SpecBase, form: Form[?] = form): String =
     moreThanTenView(form, viewModel(), NormalMode)(base.fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
 }

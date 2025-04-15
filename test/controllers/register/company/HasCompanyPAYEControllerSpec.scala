@@ -51,14 +51,14 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 
-  private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
+  private def viewAsString(form: Form[?] = form, mode: Mode = NormalMode): String =
     view(form, viewModel)(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   "HasCompanyPAYEController Controller" when {
     "on a GET" must {
       "return OK and the correct view" in {
         running(_.overrides(modules(UserAnswers().businessName(companyName).dataRetrievalAction) ++
-          Seq[GuiceableModule](): _*)) {
+          Seq[GuiceableModule]()*)) {
           app =>
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
             val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -70,7 +70,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       "populate the view correctly when the question has previously been answered" in {
         val validData = UserAnswers().businessName(companyName).set(HasPAYEId)(value = true).asOpt.value.dataRetrievalAction
         running(_.overrides(modules(validData) ++
-          Seq[GuiceableModule](): _*)) {
+          Seq[GuiceableModule]()*)) {
           app =>
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
             val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -79,7 +79,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       }
 
       "redirect to Session Expired if no existing data is found" in {
-        running(_.overrides(modules(dontGetAnyData): _*)) {
+        running(_.overrides(modules(dontGetAnyData)*)) {
           app =>
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
             val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -94,7 +94,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
         running(_.overrides(
           modules(UserAnswers().businessName(companyName).dataRetrievalAction) ++
             Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
-              bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)): _*)) {
+              bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))*)) {
           app =>
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
@@ -107,7 +107,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
 
       "return a Bad Request and errors when invalid data is submitted" in {
         running(_.overrides(modules(UserAnswers().businessName(companyName).dataRetrievalAction) ++
-          Seq[GuiceableModule](): _*)) {
+          Seq[GuiceableModule]()*)) {
           app =>
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
             val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -120,7 +120,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       }
 
       "redirect to Session Expired if no existing data is found" in {
-        running(_.overrides(modules(dontGetAnyData): _*)) {
+        running(_.overrides(modules(dontGetAnyData)*)) {
           app =>
             val controller = app.injector.instanceOf[HasCompanyPAYEController]
             val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))

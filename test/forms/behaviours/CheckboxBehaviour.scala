@@ -21,7 +21,7 @@ import play.api.data.{Form, FormError}
 
 trait CheckboxBehaviour extends FormSpec {
 
-  def formWithCheckbox(form: Form[_], fieldName: String, trueValue: String, acceptTrueOnly: Boolean, invalidKey: String): Unit = {
+  def formWithCheckbox(form: Form[?], fieldName: String, trueValue: String, acceptTrueOnly: Boolean, invalidKey: String): Unit = {
 
     "behave like a form with a checkbox" should {
       "transform a valid value to true" in {

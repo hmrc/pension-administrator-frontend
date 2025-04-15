@@ -40,7 +40,7 @@ trait Variations extends FrontendBaseController {
 
   implicit val executionContext: ExecutionContext
 
-  private val changeIds: Map[TypedIdentifier[_], TypedIdentifier[Boolean]] = Map(
+  private val changeIds: Map[TypedIdentifier[?], TypedIdentifier[Boolean]] = Map(
     IndividualContactAddressId -> IndividualAddressChangedId,
     IndividualPreviousAddressId -> IndividualPreviousAddressChangedId,
     CompanyContactAddressId -> CompanyContactAddressChangedId,
@@ -94,7 +94,7 @@ trait Variations extends FrontendBaseController {
   }
 
   def setNewFlag(id: TypedIdentifier[PersonName], mode: Mode, userAnswers: UserAnswers)
-                (implicit request: DataRequest[_]): Future[JsValue] = {
+                (implicit request: DataRequest[?]): Future[JsValue] = {
     if (mode == UpdateMode | mode == CheckUpdateMode) {
       userAnswers.get(id).fold(doNothing) { details =>
         cacheConnector.save(request.externalId, id, details.copy(isNew = true))
@@ -104,5 +104,5 @@ trait Variations extends FrontendBaseController {
     }
   }
 
-  private def doNothing(implicit request: DataRequest[_]): Future[JsValue] = Future.successful(request.userAnswers.json)
+  private def doNothing(implicit request: DataRequest[?]): Future[JsValue] = Future.successful(request.userAnswers.json)
 }

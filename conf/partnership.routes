@@ -36,13 +36,13 @@ POST        /use-as-contact-address                       controllers.register.p
 GET         /:mode/use-as-contact-address                 controllers.register.partnership.PartnershipSameContactAddressController.onPageLoad(mode: Mode)
 POST        /:mode/use-as-contact-address                 controllers.register.partnership.PartnershipSameContactAddressController.onSubmit(mode: Mode)
 
-GET         /partnership-name                             controllers.register.partnership.PartnershipNameController.onPageLoad
+GET         /partnership-name                             controllers.register.partnership.PartnershipNameController.onPageLoad()
 POST        /partnership-name                             controllers.register.partnership.PartnershipNameController.onSubmit
 
 GET         /unique-taxpayer-reference                    controllers.register.partnership.PartnershipUTRController.onPageLoad
 POST        /unique-taxpayer-reference                    controllers.register.partnership.PartnershipUTRController.onSubmit
 
-GET         /confirm-partnership-name                     controllers.register.partnership.PartnershipIsRegisteredNameController.onPageLoad
+GET         /confirm-partnership-name                     controllers.register.partnership.PartnershipIsRegisteredNameController.onPageLoad()
 POST        /confirm-partnership-name                     controllers.register.partnership.PartnershipIsRegisteredNameController.onSubmit
 
 GET         /previous-postcode                            controllers.register.partnership.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(mode: Mode = NormalMode)

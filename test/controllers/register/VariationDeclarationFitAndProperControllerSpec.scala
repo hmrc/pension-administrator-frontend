@@ -34,7 +34,7 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
-  private val form: Form[_] = new VariationDeclarationFitAndProperFormProvider()()
+  private val form: Form[?] = new VariationDeclarationFitAndProperFormProvider()()
 
   private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -102,7 +102,7 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
       view
     )
 
-  private def viewAsString(psaName: String, form: Form[_]) =
+  private def viewAsString(psaName: String, form: Form[?]) =
     view(
       form,
       Some(psaName),

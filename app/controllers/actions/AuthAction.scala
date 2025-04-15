@@ -100,7 +100,7 @@ protected class FullAuthentication @Inject()(override val authConnector: AuthCon
     (enrolments.getEnrolment("HMRC-PODS-ORG"), enrolments.getEnrolment("HMRC-PODSPP-ORG")) match {
       case (Some(_), Some(_)) =>
         sessionDataCacheConnector.fetch().flatMap { optionJsValue =>
-          optionJsValue.map(UserAnswers).flatMap(_.get(AdministratorOrPractitionerId)) match {
+          optionJsValue.map(UserAnswers.apply).flatMap(_.get(AdministratorOrPractitionerId)) match {
             case None => Future.successful(Some(Redirect(config.administratorOrPractitionerUrl)))
             case Some(Practitioner) =>
               Future.successful(Some(Redirect(Call("GET",

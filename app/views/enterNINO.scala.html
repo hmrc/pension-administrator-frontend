@@ -29,10 +29,10 @@
 )
 
 @(
-        form: Form[_],
+        form: Form[?],
         viewModel: CommonFormWithHintViewModel,
 )(
-        implicit request: Request[_], messages: Messages
+        implicit request: Request[?], messages: Messages
 )
 
 @layout(pageTitle = titleWithErrors(form, viewModel.title)) {

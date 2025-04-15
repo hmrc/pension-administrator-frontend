@@ -43,7 +43,7 @@ class PartnerNoUTRReasonControllerSpec extends NoUTRReasonControllerWithCommonBe
 
   val view: reason = app.injector.instanceOf[reason]
 
-  private def reasonView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def reasonView(form: Form[?]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "PartnerNoUTRReasonController" must {
 

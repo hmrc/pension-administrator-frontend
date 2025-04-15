@@ -29,7 +29,7 @@ object TolerantIndividual {
     (JsPath \ "firstName").formatNullable[String] and
       (JsPath \ "middleName").formatNullable[String] and
       (JsPath \ "lastName").formatNullable[String]
-    ) (TolerantIndividual.apply, unlift(TolerantIndividual.unapply))
+    ) (TolerantIndividual.apply, unlift(o => Some(Tuple.fromProductTyped(o))))
 
   def applyNonUK(firstName: String, lastName: String): TolerantIndividual = {
     new TolerantIndividual(Some(firstName), None, Some(lastName))

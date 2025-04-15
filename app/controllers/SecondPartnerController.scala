@@ -48,7 +48,7 @@ class SecondPartnerController @Inject()(@utils.annotations.Variations navigator:
 
   protected val form: Form[Boolean] = formProvider("secondPartner.error")
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen allowAccess(UpdateMode) andThen getData).async {
+  def onPageLoad: Action[AnyContent] = (authenticate andThen allowAccess(UpdateMode) andThen getData).async {
     implicit request =>
       getPartnerName.map(partnerName => Ok(view(form, partnerName, postCall)))
   }
@@ -56,7 +56,7 @@ class SecondPartnerController @Inject()(@utils.annotations.Variations navigator:
   def onSubmit(): Action[AnyContent] = (authenticate andThen allowAccess(UpdateMode) andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           getPartnerName.map(partnerName => BadRequest(view(formWithErrors, partnerName, postCall))),
         value =>
           userAnswersCacheConnector.save(request.externalId, SecondPartnerId, value).map { cacheMap =>

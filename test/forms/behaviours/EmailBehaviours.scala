@@ -23,7 +23,7 @@ import play.api.data.{Form, FormError}
 trait EmailBehaviours extends FormSpec with StringFieldBehaviours with Constraints with EmailMapping {
 
   def formWithEmailField(
-                          form: Form[_],
+                          form: Form[?],
                           fieldName: String,
                           keyEmailRequired: String,
                           keyEmailLength: String,

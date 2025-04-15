@@ -122,11 +122,11 @@ object JsLens {
         case IdxPathNode(idx) =>
           JsLens.atIndex(idx)
         case RecursiveSearch(key) =>
-          JsLens.atAllIndices andThen JsLens.atKey(key)
+          JsLens.atAllIndices.andThen(JsLens.atKey(key))
       }
     }
 
-    path.path.map(toLens).reduceLeft(_ andThen _)
+    path.path.map(toLens).reduceLeft(_.andThen(_))
   }
 
   def atKey(key: String): JsLens =
