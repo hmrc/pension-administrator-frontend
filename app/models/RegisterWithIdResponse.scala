@@ -26,6 +26,7 @@ case class OrganizationRegisterWithIdResponse(organisation: Organisation, addres
 case class IndividualRegisterWithIdResponse(individual: TolerantIndividual, address: TolerantAddress) extends RegisterWithIdResponse(address)
 
 sealed trait OrganizationRegistrationStatus
+
 case class OrganizationRegistration(response: OrganizationRegisterWithIdResponse, info: RegistrationInfo) extends OrganizationRegistrationStatus
 
 object OrganisationNotFound extends OrganizationRegistrationStatus
@@ -34,20 +35,14 @@ case class IndividualRegistration(response: IndividualRegisterWithIdResponse, in
 
 object RegisterWithIdResponse {
 
-  implicit lazy val readsOrganizationRegisterWithIdResponse: Reads[OrganizationRegisterWithIdResponse] =
-    ((JsPath \ "organisation").read[Organisation] ~ (JsPath \ "address").read[TolerantAddress]).apply(OrganizationRegisterWithIdResponse)
-
-  implicit lazy val writesOrganizationRegisterWithIdResponse: Writes[OrganizationRegisterWithIdResponse] =
-    Writes[OrganizationRegisterWithIdResponse] { response =>
-      Json.obj(
-        "address" -> response.address,
-        "organisation" -> response.organisation
-      )
-    }
+  implicit lazy val formatsOrganizationRegisterWithIdResponse: Format[OrganizationRegisterWithIdResponse] = (
+    (JsPath \ "organisation").format[Organisation] and
+      (JsPath \ "address").format[TolerantAddress]
+  )(OrganizationRegisterWithIdResponse.apply, unlift(o => Some(Tuple.fromProductTyped(o))))
 
   implicit lazy val formatsIndividualRegisterWithIdResponse: Format[IndividualRegisterWithIdResponse] = (
     (JsPath \ "individual").format[TolerantIndividual] and
       (JsPath \ "address").format[TolerantAddress]
-    ) (IndividualRegisterWithIdResponse.apply, unlift(o => Some(Tuple.fromProductTyped(o))))
+  )(IndividualRegisterWithIdResponse.apply, unlift(o => Some(Tuple.fromProductTyped(o))))
 
 }
