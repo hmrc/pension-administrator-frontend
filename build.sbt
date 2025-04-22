@@ -15,11 +15,15 @@ lazy val appName: String = "pension-administrator-frontend"
     .settings(inConfig(Test)(testSettings)*)
     .settings(scalaVersion := "3.6.2")
     .settings(
-      scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-      scalacOptions += "-Wconf:src=routes/.*:s",
-      scalacOptions += "-Wconf:msg=Flag.*repeatedly:s"
+      scalacOptions ++= Seq(
+        "-feature",
+        "-Xfatal-warnings",
+        "-Wconf:src=routes/.*:silent", // Suppress warnings from routes files
+        "-Wconf:src=twirl/.*:silent",  // Suppress warnings from twirl files
+        "-Wconf:src=target/.*:silent", // Suppress warnings from target files
+        "-Wconf:msg=Flag.*repeatedly:silent", // Suppress repeated flag warnings
+      ),
     )
-    .settings(scalacOptions ++= Seq("-Wconf:msg=Flag.*repeatedly:s"))
     .settings(
       Test / parallelExecution := true
     )

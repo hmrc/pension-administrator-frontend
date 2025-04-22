@@ -44,7 +44,7 @@ case object EmailNotSent extends EmailStatus
 trait EmailConnector {
 
   def sendEmail(emailAddress: String, templateName: String, templateParams: Map[String, String], psaId: PsaId,
-                journeyType : JourneyType.Name)
+                journeyType : JourneyType)
                (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus]
 }
 
@@ -56,7 +56,7 @@ class EmailConnectorImpl @Inject()(
 
   private val logger = Logger(classOf[EmailConnectorImpl])
 
-  private def callBackUrl(psaId: PsaId, journeyType: JourneyType.Name): String = {
+  private def callBackUrl(psaId: PsaId, journeyType: JourneyType): String = {
     val encryptedPsaId = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId.value)).value, StandardCharsets.UTF_8.toString)
     appConfig.psaEmailCallback(encryptedPsaId, journeyType.toString)
   }
@@ -66,7 +66,7 @@ class EmailConnectorImpl @Inject()(
                           templateName: String,
                           templateParams: Map[String, String],
                           psaId: PsaId,
-                          journeyType: JourneyType.Name
+                          journeyType: JourneyType
                         )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus] = {
     val emailServiceUrl = url"${appConfig.emailUrl}"
 
