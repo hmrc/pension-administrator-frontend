@@ -16,7 +16,6 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import javax.inject.Inject
@@ -28,8 +27,7 @@ import views.html.register.partnership.partners.whatYouWillNeed
 
 import scala.concurrent.Future
 
-class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                          authenticate: AuthAction,
+class WhatYouWillNeedController @Inject()(authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           val controllerComponents: MessagesControllerComponents,

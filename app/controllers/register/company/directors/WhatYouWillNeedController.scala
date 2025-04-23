@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import models.NormalMode
@@ -28,8 +27,7 @@ import views.html.register.company.directors.whatYouWillNeed
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                          authenticate: AuthAction,
+class WhatYouWillNeedController @Inject()(authenticate: AuthAction,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
                                           val controllerComponents: MessagesControllerComponents,

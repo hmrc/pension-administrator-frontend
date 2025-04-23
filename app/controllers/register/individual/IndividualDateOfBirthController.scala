@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -38,21 +37,19 @@ import views.html.register.individual.individualDateOfBirth
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualDateOfBirthController @Inject()(
-                                                 appConfig: FrontendAppConfig,
-                                                 dataCacheConnector: UserAnswersCacheConnector,
-                                                 @Individual navigator: Navigator,
-                                                 @AuthWithIV
-                                                 authenticate: AuthAction,
-                                                 allowAccess: AllowAccessActionProvider,
-                                                 getData: DataRetrievalAction,
-                                                 requireData: DataRequiredAction,
-                                                 formProvider: IndividualDateOfBirthFormProvider,
-                                                 registrationService: RegistrationService,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 val view: individualDateOfBirth
-                                                 )(implicit val executionContext: ExecutionContext
-                                                ) extends FrontendBaseController with I18nSupport with Retrievals {
+class IndividualDateOfBirthController @Inject()(dataCacheConnector: UserAnswersCacheConnector,
+                                                @Individual navigator: Navigator,
+                                                @AuthWithIV
+                                                authenticate: AuthAction,
+                                                allowAccess: AllowAccessActionProvider,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: IndividualDateOfBirthFormProvider,
+                                                registrationService: RegistrationService,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: individualDateOfBirth
+                                               )(implicit val executionContext: ExecutionContext
+                                               ) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form = formProvider()
 

@@ -17,7 +17,6 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import controllers.register.individual.routes._
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
@@ -30,8 +29,7 @@ import controllers.routes.SessionExpiredController
 import identifiers.{Identifier, UpdateContactAddressId}
 
 @Singleton
-class IndividualNavigator @Inject()(config: FrontendAppConfig,
-                                    countryOptions: CountryOptions) extends Navigator {
+class IndividualNavigator @Inject()(countryOptions: CountryOptions) extends Navigator {
 
   // scalastyle:off cyclomatic.complexity
   override def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
@@ -116,7 +114,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     }
 
 
-  def addressYearsRouteCheckMode(answers: UserAnswers): Call =
+  private def addressYearsRouteCheckMode(answers: UserAnswers): Call =
     (answers.get(IndividualAddressYearsId), answers.get(AreYouInUKId)) match {
       case (_, None) => SessionExpiredController.onPageLoad
       case (Some(AddressYears.UnderAYear), Some(false)) => IndividualPreviousAddressController.onPageLoad(CheckMode)
@@ -125,7 +123,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
       case _ => SessionExpiredController.onPageLoad
     }
 
-  def addressYearsRoutesUpdateMode(answers: UserAnswers): Call =
+  private def addressYearsRoutesUpdateMode(answers: UserAnswers): Call =
     answers.get(IndividualAddressYearsId) match {
       case Some(AddressYears.UnderAYear) => IndividualConfirmPreviousAddressController.onPageLoad()
       case Some(AddressYears.OverAYear) => anyMoreChanges
@@ -140,7 +138,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
       case _ => SessionExpiredController.onPageLoad
     }
 
-  def contactAddressRoutes(answers: UserAnswers, mode: Mode): Call =
+  private def contactAddressRoutes(answers: UserAnswers, mode: Mode): Call =
     (answers.get(IndividualSameContactAddressId), answers.get(AreYouInUKId)) match {
       case (_, None) => SessionExpiredController.onPageLoad
       case (Some(false), Some(false)) => IndividualContactAddressController.onPageLoad(mode)
@@ -173,7 +171,7 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
     }
   }
 
-  def countryBasedDobNavigation(answers: UserAnswers): Call =
+  private def countryBasedDobNavigation(answers: UserAnswers): Call =
     answers.get(AreYouInUKId) match {
       case Some(_) => IndividualSameContactAddressController.onPageLoad(NormalMode)
       case _ => SessionExpiredController.onPageLoad
@@ -186,12 +184,12 @@ class IndividualNavigator @Inject()(config: FrontendAppConfig,
         case UK => IndividualAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => IndividualDateOfBirthController.onPageLoad(NormalMode)
         case RestOfTheWorld => OutsideEuEeaController.onPageLoad()
-        case _ => SessionExpiredController.onPageLoad
+        case null => SessionExpiredController.onPageLoad
       }
     )
   }
 
-  def countryBasedContactDetailsNavigation(answers: UserAnswers): Call =
+  private def countryBasedContactDetailsNavigation(answers: UserAnswers): Call =
     answers.get(AreYouInUKId) match {
       case Some(false) => checkYourAnswers
       case Some(true) => answers.get(IndividualDateOfBirthId).fold(

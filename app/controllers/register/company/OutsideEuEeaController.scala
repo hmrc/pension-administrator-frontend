@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.BusinessNameId
@@ -31,8 +30,7 @@ import views.html.register.outsideEuEea
 
 import scala.concurrent.Future
 
-class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
-                                       authenticate: AuthAction,
+class OutsideEuEeaController @Inject()(authenticate: AuthAction,
                                        allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,

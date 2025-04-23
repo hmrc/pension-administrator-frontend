@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.NonUKBusinessTypeFormProvider
@@ -33,8 +32,7 @@ import views.html.register.nonUKBusinessType
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NonUKBusinessTypeController @Inject()(appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
+class NonUKBusinessTypeController @Inject()(override val messagesApi: MessagesApi,
                                             dataCacheConnector: UserAnswersCacheConnector,
                                             @Register navigator: Navigator,
                                             authenticate: AuthAction,

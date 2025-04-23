@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.individual.routes.*
@@ -39,18 +38,16 @@ import views.html.check_your_answers
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CheckYourAnswersController @Inject()(
-                                            appConfig: FrontendAppConfig,
-                                            @AuthWithIV authenticate: AuthAction,
-                                            allowAccess: AllowAccessActionProvider,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            dataCompletion: DataCompletion,
-                                            @Individual navigator: Navigator,
-                                            override val messagesApi: MessagesApi,
-                                            implicit val countryOptions: CountryOptions,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: check_your_answers
+class CheckYourAnswersController @Inject()(@AuthWithIV authenticate: AuthAction,
+                                           allowAccess: AllowAccessActionProvider,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           dataCompletion: DataCompletion,
+                                           @Individual navigator: Navigator,
+                                           override val messagesApi: MessagesApi,
+                                           implicit val countryOptions: CountryOptions,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           view: check_your_answers
                                           )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
@@ -59,8 +56,8 @@ class CheckYourAnswersController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       val ua = request.userAnswers
-      
-        (ua.get(IndividualDetailsId), ua.get(IndividualAddressId)) match {
+
+      (ua.get(IndividualDetailsId), ua.get(IndividualAddressId)) match {
         case (Some(_), Some(_)) =>
           loadCyaPage(mode)
         case _ =>

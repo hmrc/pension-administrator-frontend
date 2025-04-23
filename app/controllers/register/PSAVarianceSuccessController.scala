@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -30,8 +29,7 @@ import views.html.register.psaVarianceSuccess
 
 import scala.concurrent.ExecutionContext
 
-class PSAVarianceSuccessController @Inject()(appConfig: FrontendAppConfig,
-                                             authenticate: AuthAction,
+class PSAVarianceSuccessController @Inject()(authenticate: AuthAction,
                                              @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,

@@ -16,8 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AuthAction
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
@@ -27,9 +25,7 @@ import views.html.index
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndexController @Inject()(val appConfig: FrontendAppConfig,
-                                authenticate: AuthAction,
-                                dataCacheConnector: UserAnswersCacheConnector,
+class IndexController @Inject()(authenticate: AuthAction,
                                 val controllerComponents: MessagesControllerComponents,
                                 val view: index
                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {

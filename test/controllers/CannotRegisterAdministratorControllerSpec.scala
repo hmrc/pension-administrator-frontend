@@ -36,7 +36,6 @@ class CannotRegisterAdministratorControllerSpec extends ControllerSpecBase {
 
   private def controller =
     new CannotRegisterAdministratorController(
-      frontendAppConfig,
       controllerComponents,
       view
     )

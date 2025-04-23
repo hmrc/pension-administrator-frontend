@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.company.WhatYouWillNeedId
 import javax.inject.Inject
@@ -30,8 +29,7 @@ import views.html.register.company.whatYouWillNeed
 
 import scala.concurrent.ExecutionContext
 
-class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                          @RegisterCompany navigator: Navigator,
+class WhatYouWillNeedController @Inject()(@RegisterCompany navigator: Navigator,
                                           authenticate: AuthAction,
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,

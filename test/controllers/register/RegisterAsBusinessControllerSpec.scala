@@ -146,7 +146,6 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
     cache: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   ): RegisterAsBusinessController =
     new RegisterAsBusinessController(
-      frontendAppConfig,
       messagesApi,
       authAction,
       FakeAllowAccessProvider(config = frontendAppConfig),

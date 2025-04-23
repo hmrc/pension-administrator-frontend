@@ -28,13 +28,13 @@ class IndexControllerSpec extends ControllerSpecBase {
   "Index Controller" must {
     "return 200 for a GET" in {
       val result =
-        new IndexController(frontendAppConfig, FakeAuthAction, FakeUserAnswersCacheConnector, controllerComponents, indexView).onPageLoad()(fakeRequest)
+        new IndexController(FakeAuthAction, controllerComponents, indexView).onPageLoad()(fakeRequest)
       status(result) mustBe OK
     }
 
     "return the correct view for a GET" in {
       val result =
-        new IndexController(frontendAppConfig, FakeAuthAction, FakeUserAnswersCacheConnector, controllerComponents, indexView).onPageLoad()(fakeRequest)
+        new IndexController(FakeAuthAction, controllerComponents, indexView).onPageLoad()(fakeRequest)
       contentAsString(result) mustBe indexView()(fakeRequest, messages).toString
     }
   }

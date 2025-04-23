@@ -17,7 +17,6 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.register.partnership.routes.{AddPartnerController, _}
 import controllers.register.routes._
@@ -32,10 +31,8 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class PartnershipNavigator @Inject()(
-                                      val dataCacheConnector: UserAnswersCacheConnector,
-                                      countryOptions: CountryOptions,
-                                      appConfig: FrontendAppConfig) extends Navigator {
+class PartnershipNavigator @Inject()(val dataCacheConnector: UserAnswersCacheConnector,
+                                     countryOptions: CountryOptions) extends Navigator {
 
   private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
     ua.get(AreYouInUKId) match {
@@ -138,7 +135,7 @@ class PartnershipNavigator @Inject()(
       variationManualPreviousAddressRoutes(ua, UpdateMode)
     case PartnershipPhoneId => finishAmendmentNavigation(ua)
     case PartnershipEmailId => finishAmendmentNavigation(ua)
-    }
+  }
 
   private def addressYearsRoutes(answers: UserAnswers, mode: Mode): Call = {
     answers.get(PartnershipAddressYearsId) match {
@@ -166,7 +163,8 @@ class PartnershipNavigator @Inject()(
       case _ => AnyMoreChangesController.onPageLoad()
     }
 
-  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+  private def updateContactAddressCYAPage(): Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+
   private def hasPaye(ua: UserAnswers): Boolean = ua.get(HasPAYEId).getOrElse(false)
 
   private def tradingOverAYearRoutes(answers: UserAnswers, mode: Mode): Call = {
@@ -223,7 +221,7 @@ class PartnershipNavigator @Inject()(
         case UK => BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => controllers.register.partnership.routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
         case RestOfTheWorld => OutsideEuEeaController.onPageLoad()
-        case _ => SessionExpiredController.onPageLoad
+        case null => SessionExpiredController.onPageLoad
       }
     } getOrElse SessionExpiredController.onPageLoad
   }

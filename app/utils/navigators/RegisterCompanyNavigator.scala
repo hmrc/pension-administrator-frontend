@@ -17,7 +17,6 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import controllers.register.company.routes
 import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register.company.{CompanyPhoneId, _}
@@ -30,8 +29,7 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
-                                         appConfig: FrontendAppConfig) extends Navigator {
+class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends Navigator {
 
   private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
     ua.get(AreYouInUKId) match {
@@ -241,7 +239,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
         case UK => controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => routes.WhatYouWillNeedController.onPageLoad()
         case RestOfTheWorld => routes.OutsideEuEeaController.onPageLoad()
-        case _ => controllers.routes.SessionExpiredController.onPageLoad
+        case null => controllers.routes.SessionExpiredController.onPageLoad
       }
     } getOrElse controllers.routes.SessionExpiredController.onPageLoad
   }

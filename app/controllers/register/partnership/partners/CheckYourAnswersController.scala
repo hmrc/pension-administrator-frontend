@@ -16,7 +16,6 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
@@ -39,8 +38,7 @@ import views.html.check_your_answers
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                           authenticate: AuthAction,
+class CheckYourAnswersController @Inject()(authenticate: AuthAction,
                                            @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,

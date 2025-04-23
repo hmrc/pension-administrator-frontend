@@ -17,7 +17,6 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import controllers.register.company.routes
 import identifiers.register.company._
 import identifiers.register._
@@ -30,8 +29,7 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions,
-                                           appConfig: FrontendAppConfig) extends Navigator {
+class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Navigator {
 
 //  scalastyle:off cyclomatic.complexity
 // scalastyle:off method.length
@@ -236,7 +234,7 @@ class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions,
         case UK => controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => routes.WhatYouWillNeedController.onPageLoad()
         case RestOfTheWorld => routes.OutsideEuEeaController.onPageLoad()
-        case _ => controllers.routes.SessionExpiredController.onPageLoad
+        case null => controllers.routes.SessionExpiredController.onPageLoad
       }
     } getOrElse controllers.routes.SessionExpiredController.onPageLoad
   }

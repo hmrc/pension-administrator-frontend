@@ -32,7 +32,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -50,8 +49,7 @@ import views.html.register.anyMoreChanges
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AnyMoreChangesController @Inject()(appConfig: FrontendAppConfig,
-                                         dataCacheConnector: UserAnswersCacheConnector,
+class AnyMoreChangesController @Inject()(dataCacheConnector: UserAnswersCacheConnector,
                                          @Variations navigator: Navigator,
                                          authenticate: AuthAction,
                                          allowAccess: AllowAccessActionProvider,

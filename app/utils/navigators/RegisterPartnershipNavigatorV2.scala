@@ -228,14 +228,14 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
   }
 
   private def regionBasedNavigation(answers: UserAnswers): Call = {
-    answers.get(PartnershipAddressId) map { address =>
+    (answers.get(PartnershipAddressId) map { address =>
       countryOptions.regions(address.countryOpt.getOrElse("")) match {
         case UK => controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => controllers.register.administratorPartnership.partnershipDetails.routes.WhatYouWillNeedController.onPageLoad()
         case RestOfTheWorld => OutsideEuEeaController.onPageLoad()
-        case _ => controllers.routes.SessionExpiredController.onPageLoad
+        case null => controllers.routes.SessionExpiredController.onPageLoad
       }
-    } getOrElse controllers.routes.SessionExpiredController.onPageLoad
+    }).getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
   }
 
   private def confirmPreviousAddressRoutes(answers: UserAnswers): Call = {

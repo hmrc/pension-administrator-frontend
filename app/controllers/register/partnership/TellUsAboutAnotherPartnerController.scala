@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import controllers.actions._
 import identifiers.register.partnership.TellUsAboutAnotherPartnerId
 import javax.inject.Inject
@@ -29,9 +28,8 @@ import utils.annotations.PartnershipPartner
 import views.html.register.partnership.tellUsAboutAnotherPartner
 
 import scala.concurrent.ExecutionContext
-
-class TellUsAboutAnotherPartnerController @Inject()(appConfig: FrontendAppConfig,
-                                                    @PartnershipPartner navigator: Navigator,
+//todo write tests for this controller
+class TellUsAboutAnotherPartnerController @Inject()(@PartnershipPartner navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     allowAccess: AllowAccessActionProvider,
                                                     getData: DataRetrievalAction,

@@ -16,7 +16,6 @@
 
 package controllers.register.adviser
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.UpdateContactAddressId
@@ -40,8 +39,7 @@ import views.html.check_your_answers
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                           @Adviser navigator: Navigator,
+class CheckYourAnswersController @Inject()(@Adviser navigator: Navigator,
                                            authenticate: AuthAction,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,

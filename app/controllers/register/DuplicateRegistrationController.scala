@@ -16,7 +16,7 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
+
 import controllers.Retrievals
 import controllers.actions._
 import javax.inject.Inject
@@ -28,8 +28,7 @@ import views.html.register.duplicateRegistration
 
 import scala.concurrent.Future
 
-class DuplicateRegistrationController @Inject()(appConfig: FrontendAppConfig,
-                                                authenticate: AuthAction,
+class DuplicateRegistrationController @Inject()(authenticate: AuthAction,
                                                 allowAccess: AllowAccessActionProvider,
                                                 getData: DataRetrievalAction,
                                                 val controllerComponents: MessagesControllerComponents,

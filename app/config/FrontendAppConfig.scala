@@ -18,13 +18,13 @@ package config
 
 import com.google.inject.{Inject, Singleton}
 import play.api.i18n.Lang
-import play.api.{Configuration, Environment}
+import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
 import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, environment: Environment, servicesConfig: ServicesConfig) {
+class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, servicesConfig: ServicesConfig) {
   def localFriendlyUrl(uri: String): String = loadConfig("host") + uri
 
   private def loadConfig(key: String) = runModeConfiguration.getOptional[String](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))

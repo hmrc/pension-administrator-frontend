@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
@@ -36,8 +35,7 @@ import views.html.register.variationWorkingKnowledge
 
 import scala.concurrent.{Future, ExecutionContext}
 
-class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig,
-                                                    override val cacheConnector: UserAnswersCacheConnector,
+class VariationWorkingKnowledgeController @Inject()(override val cacheConnector: UserAnswersCacheConnector,
                                                     @annotations.Variations navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     @NoRLSCheck allowAccess: AllowAccessActionProvider,

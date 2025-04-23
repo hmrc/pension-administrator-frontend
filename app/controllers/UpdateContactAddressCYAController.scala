@@ -17,7 +17,6 @@
 package controllers
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import controllers.actions.{AuthAction, AllowAccessActionProvider, DataRetrievalAction}
 import identifiers.register.UpdateContactAddressCYAId
 import models._
@@ -31,7 +30,7 @@ import views.html.updateContactAddressCYA
 
 import scala.concurrent.{Future, ExecutionContext}
 
-class UpdateContactAddressCYAController @Inject()(appConfig: FrontendAppConfig,
+class UpdateContactAddressCYAController @Inject()(
                                      @utils.annotations.Variations navigator: Navigator,
                                      authenticate: AuthAction,
                                      @NoRLSCheck allowAccess: AllowAccessActionProvider,

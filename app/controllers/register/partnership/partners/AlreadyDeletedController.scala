@@ -16,7 +16,6 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.partnership.partners.PartnerNameId
@@ -31,8 +30,7 @@ import views.html.alreadyDeleted
 
 import scala.concurrent.Future
 
-class AlreadyDeletedController @Inject()(appConfig: FrontendAppConfig,
-                                         authenticate: AuthAction,
+class AlreadyDeletedController @Inject()(authenticate: AuthAction,
                                          allowAccess: AllowAccessActionProvider,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,

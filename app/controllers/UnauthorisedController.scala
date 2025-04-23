@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -25,8 +24,7 @@ import views.html.unauthorised
 
 import scala.concurrent.ExecutionContext
 
-class UnauthorisedController @Inject()(val appConfig: FrontendAppConfig,
-                                       override val messagesApi: MessagesApi,
+class UnauthorisedController @Inject()(override val messagesApi: MessagesApi,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: unauthorised
                                       )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {

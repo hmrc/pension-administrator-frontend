@@ -67,7 +67,6 @@ class UpdateContactAddressCYAControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData, userType: UserType, psaId : Option[String]) =
     new UpdateContactAddressCYAController(
-      frontendAppConfig,
       FakeNavigator,
       new FakeAuthAction(userType, psaId),
       FakeAllowAccessProvider(config = frontendAppConfig),

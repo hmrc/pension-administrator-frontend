@@ -140,17 +140,17 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
-  def getRequiredDataForRegistration(isUk : Boolean = false): FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
+  def getRequiredDataForRegistration(isUk: Boolean = false): FakeDataRetrievalAction = new FakeDataRetrievalAction(Some(
     Json.obj(
       AreYouInUKId.toString -> isUk,
       IndividualDetailsId.toString ->
-          TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName")),
+        TolerantIndividual(Some("TestFirstName"), None, Some("TestLastName")),
       IndividualAddressId.toString ->
-          Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress
+        Address("value 1", "value 2", None, None, None, "IN").toTolerantAddress
     )))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualDateOfBirthController(frontendAppConfig,
+    new IndividualDateOfBirthController(
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

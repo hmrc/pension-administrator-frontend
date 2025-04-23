@@ -33,9 +33,8 @@ import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
-import utils.{AddressHelper, Navigator, UserAnswers}
+import utils.{AddressHelper, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import javax.inject.Inject
@@ -43,7 +42,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmCompanyDetailsController @Inject()(
                                                  dataCacheConnector: UserAnswersCacheConnector,
-                                                 @RegisterCompany navigator: Navigator,
                                                  authenticate: AuthAction,
                                                  allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,

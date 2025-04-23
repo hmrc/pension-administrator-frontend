@@ -27,7 +27,6 @@ class UnauthorisedAssistantControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new UnauthorisedAssistantController(
-      frontendAppConfig,
       controllerComponents,
       view
     )

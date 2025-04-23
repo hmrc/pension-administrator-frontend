@@ -42,7 +42,7 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
   private def onPageLoadAction(dataRetrievalAction: DataRetrievalAction, fakeAuth: AuthAction) = {
 
     new AdviserNameController(
-      frontendAppConfig, fakeAuth, new FakeNavigator(onwardRoute), dataRetrievalAction,
+      fakeAuth, new FakeNavigator(onwardRoute), dataRetrievalAction,
       requiredDataAction, formProvider, FakeUserAnswersCacheConnector,
       controllerComponents, view
     ).onPageLoad(NormalMode)
@@ -52,7 +52,7 @@ class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
   private def onSubmitAction(dataRetrievalAction: DataRetrievalAction, fakeAuth: AuthAction) = {
 
     new AdviserNameController(
-      frontendAppConfig, fakeAuth, navigator, dataRetrievalAction,
+      fakeAuth, navigator, dataRetrievalAction,
       requiredDataAction, formProvider, FakeUserAnswersCacheConnector,
       controllerComponents, view
     ).onSubmit(NormalMode)

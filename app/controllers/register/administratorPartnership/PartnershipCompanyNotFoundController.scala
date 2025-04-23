@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership
 
-import config.FrontendAppConfig
 import controllers.actions._
 import models.Mode
 import play.api.i18n.I18nSupport
@@ -26,8 +25,7 @@ import views.html.register.company.companyNotFound
 
 import javax.inject.Inject
 
-class PartnershipCompanyNotFoundController @Inject()(appConfig: FrontendAppConfig,
-                                                     authenticate: AuthAction,
+class PartnershipCompanyNotFoundController @Inject()(authenticate: AuthAction,
                                                      allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,

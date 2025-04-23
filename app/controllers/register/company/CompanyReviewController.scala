@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.BusinessNameId
@@ -32,8 +31,7 @@ import views.html.register.company.companyReview
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
-                                        @RegisterCompany navigator: Navigator,
+class CompanyReviewController @Inject()(@RegisterCompany navigator: Navigator,
                                         authenticate: AuthAction,
                                         allowAccess: AllowAccessActionProvider,
                                         getData: DataRetrievalAction,

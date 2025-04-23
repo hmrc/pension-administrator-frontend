@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
 import models.Mode
@@ -25,8 +24,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.company.companyNotFound
 
-class PartnershipCompanyNotFoundController @Inject()(appConfig: FrontendAppConfig,
-                                                     authenticate: AuthAction,
+class PartnershipCompanyNotFoundController @Inject()(authenticate: AuthAction,
                                                      allowAccess: AllowAccessActionProvider,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,

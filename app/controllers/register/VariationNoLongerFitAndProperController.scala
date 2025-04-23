@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -32,8 +31,7 @@ import views.html.register.variationNoLongerFitAndProper
 
 import scala.concurrent.ExecutionContext
 
-class VariationNoLongerFitAndProperController @Inject()(appConfig: FrontendAppConfig,
-                                                        authenticate: AuthAction,
+class VariationNoLongerFitAndProperController @Inject()(authenticate: AuthAction,
                                                         @NoRLSCheck allowAccess: AllowAccessActionProvider,
                                                         getData: DataRetrievalAction,
                                                         requireData: DataRequiredAction,

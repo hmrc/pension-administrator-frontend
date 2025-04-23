@@ -51,7 +51,6 @@ class CheckYourAnswersControllerSpec
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new CheckYourAnswersController(
-      frontendAppConfig,
       FakeAllowAccessProvider(config = frontendAppConfig),
       FakeAuthAction,
       dataRetrievalAction,

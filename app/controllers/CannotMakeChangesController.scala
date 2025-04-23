@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import javax.inject.Inject
 import models.UpdateMode
@@ -27,8 +26,7 @@ import views.html.cannotMakeChanges
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CannotMakeChangesController @Inject()(val appConfig: FrontendAppConfig,
-                                            authenticate: AuthAction,
+class CannotMakeChangesController @Inject()(authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
                                             val controllerComponents: MessagesControllerComponents,

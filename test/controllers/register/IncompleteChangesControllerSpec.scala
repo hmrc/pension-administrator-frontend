@@ -58,12 +58,10 @@ class IncompleteChangesControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new IncompleteChangesController(
-      frontendAppConfig,
       FakeAuthAction(UserType.Individual),
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      FakeUserAnswersCacheConnector,
       controllerComponents,
       view
     )
