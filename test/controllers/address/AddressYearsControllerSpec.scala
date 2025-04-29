@@ -28,7 +28,6 @@ import identifiers.register.partnership.partners.PartnerAddressYearsId
 import models._
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
@@ -41,6 +40,7 @@ import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
+import org.scalatestplus.mockito.MockitoSugar
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -146,7 +146,7 @@ class AddressYearsControllerSpec extends SpecBase with Matchers with OptionValue
           when(cacheConnector.save[AddressYears, FakeIdentifier.type](
             any(),
             eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> AddressYears.OverAYear.toString

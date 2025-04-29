@@ -24,7 +24,7 @@ import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectors
 import models.Mode.checkMode
 import models._
 import models.requests.IdentifiedRequest
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.{JsObject, Json}

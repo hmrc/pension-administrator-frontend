@@ -33,7 +33,7 @@ import models.enumeration.JourneyType
 import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse, RegistrationStatus}
 import models.{NormalMode, RegistrationInfo, UserType}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.mvc.Call

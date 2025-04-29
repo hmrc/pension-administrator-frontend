@@ -28,7 +28,7 @@ import play.api.test.Helpers._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AllowAccessActionSpec extends SpecBase with ScalaFutures{
+class AllowAccessActionSpec extends SpecBase with ScalaFutures {
 
   private val minimalPsa = MinimalPSA(
     email = "a@a.c",
@@ -39,7 +39,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
     deceasedFlag = false
   )
 
-  class TestAllowAccessAction(mode: Mode, minimalPsa: MinimalPSA, config:FrontendAppConfig) extends
+  class TestAllowAccessAction(mode: Mode, minimalPsa: MinimalPSA, config: FrontendAppConfig) extends
     AllowAccessAction(mode, FakeMinimalPsaConnector(minimalPsa), frontendAppConfig) {
     override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = super.filter(request)
   }
@@ -52,7 +52,9 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
 
       whenReady(futureResult) { result =>
 
-        result.map { _.header.status  } mustBe None
+        result.map {
+          _.header.status
+        }.mustBe(None)
       }
     }
 
@@ -62,7 +64,9 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
 
       whenReady(futureResult) { result =>
 
-        result.map { _.header.status  } mustBe None
+        result.map {
+          _.header.status
+        }.mustBe(None)
       }
     }
 
@@ -71,9 +75,9 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, Some("id"))))
 
-      whenReady(futureResult) { result =>
-
-        result.map { _.header.status  } mustBe None
+      whenReady(futureResult) { _.map {
+          _.header.status
+        }.mustBe(None)
       }
     }
 
@@ -83,8 +87,12 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
 
       whenReady(futureResult) { result =>
 
-        result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+        result.map {
+          _.header.status
+        }.mustBe(Some(SEE_OTHER))
+        result.flatMap {
+          _.header.headers.get(LOCATION)
+        }.mustBe(Some(controllers.routes.SessionExpiredController.onPageLoad.url))
       }
     }
 
@@ -92,9 +100,9 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
-      whenReady(futureResult) { result =>
-
-        result.map { _.header.status  } mustBe None
+      whenReady(futureResult) { _.map {
+          _.header.status
+        }.mustBe(None)
       }
     }
 
@@ -112,8 +120,12 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
 
       whenReady(futureResult) { result =>
 
-        result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.CannotMakeChangesController.onPageLoad.url)
+        result.map {
+          _.header.status
+        }.mustBe(Some(SEE_OTHER))
+        result.flatMap {
+          _.header.headers.get(LOCATION)
+        }.mustBe(Some(controllers.routes.CannotMakeChangesController.onPageLoad.url))
       }
     }
 
@@ -122,8 +134,12 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
-        result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(Call("GET", frontendAppConfig.schemesOverviewUrl).url)
+        result.map {
+          _.header.status
+        }.mustBe(Some(SEE_OTHER))
+        result.flatMap {
+          _.header.headers.get(LOCATION)
+        } mustBe Some(Call("GET", frontendAppConfig.schemesOverviewUrl).url)
       }
     }
 
@@ -141,8 +157,12 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
-        result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad.url)
+        result.map {
+          _.header.status
+        }.mustBe(Some(SEE_OTHER))
+        result.flatMap {
+          _.header.headers.get(LOCATION)
+        }.mustBe(Some(controllers.routes.UpdateContactAddressController.onPageLoad.url))
       }
     }
 
@@ -160,8 +180,12 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
-        result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(Call("GET", frontendAppConfig.youMustContactHMRCUrl).url)
+        result.map {
+          _.header.status
+        }.mustBe(Some(SEE_OTHER))
+        result.flatMap {
+          _.header.headers.get(LOCATION)
+        }.mustBe(Some(Call("GET", frontendAppConfig.youMustContactHMRCUrl).url))
       }
     }
   }

@@ -16,10 +16,11 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
-import models._
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import models.*
+import models.register.BusinessType
 import models.registrationnoid.RegistrationNoIdIndividualRequest
-import org.scalatest._
+import org.scalatest.*
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.Application
@@ -576,7 +577,7 @@ object RegistrationConnectorSpec extends OptionValues {
   private val noIdIndividualPath = "/pension-administrator/register-with-no-id/individual"
   private val individualPath = "/pension-administrator/register-with-id/individual"
 
-  private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)
+  private val organisation = Organisation("Test Ltd", BusinessType.values)
   private val firstName = "John"
   private val lastName = "Doe"
   private val individualDateOfBirth = LocalDate.now()

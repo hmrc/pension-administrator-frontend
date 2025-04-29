@@ -24,10 +24,11 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import forms.address.SameContactAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.individual.IndividualSameContactAddressId
-import models._
+import models.*
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.{eq as eqTo, *}
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
@@ -36,9 +37,9 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
@@ -163,11 +164,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
             any(), eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, ContactAddressIdentifier.type](
             any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> (if(v) "true" else "false")
@@ -203,11 +204,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
 
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
             any(), eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, ContactAddressIdentifier.type](
             any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "true"
@@ -235,11 +236,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
             any(), eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, ContactAddressIdentifier.type](
             any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "true"
@@ -266,11 +267,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
             any(), eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[TolerantAddress, RegAddressIdentifier.type](
             any(), eqTo(RegAddressIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "true"

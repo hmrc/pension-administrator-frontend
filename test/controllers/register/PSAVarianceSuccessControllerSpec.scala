@@ -23,7 +23,7 @@ import identifiers.register.individual.IndividualDetailsId
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
 import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
@@ -46,7 +46,7 @@ class PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoSu
 
     "return OK and the correct view for a GET" in {
 
-      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
+      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(Ok))
 
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 

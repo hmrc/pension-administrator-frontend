@@ -22,7 +22,7 @@ import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.AreYouInUKId
 import models.{Address, NormalMode}
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form

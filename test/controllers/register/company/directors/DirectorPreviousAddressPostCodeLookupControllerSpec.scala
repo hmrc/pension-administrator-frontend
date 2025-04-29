@@ -19,15 +19,16 @@ package controllers.register.company.directors
 import connectors.AddressLookupConnector
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorPreviousAddressPostCodeLookupId}
-import models._
-import org.mockito.{ArgumentMatchers, MockitoSugar}
+import models.*
+import org.mockito.ArgumentMatchers
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.libs.json._
+import play.api.libs.json.*
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel

@@ -78,7 +78,7 @@ class PsaDetailsHelperSpec extends AnyWordSpecLike with Matchers {
       result = partnershipResult, expectedAnswerRows = pensionAdvisorExpectedAnswerRows)
 
     behave like validSection(testName = "pension advisor details sub-section where there are none", headingKey = pensionAdvisorSuperSectionKey,
-      result = psaDetailsHelper(psaSubscriptionPartnership copy(pensionAdvisor=None)).organisationSections,
+      result = psaDetailsHelper(psaSubscriptionPartnership.copy(pensionAdvisor=None)).organisationSections,
       expectedAnswerRows = Seq.empty)
   }
 }

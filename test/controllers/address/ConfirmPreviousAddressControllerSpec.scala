@@ -27,7 +27,7 @@ import identifiers.register.individual.IndividualSameContactAddressId
 import models._
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -101,11 +101,11 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
             any(), eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, PreviousAddressId.type](
             any(), eqTo(PreviousAddressId), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "true"
@@ -130,11 +130,11 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
             any(), eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, PreviousAddressId.type](
             any(), eqTo(PreviousAddressId), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "false"
@@ -165,11 +165,11 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
 
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
             any(), eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, PreviousAddressId.type](
             any(), eqTo(PreviousAddressId), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "true"

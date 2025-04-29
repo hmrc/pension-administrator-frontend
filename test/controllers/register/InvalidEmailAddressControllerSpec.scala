@@ -35,7 +35,9 @@ import scala.concurrent.Future
 class InvalidEmailAddressControllerSpec extends ControllerSpecBase with MockitoSugar with BeforeAndAfterEach {
 
   private val mockMcc = Helpers.stubMessagesControllerComponents()
+
   def view: invlidEmailAddress = app.injector.instanceOf[invlidEmailAddress]
+
   val userType: UserType = UserType.Organisation
 
   def controller() = new InvalidEmailAddressController(
@@ -73,7 +75,7 @@ class InvalidEmailAddressControllerSpec extends ControllerSpecBase with MockitoS
       val result: Future[Result] = controller().onPageLoad(RegistrationStatus.Individual)(FakeRequest())
       status(result) mustBe OK
       val redirectUrl = controllers.register.individual.routes.IndividualEmailController.onPageLoad(CheckMode)
-     contentAsString(result) mustBe viewAsString(redirectUrl, request, messages)
+      contentAsString(result) mustBe viewAsString(redirectUrl, request, messages)
     }
   }
 

@@ -17,16 +17,17 @@
 package controllers
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import forms.register.YesNoFormProvider
 import models.UserType.Organisation
 import models.{PersonName, UpdateMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito._
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.PsaDetailsService
 import utils.{FakeNavigator, UserAnswers}
 import views.html.secondPartner

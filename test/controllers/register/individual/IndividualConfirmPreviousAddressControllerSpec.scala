@@ -62,6 +62,8 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
 
   val countryOptions = new CountryOptions(environment, frontendAppConfig)
 
+  val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
+
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new IndividualConfirmPreviousAddressController(
       frontendAppConfig,
@@ -75,7 +77,6 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
       controllerComponents,
       view
     )
-val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
 
   def viewAsString(form: Form[?] = form): String =
     view(
@@ -86,7 +87,7 @@ val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
 
   val validData: JsResult[UserAnswers] = UserAnswers()
     .set(IndividualDetailsId)(TolerantIndividual(Some("John"), None, Some("Doe"))).flatMap(_.set(
-    ExistingCurrentAddressId)(testAddress))
+      ExistingCurrentAddressId)(testAddress))
 
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
 

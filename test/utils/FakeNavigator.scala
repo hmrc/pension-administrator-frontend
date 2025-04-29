@@ -22,7 +22,7 @@ import play.api.mvc.Call
 
 class FakeNavigator(val desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
 
-  private[this] var userAnswers: Option[UserAnswers] = None
+  private var userAnswers: Option[UserAnswers] = None
 
   def lastUserAnswers: Option[UserAnswers] = userAnswers
 

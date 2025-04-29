@@ -112,8 +112,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      status(result).mustBe(OK)
+      contentAsString(result).mustBe(viewAsString())
 
     }
 
@@ -129,8 +129,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(companyName, testBusinessPartnershipAddress)
+      status(result).mustBe(OK)
+      contentAsString(result).mustBe(viewAsString(companyName, testBusinessPartnershipAddress))
     }
 
     "redirect to the next page when the UTR is invalid" in {
@@ -142,8 +142,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyNotFoundController.onPageLoad().url)
+      status(result).mustBe(SEE_OTHER)
+      redirectLocation(result).mustBe(Some(controllers.register.company.routes.CompanyNotFoundController.onPageLoad().url))
     }
 
     "data is saved on page load" in {
@@ -158,20 +158,20 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           .json
       val result = controller(dataRetrievalAction, dataCacheConnector).onPageLoad(NormalMode)(fakeRequest)
 
-      status(result) mustBe OK
-      dataCacheConnector.lastUpsert.value mustBe expectedJson
+      status(result).mustBe(OK)
+      dataCacheConnector.lastUpsert.value.mustBe(expectedJson)
     }
 
     "valid data is submitted" when {
       "yes must redirect to next page" in {
-          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-          val result = controller(dataRetrievalActionForPost).onSubmit(NormalMode)(postRequest)
+        val result = controller(dataRetrievalActionForPost).onSubmit(NormalMode)(postRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(onwardRoute.url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(onwardRoute.url))
 
-        }
+      }
       "yes must redirect to the address page when a field is missing" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
@@ -195,8 +195,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
         val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.register.company.routes.AddressController.onPageLoad().toString)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(controllers.register.company.routes.AddressController.onPageLoad().toString))
       }
 
       "no must remove saved data from address and registration info ids" in {
@@ -204,8 +204,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
         val result = controller(dataRetrievalActionForPost).onSubmit(NormalMode)(postRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url))
         FakeUserAnswersCacheConnector.verifyNot(ConfirmCompanyAddressId)
         FakeUserAnswersCacheConnector.verifyNot(RegistrationInfoId)
       }
@@ -221,8 +221,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
           val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+          status(result).mustBe(SEE_OTHER)
+          redirectLocation(result).mustBe(Some(controllers.routes.SessionExpiredController.onPageLoad.url))
         }
         "no business type data is found" in {
           val data = Json.obj(
@@ -233,15 +233,15 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
           val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+          status(result).mustBe(SEE_OTHER)
+          redirectLocation(result).mustBe(Some(controllers.routes.SessionExpiredController.onPageLoad.url))
         }
 
         "no existing data is found" in {
           val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+          status(result).mustBe(SEE_OTHER)
+          redirectLocation(result).mustBe(Some(controllers.routes.SessionExpiredController.onPageLoad.url))
         }
       }
       "POST" when {
@@ -253,8 +253,8 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
           val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+          status(result).mustBe(SEE_OTHER)
+          redirectLocation(result).mustBe(Some(controllers.routes.SessionExpiredController.onPageLoad.url))
         }
         "no business type data is found" in {
           val data = Json.obj(
@@ -265,16 +265,16 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
           val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+          status(result).mustBe(SEE_OTHER)
+          redirectLocation(result).mustBe(Some(controllers.routes.SessionExpiredController.onPageLoad.url))
         }
 
         "no existing data is found" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
           val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+          status(result).mustBe(SEE_OTHER)
+          redirectLocation(result).mustBe(Some(controllers.routes.SessionExpiredController.onPageLoad.url))
         }
       }
     }
@@ -282,7 +282,6 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
   }
 
   private def onwardRoute: Call = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
-
 
 
   private def fakeRegistrationConnector = new FakeRegistrationConnector {
@@ -299,10 +298,10 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
         Some(utr)
       )
 
-      if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
+      if (utr == validLimitedCompanyUtr && organisation.organisationType == Value("Corporate Body")) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), info))
       }
-      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationTypeEnum.Partnership) {
+      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == Value("Partnership")) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), info))
       }
       else {
@@ -317,12 +316,11 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
 
   private def controller(
-    dataRetrievalAction: DataRetrievalAction,
-    dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
-  ) =
+                          dataRetrievalAction: DataRetrievalAction,
+                          dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
+                        ) =
     new ConfirmCompanyDetailsController(
       dataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,

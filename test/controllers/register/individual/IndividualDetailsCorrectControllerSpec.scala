@@ -28,7 +28,7 @@ import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.Individual
 import models._
 import models.requests.AuthenticatedRequest
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc._

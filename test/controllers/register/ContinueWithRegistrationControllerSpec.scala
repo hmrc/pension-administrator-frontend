@@ -46,24 +46,24 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
         val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
           .onPageLoad()(fakeRequest)
 
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(form)
+        status(result).mustBe(OK)
+        contentAsString(result).mustBe(viewAsString(form))
       }
 
       "return 303 if user action is not authenticated" in {
 
         val result = onPageLoadAction(getEmptyData, FakeUnAuthorisedAction())(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad.url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(controllers.routes.UnauthorisedController.onPageLoad.url))
       }
 
       "return 303 and redirect to 'what to register' if the user hasn't completed business matching" in {
         val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
           .onPageLoad()(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.RegisterAsBusinessController.onPageLoad().url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(routes.RegisterAsBusinessController.onPageLoad().url))
       }
     }
 
@@ -76,8 +76,8 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
         val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
           .onSubmit()(postRequestTrue)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(company.routes.CompanyRegistrationTaskListController.onPageLoad().url))
       }
 
       "redirect to 'partnership registration task list' page when form value is true for UK partnership" in {
@@ -88,8 +88,8 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
         val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
           .onSubmit()(postRequestTrue)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url))
       }
 
       "redirect to WYWN page when form value is true when customer type is NON UK" in {
@@ -99,16 +99,16 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
         val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
           .onSubmit()(postRequestTrue)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url))
       }
 
       "redirect to company 'before you begin' page when form value is false" in {
         val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
           .onSubmit()(postRequestFalse)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url))
       }
     }
   }

@@ -70,15 +70,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       "redirect to register as business page when individual name and address is not present for UK" in {
         val result = controller(UserAnswers().dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.register.routes.RegisterAsBusinessController.onPageLoad().url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(controllers.register.routes.RegisterAsBusinessController.onPageLoad().url))
       }
 
       "redirect to Session Expired if there is no cached data" in {
         val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(controllers.routes.SessionExpiredController.onPageLoad.url))
       }
     }
 
@@ -86,8 +86,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       "redirect to the next page when data is complete" in {
         val result = controller().onSubmit(NormalMode)(fakeRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(onwardRoute.url))
       }
 
       "load the same cya page when data is not complete" in {

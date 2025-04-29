@@ -26,7 +26,7 @@ import identifiers.TypedIdentifier
 import identifiers.register.individual.{IndividualAddressChangedId, IndividualContactAddressId}
 import models._
 import models.requests.DataRequest
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers

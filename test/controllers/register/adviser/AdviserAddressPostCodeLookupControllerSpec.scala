@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import forms.address.PostCodeLookupFormProvider
 import models.{Mode, NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -77,7 +77,7 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
           bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
         )*)) {
         app =>
-          when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())) thenReturn Future.successful(Seq(address))
+          when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())).thenReturn(Future.successful(Seq(address)))
           val controller = app.injector.instanceOf[AdviserAddressPostCodeLookupController]
 
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "ZZ1 1ZZ")

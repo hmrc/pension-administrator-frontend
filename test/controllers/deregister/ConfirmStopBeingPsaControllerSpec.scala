@@ -56,14 +56,14 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
       val result = controller(canDeregister = Deregistration(canDeregister = false, isOtherPsaAttached = false)).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.deregister.routes.MustInviteOthersController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(controllers.deregister.routes.MustInviteOthersController.onPageLoad().url)
     }
 
     "redirect to CannotDeregister page if Psa can't be deregistered and other PSAs are attached to Open schemes" in {
       val result = controller(canDeregister = Deregistration(canDeregister = false, isOtherPsaAttached = true)).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.deregister.routes.CannotDeregisterController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(controllers.deregister.routes.CannotDeregisterController.onPageLoad().url)
     }
 
     "return OK and the correct view for a GET and ensure audit service is successfully called" in {
@@ -86,7 +86,7 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
       val result = controller(minimalPsaDetailsNoneSuspended).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(controllers.deregister.routes.UnableToStopBeingPsaController.onPageLoad().url)
     }
 
     "return to update address page if psa RLS flag is set in minimal details" in {
@@ -168,7 +168,7 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
       val result = controller.onSubmit()(request)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.deregister.routes.CannotDeregisterController.onPageLoad.url)
+      redirectLocation(result) mustBe Some(controllers.deregister.routes.CannotDeregisterController.onPageLoad().url)
     }
   }
 

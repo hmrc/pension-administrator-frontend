@@ -112,7 +112,7 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
 
       implicit val request: DataRequest[AnyContent] = dataRequest(Json.obj("test" -> "result", "second" -> "answer"))
 
-      (testIdentifier and secondIdentifier).retrieve.value mustEqual new ~("result", "answer")
+      testIdentifier.and(secondIdentifier).retrieve.value mustEqual new ~("result", "answer")
     }
 
     "redirect to the session expired page when cant find identifier" in {

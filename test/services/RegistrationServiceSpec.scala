@@ -38,7 +38,7 @@ class RegistrationServiceSpec extends AsyncFlatSpec with Matchers with OptionVal
   "RegistrationService" should "do the registration and return future unit" in{
 
    service.registerWithNoIdIndividual(extId, individual, address, dob).map{
-     result=>
+     result =>
        userAnswersCacheConnector.verify(RegistrationInfoId, registrationInfo)
        result shouldBe registrationInfo
    }
@@ -47,17 +47,17 @@ class RegistrationServiceSpec extends AsyncFlatSpec with Matchers with OptionVal
 
   it should "throw the exception if first name is missing" in {
 
-    a[MandatoryIndividualDetailsMissing] shouldBe thrownBy {
+    a[MandatoryIndividualDetailsMissing].shouldBe(thrownBy {
       service.registerWithNoIdIndividual(extId, individual.copy(firstName = None), address, dob)
-    }
+    })
 
   }
 
   it should "throw the exception if last name is missing" in {
 
-    a[MandatoryIndividualDetailsMissing] shouldBe thrownBy {
+    a[MandatoryIndividualDetailsMissing].shouldBe(thrownBy {
       service.registerWithNoIdIndividual(extId, individual.copy(lastName = None), address, dob)
-    }
+    })
 
   }
 

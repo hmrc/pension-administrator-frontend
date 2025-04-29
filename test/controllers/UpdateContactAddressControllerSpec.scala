@@ -22,7 +22,7 @@ import identifiers.register.individual.{IndividualContactAddressId, IndividualDe
 import models._
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsNull, Json}
 import play.api.mvc.Call

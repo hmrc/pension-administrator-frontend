@@ -18,15 +18,16 @@ package controllers.register
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import identifiers.register.{PsaSubscriptionResponseId, RegisterAsBusinessId}
-import models._
+import models.*
 import models.register.PsaSubscriptionResponse
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar
-import play.api.mvc.Results._
-import play.api.test.Helpers._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.Results.*
+import play.api.test.Helpers.*
 import utils.UserAnswers
 import views.html.register.confirmation
 
@@ -52,7 +53,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
           .businessName(psaName)
           .companyEmail(psaEmail)
 
-      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
+      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(Ok))
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data.json))
 
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -68,7 +69,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
         .individualDetails(TolerantIndividual(Some("psa"),None,Some("name")))
         .individualEmail(psaEmail)
        reset(fakeUserAnswersCacheConnector)
-      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
+      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(Ok))
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data.json))
 
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
