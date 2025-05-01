@@ -31,6 +31,7 @@ import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterPAYE
+import utils.UserAnswerOps
 
 class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 

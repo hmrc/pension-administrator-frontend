@@ -31,6 +31,7 @@ import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
+import utils.UserAnswerOps
 
 class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with ScalaFutures {
 

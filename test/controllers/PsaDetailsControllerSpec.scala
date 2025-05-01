@@ -28,6 +28,7 @@ import utils.FakeNavigator
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels.{PsaViewDetailsViewModel, SuperSection}
 import views.html.psa_details
+import org.mockito.Mockito.*
 
 import scala.concurrent.{ExecutionContext, Future}
 

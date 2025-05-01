@@ -32,6 +32,7 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
+import utils.UserAnswerOps
 
 class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
   def onwardRoute: Call = routes.CompanyContactAddressController.onPageLoad(NormalMode)

@@ -34,6 +34,7 @@ import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Person
 import views.html.register.company.{addCompanyDirectors, addCompanyDirectorsv2}
+import utils.UserAnswerOps
 
 class AddCompanyDirectorsControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 

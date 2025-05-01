@@ -33,6 +33,7 @@ import utils.FakeNavigator
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
+import org.mockito.Mockito.*
 
 import scala.concurrent.Future
 

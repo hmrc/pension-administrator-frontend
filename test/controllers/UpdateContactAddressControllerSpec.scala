@@ -23,6 +23,7 @@ import models._
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers._
 import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsNull, Json}
 import play.api.mvc.Call

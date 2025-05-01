@@ -23,7 +23,8 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorNameId}
 import models._
-import org.mockito.{ArgumentMatchers, MockitoSugar}
+import org.mockito.ArgumentMatchers
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._

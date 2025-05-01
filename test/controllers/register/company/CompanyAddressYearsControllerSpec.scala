@@ -34,6 +34,7 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
+import utils.UserAnswerOps
 
 class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
 

@@ -30,6 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
+import utils.UserAnswerOps
 
 import java.time.LocalDate
 import scala.concurrent.Future

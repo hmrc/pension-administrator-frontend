@@ -24,7 +24,8 @@ import forms.address.PostCodeLookupFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyPreviousAddressPostCodeLookupId
 import models.{Mode, NormalMode, TolerantAddress}
-import org.mockito.{ArgumentMatchers, MockitoSugar}
+import org.mockito.ArgumentMatchers
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._

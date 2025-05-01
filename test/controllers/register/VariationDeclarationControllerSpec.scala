@@ -35,6 +35,7 @@ import models._
 import models.enumeration.JourneyType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import play.api.test.Helpers._

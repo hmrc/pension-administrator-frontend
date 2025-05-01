@@ -32,6 +32,7 @@ import play.api.test.Helpers.{contentAsString, redirectLocation, status, _}
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.dob
+import utils.UserAnswerOps
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}

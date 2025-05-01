@@ -23,7 +23,9 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.partnership.partners.{PartnerAddressPostCodeLookupId, PartnerNameId}
 import models._
-import org.mockito.{ArgumentMatchers, MockitoSugar}
+import org.mockito.ArgumentMatchers
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.*
 import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._

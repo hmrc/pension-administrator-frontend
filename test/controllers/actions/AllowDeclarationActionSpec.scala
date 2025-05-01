@@ -21,6 +21,7 @@ import models._
 import models.requests.OptionalDataRequest
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.ScalaFutures
+import org.mockito.Mockito.*
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import utils.UserAnswers

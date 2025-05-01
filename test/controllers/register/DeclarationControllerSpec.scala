@@ -17,14 +17,14 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors._
+import connectors.*
 import controllers.register.routes.InvalidEmailAddressController
-import controllers.routes._
+import controllers.routes.*
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import identifiers.register.partnership.PartnershipEmailId
-import identifiers.register._
+import identifiers.register.*
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.{Individual, Partnership}
@@ -32,14 +32,15 @@ import models.UserType.UserType
 import models.enumeration.JourneyType
 import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse, RegistrationStatus}
 import models.{NormalMode, RegistrationInfo, UserType}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import utils.{FakeNavigator, KnownFactsRetrieval}
 import views.html.register.declaration
 

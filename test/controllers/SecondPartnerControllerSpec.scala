@@ -30,6 +30,7 @@ import play.api.mvc.Call
 import play.api.test.Helpers.*
 import services.PsaDetailsService
 import utils.{FakeNavigator, UserAnswers}
+import utils.UserAnswerOps
 import views.html.secondPartner
 
 import scala.concurrent.Future

@@ -28,6 +28,7 @@ import models._
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.*
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json

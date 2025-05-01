@@ -23,6 +23,7 @@ import models.{PSAUser, UserType}
 import org.mockito.ArgumentMatchers.{eq as eqTo, *}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.*
 import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -32,6 +32,7 @@ import play.api.test.Helpers._
 import services.RegistrationService
 import utils.{DateHelper, FakeNavigator}
 import views.html.register.individual.individualDateOfBirth
+import org.mockito.Mockito.*
 
 import java.time.LocalDate
 import scala.concurrent.Future
