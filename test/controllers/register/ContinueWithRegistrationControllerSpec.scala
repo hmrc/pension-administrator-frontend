@@ -30,6 +30,7 @@ import play.api.test.Helpers._
 import utils.UserAnswers
 import utils.testhelpers.DataCompletionBuilder._
 import views.html.register.continueWithRegistration
+import utils.UserAnswerOps
 
 class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageBehaviours {
 

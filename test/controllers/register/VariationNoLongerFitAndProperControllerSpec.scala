@@ -26,6 +26,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.UserAnswers
 import views.html.register.variationNoLongerFitAndProper
+import utils.UserAnswerOps
 
 class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
   private val psaName: String = "Mark Wright"

@@ -25,6 +25,7 @@ import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
+import utils.UserAnswerOps
 
 class PartnerAddressIdSpec extends SpecBase {
   private val partnerDetails = PersonName("test first", "test last")

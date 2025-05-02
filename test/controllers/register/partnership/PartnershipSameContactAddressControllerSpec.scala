@@ -29,6 +29,7 @@ import utils.{FakeNavigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
+import utils.UserAnswerOps
 
 class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
 

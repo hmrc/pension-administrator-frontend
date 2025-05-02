@@ -32,6 +32,7 @@ import services.PsaDetailsService
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import views.html.updateContactAddress
+import utils.UserAnswerOps
 
 import scala.concurrent.Future
 

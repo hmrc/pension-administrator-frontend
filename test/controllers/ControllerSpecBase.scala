@@ -31,6 +31,7 @@ import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
 import utils.UserAnswers
+import utils.UserAnswerOps
 
 import scala.concurrent.ExecutionContext
 

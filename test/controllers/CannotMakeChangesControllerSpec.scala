@@ -24,6 +24,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.UserAnswers
 import views.html.cannotMakeChanges
+import utils.UserAnswerOps
 
 class CannotMakeChangesControllerSpec extends ControllerSpecBase {
   private val psaName: String = "Mark Wright"

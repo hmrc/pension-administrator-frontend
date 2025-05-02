@@ -31,6 +31,7 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
+import utils.UserAnswerOps
 
 class PartnershipPreviousAddressListControllerSpec extends ControllerSpecBase {
 

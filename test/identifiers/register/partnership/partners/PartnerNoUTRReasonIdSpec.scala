@@ -24,6 +24,7 @@ import play.api.test.FakeRequest
 import utils.UserAnswers
 import utils.checkyouranswers.Ops._
 import viewmodels.{AnswerRow, Link, Message}
+import utils.UserAnswerOps
 
 class PartnerNoUTRReasonIdSpec extends SpecBase {
 

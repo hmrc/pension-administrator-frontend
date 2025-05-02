@@ -28,13 +28,14 @@ import play.api.test.Helpers._
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
 import views.html.register.isRegisteredName
+import utils.UserAnswerOps
 
 class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRegisteredNameControllerBehaviour {
   val name = "test company name"
 
   val viewModel: CommonFormViewModel = CommonFormViewModel(
     NormalMode,
-    routes.CompanyIsRegisteredNameController.onSubmit,
+    routes.CompanyIsRegisteredNameController.onSubmit(),
     Message("isRegisteredName.company.title", name),
     Message("isRegisteredName.company.heading", name)
   )

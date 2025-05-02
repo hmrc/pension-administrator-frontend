@@ -30,6 +30,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.UserAnswerOps
 
 class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -175,8 +176,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
 
   private val updatingContactAddressForRLS = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value
 
-  private def companyNamePage = routes.CompanyNameController.onPageLoad
-  private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad
+  private def companyNamePage = routes.CompanyNameController.onPageLoad()
+  private def companyIsRegisteredNamePage = routes.CompanyIsRegisteredNameController.onPageLoad()
 
   private def confirmCompanyDetailsPage = routes.ConfirmCompanyDetailsController.onPageLoad()
 

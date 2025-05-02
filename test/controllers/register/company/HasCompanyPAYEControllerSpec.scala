@@ -30,6 +30,7 @@ import utils.annotations.RegisterCompany
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
+import utils.UserAnswerOps
 
 class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
 

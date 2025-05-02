@@ -61,7 +61,7 @@ class PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase with 
 
   def viewModel = CommonFormViewModel(
     NormalMode,
-    routes.PartnershipIsRegisteredNameController.onSubmit,
+    routes.PartnershipIsRegisteredNameController.onSubmit(),
     Message("isRegisteredName.partnership.title", name),
     Message("isRegisteredName.partnership.heading", name)
   )

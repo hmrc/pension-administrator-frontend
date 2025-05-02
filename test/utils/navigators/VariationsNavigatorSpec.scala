@@ -30,6 +30,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.UserAnswerOps
 
 class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 

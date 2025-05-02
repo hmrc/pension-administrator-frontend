@@ -29,6 +29,8 @@ import play.api.mvc.Results._
 import play.api.test.Helpers._
 import utils.UserAnswers
 import views.html.register.psaVarianceSuccess
+import utils.UserAnswerOps
+import org.mockito.Mockito.*
 
 import scala.concurrent.Future
 

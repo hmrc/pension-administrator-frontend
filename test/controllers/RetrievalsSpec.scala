@@ -46,9 +46,10 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
 
   val controller = new TestController(controllerComponents)
 
-  val success: String => Future[Result] = { _: String =>
+  val success: String => Future[Result] = { (_: String) =>
     Future.successful(Ok("Success"))
   }
+
 
   val testIdentifier: TypedIdentifier[String] = new TypedIdentifier[String] {
     override def toString: String = "test"

@@ -31,6 +31,7 @@ import play.api.test.Helpers.{status, *}
 import utils.testhelpers.DataCompletionBuilder.*
 import utils.{Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
+import utils.UserAnswerOps
 
 class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours with MockitoSugar {
 

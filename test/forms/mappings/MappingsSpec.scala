@@ -359,7 +359,7 @@ class MappingsSpec extends AnyWordSpecLike with Matchers with OptionValues with 
         )
       )
 
-      result.errors.size mustBe 1
+      result.errors.size.mustBe(1)
       result.errors must contain(FormError("date", "error.invalid"))
     }
 
@@ -372,7 +372,7 @@ class MappingsSpec extends AnyWordSpecLike with Matchers with OptionValues with 
         )
       )
 
-      result.errors.size mustBe 1
+      result.errors.size.mustBe(1)
       result.errors must contain(FormError("date", "error.invalid"))
     }
 

@@ -28,6 +28,7 @@ import utils.FakeNavigator
 import utils.testhelpers.ViewPsaDetailsBuilder._
 import viewmodels.{PsaViewDetailsViewModel, SuperSection}
 import views.html.updateContactAddressCYA
+import org.mockito.Mockito.when
 
 import scala.concurrent.{ExecutionContext, Future}
 

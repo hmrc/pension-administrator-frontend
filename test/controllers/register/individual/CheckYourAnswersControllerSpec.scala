@@ -30,6 +30,7 @@ import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
+import org.mockito.Mockito.when
 
 import java.time.LocalDate
 import scala.concurrent.Future

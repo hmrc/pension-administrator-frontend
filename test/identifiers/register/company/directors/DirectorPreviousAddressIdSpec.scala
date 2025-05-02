@@ -26,6 +26,7 @@ import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
+import utils.UserAnswerOps
 
 class DirectorPreviousAddressIdSpec extends SpecBase {
   private val address = Address("line1", "line2", None, None, None, "country")

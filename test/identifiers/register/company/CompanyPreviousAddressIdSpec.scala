@@ -25,6 +25,7 @@ import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
 import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
+import utils.UserAnswerOps
 
 class CompanyPreviousAddressIdSpec extends SpecBase {
 

@@ -28,6 +28,8 @@ import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
+import org.mockito.Mockito.*
+import utils.UserAnswerOps
 
 import scala.concurrent.Future
 

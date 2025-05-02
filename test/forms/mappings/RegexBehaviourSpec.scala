@@ -32,13 +32,13 @@ trait RegexBehaviourSpec extends TableDrivenPropertyChecks {
                                         invalidMsg: String,
                                         regexString: String): Unit = {
     "Accept all valid examples" in {
-      forAll(valid) { value: String =>
+      forAll(valid) { value =>
         constraint(invalidMsg)(value).shouldBe(Valid)
       }
     }
 
     "Reject all invalid examples" in {
-      forAll(invalid) { value: String =>
+      forAll(invalid) { value =>
         constraint(invalidMsg)(value).shouldBe(Invalid(invalidMsg, regexString))
       }
     }

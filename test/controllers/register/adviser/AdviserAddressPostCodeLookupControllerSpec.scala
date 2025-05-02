@@ -34,6 +34,7 @@ import utils.{FakeNavigator, Navigator}
 import viewmodels.Message
 import viewmodels.address.PostcodeLookupViewModel
 import views.html.address.postcodeLookup
+import org.mockito.Mockito.when
 
 import scala.concurrent.Future
 

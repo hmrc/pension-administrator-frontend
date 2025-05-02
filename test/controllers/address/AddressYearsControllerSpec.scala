@@ -41,6 +41,7 @@ import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.when
 
 import scala.concurrent.{ExecutionContext, Future}
 

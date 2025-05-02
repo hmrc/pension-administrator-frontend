@@ -28,6 +28,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.UserAnswerOps
 
 class PartnershipNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -155,9 +156,9 @@ object PartnershipNavigatorSpec extends OptionValues {
 
   private lazy val confirmPartnershipDetailsPage: Call = routes.ConfirmPartnershipDetailsController.onPageLoad()
 
-  private lazy val partnershipNamePage = routes.PartnershipNameController.onPageLoad
+  private lazy val partnershipNamePage = routes.PartnershipNameController.onPageLoad()
 
-  private lazy val partnershipIsRegisteredNamePage = routes.PartnershipIsRegisteredNameController.onPageLoad
+  private lazy val partnershipIsRegisteredNamePage = routes.PartnershipIsRegisteredNameController.onPageLoad()
 
   private lazy val sameContactAddressPage: Call = routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
 

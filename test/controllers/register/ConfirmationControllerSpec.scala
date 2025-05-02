@@ -30,6 +30,7 @@ import play.api.mvc.Results.*
 import play.api.test.Helpers.*
 import utils.UserAnswers
 import views.html.register.confirmation
+import utils.UserAnswerOps
 
 import scala.concurrent.Future
 

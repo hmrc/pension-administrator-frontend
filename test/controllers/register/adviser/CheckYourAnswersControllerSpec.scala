@@ -29,6 +29,7 @@ import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerRow, AnswerSection, Link}
 import views.html.check_your_answers
+import org.mockito.Mockito.*
 
 class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 

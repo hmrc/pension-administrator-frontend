@@ -28,6 +28,7 @@ import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.UserAnswerOps
 
 class RegisterNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
@@ -79,7 +80,7 @@ object RegisterNavigatorSpec extends OptionValues {
 
   lazy val emptyAnswers: UserAnswers = UserAnswers(Json.obj())
   lazy val sessionExpiredPage: Call = controllers.routes.SessionExpiredController.onPageLoad
-  lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad
+  lazy val companyUTRPage: Call = controllers.register.company.routes.CompanyUTRController.onPageLoad()
   lazy val partnershipUTRPage: Call = controllers.register.partnership.routes.PartnershipUTRController.onPageLoad
   lazy val declarationPage: Call = routes.DeclarationController.onPageLoad()
   lazy val declarationFitAndProperPage: Call = routes.DeclarationFitAndProperController.onPageLoad()

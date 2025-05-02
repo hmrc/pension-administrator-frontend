@@ -32,6 +32,8 @@ import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
+import org.mockito.Mockito.*
+import utils.UserAnswerOps
 
 import java.time.LocalDate
 

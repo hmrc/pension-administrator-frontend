@@ -34,6 +34,7 @@ import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{EntityViewModel, Message, Person}
 import views.html.register.addEntity
+import utils.UserAnswerOps
 
 class AddPartnerControllerSpec extends ControllerSpecBase {
 

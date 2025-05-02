@@ -26,6 +26,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import utils.UserAnswers
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
+import utils.UserAnswerOps
 
 class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues {
 

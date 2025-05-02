@@ -18,18 +18,19 @@ package controllers.register.company
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.AddressFormProvider
 import forms.register.company.CompanyAddressFormProvider
-import identifiers.register.company._
+import identifiers.register.company.*
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
-import models._
+import models.*
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.govukfrontend.views.Aliases.Value
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, FakeNavigator, UserAnswers}
@@ -78,7 +79,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
     Some("GB")
   )
 
-  val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
+  val organisation: Organisation = Organisation("MyOrganisation", OrganisationType.CorporateBody)
 
   private val data = Json.obj(
     BusinessTypeId.toString -> LimitedCompany.toString,

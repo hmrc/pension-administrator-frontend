@@ -23,6 +23,7 @@ import models.register.{Task, TaskList}
 import play.api.test.Helpers._
 import utils.UserAnswers
 import views.html.register.taskList
+import utils.UserAnswerOps
 
 class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase {
 

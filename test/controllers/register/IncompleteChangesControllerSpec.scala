@@ -26,6 +26,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import utils.UserAnswers
 import views.html.register.incompleteChanges
+import utils.UserAnswerOps
 
 class IncompleteChangesControllerSpec extends ControllerSpecBase {
   private val psaName: String = "Mark Wright"

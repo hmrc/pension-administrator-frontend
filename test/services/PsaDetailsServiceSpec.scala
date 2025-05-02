@@ -19,19 +19,19 @@ package services
 import base.SpecBase
 import connectors.SubscriptionConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
-import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
-import identifiers.register.individual._
-import identifiers.register.partnership.partners.{PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
+import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId as DirectorsExistingCurrentAddressId}
+import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId as CompanyExistingCurrentAddressId}
+import identifiers.register.individual.*
+import identifiers.register.partnership.partners.{PartnerAddressId, ExistingCurrentAddressId as PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId}
 import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId}
 import identifiers.{IndexId, UpdateModeId}
 import models.requests.OptionalDataRequest
 import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results.Ok
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,13 +41,14 @@ import utils.dataCompletion.DataCompletion
 import utils.testhelpers.ViewPsaDetailsBuilder.{companyContactOnlyWithChangeLinks, companyWithChangeLinks, individualContactOnlyWithChangeLinks, individualWithChangeLinks, partnershipContactOnlyWithChangeLinks, partnershipWithChangeLinks}
 import utils.{FakeCountryOptions, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSection}
+import org.mockito.Mockito.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
-  import PsaDetailsServiceSpec._
+  import PsaDetailsServiceSpec.*
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   implicit val request: OptionalDataRequest[?] = OptionalDataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, false, Some("test Psa id")),

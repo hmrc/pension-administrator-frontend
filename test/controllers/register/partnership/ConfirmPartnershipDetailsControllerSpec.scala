@@ -32,6 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, FakeNavigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
+import utils.UserAnswerOps
 
 import scala.concurrent.{ExecutionContext, Future}
 
