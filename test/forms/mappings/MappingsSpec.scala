@@ -296,7 +296,7 @@ class MappingsSpec extends AnyWordSpecLike with Matchers with OptionValues with 
     val testForm: Form[TestClass] = Form(
       mapping(
         "date" -> date("error.required", "error.invalid")
-      )(TestClass.apply)(TestClass.unapply)
+      )(TestClass.apply)(o => Some(o.date))
     )
 
     // scalastyle:off magic.number
