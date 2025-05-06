@@ -16,9 +16,9 @@
 
 package models
 
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
+@annotation.nowarn
 abstract class RegisterWithIdResponse(address: TolerantAddress)
 
 case class OrganizationRegisterWithIdResponse(organisation: Organisation, address: TolerantAddress) extends RegisterWithIdResponse(address)
@@ -34,15 +34,6 @@ object OrganisationNotFound extends OrganizationRegistrationStatus
 case class IndividualRegistration(response: IndividualRegisterWithIdResponse, info: RegistrationInfo)
 
 object RegisterWithIdResponse {
-
-  implicit lazy val formatsOrganizationRegisterWithIdResponse: Format[OrganizationRegisterWithIdResponse] = (
-    (JsPath \ "organisation").format[Organisation] and
-      (JsPath \ "address").format[TolerantAddress]
-  )(OrganizationRegisterWithIdResponse.apply, unlift(o => Some(Tuple.fromProductTyped(o))))
-
-  implicit lazy val formatsIndividualRegisterWithIdResponse: Format[IndividualRegisterWithIdResponse] = (
-    (JsPath \ "individual").format[TolerantIndividual] and
-      (JsPath \ "address").format[TolerantAddress]
-  )(IndividualRegisterWithIdResponse.apply, unlift(o => Some(Tuple.fromProductTyped(o))))
-
+  implicit lazy val formatsOrganizationRegisterWithIdResponse: Format[OrganizationRegisterWithIdResponse] = Json.format[OrganizationRegisterWithIdResponse]
+  implicit lazy val formatsIndividualRegisterWithIdResponse: Format[IndividualRegisterWithIdResponse] = Json.format[IndividualRegisterWithIdResponse]
 }

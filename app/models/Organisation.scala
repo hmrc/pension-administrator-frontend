@@ -55,12 +55,18 @@ enum OrganisationType extends Enum[OrganisationType] {
 }
 
 object OrganisationType {
-  private def fromString(value: String): Option[OrganisationType] =
-    OrganisationType.values.toSeq.find(_.name() == value)
+
+  def apply(orgType: String): OrganisationType = orgType match {
+    case "Corporate Body" => CorporateBody
+    case "Not Specified" => NotSpecified
+    case "LLP" => LLP
+    case "Partnership" => Partnership
+    case "Unincorporated Body" => UnincorporatedBody
+  }
 
   implicit def reads: Reads[OrganisationType] = {
     case JsString(s) =>
-      Try[OrganisationType](OrganisationType.fromString(s).get) match {
+      Try[OrganisationType](OrganisationType(s)) match {
         case Failure(orgType) => JsError("JourneyType value expected")
         case Success(orgType) => JsSuccess(orgType)
       }
