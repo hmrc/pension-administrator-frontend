@@ -93,7 +93,7 @@ class NonUKAddressFormProviderSpec extends FormBehaviours with FormSpec with Add
         "error.address_line_3.length",
         "error.address_line_3.invalid",
         validData,
-        (model: Address) => Some(model.addressLine3.toString)
+        (model: Address) => model.addressLine3
       )
 
       behave like formWithOptionalAddressField(
