@@ -74,7 +74,7 @@ class VariationDeclarationControllerSpec
     .set(RegistrationInfoId)(registrationInfo).asOpt.value
     .set(PartnershipEmailId)(email).asOpt.value
 
-    val view: variationDeclaration = app.injector.instanceOf[variationDeclaration]
+  val view: variationDeclaration = app.injector.instanceOf[variationDeclaration]
 
 
   private val dataRetrievalAction = new FakeDataRetrievalAction(Some(individual.json))
@@ -86,29 +86,29 @@ class VariationDeclarationControllerSpec
 
   private def controller(
                           dataRetrievalAction: DataRetrievalAction = dataRetrievalAction,
-                          userType: UserType                       = UserType.Organisation
+                          userType: UserType = UserType.Organisation
                         ) =
     new VariationDeclarationController(
-      appConfig               = mockAppConfig,
-      authenticate            = FakeAuthAction(userType, psaId),
-      allowAccess             = FakeAllowAccessProvider(config = frontendAppConfig),
-      getData                 = dataRetrievalAction,
-      requireData             = new DataRequiredActionImpl,
-      navigator               = fakeNavigator,
-      dataCacheConnector      = FakeUserAnswersCacheConnector,
+      appConfig = mockAppConfig,
+      authenticate = FakeAuthAction(userType, psaId),
+      allowAccess = FakeAllowAccessProvider(config = frontendAppConfig),
+      getData = dataRetrievalAction,
+      requireData = new DataRequiredActionImpl,
+      navigator = fakeNavigator,
+      dataCacheConnector = FakeUserAnswersCacheConnector,
       pensionAdministratorConnector = mockConnector,
-      emailConnector          = mockEmailConnector,
-      auditService            = fakeAuditService,
-      controllerComponents    = controllerComponents,
-      view                    = view
+      emailConnector = mockEmailConnector,
+      auditService = fakeAuditService,
+      controllerComponents = controllerComponents,
+      view = view
     )
 
 
   private def viewAsString(): String =
     view(
-      psaNameOpt        = Some(businessName),
+      psaNameOpt = Some(businessName),
       isWorkingKnowldge = true,
-      href              = VariationDeclarationController.onClickAgree()
+      href = VariationDeclarationController.onClickAgree()
     )(fakeRequest, messages).toString
 
   override def beforeEach(): Unit = {
@@ -186,9 +186,9 @@ class VariationDeclarationControllerSpec
         status(result) mustBe SEE_OTHER
 
         verify(mockConnector, times(1)).updatePsa(eqTo(answers))(any(), any())
-       verify(mockEmailConnector, times(1))
-        .sendEmail(eqTo(email), any(),
-          eqTo(Map("psaName" -> businessName)), eqTo(PsaId("A1212128")),eqTo(JourneyType.VARIATION))(any(), any())
+        verify(mockEmailConnector, times(1))
+          .sendEmail(eqTo(email), any(),
+            eqTo(Map("psaName" -> businessName)), eqTo(PsaId("A1212128")), eqTo(JourneyType.VARIATION))(any(), any())
         fakeAuditService.verifySent(expectedAuditEvent) mustBe true
       }
 
