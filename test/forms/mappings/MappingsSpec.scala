@@ -293,7 +293,7 @@ class MappingsSpec extends AnyWordSpecLike with Matchers with OptionValues with 
   "date" must {
     case class TestClass(date: LocalDate)
 
-    val testForm = Form(
+    val testForm: Form[TestClass] = Form(
       mapping(
         "date" -> date("error.required", "error.invalid")
       )(TestClass.apply)(TestClass.unapply)
