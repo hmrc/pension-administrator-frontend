@@ -60,7 +60,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
   private val sapNumber = "test-sap-number"
 
   val partnershipName = "MyPartnership"
-  val organisation: Organisation = Organisation("MyOrganisation", OrganisationTypeEnum.Partnership)
+  val organisation: Organisation = Organisation("MyOrganisation", OrganisationType.Partnership)
 
   private val data = Json.obj(
     BusinessTypeId.toString -> BusinessPartnership.toString,
@@ -237,10 +237,10 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistrationStatus] = {
 
-      if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
+      if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationType.CorporateBody) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), regInfo))
       }
-      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationTypeEnum.Partnership) {
+      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationType.Partnership) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), regInfo))
       }
       else {

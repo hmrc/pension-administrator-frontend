@@ -37,7 +37,7 @@ class NameCleansingSpec extends ControllerSpecBase {
   private val form = Form(
     mapping(
       "name" -> text
-    )(Data.apply)(o => Some(Tuple.fromProductTyped(o)))
+    )(Data.apply)(Data.unapply())
   )
 
   private val dataBeforeBind = Map(

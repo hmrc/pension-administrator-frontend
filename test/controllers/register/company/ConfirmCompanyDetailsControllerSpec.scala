@@ -30,7 +30,6 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.*
-import uk.gov.hmrc.govukfrontend.views.Aliases.Value
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, FakeNavigator, UserAnswers}
@@ -299,10 +298,10 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
         Some(utr)
       )
 
-      if (utr == validLimitedCompanyUtr && organisation.organisationType == Value("Corporate Body")) {
+      if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationType.CorporateBody) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), info))
       }
-      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == Value("Partnership")) {
+      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationType.Partnership) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), info))
       }
       else {

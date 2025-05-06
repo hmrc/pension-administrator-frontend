@@ -46,7 +46,7 @@ trait IntFieldBehaviours extends FieldBehaviours {
     "not bind integers larger than Int.MaxValue" in {
 
       forAll(intsLargerThanMaxValue -> "massiveInt") {
-        n: BigInt =>
+        n =>
           val result = form.bind(Map(fieldName -> n.toString)).apply(fieldName)
           result.errors shouldEqual Seq(nonNumericError)
       }
@@ -55,7 +55,7 @@ trait IntFieldBehaviours extends FieldBehaviours {
     "not bind integers smaller than Int.MinValue" in {
 
       forAll(intsSmallerThanMinValue -> "massivelySmallInt") {
-        n: BigInt =>
+        n =>
           val result = form.bind(Map(fieldName -> n.toString)).apply(fieldName)
           result.errors shouldEqual Seq(nonNumericError)
       }
@@ -70,7 +70,7 @@ trait IntFieldBehaviours extends FieldBehaviours {
     s"not bind integers below $minimum" in {
 
       forAll(intsBelowValue(minimum) -> "intBelowMin") {
-        n: Int =>
+        n =>
           val result = form.bind(Map(fieldName -> n.toString)).apply(fieldName)
           result.errors shouldEqual Seq(expectedError)
       }
@@ -85,7 +85,7 @@ trait IntFieldBehaviours extends FieldBehaviours {
     s"not bind integers above $maximum" in {
 
       forAll(intsAboveValue(maximum) -> "intAboveMax") {
-        n: Int =>
+        n =>
           val result = form.bind(Map(fieldName -> n.toString)).apply(fieldName)
           result.errors shouldEqual Seq(expectedError)
       }
