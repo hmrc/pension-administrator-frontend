@@ -16,27 +16,12 @@
 
 package models
 
-//import models.OrganisationTypeEnum.OrganisationType
 import models.register.BusinessType
-import models.register.BusinessType.{BusinessPartnership, LimitedCompany, LimitedLiabilityPartnership, LimitedPartnership, UnlimitedCompany}
-import play.api.libs.json.{Json, *}
-//import utils.EnumUtils
+import models.register.BusinessType.*
+import play.api.libs.json.*
+
 import scala.language.implicitConversions
 import scala.util.{Failure, Success, Try}
-
-//object OrganisationTypeEnum extends Enumeration {
-//  type OrganisationType = Value
-//
-//  val CorporateBody: OrganisationTypeEnum.Value = Value("Corporate Body")
-//  val NotSpecified: OrganisationTypeEnum.Value = Value("Not Specified")
-//  val LLP: OrganisationTypeEnum.Value = Value("LLP")
-//  val Partnership: OrganisationTypeEnum.Value = Value("Partnership")
-//  val UnincorporatedBody: OrganisationTypeEnum.Value = Value("Unincorporated Body")
-//
-//  val en:OrganisationType = Value //.asInstanceOf[OrganisationType]
-//  val eu: EnumUtils[OrganisationType] = new EnumUtils[OrganisationType](using en) {}
-//  implicit def enumFormats: Format[OrganisationType] = eu.enumFormat(en.nn)
-//}
 
 enum OrganisationType extends Enum[OrganisationType] {
   case CorporateBody
