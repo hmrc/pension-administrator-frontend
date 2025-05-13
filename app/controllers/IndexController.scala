@@ -29,7 +29,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(val appConfig: FrontendAppConfig,
                                 authenticate: AuthAction,
-                                dataCacheConnector: UserAnswersCacheConnector,
                                 val controllerComponents: MessagesControllerComponents,
                                 val view: index
                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {

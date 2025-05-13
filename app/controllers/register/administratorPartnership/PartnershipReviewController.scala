@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.BusinessNameId
@@ -32,8 +31,7 @@ import views.html.register.partnership.partnershipReview
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
-                                            @PartnershipV2 val navigator: Navigator,
+class PartnershipReviewController @Inject()(@PartnershipV2 val navigator: Navigator,
                                             authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,

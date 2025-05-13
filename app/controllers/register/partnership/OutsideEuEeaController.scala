@@ -16,12 +16,10 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipRegisteredAddressId
-import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,10 +27,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import views.html.register.outsideEuEea
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
-class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
-                                       authenticate: AuthAction,
+class OutsideEuEeaController @Inject()(authenticate: AuthAction,
                                        allowAccess: AllowAccessActionProvider,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
@@ -47,7 +45,7 @@ class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
       (BusinessNameId and PartnershipRegisteredAddressId).retrieve.map {
         case name ~ address =>
           Future.successful(Ok(view(name, countryOptions.getCountryNameFromCode(address.toAddress.get), "partnerships")))
-        }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad)))
+      }.left.map(_ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad)))
 
   }
 

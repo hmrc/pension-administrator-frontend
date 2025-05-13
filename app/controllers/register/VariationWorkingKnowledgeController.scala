@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
@@ -24,20 +23,19 @@ import forms.register.VariationWorkingKnowledgeFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.adviser.IsNewAdviserId
 import identifiers.register.{PAInDeclarationJourneyId, VariationWorkingKnowledgeId}
-import javax.inject.Inject
-import models.{Mode, CheckUpdateMode}
+import models.{CheckUpdateMode, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.NoRLSCheck
-import utils.{Navigator, annotations, UserAnswers, Enumerable}
+import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.register.variationWorkingKnowledge
 
-import scala.concurrent.{Future, ExecutionContext}
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig,
-                                                    override val cacheConnector: UserAnswersCacheConnector,
+class VariationWorkingKnowledgeController @Inject()(override val cacheConnector: UserAnswersCacheConnector,
                                                     @annotations.Variations navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     @NoRLSCheck allowAccess: AllowAccessActionProvider,
@@ -47,8 +45,8 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
                                                     val controllerComponents: MessagesControllerComponents,
                                                     val view: variationWorkingKnowledge
                                                    )(implicit val executionContext: ExecutionContext)
-                                                     extends FrontendBaseController with I18nSupport
-                                                     with Enumerable.Implicits with Variations with Retrievals {
+  extends FrontendBaseController with I18nSupport
+    with Enumerable.Implicits with Variations with Retrievals {
 
   private def form(): Form[Boolean] = formProvider()
 
@@ -61,7 +59,7 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
       }
       Ok(view(
         preparedForm,
-        if(displayReturnLink) psaName() else None,
+        if (displayReturnLink) psaName() else None,
         mode
       ))
   }
@@ -73,7 +71,7 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(
             formWithErrors,
-            if(displayReturnLink) psaName() else None,
+            if (displayReturnLink) psaName() else None,
             mode
           ))),
         value => {

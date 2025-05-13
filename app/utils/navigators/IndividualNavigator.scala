@@ -30,8 +30,7 @@ import controllers.routes.SessionExpiredController
 import identifiers.{Identifier, UpdateContactAddressId}
 
 @Singleton
-class IndividualNavigator @Inject()(config: FrontendAppConfig,
-                                    countryOptions: CountryOptions) extends Navigator {
+class IndividualNavigator @Inject()(countryOptions: CountryOptions) extends Navigator {
 
   // scalastyle:off cyclomatic.complexity
   override def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {

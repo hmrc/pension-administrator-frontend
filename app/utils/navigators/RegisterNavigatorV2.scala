@@ -27,8 +27,7 @@ import utils.{Navigator, UserAnswers}
 
 import javax.inject.Inject
 
-class RegisterNavigatorV2 @Inject()(appConfig: FrontendAppConfig
-                                 ) extends Navigator {
+class RegisterNavigatorV2 @Inject() extends Navigator {
 
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case AreYouInUKId => countryOfRegistrationRoutes(ua)

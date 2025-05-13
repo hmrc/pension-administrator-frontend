@@ -18,7 +18,6 @@ package controllers.register
 
 import audit.{AuditService, PSAStartEvent}
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
@@ -34,8 +33,7 @@ import views.html.register.registerAsBusiness
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
-                                             override val messagesApi: MessagesApi,
+class RegisterAsBusinessController @Inject()(override val messagesApi: MessagesApi,
                                              @AuthWithNoIV authenticate: AuthAction,
                                              allowAccess: AllowAccessActionProvider,
                                              getData: DataRetrievalAction,

@@ -16,12 +16,10 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.NonUKBusinessTypeFormProvider
 import identifiers.register.NonUKBusinessTypeId
-import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -31,10 +29,10 @@ import utils.annotations.Register
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.nonUKBusinessType
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NonUKBusinessTypeController @Inject()(appConfig: FrontendAppConfig,
-                                            override val messagesApi: MessagesApi,
+class NonUKBusinessTypeController @Inject()(override val messagesApi: MessagesApi,
                                             dataCacheConnector: UserAnswersCacheConnector,
                                             @Register navigator: Navigator,
                                             authenticate: AuthAction,
@@ -45,7 +43,7 @@ class NonUKBusinessTypeController @Inject()(appConfig: FrontendAppConfig,
                                             val controllerComponents: MessagesControllerComponents,
                                             val view: nonUKBusinessType
                                            )(implicit val executionContext: ExecutionContext)
-                                             extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+  extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 

@@ -17,7 +17,6 @@
 package controllers.register.adviser
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -36,7 +35,6 @@ import views.html.register.adviser.adviserName
 import scala.concurrent.{ExecutionContext, Future}
 
 class AdviserNameController @Inject()(
-                                       appConfig: FrontendAppConfig,
                                        authenticate: AuthAction,
                                        @Adviser navigator: Navigator,
                                        getData: DataRetrievalAction,
@@ -68,7 +66,7 @@ class AdviserNameController @Inject()(
     implicit request =>
       val displayReturnLink = request.userAnswers.get(UpdateContactAddressId).isEmpty
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>{
+        (formWithErrors: Form[_]) => {
           Future.successful(BadRequest(view(
             formWithErrors,
             mode,

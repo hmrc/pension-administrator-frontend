@@ -16,11 +16,9 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.company.directors.DirectorNameId
-import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,10 +27,10 @@ import utils.Enumerable
 import viewmodels.{AlreadyDeletedViewModel, Message}
 import views.html.alreadyDeleted
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
 class AlreadyDeletedController @Inject()(
-                                          appConfig: FrontendAppConfig,
                                           val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,

@@ -16,22 +16,20 @@
 
 package controllers.register.adviser
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Enumerable
 import utils.annotations.NoRLSCheck
 import views.html.alreadyDeletedAdviser
 
-import scala.concurrent.{Future, ExecutionContext}
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AdviserAlreadyDeletedController @Inject()(
-                                          appConfig: FrontendAppConfig,
                                           @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                           authenticate: AuthAction,
                                           getData: DataRetrievalAction,

@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.company.directors.routes._
@@ -40,7 +39,6 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(
-                                            appConfig: FrontendAppConfig,
                                             val allowAccess: AllowAccessActionProvider,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
@@ -92,13 +90,13 @@ class CheckYourAnswersController @Inject()(
       ))
 
     Future.successful(Ok(view(
-        answersSection,
-        controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
-        psaName(),
-        mode,
-        dataCompletion.isDirectorComplete(request.userAnswers, index),
-        returnLink = taskListReturnLinkUrl()
-      )))
+      answersSection,
+      controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
+      psaName(),
+      mode,
+      dataCompletion.isDirectorComplete(request.userAnswers, index),
+      returnLink = taskListReturnLinkUrl()
+    )))
 
   }
 }

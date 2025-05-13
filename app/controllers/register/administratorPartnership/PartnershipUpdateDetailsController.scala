@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership
 
-import config.FrontendAppConfig
 import controllers.actions._
 import models.Mode
 import play.api.i18n.I18nSupport
@@ -26,8 +25,7 @@ import views.html.register.updateDetails
 
 import javax.inject.Inject
 
-class PartnershipUpdateDetailsController @Inject()(appConfig: FrontendAppConfig,
-                                                   authenticate: AuthAction,
+class PartnershipUpdateDetailsController @Inject()(authenticate: AuthAction,
                                                    allowAccess: AllowAccessActionProvider,
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,

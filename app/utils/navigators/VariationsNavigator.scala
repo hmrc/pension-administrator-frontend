@@ -34,8 +34,7 @@ import utils.Enumerable
 import utils.Navigator
 import utils.UserAnswers
 
-class VariationsNavigator @Inject()(config: FrontendAppConfig,
-                                    dataCompletion: DataCompletion) extends Navigator with Enumerable.Implicits {
+class VariationsNavigator @Inject()(dataCompletion: DataCompletion) extends Navigator with Enumerable.Implicits {
 
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case _ => controllers.routes.IndexController.onPageLoad

@@ -30,8 +30,7 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
-                                         appConfig: FrontendAppConfig) extends Navigator {
+class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends Navigator {
 
   private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
     ua.get(AreYouInUKId) match {

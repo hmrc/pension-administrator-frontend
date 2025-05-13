@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.BusinessTypeFormProvider
@@ -26,16 +25,14 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.{Register, RegisterV2}
+import utils.annotations.RegisterV2
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.register.businessType
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessTypeController @Inject()(appConfig: FrontendAppConfig,
-                                       dataCacheConnector: UserAnswersCacheConnector,
-                                       @Register navigator: Navigator,
+class BusinessTypeController @Inject()(dataCacheConnector: UserAnswersCacheConnector,
                                        @RegisterV2 navigatorV2: Navigator,
                                        authenticate: AuthAction,
                                        allowAccess: AllowAccessActionProvider,
@@ -45,7 +42,7 @@ class BusinessTypeController @Inject()(appConfig: FrontendAppConfig,
                                        val controllerComponents: MessagesControllerComponents,
                                        val view: businessType
                                       )(implicit val executionContext: ExecutionContext)
-                                        extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+  extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
@@ -63,12 +60,12 @@ class BusinessTypeController @Inject()(appConfig: FrontendAppConfig,
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
-            value =>
-            for {
-              newCache <- dataCacheConnector.save(request.externalId, BusinessTypeId, value)
-            } yield {
-              Redirect(navigatorV2.nextPage(BusinessTypeId, mode, UserAnswers(newCache)))
-            }
+        value =>
+          for {
+            newCache <- dataCacheConnector.save(request.externalId, BusinessTypeId, value)
+          } yield {
+            Redirect(navigatorV2.nextPage(BusinessTypeId, mode, UserAnswers(newCache)))
+          }
       )
   }
 
