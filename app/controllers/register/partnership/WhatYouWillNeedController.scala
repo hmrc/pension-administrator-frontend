@@ -43,7 +43,7 @@ class WhatYouWillNeedController @Inject()(@Partnership navigator: Navigator,
       Ok(view())
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers))
   }

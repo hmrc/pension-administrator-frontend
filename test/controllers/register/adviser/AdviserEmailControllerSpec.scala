@@ -46,7 +46,7 @@ class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
     view
   )
 
-  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
+  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode), None)(fakeRequest, messages).toString
 
   "AdviserEmail Controller" must {
 
@@ -68,7 +68,7 @@ object AdviserEmailControllerSpec {
   private val adviserName = "Test Adviser Name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
-  private def viewModel(mode: Mode, index: Index) =
+  private def viewModel(mode: Mode) =
     CommonFormWithHintViewModel(
       postCall = routes.AdviserEmailController.onSubmit(mode),
       title = Message("email.title", Message("theAdviser")),

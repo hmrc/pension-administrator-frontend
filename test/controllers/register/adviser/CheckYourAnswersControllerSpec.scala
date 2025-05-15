@@ -38,7 +38,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
 
     new CheckYourAnswersController(
-      frontendAppConfig,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       dataRetrievalAction,

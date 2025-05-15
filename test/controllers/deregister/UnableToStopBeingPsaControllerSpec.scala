@@ -43,7 +43,6 @@ object UnableToStopBeingPsaControllerSpec extends ControllerSpecBase {
 
   private def controller =
     new UnableToStopBeingPsaController(
-      frontendAppConfig,
       FakeAuthAction(),
       controllerComponents,
       view

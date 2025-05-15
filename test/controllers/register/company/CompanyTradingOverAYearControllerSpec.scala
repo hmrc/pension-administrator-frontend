@@ -21,7 +21,7 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import controllers.register.company.routes._
 import forms.HasReferenceNumberFormProvider
-import models.{Mode, NormalMode}
+import models.NormalMode
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers._
@@ -63,7 +63,7 @@ class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
       view
     )
 
-  private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
+  private def viewAsString(form: Form[_] = form): String =
     view(form, viewModel)(fakeRequest, messages).toString
 
   "HasBeenTradingCompanyController" must {

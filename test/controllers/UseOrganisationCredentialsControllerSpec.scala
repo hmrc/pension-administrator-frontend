@@ -38,7 +38,6 @@ class UseOrganisationCredentialsControllerSpec extends ControllerSpecBase {
 
   def testController: UseOrganisationCredentialsController =
     new UseOrganisationCredentialsController(
-      frontendAppConfig,
       controllerComponents,
       view
     )

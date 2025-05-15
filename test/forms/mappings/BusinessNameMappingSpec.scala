@@ -29,7 +29,6 @@ class BusinessNameMappingSpec extends StringFieldBehaviours with BusinessNameMap
   "BusinessNameMapping " should {
     val mapping = nameMapping(
       requiredKey,
-      invalidBusinessNameKey,
       businessNameLengthKey
     )
     val fieldName = "value"

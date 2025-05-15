@@ -20,7 +20,7 @@ import play.api.data.Mapping
 
 trait BusinessNameMapping extends Mappings with Transforms {
 
-  def nameMapping(keyNameRequired: String, keyNameInvalid: String, keyNameMaxLength: String): Mapping[String] = {
+  def nameMapping(keyNameRequired: String, keyNameMaxLength: String): Mapping[String] = {
     text(keyNameRequired)
       .transform(standardTextTransform, noTransform)
       .verifying(

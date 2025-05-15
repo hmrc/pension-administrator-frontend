@@ -37,7 +37,7 @@ class StillUseAdviserControllerSpec extends ControllerSpecBase {
 
   private val jsObjectAdviserAndBusinessDetails: JsObject = Json.obj(
     AdviserNameId.toString -> personWithWorkingKnowledgeName,
-    BusinessNameId.toString ->psaName,
+    BusinessNameId.toString -> psaName,
     RegistrationInfoId.toString -> RegistrationInfo(
       RegistrationLegalStatus.LimitedCompany, "", noIdentifier = false, RegistrationCustomerType.UK, None, None),
 
@@ -105,7 +105,6 @@ class StillUseAdviserControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalActionWithAdviserAndBusinessDetails) =
     new StillUseAdviserController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

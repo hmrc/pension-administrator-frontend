@@ -41,7 +41,6 @@ object SuccessfulDeregistrationControllerSpec extends ControllerSpecBase with Mo
 
   private def controller =
     new SuccessfulDeregistrationController(
-      frontendAppConfig,
       controllerComponents,
       view
     )

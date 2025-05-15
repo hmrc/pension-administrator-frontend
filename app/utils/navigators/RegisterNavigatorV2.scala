@@ -16,7 +16,6 @@
 
 package utils.navigators
 
-import config.FrontendAppConfig
 import controllers.register.individual.routes
 import identifiers.Identifier
 import identifiers.register._
@@ -99,7 +98,7 @@ class RegisterNavigatorV2 @Inject() extends Navigator {
     userAnswers.get(RegisterAsBusinessId) match {
       case None => controllers.routes.SessionExpiredController.onPageLoad
       case Some(true) =>
-        controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode)
+        controllers.register.routes.WhatYouWillNeedController.onPageLoad()
       case _ =>
         routes.WhatYouWillNeedController.onPageLoad()
     }

@@ -22,8 +22,8 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.{BusinessTypeId, RegisterAsBusinessId, RegistrationInfoId}
+import models.Mode
 import models.RegistrationCustomerType.UK
-import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -55,7 +55,7 @@ class RegisterAsBusinessController @Inject()(override val messagesApi: MessagesA
       Ok(view(preparedForm))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         errors =>
@@ -72,7 +72,7 @@ class RegisterAsBusinessController @Inject()(override val messagesApi: MessagesA
                 val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
                 (businessType, customerType) match {
                   case (Some(_), Some(UK)) => Redirect(routes.ContinueWithRegistrationController.onPageLoad())
-                  case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+                  case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad())
                 }
             }
           }

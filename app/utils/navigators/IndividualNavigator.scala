@@ -17,17 +17,16 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import controllers.register.individual.routes._
+import controllers.routes.SessionExpiredController
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
+import identifiers.{Identifier, UpdateContactAddressId}
 import models.InternationalRegion._
 import models._
 import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
-import controllers.routes.SessionExpiredController
-import identifiers.{Identifier, UpdateContactAddressId}
 
 @Singleton
 class IndividualNavigator @Inject()(countryOptions: CountryOptions) extends Navigator {

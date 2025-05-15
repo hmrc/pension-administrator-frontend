@@ -86,7 +86,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
     }
 
     "redirect to the next page on a successful POST" in {
-      val result = controller().onSubmit(NormalMode)(fakeRequest)
+      val result = controller().onSubmit()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)

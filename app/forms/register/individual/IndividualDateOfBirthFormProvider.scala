@@ -27,7 +27,7 @@ class IndividualDateOfBirthFormProvider @Inject() extends FormErrorHelper with M
 
   def apply(): Form[LocalDate] =
     Form(
-      "dateOfBirth" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
+      "dateOfBirth" -> date("common.error.dateOfBirth.invalid")
         .verifying(firstError(
           nonFutureDate("common.error.dateOfBirth.future"),
           notBeforeYear("common.error.dateOfBirth.past", IndividualDateOfBirthFormProvider.startYear)

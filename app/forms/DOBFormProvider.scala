@@ -25,7 +25,7 @@ import play.api.data.Form
 class DOBFormProvider @Inject() extends Mappings with Transforms {
 
   def apply(): Form[LocalDate] = Form(
-    "value" -> date("common.error.dateOfBirth.required", "common.error.dateOfBirth.invalid")
+    "value" -> date("common.error.dateOfBirth.invalid")
       .verifying(firstError(
         nonFutureDate("common.error.dateOfBirth.future"),
         notBeforeYear("common.error.dateOfBirth.past", DOBFormProvider.startYear)

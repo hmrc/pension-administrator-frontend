@@ -45,7 +45,7 @@ trait Mappings extends Formatters with Constraints {
                               invalidKey: String = "error.invalid")(implicit ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey))
 
-  protected def date(requiredKey: String, invalidKey: String): Mapping[LocalDate] = {
+  protected def date(invalidKey: String): Mapping[LocalDate] = {
 
     def toLocalDate(input: (Int, Int, Int)): LocalDate = {
       LocalDate.of(input._3, input._2, input._1)

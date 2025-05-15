@@ -62,7 +62,7 @@ class ConfirmationController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = authenticate {
+  def onSubmit(): Action[AnyContent] = authenticate {
     _ => Redirect(controllers.routes.LogoutController.onPageLoad)
   }
 

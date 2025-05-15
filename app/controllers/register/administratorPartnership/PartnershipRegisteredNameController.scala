@@ -61,7 +61,7 @@ class PartnershipRegisteredNameController @Inject()(override val appConfig: Fron
       get(BusinessNameId, partnershipNameViewModel)
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       post(BusinessNameId, partnershipNameViewModel)
   }

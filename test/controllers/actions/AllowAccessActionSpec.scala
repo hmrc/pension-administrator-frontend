@@ -17,7 +17,6 @@
 package controllers.actions
 
 import base.SpecBase
-import config.FrontendAppConfig
 import models._
 import models.requests.AuthenticatedRequest
 import org.scalatest.concurrent.ScalaFutures
@@ -28,7 +27,7 @@ import play.api.test.Helpers._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AllowAccessActionSpec extends SpecBase with ScalaFutures{
+class AllowAccessActionSpec extends SpecBase with ScalaFutures {
 
   private val minimalPsa = MinimalPSA(
     email = "a@a.c",
@@ -39,7 +38,7 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
     deceasedFlag = false
   )
 
-  class TestAllowAccessAction(mode: Mode, minimalPsa: MinimalPSA, config:FrontendAppConfig) extends
+  class TestAllowAccessAction(mode: Mode, minimalPsa: MinimalPSA) extends
     AllowAccessAction(mode, FakeMinimalPsaConnector(minimalPsa), frontendAppConfig) {
     override def filter[A](request: AuthenticatedRequest[A]): Future[Option[Result]] = super.filter(request)
   }
@@ -47,54 +46,66 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
   "AllowAccessAction" must {
 
     "allow access to pages for user with no enrolment and Normal mode" in {
-      val action = new TestAllowAccessAction(NormalMode, minimalPsa, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(NormalMode, minimalPsa)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, "")))
 
       whenReady(futureResult) { result =>
 
-        result.map { _.header.status  } mustBe None
+        result.map {
+          _.header.status
+        } mustBe None
       }
     }
 
     "allow access to pages for user with no enrolment and Check mode" in {
-      val action = new TestAllowAccessAction(CheckMode, minimalPsa, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(CheckMode, minimalPsa)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, "")))
 
       whenReady(futureResult) { result =>
 
-        result.map { _.header.status  } mustBe None
+        result.map {
+          _.header.status
+        } mustBe None
       }
     }
 
     "allow access to pages for user with enrolment and Normal mode and trying to get pagesAfterEnrolment" in {
-      val action = new TestAllowAccessAction(NormalMode, minimalPsa, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(NormalMode, minimalPsa)
       val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, Some("id"))))
 
       whenReady(futureResult) { result =>
 
-        result.map { _.header.status  } mustBe None
+        result.map {
+          _.header.status
+        } mustBe None
       }
     }
 
     "redirect to SessionExpiredPage for user with no enrolment and UpdateMode" in {
-      val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(UpdateMode, minimalPsa)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, "")))
 
       whenReady(futureResult) { result =>
 
-        result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+        result.map {
+          _.header.status
+        } mustBe Some(SEE_OTHER)
+        result.flatMap {
+          _.header.headers.get(LOCATION)
+        } mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
       }
     }
 
     "allow access to pages for user with enrolment and UpdateMode" in {
-      val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(UpdateMode, minimalPsa)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
 
-        result.map { _.header.status  } mustBe None
+        result.map {
+          _.header.status
+        } mustBe None
       }
     }
 
@@ -107,23 +118,31 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
         rlsFlag = false,
         deceasedFlag = false
       )
-      val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(UpdateMode, minimalPsa)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
 
-        result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.CannotMakeChangesController.onPageLoad.url)
+        result.map {
+          _.header.status
+        } mustBe Some(SEE_OTHER)
+        result.flatMap {
+          _.header.headers.get(LOCATION)
+        } mustBe Some(controllers.routes.CannotMakeChangesController.onPageLoad.url)
       }
     }
 
     "redirect to intercept page for user with enrolment and Normal/Check mode" in {
-      val action = new TestAllowAccessAction(NormalMode, minimalPsa, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(NormalMode, minimalPsa)
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
-        result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(Call("GET", frontendAppConfig.schemesOverviewUrl).url)
+        result.map {
+          _.header.status
+        } mustBe Some(SEE_OTHER)
+        result.flatMap {
+          _.header.headers.get(LOCATION)
+        } mustBe Some(Call("GET", frontendAppConfig.schemesOverviewUrl).url)
       }
     }
 
@@ -136,13 +155,17 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
         rlsFlag = true,
         deceasedFlag = false
       )
-      val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(UpdateMode, minimalPsa)
       val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
-        result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad.url)
+        result.map {
+          _.header.status
+        } mustBe Some(SEE_OTHER)
+        result.flatMap {
+          _.header.headers.get(LOCATION)
+        } mustBe Some(controllers.routes.UpdateContactAddressController.onPageLoad.url)
       }
     }
 
@@ -155,13 +178,17 @@ class AllowAccessActionSpec extends SpecBase with ScalaFutures{
         rlsFlag = true,
         deceasedFlag = true
       )
-      val action = new TestAllowAccessAction(UpdateMode, minimalPsa, config = frontendAppConfig)
+      val action = new TestAllowAccessAction(UpdateMode, minimalPsa)
       val fakeRequest = FakeRequest("GET", "controllers.register.routes.ConfirmationController.onPageLoad().url")
       val futureResult = action.filter(AuthenticatedRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, Some("id"))))
 
       whenReady(futureResult) { result =>
-        result.map { _.header.status  } mustBe Some(SEE_OTHER)
-        result.flatMap { _.header.headers.get(LOCATION)  } mustBe Some(Call("GET", frontendAppConfig.youMustContactHMRCUrl).url)
+        result.map {
+          _.header.status
+        } mustBe Some(SEE_OTHER)
+        result.flatMap {
+          _.header.headers.get(LOCATION)
+        } mustBe Some(Call("GET", frontendAppConfig.youMustContactHMRCUrl).url)
       }
     }
   }

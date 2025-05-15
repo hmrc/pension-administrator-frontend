@@ -31,7 +31,6 @@ class OutsideEuEeaControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = validData) =
     new OutsideEuEeaController(
-      frontendAppConfig,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,

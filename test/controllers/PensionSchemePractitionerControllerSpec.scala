@@ -40,7 +40,7 @@ class PensionSchemePractitionerControllerSpec extends SpecBase {
 
 
   def testController: PensionSchemePractitionerController =
-    new PensionSchemePractitionerController(frontendAppConfig, controllerComponents, view)
+    new PensionSchemePractitionerController(controllerComponents, view)
 
   def viewAsString: String =
     view()(fakeRequest, messages).toString()

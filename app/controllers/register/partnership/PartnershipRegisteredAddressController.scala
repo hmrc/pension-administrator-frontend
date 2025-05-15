@@ -25,12 +25,10 @@ import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipRegisteredAddressId
-import javax.inject.Inject
 import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.HtmlFormat
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import utils.countryOptions.CountryOptions
@@ -38,6 +36,7 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnershipRegisteredAddressController @Inject()(
@@ -58,10 +57,6 @@ class PartnershipRegisteredAddressController @Inject()(
 
   protected val form: Form[Address] = formProvider()
 
-  protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
-    implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
-    view(preparedForm, viewModel)(request, messages)
-
   private def addressViewModel(partnershipName: String)(implicit messages: Messages) = ManualAddressViewModel(
     routes.PartnershipRegisteredAddressController.onSubmit(),
     countryOptions.options,
@@ -78,7 +73,7 @@ class PartnershipRegisteredAddressController @Inject()(
       }
   }
 
-  def onSubmit(mode : Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.map { name =>
         post(name, PartnershipRegisteredAddressId, addressViewModel(name), RegistrationLegalStatus.Partnership)

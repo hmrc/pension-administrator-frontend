@@ -29,9 +29,7 @@ import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import play.twirl.api.HtmlFormat
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
@@ -57,10 +55,6 @@ class CompanyRegisteredAddressController @Inject()(
                                                   )(implicit val executionContext: ExecutionContext) extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
-
-  protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
-    implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
-    view(preparedForm, viewModel)(request, messages)
 
   private def addressViewModel(companyName: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     routes.CompanyRegisteredAddressController.onSubmit(),

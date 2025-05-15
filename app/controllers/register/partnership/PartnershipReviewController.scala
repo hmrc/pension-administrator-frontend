@@ -48,7 +48,7 @@ class PartnershipReviewController @Inject()(@Partnership navigator: Navigator,
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       Redirect(navigator.nextPage(PartnershipReviewId, NormalMode, request.userAnswers))
   }

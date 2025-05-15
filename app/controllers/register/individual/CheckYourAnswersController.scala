@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.individual.routes._
@@ -40,7 +39,6 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class CheckYourAnswersController @Inject()(
-                                            appConfig: FrontendAppConfig,
                                             @AuthWithIV authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,

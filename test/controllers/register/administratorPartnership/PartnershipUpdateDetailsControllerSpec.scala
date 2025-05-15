@@ -27,7 +27,7 @@ class PartnershipUpdateDetailsControllerSpec extends ControllerSpecBase {
   val view: updateDetails = app.injector.instanceOf[updateDetails]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new PartnershipUpdateDetailsController(frontendAppConfig, FakeAuthAction,
+    new PartnershipUpdateDetailsController(FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction, new DataRequiredActionImpl,
       controllerComponents, view)

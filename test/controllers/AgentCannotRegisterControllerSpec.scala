@@ -24,8 +24,8 @@ class AgentCannotRegisterControllerSpec extends ControllerSpecBase {
 
   val view: agentCannotRegister = app.injector.instanceOf[agentCannotRegister]
 
-  def controller(dataRetrievalAction: FakeDataRetrievalAction = getEmptyData) =
-    new AgentCannotRegisterController(frontendAppConfig, controllerComponents, view)
+  def controller() =
+    new AgentCannotRegisterController(controllerComponents, view)
 
   private def viewAsString() = view()(fakeRequest, messages).toString
 

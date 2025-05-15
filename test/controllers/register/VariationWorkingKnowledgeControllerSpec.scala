@@ -49,7 +49,6 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalAction) =
     new VariationWorkingKnowledgeController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction(UserType.Individual),

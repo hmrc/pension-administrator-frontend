@@ -58,6 +58,7 @@ class RegisterNavigatorV2Spec extends SpecBase with NavigatorBehaviour {
       (RegisterAsBusinessId, registerAsBusinessIdCompanyOrPartnership, businessWynPage),
       (RegisterAsBusinessId, registerAsBusinessIdIndividual, individualWynPage),
     )
+
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
   }
 
@@ -68,10 +69,12 @@ class RegisterNavigatorV2Spec extends SpecBase with NavigatorBehaviour {
       (AreYouInUKId, inUk, registerAsBusiness),
       (AreYouInUKId, notInUk, registerAsBusiness)
     )
+
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckMode)
   }
 
 }
+
 object RegisterNavigatorV2Spec extends OptionValues {
 
   lazy val emptyAnswers: UserAnswers = UserAnswers(Json.obj())
@@ -91,7 +94,7 @@ object RegisterNavigatorV2Spec extends OptionValues {
   lazy val ukIndividualDetailsCorrect: Call = controllers.register.individual.routes.IndividualDetailsCorrectController.onPageLoad(NormalMode)
 
   lazy val individualWynPage: Call = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
-  lazy val businessWynPage: Call = controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode)
+  lazy val businessWynPage: Call = controllers.register.routes.WhatYouWillNeedController.onPageLoad()
 
   val haveDeclarationWorkingKnowledge: UserAnswers = UserAnswers(Json.obj())
     .set(DeclarationWorkingKnowledgeId)(DeclarationWorkingKnowledge.WorkingKnowledge).asOpt.value

@@ -27,7 +27,7 @@ class CompanyUpdateDetailsControllerSpec extends ControllerSpecBase {
   val view: updateDetails = app.injector.instanceOf[updateDetails]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyUpdateDetailsController(frontendAppConfig, FakeAuthAction,
+    new CompanyUpdateDetailsController(FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction, new DataRequiredActionImpl,
       controllerComponents, view)

@@ -21,7 +21,7 @@ import play.api.data.{Forms, Mapping}
 
 trait CheckboxMapping {
 
-  def checkboxMapping(fieldName: String, trueValue: String, acceptTrueOnly: Boolean, invalidKey: String): Mapping[Boolean] = {
+  def checkboxMapping(trueValue: String, acceptTrueOnly: Boolean, invalidKey: String): Mapping[Boolean] = {
     Forms.optional(Forms.text)
       .verifying(checkboxConstraint(trueValue, acceptTrueOnly, invalidKey))
       .transform(transformFromCheckbox(trueValue), transformToCheckbox(trueValue))

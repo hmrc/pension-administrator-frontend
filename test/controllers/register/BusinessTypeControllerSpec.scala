@@ -42,9 +42,7 @@ class BusinessTypeControllerSpec extends ControllerSpecBase {
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData
                         ) =
     new BusinessTypeController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),

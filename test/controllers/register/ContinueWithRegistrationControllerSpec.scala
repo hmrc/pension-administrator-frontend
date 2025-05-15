@@ -100,7 +100,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
           .onSubmit()(postRequestTrue)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
+        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad().url)
       }
 
       "redirect to company 'before you begin' page when form value is false" in {
@@ -108,7 +108,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
           .onSubmit()(postRequestFalse)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
+        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad().url)
       }
     }
   }

@@ -26,7 +26,6 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new WhatYouWillNeedController(
-      frontendAppConfig,
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,

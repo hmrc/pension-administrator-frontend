@@ -65,7 +65,6 @@ class PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoSu
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new PSAVarianceSuccessController(
-      frontendAppConfig,
       FakeAuthAction(UserType.Individual),
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,

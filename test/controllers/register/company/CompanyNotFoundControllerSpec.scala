@@ -27,7 +27,7 @@ class CompanyNotFoundControllerSpec extends ControllerSpecBase {
   val view: companyNotFound = app.injector.instanceOf[companyNotFound]
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new CompanyNotFoundController(frontendAppConfig, FakeAuthAction,
+    new CompanyNotFoundController(FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig), dataRetrievalAction, new DataRequiredActionImpl,
       controllerComponents, view)
 

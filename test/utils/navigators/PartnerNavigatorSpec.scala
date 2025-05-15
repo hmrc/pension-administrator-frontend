@@ -117,21 +117,21 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
       (CheckYourAnswersId, twoPartners, addPartnersPage(UpdateMode)),
       (AddPartnersId, addPartnersFalse, anyMoreChangesPage),
       (PartnerEnterNINOId(0), defaultAnswers, partnerHasUtrPage(UpdateMode)),
-      (PartnerEnterNINOId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
+      (PartnerEnterNINOId(0), existingPartnerInUpdate(), anyMoreChangesPage),
       (PartnerNoNINOReasonId(0), defaultAnswers, partnerHasUtrPage(UpdateMode)),
-      (PartnerNoNINOReasonId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
+      (PartnerNoNINOReasonId(0), existingPartnerInUpdate(), anyMoreChangesPage),
       (PartnerEnterUTRId(0), defaultAnswers, addressPostCodePage(UpdateMode)),
-      (PartnerEnterUTRId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
+      (PartnerEnterUTRId(0), existingPartnerInUpdate(), anyMoreChangesPage),
       (MoreThanTenPartnersId, emptyAnswers, anyMoreChangesPage),
       (PartnerAddressId(0), defaultAnswers, partnerAddressYearsPage(UpdateMode)),
-      (PartnerAddressId(0), existingPartnerInUpdate(0), confirmPreviousAddress),
+      (PartnerAddressId(0), existingPartnerInUpdate(), confirmPreviousAddress),
       (PartnerAddressYearsId(0), addressYearsOverAYearExistingPartner, anyMoreChangesPage),
       (PartnerAddressYearsId(0), addressYearsUnderAYearExistingPartner, confirmPreviousAddress),
-      (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressSame(0), anyMoreChangesPage),
-      (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(0), paPostCodePage(UpdateMode)),
-      (PartnerPreviousAddressId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
-      (PartnerEmailId(0), existingPartnerInUpdate(0), anyMoreChangesPage),
-      (PartnerPhoneId(0), existingPartnerInUpdate(0), anyMoreChangesPage)
+      (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressSame(), anyMoreChangesPage),
+      (PartnerConfirmPreviousAddressId(0), confirmPreviousAddressNotSame(), paPostCodePage(UpdateMode)),
+      (PartnerPreviousAddressId(0), existingPartnerInUpdate(), anyMoreChangesPage),
+      (PartnerEmailId(0), existingPartnerInUpdate(), anyMoreChangesPage),
+      (PartnerPhoneId(0), existingPartnerInUpdate(), anyMoreChangesPage)
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, UpdateMode)
   }
@@ -217,8 +217,8 @@ object PartnerNavigatorSpec extends OptionValues {
   val defaultAnswers = UserAnswers(Json.obj())
     .set(PartnerNameId(0))(partner(0).copy(isNew = true)).asOpt.value
 
-  private def existingPartnerInUpdate(index: Index) = UserAnswers(Json.obj())
-    .set(PartnerNameId(index))(partner(index).copy(isNew = false)).asOpt.value
+  private def existingPartnerInUpdate(): UserAnswers = UserAnswers(Json.obj())
+    .set(PartnerNameId(0))(partner(0).copy(isNew = false)).asOpt.value
 
   private val addressYearsOverAYear = defaultAnswers
     .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
@@ -230,9 +230,9 @@ object PartnerNavigatorSpec extends OptionValues {
   private val hasUtrNo = defaultAnswers
     .set(HasPartnerUTRId(0))(value = false).asOpt.value
 
-  private val addressYearsOverAYearExistingPartner = existingPartnerInUpdate(0)
+  private val addressYearsOverAYearExistingPartner = existingPartnerInUpdate()
     .set(PartnerAddressYearsId(0))(AddressYears.OverAYear).asOpt.value
-  private val addressYearsUnderAYearExistingPartner = existingPartnerInUpdate(0)
+  private val addressYearsUnderAYearExistingPartner = existingPartnerInUpdate()
     .set(PartnerAddressYearsId(0))(AddressYears.UnderAYear).asOpt.value
 
   private val addPartnersFalse = UserAnswers(Json.obj())
@@ -255,10 +255,10 @@ object PartnerNavigatorSpec extends OptionValues {
   private val hasNinoNo = defaultAnswers
     .set(HasPartnerNINOId(0))(value = false).asOpt.value
 
-  private def confirmPreviousAddressSame(index: Int) = existingPartnerInUpdate(0)
+  private def confirmPreviousAddressSame(): UserAnswers = existingPartnerInUpdate()
     .set(PartnerConfirmPreviousAddressId(0))(true).asOpt.value
 
-  private def confirmPreviousAddressNotSame(index: Int) = existingPartnerInUpdate(0)
+  private def confirmPreviousAddressNotSame(): UserAnswers = existingPartnerInUpdate()
     .set(PartnerConfirmPreviousAddressId(0))(false).asOpt.value
 
   val addPartnersMoreThan10 = UserAnswers(Json.obj(

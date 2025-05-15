@@ -42,9 +42,9 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerWithCommonBeha
   private val hasReferenceNumberForm = formProvider("error.required", partnershipName)
 
   private def hasReferenceNumberView(form: Form[_]): String =
-    view(form, viewModel(NormalMode))(fakeRequest, messages).toString
+    view(form, viewModel())(fakeRequest, messages).toString
 
-  private def viewModel(mode: Mode): CommonFormWithHintViewModel =
+  private def viewModel(): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
       postCall = routes.PartnershipTradingOverAYearController.onSubmit(NormalMode),
       title = Message("trading.title", Message("thePartnership")),

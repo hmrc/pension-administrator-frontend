@@ -59,7 +59,6 @@ class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new VariationNoLongerFitAndProperController(
-      frontendAppConfig,
       FakeAuthAction(UserType.Individual),
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,

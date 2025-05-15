@@ -21,12 +21,8 @@ import play.api.data.Form
 
 class VariationDeclarationFormProvider extends CheckboxMapping {
 
-  private val fieldName = "agree"
-  private val trueValue = "agreed"
-  private val invalidKey = "declaration.variations.invalid"
-
   def apply(): Form[Boolean] =
     Form(
-      fieldName -> checkboxMapping(fieldName, trueValue, acceptTrueOnly = true, invalidKey)
+      "agree" -> checkboxMapping("agreed", acceptTrueOnly = true, "declaration.variations.invalid")
     )
 }

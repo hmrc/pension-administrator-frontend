@@ -18,7 +18,7 @@ package controllers.register
 
 import controllers.actions.AuthAction
 import controllers.register.routes._
-import models.{Mode, NormalMode}
+import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -31,7 +31,7 @@ class WhatYouWillNeedController @Inject()(authenticate: AuthAction,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: whatYouWillNeed
                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
-  def onPageLoad(mode: Mode): Action[AnyContent] = authenticate {
+  def onPageLoad(): Action[AnyContent] = authenticate {
     implicit request =>
       Ok(view(BusinessTypeAreYouInUKController.onPageLoad(NormalMode)))
   }

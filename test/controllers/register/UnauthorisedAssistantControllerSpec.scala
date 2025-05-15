@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import controllers.actions._
 import controllers.{ControllerSpecBase, UnauthorisedAssistantController}
 import play.api.test.Helpers._
 import views.html.unauthorisedAssistant
@@ -25,9 +24,8 @@ class UnauthorisedAssistantControllerSpec extends ControllerSpecBase {
 
   val view: unauthorisedAssistant = app.injector.instanceOf[unauthorisedAssistant]
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  def controller() =
     new UnauthorisedAssistantController(
-      frontendAppConfig,
       controllerComponents,
       view
     )
