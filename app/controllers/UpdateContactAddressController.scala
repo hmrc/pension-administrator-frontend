@@ -18,31 +18,24 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.AuthAction
-import controllers.actions.DataRetrievalAction
+import controllers.actions.{AuthAction, DataRetrievalAction}
 import identifiers.UpdateContactAddressId
 import identifiers.register.RegistrationInfoId
 import identifiers.register.company.CompanyContactAddressId
 import identifiers.register.individual.IndividualContactAddressId
 import identifiers.register.partnership.PartnershipContactAddressId
-import javax.inject.Inject
-import models.Address
-import models.RegistrationLegalStatus._
-import models.UpdateMode
+import models.RegistrationLegalStatus.*
+import models.{Address, UpdateMode}
 import play.api.i18n.I18nSupport
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
-import play.api.mvc.Result
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Navigator
-import utils.UserAnswers
 import utils.countryOptions.CountryOptions
+import utils.{Navigator, UserAnswers}
 import views.html.updateContactAddress
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                             authenticate: AuthAction,
@@ -56,18 +49,17 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData).async { implicit request =>
-    request.user.alreadyEnrolledPsaId match {
-      case Some(psaId) =>
-        psaDetailsService.getUserAnswers(psaId, request.externalId).flatMap{ userAnswersUpdated =>
-          getAddress(userAnswersUpdated) match {
-              case Some(address) =>
-                val ua = userAnswersUpdated.setOrException(UpdateContactAddressId)(true)
-                userAnswersCacheConnector.upsert(request.externalId, ua.json)
-                  .map(_=>Ok(view(address.lines(countryOptions), navigator.nextPage(UpdateContactAddressId, UpdateMode, ua).url)))
-              case None => Future.successful(sessionExpired)
-            }
-        }
-      case None => Future.successful(sessionExpired)
+    psaDetailsService.getUserAnswers.flatMap { userAnswersUpdated =>
+      getAddress(userAnswersUpdated) match {
+        case Some(address) =>
+          val ua = userAnswersUpdated.setOrException(UpdateContactAddressId)(true)
+          userAnswersCacheConnector
+            .upsert(ua.json)
+            .map(_ =>
+              Ok(view(address.lines(countryOptions), navigator.nextPage(UpdateContactAddressId, UpdateMode, ua).url))
+            )
+        case None => Future.successful(sessionExpired)
+      }
     }
   }
 

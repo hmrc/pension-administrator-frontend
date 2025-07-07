@@ -56,7 +56,7 @@ class SecondPartnerControllerSpec extends ControllerSpecBase with MockitoSugar w
 
   override protected def beforeEach(): Unit = {
     reset(mockPsaDetailsService)
-    when(mockPsaDetailsService.getUserAnswers(any(), any())(any(), any())).thenReturn(Future.successful(validData))
+    when(mockPsaDetailsService.getUserAnswers(any(), any())).thenReturn(Future.successful(validData))
   }
 
   "SecondPartnerController" must {

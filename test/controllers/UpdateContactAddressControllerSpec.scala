@@ -42,13 +42,13 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
 
   override protected def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
-    when(mockUserAnswersCacheConnector.upsert(any(), any())(any(), any()))
+    when(mockUserAnswersCacheConnector.upsert(any())(any(), any()))
       .thenReturn(Future.successful(JsNull))
   }
 
   "UpdateContactAddressController" must {
     "return OK and the correct view for a GET" in {
-      when(mockPsaDetailsService.getUserAnswers(any(), any())(any(), any()))
+      when(mockPsaDetailsService.getUserAnswers(any(), any()))
         .thenReturn(Future.successful(individual))
 
       val result = controller(dataRetrievalAction).onPageLoad()(fakeRequest)

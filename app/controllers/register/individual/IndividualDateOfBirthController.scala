@@ -86,7 +86,7 @@ class IndividualDateOfBirthController @Inject()(dataCacheConnector: UserAnswersC
   }
 
   private def saveAndRedirect(mode: Mode, value: java.time.LocalDate)(implicit request: DataRequest[AnyContent]): Future[Result] = {
-    dataCacheConnector.save(request.externalId, IndividualDateOfBirthId, value).map(cacheMap =>
+    dataCacheConnector.save(IndividualDateOfBirthId, value).map(cacheMap =>
       Redirect(navigator.nextPage(IndividualDateOfBirthId, mode, UserAnswers(cacheMap))))
   }
 }

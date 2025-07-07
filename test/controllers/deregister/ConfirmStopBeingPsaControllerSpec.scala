@@ -18,10 +18,10 @@ package controllers.deregister
 
 import audit.testdoubles.StubSuccessfulAuditService
 import config.FrontendAppConfig
-import connectors._
+import connectors.*
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.deregister.ConfirmStopBeingPsaFormProvider
 import models.register.KnownFacts
 import models.requests.DataRequest
@@ -31,7 +31,7 @@ import play.api.data.Form
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded, Call, RequestHeader}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.PSAConstants.PSA_ACTIVE_RELATIONSHIP_EXISTS
@@ -41,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFutures {
 
-  import ConfirmStopBeingPsaControllerSpec._
+  import ConfirmStopBeingPsaControllerSpec.*
 
   "ConfirmStopBeingPsaController" must {
 
@@ -211,11 +211,11 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
     override def canDeRegister(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = Future.successful(deregistration)
   }
 
-  private def fakeMinimalPsaConnector(minimalPsaDetailsIndividual: MinimalPSA): MinimalPsaConnector = new MinimalPsaConnector {
-    @annotation.nowarn
-    override def getMinimalPsaDetails()(
-      implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = Future.successful(minimalPsaDetailsIndividual)
-  }
+  private def fakeMinimalPsaConnector(minimalPsaDetailsIndividual: MinimalPSA): MinimalPsaConnector =
+    new MinimalPsaConnector {
+      override def getMinimalPsaDetails()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] =
+        Future.successful(minimalPsaDetailsIndividual)
+    }
 
   private val minimalPsaDetailsIndividual = MinimalPSA(
     "test@test.com", isPsaSuspended = false, None, Some(IndividualDetails("John", Some("Doe"), "Doe")),

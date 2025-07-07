@@ -33,36 +33,30 @@ trait FakeUserAnswersCacheConnector extends UserAnswersCacheConnector with Match
   private var json: Option[JsValue] = None
   private var isAllDataRemoved: Boolean = false
 
-  override def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
-                                               (implicit
-                                                fmt: Format[A],
-                                                executionContext: ExecutionContext,
-                                                hc: HeaderCarrier
-                                               ): Future[JsValue] = {
+  override def save[A, I <: TypedIdentifier[A]](id: I, value: A)
+                                               (implicit fmt: Format[A], ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     data += (id.toString -> Json.toJson(value))
     Future.successful(Json.obj(id.toString -> Json.toJson(value)))
   }
 
-  def remove[I <: TypedIdentifier[?]](cacheId: String, id: I)
-                                     (implicit
-                                      executionContext: ExecutionContext,
-                                      hc: HeaderCarrier
-                                     ): Future[JsValue] = {
+  override def remove[I <: TypedIdentifier[?]](id: I)
+                                     (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     removed += id.toString
     Future.successful(Json.obj())
   }
 
-  override def fetch(cacheId: String)(implicit
-                                      executionContext: ExecutionContext,
-                                      hc: HeaderCarrier
-  ): Future[Option[JsValue]] = {
-
+  override def fetch(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] =
     Future.successful(Some(Json.obj()))
-  }
 
-  override def upsert(cacheId: String, value: JsValue)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
+  override def upsert(value: JsValue)
+                     (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     json = Some(value)
     Future.successful(value)
+  }
+
+  override def removeAll(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
+    isAllDataRemoved = true
+    Future.successful(Ok)
   }
 
   def verify[A, I <: TypedIdentifier[A]](id: I, value: A)(implicit fmt: Format[A]): Unit = {
@@ -82,11 +76,6 @@ trait FakeUserAnswersCacheConnector extends UserAnswersCacheConnector with Match
   }
 
   def lastUpsert: Option[JsValue] = json
-
-  override def removeAll(cacheId: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] = {
-    isAllDataRemoved = true
-    Future.successful(Ok)
-  }
 
   def reset(): Unit = {
     data.clear()

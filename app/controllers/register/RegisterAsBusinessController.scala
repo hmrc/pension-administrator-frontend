@@ -62,7 +62,7 @@ class RegisterAsBusinessController @Inject()(override val messagesApi: MessagesA
           Future.successful(BadRequest(view(errors))),
         isBusiness => {
           for {
-            _ <- cache.save(request.externalId, RegisterAsBusinessId, isBusiness)
+            _ <- cache.save(RegisterAsBusinessId, isBusiness)
             _ = PSAStartEvent.sendEvent(auditService)
           } yield {
             isBusiness match {

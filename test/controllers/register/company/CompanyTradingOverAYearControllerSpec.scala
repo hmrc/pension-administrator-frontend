@@ -18,13 +18,13 @@ package controllers.register.company
 
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
-import controllers.register.company.routes._
+import controllers.actions.*
+import controllers.register.company.routes.*
 import forms.HasReferenceNumberFormProvider
 import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.FakeNavigator
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
@@ -63,7 +63,7 @@ class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
       view
     )
 
-  private def viewAsString(form: Form[?] = form, mode: Mode = NormalMode): String =
+  private def viewAsString(form: Form[?] = form): String =
     view(form, viewModel)(fakeRequest, messages).toString
 
   "HasBeenTradingCompanyController" must {

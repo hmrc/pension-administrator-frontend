@@ -32,7 +32,7 @@ import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.countryOptions.CountryOptions
-import utils.{AddressHelper, FakeNavigator, UserAnswers}
+import utils.{AddressHelper, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import java.time.LocalDate

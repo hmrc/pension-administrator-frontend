@@ -84,7 +84,7 @@ class VariationDeclarationController @Inject()(appConfig: FrontendAppConfig,
       val workingKnowledge = request.userAnswers.get(VariationWorkingKnowledgeId).getOrElse(false)
 
       val psaId = request.user.alreadyEnrolledPsaId.getOrElse(throw new RuntimeException("PSA ID not found"))
-      dataCacheConnector.save(cacheId = request.externalId, id = DeclarationId, value = true) flatMap { json =>
+      dataCacheConnector.save(id = DeclarationId, value = true) flatMap { json =>
         val answers = UserAnswers(json).set(ExistingPSAId)(
           ExistingPSA(isExistingPSA = request.user.isExistingPSA,
             existingPSAId = request.user.existingPSAId)).asOpt

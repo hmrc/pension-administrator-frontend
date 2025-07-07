@@ -20,23 +20,23 @@ import base.SpecBase
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.actions.FakeAllowAccessProvider
+import controllers.actions.{AllowAccessActionProvider, FakeAllowAccessProvider}
 import forms.address.AddressYearsFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.partnership.partners.PartnerAddressYearsId
-import models._
+import models.*
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{eq as eqTo, *}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -57,7 +57,7 @@ object AddressYearsControllerSpec {
                                  val view: addressYears
                                 )(implicit val executionContext: ExecutionContext) extends AddressYearsController with I18nSupport {
 
-    override val allowAccess = FakeAllowAccessProvider(config = appConfig)
+    override val allowAccess: AllowAccessActionProvider = FakeAllowAccessProvider(config = appConfig)
 
     def request(answers: UserAnswers, fakeRequest: Request[AnyContent] = FakeRequest()): DataRequest[AnyContent] =
       DataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers)
@@ -82,7 +82,7 @@ class AddressYearsControllerSpec extends SpecBase with Matchers with OptionValue
 
   val view: addressYears = app.injector.instanceOf[addressYears]
 
-  val viewmodel = AddressYearsViewModel(
+  val viewmodel: AddressYearsViewModel = AddressYearsViewModel(
     postCall = Call("GET", "www.example.com"),
     title = "title",
     heading = "heading",
@@ -145,7 +145,6 @@ class AddressYearsControllerSpec extends SpecBase with Matchers with OptionValue
       )) {
         app =>
           when(cacheConnector.save[AddressYears, FakeIdentifier.type](
-            any(),
             eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 

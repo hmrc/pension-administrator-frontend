@@ -41,20 +41,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[PsaDetailServiceImpl])
 trait PsaDetailsService {
-  def retrievePsaDataAndGenerateViewModel(psaId: String)
-                                         (implicit hc: HeaderCarrier,
+  def retrievePsaDataAndGenerateViewModel(implicit hc: HeaderCarrier,
                                           executionContext: ExecutionContext,
                                           request: OptionalDataRequest[?],
                                           messages: Messages): Future[PsaViewDetailsViewModel]
 
   def retrievePsaDataAndGenerateContactDetailsOnlyViewModel(psaId: String, mode: Mode)
-    (implicit hc: HeaderCarrier,
-      executionContext: ExecutionContext,
-      request: OptionalDataRequest[?],
-      messages: Messages): Future[PsaViewDetailsViewModel]
+                                                           (implicit hc: HeaderCarrier,
+                                                            executionContext: ExecutionContext,
+                                                            request: OptionalDataRequest[?],
+                                                            messages: Messages): Future[PsaViewDetailsViewModel]
 
-  def getUserAnswers(psaId: String, externalId: String)(implicit hc: HeaderCarrier,
-    executionContext: ExecutionContext): Future[UserAnswers]
+  def getUserAnswers(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[UserAnswers]
 }
 
 class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnector,
@@ -63,40 +61,37 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
                                      dataCompletion: DataCompletion
                                     ) extends PsaDetailsService {
 
-  override def retrievePsaDataAndGenerateViewModel(psaId: String)
-                                                  (implicit hc: HeaderCarrier,
+  override def retrievePsaDataAndGenerateViewModel(implicit hc: HeaderCarrier,
                                                    executionContext: ExecutionContext,
                                                    request: OptionalDataRequest[?],
                                                    messages: Messages): Future[PsaViewDetailsViewModel] =
-    retrievePsaDataFromUserAnswers(psaId, getPsaDetailsViewModel)
+    retrievePsaDataFromUserAnswers(getPsaDetailsViewModel)
 
   override def retrievePsaDataAndGenerateContactDetailsOnlyViewModel(psaId: String, mode: Mode)
-    (implicit hc: HeaderCarrier,
-      executionContext: ExecutionContext,
-      request: OptionalDataRequest[?],
-      messages: Messages): Future[PsaViewDetailsViewModel] =
-    retrievePsaDataFromUserAnswers(psaId, getPsaContactDetailsOnlyViewModel(psaId))
+                                                                    (implicit hc: HeaderCarrier,
+                                                                     executionContext: ExecutionContext,
+                                                                     request: OptionalDataRequest[?],
+                                                                     messages: Messages): Future[PsaViewDetailsViewModel] =
+    retrievePsaDataFromUserAnswers(getPsaContactDetailsOnlyViewModel(psaId))
 
-  def retrievePsaDataFromUserAnswers(
-    psaId: String,
-    getViewModel: (UserAnswers, Messages) => PsaViewDetailsViewModel)(implicit hc: HeaderCarrier,
-    executionContext: ExecutionContext,
-    request: OptionalDataRequest[?], messages: Messages): Future[PsaViewDetailsViewModel] = {
+  private def retrievePsaDataFromUserAnswers(getViewModel: (UserAnswers, Messages) => PsaViewDetailsViewModel)
+                                            (implicit hc: HeaderCarrier,
+                                             executionContext: ExecutionContext,
+                                             messages: Messages): Future[PsaViewDetailsViewModel] =
     for {
-      userAnswers <- getUserAnswers(psaId, request.externalId)
-      _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)
+      userAnswers <- getUserAnswers
+      _           <- userAnswersCacheConnector.upsert(userAnswers.json)
     } yield {
       getViewModel(userAnswers, implicitly)
     }
-  }
 
-  def getUserAnswers(psaId: String, externalId: String)(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[UserAnswers] =
-    userAnswersCacheConnector.fetch(externalId).flatMap {
+  def getUserAnswers(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[UserAnswers] =
+    userAnswersCacheConnector.fetch.flatMap {
       case None => subscriptionConnector.getSubscriptionDetailsSelf().flatMap { getUpdatedUserAnswers }
       case Some(data) =>
         (UserAnswers(data).get(IndexId), UserAnswers(data).get(RegistrationInfoId)) match {
           case (Some(_), None) =>
-            userAnswersCacheConnector.removeAll(externalId).flatMap { _ =>
+            userAnswersCacheConnector.removeAll.flatMap { _ =>
               subscriptionConnector.getSubscriptionDetailsSelf().flatMap { getUpdatedUserAnswers }
             }
           case _ =>

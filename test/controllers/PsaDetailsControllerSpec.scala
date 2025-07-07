@@ -44,7 +44,7 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
   "Psa details Controller" must {
     "return 200 and  correct view for a GET for PSA company" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any())(any(), any(), any(), any()))
+      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any(), any(), any(), any()))
         .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
           isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)))
 
@@ -52,17 +52,6 @@ class PsaDetailsControllerSpec extends ControllerSpecBase {
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(companyWithChangeLinks, "Test company name")
-    }
-
-    "redirect to session expired if psa id not present" in {
-      when(fakePsaDataService.retrievePsaDataAndGenerateViewModel(any())(any(), any(), any(), any()))
-        .thenReturn(Future.successful(PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name",
-          isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = title)))
-
-      val result = controller(userType = UserType.Organisation, psaId = None).onPageLoad(UpdateMode)(fakeRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
     }
   }
 

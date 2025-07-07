@@ -19,21 +19,21 @@ package utils.navigators
 import base.SpecBase
 import controllers.register.company.directors.routes
 import identifiers.Identifier
-import identifiers.register.company.directors._
+import identifiers.register.company.directors.*
 import identifiers.register.company.{AddCompanyDirectorsId, MoreThanTenDirectorsId}
+import models.*
 import models.Mode.checkMode
-import models._
 import models.requests.IdentifiedRequest
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
 class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBehaviour {
 
-  import DirectorNavigatorSpec._
+  import DirectorNavigatorSpec.*
 
   val navigator: Navigator = injector.instanceOf[DirectorNavigator]
 
@@ -57,13 +57,13 @@ class DirectorNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeh
       (DirectorEmailId(index), defaultAnswers, directorPhonePage(NormalMode)),
       (DirectorPhoneId(index), defaultAnswers, checkYourAnswersPage(NormalMode)),
       (CheckYourAnswersId, emptyAnswers, addDirectorsPage(NormalMode)),
-      (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage(NormalMode)),
+      (AddCompanyDirectorsId, addCompanyDirectorsFalse, companyReviewPage()),
       (DirectorEnterNINOId(index), emptyAnswers, directorHasUtrPage(NormalMode)),
       (DirectorNoNINOReasonId(index), emptyAnswers, directorHasUtrPage(NormalMode)),
       (DirectorEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode)),
       (DirectorNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode)),
       (DirectorAddressId(index), emptyAnswers, directorAddressYearsPage(NormalMode)),
-      (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage(NormalMode))
+      (MoreThanTenDirectorsId, emptyAnswers, companyReviewPage())
     )
 
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
@@ -170,7 +170,7 @@ object DirectorNavigatorSpec extends OptionValues {
 
   private def checkYourAnswersPage(mode: Mode): Call = routes.CheckYourAnswersController.onPageLoad(mode, index)
 
-  private def companyReviewPage(mode: Mode): Call = controllers.register.company.routes.CompanyReviewController.onPageLoad()
+  private def companyReviewPage(): Call = controllers.register.company.routes.CompanyReviewController.onPageLoad()
 
   private def moreThanTenDirectorsPage(mode: Mode): Call = controllers.register.company.routes.MoreThanTenDirectorsController.onPageLoad(mode)
 

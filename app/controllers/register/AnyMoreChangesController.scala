@@ -74,7 +74,7 @@ class AnyMoreChangesController @Inject()(dataCacheConnector: UserAnswersCacheCon
         (formWithErrors: Form[?]) =>
           Future.successful(BadRequest(view(formWithErrors, psaName()))),
         value =>
-          dataCacheConnector.save(request.externalId, AnyMoreChangesId, value).map(cacheMap =>
+          dataCacheConnector.save(AnyMoreChangesId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AnyMoreChangesId, UpdateMode, UserAnswers(cacheMap))))
       )
   }

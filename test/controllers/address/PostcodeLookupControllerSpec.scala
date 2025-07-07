@@ -21,7 +21,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.FakeAllowAccessProvider
+import controllers.actions.{AllowAccessActionProvider, FakeAllowAccessProvider}
 import forms.address.PostCodeLookupFormProvider
 import identifiers.TypedIdentifier
 import models.*
@@ -67,7 +67,7 @@ object PostcodeLookupControllerSpec extends SpecBase {
                                   val view: postcodeLookup
                                 )(implicit val executionContext: ExecutionContext) extends PostcodeLookupController {
 
-    override val allowAccess = FakeAllowAccessProvider(config = frontendAppConfig)
+    override val allowAccess: AllowAccessActionProvider = FakeAllowAccessProvider(config = frontendAppConfig)
 
     def onPageLoad(viewmodel: PostcodeLookupViewModel, answers: UserAnswers): Future[Result] =
       get(viewmodel, NormalMode)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers))
@@ -127,13 +127,11 @@ class PostcodeLookupControllerSpec extends AnyWordSpecLike with Matchers with Mo
 
       val address = TolerantAddress(Some(""), Some(""), None, None, None, Some("GB"))
 
-      when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any())).thenReturn(Future.successful {
-        Seq(address)
-      })
+      when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any()))
+        .thenReturn(Future.successful(Seq(address)))
 
-      when(cacheConnector.save(eqTo("cacheId"), eqTo(FakeIdentifier), eqTo(Seq(address)))(any(), any(), any())).thenReturn(Future.successful {
-        Json.obj()
-      })
+      when(cacheConnector.save(eqTo(FakeIdentifier), eqTo(Seq(address)))(any(), any(), any()))
+        .thenReturn(Future.successful(Json.obj()))
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator),
@@ -215,7 +213,7 @@ class PostcodeLookupControllerSpec extends AnyWordSpecLike with Matchers with Mo
           val addressConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
           when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any()))
-            .thenReturn(Future.successful{Seq.empty})
+            .thenReturn(Future.successful(Seq.empty))
 
           running(_.overrides(
             bind[Navigator].toInstance(FakeNavigator),

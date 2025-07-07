@@ -74,9 +74,9 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
             case _ =>
               for {
                 registration <- registrationConnector.registerWithIdIndividual(nino)
-                _ <- dataCacheConnector.save(request.externalId, IndividualDetailsId, registration.response.individual)
-                _ <- dataCacheConnector.save(request.externalId, IndividualAddressId, registration.response.address)
-                _ <- dataCacheConnector.save(request.externalId, RegistrationInfoId, registration.info)
+                _ <- dataCacheConnector.save(IndividualDetailsId, registration.response.individual)
+                _ <- dataCacheConnector.save(IndividualAddressId, registration.response.address)
+                _ <- dataCacheConnector.save(RegistrationInfoId, registration.info)
               } yield {
                 Ok(view(preparedForm, mode, registration.response.individual, registration.response.address, countryOptions))
               }
@@ -108,7 +108,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
             if (invalidFields) {
               Future.successful(Redirect(routes.AddressController.onPageLoad()))
             } else {
-              dataCacheConnector.save(request.externalId, IndividualDetailsCorrectId, value).map(cacheMap =>
+              dataCacheConnector.save(IndividualDetailsCorrectId, value).map(cacheMap =>
                 Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode, UserAnswers(cacheMap)))
               )
             }

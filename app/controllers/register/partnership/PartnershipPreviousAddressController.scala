@@ -18,27 +18,25 @@ package controllers.register.partnership
 
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import controllers.address.ManualAddressController
-import controllers.register.partnership.routes._
+import controllers.register.partnership.routes.*
 import forms.UKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.NoRLSCheck
-import utils.annotations.Partnership
+import utils.annotations.{NoRLSCheck, Partnership}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
@@ -54,9 +52,9 @@ class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppC
                                                      val view: manualAddress
                                                     )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
-  private[controllers] val postCall = PartnershipPreviousAddressController.onSubmit
+  private[controllers] def postCall(mode: Mode): Call = PartnershipPreviousAddressController.onSubmit(mode)
   private val isUkHintText = true
-  protected val form: Form[Address] = formProvider("error.country.invalid")
+  protected val form: Form[Address] = formProvider()
 
   private def viewmodel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),

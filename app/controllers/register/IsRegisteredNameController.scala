@@ -67,7 +67,7 @@ trait IsRegisteredNameController extends FrontendBaseController with I18nSupport
       (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewmodel))),
       value =>
-        cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
+        cacheConnector.save(id, value).flatMap { cacheMap =>
           Future.successful(Redirect(navigator.nextPage(id, viewmodel.mode, UserAnswers(cacheMap))))
         }
     )

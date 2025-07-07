@@ -18,19 +18,17 @@ package controllers.register.individual
 
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import controllers.address.SameContactAddressController
-import controllers.register.individual.routes._
+import controllers.register.individual.routes.*
 import forms.address.SameContactAddressFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.AreYouInUKId
-import identifiers.register.individual._
-
-import javax.inject.Inject
+import identifiers.register.individual.*
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.{AuthWithIV, Individual}
 import utils.countryOptions.CountryOptions
@@ -38,6 +36,7 @@ import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAppConfig,
@@ -53,7 +52,7 @@ class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAp
                                                        val view: sameContactAddress
                                                       )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
-  private[controllers] val postCall = IndividualSameContactAddressController.onSubmit
+  private[controllers] def postCall(mode: Mode): Call = IndividualSameContactAddressController.onSubmit(mode)
   private[controllers] val title: Message = "individual.same.contact.address.title"
   private[controllers] val heading: Message = "individual.same.contact.address.heading"
 

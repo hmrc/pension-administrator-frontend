@@ -65,7 +65,7 @@ trait BusinessNameController extends FrontendBaseController with I18nSupport wit
             Future.successful(BadRequest(view(formWithErrors, toString(businessType), href)))
           },
         value =>
-          cacheConnector.save(request.externalId, BusinessNameId, value).map(cacheMap =>
+          cacheConnector.save(BusinessNameId, value).map(cacheMap =>
             Redirect(navigator.nextPage(BusinessNameId, NormalMode, UserAnswers(cacheMap))))
       )
   }

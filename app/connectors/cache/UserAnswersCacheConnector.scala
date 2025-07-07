@@ -16,34 +16,108 @@
 
 package connectors.cache
 
+import com.google.inject.{ImplementedBy, Inject}
+import config.FrontendAppConfig
 import identifiers.TypedIdentifier
-import play.api.libs.json.{Format, JsValue}
-import play.api.mvc.Result
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.libs.json.*
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import play.api.mvc.Results.Ok
+import play.api.mvc.{Result, Results}
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpException, HttpResponse, NotFoundException, StringContextOps}
+import utils.UserAnswers
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@ImplementedBy(classOf[UserAnswersCacheConnectorImpl])
 trait UserAnswersCacheConnector {
 
-  def save[A, I <: TypedIdentifier[A]](cacheId: String, id: I, value: A)
-                                      (implicit
-                                       fmt: Format[A],
-                                       executionContext: ExecutionContext,
-                                       hc: HeaderCarrier
-                                      ): Future[JsValue]
+  def save[A, I <: TypedIdentifier[A]](id: I, value: A)
+                                      (implicit fmt: Format[A], ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue]
 
-  def remove[I <: TypedIdentifier[?]](cacheId: String, id: I)
-                                     (implicit
-                                      executionContext: ExecutionContext,
-                                      hc: HeaderCarrier
-                                     ): Future[JsValue]
+  def remove[I <: TypedIdentifier[?]](id: I)
+                                     (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue]
 
-  def fetch(cacheId: String)(implicit
-                             executionContext: ExecutionContext,
-                             hc: HeaderCarrier
-  ): Future[Option[JsValue]]
+  def fetch(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]]
 
-  def upsert(cacheId: String, value: JsValue)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue]
+  def upsert(value: JsValue)
+            (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue]
 
-  def removeAll(cacheId: String)(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Result]
+  def removeAll(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result]
+}
+
+class UserAnswersCacheConnectorImpl @Inject()(config: FrontendAppConfig, http: HttpClientV2)
+  extends UserAnswersCacheConnector {
+
+  protected def url: String = s"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/psa-data-self"
+
+  override def save[A, I <: TypedIdentifier[A]](id: I, value: A)
+                                               (implicit fmt: Format[A], ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+    modify(_.set(id)(value))
+
+  def remove[I <: TypedIdentifier[?]](id: I)
+                                     (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+    modify(_.remove(id))
+
+  override def upsert(value: JsValue)
+                     (implicit ec: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+    modify(_ => JsSuccess(UserAnswers(value)))
+
+  private[connectors] def modify(modification: UserAnswers => JsResult[UserAnswers])
+                                (implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] =
+    fetch.flatMap {
+      json =>
+        modification(UserAnswers(json.getOrElse(Json.obj()))) match {
+          case JsSuccess(UserAnswers(updatedJson), _) =>
+            updatedJson match {
+              case obj: JsObject =>
+                http
+                  .post(url"$url")
+                  .withBody(obj)
+                  .execute[HttpResponse]
+                  .map {
+                    response =>
+                      response.status match {
+                        case OK =>
+                          obj
+                        case _ =>
+                          throw new HttpException(response.body, response.status)
+                      }
+                  }
+              case _ =>
+                Future.failed(new IllegalArgumentException("Updated JSON is not a JsObject"))
+            }
+          case JsError(errors) =>
+            Future.failed(JsResultException(errors))
+        }
+    }
+
+  override def fetch(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] =
+    http
+      .get(url"$url")
+      .execute[HttpResponse]
+      .recoverWith {
+        case _: NotFoundException =>
+          Future.successful(HttpResponse(NOT_FOUND, "Not found"))
+      }
+      .map { response =>
+        response.status match {
+          case NOT_FOUND =>
+            None
+          case OK =>
+            Some(Json.parse(response.body))
+          case _ =>
+            throw new HttpException(response.body, response.status)
+        }
+      }
+
+  override def removeAll(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Result] =
+    http
+      .delete(url"$url")
+      .execute[HttpResponse]
+      .map { _ =>
+        Ok
+      }
 }

@@ -17,11 +17,10 @@
 package controllers.register
 
 import controllers.ControllerSpecBase
-import controllers.actions.{DataRetrievalAction, FakeAuthAction}
+import controllers.actions.FakeAuthAction
 import models.NormalMode
 import play.api.mvc.Call
-import play.api.test.Helpers._
-import utils.FakeNavigator
+import play.api.test.Helpers.*
 import views.html.register.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
@@ -30,7 +29,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
 
-  private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
+  private def controller: WhatYouWillNeedController =
     new WhatYouWillNeedController(
       FakeAuthAction,
       controllerComponents,
@@ -42,7 +41,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
   "WhatYouWillNeed Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+      val result = controller.onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()

@@ -87,7 +87,7 @@ class AddressController @Inject()(authenticate: AuthAction,
             address.postcode,
             Some(address.country)
           )
-          cacheConnector.save(request.externalId, IndividualAddressId, tolerantAddress).map { newCache =>
+          cacheConnector.save(IndividualAddressId, tolerantAddress).map { newCache =>
             val ua = UserAnswers(newCache).set(IndividualDetailsCorrectId)(true).asOpt
               .getOrElse(UserAnswers(newCache))
             Redirect(navigator.nextPage(IndividualDetailsCorrectId, mode, ua))

@@ -28,11 +28,11 @@ import models.*
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.{eq as eqTo, *}
 import org.mockito.Mockito.*
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
@@ -85,7 +85,7 @@ object SameContactAddressControllerSpec extends SpecBase {
 
 class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers with OptionValues with ScalaFutures with MockitoSugar {
 
-  import SameContactAddressControllerSpec._
+  import SameContactAddressControllerSpec.*
 
   def testAddress(line2: Option[String]) = TolerantAddress(
     Some("address line 1"),
@@ -153,7 +153,7 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
   def controllerPostDataChange(v:Boolean):Unit = {
     s"return a redirect when the submitted data is valid and the data is changed to $v" in {
 
-      import play.api.inject._
+      import play.api.inject.*
 
       val cacheConnector = mock[UserAnswersCacheConnector]
 
@@ -163,11 +163,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
       )) {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, ContactAddressIdentifier.type](
-            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+            eqTo(ContactAddressIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -190,7 +190,7 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
 
     "return a redirect and save the data when the there is no existing data" in {
 
-      import play.api.inject._
+      import play.api.inject.*
 
       val cacheConnector = mock[UserAnswersCacheConnector]
       val userAnswers = UserAnswers().set(IndividualSameContactAddressId)(true).asOpt.value.json
@@ -203,11 +203,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
         app =>
 
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, ContactAddressIdentifier.type](
-            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+            eqTo(ContactAddressIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -218,12 +218,12 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
-          verify(cacheConnector, times(2)).save(any(), any(), any())(any(), any(), any())
+          verify(cacheConnector, times(2)).save(any(), any())(any(), any(), any())
       }
     }
 
     "return a redirect and save the data when the there is existing data and the data is not changed" in {
-      import play.api.inject._
+      import play.api.inject.*
 
       val cacheConnector = mock[UserAnswersCacheConnector]
       val userAnswers = UserAnswers().set(IndividualSameContactAddressId)(true).asOpt.value.json
@@ -235,11 +235,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
       )) {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, ContactAddressIdentifier.type](
-            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+            eqTo(ContactAddressIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -250,13 +250,13 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
-          verify(cacheConnector, times(2)).save(any(), any(), any())(any(), any(), any())
+          verify(cacheConnector, times(2)).save(any(), any())(any(), any(), any())
       }
     }
 
     "return a redirect when the submitted data is valid and address does not have line 2" in {
 
-      import play.api.inject._
+      import play.api.inject.*
 
       val cacheConnector = mock[UserAnswersCacheConnector]
 
@@ -266,11 +266,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
       )) {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[TolerantAddress, RegAddressIdentifier.type](
-            any(), eqTo(RegAddressIdentifier), any())(any(), any(), any())
+            eqTo(RegAddressIdentifier), any())(any(), any(), any())
           ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(

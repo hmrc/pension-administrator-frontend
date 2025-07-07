@@ -227,7 +227,7 @@ object AddressListControllerSpec extends SpecBase {
   val fakeAddressListId: TypedIdentifier[TolerantAddress] = new TypedIdentifier[TolerantAddress]() {}
   val fakeAddressId: TypedIdentifier[Address] = new TypedIdentifier[Address]() {}
 
-  private lazy val postCall = controllers.routes.IndexController.onPageLoad
+  private lazy val postCall: Call = controllers.routes.IndexController.onPageLoad
   private lazy val manualInputCall = controllers.routes.SessionExpiredController.onPageLoad
 
   private val addresses = Seq(

@@ -17,18 +17,17 @@
 package controllers.register.company
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.actions._
+import controllers.actions.*
 import controllers.{ControllerSpecBase, IsRegisteredNameControllerBehaviour}
 import forms.register.IsRegisteredNameFormProvider
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, UserType}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.{CommonFormViewModel, Message}
 import views.html.register.isRegisteredName
-import utils.UserAnswerOps
 
 class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRegisteredNameControllerBehaviour {
   val name = "test company name"
@@ -43,7 +42,7 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
   val view: isRegisteredName = app.injector.instanceOf[isRegisteredName]
 
   implicit val dataRequest: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
-    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), UserAnswers())
+    PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None), UserAnswers())
 
   "CompanyIsRegisteredNameController" must {
 

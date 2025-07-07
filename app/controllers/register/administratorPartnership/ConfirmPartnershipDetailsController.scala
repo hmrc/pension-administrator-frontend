@@ -70,7 +70,7 @@ class ConfirmPartnershipDetailsController @Inject()(
             upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
             upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
               upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
-                dataCacheConnector.upsert(request.externalId, userAnswers.json).map { _ =>
+                dataCacheConnector.upsert(userAnswers.json).map { _ =>
 
                   Ok(view(
                     form,
@@ -135,7 +135,7 @@ class ConfirmPartnershipDetailsController @Inject()(
             val updatedAnswers = request.userAnswers.removeAllOf(List(
               PartnershipRegisteredAddressId, RegistrationInfoId
             )).asOpt.getOrElse(request.userAnswers)
-            dataCacheConnector.upsert(request.externalId, updatedAnswers.json).flatMap { _ =>
+            dataCacheConnector.upsert(updatedAnswers.json).flatMap { _ =>
               Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
             }
         }

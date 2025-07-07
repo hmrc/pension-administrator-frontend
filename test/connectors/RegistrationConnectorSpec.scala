@@ -18,7 +18,6 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import models.*
-import models.register.BusinessType
 import models.registrationnoid.RegistrationNoIdIndividualRequest
 import org.scalatest.*
 import org.scalatest.flatspec.AsyncFlatSpec
@@ -37,7 +36,7 @@ import scala.concurrent.ExecutionContext
 class RegistrationConnectorSpec()
   extends AsyncFlatSpec with Matchers with OptionValues with WireMockHelper {
 
-  import RegistrationConnectorSpec._
+  import RegistrationConnectorSpec.*
 
   override protected lazy val app: Application =
     new GuiceApplicationBuilder()

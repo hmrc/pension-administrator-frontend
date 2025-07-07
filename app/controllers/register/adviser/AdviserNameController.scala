@@ -75,7 +75,7 @@ class AdviserNameController @Inject()(
           )))
         },
         value => {
-          dataCacheConnector.save(request.externalId, AdviserNameId, value).map(
+          dataCacheConnector.save(AdviserNameId, value).map(
             cacheMap =>
               Redirect(navigator.nextPage(AdviserNameId, mode, UserAnswers(cacheMap)))
           )

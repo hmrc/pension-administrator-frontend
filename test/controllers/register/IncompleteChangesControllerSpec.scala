@@ -16,17 +16,15 @@
 
 package controllers.register
 
-import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import identifiers.register.individual.IndividualDetailsId
-import models._
+import models.*
 import models.requests.DataRequest
 import play.api.libs.json.Json
-import play.api.test.Helpers._
-import utils.UserAnswers
+import play.api.test.Helpers.*
+import utils.{UserAnswerOps, UserAnswers}
 import views.html.register.incompleteChanges
-import utils.UserAnswerOps
 
 class IncompleteChangesControllerSpec extends ControllerSpecBase {
   private val psaName: String = "Mark Wright"

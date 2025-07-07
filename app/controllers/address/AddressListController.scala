@@ -64,7 +64,7 @@ trait AddressListController extends FrontendBaseController with I18nSupport with
                     (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     def performUpsert(userAnswers: UserAnswers)(block: JsValue => Future[Result]):Future[Result] =
-      cacheConnector.upsert(request.externalId, userAnswers.json).flatMap(block)
+      cacheConnector.upsert(userAnswers.json).flatMap(block)
 
     form.bindFromRequest().fold(
       formWithErrors =>

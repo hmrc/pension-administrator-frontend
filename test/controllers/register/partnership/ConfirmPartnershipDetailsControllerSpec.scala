@@ -18,21 +18,20 @@ package controllers.register.partnership
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.UKAddressFormProvider
 import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
-import models._
+import models.*
 import models.register.BusinessType.BusinessPartnership
 import play.api.data.Form
-import play.api.libs.json._
-import play.api.test.Helpers._
+import play.api.libs.json.*
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, FakeNavigator, UserAnswers}
 import views.html.register.partnership.confirmPartnershipDetails
-import utils.UserAnswerOps
 
 import scala.concurrent.{ExecutionContext, Future}
 

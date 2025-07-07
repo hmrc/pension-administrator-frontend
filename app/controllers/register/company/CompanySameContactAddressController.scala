@@ -29,7 +29,7 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
@@ -57,7 +57,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
 
   def form(name: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
 
-  private[controllers] val postCall = CompanySameContactAddressController.onSubmit
+  private[controllers] def postCall(mode: Mode): Call = CompanySameContactAddressController.onSubmit(mode)
   private[controllers] val title: Message = "company.same.contact.address.title"
   private[controllers] val heading: Message = "company.same.contact.address.heading"
   private[controllers] val confirmText: Message = "same.contact.address.confirm.text"

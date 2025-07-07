@@ -41,7 +41,7 @@ class PSAVarianceSuccessController @Inject()(authenticate: AuthAction,
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val name = psaName()
-      dataCacheConnector.removeAll(request.externalId).map { _ =>
+      dataCacheConnector.removeAll.map { _ =>
         Ok(view(name))
       }
   }

@@ -76,7 +76,7 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
             Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl()))))),
           value =>
             for {
-              cacheMap <- dataCacheConnector.save(request.externalId, HasVATId, value)
+              cacheMap <- dataCacheConnector.save(HasVATId, value)
             } yield {
               if (!value) {
                 Redirect(companydetails.routes.CheckYourAnswersController.onPageLoad())

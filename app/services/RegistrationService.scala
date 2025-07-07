@@ -51,7 +51,7 @@ class RegistrationServiceImpl @Inject()(
       individual.lastName.getOrElse(error("Last name missing")),
       address,
       dob)
-    _ <- dataCacheConnector.save(extId, RegistrationInfoId, registrationInfo)
+    _ <- dataCacheConnector.save(RegistrationInfoId, registrationInfo)
   } yield {
     registrationInfo
   }

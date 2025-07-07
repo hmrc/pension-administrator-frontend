@@ -74,7 +74,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any()))
         .thenReturn(Future.successful(individualUserAnswers))
 
-      val result = service().retrievePsaDataAndGenerateViewModel("123")
+      val result = service().retrievePsaDataAndGenerateViewModel
       whenReady(result) {
         _ mustBe PsaViewDetailsViewModel(individualWithChangeLinks, "Stephen Wood", isUserAnswerUpdated = false,
           userAnswersIncompleteMessage = None, title = titlePsaDataFull)
@@ -90,7 +90,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any()))
         .thenReturn(Future.successful(companyUserAnswers))
 
-      val result = service().retrievePsaDataAndGenerateViewModel("123")
+      val result = service().retrievePsaDataAndGenerateViewModel
       whenReady(result) {
         _ mustBe PsaViewDetailsViewModel(companyWithChangeLinks, "Test company name", isUserAnswerUpdated = false,
           userAnswersIncompleteMessage = None, title = titlePsaDataFull)
@@ -109,7 +109,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
         .thenReturn(Future.successful(partnershipUserAnswers))
       when(mockDataCompletion.psaUpdateDetailsInCompleteAlert(any())).thenReturn(Some("incomplete.alert.message"))
 
-      val result = service().retrievePsaDataAndGenerateViewModel("123")
+      val result = service().retrievePsaDataAndGenerateViewModel
       whenReady(result) {
         _ mustBe PsaViewDetailsViewModel(partnershipWithChangeLinks, "Test partnership name",
           isUserAnswerUpdated = false, userAnswersIncompleteMessage = Some("incomplete.alert.message"), title = titlePsaDataFull)
@@ -121,27 +121,27 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
     "call psa subscription details to fetch data if no data is available in user answers" in {
       reset(mockUserAnswersConnector, mockSubscriptionConnector)
-      when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+      when(mockUserAnswersConnector.fetch(any(), any())).thenReturn(Future.successful(None))
+      when(mockUserAnswersConnector.upsert(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
-      val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel("123")
+      val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel
       whenReady(result) { _ =>
-        verify(mockUserAnswersConnector, never).removeAll(any())(any(), any())
+        verify(mockUserAnswersConnector, never).removeAll(any(), any())
         verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf()(any(), any())
       }
     }
 
     "remove the existing data and call psa subscription details to fetch data if data for index is available in user answers" in {
       reset(mockUserAnswersConnector, mockSubscriptionConnector)
-      when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(Some(Json.obj(IndexId.toString -> "index"))))
-      when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockUserAnswersConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(Ok))
+      when(mockUserAnswersConnector.fetch(any(), any())).thenReturn(Future.successful(Some(Json.obj(IndexId.toString -> "index"))))
+      when(mockUserAnswersConnector.upsert(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+      when(mockUserAnswersConnector.removeAll(any(), any())).thenReturn(Future.successful(Ok))
       when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
-      val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel("123")
+      val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel
       whenReady(result) { _ =>
-        verify(mockUserAnswersConnector, times(1)).removeAll(any())(any(), any())
+        verify(mockUserAnswersConnector, times(1)).removeAll(any(), any())
         verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf()(any(), any())
       }
     }
@@ -149,10 +149,10 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
     "populate all the variations change flags when getUserAnswers is called when no user answers data" in {
       reset(mockUserAnswersConnector, mockSubscriptionConnector)
 
-      when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(None))
+      when(mockUserAnswersConnector.fetch(any(), any())).thenReturn(Future.successful(None))
       when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
-      val result = service(mockUserAnswersConnector).getUserAnswers("123", request.externalId)
+      val result = service(mockUserAnswersConnector).getUserAnswers
       whenReady(result) { userAnswers =>
         Seq(IndividualAddressChangedId,
           IndividualPreviousAddressChangedId,
@@ -210,27 +210,27 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
 
     "call psa subscription details to fetch data if no data is available in user answers" in {
       reset(mockUserAnswersConnector, mockSubscriptionConnector)
-      when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(None))
-      when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+      when(mockUserAnswersConnector.fetch(any(), any())).thenReturn(Future.successful(None))
+      when(mockUserAnswersConnector.upsert(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
       val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateContactDetailsOnlyViewModel("A2100005", mode)
       whenReady(result) { _ =>
-        verify(mockUserAnswersConnector, never).removeAll(any())(any(), any())
+        verify(mockUserAnswersConnector, never).removeAll(any(), any())
         verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf()(any(), any())
       }
     }
 
     "remove the existing data and call psa subscription details to fetch data if data for index is available in user answers" in {
       reset(mockUserAnswersConnector, mockSubscriptionConnector)
-      when(mockUserAnswersConnector.fetch(any())(any(), any())).thenReturn(Future.successful(Some(Json.obj(IndexId.toString -> "index"))))
-      when(mockUserAnswersConnector.upsert(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockUserAnswersConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(Ok))
+      when(mockUserAnswersConnector.fetch(any(), any())).thenReturn(Future.successful(Some(Json.obj(IndexId.toString -> "index"))))
+      when(mockUserAnswersConnector.upsert(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+      when(mockUserAnswersConnector.removeAll(any(), any())).thenReturn(Future.successful(Ok))
       when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
       val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateContactDetailsOnlyViewModel("A2100005", mode)
       whenReady(result) { _ =>
-        verify(mockUserAnswersConnector, times(1)).removeAll(any())(any(), any())
+        verify(mockUserAnswersConnector, times(1)).removeAll(any(), any())
         verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf()(any(), any())
       }
     }
@@ -246,13 +246,8 @@ object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
   private val mockDataCompletion: DataCompletion = mock[DataCompletion]
 
   object LocalFakeUserAnswersCacheConnector extends FakeUserAnswersCacheConnector {
-    override def fetch(cacheId: String)(implicit
-                                        executionContext: ExecutionContext,
-                                        hc: HeaderCarrier
-    ): Future[Option[JsValue]] = {
-
+    override def fetch(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] =
       Future.successful(None)
-    }
   }
 
   def service(cacheConnector: UserAnswersCacheConnector = LocalFakeUserAnswersCacheConnector): PsaDetailServiceImpl = new PsaDetailServiceImpl(

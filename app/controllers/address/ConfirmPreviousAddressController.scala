@@ -52,34 +52,42 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
 
   protected  def view: sameContactAddress
 
-  protected def form(name: String)(implicit mesages: Messages): Form[Boolean] =
+  protected def form(name: String)(implicit messages: Messages): Form[Boolean] =
     formProvider(Message("confirmPreviousAddress.error", name))
 
   protected def get(id: TypedIdentifier[Boolean], viewModel: SameContactAddressViewModel)
                    (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
-    val preparedForm = request.userAnswers.get(id) match {
-      case None => form(viewModel.psaName)(implicitly)
-      case Some(value) => form(viewModel.psaName)(implicitly).fill(value)
-    }
+    val preparedForm =
+      request.userAnswers.get(id) match {
+        case None =>
+          form(viewModel.psaName)
+        case Some(value) =>
+          form(viewModel.psaName).fill(value)
+      }
+
     Future.successful(Ok(view(preparedForm, viewModel, countryOptions)))
   }
 
   protected def post(id: TypedIdentifier[Boolean], contactId: TypedIdentifier[Address], viewModel: SameContactAddressViewModel, mode: Mode)
-                    (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
+                    (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] =
 
-    form(viewModel.psaName)(implicitly).bindFromRequest().fold(
-      formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),
-      { case true => dataCacheConnector.save(request.externalId, id, true).flatMap { _ =>
-        dataCacheConnector.save(request.externalId, contactId, viewModel.address.toAddress.get).map {
-          cacheMap =>
-            Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
+    form(viewModel.psaName).bindFromRequest().fold(
+      formWithError =>
+        Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),
+      value =>
+        if (value) {
+          dataCacheConnector.save(id, value).flatMap { _ =>
+            dataCacheConnector.save(contactId, viewModel.address.toAddress.get).map { jsValue =>
+              println(s"\n\n\n\n$value\n\n\n\n\n")
+              Redirect(navigator.nextPage(id, mode, UserAnswers(jsValue)))
+            }
+          }
+        } else {
+          dataCacheConnector.save(id, value).flatMap { jsValue =>
+            println(s"\n\n\n\n$value\n\n\n\n\n")
+            Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(jsValue))))
+          }
         }
-      }
-      case _ => dataCacheConnector.save(request.externalId, id, false).flatMap { cacheMap =>
-        Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap))))
-      }
-      }
     )
-  }
 }

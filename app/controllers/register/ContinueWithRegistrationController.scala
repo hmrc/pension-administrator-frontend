@@ -67,7 +67,7 @@ class ContinueWithRegistrationController @Inject()(
         }
         Future.successful(result)
       } else {
-        cache.removeAll(request.externalId).map(_ =>
+        cache.removeAll.map(_ =>
           Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
         )
       }

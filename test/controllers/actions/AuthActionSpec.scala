@@ -383,21 +383,16 @@ object AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar
 
   private val bothEnrolments = Enrolments(Set(enrolmentPSA, enrolmentPSP))
 
-  def fakeUserAnswersCacheConnector(dataToBeReturned: JsValue = Json.obj("areYouInUK" -> true)):
-  FakeUserAnswersCacheConnector = new FakeUserAnswersCacheConnector {
-    override def fetch(cacheId: String)(implicit
-                                        executionContext: ExecutionContext,
-                                        hc: HeaderCarrier
-    ): Future[Option[JsValue]] = {
-      Future.successful(Some(dataToBeReturned))
+  def fakeUserAnswersCacheConnector(dataToBeReturned: JsValue = Json.obj("areYouInUK" -> true)): FakeUserAnswersCacheConnector =
+    new FakeUserAnswersCacheConnector {
+      override def fetch(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Option[JsValue]] =
+        Future.successful(Some(dataToBeReturned))
     }
-  }
 
   private def fakeAuthConnector(stubbedRetrievalResult: Future[?]) = new AuthConnector {
 
-    def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[A] = {
+    def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[A] =
       stubbedRetrievalResult.map(_.asInstanceOf[A])(executionContext)
-    }
   }
 
   private def authRetrievals(affinityGroup: Option[AffinityGroup] = Some(AffinityGroup.Organisation),

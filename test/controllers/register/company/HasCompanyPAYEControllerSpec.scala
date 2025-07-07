@@ -20,17 +20,16 @@ import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnecto
 import controllers.ControllerSpecBase
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.HasPAYEId
-import models.{Mode, NormalMode}
+import models.NormalMode
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.annotations.RegisterCompany
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswerOps, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
-import utils.UserAnswerOps
 
 class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
 
@@ -52,7 +51,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 
-  private def viewAsString(form: Form[?] = form, mode: Mode = NormalMode): String =
+  private def viewAsString(form: Form[?] = form): String =
     view(form, viewModel)(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   "HasCompanyPAYEController Controller" when {

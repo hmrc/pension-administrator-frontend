@@ -72,22 +72,22 @@ trait SameContactAddressController extends FrontendBaseController with Retrieval
       formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),
       value => {
         if (value) {
-          dataCacheConnector.save(request.externalId, id, value).flatMap { _ =>
+          dataCacheConnector.save(id, value).flatMap { _ =>
               getResolvedAddress(viewModel.address) match {
                 case None =>
-                  dataCacheConnector.save(request.externalId, addressId, viewModel.address).map {
+                  dataCacheConnector.save(addressId, viewModel.address).map {
                     cacheMap =>
                       Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
                   }
                 case Some(address) =>
-                  dataCacheConnector.save(request.externalId, contactId, address).map {
+                  dataCacheConnector.save(contactId, address).map {
                     cacheMap =>
                       Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
                   }
               }
           }
         } else {
-          dataCacheConnector.save(request.externalId, id, value).map {
+          dataCacheConnector.save(id, value).map {
             cacheMap =>
               Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
           }

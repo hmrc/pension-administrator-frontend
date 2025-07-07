@@ -17,7 +17,7 @@
 package controllers.register.adviser
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.adviser.AdviserNameFormProvider
 import models.RegistrationCustomerType.UK
@@ -26,10 +26,8 @@ import models.{NormalMode, RegistrationIdType, RegistrationInfo}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator, UserAnswerOps, UserAnswers}
 import views.html.register.adviser.adviserName
-import utils.UserAnswerOps
-import org.mockito.Mockito.*
 
 class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {
 

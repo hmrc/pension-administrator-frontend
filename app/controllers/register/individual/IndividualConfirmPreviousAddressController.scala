@@ -18,23 +18,22 @@ package controllers.register.individual
 
 import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import controllers.address.ConfirmPreviousAddressController
 import controllers.register.individual.routes._
 import identifiers.UpdateContactAddressId
-import identifiers.register.individual._
-import javax.inject.Inject
+import identifiers.register.individual.*
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.Individual
-import utils.annotations.NoRLSCheck
+import utils.annotations.{Individual, NoRLSCheck}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class IndividualConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
@@ -50,7 +49,7 @@ class IndividualConfirmPreviousAddressController @Inject()(val appConfig: Fronte
                                                       )(implicit val executionContext: ExecutionContext)
                                                         extends ConfirmPreviousAddressController with I18nSupport {
 
-  private[controllers] val postCall = IndividualConfirmPreviousAddressController.onSubmit()
+  private[controllers] lazy val postCall: Call = IndividualConfirmPreviousAddressController.onSubmit()
   private[controllers] val title: Message = "confirmPreviousAddress.title"
   private[controllers] val heading: Message = "confirmPreviousAddress.heading"
 

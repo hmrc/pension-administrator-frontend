@@ -17,10 +17,10 @@
 package utils
 
 import identifiers.Identifier
-import models.{Mode, NormalMode}
+import models.Mode
 import play.api.mvc.Call
 
-class FakeNavigator(val desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+class FakeNavigator(val desiredRoute: Call) extends Navigator {
 
   private var userAnswers: Option[UserAnswers] = None
 
@@ -44,4 +44,4 @@ class FakeNavigator(val desiredRoute: Call, mode: Mode = NormalMode) extends Nav
   }
 }
 
-object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"), NormalMode)
+object FakeNavigator extends FakeNavigator(Call("GET", "www.example.com"))

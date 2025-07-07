@@ -35,7 +35,7 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures {
 
   private val mockDataCompletion = mock[DataCompletion]
 
-  class TestAllowDeclarationAction(mode: Mode, isSuspended: Boolean = false) extends AllowDeclarationAction(mode, mockDataCompletion) {
+  class TestAllowDeclarationAction(mode: Mode) extends AllowDeclarationAction(mode, mockDataCompletion) {
     override def filter[A](request: OptionalDataRequest[A]): Future[Option[Result]] = super.filter(request)
   }
 

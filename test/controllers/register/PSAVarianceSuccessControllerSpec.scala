@@ -18,19 +18,18 @@ package controllers.register
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import identifiers.register.individual.IndividualDetailsId
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
-import org.mockito.ArgumentMatchers._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
-import play.api.mvc.Results._
-import play.api.test.Helpers._
+import play.api.mvc.Results.*
+import play.api.test.Helpers.*
 import utils.UserAnswers
 import views.html.register.psaVarianceSuccess
-import utils.UserAnswerOps
-import org.mockito.Mockito.*
 
 import scala.concurrent.Future
 
@@ -48,13 +47,13 @@ class PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoSu
 
     "return OK and the correct view for a GET" in {
 
-      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())).thenReturn(Future.successful(Ok))
+      when(fakeUserAnswersCacheConnector.removeAll(any(), any())).thenReturn(Future.successful(Ok))
 
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(individual)
-      verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
+      verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any(), any())
     }
 
     "redirect to Session Expired on a GET when no data exists" in {

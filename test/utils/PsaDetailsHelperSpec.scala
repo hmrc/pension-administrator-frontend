@@ -20,14 +20,15 @@ import base.SpecBase
 import models.PsaSubscription.PsaSubscription
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import utils.PsaDetailsHelper._
-import utils.PsaDetailsHelperSpec.actualSeqAnswerRow
+import utils.PsaDetailsHelper.*
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.PsaSubscriptionBuilder
-import utils.testhelpers.PsaSubscriptionBuilder._
+import utils.testhelpers.PsaSubscriptionBuilder.*
 import viewmodels.{AnswerRow, SuperSection}
 
 class PsaDetailsHelperSpec extends AnyWordSpecLike with Matchers {
+
+  import PsaDetailsHelperSpec.*
 
   def validSection(testName: String, headingKey: Option[String], result: Seq[SuperSection], expectedAnswerRows: Seq[AnswerRow]): Unit = {
     s"display Individual details section with correct labels for $testName" in {
@@ -44,8 +45,6 @@ class PsaDetailsHelperSpec extends AnyWordSpecLike with Matchers {
       actualValues mustBe expectedValues
     }
   }
-
-  import PsaDetailsHelperSpec._
 
   "PsaDetailsHelper" must {
 

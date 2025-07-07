@@ -57,7 +57,7 @@ trait PhoneController extends FrontendBaseController with Retrievals with I18nSu
       (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel, psaName()))),
       value => {
-        cacheConnector.save(request.externalId, id, value).flatMap(
+        cacheConnector.save(id, value).flatMap(
           cacheMap =>
             saveChangeFlag(mode, id).map { _ =>
               Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
