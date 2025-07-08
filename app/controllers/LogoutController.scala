@@ -33,7 +33,7 @@ class LogoutController @Inject()(appConfig: FrontendAppConfig, val controllerCom
 
   def onPageLoad: Action[AnyContent] = authenticate.async { implicit request =>
     sessionDataCacheConnector.removeAll().map { _ =>
-      Redirect(appConfig.serviceSignOut).withNewSession
+      Redirect(appConfig.serviceSignOut)
     }
   }
 
