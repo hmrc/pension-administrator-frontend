@@ -79,13 +79,11 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
         if (value) {
           dataCacheConnector.save(id, value).flatMap { _ =>
             dataCacheConnector.save(contactId, viewModel.address.toAddress.get).map { jsValue =>
-              println(s"\n\n\n\n$value\n\n\n\n\n")
               Redirect(navigator.nextPage(id, mode, UserAnswers(jsValue)))
             }
           }
         } else {
           dataCacheConnector.save(id, value).flatMap { jsValue =>
-            println(s"\n\n\n\n$value\n\n\n\n\n")
             Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(jsValue))))
           }
         }
