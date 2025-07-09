@@ -50,7 +50,7 @@ class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
       view
     )
 
-  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode), Some("Test Company Name"))(fakeRequest, messages).toString
+  private def phoneView(form: Form[?]): String = view(form, viewModel(NormalMode), Some("Test Company Name"))(fakeRequest, messages).toString
 
   "CompanyPhoneController" must {
 

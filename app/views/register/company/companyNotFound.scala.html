@@ -24,7 +24,7 @@
     button_link: components.button_link
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[?], messages: Messages)
 
 @openLink1 = {<a class="govuk-link" id="companies-house-link" href="@appConfig.tellCompaniesHouseCompanyChangesUrl">}
 @openLink2 = {<a class="govuk-link" id="hmrc-company-link" href="@appConfig.tellHMRCCompanyChangesUrl">}

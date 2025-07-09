@@ -50,7 +50,7 @@ trait MoreThanTenController extends FrontendBaseController with I18nSupport with
 
   def post(viewModel: MoreThanTenViewModel, mode: Mode)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form(viewModel.errorKey).bindFromRequest().fold(
-      (formWithErrors: Form[_]) =>
+      (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel, mode))),
       value => {
         val hasAnswerChanged = request.userAnswers.get(viewModel.id) match {

@@ -65,7 +65,7 @@ class PartnerPreviousAddressControllerSpec extends ControllerSpecBase with Scala
       None
     )
 
-  private def viewAsString(form: Form[_] = form) =
+  private def viewAsString(form: Form[?] = form) =
     view(
       form,
       viewModel,

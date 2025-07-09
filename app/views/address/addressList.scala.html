@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
 @import models.Mode
 @import viewmodels.address.AddressListViewModel
+@import utils.countryOptions.CountryOptions
 @import utils.ViewHelper.titleWithErrors
 
 @this(
@@ -26,10 +27,10 @@
     formHelper: PlayFrontendFormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
     input_radio: components.input_radio,
-    submit_button: components.submit_button
+    submit_button: components.submit_button,
+    countryOptions: CountryOptions
 )
-
-@(form: Form[_], viewModel: AddressListViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], viewModel: AddressListViewModel, mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = titleWithErrors(form, viewModel.title)) {
 
@@ -49,7 +50,7 @@
             legendClass = Some("govuk-visually-hidden"),
             inputs = for((address, i) <- viewModel.addresses.zipWithIndex) yield {
                 RadioItem(
-                    content = Text(address.print),
+                    content = Text(address.print(countryOptions)),
                     value = Some(i.toString)
                 )
             }

@@ -89,7 +89,7 @@ class ConfirmCompanyDetailsController @Inject()(
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             (BusinessNameId and ConfirmCompanyAddressId).retrieve.map {
               case name ~ address =>
                 Future.successful(BadRequest(view(formWithErrors, address, name, countryOptions)))

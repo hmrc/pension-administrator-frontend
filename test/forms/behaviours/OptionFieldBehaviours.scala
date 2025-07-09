@@ -20,7 +20,7 @@ import play.api.data.{Form, FormError}
 
 class OptionFieldBehaviours extends FieldBehaviours {
 
-  def optionsField[T](form: Form[_],
+  def optionsField[T](form: Form[?],
                       fieldName: String,
                       validValues: Seq[T],
                       invalidError: FormError): Unit = {

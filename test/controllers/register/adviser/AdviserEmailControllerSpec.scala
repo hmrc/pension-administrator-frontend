@@ -46,7 +46,7 @@ class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
     view
   )
 
-  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
+  private def emailView(form: Form[?]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
 
   "AdviserEmail Controller" must {
 

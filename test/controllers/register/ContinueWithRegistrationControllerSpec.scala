@@ -130,7 +130,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
   private def onPageLoadAction(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
     controller(dataRetrievalAction, authAction).onPageLoad()
 
-  private def viewAsString(form: Form[_]): String =
+  private def viewAsString(form: Form[?]): String =
     view(form)(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
 }
 

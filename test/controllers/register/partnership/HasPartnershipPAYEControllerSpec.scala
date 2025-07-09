@@ -42,7 +42,7 @@ class HasPartnershipPAYEControllerSpec extends ControllerWithCommonBehaviour {
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     controllerComponents, view)
 
-  private def hasReferenceNumberView(form: Form[_]): String =
+  private def hasReferenceNumberView(form: Form[?]): String =
     view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   "HasPartnershipPAYEController" must {

@@ -71,7 +71,7 @@ class HasCompanyPAYEController @Inject()(override val appConfig: FrontendAppConf
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
         form(companyName).bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
+          (formWithErrors: Form[?]) =>
             Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl()))))),
           value =>
             for {

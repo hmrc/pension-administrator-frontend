@@ -30,7 +30,7 @@ class PSAStartEventSpec extends AsyncFlatSpec with Matchers {
 
   private val externalId = "test-external-id"
 
-  private def testRequest(userType: UserType, isExistingPsa: Boolean): OptionalDataRequest[_] = {
+  private def testRequest(userType: UserType, isExistingPsa: Boolean): OptionalDataRequest[?] = {
     OptionalDataRequest(
       request = FakeRequest("", ""),
       externalId = externalId,
@@ -42,7 +42,7 @@ class PSAStartEventSpec extends AsyncFlatSpec with Matchers {
   "PSAStartEvent" should "send a PSAStart event for invdividuals" in {
 
     val auditService = new StubSuccessfulAuditService()
-    implicit val request: OptionalDataRequest[_] = testRequest(UserType.Individual, false)
+    implicit val request: OptionalDataRequest[?] = testRequest(UserType.Individual, false)
 
     PSAStartEvent.sendEvent(auditService)
 
@@ -61,7 +61,7 @@ class PSAStartEventSpec extends AsyncFlatSpec with Matchers {
   it should "send a PSAStart event for organisations" in {
 
     val auditService = new StubSuccessfulAuditService()
-    implicit val request: OptionalDataRequest[_] = testRequest(UserType.Organisation, false)
+    implicit val request: OptionalDataRequest[?] = testRequest(UserType.Organisation, false)
 
     PSAStartEvent.sendEvent(auditService)
 
@@ -90,7 +90,7 @@ class PSAStartEventSpec extends AsyncFlatSpec with Matchers {
   it should "send a PSAStart event for an existing user" in {
 
     val auditService = new StubSuccessfulAuditService()
-    implicit val request: OptionalDataRequest[_] = testRequest(UserType.Individual, true)
+    implicit val request: OptionalDataRequest[?] = testRequest(UserType.Individual, true)
 
     PSAStartEvent.sendEvent(auditService)
 

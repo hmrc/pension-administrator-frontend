@@ -42,7 +42,7 @@ class HasPartnerUTRControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
-  private def hasReferenceNumberView(form: Form[_]): String =
+  private def hasReferenceNumberView(form: Form[?]): String =
     view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "HasPartnerUTRController" must {

@@ -43,7 +43,7 @@ class PartnerEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: enterUTR = app.injector.instanceOf[enterUTR]
 
-  private def enterUTRView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def enterUTRView(form: Form[?]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "PartnerEnterUTRController" must {
 

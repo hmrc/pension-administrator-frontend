@@ -137,7 +137,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
   def saveAction(cache: UserAnswersCacheConnector): Action[AnyContent] =
     controller(cache = cache).onSubmit(NormalMode)
 
-  def viewAsString(form: Form[_]): String =
+  def viewAsString(form: Form[?]): String =
       view(form)(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
 
   private def controller(

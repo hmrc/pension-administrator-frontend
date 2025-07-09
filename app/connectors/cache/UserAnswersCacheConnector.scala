@@ -32,7 +32,7 @@ trait UserAnswersCacheConnector {
                                        hc: HeaderCarrier
                                       ): Future[JsValue]
 
-  def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
+  def remove[I <: TypedIdentifier[?]](cacheId: String, id: I)
                                      (implicit
                                       executionContext: ExecutionContext,
                                       hc: HeaderCarrier

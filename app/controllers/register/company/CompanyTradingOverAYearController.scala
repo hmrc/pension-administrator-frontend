@@ -78,7 +78,7 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
         BusinessNameId.retrieve.map {
           companyName => {
             form(companyName).bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>
+              (formWithErrors: Form[?]) =>
                 Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl()))))),
               value => {
                 for {

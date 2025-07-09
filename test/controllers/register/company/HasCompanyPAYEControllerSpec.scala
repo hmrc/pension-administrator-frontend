@@ -51,7 +51,7 @@ class HasCompanyPAYEControllerSpec extends ControllerSpecBase {
       returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 
-  private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode): String =
+  private def viewAsString(form: Form[?] = form, mode: Mode = NormalMode): String =
     view(form, viewModel)(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   "HasCompanyPAYEController Controller" when {

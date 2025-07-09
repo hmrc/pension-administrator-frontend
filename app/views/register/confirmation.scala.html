@@ -28,7 +28,7 @@
     submit_button: components.submit_button,
 )
 
-@(psaId: String, psaName: String, psaEmail: String,isPsaTypeCompany:Boolean)(implicit request: DataRequest[_], messages: Messages)
+@(psaId: String, psaName: String, psaEmail: String,isPsaTypeCompany:Boolean)(implicit request: DataRequest[?], messages: Messages)
 
 @registerSchemeLink = {<a id="register-scheme-link" class="govuk-link" href="@appConfig.registerSchemeUrl">@messages("confirmation.whatYouNeedToKnow.registerLink")</a>}
 @printThisPageLink = {<a id="print-this-page-link" class="govuk-link" onclick="window.print();return false;" href="#">@messages("site.printThisPage")</a>}

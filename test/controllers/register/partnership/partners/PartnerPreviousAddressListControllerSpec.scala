@@ -92,7 +92,7 @@ class PartnerPreviousAddressListControllerSpec extends ControllerSpecBase {
       Message("manual.entry.link")
     )
 
-  private def viewAsString(form: Form[_] = form): String =
+  private def viewAsString(form: Form[?] = form): String =
     view(form,
       viewModel,
       NormalMode

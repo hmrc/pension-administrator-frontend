@@ -42,7 +42,7 @@ class IndividualEmailControllerSpec extends ControllerWithCommonBehaviour {
 
 
 
-  private def emailView(form: Form[_]): String = view(form, viewModel(NormalMode), Some("psaName"))(fakeRequest, messages).toString
+  private def emailView(form: Form[?]): String = view(form, viewModel(NormalMode), Some("psaName"))(fakeRequest, messages).toString
 
   "IndividualEmail Controller" must {
 

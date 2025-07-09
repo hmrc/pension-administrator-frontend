@@ -42,7 +42,7 @@ class DirectorPhoneControllerSpec extends ControllerWithCommonBehaviour {
     controllerComponents, view
   )
 
-  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
+  private def phoneView(form: Form[?]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
 
   "DirectorPhoneController" must {
 

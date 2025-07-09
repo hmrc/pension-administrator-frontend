@@ -21,7 +21,7 @@
     appConfig: FrontendAppConfig
 )
 
-@(organisationName: String, country: String, organisationType: String)(implicit request: Request[_], messages: Messages)
+@(organisationName: String, country: String, organisationType: String)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("outsideEuEea.title")) {
 

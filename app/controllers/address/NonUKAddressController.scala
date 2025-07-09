@@ -56,8 +56,8 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
 
   protected def view: nonukAddress
 
-  protected def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
-    implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
+  protected def createView(appConfig: FrontendAppConfig, preparedForm: Form[?], viewModel: ManualAddressViewModel)(
+    implicit request: Request[?], messages: Messages): () => HtmlFormat.Appendable = () =>
     view(preparedForm, viewModel)(request, messages)
 
   protected def get(id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel
@@ -72,7 +72,7 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
   protected def post(name: String, id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel, legalStatus: RegistrationLegalStatus)(
     implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
-      (formWithError: Form[_]) => {
+      (formWithError: Form[?]) => {
         val view = createView(appConfig, formWithError, viewModel)
         Future.successful(BadRequest(view()))
       },

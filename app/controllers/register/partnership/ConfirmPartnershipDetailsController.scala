@@ -117,7 +117,7 @@ class ConfirmPartnershipDetailsController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           (BusinessNameId and PartnershipRegisteredAddressId).retrieve.map {
             case name ~ address =>
               Future.successful(BadRequest(view(

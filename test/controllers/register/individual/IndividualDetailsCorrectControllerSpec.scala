@@ -124,7 +124,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Moc
 
   val view: individualDetailsCorrect = app.injector.instanceOf[individualDetailsCorrect]
 
-  private def viewAsString(form: Form[_] = form) =
+  private def viewAsString(form: Form[?] = form) =
     view(
       form,
       NormalMode,

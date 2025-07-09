@@ -20,7 +20,7 @@
     button_link: components.button_link
 )
 
-@(returnLinkUrl: Call)(implicit request: Request[_], messages: Messages)
+@(returnLinkUrl: Call)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("invlidEmailAddress.title")) {
 

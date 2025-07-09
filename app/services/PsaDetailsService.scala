@@ -44,13 +44,13 @@ trait PsaDetailsService {
   def retrievePsaDataAndGenerateViewModel(psaId: String)
                                          (implicit hc: HeaderCarrier,
                                           executionContext: ExecutionContext,
-                                          request: OptionalDataRequest[_],
+                                          request: OptionalDataRequest[?],
                                           messages: Messages): Future[PsaViewDetailsViewModel]
 
   def retrievePsaDataAndGenerateContactDetailsOnlyViewModel(psaId: String, mode: Mode)
     (implicit hc: HeaderCarrier,
       executionContext: ExecutionContext,
-      request: OptionalDataRequest[_],
+      request: OptionalDataRequest[?],
       messages: Messages): Future[PsaViewDetailsViewModel]
 
   def getUserAnswers(psaId: String, externalId: String)(implicit hc: HeaderCarrier,
@@ -66,14 +66,14 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
   override def retrievePsaDataAndGenerateViewModel(psaId: String)
                                                   (implicit hc: HeaderCarrier,
                                                    executionContext: ExecutionContext,
-                                                   request: OptionalDataRequest[_],
+                                                   request: OptionalDataRequest[?],
                                                    messages: Messages): Future[PsaViewDetailsViewModel] =
     retrievePsaDataFromUserAnswers(psaId, getPsaDetailsViewModel)
 
   override def retrievePsaDataAndGenerateContactDetailsOnlyViewModel(psaId: String, mode: Mode)
     (implicit hc: HeaderCarrier,
       executionContext: ExecutionContext,
-      request: OptionalDataRequest[_],
+      request: OptionalDataRequest[?],
       messages: Messages): Future[PsaViewDetailsViewModel] =
     retrievePsaDataFromUserAnswers(psaId, getPsaContactDetailsOnlyViewModel(psaId))
 
@@ -81,7 +81,7 @@ class PsaDetailServiceImpl @Inject()(subscriptionConnector: SubscriptionConnecto
     psaId: String,
     getViewModel: (UserAnswers, Messages) => PsaViewDetailsViewModel)(implicit hc: HeaderCarrier,
     executionContext: ExecutionContext,
-    request: OptionalDataRequest[_], messages: Messages): Future[PsaViewDetailsViewModel] = {
+    request: OptionalDataRequest[?], messages: Messages): Future[PsaViewDetailsViewModel] = {
     for {
       userAnswers <- getUserAnswers(psaId, request.externalId)
       _ <- userAnswersCacheConnector.upsert(request.externalId, userAnswers.json)

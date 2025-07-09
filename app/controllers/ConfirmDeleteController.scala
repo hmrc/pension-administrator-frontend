@@ -74,7 +74,7 @@ trait ConfirmDeleteController extends FrontendBaseController with I18nSupport wi
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form(vm.name).bindFromRequest().fold(
-      (formWithError: Form[_]) => Future.successful(BadRequest(view(formWithError, vm, mode))),
+      (formWithError: Form[?]) => Future.successful(BadRequest(view(formWithError, vm, mode))),
       {
         case true =>
           id.retrieve.map { details =>

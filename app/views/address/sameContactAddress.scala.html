@@ -29,7 +29,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], viewmodel: SameContactAddressViewModel, countryOptions: CountryOptions)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], viewmodel: SameContactAddressViewModel, countryOptions: CountryOptions)(implicit request: Request[?], messages: Messages)
 
 @hintHtml = {
     <p class="govuk-!-margin-top-0">

@@ -29,7 +29,7 @@
     govukInput: GovukInput,
 )
 
-@(form: Form[_], businessType: String, hint: String, href: Call)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], businessType: String, hint: String, href: Call)(implicit request: Request[?], messages: Messages)
 
 @hintHtml = {
     <p class="govuk-!-margin-top-0">@messages("utr.p1")</p>

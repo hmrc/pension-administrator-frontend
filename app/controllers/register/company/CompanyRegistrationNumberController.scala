@@ -70,7 +70,7 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
     implicit request =>
 
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl()))))),
         value =>
           for {

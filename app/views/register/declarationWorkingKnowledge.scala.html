@@ -30,7 +30,7 @@
     input_yes_no: components.input_yes_no
 )
 
-@(form: Form[_], mode: Mode,psaName: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], mode: Mode,psaName: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = titleWithErrors(form, messages("declarationWorkingKnowledge.title"))) {
 

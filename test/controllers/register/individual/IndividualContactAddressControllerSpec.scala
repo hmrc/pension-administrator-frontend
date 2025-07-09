@@ -74,7 +74,7 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Moc
     .set(AreYouInUKId)(true)
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
 
-  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = form): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 
   "IndividualContactAddress Controller" must {
 

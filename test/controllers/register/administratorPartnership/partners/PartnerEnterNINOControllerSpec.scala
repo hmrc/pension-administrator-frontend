@@ -42,7 +42,7 @@ class PartnerEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
 
   val view: enterNINO = app.injector.instanceOf[enterNINO]
 
-  private def enterNINOView(form: Form[_]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
+  private def enterNINOView(form: Form[?]): String = view(form, viewModel(NormalMode, index))(fakeRequest, messages).toString
 
   "PartnerEnterNINOController" must {
 

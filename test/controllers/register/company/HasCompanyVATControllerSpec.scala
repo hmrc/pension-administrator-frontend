@@ -63,7 +63,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
       view
     )
 
-  private def viewAsString(form: Form[_] = form, mode:Mode = NormalMode): String =
+  private def viewAsString(form: Form[?] = form, mode:Mode = NormalMode): String =
     view(form, viewModel)(fakeRequest, messages).toString
 
   "HasCompanyVATController Controller" must {

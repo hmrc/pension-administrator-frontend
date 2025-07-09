@@ -77,7 +77,7 @@ class PartnerConfirmPreviousAddressControllerSpec extends ControllerSpecBase {
 
   val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
 
-  def viewAsString(form: Form[_] = form): String =
+  def viewAsString(form: Form[?] = form): String =
     view(
       form,
       viewmodel,

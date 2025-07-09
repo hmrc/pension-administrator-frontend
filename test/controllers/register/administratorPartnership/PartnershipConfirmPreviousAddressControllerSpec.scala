@@ -81,7 +81,7 @@ class PartnershipConfirmPreviousAddressControllerSpec extends ControllerSpecBase
   val formProvider: ConfirmPreviousAddressFormProvider = new ConfirmPreviousAddressFormProvider()
   val form: Form[Boolean] = formProvider(Message("confirmPreviousAddress.error", psa))
 
-  def viewAsString(form: Form[_] = form): String =
+  def viewAsString(form: Form[?] = form): String =
     view(
       form,
       viewmodel,

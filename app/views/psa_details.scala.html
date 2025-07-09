@@ -28,7 +28,7 @@
     incomplete_alert: components.incomplete_alert
 )
 
-@(psaDetails: viewmodels.PsaViewDetailsViewModel, nextPage: Call)(implicit request: Request[_], messages: Messages)
+@(psaDetails: viewmodels.PsaViewDetailsViewModel, nextPage: Call)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages(psaDetails.title)) {
 

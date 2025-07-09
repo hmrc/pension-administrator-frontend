@@ -70,7 +70,7 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
       Message("enter.previous.address.heading", directorName)
     )
   private val isUkHintText = false
-  private def viewAsString(form: Form[_] = form) =
+  private def viewAsString(form: Form[?] = form) =
     view(
       form,
       viewModel,

@@ -61,7 +61,7 @@ trait AreYouInUKController extends FrontendBaseController with I18nSupport {
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           Future.successful(BadRequest(view(formWithErrors, viewmodel(mode)))),
         value => {
           dataCacheConnector.save(request.externalId, AreYouInUKId, value).map(cacheMap =>
@@ -72,7 +72,7 @@ trait AreYouInUKController extends FrontendBaseController with I18nSupport {
   def onSubmitIndividual(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData).async {
       implicit request =>
-        form.bindFromRequest().fold((formWithErrors: Form[_]) =>
+        form.bindFromRequest().fold((formWithErrors: Form[?]) =>
           Future.successful(BadRequest(view(formWithErrors, viewmodel(mode)))),
           value => {
             if (!value) {

@@ -61,7 +61,7 @@ class BusinessTypeAreYouInUKControllerSpec extends ControllerSpecBase {
       p2 = Some("areYouInUK.check.provideNonUkAddress")
     )
 
-  private def viewAsString(form: Form[_] = form, mode: Mode = NormalMode) = view(form, viewmodel(mode))(fakeRequest, messages).toString
+  private def viewAsString(form: Form[?] = form, mode: Mode = NormalMode) = view(form, viewmodel(mode))(fakeRequest, messages).toString
 
   "Are You In the  UK Controller" must {
 

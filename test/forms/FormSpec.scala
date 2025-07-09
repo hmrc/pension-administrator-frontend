@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 
 trait FormSpec extends AnyWordSpecLike with OptionValues with Matchers with GuiceOneAppPerSuite {
 
-  def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]) = {
+  def checkForError(form: Form[?], data: Map[String, String], expectedErrors: Seq[FormError]) = {
 
     form.bind(data).fold(
       formWithErrors => {

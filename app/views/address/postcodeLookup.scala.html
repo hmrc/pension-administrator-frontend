@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.implicits._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
-@import models.{Mode}
+@import models.Mode
 @import viewmodels.address.PostcodeLookupViewModel
 @import utils.ViewHelper.titleWithErrors
 
@@ -29,7 +29,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], viewmodel: PostcodeLookupViewModel, mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @link = {
     <a href="@viewmodel.manualInputCall.url" class="govuk-link" target="_self" data-sso="false">

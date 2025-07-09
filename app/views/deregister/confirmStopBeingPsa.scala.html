@@ -31,7 +31,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], psaName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], psaName: String)(implicit request: Request[?], messages: Messages)
 
 @hintHtml = {
     <p class="govuk-!-margin-top-0">@messages("confirmStopBeingPsa.p1")</p>

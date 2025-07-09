@@ -63,7 +63,7 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[_] = form): String =
+  def viewAsString(form: Form[?] = form): String =
     view(form, viewModel, NormalMode)(fakeRequest, messagesApi.preferred(fakeRequest)).toString
 
   "MoreThanTenDirectors Controller" must {

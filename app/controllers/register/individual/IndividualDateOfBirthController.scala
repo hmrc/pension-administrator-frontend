@@ -72,7 +72,7 @@ class IndividualDateOfBirthController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           (AreYouInUKId and IndividualDetailsId and IndividualAddressId).retrieve.map {

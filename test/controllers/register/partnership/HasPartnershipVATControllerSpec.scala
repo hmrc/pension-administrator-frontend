@@ -52,7 +52,7 @@ class HasPartnershipVATControllerSpec extends ControllerWithCommonBehaviour {
       entityName = partnershipName
     )
 
-  private def hasReferenceNumberView(form: Form[_]): String =
+  private def hasReferenceNumberView(form: Form[?]): String =
     view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =

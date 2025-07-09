@@ -34,7 +34,7 @@
     appConfig: FrontendAppConfig
 )
 
-@(form: Form[_], viewmodel: EntityViewModel, mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
+@(form: Form[?], viewmodel: EntityViewModel, mode: Mode)(implicit request: DataRequest[AnyContent], messages: Messages)
 
 @entitiesIncomplete = @{ viewmodel.entities.filterNot(_.isComplete) }
 @entitiesComplete = @{ viewmodel.entities.filter(_.isComplete) }

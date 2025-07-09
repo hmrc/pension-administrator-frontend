@@ -75,7 +75,7 @@ class AddCompanyDirectorsController @Inject()(
         }
         else {
             form.bindFromRequest().fold(
-              (formWithErrors: Form[_]) =>{
+              (formWithErrors: Form[?]) =>{
                 val directorsComplete = directors.filter(_.isComplete)
                 val directorsIncomplete = directors.filterNot(_.isComplete)
                 BadRequest(viewv2(formWithErrors, mode, directorsComplete, directorsIncomplete, psaName()))

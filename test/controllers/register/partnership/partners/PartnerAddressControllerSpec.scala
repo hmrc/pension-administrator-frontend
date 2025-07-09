@@ -133,7 +133,7 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
       view
     )
 
-  private def viewAsString(form: Form[_] = form) =
+  private def viewAsString(form: Form[?] = form) =
     view(
       form,
       viewModel,

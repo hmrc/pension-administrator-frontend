@@ -63,7 +63,7 @@ class PartnershipRegisteredNameControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[_] = form): String = view(form, viewmodel)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = form): String = view(form, viewmodel)(fakeRequest, messages).toString
 
   "CompanyRegisteredName Controller" when {
 

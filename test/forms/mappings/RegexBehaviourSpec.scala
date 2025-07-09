@@ -45,7 +45,7 @@ trait RegexBehaviourSpec extends TableDrivenPropertyChecks {
   }
 
   def formWithRegex(
-                     form: Form[_],
+                     form: Form[?],
                      valid: TableFor1[Map[String, String]],
                      invalid: TableFor1[Map[String, String]]
                    ): Unit = {
