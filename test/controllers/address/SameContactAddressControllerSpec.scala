@@ -162,11 +162,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
       )) {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           when(cacheConnector.save[Address, ContactAddressIdentifier.type](
-            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+            eqTo(ContactAddressIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -202,11 +202,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
         app =>
 
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           when(cacheConnector.save[Address, ContactAddressIdentifier.type](
-            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+            eqTo(ContactAddressIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -217,7 +217,7 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
-          verify(cacheConnector, times(2)).save(any(), any(), any())(any(), any(), any())
+          verify(cacheConnector, times(2)).save(any(), any())(any(), any(), any())
       }
     }
 
@@ -234,11 +234,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
       )) {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           when(cacheConnector.save[Address, ContactAddressIdentifier.type](
-            any(), eqTo(ContactAddressIdentifier), any())(any(), any(), any())
+            eqTo(ContactAddressIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -249,7 +249,7 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
-          verify(cacheConnector, times(2)).save(any(), any(), any())(any(), any(), any())
+          verify(cacheConnector, times(2)).save(any(), any())(any(), any(), any())
       }
     }
 
@@ -265,11 +265,11 @@ class SameContactAddressControllerSpec extends AnyWordSpecLike with Matchers wit
       )) {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           when(cacheConnector.save[TolerantAddress, RegAddressIdentifier.type](
-            any(), eqTo(RegAddressIdentifier), any())(any(), any(), any())
+            eqTo(RegAddressIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(

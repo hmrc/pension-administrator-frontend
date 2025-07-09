@@ -88,7 +88,7 @@ class AddressController @Inject()(authenticate: AuthAction,
             address.postcode, Some(address.country)
           )
           for {
-            _ <- cacheConnector.save(request.externalId, ConfirmCompanyAddressId, tolerantAddress)
+            _ <- cacheConnector.save(ConfirmCompanyAddressId, tolerantAddress)
           } yield {
               Redirect(routes.CompanyRegistrationTaskListController.onPageLoad())
           }

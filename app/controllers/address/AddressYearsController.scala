@@ -61,7 +61,7 @@ trait AddressYearsController extends FrontendBaseController with Retrievals with
       formWithErrors =>
         Future.successful(BadRequest(view(formWithErrors, viewmodel, mode))),
       addressYears =>
-        cacheConnector.save(request.externalId, id, addressYears).flatMap {
+        cacheConnector.save(id, addressYears).flatMap {
           answers =>
             saveChangeFlag(mode, id).map(_ =>
               Redirect(nav.getOrElse(navigator).nextPage(id, mode, UserAnswers(answers)))

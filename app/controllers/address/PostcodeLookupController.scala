@@ -81,7 +81,6 @@ trait PostcodeLookupController extends FrontendBaseController with Retrievals wi
       case Nil => Future.successful(Ok(view(formWithError(Message("error.postcode.noResults", postcode)), viewmodel, mode)))
       case addresses =>
         cacheConnector.save(
-          request.externalId,
           id,
           addresses
         ).map(json => Redirect(navigator.nextPage(id, mode, UserAnswers(json))))

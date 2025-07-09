@@ -56,18 +56,14 @@ class UpdateContactAddressController @Inject()(val appConfig: FrontendAppConfig,
                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData).async { implicit request =>
-    request.user.alreadyEnrolledPsaId match {
-      case Some(psaId) =>
-        psaDetailsService.getUserAnswers(psaId, request.externalId).flatMap{ userAnswersUpdated =>
-          getAddress(userAnswersUpdated) match {
-              case Some(address) =>
-                val ua = userAnswersUpdated.setOrException(UpdateContactAddressId)(true)
-                userAnswersCacheConnector.upsert(request.externalId, ua.json)
-                  .map(_=>Ok(view(address.lines(countryOptions), navigator.nextPage(UpdateContactAddressId, UpdateMode, ua).url)))
-              case None => Future.successful(sessionExpired)
-            }
-        }
-      case None => Future.successful(sessionExpired)
+    psaDetailsService.getUserAnswers.flatMap { userAnswersUpdated =>
+      getAddress(userAnswersUpdated) match {
+        case Some(address) =>
+          val ua = userAnswersUpdated.setOrException(UpdateContactAddressId)(true)
+          userAnswersCacheConnector.upsert(ua.json)
+            .map(_ => Ok(view(address.lines(countryOptions), navigator.nextPage(UpdateContactAddressId, UpdateMode, ua).url)))
+        case None => Future.successful(sessionExpired)
+      }
     }
   }
 

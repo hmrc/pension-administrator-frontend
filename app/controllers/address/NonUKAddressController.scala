@@ -80,14 +80,14 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
         if (address.country.equals("GB")) {
           redirectUkAddress(request.externalId, address, id)
         } else {
-          val cacheMap = dataCacheConnector.save(request.externalId, id, address.toTolerantAddress)
+          val cacheMap = dataCacheConnector.save(id, address.toTolerantAddress)
           val resultAfterRegisterWithoutID = cacheMap.flatMap { _ =>
             countryOptions.regions(address.country) match {
               case RestOfTheWorld =>
-                dataCacheConnector.remove(request.externalId, RegistrationInfoId).map(_=>())
+                dataCacheConnector.remove(RegistrationInfoId).map(_=>())
               case _ =>
                 registrationConnector.registerWithNoIdOrganisation(name, address, legalStatus).flatMap { registrationInfo =>
-                  dataCacheConnector.save(request.externalId, RegistrationInfoId, registrationInfo)
+                  dataCacheConnector.save(RegistrationInfoId, registrationInfo)
                 }.map(_ => ())
             }
           }
@@ -107,7 +107,7 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
                         id: TypedIdentifier[TolerantAddress]
                        )(implicit hc: HeaderCarrier): Future[Result] =
     for {
-      cacheMap <- dataCacheConnector.save(extId, id, address.toTolerantAddress)
+      cacheMap <- dataCacheConnector.save(id, address.toTolerantAddress)
     } yield {
       Redirect(navigator.nextPage(id, NormalMode, UserAnswers(cacheMap)))
     }

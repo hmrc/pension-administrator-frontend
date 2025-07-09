@@ -73,7 +73,7 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
     form.bindFromRequest().fold(
       (formWithError: Form[?]) => Future.successful(BadRequest(view(formWithError, viewModel, mode, isUkHintText))),
       address => {
-        cacheConnector.save(request.externalId, id, address).flatMap { userAnswersJson =>
+        cacheConnector.save(id, address).flatMap { userAnswersJson =>
           saveChangeFlag(mode, id)
             .flatMap {
               _ =>

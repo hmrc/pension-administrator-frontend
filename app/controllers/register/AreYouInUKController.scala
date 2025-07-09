@@ -64,7 +64,7 @@ trait AreYouInUKController extends FrontendBaseController with I18nSupport {
         (formWithErrors: Form[?]) =>
           Future.successful(BadRequest(view(formWithErrors, viewmodel(mode)))),
         value => {
-          dataCacheConnector.save(request.externalId, AreYouInUKId, value).map(cacheMap =>
+          dataCacheConnector.save(AreYouInUKId, value).map(cacheMap =>
             Redirect(navigator.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap))))
         })
   }
@@ -76,10 +76,10 @@ trait AreYouInUKController extends FrontendBaseController with I18nSupport {
           Future.successful(BadRequest(view(formWithErrors, viewmodel(mode)))),
           value => {
             if (!value) {
-              dataCacheConnector.save(request.externalId, AreYouInUKId, value)
+              dataCacheConnector.save(AreYouInUKId, value)
                 .map(_ => Redirect(controllers.register.individual.routes.NonUKAdministratorController.onPageLoad()))
             } else {
-              dataCacheConnector.save(request.externalId, AreYouInUKId, value).map(cacheMap =>
+              dataCacheConnector.save(AreYouInUKId, value).map(cacheMap =>
                 Redirect(navigator.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap))))
             }
           }

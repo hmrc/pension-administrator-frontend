@@ -88,7 +88,7 @@ trait Variations extends FrontendBaseController {
 
     val result = applicableMode.flatMap { _ =>
       findChangeIdNonIndexed(id).fold(findChangeIdIndexed(id))(Some(_))
-        .map(cacheConnector.save(request.externalId, _, value = true))
+        .map(cacheConnector.save(_, value = true))
     }
     result.fold(doNothing)(identity)
   }
@@ -97,7 +97,7 @@ trait Variations extends FrontendBaseController {
                 (implicit request: DataRequest[?]): Future[JsValue] = {
     if (mode == UpdateMode | mode == CheckUpdateMode) {
       userAnswers.get(id).fold(doNothing) { details =>
-        cacheConnector.save(request.externalId, id, details.copy(isNew = true))
+        cacheConnector.save(id, details.copy(isNew = true))
       }
     } else {
       doNothing

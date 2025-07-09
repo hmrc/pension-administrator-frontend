@@ -100,11 +100,11 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
       )) {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           when(cacheConnector.save[Address, PreviousAddressId.type](
-            any(), eqTo(PreviousAddressId), any())(any(), any(), any())
+            eqTo(PreviousAddressId), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -129,11 +129,11 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
       )) {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           when(cacheConnector.save[Address, PreviousAddressId.type](
-            any(), eqTo(PreviousAddressId), any())(any(), any(), any())
+            eqTo(PreviousAddressId), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -164,11 +164,11 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
         app =>
 
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
-            any(), eqTo(FakeIdentifier), any())(any(), any(), any())
+            eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           when(cacheConnector.save[Address, PreviousAddressId.type](
-            any(), eqTo(PreviousAddressId), any())(any(), any(), any())
+            eqTo(PreviousAddressId), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 
           val request = FakeRequest().withFormUrlEncodedBody(
@@ -179,7 +179,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
 
           status(result) mustEqual SEE_OTHER
           redirectLocation(result).value mustEqual "www.example.com"
-          verify(cacheConnector, times(2)).save(any(), any(), any())(any(), any(), any())
+          verify(cacheConnector, times(2)).save(any(), any())(any(), any(), any())
       }
     }
 

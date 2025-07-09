@@ -82,7 +82,7 @@ class CompanyTradingOverAYearController @Inject()(override val appConfig: Fronte
                 Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl()))))),
               value => {
                 for {
-                  newCache <- dataCacheConnector.save(request.externalId, CompanyTradingOverAYearId, value)
+                  newCache <- dataCacheConnector.save(CompanyTradingOverAYearId, value)
                 } yield {
                   Redirect(navigatorV2.nextPage(CompanyTradingOverAYearId, mode, UserAnswers(newCache)))
                 }

@@ -65,7 +65,7 @@ class BusinessTypeController @Inject()(appConfig: FrontendAppConfig,
           Future.successful(BadRequest(view(formWithErrors, mode))),
             value =>
             for {
-              newCache <- dataCacheConnector.save(request.externalId, BusinessTypeId, value)
+              newCache <- dataCacheConnector.save(BusinessTypeId, value)
             } yield {
               Redirect(navigatorV2.nextPage(BusinessTypeId, mode, UserAnswers(newCache)))
             }

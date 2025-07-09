@@ -64,7 +64,7 @@ trait OrganisationNameController extends FrontendBaseController with Retrievals 
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, viewmodel))),
         companyName =>
-          cacheConnector.save(request.externalId, id, companyName).map {
+          cacheConnector.save(id, companyName).map {
             answers =>
               Redirect(navigator.nextPage(id, NormalMode, UserAnswers(answers)))
           }

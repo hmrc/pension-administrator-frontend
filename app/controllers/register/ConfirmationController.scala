@@ -50,7 +50,7 @@ class ConfirmationController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       PsaSubscriptionResponseId.retrieve.map { response =>
-        dataCacheConnector.removeAll(request.externalId).flatMap { _ =>
+        dataCacheConnector.removeAll.flatMap { _ =>
           (psaName(), psaEmail) match {
             case (Some(name), Some(email)) =>
               Future.successful(Ok(view(response.psaId, name, email,isPsaTypeCompany(request.userAnswers))))
@@ -62,7 +62,7 @@ class ConfirmationController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = authenticate {
+  def onSubmit: Action[AnyContent] = authenticate {
     _ => Redirect(controllers.routes.LogoutController.onPageLoad)
   }
 

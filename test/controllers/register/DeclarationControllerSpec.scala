@@ -124,7 +124,7 @@ class DeclarationControllerSpec
             )
           )
 
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+          when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
             .thenReturn(Future.successful(validData))
           when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
             .thenReturn(Future.successful(validPsaResponse))
@@ -153,7 +153,7 @@ class DeclarationControllerSpec
         "on a valid request and not send the email" in {
           when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
             .thenReturn(Future.successful(validPsaResponse))
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+          when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
             .thenReturn(Future.successful(data))
           when(mockKnownFactsRetrieval.retrieve(any())(any()))
             .thenReturn(knownFacts)
@@ -180,7 +180,7 @@ class DeclarationControllerSpec
         "known facts cannot be retrieved" in {
           when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
             .thenReturn(Future.successful(validPsaResponse))
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+          when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
             .thenReturn(Future.successful(data))
           when(mockKnownFactsRetrieval.retrieve(any())(any()))
             .thenReturn(None)
@@ -194,7 +194,7 @@ class DeclarationControllerSpec
         "enrolment is not successful" in {
           when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
             .thenReturn(Future.successful(validPsaResponse))
-          when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+          when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
             .thenReturn(Future.successful(data))
           when(mockKnownFactsRetrieval.retrieve(any())(any()))
             .thenReturn(knownFacts)
@@ -312,7 +312,7 @@ class DeclarationControllerSpec
 
         when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
           .thenReturn(Future.successful(validPsaResponse))
-        when(mockUserAnswersCacheConnector.save(any(), any(), any())(any(), any(), any()))
+        when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(data))
         when(mockKnownFactsRetrieval.retrieve(any())(any()))
           .thenReturn(knownFacts)

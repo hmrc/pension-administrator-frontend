@@ -59,7 +59,7 @@ class SecondPartnerController @Inject()(@utils.annotations.Variations navigator:
         (formWithErrors: Form[?]) =>
           getPartnerName.map(partnerName => BadRequest(view(formWithErrors, partnerName, postCall))),
         value =>
-          userAnswersCacheConnector.save(request.externalId, SecondPartnerId, value).map { cacheMap =>
+          userAnswersCacheConnector.save(SecondPartnerId, value).map { cacheMap =>
             Redirect(navigator.nextPage(SecondPartnerId, UpdateMode, UserAnswers(cacheMap)))
 
         })
@@ -67,16 +67,13 @@ class SecondPartnerController @Inject()(@utils.annotations.Variations navigator:
 
   private def postCall: Call = routes.SecondPartnerController.onSubmit()
 
-  private def getPartnerName(implicit request: OptionalDataRequest[AnyContent]): Future[Option[String]] = {
-    request.user.alreadyEnrolledPsaId.map { psaId =>
-      psaDetailsService.getUserAnswers(psaId, request.externalId).map { userAnswers =>
-        val partnersSeq: Seq[Person] = userAnswers.allPartnersAfterDelete(UpdateMode)
-        if(partnersSeq.size == 1) {
-          Some(partnersSeq.head.name)
-        } else {
-          None
-        }
+  private def getPartnerName(implicit request: OptionalDataRequest[AnyContent]): Future[Option[String]] =
+    psaDetailsService.getUserAnswers.map { userAnswers =>
+      val partnersSeq: Seq[Person] = userAnswers.allPartnersAfterDelete(UpdateMode)
+      if (partnersSeq.size == 1) {
+        Some(partnersSeq.head.name)
+      } else {
+        None
       }
-    }.getOrElse(Future.successful(None))
-  }
+    }
 }

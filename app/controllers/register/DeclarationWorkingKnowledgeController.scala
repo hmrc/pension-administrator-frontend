@@ -64,7 +64,7 @@ class DeclarationWorkingKnowledgeController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode, psaName(), taskListReturnLinkUrl()))),
         value => {
           for {
-            cacheMap <- dataCacheConnector.save(request.externalId, DeclarationWorkingKnowledgeId,
+            cacheMap <- dataCacheConnector.save(DeclarationWorkingKnowledgeId,
               DeclarationWorkingKnowledge.declarationWorkingKnowledge(value, isRegistrationToggleEnabled = true))
           } yield {
               Redirect(navigator.nextPage(DeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap)))

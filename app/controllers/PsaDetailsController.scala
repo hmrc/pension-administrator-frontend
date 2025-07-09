@@ -28,7 +28,7 @@ import utils.annotations.NoSuspendedCheck
 import utils.{Navigator, UserAnswers}
 import views.html.psa_details
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class PsaDetailsController @Inject()(
                                       @utils.annotations.Variations navigator: Navigator,
@@ -43,13 +43,9 @@ class PsaDetailsController @Inject()(
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData).async {
       implicit request =>
-        request.user.alreadyEnrolledPsaId.map { psaId =>
-          psaDetailsService.retrievePsaDataAndGenerateViewModel(psaId).map { psaDetails =>
-            val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
-            Ok(view(psaDetails, nextPage))
-          }
-        }.getOrElse(
-          Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad))
-        )
+        psaDetailsService.retrievePsaDataAndGenerateViewModel.map { psaDetails =>
+          val nextPage = navigator.nextPage(DeclarationChangedId, mode, request.userAnswers.getOrElse(UserAnswers()))
+          Ok(view(psaDetails, nextPage))
+        }
     }
 }

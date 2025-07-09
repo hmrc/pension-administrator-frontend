@@ -80,7 +80,7 @@ class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfi
             Future.successful(BadRequest(view(formWithErrors, viewModel(mode, companyName)))),
           value =>
             for {
-              newCache <- dataCacheConnector.save(request.externalId, HasCompanyCRNId, value)
+              newCache <- dataCacheConnector.save(HasCompanyCRNId, value)
             } yield {
               Redirect(navigatorV2.nextPage(HasCompanyCRNId, mode, UserAnswers(newCache)))
             }

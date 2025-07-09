@@ -52,14 +52,14 @@ class ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
           .businessName(psaName)
           .companyEmail(psaEmail)
 
-      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
+      when(fakeUserAnswersCacheConnector.removeAll(any(), any())) thenReturn Future.successful(Ok)
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data.json))
 
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
-      verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
+      verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any(), any())
     }
 
     "return OK and the correct view for a GET for Individual" in {
@@ -68,14 +68,14 @@ class ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
         .individualDetails(TolerantIndividual(Some("psa"),None,Some("name")))
         .individualEmail(psaEmail)
        reset(fakeUserAnswersCacheConnector)
-      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
+      when(fakeUserAnswersCacheConnector.removeAll(any(), any())) thenReturn Future.successful(Ok)
       val dataRetrievalAction = new FakeDataRetrievalAction(Some(data.json))
 
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsStringOther()
-      verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
+      verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any(), any())
     }
 
     "redirect to Session Expired on a GET when no data exists" in {
@@ -86,7 +86,7 @@ class ConfirmationControllerSpec extends ControllerSpecBase with MockitoSugar {
     }
 
     "redirect to the next page on a successful POST" in {
-      val result = controller().onSubmit(NormalMode)(fakeRequest)
+      val result = controller().onSubmit(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)

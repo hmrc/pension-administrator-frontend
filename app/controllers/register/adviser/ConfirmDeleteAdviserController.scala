@@ -85,7 +85,7 @@ class ConfirmDeleteAdviserController @Inject()(
             (formWithErrors: Form[?]) =>
               Future.successful(BadRequest(view(formWithErrors, viewModel(name), mode))),
             value => {
-              cacheConnector.save(request.externalId, ConfirmDeleteAdviserId, value) flatMap {
+              cacheConnector.save(ConfirmDeleteAdviserId, value) flatMap {
                 cacheMap =>
                   deleteAdviserAndSetChangeFlag(value, UserAnswers(cacheMap), mode) map {
                     updatedCacheMap =>
@@ -115,7 +115,7 @@ class ConfirmDeleteAdviserController @Inject()(
           .asOpt
           .getOrElse(userAnswers)
 
-      cacheConnector.upsert(request.externalId, updatedAnswers.json) flatMap {
+      cacheConnector.upsert(updatedAnswers.json) flatMap {
         _ =>
           saveChangeFlag(mode, ConfirmDeleteAdviserId)
       }

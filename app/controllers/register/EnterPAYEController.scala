@@ -55,7 +55,7 @@ trait EnterPAYEController extends FrontendBaseController with I18nSupport {
       (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel))),
       value =>
-        cacheConnector.save(request.externalId, id, value).map(
+        cacheConnector.save(id, value).map(
           cacheMap =>
             Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
         )
