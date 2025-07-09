@@ -72,7 +72,7 @@ class PartnershipContactAddressControllerSpec
       view
     )
 
-  private def viewAsString(form: Form[_] = form): String =
+  private def viewAsString(form: Form[?] = form): String =
     view(form, viewModel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 
   "PartnershipContactAddress Controller" must {

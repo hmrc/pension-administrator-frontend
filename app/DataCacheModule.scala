@@ -22,7 +22,7 @@ import play.api.Configuration
 import play.api.Environment
 
 class DataCacheModule extends Module {
-  override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
+  override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[?]] = {
     Seq(bind[UserAnswersCacheConnector].to[PensionAdminDataCacheConnector])
   }
 }

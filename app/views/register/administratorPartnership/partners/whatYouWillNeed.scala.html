@@ -24,7 +24,7 @@
     submit_button: components.submit_button
 )
 
-@(href: Call,partnershipName: String)(implicit request: Request[_], messages: Messages)
+@(href: Call,partnershipName: String)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("whatYouWillNeed.partners.heading")) {
 

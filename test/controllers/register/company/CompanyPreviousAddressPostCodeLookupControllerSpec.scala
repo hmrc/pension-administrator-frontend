@@ -61,7 +61,7 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
       view
     )
 
-  private def viewAsString(form: Form[_] = form) =
+  private def viewAsString(form: Form[?] = form) =
     view(
       form,
       viewModel(NormalMode, companyName),

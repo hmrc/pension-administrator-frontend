@@ -23,7 +23,7 @@ import play.api.data.{Form, FormError}
 trait CrnBehaviours extends FormSpec with StringFieldBehaviours with Constraints with CrnMapping {
 
   def formWithCrnField(
-                        form: Form[_],
+                        form: Form[?],
                         fieldName: String,
                         keyCrnRequired: String,
                         keyCrnInvalid: String

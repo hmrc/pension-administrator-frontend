@@ -54,7 +54,7 @@ trait PhoneController extends FrontendBaseController with Retrievals with I18nSu
   def post(id: TypedIdentifier[String], mode: Mode, form: Form[String], viewModel: CommonFormWithHintViewModel)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
-      (formWithErrors: Form[_]) =>
+      (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel, psaName()))),
       value => {
         cacheConnector.save(request.externalId, id, value).flatMap(

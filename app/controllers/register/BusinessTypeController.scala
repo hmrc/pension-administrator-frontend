@@ -61,7 +61,7 @@ class BusinessTypeController @Inject()(appConfig: FrontendAppConfig,
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
             value =>
             for {

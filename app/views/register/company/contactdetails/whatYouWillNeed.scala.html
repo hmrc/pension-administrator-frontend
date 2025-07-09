@@ -23,7 +23,7 @@
     submit_button: components.submit_button
 )
 
-@(companyName: String, returnLinkCompanyName: Option[String])(implicit request: Request[_], messages: Messages)
+@(companyName: String, returnLinkCompanyName: Option[String])(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("contactDetails.whatYouWillNeed.title", companyName)) {
 

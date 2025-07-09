@@ -174,5 +174,5 @@ class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar 
       view
     )
 
-  def viewAsString(form: Form[_] = form): String = view(form, addressViewModel, NormalMode, isUkHintText)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = form): String = view(form, addressViewModel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 }

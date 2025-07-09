@@ -56,7 +56,7 @@ class SecondPartnerController @Inject()(@utils.annotations.Variations navigator:
   def onSubmit(): Action[AnyContent] = (authenticate andThen allowAccess(UpdateMode) andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[?]) =>
           getPartnerName.map(partnerName => BadRequest(view(formWithErrors, partnerName, postCall))),
         value =>
           userAnswersCacheConnector.save(request.externalId, SecondPartnerId, value).map { cacheMap =>

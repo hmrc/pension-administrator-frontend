@@ -23,7 +23,7 @@
     govukSelect : GovukSelect
 )
 
-@(form: Form[_], options: Seq[InputOption], isUkHintText: Boolean)(implicit messages: Messages)
+@(form: Form[?], options: Seq[InputOption], isUkHintText: Boolean)(implicit messages: Messages)
 
 @govukInput(
     Input(

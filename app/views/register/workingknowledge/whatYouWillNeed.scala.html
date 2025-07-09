@@ -19,7 +19,7 @@
     button_link: components.button_link
 )
 
-@(href: Call,psaName: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(href: Call,psaName: Option[String] = None,returnLink: Option[String] = None)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("whatYouWillNeed.workingKnowledge.title")) {
 

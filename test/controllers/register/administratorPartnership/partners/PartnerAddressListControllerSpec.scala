@@ -50,7 +50,7 @@ class PartnerAddressListControllerSpec extends ControllerSpecBase {
     )
 
   val view: addressList = app.injector.instanceOf[addressList]
-  def viewAsString(form: Form[_] = form): String =
+  def viewAsString(form: Form[?] = form): String =
     view(form,
       viewModel,
       NormalMode

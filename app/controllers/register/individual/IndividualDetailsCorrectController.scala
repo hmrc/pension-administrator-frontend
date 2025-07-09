@@ -88,7 +88,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
+        (formWithErrors: Form[?]) => {
           (IndividualDetailsId and IndividualAddressId).retrieve.map {
             case individual ~ address =>
               Future.successful(BadRequest(view(formWithErrors, mode, individual, address, countryOptions)))

@@ -37,7 +37,7 @@ class ErrorHandler @Inject() (
                                       heading: String,
                                       message: String
                                     )(implicit request: RequestHeader): Future[Html] = {
-    def requestImplicit: Request[_] = Request(request, "")
+    def requestImplicit: Request[?] = Request(request, "")
     def messages: Messages = messagesApi.preferred(request)
     Future.successful(errorTemplate(pageTitle, heading, message)(requestImplicit, messages))
   }

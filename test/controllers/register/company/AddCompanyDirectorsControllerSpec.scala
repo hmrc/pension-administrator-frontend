@@ -184,7 +184,7 @@ object AddCompanyDirectorsControllerSpec extends AddCompanyDirectorsControllerSp
   val request: DataRequest[AnyContent] = DataRequest(FakeRequest(), "cacheId",
     PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None), UserAnswers(Json.obj()))
 
-  private def viewAsStringV2(form: Form[_] = form, directorsComplete: Seq[Person] = Nil, directorsInComplete: Seq[Person] = Nil) =
+  private def viewAsStringV2(form: Form[?] = form, directorsComplete: Seq[Person] = Nil, directorsInComplete: Seq[Person] = Nil) =
     viewv2(form, NormalMode, directorsComplete,directorsInComplete, None)(request, messages).toString
 
   // scalastyle:off magic.number

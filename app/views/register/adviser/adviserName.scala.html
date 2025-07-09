@@ -27,7 +27,7 @@
         input_text: components.input_text
 )
 
-@(form: Form[_], mode: Mode, psaNameOpt: Option[String], returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], mode: Mode, psaNameOpt: Option[String], returnLink: Option[String] = None)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = titleWithErrors(form, messages("adviserName.title"))) {
 

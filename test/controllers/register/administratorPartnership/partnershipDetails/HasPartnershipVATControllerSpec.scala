@@ -53,7 +53,7 @@ class HasPartnershipVATControllerSpec extends ControllerWithCommonBehaviour {
       returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     )
 
-  private def hasReferenceNumberView(form: Form[_]): String =
+  private def hasReferenceNumberView(form: Form[?]): String =
     view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =

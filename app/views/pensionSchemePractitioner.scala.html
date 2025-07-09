@@ -21,7 +21,7 @@
     appConfig: FrontendAppConfig
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[?], messages: Messages)
 
 @continueTpss() = {<a id="continueTpssLink" class="govuk-link" href="@appConfig.tpssUrl">@messages("pensionSchemePractitioner.link")</a>}
 

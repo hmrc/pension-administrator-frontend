@@ -19,7 +19,7 @@
     button_link: components.button_link
 )
 
-@(psaNameOpt: Option[String], isWorkingKnowldge:Boolean, href: Call)(implicit request: Request[_], messages: Messages)
+@(psaNameOpt: Option[String], isWorkingKnowldge:Boolean, href: Call)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("declaration.variations.title")) {
 

@@ -66,7 +66,7 @@ trait DOBController extends FrontendBaseController with I18nSupport with Variati
                                            (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     form.bindFromRequest().fold(
-      (formWithErrors: Form[_]) =>
+      (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel))),
       value =>
         cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>

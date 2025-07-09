@@ -53,7 +53,7 @@ trait HasReferenceNumberController extends FrontendBaseController with Retrieval
   def post(id: TypedIdentifier[Boolean], mode: Mode, form: Form[Boolean], viewModel: CommonFormWithHintViewModel)
           (implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
-      (formWithErrors: Form[_]) =>
+      (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel))),
       value => {
         dataCacheConnector.save(request.externalId, id, value).map{cacheMap =>

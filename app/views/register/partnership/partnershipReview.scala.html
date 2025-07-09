@@ -24,7 +24,7 @@
     submit_button: components.submit_button
 )
 
-@(partnershipName: String, partners: Seq[String])(implicit request: Request[_], messages: Messages)
+@(partnershipName: String, partners: Seq[String])(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("partnershipReview.title")) {
 

@@ -29,7 +29,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], viewmodel: ManualAddressViewModel, mode: Mode, isUkHintText: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], viewmodel: ManualAddressViewModel, mode: Mode, isUkHintText: Boolean)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = titleWithErrors(form, viewmodel.title)) {
 

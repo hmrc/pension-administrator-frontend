@@ -46,7 +46,7 @@ class ICacheConnector @Inject()(
     modify(cacheId, _.set(id)(value))
   }
 
-  def remove[I <: TypedIdentifier[_]](cacheId: String, id: I
+  def remove[I <: TypedIdentifier[?]](cacheId: String, id: I
                                      )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[JsValue] = {
     modify(cacheId, _.remove(id))
   }

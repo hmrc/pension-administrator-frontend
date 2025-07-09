@@ -43,7 +43,7 @@ trait FakeUserAnswersCacheConnector extends UserAnswersCacheConnector with Match
     Future.successful(Json.obj(id.toString -> Json.toJson(value)))
   }
 
-  def remove[I <: TypedIdentifier[_]](cacheId: String, id: I)
+  def remove[I <: TypedIdentifier[?]](cacheId: String, id: I)
                                      (implicit
                                       executionContext: ExecutionContext,
                                       hc: HeaderCarrier
@@ -69,7 +69,7 @@ trait FakeUserAnswersCacheConnector extends UserAnswersCacheConnector with Match
     data should contain(id.toString -> Json.toJson(value))
   }
 
-  def verifyRemoved(id: TypedIdentifier[_]): Unit = {
+  def verifyRemoved(id: TypedIdentifier[?]): Unit = {
     removed should contain(id.toString)
   }
 
@@ -77,7 +77,7 @@ trait FakeUserAnswersCacheConnector extends UserAnswersCacheConnector with Match
     isAllDataRemoved shouldBe true
   }
 
-  def verifyNot(id: TypedIdentifier[_]): Unit = {
+  def verifyNot(id: TypedIdentifier[?]): Unit = {
     data should not contain key(id.toString)
   }
 

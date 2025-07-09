@@ -63,7 +63,7 @@ class CompanyEnterVATControllerSpec extends ControllerSpecBase {
       returnLink =  Some(routes.CompanyRegistrationTaskListController.onPageLoad().url)
     )
 
-  def viewAsString(form: Form[_] = form): String = view(
+  def viewAsString(form: Form[?] = form): String = view(
     form,
     viewModel
   )(fakeRequest, messages).toString

@@ -36,7 +36,7 @@ case class PSAStartEvent(externalId: String, userType: UserType, existingUser: B
 
 object PSAStartEvent {
 
-  def sendEvent(auditService: AuditService)(implicit request: OptionalDataRequest[_], executionContext: ExecutionContext): Unit = {
+  def sendEvent(auditService: AuditService)(implicit request: OptionalDataRequest[?], executionContext: ExecutionContext): Unit = {
 
     val event = PSAStartEvent(request.externalId, request.user.userType, request.user.isExistingPSA)
 

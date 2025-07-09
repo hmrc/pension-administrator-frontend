@@ -54,7 +54,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
   private val payeNumber = "123AB456"
 
-  private def viewAsString(form: Form[_] = form): String = view(
+  private def viewAsString(form: Form[?] = form): String = view(
     form,
     viewModel
   )(fakeRequest, messagesApi.preferred(fakeRequest)).toString

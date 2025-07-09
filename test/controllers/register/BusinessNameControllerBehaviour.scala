@@ -112,7 +112,7 @@ trait BusinessNameControllerBehaviour extends ControllerSpecBase {
 
   }
 
-  def viewAsString(form: Form[_],
+  def viewAsString(form: Form[?],
                    answers: UserAnswers, href: Call = onwardRoute): String =
     view(form, businessType(answers), href)(fakeRequest, messages).toString()
 

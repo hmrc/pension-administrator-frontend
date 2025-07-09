@@ -48,7 +48,7 @@ class AdviserPhoneControllerSpec extends ControllerWithCommonBehaviour {
     view
   )
 
-  private def phoneView(form: Form[_]): String = view(form, viewModel(NormalMode), None)(fakeRequest, messages).toString
+  private def phoneView(form: Form[?]): String = view(form, viewModel(NormalMode), None)(fakeRequest, messages).toString
 
   "AdviserPhoneController" must {
 

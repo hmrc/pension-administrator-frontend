@@ -117,6 +117,6 @@ class StillUseAdviserControllerSpec extends ControllerSpecBase {
       view
     )
 
-  private def viewAsString(form: Form[_] = form) = view(
+  private def viewAsString(form: Form[?] = form) = view(
     form, UpdateMode, Some(psaName), displayReturnLink = true, personWithWorkingKnowledgeName)(fakeRequest, messages).toString
 }

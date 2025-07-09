@@ -27,7 +27,7 @@
     submit_button: components.submit_button
 )
 
-@(form: Form[_], businessType: String, href: Call,returnLink: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], businessType: String, href: Call,returnLink: Option[String] = None)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = titleWithErrors(form, messages("businessName.title", businessType))) {
 

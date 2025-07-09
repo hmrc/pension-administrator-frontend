@@ -27,7 +27,7 @@
     submit_button: components.submit_button
 )
 
-@(index: Int, fullName: String, mode:Mode)(implicit request: Request[_], messages: Messages)
+@(index: Int, fullName: String, mode:Mode)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("confirmDeleteDirector.title")) {
 

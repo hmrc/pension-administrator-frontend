@@ -145,7 +145,7 @@ trait PersonNameControllerBehaviour extends ControllerSpecBase {
   def testForm(): Form[PersonName] =
     new PersonNameFormProvider()()
 
-  def viewAsString(form: Form[_], viewModel: CommonFormWithHintViewModel): String =
+  def viewAsString(form: Form[?], viewModel: CommonFormWithHintViewModel): String =
     personNameView(form, viewModel, NormalMode)(fakeRequest, messages).toString()
 
 }

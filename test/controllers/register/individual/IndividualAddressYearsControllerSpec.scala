@@ -64,7 +64,7 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
 
   val view: addressYears = app.injector.instanceOf[addressYears]
 
-  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = form): String = view(form, viewmodel, NormalMode)(fakeRequest, messages).toString
 
   val validJson: JsValue = Json.obj(AreYouInUKId.toString -> true)
 

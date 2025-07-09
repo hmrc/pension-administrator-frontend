@@ -44,7 +44,7 @@ class InvalidEmailAddressControllerSpec extends ControllerSpecBase with MockitoS
     view
   )(global)
 
-  private def viewAsString(redirectUrl: Call, fakeRequest: FakeRequest[_], messages: Messages): String =
+  private def viewAsString(redirectUrl: Call, fakeRequest: FakeRequest[?], messages: Messages): String =
     view(redirectUrl)(fakeRequest, messages).toString
 
   "InvalidEmailAddressController" should {

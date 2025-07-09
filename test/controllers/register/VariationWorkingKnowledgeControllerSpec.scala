@@ -61,7 +61,7 @@ class VariationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[_] = form): String = view(form, None, UpdateMode)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = form): String = view(form, None, UpdateMode)(fakeRequest, messages).toString
 
   "VariationWorkingKnowledge Controller" must {
 

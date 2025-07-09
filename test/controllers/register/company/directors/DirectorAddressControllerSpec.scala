@@ -90,7 +90,7 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
     returnLink = Some(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad().url)
   )
 
-  private def viewAsString(form: Form[_] = form) =
+  private def viewAsString(form: Form[?] = form) =
     view(
       form,
       viewModel,

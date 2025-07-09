@@ -50,7 +50,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
   import PsaDetailsServiceSpec._
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val request: OptionalDataRequest[_] = OptionalDataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, false, Some("test Psa id")),
+  implicit val request: OptionalDataRequest[?] = OptionalDataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, false, Some("test Psa id")),
     Some(UserAnswers(Json.obj()).set(DeclarationChangedId)(true).asOpt.value))
 
   override def beforeEach(): Unit = {

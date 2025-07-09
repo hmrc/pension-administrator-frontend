@@ -58,8 +58,8 @@ class CompanyRegisteredAddressController @Inject()(
 
   protected val form: Form[Address] = formProvider()
 
-  protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[_], viewModel: ManualAddressViewModel)(
-    implicit request: Request[_], messages: Messages): () => HtmlFormat.Appendable = () =>
+  protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[?], viewModel: ManualAddressViewModel)(
+    implicit request: Request[?], messages: Messages): () => HtmlFormat.Appendable = () =>
     view(preparedForm, viewModel)(request, messages)
 
   private def addressViewModel(companyName: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(

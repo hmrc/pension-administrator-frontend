@@ -120,5 +120,5 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
       view
     )
 
-  def viewAsString(form: Form[_] = form): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = form): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 }

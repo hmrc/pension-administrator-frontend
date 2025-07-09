@@ -129,7 +129,7 @@ trait UTRControllerBehaviour extends ControllerSpecBase {
   def testForm(): Form[String] =
     new UTRFormProvider()()
 
-  def viewAsString(form: Form[_], entity: String, href: Call): String =
+  def viewAsString(form: Form[?], entity: String, href: Call): String =
     view(form, entity, hint, href)(fakeRequest, messages).toString()
 
 }

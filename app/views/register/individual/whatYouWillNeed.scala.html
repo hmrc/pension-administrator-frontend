@@ -23,7 +23,7 @@
     submit_button: components.submit_button
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("whatYouWillNeed.title")) {
 

@@ -34,7 +34,7 @@
     appConfig: FrontendAppConfig
 )
 
-@(form: Form[_], mode: Mode, directorsComplete: Seq[Person],directorsIncomplete: Seq[Person], psaNameOpt: Option[String])(implicit request: DataRequest[AnyContent], messages: Messages)
+@(form: Form[?], mode: Mode, directorsComplete: Seq[Person],directorsIncomplete: Seq[Person], psaNameOpt: Option[String])(implicit request: DataRequest[AnyContent], messages: Messages)
 
 @directors = @{ directorsComplete ++ directorsIncomplete }
 
