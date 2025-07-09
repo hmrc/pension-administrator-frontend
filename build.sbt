@@ -13,7 +13,7 @@ lazy val appName: String = "pension-administrator-frontend"
     .settings(scalaSettings *)
     .settings(defaultSettings() *)
     .settings(inConfig(Test)(testSettings) *)
-    .settings(scalaVersion := "2.13.12")
+    .settings(scalaVersion := "2.13.16")
     .settings(
       scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
       scalacOptions += "-Wconf:src=routes/.*:s"

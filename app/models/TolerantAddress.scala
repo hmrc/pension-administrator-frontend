@@ -30,23 +30,6 @@ case class TolerantAddress(addressLine1: Option[String],
                            postcode: Option[String],
                            countryOpt: Option[String]) {
 
-  @Deprecated
-  def lines: Seq[String] = {
-    Seq(
-      this.addressLine1,
-      this.addressLine2,
-      this.addressLine3,
-      this.addressLine4,
-      this.countryOpt,
-      this.postcode
-    ).flatten(s => s)
-  }
-
-  @Deprecated
-  def print: String = {
-    lines.mkString(", ")
-  }
-
   def lines(countryOptions: CountryOptions): Seq[String] = {
     Seq(
       this.addressLine1,
