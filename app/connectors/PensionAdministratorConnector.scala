@@ -19,10 +19,10 @@ package connectors
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import config.FrontendAppConfig
 import models.register.PsaSubscriptionResponse
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status.OK
-import play.api.libs.json._
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import play.api.libs.json.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.{HttpResponseHelper, UserAnswers}
@@ -43,17 +43,16 @@ trait PensionAdministratorConnector {
 @Singleton
 class PensionAdministratorConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends PensionAdministratorConnector
-    with HttpResponseHelper {
-
-  private val logger = Logger(classOf[PensionAdministratorConnectorImpl])
+    with HttpResponseHelper
+    with Logging {
 
   def registerPsa(answers: UserAnswers)
-                 (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] = {
-    val url = url"${config.registerPsaUrl}"
-
-    httpV2Client.post(url).withBody(answers.json).execute[HttpResponse] map {
-      response =>
-
+                 (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[PsaSubscriptionResponse] =
+    httpV2Client
+      .post(url"${config.registerPsaUrl}")
+      .withBody(answers.json)
+      .execute[HttpResponse]
+      .map { response =>
         response.status match {
           case OK =>
             Json.parse(response.body).validate[PsaSubscriptionResponse] match {
@@ -64,15 +63,14 @@ class PensionAdministratorConnectorImpl @Inject()(httpV2Client: HttpClientV2, co
             }
           case _ =>
             logger.error("Unable to register PSA")
-            handleErrorResponse("POST", url.toString)(response)
+            handleErrorResponse("POST", url"${config.registerPsaUrl}".toString)(response)
         }
     }
-  }
 
   def updatePsa(answers: UserAnswers)
-               (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] = {
-    val url = url"${config.updatePsaSelfUrl}"
-
-    httpV2Client.post(url).withBody(answers.json).execute[HttpResponse]
-  }
+               (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[HttpResponse] =
+    httpV2Client
+      .post(url"${config.updatePsaSelfUrl}")
+      .withBody(answers.json)
+      .execute[HttpResponse]
 }

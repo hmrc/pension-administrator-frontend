@@ -16,7 +16,7 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import config.FrontendAppConfig
 import models.Deregistration
 import org.scalatest.flatspec.AsyncFlatSpec
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper{
 
-  import DeregistrationConnectorSpec._
+  import DeregistrationConnectorSpec.*
   override protected def portConfigKey: String = "microservice.services.pension-administrator.port"
 
   "Delete" should "return successful following a successful deletion" in {
@@ -47,7 +47,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
     val connector = injector.instanceOf[DeregistrationConnector]
 
-    connector.stopBeingPSA(psaId).map {
+    connector.stopBeingPSA.map {
       _ => server.findAll(deleteRequestedFor(urlEqualTo(deregisterSelfUrl))).size() shouldBe 1
     }
   }
@@ -65,7 +65,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 
     val connector = injector.instanceOf[DeregistrationConnector]
     recoverToSucceededIf[BadRequestException] {
-      connector.stopBeingPSA(psaId)
+      connector.stopBeingPSA
     }
   }
 
@@ -134,8 +134,8 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
   "Delete" should "return FORBIDDEN with PSA_ACTIVE_RELATIONSHIP_EXISTS when PsaActiveRelationshipExistsException is thrown" in {
     val mockHttpClient = injector.instanceOf[HttpClientV2]
     val mockConfig = injector.instanceOf[FrontendAppConfig]
-    val connector = new DeregistrationConnectorImpl(httpV2Client = mockHttpClient, config = mockConfig) {
-      override def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val connector: DeregistrationConnector = new DeregistrationConnector(httpV2Client = mockHttpClient, config = mockConfig) {
+      override def stopBeingPSA(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
         Future.failed(new PsaActiveRelationshipExistsException("PSA active relationship exists"))
           .recover {
             case _: PsaActiveRelationshipExistsException =>
@@ -144,7 +144,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
       }
     }
 
-    connector.stopBeingPSA(psaId).map { response =>
+    connector.stopBeingPSA.map { response =>
       response.status shouldBe FORBIDDEN
       response.body shouldBe PSA_ACTIVE_RELATIONSHIP_EXISTS
     }
@@ -155,7 +155,6 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
 object DeregistrationConnectorSpec {
   implicit val hc : HeaderCarrier = HeaderCarrier()
 
-  private val psaId = "238DAJFASS"
   private val deregisterSelfUrl = s"/pension-administrator/deregister-psa-self"
   private val canRegisterUrl = s"/pension-administrator/can-deregister-self"
 

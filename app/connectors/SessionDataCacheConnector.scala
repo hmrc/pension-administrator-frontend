@@ -32,14 +32,18 @@ class SessionDataCacheConnector @Inject()(
                                            config: FrontendAppConfig,
                                            httpV2Client: HttpClientV2
                                          ) {
-  private def url() = url"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/session-data-self"
+  private def url = url"${config.pensionAdministratorUrl}/pension-administrator/journey-cache/session-data-self"
 
-  def fetch()
-           (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[JsValue]] = {
+  def fetch(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Option[JsValue]] =
 
-    httpV2Client.get(url()).execute[HttpResponse]
-      .recoverWith(mapExceptionsToStatus)
-      .map{ response =>
+    httpV2Client
+      .get(url)
+      .execute[HttpResponse]
+      .recoverWith {
+        case _: NotFoundException =>
+          Future.successful(HttpResponse(NOT_FOUND, "Not found"))
+      }
+      .map { response =>
         response.status match {
           case NOT_FOUND =>
             None
@@ -50,18 +54,13 @@ class SessionDataCacheConnector @Inject()(
             throw new HttpException(response.body, response.status)
         }
       }
-  }
 
-  def removeAll()
-               (implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] = {
-    httpV2Client.delete(url()).execute[HttpResponse].map { _ =>
-      Ok
-    }
-  }
-
-  private def mapExceptionsToStatus: PartialFunction[Throwable, Future[HttpResponse]] = {
-    case _: NotFoundException =>
-      Future.successful(HttpResponse(NOT_FOUND, "Not found"))
-  }
+  def removeAll(implicit ec: ExecutionContext, headerCarrier: HeaderCarrier): Future[Result] =
+    httpV2Client
+      .delete(url)
+      .execute[HttpResponse]
+      .map { _ =>
+        Ok
+      }
 
 }

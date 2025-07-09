@@ -16,11 +16,11 @@
 
 package connectors
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.SendEmailRequest
 import models.enumeration.JourneyType
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status.*
 import play.api.libs.json.Json
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
@@ -40,55 +40,48 @@ case object EmailSent extends EmailStatus
 
 case object EmailNotSent extends EmailStatus
 
-@ImplementedBy(classOf[EmailConnectorImpl])
-trait EmailConnector {
-
-  def sendEmail(emailAddress: String, templateName: String, templateParams: Map[String, String], psaId: PsaId,
-                journeyType : JourneyType)
-               (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus]
-}
-
-class EmailConnectorImpl @Inject()(
-                                    appConfig: FrontendAppConfig,
-                                    httpV2Client: HttpClientV2,
-                                    crypto: ApplicationCrypto
-                                  ) extends EmailConnector {
-
-  private val logger = Logger(classOf[EmailConnectorImpl])
+class EmailConnector @Inject()(
+                                appConfig: FrontendAppConfig,
+                                httpV2Client: HttpClientV2,
+                                crypto: ApplicationCrypto
+                              ) extends Logging {
 
   private def callBackUrl(psaId: PsaId, journeyType: JourneyType): String = {
     val encryptedPsaId = URLEncoder.encode(crypto.QueryParameterCrypto.encrypt(PlainText(psaId.value)).value, StandardCharsets.UTF_8.toString)
     appConfig.psaEmailCallback(encryptedPsaId, journeyType.toString)
   }
 
-  override def sendEmail(
-                          emailAddress: String,
-                          templateName: String,
-                          templateParams: Map[String, String],
-                          psaId: PsaId,
-                          journeyType: JourneyType
-                        )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus] = {
-    val emailServiceUrl = url"${appConfig.emailUrl}"
-
-    val sendEmailReq = SendEmailRequest(List(emailAddress), templateName, templateParams, appConfig.emailSendForce, callBackUrl(psaId, journeyType))
-
-    val jsonData = Json.toJson(sendEmailReq)
-
-    (httpV2Client.post(emailServiceUrl).withBody(jsonData).execute[HttpResponse] map { response =>
-      response.status match {
-        case ACCEPTED =>
-          EmailSent
-        case status =>
-          logger.warn(s"Sending Email failed with response status $status")
-          EmailNotSent
+  def sendEmail(
+                 emailAddress: String,
+                 templateName: String,
+                 templateParams: Map[String, String],
+                 psaId: PsaId,
+                 journeyType: JourneyType
+               )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[EmailStatus] =
+    httpV2Client
+      .post(url"${appConfig.emailUrl}")
+      .withBody(Json.toJson(SendEmailRequest(
+        to         = List(emailAddress),
+        templateId = templateName,
+        parameters = templateParams,
+        force      = appConfig.emailSendForce,
+        eventUrl   = callBackUrl(psaId, journeyType)
+      )))
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case ACCEPTED =>
+            EmailSent
+          case status =>
+            logger.warn(s"Sending Email failed with response status $status")
+            EmailNotSent
+        }
       }
-    }).recoverWith(logExceptions)
-  }
+      .recoverWith {
+        case t: Throwable =>
+          logger.warn("Unable to connect to Email Service", t)
+          Future.successful(EmailNotSent)
+      }
 
-  private def logExceptions: PartialFunction[Throwable, Future[EmailStatus]] = {
-    case t: Throwable =>
-      logger.warn("Unable to connect to Email Service", t)
-      Future.successful(EmailNotSent)
-  }
 }
 

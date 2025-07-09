@@ -20,7 +20,7 @@ import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import models.*
 import models.registrationnoid.RegistrationNoIdIndividualRequest
-import play.api.Logger
+import play.api.Logging
 import play.api.http.Status.*
 import play.api.libs.json.*
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
@@ -76,9 +76,8 @@ trait RegistrationConnector {
 @Singleton
 class RegistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends RegistrationConnector
-    with HttpResponseHelper {
-
-  private val logger = Logger(classOf[RegistrationConnectorImpl])
+    with HttpResponseHelper
+    with Logging {
 
   private val readsSapNumber: Reads[String] = (JsPath \ "sapNumber").read[String]
 
@@ -91,46 +90,50 @@ class RegistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: Fr
                                            ec: ExecutionContext
                                          ): Future[OrganizationRegistrationStatus] = {
 
-    val url = url"${config.registerWithIdOrganisationUrl}"
-
     val body = Json.obj(
       "utr" -> utr,
       "organisationName" -> organisation.organisationName,
       "organisationType" -> organisation.organisationType.toString
     )
 
-    httpV2Client.post(url).withBody(body).execute[HttpResponse] map { response =>
-      response.status match {
-        case OK =>
-          val json = Json.parse(response.body)
-          json.validate[OrganizationRegisterWithIdResponse] match {
-            case JsSuccess(value, _) =>
-              OrganizationRegistration(
-                response = value,
-                info = registrationInfo(
-                  json = json,
-                  legalStatus = legalStatus,
-                  customerType = RegistrationCustomerType.fromAddress(value.address),
-                  idType = Some(RegistrationIdType.UTR), idNumber = Some(utr),
-                  noIdentifier = false
+    httpV2Client
+      .post(url"${config.registerWithIdOrganisationUrl}")
+      .withBody(body)
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK =>
+            val json = Json.parse(response.body)
+            json.validate[OrganizationRegisterWithIdResponse] match {
+              case JsSuccess(value, _) =>
+                OrganizationRegistration(
+                  response = value,
+                  info = registrationInfo(
+                    json = json,
+                    legalStatus = legalStatus,
+                    customerType = RegistrationCustomerType.fromAddress(value.address),
+                    idType = Some(RegistrationIdType.UTR), idNumber = Some(utr),
+                    noIdentifier = false
+                  )
                 )
-              )
-            case JsError(errors) =>
-              throw JsResultException(errors)
-          }
-        case NOT_FOUND => OrganisationNotFound
-        case _ =>
-          handleErrorResponse("POST", url.toString)(response)
-      }
+              case JsError(errors) =>
+                throw JsResultException(errors)
+            }
+          case NOT_FOUND =>
+            OrganisationNotFound
+          case _ =>
+            handleErrorResponse("POST", url"${config.registerWithIdOrganisationUrl}".toString)(response)
+        }
 
-    } andThen {
-      case Failure(ex: NotFoundException) =>
-        logger.warn("Organisation not found with registerWithIdOrganisation", ex)
-        ex
-      case Failure(ex) =>
-        logger.error("Unable to connect to registerWithIdOrganisation", ex)
-        ex
-    }
+      }
+      .andThen {
+        case Failure(ex: NotFoundException) =>
+          logger.warn(s"Organisation not found with registerWithIdOrganisation: ${ex.message}")
+          ex
+        case Failure(ex) =>
+          logger.error("Unable to connect to registerWithIdOrganisation")
+          ex
+      }
   }
 
   override def registerWithIdIndividual(
@@ -146,18 +149,18 @@ class RegistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: Fr
       response =>
         response.status match {
           case OK =>
-            val json = Json.parse(response.body)
+            val json: JsValue = Json.parse(response.body)
 
             json.validate[IndividualRegisterWithIdResponse] match {
               case JsSuccess(value, _) =>
                 IndividualRegistration(
                   response = value,
-                  info = registrationInfo(
-                    json = json,
-                    legalStatus = RegistrationLegalStatus.Individual,
+                  info     = registrationInfo(
+                    json         = json,
+                    legalStatus  = RegistrationLegalStatus.Individual,
                     customerType = RegistrationCustomerType.fromAddress(value.address),
-                    idType = Some(RegistrationIdType.Nino),
-                    idNumber = Some(nino.nino),
+                    idType       = Some(RegistrationIdType.Nino),
+                    idNumber     = Some(nino.nino),
                     noIdentifier = false
                   )
                 )

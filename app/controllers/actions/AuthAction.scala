@@ -99,7 +99,7 @@ protected class FullAuthentication @Inject()(override val authConnector: AuthCon
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     (enrolments.getEnrolment("HMRC-PODS-ORG"), enrolments.getEnrolment("HMRC-PODSPP-ORG")) match {
       case (Some(_), Some(_)) =>
-        sessionDataCacheConnector.fetch().flatMap { optionJsValue =>
+        sessionDataCacheConnector.fetch.flatMap { optionJsValue =>
           optionJsValue.map(UserAnswers.apply).flatMap(_.get(AdministratorOrPractitionerId)) match {
             case None => Future.successful(Some(Redirect(config.administratorOrPractitionerUrl)))
             case Some(Practitioner) =>

@@ -56,7 +56,7 @@ class SessionDataCacheConnectorSpec
           )
       )
 
-      connector.fetch() map {
+      connector.fetch.map {
         _ mustBe Some(Json.parse(validResponse("administrator")))
       }
     }
@@ -70,7 +70,7 @@ class SessionDataCacheConnectorSpec
           )
       )
 
-      connector.fetch() map {
+      connector.fetch.map {
         _ mustBe Some(jsonAOP(AdministratorOrPractitioner.Practitioner))
       }
     }
@@ -84,7 +84,7 @@ class SessionDataCacheConnectorSpec
           )
       )
 
-      connector.fetch() map {
+      connector.fetch.map {
         _ mustBe None
       }
     }
@@ -99,7 +99,7 @@ class SessionDataCacheConnectorSpec
       )
 
         recoverToSucceededIf[HttpException] {
-          connector.fetch()
+          connector.fetch
         }
     }
   }

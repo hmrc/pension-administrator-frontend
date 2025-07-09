@@ -16,78 +16,73 @@
 
 package connectors
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.Deregistration
-import play.api.Logger
-import play.api.http.Status._
+import play.api.Logging
+import play.api.http.Status.*
 import play.api.libs.json.{JsError, JsResultException, JsSuccess}
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import utils.{HttpResponseHelper, PsaActiveRelationshipExistsException}
 import utils.PSAConstants.PSA_ACTIVE_RELATIONSHIP_EXISTS
+import utils.{HttpResponseHelper, PsaActiveRelationshipExistsException}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Failure
 
-@ImplementedBy(classOf[DeregistrationConnectorImpl])
-trait DeregistrationConnector {
-  def stopBeingPSA(psaId: String)
-                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
+class DeregistrationConnector @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
+  extends HttpResponseHelper
+    with Logging {
 
-  def canDeRegister
-                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration]
-}
-
-class DeregistrationConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
-  extends DeregistrationConnector
-    with HttpResponseHelper {
-
-  private val logger = Logger(classOf[DeregistrationConnectorImpl])
-
-  override def stopBeingPSA(psaId: String)
-                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def stopBeingPSA(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
 
     val deregisterUrl = url"${config.deregisterPsaSelfUrl}"
 
-    (httpV2Client.delete(deregisterUrl).execute[HttpResponse] map {
-      response =>
+    httpV2Client
+      .delete(deregisterUrl)
+      .execute[HttpResponse]
+      .map { response =>
         response.status match {
           case NO_CONTENT =>
             response
           case _ =>
             handleErrorResponse("DELETE", deregisterUrl.toString)(response)
         }
-    } recover {
-      case _: PsaActiveRelationshipExistsException =>
-        HttpResponse(FORBIDDEN, PSA_ACTIVE_RELATIONSHIP_EXISTS)
-    }).andThen({
-      case Failure(t: Throwable) =>
-        logger.warn("Unable to deregister PSA", t)
-    })
+      }
+      .recover {
+        case _: PsaActiveRelationshipExistsException =>
+          HttpResponse(FORBIDDEN, PSA_ACTIVE_RELATIONSHIP_EXISTS)
+      }
+      .andThen {
+        case Failure(t: Throwable) =>
+          logger.warn("Unable to deregister PSA", t)
+      }
   }
 
-  override def canDeRegister
-                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = {
+  def canDeRegister(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = {
 
     val url = url"${config.canDeRegisterPsaUrl}"
 
-    httpV2Client.get(url).execute[HttpResponse].map {
-      response =>
+    httpV2Client
+      .get(url)
+      .execute[HttpResponse]
+      .map { response =>
         response.status match {
-          case OK => response.json.validate[Deregistration] match {
-            case JsSuccess(value, _) =>
-              value
-            case JsError(errors) =>
-              throw JsResultException(errors)
-          }
+          case OK =>
+            response.json.validate[Deregistration] match {
+              case JsSuccess(value, _) =>
+                value
+              case JsError(errors) =>
+                throw JsResultException(errors)
+            }
           case _ =>
             handleErrorResponse("GET", url.toString)(response)
         }
-    } andThen {
-      case Failure(t: Throwable) =>
-        logger.warn("Unable to get the response from can de register api", t)
-    }
+      }
+      .andThen {
+        case Failure(t: Throwable) =>
+          logger.warn("Unable to get the response from can de register api", t)
+      }
   }
 }

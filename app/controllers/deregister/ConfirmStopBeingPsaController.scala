@@ -81,7 +81,7 @@ class ConfirmStopBeingPsaController @Inject()(
                   value => {
                     if (value) {
                       for {
-                        response <- deregistrationConnector.stopBeingPSA(psaId)
+                        response <- deregistrationConnector.stopBeingPSA
                         result <- if (response.status == FORBIDDEN && response.body.contains(PSA_ACTIVE_RELATIONSHIP_EXISTS)) {
                           Future.successful(Redirect(controllers.deregister.routes.CannotDeregisterController.onPageLoad()))
                         } else {

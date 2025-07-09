@@ -33,6 +33,7 @@ import play.api.mvc.{AnyContent, AnyContentAsFormUrlEncoded, Call, RequestHeader
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.domain.PsaId
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.PSAConstants.PSA_ACTIVE_RELATIONSHIP_EXISTS
 import views.html.deregister.confirmStopBeingPsa
@@ -143,9 +144,11 @@ class ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase with ScalaFut
 
     "redirect to CannotDeregisterController if response status is FORBIDDEN and body contains PSA_ACTIVE_RELATIONSHIP_EXISTS" in {
       val request = FakeRequest().withFormUrlEncodedBody("value" -> "true")
+      val mockHttpClient = injector.instanceOf[HttpClientV2]
+      val mockConfig = injector.instanceOf[FrontendAppConfig]
 
-      val mockDeregistrationConnector = new DeregistrationConnector {
-        override def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+      val mockDeregistrationConnector = new DeregistrationConnector(httpV2Client = mockHttpClient, config = mockConfig) {
+        override def stopBeingPSA(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
           Future.successful(HttpResponse(FORBIDDEN, Json.obj("reason" -> PSA_ACTIVE_RELATIONSHIP_EXISTS).toString))
 
         override def canDeRegister(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] =
@@ -204,12 +207,17 @@ object ConfirmStopBeingPsaControllerSpec extends ControllerSpecBase {
                          rh: RequestHeader): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT, ""))
   }
 
-  private def fakeDeregistrationConnector(deregistration: Deregistration): DeregistrationConnector = new DeregistrationConnector {
-    override def stopBeingPSA(psaId: String)(
-      implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = Future.successful(HttpResponse(NO_CONTENT, ""))
+  val mockHttpClient: HttpClientV2 = injector.instanceOf[HttpClientV2]
+  val mockConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
-    override def canDeRegister(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] = Future.successful(deregistration)
-  }
+  private def fakeDeregistrationConnector(deregistration: Deregistration): DeregistrationConnector =
+    new DeregistrationConnector(httpV2Client = mockHttpClient, config = mockConfig) {
+      override def stopBeingPSA(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+        Future.successful(HttpResponse(NO_CONTENT, ""))
+
+      override def canDeRegister(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Deregistration] =
+        Future.successful(deregistration)
+    }
 
   private def fakeMinimalPsaConnector(minimalPsaDetailsIndividual: MinimalPSA): MinimalPsaConnector =
     new MinimalPsaConnector {
