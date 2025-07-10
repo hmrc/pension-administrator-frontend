@@ -56,7 +56,7 @@ class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConf
   def onClickAgree(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen
     getData andThen allowDeclaration(mode) andThen requireData).async {
     implicit request =>
-      dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, value = true).map { cacheMap =>
+      dataCacheConnector.save(DeclarationFitAndProperId, value = true).map { cacheMap =>
         Redirect(navigator.nextPage(DeclarationFitAndProperId, NormalMode, UserAnswers(cacheMap)))
       }
   }

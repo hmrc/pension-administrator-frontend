@@ -33,7 +33,7 @@ class DataRetrievalActionImpl @Inject()(val dataCacheConnector: UserAnswersCache
   override protected def transform[A](request: AuthenticatedRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    dataCacheConnector.fetch(request.externalId).map {
+    dataCacheConnector.fetch.map {
       case None =>
         OptionalDataRequest(request.request, request.externalId, request.user, None)
       case Some(data) =>

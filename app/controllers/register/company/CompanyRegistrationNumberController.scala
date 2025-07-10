@@ -74,7 +74,7 @@ class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppCo
           Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl()))))),
         value =>
           for {
-            newCache <- cacheConnector.save(request.externalId, CompanyRegistrationNumberId, value)
+            newCache <- cacheConnector.save(CompanyRegistrationNumberId, value)
           } yield {
             Redirect(navigatorV2.nextPage(CompanyRegistrationNumberId, mode, UserAnswers(newCache)))
           }

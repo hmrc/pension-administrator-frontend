@@ -144,7 +144,6 @@ class AddressYearsControllerSpec extends SpecBase with Matchers with OptionValue
       )) {
         app =>
           when(cacheConnector.save[AddressYears, FakeIdentifier.type](
-            any(),
             eqTo(FakeIdentifier), any())(any(), any(), any())
           ) thenReturn Future.successful(Json.obj())
 

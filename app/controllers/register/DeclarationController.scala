@@ -80,7 +80,6 @@ class DeclarationController @Inject()(
     (authenticate andThen allowAccess(mode) andThen getData andThen allowDeclaration(mode) andThen requireData).async {
       implicit request =>
         dataCacheConnector.save(
-          cacheId = request.externalId,
           id      = DeclarationId,
           value   = true
         ) flatMap { cacheMap =>
@@ -97,7 +96,7 @@ class DeclarationController @Inject()(
 
           (for {
             psaResponse <- pensionAdministratorConnector.registerPsa(answers)
-            cacheMap    <- dataCacheConnector.save(request.externalId, PsaSubscriptionResponseId, psaResponse)
+            cacheMap    <- dataCacheConnector.save(PsaSubscriptionResponseId, psaResponse)
             _           <- enrol(psaResponse.psaId)
             emailStatus <- sendEmail(psaResponse.psaId)
           } yield {

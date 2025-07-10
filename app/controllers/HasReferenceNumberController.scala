@@ -56,7 +56,7 @@ trait HasReferenceNumberController extends FrontendBaseController with Retrieval
       (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel))),
       value => {
-        dataCacheConnector.save(request.externalId, id, value).map{cacheMap =>
+        dataCacheConnector.save(id, value).map{cacheMap =>
           Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))}
       }
     )

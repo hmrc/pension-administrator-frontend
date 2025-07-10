@@ -57,7 +57,7 @@ trait EnterUTRController extends FrontendBaseController with Retrievals with I18
       (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewmodel))),
       value =>
-        cacheConnector.save(request.externalId, id, value.copy(isEditable = true)).flatMap(
+        cacheConnector.save(id, value.copy(isEditable = true)).flatMap(
           cacheMap =>
             saveChangeFlag(mode, id).map { _ =>
               Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))

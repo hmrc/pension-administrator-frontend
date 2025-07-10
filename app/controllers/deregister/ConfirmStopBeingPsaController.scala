@@ -87,7 +87,7 @@ class ConfirmStopBeingPsaController @Inject()(
                         } else {
                           for {
                             _ <- enrolments.deEnrol(request.user.groupIdentifier, psaId, request.externalId)
-                            _ <- dataCacheConnector.removeAll(request.externalId)
+                            _ <- dataCacheConnector.removeAll
                           } yield {
                             Redirect(controllers.deregister.routes.SuccessfulDeregistrationController.onPageLoad())
                           }

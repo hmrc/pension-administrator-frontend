@@ -72,7 +72,7 @@ class CompanyEnterVATController @Inject()(val appConfig: FrontendAppConfig,
           Future.successful(BadRequest(view(errors, viewModel(mode, Some(companyTaskListUrl()))))),
         value =>
           for {
-            _ <- cacheConnector.save(request.externalId, EnterVATId, value)
+            _ <- cacheConnector.save(EnterVATId, value)
           } yield {
             Redirect(companydetails.routes.CheckYourAnswersController.onPageLoad())
           }

@@ -55,7 +55,7 @@ trait ReasonController extends FrontendBaseController with Retrievals with I18nS
       (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewmodel))),
       reason => {
-        dataCacheConnector.save(request.externalId, id, reason).map { cacheMap =>
+        dataCacheConnector.save(id, reason).map { cacheMap =>
           Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
         }
       }

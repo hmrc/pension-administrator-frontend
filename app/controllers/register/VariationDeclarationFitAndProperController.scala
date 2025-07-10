@@ -74,7 +74,7 @@ class VariationDeclarationFitAndProperController @Inject()(val appConfig: Fronte
           displayReturnLink
         ))),
         success => {
-          dataCacheConnector.save(request.externalId, DeclarationFitAndProperId, success).map { json =>
+          dataCacheConnector.save(DeclarationFitAndProperId, success).map { json =>
             Redirect(navigator.nextPage(DeclarationFitAndProperId, mode, UserAnswers(json)))
           }
         }

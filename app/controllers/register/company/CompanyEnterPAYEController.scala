@@ -74,7 +74,7 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
           Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl()))))),
         value =>
           for {
-            newCache <- cacheConnector.save(request.externalId, EnterPAYEId, value)
+            newCache <- cacheConnector.save(EnterPAYEId, value)
           } yield {
               Redirect(navigatorV2.nextPage(EnterPAYEId, mode, UserAnswers(newCache)))
           }

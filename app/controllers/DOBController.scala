@@ -69,7 +69,7 @@ trait DOBController extends FrontendBaseController with I18nSupport with Variati
       (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel))),
       value =>
-        cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
+        cacheConnector.save(id, value).flatMap { cacheMap =>
           Future.successful(Redirect(navigator.nextPage(id, viewModel.mode, UserAnswers(cacheMap))))
         }
     )

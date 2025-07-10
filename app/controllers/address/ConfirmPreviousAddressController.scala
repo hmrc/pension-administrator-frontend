@@ -70,13 +70,13 @@ trait ConfirmPreviousAddressController extends FrontendBaseController with Retri
 
     form(viewModel.psaName)(implicitly).bindFromRequest().fold(
       formWithError => Future.successful(BadRequest(view(formWithError, viewModel, countryOptions))),
-      { case true => dataCacheConnector.save(request.externalId, id, true).flatMap { _ =>
-        dataCacheConnector.save(request.externalId, contactId, viewModel.address.toAddress.get).map {
+      { case true => dataCacheConnector.save(id, true).flatMap { _ =>
+        dataCacheConnector.save(contactId, viewModel.address.toAddress.get).map {
           cacheMap =>
             Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap)))
         }
       }
-      case _ => dataCacheConnector.save(request.externalId, id, false).flatMap { cacheMap =>
+      case _ => dataCacheConnector.save(id, false).flatMap { cacheMap =>
         Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(cacheMap))))
       }
       }

@@ -130,7 +130,7 @@ class PostcodeLookupControllerSpec extends AnyWordSpecLike with Matchers with Mo
         Seq(address)
       }
 
-      when(cacheConnector.save(eqTo("cacheId"), eqTo(FakeIdentifier), eqTo(Seq(address)))(any(), any(), any())) thenReturn Future.successful {
+      when(cacheConnector.save(eqTo(FakeIdentifier), eqTo(Seq(address)))(any(), any(), any())) thenReturn Future.successful {
         Json.obj()
       }
 

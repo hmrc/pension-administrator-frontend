@@ -87,7 +87,7 @@ class AddressController @Inject()(authenticate: AuthAction,
             address.postcode,
             Some(address.country)
           )
-          cacheConnector.save(request.externalId, PartnershipRegisteredAddressId, tolerantAddress).map { newCache =>
+          cacheConnector.save(PartnershipRegisteredAddressId, tolerantAddress).map { newCache =>
             Redirect(navigator.nextPage(ConfirmPartnershipDetailsId, NormalMode, UserAnswers(newCache)))
           }
         }

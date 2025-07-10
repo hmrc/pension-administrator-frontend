@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import connectors.cache.ICacheConnector
+import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import org.scalatest._
 import org.scalatest.matchers.must.Matchers
@@ -28,7 +28,7 @@ import play.api.mvc.Results._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import utils.WireMockHelper
 
-class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with OptionValues with RecoverMethods {
+class UserAnswersCacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with OptionValues with RecoverMethods {
 
   private object FakeIdentifier extends TypedIdentifier[String] {
     override def toString: String = "fake-identifier"
@@ -38,21 +38,21 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private def url(id: String): String = s"/pension-administrator/journey-cache/psa/$id"
+  private def url: String = "/pension-administrator/journey-cache/psa-data-self"
 
-  private lazy val connector = injector.instanceOf[ICacheConnector]
+  private lazy val connector = injector.instanceOf[UserAnswersCacheConnector]
 
   ".fetch" must {
 
     "return `None` when the server returns a 404" in {
       server.stubFor(
-        get(urlEqualTo(url("foo")))
+        get(urlEqualTo(url))
           .willReturn(
             notFound
           )
       )
 
-      connector.fetch("foo") map {
+      connector.fetch.map {
         result =>
           result mustNot be(defined)
       }
@@ -60,13 +60,13 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
 
     "return data when the server returns 200" in {
       server.stubFor(
-        get(urlEqualTo(url("foo")))
+        get(urlEqualTo(url))
           .willReturn(
             ok("{}")
           )
       )
 
-      connector.fetch("foo") map {
+      connector.fetch.map {
         result =>
           result.value mustEqual Json.obj()
       }
@@ -75,14 +75,14 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
     "return a failed future on upstream error" in {
 
       server.stubFor(
-        get(urlEqualTo(url("foo")))
+        get(urlEqualTo(url))
           .willReturn(
             serverError
           )
       )
 
       recoverToExceptionIf[HttpException] {
-        connector.fetch("foo")
+        connector.fetch
       } map {
         _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
       }
@@ -101,21 +101,21 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
       val value = Json.stringify(json)
 
       server.stubFor(
-        get(urlEqualTo(url("foo")))
+        get(urlEqualTo(url))
           .willReturn(
             notFound
           )
       )
 
       server.stubFor(
-        post(urlEqualTo(url("foo")))
+        post(urlEqualTo(url))
           .withRequestBody(equalTo(value))
           .willReturn(
             ok
           )
       )
 
-      connector.save("foo", FakeIdentifier, "foobar") map {
+      connector.save(FakeIdentifier, "foobar") map {
         _ mustEqual json
       }
     }
@@ -135,21 +135,21 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
       val updatedValue = Json.stringify(updatedJson)
 
       server.stubFor(
-        get(urlEqualTo(url("foo")))
+        get(urlEqualTo(url))
           .willReturn(
             ok(value)
           )
       )
 
       server.stubFor(
-        post(urlEqualTo(url("foo")))
+        post(urlEqualTo(url))
           .withRequestBody(equalTo(updatedValue))
           .willReturn(
             ok
           )
       )
 
-      connector.save("foo", FakeIdentifier, "foobar") map {
+      connector.save(FakeIdentifier, "foobar") map {
         _ mustEqual updatedJson
       }
     }
@@ -168,21 +168,21 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
       val updatedValue = Json.stringify(updatedJson)
 
       server.stubFor(
-        get(urlEqualTo(url("foo")))
+        get(urlEqualTo(url))
           .willReturn(
             ok(value)
           )
       )
 
       server.stubFor(
-        post(urlEqualTo(url("foo")))
+        post(urlEqualTo(url))
           .withRequestBody(equalTo(updatedValue))
           .willReturn(
             ok
           )
       )
 
-      connector.save("foo", FakeIdentifier, "foobar") map {
+      connector.save(FakeIdentifier, "foobar") map {
         _ mustEqual updatedJson
       }
     }
@@ -201,14 +201,14 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
       val updatedValue = Json.stringify(updatedJson)
 
       server.stubFor(
-        get(urlEqualTo(url("foo")))
+        get(urlEqualTo(url))
           .willReturn(
             ok(value)
           )
       )
 
       server.stubFor(
-        post(urlEqualTo(url("foo")))
+        post(urlEqualTo(url))
           .withRequestBody(equalTo(updatedValue))
           .willReturn(
             serverError
@@ -216,7 +216,7 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
       )
 
       recoverToExceptionIf[HttpException] {
-        connector.save("foo", FakeIdentifier, "foobar")
+        connector.save(FakeIdentifier, "foobar")
       } map {
         _.responseCode mustEqual Status.INTERNAL_SERVER_ERROR
       }
@@ -239,21 +239,21 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
       val updatedValue = Json.stringify(updatedJson)
 
       server.stubFor(
-        get(urlEqualTo(url("foo")))
+        get(urlEqualTo(url))
           .willReturn(
             ok(value)
           )
       )
 
       server.stubFor(
-        post(urlEqualTo(url("foo")))
+        post(urlEqualTo(url))
           .withRequestBody(equalTo(updatedValue))
           .willReturn(
             ok
           )
       )
 
-      connector.remove("foo", FakeIdentifier) map {
+      connector.remove(FakeIdentifier) map {
         _ mustEqual updatedJson
       }
     }
@@ -261,11 +261,11 @@ class ICacheConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelpe
 
   ".removeAll" must {
     "remove all the data" in {
-      server.stubFor(delete(urlEqualTo(url("foo"))).
+      server.stubFor(delete(urlEqualTo(url)).
         willReturn(ok)
       )
 
-      connector.removeAll("foo").map {
+      connector.removeAll.map {
         _ mustEqual Ok
       }
     }

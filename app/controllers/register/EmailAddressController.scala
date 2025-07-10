@@ -57,7 +57,7 @@ trait EmailAddressController extends FrontendBaseController with Retrievals with
       (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel, psaName()))),
       value =>
-        cacheConnector.save(request.externalId, id, value).flatMap(
+        cacheConnector.save(id, value).flatMap(
           cacheMap =>
             saveChangeFlag(mode, id).map { _ =>
               Redirect(nav.getOrElse(navigator).nextPage(id, mode, UserAnswers(cacheMap)))

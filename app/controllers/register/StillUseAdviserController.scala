@@ -77,7 +77,7 @@ class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
             displayReturnLink,
             adviserName()))),
         value => {
-          cacheConnector.save(request.externalId, VariationStillDeclarationWorkingKnowledgeId, value).map(cacheMap =>
+          cacheConnector.save(VariationStillDeclarationWorkingKnowledgeId, value).map(cacheMap =>
             Redirect(navigator.nextPage(VariationStillDeclarationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
         }
       )

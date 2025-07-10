@@ -23,7 +23,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 case class FakeMinimalPsaConnector(minimalPSA: MinimalPSA) extends MinimalPsaConnector {
-  @annotation.nowarn
   override def getMinimalPsaDetails()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = Future.successful(minimalPSA)
 }
 

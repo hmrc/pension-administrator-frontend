@@ -66,7 +66,7 @@ trait PersonNameController extends FrontendBaseController with Variations {
       (formWithErrors: Form[?]) =>
         Future.successful(BadRequest(view(formWithErrors, viewModel, mode))),
       value =>
-        cacheConnector.save(request.externalId, id, value).flatMap { cacheMap =>
+        cacheConnector.save(id, value).flatMap { cacheMap =>
           setNewFlag(id, mode, UserAnswers(cacheMap)).map { updatedUserAnswers =>
             Redirect(navigator.nextPage(id, mode, UserAnswers(updatedUserAnswers)))
           }

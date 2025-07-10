@@ -64,18 +64,18 @@ class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
           Future.successful(BadRequest(view(errors))),
         isBusiness => {
           for {
-            _ <- cache.save(request.externalId, RegisterAsBusinessId, isBusiness)
+            _ <- cache.save(RegisterAsBusinessId, isBusiness)
             _ = PSAStartEvent.sendEvent(auditService)
           } yield {
-            isBusiness match {
-              case false => Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())
-              case true =>
-                val businessType = request.userAnswers.flatMap(_.get(BusinessTypeId))
-                val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
-                (businessType, customerType) match {
-                  case (Some(_), Some(UK)) => Redirect(routes.ContinueWithRegistrationController.onPageLoad())
-                  case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
-                }
+            if (isBusiness) {
+              val businessType = request.userAnswers.flatMap(_.get(BusinessTypeId))
+              val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
+              (businessType, customerType) match {
+                case (Some(_), Some(UK)) => Redirect(routes.ContinueWithRegistrationController.onPageLoad())
+                case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+              }
+            } else {
+              Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())
             }
           }
         }

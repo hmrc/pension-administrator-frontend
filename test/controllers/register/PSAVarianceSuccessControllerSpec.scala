@@ -46,13 +46,13 @@ class PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoSu
 
     "return OK and the correct view for a GET" in {
 
-      when(fakeUserAnswersCacheConnector.removeAll(any())(any(), any())) thenReturn Future.successful(Ok)
+      when(fakeUserAnswersCacheConnector.removeAll(any(), any())) thenReturn Future.successful(Ok)
 
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString(individual)
-      verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any())(any(), any())
+      verify(fakeUserAnswersCacheConnector, times(1)).removeAll(any(), any())
     }
 
     "redirect to Session Expired on a GET when no data exists" in {

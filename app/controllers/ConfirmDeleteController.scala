@@ -79,7 +79,7 @@ trait ConfirmDeleteController extends FrontendBaseController with I18nSupport wi
         case true =>
           id.retrieve.map { details =>
             saveChangeFlags(id, mode).flatMap { _ =>
-              cacheConnector.save(request.externalId, id, details.copy(isDeleted = true)) map { _ =>
+              cacheConnector.save(id, details.copy(isDeleted = true)) map { _ =>
                 Redirect(postUrl)
               }
             }

@@ -64,7 +64,7 @@ class NonUKBusinessTypeController @Inject()(appConfig: FrontendAppConfig,
         (formWithErrors: Form[?]) =>
           Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          dataCacheConnector.save(request.externalId, NonUKBusinessTypeId, value).map(cacheMap =>
+          dataCacheConnector.save(NonUKBusinessTypeId, value).map(cacheMap =>
             Redirect(navigator.nextPage(NonUKBusinessTypeId, NormalMode, UserAnswers(cacheMap))))
       )
   }

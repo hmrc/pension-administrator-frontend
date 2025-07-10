@@ -79,14 +79,14 @@ class VariationWorkingKnowledgeController @Inject()(appConfig: FrontendAppConfig
         value => {
           val resultOfSaveDeclarationFlag = mode match {
             case CheckUpdateMode =>
-              cacheConnector.save(request.externalId, PAInDeclarationJourneyId, true)
+              cacheConnector.save(PAInDeclarationJourneyId, true)
             case _ =>
               Future.successful(())
           }
 
           resultOfSaveDeclarationFlag.flatMap(_ =>
-            cacheConnector.save(request.externalId, IsNewAdviserId, !value).flatMap(_ =>
-              cacheConnector.save(request.externalId, VariationWorkingKnowledgeId, value).flatMap(cacheMap =>
+            cacheConnector.save(IsNewAdviserId, !value).flatMap(_ =>
+              cacheConnector.save(VariationWorkingKnowledgeId, value).flatMap(cacheMap =>
                 saveChangeFlag(mode, VariationWorkingKnowledgeId).map(_ =>
                   Redirect(navigator.nextPage(VariationWorkingKnowledgeId, mode, UserAnswers(cacheMap))))
               )

@@ -62,7 +62,7 @@ class CompanyPhoneController @Inject()(@RegisterCompany val navigator: Navigator
           Future.successful(BadRequest(view(formWithErrors, viewModel(mode, Some(companyTaskListUrl())), psaName()))),
         value => {
           for {
-            _ <- cacheConnector.save(request.externalId, CompanyPhoneId, value)
+            _ <- cacheConnector.save(CompanyPhoneId, value)
             _ <- saveChangeFlag(mode, CompanyPhoneId)
           } yield {
               Redirect(contactdetails.routes.CheckYourAnswersController.onPageLoad())
