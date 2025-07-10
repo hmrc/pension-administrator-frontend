@@ -16,14 +16,11 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
 import forms.PhoneFormProvider
 import identifiers.register.partnership.partners.{PartnerNameId, PartnerPhoneId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,10 +29,10 @@ import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.phone
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnerPhoneController @Inject()(@PartnershipPartner val navigator: Navigator,
-                                       val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        @NoRLSCheck val allowAccess: AllowAccessActionProvider,

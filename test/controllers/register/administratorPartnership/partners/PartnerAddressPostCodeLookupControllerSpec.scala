@@ -40,7 +40,6 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   import PartnerAddressPostCodeLookupControllerSpec._
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getRequiredData) = new PartnerAddressPostCodeLookupController(
-    frontendAppConfig,
     FakeUserAnswersCacheConnector,
     fakeAddressLookupConnector,
     new FakeNavigator(desiredRoute = onwardRoute),

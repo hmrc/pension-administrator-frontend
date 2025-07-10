@@ -35,7 +35,6 @@ class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
   val view: email = app.injector.instanceOf[email]
   private def controller(dataRetrievalAction: DataRetrievalAction) = new AdviserEmailController(
     new FakeNavigator(onwardRoute),
-    frontendAppConfig,
     FakeUserAnswersCacheConnector,
     FakeAuthAction,
     FakeAllowAccessProvider(config = frontendAppConfig),

@@ -17,7 +17,6 @@
 package controllers.register.adviser
 
 import audit.AuditService
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
@@ -38,7 +37,7 @@ import views.html.address.manualAddress
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class AdviserAddressController @Inject()(override val appConfig: FrontendAppConfig,
+class AdviserAddressController @Inject()(
                                          override val cacheConnector: UserAnswersCacheConnector,
                                          @Adviser override val navigator: Navigator,
                                          @NoRLSCheck override val allowAccess: AllowAccessActionProvider,

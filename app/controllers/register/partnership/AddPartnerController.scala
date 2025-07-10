@@ -17,14 +17,11 @@
 package controllers.register.partnership
 
 import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.AddEntityController
 import forms.register.AddEntityFormProvider
 import identifiers.register.partnership.AddPartnersId
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -35,11 +32,11 @@ import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{EntityViewModel, Message, Person}
 import views.html.register.addEntity
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AddPartnerController @Inject()(
-                                      override val appConfig: FrontendAppConfig,
-                                      override val cacheConnector: UserAnswersCacheConnector,
+                                      appConfig: FrontendAppConfig,
                                       @PartnershipPartner override val navigator: Navigator,
                                       authenticate: AuthAction,
                                       @NoRLSCheck allowAccess: AllowAccessActionProvider,
@@ -65,7 +62,7 @@ class AddPartnerController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       val partners: Seq[Person] = request.userAnswers.allPartnersAfterDelete(mode)
-      get(AddPartnersId, form, viewmodel(partners, mode), mode)
+      get(form, viewmodel(partners, mode), mode)
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {

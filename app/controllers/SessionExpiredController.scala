@@ -16,16 +16,15 @@
 
 package controllers
 
-import config.FrontendAppConfig
-import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.session_expired
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class SessionExpiredController @Inject()(val appConfig: FrontendAppConfig,
+class SessionExpiredController @Inject()(
                                          override val messagesApi: MessagesApi,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: session_expired

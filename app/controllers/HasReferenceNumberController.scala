@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.Mode
@@ -34,8 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 trait HasReferenceNumberController extends FrontendBaseController with Retrievals with I18nSupport {
 
   implicit val executionContext: ExecutionContext
-
-  protected def appConfig: FrontendAppConfig
 
   protected val dataCacheConnector: UserAnswersCacheConnector
 

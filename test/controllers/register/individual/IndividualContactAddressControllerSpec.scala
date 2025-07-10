@@ -55,7 +55,6 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Moc
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IndividualContactAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

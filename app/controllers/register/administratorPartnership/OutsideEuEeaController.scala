@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.BusinessNameId
@@ -31,15 +30,16 @@ import views.html.register.outsideEuEea
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
-                                       authenticate: AuthAction,
-                                       allowAccess: AllowAccessActionProvider,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       countryOptions: CountryOptions,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val view: outsideEuEea
-                                      ) extends FrontendBaseController with I18nSupport with Retrievals {
+class OutsideEuEeaController @Inject()(
+                                        authenticate: AuthAction,
+                                        allowAccess: AllowAccessActionProvider,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        countryOptions: CountryOptions,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        val view: outsideEuEea
+                                      )
+  extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

@@ -17,10 +17,9 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import controllers.register.company.routes
-import identifiers.register.company._
 import identifiers.register._
+import identifiers.register.company._
 import identifiers.{Identifier, UpdateContactAddressId}
 import models.InternationalRegion._
 import models._
@@ -30,8 +29,7 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions,
-                                           appConfig: FrontendAppConfig) extends Navigator {
+class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Navigator {
 
 //  scalastyle:off cyclomatic.complexity
 // scalastyle:off method.length

@@ -59,13 +59,13 @@ class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new VariationNoLongerFitAndProperController(
-      frontendAppConfig,
       FakeAuthAction(UserType.Individual),
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       FakeUserAnswersCacheConnector,
-      controllerComponents, view
+      controllerComponents,
+      view
     )
 
   private def viewAsString(userAnswers: UserAnswers) =

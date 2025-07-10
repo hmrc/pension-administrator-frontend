@@ -18,7 +18,6 @@ package controllers.register.individual
 
 import controllers.ControllerSpecBase
 import controllers.actions._
-import controllers.register.individual.CheckYourAnswersController.postUrl
 import models._
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
@@ -126,7 +125,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
   private def controller(getData: DataRetrievalAction = getIndividual): CheckYourAnswersController = {
     new CheckYourAnswersController(
-      appConfig = frontendAppConfig,
       authenticate = FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       getData = getData,
@@ -150,7 +148,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
     contentAsString(result) mustBe cyaView(
       sections,
-      postUrl,
+      Call(POST, "/register-as-pension-scheme-administrator/register/individual/check-your-answers"),
       None,
       NormalMode,
       isComplete

@@ -18,7 +18,6 @@ package controllers.address
 
 import base.SpecBase
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.FakeAllowAccessProvider
 import forms.address.AddressListFormProvider
@@ -177,7 +176,6 @@ object AddressListControllerSpec extends SpecBase {
   val view: addressList = app.injector.instanceOf[addressList]
 
   class TestController @Inject()(
-                                  override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   val view: addressList
                                 )(implicit val executionContext: ExecutionContext) extends AddressListController {

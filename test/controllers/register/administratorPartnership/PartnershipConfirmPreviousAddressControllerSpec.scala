@@ -65,7 +65,6 @@ class PartnershipConfirmPreviousAddressControllerSpec extends ControllerSpecBase
 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new PartnershipConfirmPreviousAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

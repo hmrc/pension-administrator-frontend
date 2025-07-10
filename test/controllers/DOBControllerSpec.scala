@@ -17,9 +17,8 @@
 package controllers
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.actions.FakeAllowAccessProvider
+import controllers.actions.{AllowAccessActionProvider, FakeAllowAccessProvider}
 import forms.DOBFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -148,7 +147,6 @@ class DOBControllerSpec extends ControllerSpecBase {
 
   def controller(base: ControllerSpecBase): DOBController = {
     new DOBController {
-      override def appConfig: FrontendAppConfig = base.frontendAppConfig
 
       override def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
 
@@ -156,7 +154,7 @@ class DOBControllerSpec extends ControllerSpecBase {
 
       override def messagesApi: MessagesApi = base.messagesApi
 
-      override val allowAccess = FakeAllowAccessProvider(config = base.frontendAppConfig)
+      override val allowAccess: AllowAccessActionProvider = FakeAllowAccessProvider(config = base.frontendAppConfig)
 
       override protected def controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
 

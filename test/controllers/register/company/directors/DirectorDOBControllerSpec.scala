@@ -57,7 +57,6 @@ class DirectorDOBControllerSpec extends ControllerSpecBase {
                         dataRetrievalAction: DataRetrievalAction
                       )(connector: UserAnswersCacheConnector, nav: Navigator): DirectorDOBController =
     new DirectorDOBController(
-      appConfig = base.frontendAppConfig,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,

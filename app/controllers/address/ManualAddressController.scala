@@ -16,7 +16,6 @@
 
 package controllers.address
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import controllers.{Retrievals, Variations}
@@ -34,8 +33,6 @@ import views.html.address.manualAddress
 import scala.concurrent.Future
 
 trait ManualAddressController extends FrontendBaseController with Retrievals with I18nSupport with Variations {
-
-  protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 

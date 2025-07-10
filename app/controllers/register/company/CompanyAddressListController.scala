@@ -17,14 +17,12 @@
 package controllers.register.company
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
-import identifiers.register.company.{CompanyAddressListId, CompanyContactAddressPostCodeLookupId,
-  CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
+import identifiers.register.company.{CompanyAddressListId, CompanyContactAddressPostCodeLookupId, CompanyPreviousAddressId, CompanyPreviousAddressPostCodeLookupId}
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
@@ -37,7 +35,7 @@ import views.html.address.addressList
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyAddressListController @Inject()(override val appConfig: FrontendAppConfig,
+class CompanyAddressListController @Inject()(
                                              override val cacheConnector: UserAnswersCacheConnector,
                                              @RegisterCompany override val navigator: Navigator,
                                              @RegisterContactV2 val navigatorV2: Navigator,

@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
@@ -35,7 +34,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorNoNINOReasonController @Inject()(@CompanyDirector val navigator: Navigator,
-                                               val appConfig: FrontendAppConfig,
                                                val dataCacheConnector: UserAnswersCacheConnector,
                                                authenticate: AuthAction,
                                                val allowAccess: AllowAccessActionProvider,

@@ -16,14 +16,11 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
 import forms.NINOReasonFormProvider
 import identifiers.register.partnership.partners.{PartnerNameId, PartnerNoNINOReasonId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -34,10 +31,10 @@ import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnerNoNINOReasonController @Inject()(@PartnershipPartner val navigator: Navigator,
-                                              val appConfig: FrontendAppConfig,
                                               val dataCacheConnector: UserAnswersCacheConnector,
                                               authenticate: AuthAction,
                                               @NoRLSCheck val allowAccess: AllowAccessActionProvider,

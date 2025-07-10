@@ -33,9 +33,8 @@ import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
-import utils.{AddressHelper, Navigator, UserAnswers}
+import utils.{AddressHelper, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import javax.inject.Inject
@@ -43,7 +42,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmCompanyDetailsController @Inject()(
                                                  dataCacheConnector: UserAnswersCacheConnector,
-                                                 @RegisterCompany navigator: Navigator,
                                                  authenticate: AuthAction,
                                                  allowAccess: AllowAccessActionProvider,
                                                  getData: DataRetrievalAction,
@@ -69,23 +67,23 @@ class ConfirmCompanyDetailsController @Inject()(
       implicit request =>
         getCompanyDetails {
           case registration@(_: OrganizationRegistration) =>
-          upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
-            upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
-              upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
-                dataCacheConnector.upsert(userAnswers.json).flatMap { _ =>
+            upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
+              upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
+                upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
+                  dataCacheConnector.upsert(userAnswers.json).flatMap { _ =>
 
-                  Future.successful(Ok(view(
-                    form, registration.response.address, registration.response.organisation.organisationName, countryOptions
-                  )))
+                    Future.successful(Ok(view(
+                      form, registration.response.address, registration.response.organisation.organisationName, countryOptions
+                    )))
+                  }
                 }
               }
             }
-          }
           case _ => Future.successful(Redirect(routes.CompanyNotFoundController.onPageLoad()))
         }
     }
 
-  def onSubmit(mode: Mode): Action[AnyContent] =
+  def onSubmit(): Action[AnyContent] =
     (authenticate andThen getData andThen requireData).async {
       implicit request =>
         form.bindFromRequest().fold(

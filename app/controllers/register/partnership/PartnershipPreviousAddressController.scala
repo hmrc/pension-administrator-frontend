@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
@@ -24,34 +23,32 @@ import controllers.register.partnership.routes._
 import forms.UKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.NoRLSCheck
-import utils.annotations.Partnership
+import utils.annotations.{NoRLSCheck, Partnership}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnershipPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                     val cacheConnector: UserAnswersCacheConnector,
-                                                     @Partnership val navigator: Navigator,
-                                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
-                                                     authenticate: AuthAction,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     formProvider: UKAddressFormProvider,
-                                                     val countryOptions: CountryOptions,
-                                                     val controllerComponents: MessagesControllerComponents,
-                                                     val view: manualAddress
+class PartnershipPreviousAddressController @Inject()(
+                                                      val cacheConnector: UserAnswersCacheConnector,
+                                                      @Partnership val navigator: Navigator,
+                                                      @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
+                                                      authenticate: AuthAction,
+                                                      getData: DataRetrievalAction,
+                                                      requireData: DataRequiredAction,
+                                                      formProvider: UKAddressFormProvider,
+                                                      val countryOptions: CountryOptions,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      val view: manualAddress
                                                     )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = PartnershipPreviousAddressController.onSubmit _

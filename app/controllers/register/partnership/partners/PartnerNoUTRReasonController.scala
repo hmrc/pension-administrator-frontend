@@ -16,15 +16,11 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
-import controllers.register.partnership.partners.routes.PartnerNoUTRReasonController
 import forms.UTRReasonFormProvider
 import identifiers.register.partnership.partners.{PartnerNameId, PartnerNoUTRReasonId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -34,10 +30,10 @@ import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.reason
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnerNoUTRReasonController @Inject()(@PartnershipPartner val navigator: Navigator,
-                                             val appConfig: FrontendAppConfig,
                                              val dataCacheConnector: UserAnswersCacheConnector,
                                              authenticate: AuthAction,
                                              @NoRLSCheck val allowAccess: AllowAccessActionProvider,
@@ -69,7 +65,7 @@ class PartnerNoUTRReasonController @Inject()(@PartnershipPartner val navigator: 
 
   private def viewModel(mode: Mode, index: Index, partnerName: String) =
     CommonFormWithHintViewModel(
-      postCall = PartnerNoUTRReasonController.onSubmit(mode, index),
+      postCall = routes.PartnerNoUTRReasonController.onSubmit(mode, index),
       title = Message("whyNoUTR.heading", Message("thePartner")),
       heading = Message("whyNoUTR.heading", partnerName),
       mode = mode,

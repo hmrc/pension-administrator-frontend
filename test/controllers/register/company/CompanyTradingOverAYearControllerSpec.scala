@@ -50,7 +50,7 @@ class CompanyTradingOverAYearControllerSpec extends ControllerSpecBase {
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new CompanyTradingOverAYearController(frontendAppConfig,
+    new CompanyTradingOverAYearController(
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       new FakeNavigator(desiredRoute = onwardRoute),

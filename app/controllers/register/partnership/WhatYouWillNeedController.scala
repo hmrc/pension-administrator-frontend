@@ -16,10 +16,8 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import controllers.actions._
 import identifiers.register.partnership.WhatYouWillNeedId
-import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,16 +26,17 @@ import utils.Navigator
 import utils.annotations.Partnership
 import views.html.register.partnership.whatYouWillNeed
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
-                                          @Partnership navigator: Navigator,
-                                          authenticate: AuthAction,
-                                          allowAccess: AllowAccessActionProvider,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val view: whatYouWillNeed
+class WhatYouWillNeedController @Inject()(
+                                           @Partnership navigator: Navigator,
+                                           authenticate: AuthAction,
+                                           allowAccess: AllowAccessActionProvider,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: whatYouWillNeed
                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
@@ -45,7 +44,7 @@ class WhatYouWillNeedController @Inject()(appConfig: FrontendAppConfig,
       Ok(view())
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       Redirect(navigator.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers))
   }

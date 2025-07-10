@@ -31,7 +31,6 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new WhatYouWillNeedController(
-      frontendAppConfig,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
@@ -54,7 +53,7 @@ class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
 
     "redirect to next page on submit" in {
 
-      val result = controller().onSubmit(NormalMode)(fakeRequest)
+      val result = controller().onSubmit()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)

@@ -16,11 +16,9 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.YesNoFormProvider
-import javax.inject.Inject
 import models.Mode
 import play.api.mvc.MessagesControllerComponents
 import utils.Navigator
@@ -28,9 +26,10 @@ import utils.annotations.{AuthWithNoIV, Register}
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class BusinessTypeAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
+class BusinessTypeAreYouInUKController @Inject()(
                                                  override val dataCacheConnector: UserAnswersCacheConnector,
                                                  @Register override val navigator: Navigator,
                                                  override val allowAccess: AllowAccessActionProvider,

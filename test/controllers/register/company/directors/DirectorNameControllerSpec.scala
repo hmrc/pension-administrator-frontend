@@ -71,7 +71,6 @@ class DirectorNameControllerSpec extends ControllerSpecBase with PersonNameContr
                       )(connector: UserAnswersCacheConnector, nav: Navigator): DirectorNameController = {
     val view: personName = app.injector.instanceOf[personName]
     new DirectorNameController(
-      appConfig = frontendAppConfig,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,

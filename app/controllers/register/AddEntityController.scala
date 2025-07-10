@@ -16,8 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
-import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
 import models.Mode
@@ -42,15 +40,11 @@ trait AddEntityController
 
   implicit protected def executionContext: ExecutionContext
 
-  protected def appConfig: FrontendAppConfig
-
-  protected def cacheConnector: UserAnswersCacheConnector
-
   protected def navigator: Navigator
 
   protected def view: addEntity
 
-  protected def get(id: TypedIdentifier[Boolean], form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
+  protected def get(form: Form[Boolean], viewmodel: EntityViewModel, mode: Mode)
                    (implicit request: DataRequest[AnyContent], messages: Messages): Future[Result] = {
 
     Future.successful(Ok(view(form, viewmodel, mode)))
@@ -61,8 +55,7 @@ trait AddEntityController
 
     if (viewmodel.entities.isEmpty || viewmodel.entities.lengthCompare(viewmodel.maxLimit) >= 0) {
       Future.successful(Redirect(navigator.nextPage(id, mode, request.userAnswers)))
-    }
-    else {
+    } else {
       form.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, viewmodel, mode))),

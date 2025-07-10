@@ -16,11 +16,9 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
-import controllers.register.company.directors.routes.HasDirectorUTRController
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.company.directors.{DirectorNameId, HasDirectorUTRId}
 import models.requests.DataRequest
@@ -36,7 +34,7 @@ import views.html.hasReferenceNumber
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConfig,
+class HasDirectorUTRController @Inject()(
                                          override val dataCacheConnector: UserAnswersCacheConnector,
                                          @CompanyDirector override val navigator: Navigator,
                                          authenticate: AuthAction,
@@ -51,7 +49,7 @@ class HasDirectorUTRController @Inject()(override val appConfig: FrontendAppConf
   private def viewModel(mode: Mode, entityName: String, index: Index, returnLink: Option[String])
                        (implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasDirectorUTRController.onSubmit(mode, index),
+      postCall = routes.HasDirectorUTRController.onSubmit(mode, index),
       title = Message("hasUTR.heading", Message("theDirector")),
       heading = Message("hasUTR.heading", entityName),
       mode = mode,

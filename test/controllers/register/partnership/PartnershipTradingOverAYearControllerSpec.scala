@@ -58,7 +58,7 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerWithCommonBeha
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "true"))
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =
-    new PartnershipTradingOverAYearController(frontendAppConfig,
+    new PartnershipTradingOverAYearController(
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

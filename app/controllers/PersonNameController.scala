@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import forms.PersonNameFormProvider
@@ -37,7 +36,6 @@ trait PersonNameController extends FrontendBaseController with Variations {
 
   protected val allowAccess: AllowAccessActionProvider
 
-  def appConfig: FrontendAppConfig
 
   def cacheConnector: UserAnswersCacheConnector
 

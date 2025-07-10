@@ -20,7 +20,6 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import forms.register.YesNoFormProvider
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
-import models.NormalMode
 import models.RegistrationCustomerType.UK
 import models.register.BusinessType.{LimitedCompany, UnlimitedCompany}
 import play.api.data.Form
@@ -63,12 +62,12 @@ class ContinueWithRegistrationController @Inject()(
             Redirect(company.routes.CompanyRegistrationTaskListController.onPageLoad())
           case (Some(_), Some(UK)) =>
             Redirect(administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
-          case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+          case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad())
         }
         Future.successful(result)
       } else {
         cache.removeAll.map(_ =>
-          Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+          Redirect(routes.WhatYouWillNeedController.onPageLoad())
         )
       }
     )

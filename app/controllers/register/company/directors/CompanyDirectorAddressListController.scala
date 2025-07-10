@@ -17,7 +17,6 @@
 package controllers.register.company.directors
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -36,7 +35,7 @@ import views.html.address.addressList
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyDirectorAddressListController @Inject()(override val appConfig: FrontendAppConfig,
+class CompanyDirectorAddressListController @Inject()(
                                                      override val cacheConnector: UserAnswersCacheConnector,
                                                      @CompanyDirector override val navigator: Navigator,
                                                      override val allowAccess: AllowAccessActionProvider,

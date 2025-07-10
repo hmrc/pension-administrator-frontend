@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.contactDetails
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -40,7 +39,6 @@ import scala.concurrent.ExecutionContext
 class PartnershipContactAddressListController @Inject()(
                                                          val cacheConnector: UserAnswersCacheConnector,
                                                          @PartnershipV2 val navigator: Navigator,
-                                                         val appConfig: FrontendAppConfig,
                                                          @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                          authenticate: AuthAction,
                                                          getData: DataRetrievalAction,
@@ -48,9 +46,8 @@ class PartnershipContactAddressListController @Inject()(
                                                          formProvider: AddressListFormProvider,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          val view: addressList
-                                                       )(implicit val executionContext: ExecutionContext
-                                                       ) extends AddressListController with Retrievals {
-
+                                                       )(implicit val executionContext: ExecutionContext)
+  extends AddressListController with Retrievals {
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
     formProvider(addresses, Message("select.address.required.error").withArgs(name))

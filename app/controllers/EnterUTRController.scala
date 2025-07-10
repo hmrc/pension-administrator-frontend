@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
@@ -34,8 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 trait EnterUTRController extends FrontendBaseController with Retrievals with I18nSupport with Variations {
 
   implicit val executionContext: ExecutionContext
-
-  protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 

@@ -150,7 +150,7 @@ class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with Mockit
     )))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new IndividualDateOfBirthController(frontendAppConfig,
+    new IndividualDateOfBirthController(
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

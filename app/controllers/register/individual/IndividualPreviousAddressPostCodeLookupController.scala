@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -38,7 +37,6 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class IndividualPreviousAddressPostCodeLookupController @Inject()(
                                                                    @Individual override val navigator: Navigator,
-                                                                   override val appConfig: FrontendAppConfig,
                                                                    override val cacheConnector: UserAnswersCacheConnector,
                                                                    override val addressLookupConnector: AddressLookupConnector,
                                                                    @AuthWithIV authenticate: AuthAction,

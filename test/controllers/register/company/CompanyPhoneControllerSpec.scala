@@ -39,7 +39,6 @@ class CompanyPhoneControllerSpec extends ControllerWithCommonBehaviour {
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new CompanyPhoneController(
       new FakeNavigator(onwardRoute),
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),

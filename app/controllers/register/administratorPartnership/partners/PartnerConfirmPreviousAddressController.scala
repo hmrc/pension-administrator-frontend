@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
@@ -35,22 +34,22 @@ import views.html.address.sameContactAddress
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnerConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                        val dataCacheConnector: UserAnswersCacheConnector,
-                                                        @PartnershipPartnerV2 val navigator: Navigator,
-                                                        authenticate: AuthAction,
-                                                        @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                                        getData: DataRetrievalAction,
-                                                        requireData: DataRequiredAction,
-                                                        val countryOptions: CountryOptions,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        val view: sameContactAddress
-                                                       )(implicit val executionContext: ExecutionContext
-)                                                       extends ConfirmPreviousAddressController with I18nSupport {
+class PartnerConfirmPreviousAddressController @Inject()(
+                                                         val dataCacheConnector: UserAnswersCacheConnector,
+                                                         @PartnershipPartnerV2 val navigator: Navigator,
+                                                         authenticate: AuthAction,
+                                                         @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                                         getData: DataRetrievalAction,
+                                                         requireData: DataRequiredAction,
+                                                         val countryOptions: CountryOptions,
+                                                         val controllerComponents: MessagesControllerComponents,
+                                                         val view: sameContactAddress
+                                                       )(implicit val executionContext: ExecutionContext)
+  extends ConfirmPreviousAddressController with I18nSupport {
   private[controllers] val title: Message = "confirmPreviousAddress.title"
   private[controllers] val heading: Message = "confirmPreviousAddress.heading"
 
-  private def viewModel(mode: Mode, index: Index) =
+  private def viewModel(mode: Mode, index: Index): Retrieval[SameContactAddressViewModel] =
     Retrieval(
       implicit request =>
         (PartnerNameId(index) and ExistingCurrentAddressId(index)).retrieve.map {

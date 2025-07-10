@@ -16,14 +16,11 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{PersonNameController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.partners.PartnerNameId
-
-import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,17 +29,18 @@ import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.personName
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnerNameController @Inject()(val appConfig: FrontendAppConfig,
-                                      val cacheConnector: UserAnswersCacheConnector,
-                                      @PartnershipPartner val navigator: Navigator,
-                                      @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
-                                      authenticate: AuthAction,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      val view: personName
+class PartnerNameController @Inject()(
+                                       val cacheConnector: UserAnswersCacheConnector,
+                                       @PartnershipPartner val navigator: Navigator,
+                                       @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
+                                       authenticate: AuthAction,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       val view: personName
                                      )(implicit val executionContext: ExecutionContext) extends PersonNameController with Retrievals with I18nSupport {
 
   private[partners] def viewModel(mode: Mode, index: Index, name: String) =

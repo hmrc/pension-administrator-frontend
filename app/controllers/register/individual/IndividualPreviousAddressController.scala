@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
@@ -25,8 +24,6 @@ import forms.AddressFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
@@ -39,19 +36,20 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                    val cacheConnector: UserAnswersCacheConnector,
-                                                    @Individual val navigator: Navigator,
-                                                    @AuthWithIV authenticate: AuthAction,
-                                                    @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    formProvider: AddressFormProvider,
-                                                    val countryOptions: CountryOptions,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    val view: manualAddress
+class IndividualPreviousAddressController @Inject()(
+                                                     val cacheConnector: UserAnswersCacheConnector,
+                                                     @Individual val navigator: Navigator,
+                                                     @AuthWithIV authenticate: AuthAction,
+                                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: AddressFormProvider,
+                                                     val countryOptions: CountryOptions,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     val view: manualAddress
                                                    )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] val postCall = IndividualPreviousAddressController.onSubmit _
@@ -63,7 +61,7 @@ class IndividualPreviousAddressController @Inject()(val appConfig: FrontendAppCo
     countryOptions.options,
     title = Message("individual.enter.previous.address.heading"),
     heading = Message("individual.enter.previous.address.heading"),
-    psaName = if(displayReturnLink) psaName() else None
+    psaName = if (displayReturnLink) psaName() else None
   )
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

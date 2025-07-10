@@ -38,7 +38,6 @@ class DirectorNoNINOReasonControllerSpec extends NoNINOReasonControllerWithCommo
   
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorNoNINOReasonController(
     new FakeNavigator(onwardRoute),
-    frontendAppConfig,
     FakeUserAnswersCacheConnector,
     FakeAuthAction,
     FakeAllowAccessProvider(config = frontendAppConfig),

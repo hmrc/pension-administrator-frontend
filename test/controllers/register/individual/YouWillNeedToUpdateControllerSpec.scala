@@ -28,7 +28,6 @@ class YouWillNeedToUpdateControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new YouWillNeedToUpdateController(
-      frontendAppConfig,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,

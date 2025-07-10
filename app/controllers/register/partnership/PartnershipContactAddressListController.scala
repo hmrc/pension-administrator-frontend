@@ -16,32 +16,29 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions.{DataRequiredAction, AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership._
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.NoRLSCheck
-import utils.annotations.Partnership
+import utils.annotations.{NoRLSCheck, Partnership}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnershipContactAddressListController @Inject()(
                                                          val cacheConnector: UserAnswersCacheConnector,
                                                          @Partnership val navigator: Navigator,
-                                                         val appConfig: FrontendAppConfig,
                                                          @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                          authenticate: AuthAction,
                                                          getData: DataRetrievalAction,
@@ -49,14 +46,13 @@ class PartnershipContactAddressListController @Inject()(
                                                          formProvider: AddressListFormProvider,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          val view: addressList
-                                                       )(implicit val executionContext: ExecutionContext
-                                                       ) extends AddressListController with Retrievals {
+                                                       )(implicit val executionContext: ExecutionContext) extends AddressListController with Retrievals {
 
 
   def form(addresses: Seq[TolerantAddress], name: String)(implicit request: DataRequest[AnyContent]): Form[Int] =
     formProvider(addresses, Message("select.address.required.error").withArgs(name))
 
-  def viewModel(mode: Mode) = Retrieval { implicit request =>
+  def viewModel(mode: Mode): Retrieval[AddressListViewModel] = Retrieval { implicit request =>
     PartnershipContactAddressPostCodeLookupId.retrieve map { addresses =>
       AddressListViewModel(
         routes.PartnershipContactAddressListController.onSubmit(mode),

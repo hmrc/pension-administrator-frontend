@@ -71,7 +71,6 @@ class MoreThanTenPartnersControllerSpec extends ControllerSpecBase {
 
   def controller: MoreThanTenPartnersController =
     new MoreThanTenPartnersController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       FakeNavigator,
       FakeAuthAction,

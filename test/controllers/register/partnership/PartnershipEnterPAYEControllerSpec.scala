@@ -38,7 +38,7 @@ class PartnershipEnterPAYEControllerSpec extends ControllerWithCommonBehaviour {
   private val payeForm = formProvider(partnershipName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new PartnershipEnterPAYEController(
-    frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
+    FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     controllerComponents, view)
 

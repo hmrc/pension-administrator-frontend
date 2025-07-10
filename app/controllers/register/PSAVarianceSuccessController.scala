@@ -16,29 +16,29 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
-import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.NoRLSCheck
 import views.html.register.psaVarianceSuccess
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PSAVarianceSuccessController @Inject()(appConfig: FrontendAppConfig,
-                                             authenticate: AuthAction,
-                                             @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                             getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction,
-                                             dataCacheConnector: UserAnswersCacheConnector,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             val view: psaVarianceSuccess
-                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+class PSAVarianceSuccessController @Inject()(
+                                              authenticate: AuthAction,
+                                              @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                              getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              dataCacheConnector: UserAnswersCacheConnector,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val view: psaVarianceSuccess
+                                            )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

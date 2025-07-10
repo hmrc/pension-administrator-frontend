@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
@@ -35,7 +34,7 @@ import views.html.hasReferenceNumber
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HasDirectorNINOController @Inject()(override val appConfig: FrontendAppConfig,
+class HasDirectorNINOController @Inject()(
                                           override val dataCacheConnector: UserAnswersCacheConnector,
                                           @CompanyDirector override val navigator: Navigator,
                                           authenticate: AuthAction,

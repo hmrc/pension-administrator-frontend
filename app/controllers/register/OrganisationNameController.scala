@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
@@ -35,8 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 trait OrganisationNameController extends FrontendBaseController with Retrievals with I18nSupport with NameCleansing {
 
   implicit val executionContext: ExecutionContext
-
-  protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 

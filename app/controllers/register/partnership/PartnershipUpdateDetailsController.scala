@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import controllers.actions._
 import models.Mode
 import play.api.i18n.I18nSupport
@@ -26,14 +25,14 @@ import views.html.register.updateDetails
 
 import javax.inject.Inject
 
-class PartnershipUpdateDetailsController @Inject()(appConfig: FrontendAppConfig,
-                                                   authenticate: AuthAction,
-                                                   allowAccess: AllowAccessActionProvider,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   val view: updateDetails
-                                              ) extends FrontendBaseController with I18nSupport {
+class PartnershipUpdateDetailsController @Inject()(
+                                                    authenticate: AuthAction,
+                                                    allowAccess: AllowAccessActionProvider,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: updateDetails
+                                                  ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>

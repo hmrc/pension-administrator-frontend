@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.Mode
@@ -34,8 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 trait ReasonController extends FrontendBaseController with Retrievals with I18nSupport {
 
   protected implicit val executionContext: ExecutionContext
-
-  protected def appConfig: FrontendAppConfig
 
   protected val dataCacheConnector: UserAnswersCacheConnector
 

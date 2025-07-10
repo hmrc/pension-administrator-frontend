@@ -28,8 +28,8 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
+import utils.UserAnswers
 import utils.testhelpers.DataCompletionBuilder._
-import utils.{Navigator, UserAnswers}
 import views.html.register.registerAsBusiness
 
 class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours with MockitoSugar {
@@ -68,7 +68,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
       "return a Bad Request and errors when invalid data is submitted" in {
 
         val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
-          onSubmit(NormalMode)(fakeRequest)
+          onSubmit()(fakeRequest)
 
         val formWithErrors = form.bind(Map.empty[String, String])
 
@@ -78,15 +78,15 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
 
       "route to the company 'before you start' page when the registration is for a company / partnership" in {
         val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
-          onSubmit(NormalMode)(postRequestTrue)
+          onSubmit()(postRequestTrue)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
+        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad().url)
       }
 
       "route to the individual 'before you start' page when the registration is NOT for a company / partnership" in {
         val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
-          onSubmit(NormalMode)(postRequestFalse)
+          onSubmit()(postRequestFalse)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(individual.routes.WhatYouWillNeedController.onPageLoad().url)
@@ -97,7 +97,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
         auditService.reset()
 
         val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
-          onSubmit(NormalMode)(postRequestTrue)
+          onSubmit()(postRequestTrue)
 
         status(result) mustBe SEE_OTHER
         auditService.verifyNothingSent() mustBe false
@@ -109,7 +109,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
           val userAnswers = validData.completeCompanyDetailsUK
 
           val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
-            onSubmit(NormalMode)(postRequestTrue)
+            onSubmit()(postRequestTrue)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.ContinueWithRegistrationController.onPageLoad().url)
@@ -119,10 +119,10 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
           val userAnswers = validData.completeCompanyDetailsNonUKCustomer
 
           val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
-            onSubmit(NormalMode)(postRequestTrue)
+            onSubmit()(postRequestTrue)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad(NormalMode).url)
+          redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad().url)
         }
       }
     }
@@ -131,11 +131,11 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
   def onPageLoadAction(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
     controller(dataRetrievalAction, authAction).onPageLoad(NormalMode)
 
-  def onSubmitAction(navigator: Navigator)(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
-    controller(dataRetrievalAction, authAction).onSubmit(NormalMode)
+  def onSubmitAction()(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
+    controller(dataRetrievalAction, authAction).onSubmit()
 
   def saveAction(cache: UserAnswersCacheConnector): Action[AnyContent] =
-    controller(cache = cache).onSubmit(NormalMode)
+    controller(cache = cache).onSubmit()
 
   def viewAsString(form: Form[?]): String =
       view(form)(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
@@ -146,7 +146,6 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
     cache: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
   ): RegisterAsBusinessController =
     new RegisterAsBusinessController(
-      frontendAppConfig,
       messagesApi,
       authAction,
       FakeAllowAccessProvider(config = frontendAppConfig),

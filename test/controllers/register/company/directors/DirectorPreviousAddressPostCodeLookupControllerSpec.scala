@@ -50,7 +50,6 @@ class DirectorPreviousAddressPostCodeLookupControllerSpec extends ControllerSpec
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorPreviousAddressPostCodeLookupController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),

@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.SameContactAddressController
@@ -25,8 +24,6 @@ import forms.address.SameContactAddressFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual._
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -38,19 +35,20 @@ import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualSameContactAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                       val dataCacheConnector: UserAnswersCacheConnector,
-                                                       @Individual val navigator: Navigator,
-                                                       @AuthWithIV authenticate: AuthAction,
-                                                       allowAccess: AllowAccessActionProvider,
-                                                       getData: DataRetrievalAction,
-                                                       requireData: DataRequiredAction,
-                                                       formProvider: SameContactAddressFormProvider,
-                                                       val countryOptions: CountryOptions,
-                                                       val controllerComponents: MessagesControllerComponents,
-                                                       val view: sameContactAddress
+class IndividualSameContactAddressController @Inject()(
+                                                        val dataCacheConnector: UserAnswersCacheConnector,
+                                                        @Individual val navigator: Navigator,
+                                                        @AuthWithIV authenticate: AuthAction,
+                                                        allowAccess: AllowAccessActionProvider,
+                                                        getData: DataRetrievalAction,
+                                                        requireData: DataRequiredAction,
+                                                        formProvider: SameContactAddressFormProvider,
+                                                        val countryOptions: CountryOptions,
+                                                        val controllerComponents: MessagesControllerComponents,
+                                                        val view: sameContactAddress
                                                       )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
   private[controllers] val postCall = IndividualSameContactAddressController.onSubmit _

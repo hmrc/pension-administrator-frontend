@@ -76,7 +76,6 @@ class CompanyIsRegisteredNameControllerSpec extends ControllerSpecBase with IsRe
                         dataRetrievalAction: DataRetrievalAction
                       )(connector: UserAnswersCacheConnector, nav: Navigator): CompanyIsRegisteredNameController =
     new CompanyIsRegisteredNameController(
-      appConfig = base.frontendAppConfig,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,

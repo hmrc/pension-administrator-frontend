@@ -16,14 +16,11 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.NINOController
 import forms.register.NINOFormProvider
 import identifiers.register.partnership.partners.{PartnerEnterNINOId, PartnerNameId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import play.api.data.Form
@@ -34,10 +31,10 @@ import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterNINO
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnerEnterNINOController @Inject()(@PartnershipPartner val navigator: Navigator,
-                                           val appConfig: FrontendAppConfig,
                                            val cacheConnector: UserAnswersCacheConnector,
                                            authenticate: AuthAction,
                                            @NoRLSCheck val allowAccess: AllowAccessActionProvider,

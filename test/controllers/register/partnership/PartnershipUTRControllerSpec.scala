@@ -67,7 +67,6 @@ class PartnershipUTRControllerSpec extends ControllerSpecBase with UTRController
                         dataRetrievalAction: DataRetrievalAction
                       )(connector: UserAnswersCacheConnector, nav: Navigator): PartnershipUTRController =
     new PartnershipUTRController(
-      appConfig = frontendAppConfig,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,

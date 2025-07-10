@@ -17,7 +17,6 @@
 package controllers.register.company
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
@@ -29,8 +28,7 @@ import models.{Address, Mode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.NoRLSCheck
-import utils.annotations.RegisterCompany
+import utils.annotations.{NoRLSCheck, RegisterCompany}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -38,7 +36,7 @@ import views.html.address.manualAddress
 
 import scala.concurrent.ExecutionContext
 
-class CompanyPreviousAddressController @Inject()(override val appConfig: FrontendAppConfig,
+class CompanyPreviousAddressController @Inject()(
                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                  @RegisterCompany override val navigator: Navigator,
                                                  authenticate: AuthAction,

@@ -16,26 +16,27 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.submissionInvalid
 
-class SubmissionInvalidController @Inject()(appConfig: FrontendAppConfig,
-                                            authenticate: AuthAction,
-                                            allowAccess: AllowAccessActionProvider,
-                                            getData: DataRetrievalAction,
-                                            requireData: DataRequiredAction,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            val view: submissionInvalid
-                                           ) extends FrontendBaseController with I18nSupport {
+import javax.inject.Inject
+
+class SubmissionInvalidController @Inject()(
+                                             authenticate: AuthAction,
+                                             allowAccess: AllowAccessActionProvider,
+                                             getData: DataRetrievalAction,
+                                             requireData: DataRequiredAction,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             val view: submissionInvalid
+                                           )
+  extends FrontendBaseController with I18nSupport {
 
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
       Ok(view())
   }

@@ -16,7 +16,6 @@
 
 package controllers.address
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import controllers.{Retrievals, Variations}
@@ -34,8 +33,6 @@ import views.html.address.addressYears
 import scala.concurrent.Future
 
 trait AddressYearsController extends FrontendBaseController with Retrievals with Variations {
-
-  protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 

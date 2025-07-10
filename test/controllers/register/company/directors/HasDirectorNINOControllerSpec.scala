@@ -37,7 +37,6 @@ class HasDirectorNINOControllerSpec extends ControllerWithCommonBehaviour {
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasDirectorNINOController(
-    frontendAppConfig,
     FakeUserAnswersCacheConnector,
     new FakeNavigator(onwardRoute),
     FakeAuthAction,

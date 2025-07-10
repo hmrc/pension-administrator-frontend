@@ -48,7 +48,6 @@ class PartnerPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartner) =
     new PartnerPreviousAddressPostCodeLookupController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),

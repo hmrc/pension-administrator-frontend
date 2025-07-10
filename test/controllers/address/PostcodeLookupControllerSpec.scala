@@ -18,7 +18,6 @@ package controllers.address
 
 import base.SpecBase
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.FakeAllowAccessProvider
@@ -57,7 +56,6 @@ object PostcodeLookupControllerSpec extends SpecBase {
   val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
 
   class TestController @Inject()(
-                                  override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val addressLookupConnector: AddressLookupConnector,

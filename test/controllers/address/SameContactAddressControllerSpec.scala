@@ -18,7 +18,6 @@ package controllers.address
 
 import base.SpecBase
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import forms.address.SameContactAddressFormProvider
@@ -57,7 +56,6 @@ object SameContactAddressControllerSpec extends SpecBase {
   val view: sameContactAddress = app.injector.instanceOf[sameContactAddress]
 
   class TestController @Inject()(
-                                  override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,

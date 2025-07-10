@@ -15,8 +15,12 @@ lazy val appName: String = "pension-administrator-frontend"
     .settings(inConfig(Test)(testSettings) *)
     .settings(scalaVersion := "2.13.16")
     .settings(
-      scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s",
-      scalacOptions += "-Wconf:src=routes/.*:s"
+      scalacOptions ++= Seq(
+        "-Wconf:cat=unused-imports&src=html/.*:s",
+        "-Wconf:src=routes/.*:s",
+        "-Werror",
+        "-feature"
+      )
     )
     .settings(
       Test / parallelExecution := true
@@ -48,7 +52,6 @@ lazy val appName: String = "pension-administrator-frontend"
       ScoverageKeys.coverageHighlighting := true
     )
     .settings(
-      scalacOptions ++= Seq("-feature"),
       libraryDependencies ++= AppDependencies(),
       retrieveManaged := true
     )

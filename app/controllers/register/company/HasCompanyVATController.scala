@@ -16,10 +16,8 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.register.company.routes.HasCompanyVATController
 import controllers.{HasReferenceNumberController, Retrievals}
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.HasVATId
@@ -35,21 +33,21 @@ import views.html.hasReferenceNumber
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfig,
-                                        override val dataCacheConnector: UserAnswersCacheConnector,
-                                        @RegisterCompany override val navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        allowAccess: AllowAccessActionProvider,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: HasReferenceNumberFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        val view: hasReferenceNumber
+class HasCompanyVATController @Inject()(
+                                         override val dataCacheConnector: UserAnswersCacheConnector,
+                                         @RegisterCompany override val navigator: Navigator,
+                                         authenticate: AuthAction,
+                                         allowAccess: AllowAccessActionProvider,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: HasReferenceNumberFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: hasReferenceNumber
                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController with Retrievals {
 
   private def viewModel(mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasCompanyVATController.onSubmit(mode),
+      postCall = routes.HasCompanyVATController.onSubmit(mode),
       title = Message("hasVAT.heading", Message("theCompany")),
       heading = Message("hasVAT.heading", companyName),
       mode = mode,
@@ -65,7 +63,7 @@ class HasCompanyVATController @Inject()(override val appConfig: FrontendAppConfi
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(HasVATId, form(companyName), viewModel(mode, Some(companyTaskListUrl()) ))
+        get(HasVATId, form(companyName), viewModel(mode, Some(companyTaskListUrl())))
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =

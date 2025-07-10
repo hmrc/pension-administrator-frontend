@@ -36,7 +36,6 @@ class PartnershipEnterVATControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = dontGetAnyData) =
     new PartnershipEnterVATController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -39,7 +38,6 @@ import scala.concurrent.ExecutionContext
 
 class CompanyAddressYearsController @Inject()(@RegisterCompany override val navigator: Navigator,
                                               @RegisterContactV2 val navigatorV2: Navigator,
-                                              override val appConfig: FrontendAppConfig,
                                               override val cacheConnector: UserAnswersCacheConnector,
                                               @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                               authenticate: AuthAction,

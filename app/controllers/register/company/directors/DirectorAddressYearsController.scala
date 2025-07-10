@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -38,7 +37,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorAddressYearsController @Inject()(@CompanyDirector override val navigator: Navigator,
-                                               override val appConfig: FrontendAppConfig,
                                                override val cacheConnector: UserAnswersCacheConnector,
                                                override val allowAccess: AllowAccessActionProvider,
                                                authenticate: AuthAction,

@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -37,18 +36,18 @@ import views.html.address.addressYears
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnerAddressYearsController @Inject()(val appConfig: FrontendAppConfig,
-                                              val cacheConnector: UserAnswersCacheConnector,
-                                              @PartnershipPartnerV2 val navigator: Navigator,
-                                              authenticate: AuthAction,
-                                              @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: AddressYearsFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val view: addressYears
+class PartnerAddressYearsController @Inject()(
+                                               val cacheConnector: UserAnswersCacheConnector,
+                                               @PartnershipPartnerV2 val navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: AddressYearsFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: addressYears
                                              )(implicit val executionContext: ExecutionContext)
-                                               extends AddressYearsController with Retrievals with I18nSupport {
+  extends AddressYearsController with Retrievals with I18nSupport {
 
 
   private def form(partnerName: String)

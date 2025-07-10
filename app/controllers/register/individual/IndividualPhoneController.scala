@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
@@ -36,13 +35,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualPhoneController @Inject()(@Individual val navigator: Navigator,
-                                       val appConfig: FrontendAppConfig,
-                                       val cacheConnector: UserAnswersCacheConnector,
-                                       @AuthWithIV authenticate: AuthAction,
-                                       @NoRLSCheck val allowAccess: AllowAccessActionProvider,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: PhoneFormProvider,
+                                          val cacheConnector: UserAnswersCacheConnector,
+                                          @AuthWithIV authenticate: AuthAction,
+                                          @NoRLSCheck val allowAccess: AllowAccessActionProvider,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: PhoneFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: phone
                                          )(implicit val executionContext: ExecutionContext) extends PhoneController {

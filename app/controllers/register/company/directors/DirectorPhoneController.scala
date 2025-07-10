@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
@@ -34,7 +33,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorPhoneController @Inject()(@CompanyDirector val navigator: Navigator,
-                                        val appConfig: FrontendAppConfig,
                                         val cacheConnector: UserAnswersCacheConnector,
                                         authenticate: AuthAction,
                                         val allowAccess: AllowAccessActionProvider,
@@ -43,7 +41,7 @@ class DirectorPhoneController @Inject()(@CompanyDirector val navigator: Navigato
                                         formProvider: PhoneFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         val view: phone
-                                      )(implicit val executionContext: ExecutionContext) extends PhoneController {
+                                       )(implicit val executionContext: ExecutionContext) extends PhoneController {
 
   private val form = formProvider()
 
@@ -55,7 +53,7 @@ class DirectorPhoneController @Inject()(@CompanyDirector val navigator: Navigato
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-        post(DirectorPhoneId(index), mode, form, viewModel(mode, index, entityName(index), Some(companyTaskListUrl())))
+      post(DirectorPhoneId(index), mode, form, viewModel(mode, index, entityName(index), Some(companyTaskListUrl())))
   }
 
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =

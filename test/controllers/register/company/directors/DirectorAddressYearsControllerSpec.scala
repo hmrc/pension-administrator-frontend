@@ -59,7 +59,6 @@ class DirectorAddressYearsControllerSpec extends ControllerSpecBase {
   private def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorAddressYearsController(
       new FakeNavigator(desiredRoute = onwardRoute),
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       FakeAllowAccessProvider(config = frontendAppConfig),
       FakeAuthAction,

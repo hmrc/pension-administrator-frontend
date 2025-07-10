@@ -16,13 +16,10 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.AreYouInUKController
 import forms.register.YesNoFormProvider
-
-import javax.inject.Inject
 import models.Mode
 import play.api.data.Form
 import play.api.mvc.MessagesControllerComponents
@@ -31,9 +28,10 @@ import utils.annotations.{AuthWithNoIV, Individual}
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class IndividualAreYouInUKController @Inject()(override val appConfig: FrontendAppConfig,
+class IndividualAreYouInUKController @Inject()(
                                                override val dataCacheConnector: UserAnswersCacheConnector,
                                                @Individual override val navigator: Navigator,
                                                override val allowAccess: AllowAccessActionProvider,

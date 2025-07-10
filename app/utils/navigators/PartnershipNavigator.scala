@@ -17,14 +17,13 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.register.partnership.routes.{AddPartnerController, _}
+import controllers.register.partnership.routes._
 import controllers.register.routes._
 import controllers.routes._
-import identifiers.{Identifier, UpdateContactAddressId}
 import identifiers.register.partnership._
-import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessUTRId, EnterVATId, IsRegisteredNameId, _}
+import identifiers.register._
+import identifiers.{Identifier, UpdateContactAddressId}
 import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
 import models._
 import play.api.mvc.Call
@@ -34,8 +33,8 @@ import utils.{Navigator, UserAnswers}
 @Singleton
 class PartnershipNavigator @Inject()(
                                       val dataCacheConnector: UserAnswersCacheConnector,
-                                      countryOptions: CountryOptions,
-                                      appConfig: FrontendAppConfig) extends Navigator {
+                                      countryOptions: CountryOptions
+                                    ) extends Navigator {
 
   private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
     ua.get(AreYouInUKId) match {
@@ -138,7 +137,7 @@ class PartnershipNavigator @Inject()(
       variationManualPreviousAddressRoutes(ua, UpdateMode)
     case PartnershipPhoneId => finishAmendmentNavigation(ua)
     case PartnershipEmailId => finishAmendmentNavigation(ua)
-    }
+  }
 
   private def addressYearsRoutes(answers: UserAnswers, mode: Mode): Call = {
     answers.get(PartnershipAddressYearsId) match {
@@ -166,7 +165,8 @@ class PartnershipNavigator @Inject()(
       case _ => AnyMoreChangesController.onPageLoad()
     }
 
-  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+  private def updateContactAddressCYAPage(): Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+
   private def hasPaye(ua: UserAnswers): Boolean = ua.get(HasPAYEId).getOrElse(false)
 
   private def tradingOverAYearRoutes(answers: UserAnswers, mode: Mode): Call = {

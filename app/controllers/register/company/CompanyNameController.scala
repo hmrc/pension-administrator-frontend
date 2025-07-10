@@ -16,21 +16,20 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.BusinessNameController
 import forms.BusinessNameFormProvider
-import javax.inject.Inject
 import play.api.data.Form
 import play.api.mvc.{Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import views.html.register.businessName
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CompanyNameController @Inject()(override val appConfig: FrontendAppConfig,
+class CompanyNameController @Inject()(
                                       override val cacheConnector: UserAnswersCacheConnector,
                                       @RegisterCompany override val navigator: Navigator,
                                       override val authenticate: AuthAction,

@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partnershipDetails
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
@@ -34,7 +33,7 @@ import views.html.hasReferenceNumber
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HasPartnershipPAYEController @Inject()(override val appConfig: FrontendAppConfig,
+class HasPartnershipPAYEController @Inject()(
                                              override val dataCacheConnector: UserAnswersCacheConnector,
                                              @PartnershipV2 val navigator: Navigator,
                                              authenticate: AuthAction,

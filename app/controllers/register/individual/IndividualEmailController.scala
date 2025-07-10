@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
@@ -36,13 +35,12 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualEmailController @Inject()(@Individual val navigator: Navigator,
-                                       val appConfig: FrontendAppConfig,
-                                       val cacheConnector: UserAnswersCacheConnector,
-                                       @AuthWithIV authenticate: AuthAction,
-                                       @NoRLSCheck val allowAccess: AllowAccessActionProvider,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: EmailFormProvider,
+                                          val cacheConnector: UserAnswersCacheConnector,
+                                          @AuthWithIV authenticate: AuthAction,
+                                          @NoRLSCheck val allowAccess: AllowAccessActionProvider,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          formProvider: EmailFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: email
                                          )(implicit val executionContext: ExecutionContext) extends EmailAddressController {

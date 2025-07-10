@@ -51,7 +51,6 @@ class IndividualAddressYearsControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new IndividualAddressYearsController(
       new FakeNavigator(desiredRoute = onwardRoute),
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),

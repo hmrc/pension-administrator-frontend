@@ -17,7 +17,6 @@
 package controllers.register.administratorPartnership
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.OrganisationNameController
@@ -32,7 +31,7 @@ import views.html.organisationName
 
 import scala.concurrent.ExecutionContext
 
-class PartnershipRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
+class PartnershipRegisteredNameController @Inject()(
                                                     @PartnershipV2 val navigator: Navigator,
                                                     authenticate: AuthAction,
                                                     allowAccess: AllowAccessActionProvider,
@@ -61,7 +60,7 @@ class PartnershipRegisteredNameController @Inject()(override val appConfig: Fron
       get(BusinessNameId, partnershipNameViewModel)
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       post(BusinessNameId, partnershipNameViewModel)
   }

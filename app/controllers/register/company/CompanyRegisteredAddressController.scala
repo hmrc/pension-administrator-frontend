@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -25,7 +24,6 @@ import controllers.address.NonUKAddressController
 import forms.UKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressId
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
@@ -39,10 +37,10 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class CompanyRegisteredAddressController @Inject()(
-                                                    override val appConfig: FrontendAppConfig,
                                                     override val dataCacheConnector: UserAnswersCacheConnector,
                                                     override val registrationConnector: RegistrationConnector,
                                                     @RegisterCompany override val navigator: Navigator,
@@ -58,8 +56,8 @@ class CompanyRegisteredAddressController @Inject()(
 
   protected val form: Form[Address] = formProvider()
 
-  protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[?], viewModel: ManualAddressViewModel)(
-    implicit request: Request[?], messages: Messages): () => HtmlFormat.Appendable = () =>
+  protected override def createView(preparedForm: Form[?], viewModel: ManualAddressViewModel)
+                                   (implicit request: Request[?], messages: Messages): () => HtmlFormat.Appendable = () =>
     view(preparedForm, viewModel)(request, messages)
 
   private def addressViewModel(companyName: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(

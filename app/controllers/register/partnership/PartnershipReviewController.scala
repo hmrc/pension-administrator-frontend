@@ -16,12 +16,10 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipReviewId
-import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,9 +28,10 @@ import utils.Navigator
 import utils.annotations.Partnership
 import views.html.register.partnership.partnershipReview
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
+class PartnershipReviewController @Inject()(
                                             @Partnership navigator: Navigator,
                                             authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
@@ -50,7 +49,7 @@ class PartnershipReviewController @Inject()(appConfig: FrontendAppConfig,
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
     implicit request =>
       Redirect(navigator.nextPage(PartnershipReviewId, NormalMode, request.userAnswers))
   }

@@ -17,29 +17,28 @@
 package controllers
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
-import controllers.actions.{AuthAction, AllowAccessActionProvider, DataRetrievalAction}
+import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import identifiers.register.UpdateContactAddressCYAId
 import models._
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.PsaDetailsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Navigator, UserAnswers}
 import utils.annotations.NoRLSCheck
+import utils.{Navigator, UserAnswers}
 import views.html.updateContactAddressCYA
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
-class UpdateContactAddressCYAController @Inject()(appConfig: FrontendAppConfig,
-                                     @utils.annotations.Variations navigator: Navigator,
-                                     authenticate: AuthAction,
-                                     @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                     getData: DataRetrievalAction,
-                                     psaDetailsService: PsaDetailsService,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     view: updateContactAddressCYA
-                                    )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class UpdateContactAddressCYAController @Inject()(
+                                                   @utils.annotations.Variations navigator: Navigator,
+                                                   authenticate: AuthAction,
+                                                   @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                                   getData: DataRetrievalAction,
+                                                   psaDetailsService: PsaDetailsService,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   view: updateContactAddressCYA
+                                                 )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode = UpdateMode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>

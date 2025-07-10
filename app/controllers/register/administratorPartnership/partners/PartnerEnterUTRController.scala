@@ -16,11 +16,9 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.EnterUTRController
 import controllers.actions._
-import controllers.register.administratorPartnership.partners.routes.PartnerEnterUTRController
 import forms.EnterUTRFormProvider
 import identifiers.register.partnership.partners.{PartnerEnterUTRId, PartnerNameId}
 import models.requests.DataRequest
@@ -37,7 +35,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnerEnterUTRController @Inject()(@PartnershipPartnerV2 val navigator: Navigator,
-                                          val appConfig: FrontendAppConfig,
                                           val cacheConnector: UserAnswersCacheConnector,
                                           authenticate: AuthAction,
                                           @NoRLSCheck val allowAccess: AllowAccessActionProvider,
@@ -46,7 +43,8 @@ class PartnerEnterUTRController @Inject()(@PartnershipPartnerV2 val navigator: N
                                           formProvider: EnterUTRFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: enterUTR
-                                         )(implicit val executionContext: ExecutionContext) extends EnterUTRController with I18nSupport {
+                                         )(implicit val executionContext: ExecutionContext)
+  extends EnterUTRController with I18nSupport {
 
   private def form(partnerName: String)
                   (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] = formProvider(partnerName)
@@ -67,9 +65,9 @@ class PartnerEnterUTRController @Inject()(@PartnershipPartnerV2 val navigator: N
   private def entityName(index: Index)(implicit request: DataRequest[AnyContent]): String =
     request.userAnswers.get(PartnerNameId(index)).map(_.fullName).getOrElse(Message("thePartner"))
 
-  private def viewModel(mode: Mode, index: Index, partnerName: String) (implicit request: DataRequest[AnyContent])=
+  private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
-      postCall = PartnerEnterUTRController.onSubmit(mode, index),
+      postCall = routes.PartnerEnterUTRController.onSubmit(mode, index),
       title = Message("enterUTR.heading", Message("thePartner")),
       heading = Message("enterUTR.heading", partnerName),
       mode = mode,

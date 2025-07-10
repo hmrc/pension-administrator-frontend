@@ -16,39 +16,37 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
 import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.company._
-import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.NoRLSCheck
-import utils.annotations.RegisterCompany
+import utils.annotations.{NoRLSCheck, RegisterCompany}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CompanyConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                        val dataCacheConnector: UserAnswersCacheConnector,
-                                                        @RegisterCompany val navigator: Navigator,
-                                                        authenticate: AuthAction,
-                                                        @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                                        getData: DataRetrievalAction,
-                                                        requireData: DataRequiredAction,
-                                                        val countryOptions: CountryOptions,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        val view: sameContactAddress
+class CompanyConfirmPreviousAddressController @Inject()(
+                                                         val dataCacheConnector: UserAnswersCacheConnector,
+                                                         @RegisterCompany val navigator: Navigator,
+                                                         authenticate: AuthAction,
+                                                         @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                                         getData: DataRetrievalAction,
+                                                         requireData: DataRequiredAction,
+                                                         val countryOptions: CountryOptions,
+                                                         val controllerComponents: MessagesControllerComponents,
+                                                         val view: sameContactAddress
                                                        )(implicit val executionContext: ExecutionContext)
-                                                        extends ConfirmPreviousAddressController with I18nSupport {
+  extends ConfirmPreviousAddressController with I18nSupport {
 
   private[controllers] val postCall = routes.CompanyConfirmPreviousAddressController.onSubmit _
   private[controllers] val title: Message = "confirmPreviousAddress.title"

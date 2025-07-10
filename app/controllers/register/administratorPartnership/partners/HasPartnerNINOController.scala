@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
@@ -34,7 +33,7 @@ import views.html.hasReferenceNumber
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HasPartnerNINOController @Inject()(override val appConfig: FrontendAppConfig,
+class HasPartnerNINOController @Inject()(
                                          override val dataCacheConnector: UserAnswersCacheConnector,
                                          @PartnershipPartnerV2 override val navigator: Navigator,
                                          authenticate: AuthAction,

@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{ConfirmDeleteController, Retrievals}
@@ -33,17 +32,18 @@ import views.html.confirmDelete
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class ConfirmDeletePartnerController @Inject()(val appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
-                                               authenticate: AuthAction,
-                                               allowAccess: AllowAccessActionProvider,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               val cacheConnector: UserAnswersCacheConnector,
-                                               formProvider: ConfirmDeleteFormProvider,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val view: confirmDelete
-                                              )(implicit val executionContext: ExecutionContext) extends ConfirmDeleteController with Retrievals {
+class ConfirmDeletePartnerController @Inject()(
+                                                override val messagesApi: MessagesApi,
+                                                authenticate: AuthAction,
+                                                allowAccess: AllowAccessActionProvider,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                val cacheConnector: UserAnswersCacheConnector,
+                                                formProvider: ConfirmDeleteFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: confirmDelete
+                                              )(implicit val executionContext: ExecutionContext)
+  extends ConfirmDeleteController with Retrievals {
 
   def form(partnerName: String)(implicit messages: Messages): Form[Boolean] = formProvider(partnerName)
 

@@ -16,10 +16,9 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
-import controllers.register.company.routes.AddCompanyDirectorsController
+import controllers.register.company.routes
 import controllers.{ConfirmDeleteController, Retrievals}
 import forms.ConfirmDeleteFormProvider
 import identifiers.register.company.directors.DirectorNameId
@@ -34,22 +33,22 @@ import views.html.confirmDelete
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class ConfirmDeleteDirectorController @Inject()(val appConfig: FrontendAppConfig,
-                                                override val messagesApi: MessagesApi,
-                                                val allowAccess: AllowAccessActionProvider,
-                                                authenticate: AuthAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                val cacheConnector: UserAnswersCacheConnector,
-                                                formProvider: ConfirmDeleteFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                val view: confirmDelete
+class ConfirmDeleteDirectorController @Inject()(
+                                                 override val messagesApi: MessagesApi,
+                                                 val allowAccess: AllowAccessActionProvider,
+                                                 authenticate: AuthAction,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 val cacheConnector: UserAnswersCacheConnector,
+                                                 formProvider: ConfirmDeleteFormProvider,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 val view: confirmDelete
                                                )(implicit val executionContext: ExecutionContext) extends ConfirmDeleteController with Retrievals {
 
   def form(directorName: String)(implicit messages: Messages): Form[Boolean] = formProvider(directorName)
 
   private def vm(index: Index, name: String, mode: Mode, returnLink: Option[String])(implicit request: DataRequest[AnyContent]) = ConfirmDeleteViewModel(
-    routes.ConfirmDeleteDirectorController.onSubmit(mode, index),
+    controllers.register.company.directors.routes.ConfirmDeleteDirectorController.onSubmit(mode, index),
     controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode),
     Message("confirmDeleteDirector.title"),
     "confirmDeleteDirector.heading",
@@ -62,14 +61,14 @@ class ConfirmDeleteDirectorController @Inject()(val appConfig: FrontendAppConfig
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       DirectorNameId(index).retrieve.map { details =>
-        get(vm(index, details.fullName, mode, Some(companyTaskListUrl())), details.isDeleted, routes.AlreadyDeletedController.onPageLoad(index), mode)
+        get(vm(index, details.fullName, mode, Some(companyTaskListUrl())), details.isDeleted, controllers.register.company.directors.routes.AlreadyDeletedController.onPageLoad(index), mode)
       }
   }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       DirectorNameId(index).retrieve.map { details =>
-        post(vm(index, details.fullName, mode, Some(companyTaskListUrl())), DirectorNameId(index), AddCompanyDirectorsController.onPageLoad(mode), mode)
+        post(vm(index, details.fullName, mode, Some(companyTaskListUrl())), DirectorNameId(index), routes.AddCompanyDirectorsController.onPageLoad(mode), mode)
       }
   }
 

@@ -27,6 +27,6 @@ class VariationDeclarationFormProvider extends CheckboxMapping {
 
   def apply(): Form[Boolean] =
     Form(
-      fieldName -> checkboxMapping(fieldName, trueValue, acceptTrueOnly = true, invalidKey)
+      fieldName -> checkboxMapping(trueValue, acceptTrueOnly = true, invalidKey)
     )
 }

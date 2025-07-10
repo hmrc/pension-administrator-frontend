@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import models.Mode
@@ -34,8 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 trait EnterNumberController extends FrontendBaseController with I18nSupport {
 
   implicit val executionContext: ExecutionContext
-
-  protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 

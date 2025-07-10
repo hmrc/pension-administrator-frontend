@@ -17,7 +17,6 @@
 package controllers.register.partnership
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
@@ -30,8 +29,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
-import utils.annotations.NoRLSCheck
-import utils.annotations.Partnership
+import utils.annotations.{NoRLSCheck, Partnership}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
@@ -39,7 +37,7 @@ import views.html.address.manualAddress
 
 import scala.concurrent.ExecutionContext
 
-class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppConfig,
+class PartnershipContactAddressController @Inject()(
                                                     val cacheConnector: UserAnswersCacheConnector,
                                                     @Partnership val navigator: Navigator,
                                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,

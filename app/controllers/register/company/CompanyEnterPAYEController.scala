@@ -17,7 +17,6 @@
 package controllers.register.company
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -35,17 +34,17 @@ import views.html.enterPAYE
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
-                                           val cacheConnector: UserAnswersCacheConnector,
-                                           @RegisterCompany val navigator: Navigator,
-                                           @RegisterCompanyV2 val navigatorV2: Navigator,
-                                           authenticate: AuthAction,
-                                           allowAccess: AllowAccessActionProvider,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           formProvider: EnterPAYEFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val view: enterPAYE
+class CompanyEnterPAYEController @Inject()(
+                                            val cacheConnector: UserAnswersCacheConnector,
+                                            @RegisterCompany val navigator: Navigator,
+                                            @RegisterCompanyV2 val navigatorV2: Navigator,
+                                            authenticate: AuthAction,
+                                            allowAccess: AllowAccessActionProvider,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            formProvider: EnterPAYEFormProvider,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: enterPAYE
                                           )(implicit val executionContext: ExecutionContext) extends EnterPAYEController with Retrievals {
 
   protected def form(companyName: String)
@@ -76,7 +75,7 @@ class CompanyEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
           for {
             newCache <- cacheConnector.save(EnterPAYEId, value)
           } yield {
-              Redirect(navigatorV2.nextPage(EnterPAYEId, mode, UserAnswers(newCache)))
+            Redirect(navigatorV2.nextPage(EnterPAYEId, mode, UserAnswers(newCache)))
           }
       )
   }

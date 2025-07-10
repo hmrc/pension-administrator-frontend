@@ -37,7 +37,6 @@ class AdviserPhoneControllerSpec extends ControllerWithCommonBehaviour {
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new AdviserPhoneController(
     new FakeNavigator(onwardRoute),
-    frontendAppConfig,
     FakeUserAnswersCacheConnector,
     FakeAuthAction,
     FakeAllowAccessProvider(config = frontendAppConfig),

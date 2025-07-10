@@ -16,11 +16,9 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.partnership.partners.PartnerNameId
-import javax.inject.Inject
 import models.{Index, Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,15 +27,16 @@ import utils.Enumerable
 import viewmodels.{AlreadyDeletedViewModel, Message}
 import views.html.alreadyDeleted
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
-class AlreadyDeletedController @Inject()(appConfig: FrontendAppConfig,
-                                         authenticate: AuthAction,
-                                         allowAccess: AllowAccessActionProvider,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         val view: alreadyDeleted
+class AlreadyDeletedController @Inject()(
+                                          authenticate: AuthAction,
+                                          allowAccess: AllowAccessActionProvider,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: alreadyDeleted
                                         ) extends FrontendBaseController with Retrievals with Enumerable.Implicits with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

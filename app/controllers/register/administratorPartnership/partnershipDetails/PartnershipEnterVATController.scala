@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partnershipDetails
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.VATNumberController
@@ -34,16 +33,16 @@ import views.html.enterVAT
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnershipEnterVATController @Inject()(val appConfig: FrontendAppConfig,
-                                              val cacheConnector: UserAnswersCacheConnector,
-                                              @PartnershipV2 val navigator: Navigator,
-                                              authenticate: AuthAction,
-                                              allowAccess: AllowAccessActionProvider,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: EnterVATFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val view: enterVAT
+class PartnershipEnterVATController @Inject()(
+                                               val cacheConnector: UserAnswersCacheConnector,
+                                               @PartnershipV2 val navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               allowAccess: AllowAccessActionProvider,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: EnterVATFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: enterVAT
                                              )(implicit val executionContext: ExecutionContext) extends VATNumberController {
 
   private def form(partnershipName: String)

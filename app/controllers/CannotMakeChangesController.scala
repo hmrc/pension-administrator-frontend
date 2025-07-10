@@ -16,18 +16,17 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
-import javax.inject.Inject
 import models.UpdateMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.cannotMakeChanges
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CannotMakeChangesController @Inject()(val appConfig: FrontendAppConfig,
+class CannotMakeChangesController @Inject()(
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,

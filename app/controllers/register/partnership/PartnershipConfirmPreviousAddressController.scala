@@ -16,14 +16,12 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
 import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{ExistingCurrentAddressId, PartnershipConfirmPreviousAddressId, PartnershipPreviousAddressId}
-import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,20 +32,21 @@ import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnershipConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                            val dataCacheConnector: UserAnswersCacheConnector,
-                                                            @Partnership val navigator: Navigator,
-                                                            authenticate: AuthAction,
-                                                            @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                                            getData: DataRetrievalAction,
-                                                            requireData: DataRequiredAction,
-                                                            val countryOptions: CountryOptions,
-                                                            val controllerComponents: MessagesControllerComponents,
-                                                            val view: sameContactAddress
-                                                            )(implicit val executionContext: ExecutionContext
-                                                            ) extends ConfirmPreviousAddressController with I18nSupport {
+class PartnershipConfirmPreviousAddressController @Inject()(
+                                                             val dataCacheConnector: UserAnswersCacheConnector,
+                                                             @Partnership val navigator: Navigator,
+                                                             authenticate: AuthAction,
+                                                             @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                                             getData: DataRetrievalAction,
+                                                             requireData: DataRequiredAction,
+                                                             val countryOptions: CountryOptions,
+                                                             val controllerComponents: MessagesControllerComponents,
+                                                             val view: sameContactAddress
+                                                           )(implicit val executionContext: ExecutionContext)
+  extends ConfirmPreviousAddressController with I18nSupport {
 
   private[controllers] val postCall = routes.PartnershipConfirmPreviousAddressController.onSubmit _
   private[controllers] val title: Message = "confirmPreviousAddress.title"

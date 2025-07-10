@@ -16,7 +16,6 @@
 
 package controllers.register.adviser
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.UpdateContactAddressId
@@ -40,16 +39,17 @@ import views.html.check_your_answers
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                           @Adviser navigator: Navigator,
-                                           authenticate: AuthAction,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           dataCompletion: DataCompletion,
-                                           implicit val countryOptions: CountryOptions,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val view: check_your_answers
-                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
+class CheckYourAnswersController @Inject()(
+                                            @Adviser navigator: Navigator,
+                                            authenticate: AuthAction,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            dataCompletion: DataCompletion,
+                                            implicit val countryOptions: CountryOptions,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: check_your_answers
+                                          )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
@@ -65,15 +65,15 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       isDataComplete match {
         case true =>
           request.userAnswers.get(BusinessTypeId) match {
-             case Some(BusinessType.LimitedCompany) | Some(BusinessType.UnlimitedCompany) =>
-               Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
+            case Some(BusinessType.LimitedCompany) | Some(BusinessType.UnlimitedCompany) =>
+              Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
             case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
               Redirect(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
-             case None => // Must be individual
-               Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
+            case None => // Must be individual
+              Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers))
             case _ =>
               Redirect(controllers.routes.SessionExpiredController.onPageLoad)
-            }
+          }
         case false => cyaPage(mode, Some(companyTaskListUrl()))
       }
   }
@@ -93,7 +93,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       routes.CheckYourAnswersController.onSubmit(mode),
       if (displayReturnLink) psaName() else None,
       mode,
-      dataCompletion.isAdviserComplete(request.userAnswers,mode),
+      dataCompletion.isAdviserComplete(request.userAnswers, mode),
       returnLink = returnLink
     ))
   }

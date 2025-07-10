@@ -38,7 +38,6 @@ class CannotDeregisterControllerSpec extends ControllerSpecBase with ScalaFuture
 
   private def controller =
     new CannotDeregisterController(
-      frontendAppConfig,
       FakeAuthAction(),
       controllerComponents,
       view

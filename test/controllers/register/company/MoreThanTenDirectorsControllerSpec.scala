@@ -51,7 +51,7 @@ class MoreThanTenDirectorsControllerSpec extends ControllerSpecBase {
     )
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
-    new MoreThanTenDirectorsController(frontendAppConfig,
+    new MoreThanTenDirectorsController(
       messagesApi,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),

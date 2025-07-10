@@ -46,7 +46,6 @@ class CompanyNameControllerSpec extends ControllerSpecBase with BusinessNameCont
 
   def createController(userAnswers: UserAnswers): CompanyNameController =
     new CompanyNameController(
-      frontendAppConfig,
       new FakeUserAnswersCacheConnector{},
       new FakeNavigator(onwardRoute),
       FakeAuthAction,

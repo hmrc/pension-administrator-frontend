@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -36,7 +35,7 @@ import views.html.hasReferenceNumber
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyTradingOverAYearController @Inject()(override val appConfig: FrontendAppConfig,
+class CompanyTradingOverAYearController @Inject()(
                                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                                   @RegisterCompany override val navigator: Navigator,
                                                   @RegisterContactV2 val navigatorV2: Navigator,

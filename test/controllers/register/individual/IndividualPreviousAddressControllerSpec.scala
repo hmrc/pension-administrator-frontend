@@ -55,7 +55,6 @@ class IndividualPreviousAddressControllerSpec extends ControllerSpecBase with Mo
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDataUKResident) =
     new IndividualPreviousAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

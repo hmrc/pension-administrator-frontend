@@ -68,7 +68,6 @@ class DirectorAddressControllerSpec extends ControllerSpecBase with ScalaFutures
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new DirectorAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAllowAccessProvider(config = frontendAppConfig),

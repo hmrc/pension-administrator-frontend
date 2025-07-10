@@ -71,7 +71,6 @@ class PartnershipSameContactAddressControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction) =
     new PartnershipSameContactAddressController(
       new FakeNavigator(desiredRoute = onwardRoute),
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),

@@ -16,7 +16,6 @@
 
 package controllers.address
 
-import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -37,8 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait PostcodeLookupController extends FrontendBaseController with Retrievals with I18nSupport {
   implicit val executionContext: ExecutionContext
-
-  protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 

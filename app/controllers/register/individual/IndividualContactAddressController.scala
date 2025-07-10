@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ManualAddressController
@@ -24,16 +23,11 @@ import forms.AddressFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId}
-
-import javax.inject.Inject
+import models.{Address, Mode}
 import models.requests.DataRequest
-import models.Address
-import models.Mode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.Action
-import play.api.mvc.AnyContent
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.{AuthWithIV, Individual, NoRLSCheck}
 import utils.countryOptions.CountryOptions
@@ -41,9 +35,10 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualContactAddressController @Inject()(val appConfig: FrontendAppConfig,
+class IndividualContactAddressController @Inject()(
                                                    val cacheConnector: UserAnswersCacheConnector,
                                                    @Individual val navigator: Navigator,
                                                    @AuthWithIV authenticate: AuthAction,

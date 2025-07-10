@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership
 
-import config.FrontendAppConfig
 import controllers.actions._
 import models.Mode
 import play.api.i18n.I18nSupport
@@ -26,13 +25,13 @@ import views.html.register.company.companyNotFound
 
 import javax.inject.Inject
 
-class PartnershipCompanyNotFoundController @Inject()(appConfig: FrontendAppConfig,
-                                                     authenticate: AuthAction,
-                                                     allowAccess: AllowAccessActionProvider,
-                                                     getData: DataRetrievalAction,
-                                                     requireData: DataRequiredAction,
-                                                     val controllerComponents: MessagesControllerComponents,
-                                                     val view: companyNotFound
+class PartnershipCompanyNotFoundController @Inject()(
+                                                      authenticate: AuthAction,
+                                                      allowAccess: AllowAccessActionProvider,
+                                                      getData: DataRetrievalAction,
+                                                      requireData: DataRequiredAction,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      val view: companyNotFound
                                                     ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
