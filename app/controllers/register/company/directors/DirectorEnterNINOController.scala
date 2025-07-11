@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.NINOController
@@ -35,7 +34,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorEnterNINOController @Inject()(@CompanyDirector val navigator: Navigator,
-                                            val appConfig: FrontendAppConfig,
                                             val cacheConnector: UserAnswersCacheConnector,
                                             authenticate: AuthAction,
                                             val allowAccess: AllowAccessActionProvider,

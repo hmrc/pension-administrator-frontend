@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -25,7 +24,6 @@ import controllers.address.NonUKAddressController
 import forms.address.NonUKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipRegisteredAddressId
-import javax.inject.Inject
 import models.{Address, Mode, RegistrationLegalStatus}
 import play.api.data.Form
 import play.api.i18n.Messages
@@ -38,10 +36,10 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.nonukAddress
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnershipRegisteredAddressController @Inject()(
-                                                        override val appConfig: FrontendAppConfig,
                                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                                         override val registrationConnector: RegistrationConnector,
                                                         @Partnership override val navigator: Navigator,
@@ -53,12 +51,12 @@ class PartnershipRegisteredAddressController @Inject()(
                                                         val countryOptions: CountryOptions,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         val view: nonukAddress
-                                                        )(implicit val executionContext: ExecutionContext
-                                                        ) extends NonUKAddressController with Retrievals {
+                                                      )(implicit val executionContext: ExecutionContext)
+  extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
 
-  protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[?], viewModel: ManualAddressViewModel)(
+  protected override def createView(preparedForm: Form[?], viewModel: ManualAddressViewModel)(
     implicit request: Request[?], messages: Messages): () => HtmlFormat.Appendable = () =>
     view(preparedForm, viewModel)(request, messages)
 
@@ -71,14 +69,14 @@ class PartnershipRegisteredAddressController @Inject()(
     Some(Message("partnershipRegisteredNonUKAddress.hintText"))
   )
 
-  def onPageLoad(mode : Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.map { name =>
         get(PartnershipRegisteredAddressId, addressViewModel(name))
       }
   }
 
-  def onSubmit(mode : Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.map { name =>
         post(name, PartnershipRegisteredAddressId, addressViewModel(name), RegistrationLegalStatus.Partnership)

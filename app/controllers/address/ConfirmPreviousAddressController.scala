@@ -16,7 +16,6 @@
 
 package controllers.address
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import forms.address.ConfirmPreviousAddressFormProvider
@@ -37,8 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait ConfirmPreviousAddressController extends FrontendBaseController with Retrievals {
   implicit val executionContext: ExecutionContext
-
-  protected def appConfig: FrontendAppConfig
 
   protected def controllerComponents: MessagesControllerComponents
 

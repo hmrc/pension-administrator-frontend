@@ -16,31 +16,28 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.individual._
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
-import play.api.mvc.{Result, AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
-import utils.annotations.Individual
-import utils.annotations.NoRLSCheck
+import utils.annotations.{Individual, NoRLSCheck}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
-import scala.concurrent.{Future, ExecutionContext}
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class IndividualPreviousAddressListController @Inject()(
                                                          @Individual override val navigator: Navigator,
-                                                         override val appConfig: FrontendAppConfig,
                                                          override val cacheConnector: UserAnswersCacheConnector,
                                                          authenticate: AuthAction,
                                                          @NoRLSCheck override val allowAccess: AllowAccessActionProvider,

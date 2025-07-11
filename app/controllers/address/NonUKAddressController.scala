@@ -16,7 +16,6 @@
 
 package controllers.address
 
-import config.FrontendAppConfig
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -42,8 +41,6 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
 
   implicit val executionContext: ExecutionContext
 
-  protected def appConfig: FrontendAppConfig
-
   protected def dataCacheConnector: UserAnswersCacheConnector
 
   protected def registrationConnector: RegistrationConnector
@@ -56,29 +53,29 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
 
   protected def view: nonukAddress
 
-  protected def createView(appConfig: FrontendAppConfig, preparedForm: Form[?], viewModel: ManualAddressViewModel)(
-    implicit request: Request[?], messages: Messages): () => HtmlFormat.Appendable = () =>
+  protected def createView(preparedForm: Form[?], viewModel: ManualAddressViewModel)
+                          (implicit request: Request[?], messages: Messages): () => HtmlFormat.Appendable = () =>
     view(preparedForm, viewModel)(request, messages)
 
-  protected def get(id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel
-                   )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  protected def get(id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel)
+                   (implicit request: DataRequest[AnyContent]): Future[Result] = {
 
     val preparedForm = request.userAnswers.get(id).fold(form)(v => form.fill(v.toPrepopAddress))
-    val view = createView(appConfig, preparedForm, viewModel)
+    val view = createView(preparedForm, viewModel)
 
     Future.successful(Ok(view()))
   }
 
-  protected def post(name: String, id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel, legalStatus: RegistrationLegalStatus)(
-    implicit request: DataRequest[AnyContent]): Future[Result] = {
+  protected def post(name: String, id: TypedIdentifier[TolerantAddress], viewModel: ManualAddressViewModel, legalStatus: RegistrationLegalStatus)
+                    (implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithError: Form[?]) => {
-        val view = createView(appConfig, formWithError, viewModel)
+        val view = createView(formWithError, viewModel)
         Future.successful(BadRequest(view()))
       },
       address => {
         if (address.country.equals("GB")) {
-          redirectUkAddress(request.externalId, address, id)
+          redirectUkAddress(address, id)
         } else {
           val cacheMap = dataCacheConnector.save(id, address.toTolerantAddress)
           val resultAfterRegisterWithoutID = cacheMap.flatMap { _ =>
@@ -102,7 +99,7 @@ trait NonUKAddressController extends FrontendBaseController with Retrievals with
     )
   }
 
-  def redirectUkAddress(extId: String,
+  def redirectUkAddress(
                         address: Address,
                         id: TypedIdentifier[TolerantAddress]
                        )(implicit hc: HeaderCarrier): Future[Result] =

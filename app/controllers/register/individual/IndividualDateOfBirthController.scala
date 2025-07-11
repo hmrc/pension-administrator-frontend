@@ -16,15 +16,12 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.individual.IndividualDateOfBirthFormProvider
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
-
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -36,10 +33,10 @@ import utils.annotations.{AuthWithIV, Individual}
 import utils.{Navigator, UserAnswers}
 import views.html.register.individual.individualDateOfBirth
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualDateOfBirthController @Inject()(
-                                                 appConfig: FrontendAppConfig,
                                                  dataCacheConnector: UserAnswersCacheConnector,
                                                  @Individual navigator: Navigator,
                                                  @AuthWithIV

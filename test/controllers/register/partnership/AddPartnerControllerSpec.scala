@@ -168,7 +168,6 @@ object AddPartnerControllerSpec extends AddPartnerControllerSpec {
                           ) =
     new AddPartnerController(
       frontendAppConfig,
-      FakeUserAnswersCacheConnector,
       navigator,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),

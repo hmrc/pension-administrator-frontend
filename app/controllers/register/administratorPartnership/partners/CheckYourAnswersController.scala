@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
@@ -38,23 +37,23 @@ import views.html.check_your_answers
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                           authenticate: AuthAction,
-                                           @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           dataCompletion: DataCompletion,
-                                           @PartnershipPartnerV2 navigator: Navigator,
-                                           implicit val countryOptions: CountryOptions,
-                                           override val cacheConnector: UserAnswersCacheConnector,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val view: check_your_answers
+class CheckYourAnswersController @Inject()(
+                                            authenticate: AuthAction,
+                                            @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            dataCompletion: DataCompletion,
+                                            @PartnershipPartnerV2 navigator: Navigator,
+                                            implicit val countryOptions: CountryOptions,
+                                            override val cacheConnector: UserAnswersCacheConnector,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: check_your_answers
                                           )(implicit val executionContext: ExecutionContext)
-                                            extends FrontendBaseController with Retrievals with Variations with I18nSupport {
+  extends FrontendBaseController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerNameV2(mode, index) {_ =>
+      retrievePartnerNameV2(mode, index) { _ =>
         loadCyaPage(index, mode)
       }
   }
@@ -95,7 +94,7 @@ class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
       psaName(),
       mode,
       isComplete = true,
-      returnLink =  Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
+      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
     ))
     )
   }

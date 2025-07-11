@@ -156,7 +156,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-          val result = controller(dataRetrievalAction, dataCacheConnector).onSubmit(NormalMode)(postRequest)
+          val result = controller(dataRetrievalAction, dataCacheConnector).onSubmit()(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -166,7 +166,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       "no" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
-        val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
+        val result = controller(dataRetrievalAction).onSubmit()(postRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
@@ -212,7 +212,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
+          val result = controller(dataRetrievalAction).onSubmit()(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
@@ -220,7 +220,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
         "no existing data is found" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+          val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)

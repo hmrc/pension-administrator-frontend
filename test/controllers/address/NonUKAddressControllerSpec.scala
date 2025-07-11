@@ -18,7 +18,6 @@ package controllers.address
 
 import base.SpecBase
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.RegistrationConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.address.NonUKAddressFormProvider
@@ -201,7 +200,6 @@ object NonUKAddressControllerSpec extends NonUKAddressControllerDataMocks {
   val view: nonukAddress = app.injector.instanceOf[nonukAddress]
 
   class TestController @Inject()(
-                                  override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val dataCacheConnector: UserAnswersCacheConnector,
                                   override val registrationConnector: RegistrationConnector,

@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -24,25 +23,22 @@ import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId, PartnershipPreviousAddressPostCodeLookupId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
-import utils.annotations.NoRLSCheck
-import utils.annotations.Partnership
+import utils.annotations.{NoRLSCheck, Partnership}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 
 class PartnershipPreviousAddressListController @Inject()(
                                                           @Partnership override val navigator: Navigator,
-                                                          override val appConfig: FrontendAppConfig,
                                                           override val cacheConnector: UserAnswersCacheConnector,
                                                           @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                           authenticate: AuthAction,

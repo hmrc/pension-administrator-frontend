@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -35,8 +34,6 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
   private val validRequest = fakeRequest.withFormUrlEncodedBody("agree" -> "agreed")
   val email = "test@test.com"
   val businessName = "MyCompany"
-
-  private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
   val view: declarationFitAndProper = app.injector.instanceOf[declarationFitAndProper]
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -88,7 +85,6 @@ class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with Mock
                           fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
                         ) =
     new DeclarationFitAndProperController(
-      appConfig,
       messagesApi,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),

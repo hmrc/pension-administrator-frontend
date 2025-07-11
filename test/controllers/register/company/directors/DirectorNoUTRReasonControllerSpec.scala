@@ -40,7 +40,6 @@ class DirectorNoUTRReasonControllerSpec extends NoUTRReasonControllerWithCommonB
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorNoUTRReasonController(
     new FakeNavigator(onwardRoute),
-    frontendAppConfig,
     FakeUserAnswersCacheConnector,
     FakeAuthAction,
     FakeAllowAccessProvider(config = frontendAppConfig),

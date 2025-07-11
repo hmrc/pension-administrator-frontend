@@ -17,7 +17,6 @@
 package controllers.register.company
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
@@ -36,7 +35,7 @@ import views.html.address.manualAddress
 
 import scala.concurrent.ExecutionContext
 
-class CompanyContactAddressController @Inject()(override val appConfig: FrontendAppConfig,
+class CompanyContactAddressController @Inject()(
                                                 override val cacheConnector: UserAnswersCacheConnector,
                                                 @RegisterCompany override val navigator: Navigator,
                                                 authenticate: AuthAction,

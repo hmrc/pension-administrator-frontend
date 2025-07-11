@@ -16,7 +16,6 @@
 
 package controllers.register.adviser
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
@@ -35,7 +34,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AdviserPhoneController @Inject()(@Adviser val navigator: Navigator,
-                                       val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        @NoRLSCheck val allowAccess: AllowAccessActionProvider,

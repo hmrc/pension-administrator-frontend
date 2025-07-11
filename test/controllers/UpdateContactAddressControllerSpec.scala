@@ -62,7 +62,6 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new UpdateContactAddressController(
-      frontendAppConfig,
       FakeAuthAction(UserType.Individual),
       dataRetrievalAction,
       controllerComponents,

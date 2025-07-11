@@ -16,36 +16,34 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register._
-import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.annotations.NoRLSCheck
-import utils.annotations.Register
+import utils.annotations.{NoRLSCheck, Register}
 import utils.{Navigator, UserAnswers}
 import views.html.register.declarationFitAndProper
 
-import scala.concurrent.{Future, ExecutionContext}
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,
-                                                  override val messagesApi: MessagesApi,
-                                                  authenticate: AuthAction,
-                                                  @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                                  getData: DataRetrievalAction,
-                                                  requireData: DataRequiredAction,
-                                                  allowDeclaration: AllowDeclarationActionProvider,
-                                                  @Register navigator: Navigator,
-                                                  dataCacheConnector: UserAnswersCacheConnector,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  val view: declarationFitAndProper
+class DeclarationFitAndProperController @Inject()(
+                                                   override val messagesApi: MessagesApi,
+                                                   authenticate: AuthAction,
+                                                   @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                                   getData: DataRetrievalAction,
+                                                   requireData: DataRequiredAction,
+                                                   allowDeclaration: AllowDeclarationActionProvider,
+                                                   @Register navigator: Navigator,
+                                                   dataCacheConnector: UserAnswersCacheConnector,
+                                                   val controllerComponents: MessagesControllerComponents,
+                                                   val view: declarationFitAndProper
                                                  )(implicit val executionContext: ExecutionContext)
-                                                   extends FrontendBaseController with I18nSupport with Retrievals {
+  extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen
     getData andThen allowDeclaration(mode) andThen requireData).async {

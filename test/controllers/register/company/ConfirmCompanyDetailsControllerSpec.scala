@@ -32,7 +32,7 @@ import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 import utils.countryOptions.CountryOptions
-import utils.{AddressHelper, FakeNavigator, UserAnswers}
+import utils.{AddressHelper, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import java.time.LocalDate
@@ -166,7 +166,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       "yes must redirect to next page" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-          val result = controller(dataRetrievalActionForPost).onSubmit(NormalMode)(postRequest)
+          val result = controller(dataRetrievalActionForPost).onSubmit()(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -193,7 +193,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
         val dataRetrievalAction = new FakeDataRetrievalAction(Some(dataForPost))
 
-        val result = controller(dataRetrievalAction).onSubmit(NormalMode)(postRequest)
+        val result = controller(dataRetrievalAction).onSubmit()(postRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.company.routes.AddressController.onPageLoad().toString)
@@ -202,7 +202,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       "no must remove saved data from address and registration info ids" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
-        val result = controller(dataRetrievalActionForPost).onSubmit(NormalMode)(postRequest)
+        val result = controller(dataRetrievalActionForPost).onSubmit()(postRequest)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
@@ -251,7 +251,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
+          val result = controller(dataRetrievalAction).onSubmit()(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
@@ -263,7 +263,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
           )
 
           val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onSubmit(NormalMode)(fakeRequest)
+          val result = controller(dataRetrievalAction).onSubmit()(fakeRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
@@ -271,7 +271,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
         "no existing data is found" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+          val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
@@ -322,7 +322,6 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
   ) =
     new ConfirmCompanyDetailsController(
       dataCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,

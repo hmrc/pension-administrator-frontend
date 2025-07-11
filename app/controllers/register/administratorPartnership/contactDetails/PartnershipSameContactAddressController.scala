@@ -17,7 +17,6 @@
 package controllers.register.administratorPartnership.contactDetails
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
@@ -41,7 +40,6 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class PartnershipSameContactAddressController @Inject()(
                                                          @PartnershipV2 val navigator: Navigator,
-                                                         val appConfig: FrontendAppConfig,
                                                          val dataCacheConnector: UserAnswersCacheConnector,
                                                          authenticate: AuthAction,
                                                          @NoRLSCheck allowAccess: AllowAccessActionProvider,
@@ -51,8 +49,7 @@ class PartnershipSameContactAddressController @Inject()(
                                                          val countryOptions: CountryOptions,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          val view: sameContactAddress
-                                                       )(implicit val executionContext: ExecutionContext
-                                                       ) extends SameContactAddressController {
+                                                       )(implicit val executionContext: ExecutionContext) extends SameContactAddressController {
 
   private[controllers] val confirmText: Message = "same.contact.address.confirm.text"
 

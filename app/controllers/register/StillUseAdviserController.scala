@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
@@ -24,31 +23,31 @@ import forms.register.StillUseAdviserFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.VariationStillDeclarationWorkingKnowledgeId
 import identifiers.register.adviser.AdviserNameId
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.NoRLSCheck
-import utils.{Navigator, annotations, UserAnswers, Enumerable}
+import utils.{Enumerable, Navigator, UserAnswers, annotations}
 import views.html.register.stillUseAdviser
 
-import scala.concurrent.{Future, ExecutionContext}
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class StillUseAdviserController @Inject()(appConfig: FrontendAppConfig,
-                                          override val cacheConnector: UserAnswersCacheConnector,
-                                          @annotations.Variations navigator: Navigator,
-                                          authenticate: AuthAction,
-                                          @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                          getData: DataRetrievalAction,
-                                          requireData: DataRequiredAction,
-                                          formProvider: StillUseAdviserFormProvider,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val view: stillUseAdviser
-                                          )(implicit val executionContext: ExecutionContext
-                                          ) extends FrontendBaseController with Enumerable.Implicits  with I18nSupport with Variations with Retrievals {
+class StillUseAdviserController @Inject()(
+                                           override val cacheConnector: UserAnswersCacheConnector,
+                                           @annotations.Variations navigator: Navigator,
+                                           authenticate: AuthAction,
+                                           @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                           getData: DataRetrievalAction,
+                                           requireData: DataRequiredAction,
+                                           formProvider: StillUseAdviserFormProvider,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: stillUseAdviser
+                                         )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with Enumerable.Implicits with I18nSupport with Variations with Retrievals {
 
   private def form(): Form[Boolean] =
     formProvider()

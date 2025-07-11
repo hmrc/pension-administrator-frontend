@@ -16,14 +16,13 @@
 
 package models
 
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 abstract class RegisterWithIdResponse(address: TolerantAddress)
 
-case class OrganizationRegisterWithIdResponse(organisation: Organisation, address: TolerantAddress) extends RegisterWithIdResponse(address)
+case class OrganizationRegisterWithIdResponse(organisation: Organisation, address: TolerantAddress) extends RegisterWithIdResponse(address = address)
 
-case class IndividualRegisterWithIdResponse(individual: TolerantIndividual, address: TolerantAddress) extends RegisterWithIdResponse(address)
+case class IndividualRegisterWithIdResponse(individual: TolerantIndividual, address: TolerantAddress) extends RegisterWithIdResponse(address = address)
 
 sealed trait OrganizationRegistrationStatus
 case class OrganizationRegistration(response: OrganizationRegisterWithIdResponse, info: RegistrationInfo) extends OrganizationRegistrationStatus
@@ -34,20 +33,10 @@ case class IndividualRegistration(response: IndividualRegisterWithIdResponse, in
 
 object RegisterWithIdResponse {
 
-  implicit lazy val readsOrganizationRegisterWithIdResponse: Reads[OrganizationRegisterWithIdResponse] =
-    ((JsPath \ "organisation").read[Organisation] ~ (JsPath \ "address").read[TolerantAddress]).apply(OrganizationRegisterWithIdResponse)
+  implicit lazy val formatsOrganizationRegisterWithIdResponse: Format[OrganizationRegisterWithIdResponse] =
+    Json.format[OrganizationRegisterWithIdResponse]
 
-  implicit lazy val writesOrganizationRegisterWithIdResponse: Writes[OrganizationRegisterWithIdResponse] =
-    Writes[OrganizationRegisterWithIdResponse] { response =>
-      Json.obj(
-        "address" -> response.address,
-        "organisation" -> response.organisation
-      )
-    }
-
-  implicit lazy val formatsIndividualRegisterWithIdResponse: Format[IndividualRegisterWithIdResponse] = (
-    (JsPath \ "individual").format[TolerantIndividual] and
-      (JsPath \ "address").format[TolerantAddress]
-    ) (IndividualRegisterWithIdResponse.apply, unlift(IndividualRegisterWithIdResponse.unapply))
+  implicit lazy val formatsIndividualRegisterWithIdResponse: Format[IndividualRegisterWithIdResponse] =
+    Json.format[IndividualRegisterWithIdResponse]
 
 }

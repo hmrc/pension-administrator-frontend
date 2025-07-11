@@ -16,15 +16,12 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.AddressYearsController
 import forms.address.AddressYearsFormProvider
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualAddressYearsId, IndividualDetailsId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{AddressYears, Mode}
 import play.api.data.Form
@@ -36,10 +33,10 @@ import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualAddressYearsController @Inject()(@Individual override val navigator: Navigator,
-                                                 override val appConfig: FrontendAppConfig,
                                                  override val cacheConnector: UserAnswersCacheConnector,
                                                  @AuthWithIV authenticate: AuthAction,
                                                  @NoRLSCheck override val allowAccess: AllowAccessActionProvider,

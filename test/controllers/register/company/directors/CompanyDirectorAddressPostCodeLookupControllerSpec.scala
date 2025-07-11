@@ -59,7 +59,6 @@ class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecB
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getRequiredData) =
     new CompanyDirectorAddressPostCodeLookupController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       fakeAddressLookupConnector,
       new FakeNavigator(desiredRoute = onwardRoute),

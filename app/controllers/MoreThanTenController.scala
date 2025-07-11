@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import forms.MoreThanTenFormProvider
 import models.Mode
 import models.requests.DataRequest
@@ -31,8 +30,6 @@ import views.html.moreThanTen
 import scala.concurrent.Future
 
 trait MoreThanTenController extends FrontendBaseController with I18nSupport with Variations {
-
-  protected def appConfig: FrontendAppConfig
 
   protected def navigator: Navigator
 

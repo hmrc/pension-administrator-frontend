@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -37,7 +36,6 @@ trait BusinessNameController extends FrontendBaseController with I18nSupport wit
 
   implicit val executionContext: ExecutionContext
 
-  def appConfig: FrontendAppConfig
   def cacheConnector: UserAnswersCacheConnector
   def navigator: Navigator
   def authenticate: AuthAction

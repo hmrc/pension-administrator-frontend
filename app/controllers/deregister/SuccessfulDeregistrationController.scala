@@ -16,23 +16,23 @@
 
 package controllers.deregister
 
-import config.FrontendAppConfig
 import controllers.Retrievals
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.deregister.successful_deregistration
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SuccessfulDeregistrationController @Inject()(appConfig: FrontendAppConfig,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: successful_deregistration
-                                      )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+class SuccessfulDeregistrationController @Inject()(
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    view: successful_deregistration
+                                                  )(implicit val ec: ExecutionContext)
+  extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(): Action[AnyContent] = Action.async {
     implicit request =>
-        Future.successful(Ok(view()))
+      Future.successful(Ok(view()))
   }
 }

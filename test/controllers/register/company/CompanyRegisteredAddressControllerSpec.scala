@@ -45,7 +45,6 @@ class CompanyRegisteredAddressControllerSpec extends NonUKAddressControllerDataM
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany, registrationConnector: RegistrationConnector = fakeRegistrationConnector,
                  userAnswersCacheConnector : UserAnswersCacheConnector = FakeUserAnswersCacheConnector) =
     new CompanyRegisteredAddressController(
-      frontendAppConfig,
       userAnswersCacheConnector,
       registrationConnector,
       new FakeNavigator(desiredRoute = onwardRoute),

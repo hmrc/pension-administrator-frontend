@@ -17,11 +17,10 @@
 package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import controllers.register.company.routes
+import identifiers.register.company._
+import identifiers.register._
 import identifiers.{Identifier, UpdateContactAddressId}
-import identifiers.register.company.{CompanyPhoneId, _}
-import identifiers.register.{AreYouInUKId, BusinessTypeId, _}
 import models.InternationalRegion._
 import models._
 import models.register.BusinessType
@@ -30,8 +29,7 @@ import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
 
 @Singleton
-class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
-                                         appConfig: FrontendAppConfig) extends Navigator {
+class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends Navigator {
 
   private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
     ua.get(AreYouInUKId) match {
@@ -39,8 +37,8 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
       case _ => controllers.register.routes.NonUKAdministratorController.onPageLoad()
     }
 
-// scalastyle:off cyclomatic.complexity
-// scalastyle:off method.length
+  // scalastyle:off cyclomatic.complexity
+  // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case BusinessUTRId => nextPageOrNonUkRedirect(ua, routes.CompanyNameController.onPageLoad)
 
@@ -159,7 +157,8 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions,
     }
   }
 
-  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+  private def updateContactAddressCYAPage(): Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+
   private def checkYourAnswers: Call =
     controllers.register.company.routes.CheckYourAnswersController.onPageLoad()
 

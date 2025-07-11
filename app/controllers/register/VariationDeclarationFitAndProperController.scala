@@ -16,37 +16,36 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
 import forms.register.VariationDeclarationFitAndProperFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register._
-import javax.inject.Inject
 import models._
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Action}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.{NoRLSCheck, Variations}
 import utils.{Navigator, UserAnswers}
 import views.html.register.variationDeclarationFitAndProper
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VariationDeclarationFitAndProperController @Inject()(val appConfig: FrontendAppConfig,
-                                                           authenticate: AuthAction,
-                                                           @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                                           getData: DataRetrievalAction,
-                                                           requireData: DataRequiredAction,
-                                                           @Variations navigator: Navigator,
-                                                           formProvider: VariationDeclarationFitAndProperFormProvider,
-                                                           dataCacheConnector: UserAnswersCacheConnector,
-                                                           val controllerComponents: MessagesControllerComponents,
-                                                           val view: variationDeclarationFitAndProper
+class VariationDeclarationFitAndProperController @Inject()(
+                                                            authenticate: AuthAction,
+                                                            @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                                            getData: DataRetrievalAction,
+                                                            requireData: DataRequiredAction,
+                                                            @Variations navigator: Navigator,
+                                                            formProvider: VariationDeclarationFitAndProperFormProvider,
+                                                            dataCacheConnector: UserAnswersCacheConnector,
+                                                            val controllerComponents: MessagesControllerComponents,
+                                                            val view: variationDeclarationFitAndProper
                                                           )(implicit val executionContext: ExecutionContext)
-                                                            extends FrontendBaseController with I18nSupport with Retrievals {
+  extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val form: Form[Boolean] = formProvider()
 

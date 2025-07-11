@@ -16,14 +16,11 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.partnership.partners.{HasPartnerNINOId, PartnerNameId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode}
 import play.api.data.Form
@@ -33,9 +30,10 @@ import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HasPartnerNINOController @Inject()(override val appConfig: FrontendAppConfig,
+class HasPartnerNINOController @Inject()(
                                          override val dataCacheConnector: UserAnswersCacheConnector,
                                          @PartnershipPartner override val navigator: Navigator,
                                          authenticate: AuthAction,

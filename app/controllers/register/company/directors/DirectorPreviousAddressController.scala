@@ -18,7 +18,6 @@ package controllers.register.company.directors
 
 import audit.AuditService
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
@@ -37,7 +36,7 @@ import views.html.address.manualAddress
 
 import scala.concurrent.ExecutionContext
 
-class DirectorPreviousAddressController @Inject()(override val appConfig: FrontendAppConfig,
+class DirectorPreviousAddressController @Inject()(
                                                   override val cacheConnector: UserAnswersCacheConnector,
                                                   @CompanyDirector override val navigator: Navigator,
                                                   override val allowAccess: AllowAccessActionProvider,

@@ -17,7 +17,6 @@
 package controllers.register.administratorPartnership.contactDetails
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -41,7 +40,6 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class PartnershipPreviousAddressPostCodeLookupController @Inject()(
                                                                     @PartnershipV2 val navigator: Navigator,
-                                                                    override val appConfig: FrontendAppConfig,
                                                                     override val cacheConnector: UserAnswersCacheConnector,
                                                                     override val addressLookupConnector: AddressLookupConnector,
                                                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,

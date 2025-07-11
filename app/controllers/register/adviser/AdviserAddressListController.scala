@@ -16,7 +16,6 @@
 
 package controllers.register.adviser
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -37,7 +36,7 @@ import views.html.address.addressList
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdviserAddressListController @Inject()(override val appConfig: FrontendAppConfig,
+class AdviserAddressListController @Inject()(
                                              override val cacheConnector: UserAnswersCacheConnector,
                                              @Adviser override val navigator: Navigator,
                                              @NoRLSCheck override val allowAccess: AllowAccessActionProvider,

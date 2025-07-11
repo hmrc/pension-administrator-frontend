@@ -17,7 +17,6 @@
 package controllers.register.administratorPartnership.contactDetails
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
@@ -38,21 +37,23 @@ import views.html.address.manualAddress
 
 import scala.concurrent.ExecutionContext
 
-class PartnershipContactAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                    val cacheConnector: UserAnswersCacheConnector,
-                                                    @PartnershipV2 val navigator: Navigator,
-                                                    @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
-                                                    authenticate: AuthAction,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    formProvider: UKAddressFormProvider,
-                                                    val countryOptions: CountryOptions,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    val view: manualAddress
-                                                   )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
+class PartnershipContactAddressController @Inject()(
+                                                     val cacheConnector: UserAnswersCacheConnector,
+                                                     @PartnershipV2 val navigator: Navigator,
+                                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
+                                                     authenticate: AuthAction,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: UKAddressFormProvider,
+                                                     val countryOptions: CountryOptions,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     val view: manualAddress
+                                                   )(implicit val executionContext: ExecutionContext)
+  extends ManualAddressController with I18nSupport {
 
-  protected val form: Form[Address] = formProvider("error.country.invalid")
+  protected val form: Form[Address] = formProvider()
   private val isUkHintText = true
+
   def viewmodel(mode: Mode, partnershipName: String)(implicit request: DataRequest[AnyContent]) =
     ManualAddressViewModel(
       postCall = routes.PartnershipContactAddressController.onSubmit(mode),

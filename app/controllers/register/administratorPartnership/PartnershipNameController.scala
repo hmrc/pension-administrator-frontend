@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.BusinessNameController
@@ -30,7 +29,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnershipNameController @Inject()(
-                                           override val appConfig: FrontendAppConfig,
                                            override val cacheConnector: UserAnswersCacheConnector,
                                            @PartnershipV2 val navigator: Navigator,
                                            override val authenticate: AuthAction,

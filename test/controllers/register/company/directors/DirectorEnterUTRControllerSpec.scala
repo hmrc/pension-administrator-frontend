@@ -38,7 +38,6 @@ class DirectorEnterUTRControllerSpec extends ControllerWithCommonBehaviour {
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEnterUTRController(
     new FakeNavigator(onwardRoute),
-    frontendAppConfig,
     FakeUserAnswersCacheConnector,
     FakeAuthAction,
     FakeAllowAccessProvider(config = frontendAppConfig),

@@ -16,12 +16,11 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.UTRController
-import identifiers.register.{BusinessTypeId, BusinessUTRId}
+import identifiers.register.BusinessUTRId
 import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -33,30 +32,25 @@ import views.html.register.utr
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CompanyUTRController @Inject()(override val appConfig: FrontendAppConfig,
-                                     override val cacheConnector: UserAnswersCacheConnector,
-                                     @RegisterCompany override val navigator: Navigator,
-                                     authenticate: AuthAction,
-                                     override val allowAccess: AllowAccessActionProvider,
-                                     getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     val view: utr
+class CompanyUTRController @Inject()(
+                                      override val cacheConnector: UserAnswersCacheConnector,
+                                      @RegisterCompany override val navigator: Navigator,
+                                      authenticate: AuthAction,
+                                      override val allowAccess: AllowAccessActionProvider,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val view: utr
                                     )(implicit val executionContext: ExecutionContext) extends UTRController with I18nSupport with Retrievals {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      BusinessTypeId.retrieve.map { businessType =>
-        get(BusinessUTRId, Message("theCompany"), Message("utr.company.hint"), href)
-      }
+      get(BusinessUTRId, Message("theCompany"), Message("utr.company.hint"), href)
   }
 
   def onSubmit: Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-
-            BusinessTypeId.retrieve.map { businessType =>
-              post(BusinessUTRId, Message("theCompany"), Message("utr.company.hint"), href, NormalMode)
-            }
+      post(BusinessUTRId, Message("theCompany"), Message("utr.company.hint"), href, NormalMode)
   }
 
   def href: Call = routes.CompanyUTRController.onSubmit

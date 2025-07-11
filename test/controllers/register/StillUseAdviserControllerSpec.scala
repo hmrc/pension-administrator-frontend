@@ -105,7 +105,6 @@ class StillUseAdviserControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction = dataRetrievalActionWithAdviserAndBusinessDetails) =
     new StillUseAdviserController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

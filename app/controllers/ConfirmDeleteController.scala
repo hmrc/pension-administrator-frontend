@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import identifiers.TypedIdentifier
 import identifiers.register.company.MoreThanTenDirectorsId
@@ -36,8 +35,6 @@ import views.html.confirmDelete
 import scala.concurrent.Future
 
 trait ConfirmDeleteController extends FrontendBaseController with I18nSupport with Retrievals with Variations {
-
-  protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 

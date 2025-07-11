@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.{MoreThanTenController, Retrievals}
@@ -32,16 +31,17 @@ import views.html.moreThanTen
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class MoreThanTenPartnersController @Inject()(val appConfig: FrontendAppConfig,
-                                              override val cacheConnector: UserAnswersCacheConnector,
-                                              @PartnershipPartnerV2 val navigator: Navigator,
-                                              authenticate: AuthAction,
-                                              allowAccess: AllowAccessActionProvider,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val view: moreThanTen
-                                             )(implicit val executionContext: ExecutionContext) extends MoreThanTenController with Retrievals {
+class MoreThanTenPartnersController @Inject()(
+                                               override val cacheConnector: UserAnswersCacheConnector,
+                                               @PartnershipPartnerV2 val navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               allowAccess: AllowAccessActionProvider,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: moreThanTen
+                                             )(implicit val executionContext: ExecutionContext)
+  extends MoreThanTenController with Retrievals {
 
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): MoreThanTenViewModel =
     MoreThanTenViewModel(

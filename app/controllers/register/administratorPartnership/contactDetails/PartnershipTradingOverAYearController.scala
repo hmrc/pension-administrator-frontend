@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.contactDetails
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
@@ -35,7 +34,7 @@ import views.html.hasReferenceNumber
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnershipTradingOverAYearController @Inject()(override val appConfig: FrontendAppConfig,
+class PartnershipTradingOverAYearController @Inject()(
                                                       override val dataCacheConnector: UserAnswersCacheConnector,
                                                       @PartnershipV2 val navigator: Navigator,
                                                       authenticate: AuthAction,

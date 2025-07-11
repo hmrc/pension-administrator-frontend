@@ -47,7 +47,6 @@ class PartnershipNameControllerSpec extends ControllerSpecBase with BusinessName
 
   def createController(userAnswers: UserAnswers): PartnershipNameController =
     new PartnershipNameController(
-      frontendAppConfig,
       new FakeUserAnswersCacheConnector{},
       new FakeNavigator(onwardRoute),
       FakeAuthAction,

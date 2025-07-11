@@ -48,7 +48,6 @@ class DirectorPreviousAddressControllerSpec extends ControllerSpecBase with Scal
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getDirector) =
     new DirectorPreviousAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAllowAccessProvider(config = frontendAppConfig),

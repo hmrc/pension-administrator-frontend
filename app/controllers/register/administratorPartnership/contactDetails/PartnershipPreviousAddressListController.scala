@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.contactDetails
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -40,7 +39,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipPreviousAddressListController @Inject()(
                                                           @PartnershipV2 val navigator: Navigator,
-                                                          override val appConfig: FrontendAppConfig,
                                                           override val cacheConnector: UserAnswersCacheConnector,
                                                           @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
                                                           authenticate: AuthAction,

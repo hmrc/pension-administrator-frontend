@@ -41,7 +41,6 @@ class DirectorEmailControllerSpec extends ControllerWithCommonBehaviour {
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEmailController(
     new FakeNavigator(onwardRoute),
-    frontendAppConfig,
     FakeUserAnswersCacheConnector,
     FakeAuthAction,
     FakeAllowAccessProvider(config = frontendAppConfig),

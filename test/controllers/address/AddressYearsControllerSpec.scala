@@ -48,7 +48,7 @@ object AddressYearsControllerSpec {
 
   object FakeIdentifier extends TypedIdentifier[AddressYears]
 
-  class TestController @Inject()(override val appConfig: FrontendAppConfig,
+  class TestController @Inject()(appConfig: FrontendAppConfig,
                                  override val cacheConnector: UserAnswersCacheConnector,
                                  override val navigator: Navigator,
                                  formProvider: AddressYearsFormProvider,

@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import forms.register.YesNoFormProvider
@@ -34,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait AreYouInUKController extends FrontendBaseController with I18nSupport {
   implicit val executionContext: ExecutionContext
-  protected val appConfig: FrontendAppConfig
   protected val dataCacheConnector: UserAnswersCacheConnector
   protected val navigator: Navigator
   protected val authenticate: AuthAction

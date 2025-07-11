@@ -64,7 +64,6 @@ class IndividualConfirmPreviousAddressControllerSpec extends ControllerSpecBase 
 
   def controller(dataRetrievalAction: DataRetrievalAction = getIndividual) =
     new IndividualConfirmPreviousAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

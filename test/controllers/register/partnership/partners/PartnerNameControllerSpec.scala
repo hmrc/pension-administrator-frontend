@@ -63,7 +63,6 @@ class PartnerNameControllerSpec extends ControllerSpecBase with PersonNameContro
   def createController(dataRetrievalAction: DataRetrievalAction)
                       (connector: UserAnswersCacheConnector, nav: Navigator): PartnerNameController =
     new PartnerNameController(
-      appConfig = frontendAppConfig,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,

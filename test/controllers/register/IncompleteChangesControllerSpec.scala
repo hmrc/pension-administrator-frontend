@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions._
 import identifiers.register.individual.IndividualDetailsId
@@ -58,12 +57,10 @@ class IncompleteChangesControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new IncompleteChangesController(
-      frontendAppConfig,
       FakeAuthAction(UserType.Individual),
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      FakeUserAnswersCacheConnector,
       controllerComponents,
       view
     )

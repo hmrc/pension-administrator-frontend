@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.PhoneController
@@ -34,7 +33,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnerPhoneController @Inject()(@PartnershipPartnerV2 val navigator: Navigator,
-                                       val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        @NoRLSCheck val allowAccess: AllowAccessActionProvider,

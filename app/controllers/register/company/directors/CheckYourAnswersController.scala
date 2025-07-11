@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.company.directors.routes._
@@ -40,7 +39,6 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(
-                                            appConfig: FrontendAppConfig,
                                             val allowAccess: AllowAccessActionProvider,
                                             authenticate: AuthAction,
                                             getData: DataRetrievalAction,
@@ -51,8 +49,8 @@ class CheckYourAnswersController @Inject()(
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: check_your_answers
-                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController
-  with Retrievals with Variations with I18nSupport with Enumerable.Implicits {
+                                          )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with Retrievals with Variations with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
@@ -92,13 +90,13 @@ class CheckYourAnswersController @Inject()(
       ))
 
     Future.successful(Ok(view(
-        answersSection,
-        controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
-        psaName(),
-        mode,
-        dataCompletion.isDirectorComplete(request.userAnswers, index),
-        returnLink = taskListReturnLinkUrl()
-      )))
+      answersSection,
+      controllers.register.company.directors.routes.CheckYourAnswersController.onSubmit(mode, index),
+      psaName(),
+      mode,
+      dataCompletion.isDirectorComplete(request.userAnswers, index),
+      returnLink = taskListReturnLinkUrl()
+    )))
 
   }
 }

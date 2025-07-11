@@ -16,7 +16,6 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
@@ -24,7 +23,6 @@ import controllers.register.partnership.routes._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.PartnershipTradingOverAYearId
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -34,9 +32,10 @@ import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnershipTradingOverAYearController @Inject()(override val appConfig: FrontendAppConfig,
+class PartnershipTradingOverAYearController @Inject()(
                                                     override val dataCacheConnector: UserAnswersCacheConnector,
                                                     @Partnership override val navigator: Navigator,
                                                     authenticate: AuthAction,

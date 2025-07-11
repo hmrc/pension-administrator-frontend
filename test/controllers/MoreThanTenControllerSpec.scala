@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.MoreThanTenFormProvider
 import identifiers.TypedIdentifier
@@ -157,7 +156,6 @@ class MoreThanTenControllerSpec extends ControllerSpecBase with OptionValues {
   def testFixture(base: SpecBase): TestFixture = {
     val connector = new FakeUserAnswersCacheConnector {}
     val controller: MoreThanTenController = new MoreThanTenController {
-      override protected def appConfig: FrontendAppConfig = base.frontendAppConfig
 
       override protected def cacheConnector: UserAnswersCacheConnector = connector
 

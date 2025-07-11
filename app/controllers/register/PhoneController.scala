@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
@@ -35,8 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 trait PhoneController extends FrontendBaseController with Retrievals with I18nSupport with Variations {
 
   implicit val executionContext: ExecutionContext
-
-  protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 

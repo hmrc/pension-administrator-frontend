@@ -16,9 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import forms.DOBFormProvider
@@ -32,6 +29,7 @@ import utils.{Navigator, UserAnswers}
 import viewmodels.CommonFormWithHintViewModel
 import views.html.dob
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 trait DOBController extends FrontendBaseController with I18nSupport with Variations {
@@ -39,8 +37,6 @@ trait DOBController extends FrontendBaseController with I18nSupport with Variati
   protected val allowAccess: AllowAccessActionProvider
 
   implicit val executionContext: ExecutionContext
-
-  def appConfig: FrontendAppConfig
 
   def cacheConnector: UserAnswersCacheConnector
 

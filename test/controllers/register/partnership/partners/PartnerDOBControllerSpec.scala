@@ -48,7 +48,6 @@ class PartnerDOBControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction): PartnerDOBController =
     new PartnerDOBController(
-      appConfig = frontendAppConfig,
       cacheConnector = FakeUserAnswersCacheConnector,
       navigator = FakeNavigator,
       authenticate = FakeAuthAction,

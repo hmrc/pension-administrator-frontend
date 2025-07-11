@@ -16,7 +16,6 @@
 
 package controllers.register.adviser
 
-import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
@@ -38,7 +37,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AdviserAddressPostCodeLookupController @Inject()(
-                                                        override val appConfig: FrontendAppConfig,
                                                         override val cacheConnector: UserAnswersCacheConnector,
                                                         override val addressLookupConnector: AddressLookupConnector,
                                                         @Adviser override val navigator: Navigator,

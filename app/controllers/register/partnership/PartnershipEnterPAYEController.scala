@@ -17,7 +17,6 @@
 package controllers.register.partnership
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.EnterPAYEController
@@ -34,16 +33,16 @@ import views.html.enterPAYE
 
 import scala.concurrent.ExecutionContext
 
-class PartnershipEnterPAYEController @Inject()(val appConfig: FrontendAppConfig,
-                                               val cacheConnector: UserAnswersCacheConnector,
-                                               @Partnership val navigator: Navigator,
-                                               authenticate: AuthAction,
-                                               allowAccess: AllowAccessActionProvider,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               formProvider: EnterPAYEFormProvider,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val view: enterPAYE
+class PartnershipEnterPAYEController @Inject()(
+                                                val cacheConnector: UserAnswersCacheConnector,
+                                                @Partnership val navigator: Navigator,
+                                                authenticate: AuthAction,
+                                                allowAccess: AllowAccessActionProvider,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                formProvider: EnterPAYEFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: enterPAYE
                                               )(implicit val executionContext: ExecutionContext) extends EnterPAYEController {
 
   protected def form(partnershipName: String)

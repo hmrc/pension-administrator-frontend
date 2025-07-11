@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{DOBController, Retrievals}
@@ -32,15 +31,15 @@ import views.html.dob
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DirectorDOBController @Inject()(val appConfig: FrontendAppConfig,
-                                      val cacheConnector: UserAnswersCacheConnector,
-                                      @CompanyDirector val navigator: Navigator,
-                                      override val allowAccess: AllowAccessActionProvider,
-                                      authenticate: AuthAction,
-                                      getData: DataRetrievalAction,
-                                      requireData: DataRequiredAction,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      val view: dob
+class DirectorDOBController @Inject()(
+                                       val cacheConnector: UserAnswersCacheConnector,
+                                       @CompanyDirector val navigator: Navigator,
+                                       override val allowAccess: AllowAccessActionProvider,
+                                       authenticate: AuthAction,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       val view: dob
                                      )(implicit val executionContext: ExecutionContext) extends DOBController with Retrievals {
 
   private[directors] def viewModel(mode: Mode,

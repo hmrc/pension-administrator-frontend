@@ -18,7 +18,6 @@ package controllers.address
 
 import base.SpecBase
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.actions.FakeAllowAccessProvider
 import forms.AddressFormProvider
@@ -64,7 +63,6 @@ object ManualAddressControllerSpec extends SpecBase {
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
   class TestController @Inject()(
-                                  override val appConfig: FrontendAppConfig,
                                   override val messagesApi: MessagesApi,
                                   override val cacheConnector: UserAnswersCacheConnector,
                                   override val navigator: Navigator,

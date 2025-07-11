@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Variations
 import controllers.actions.AllowAccessActionProvider
@@ -38,8 +37,6 @@ trait UTRController extends FrontendBaseController with I18nSupport with Variati
   protected val allowAccess: AllowAccessActionProvider
 
   implicit val executionContext: ExecutionContext
-
-  def appConfig: FrontendAppConfig
 
   def cacheConnector: UserAnswersCacheConnector
 

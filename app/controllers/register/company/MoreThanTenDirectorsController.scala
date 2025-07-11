@@ -16,12 +16,10 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{MoreThanTenController, Retrievals}
 import identifiers.register.company.MoreThanTenDirectorsId
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
@@ -31,19 +29,21 @@ import utils.annotations.CompanyDirector
 import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class MoreThanTenDirectorsController @Inject()(val appConfig: FrontendAppConfig,
-                                               override val messagesApi: MessagesApi,
-                                               val cacheConnector: UserAnswersCacheConnector,
-                                               @CompanyDirector val navigator: Navigator,
-                                               authenticate: AuthAction,
-                                               allowAccess: AllowAccessActionProvider,
-                                               getData: DataRetrievalAction,
-                                               requireData: DataRequiredAction,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val view: moreThanTen
-                                              )(implicit val executionContext: ExecutionContext) extends MoreThanTenController with Retrievals {
+class MoreThanTenDirectorsController @Inject()(
+                                                override val messagesApi: MessagesApi,
+                                                val cacheConnector: UserAnswersCacheConnector,
+                                                @CompanyDirector val navigator: Navigator,
+                                                authenticate: AuthAction,
+                                                allowAccess: AllowAccessActionProvider,
+                                                getData: DataRetrievalAction,
+                                                requireData: DataRequiredAction,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: moreThanTen
+                                              )(implicit val executionContext: ExecutionContext)
+  extends MoreThanTenController with Retrievals {
 
   private def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): MoreThanTenViewModel =
     MoreThanTenViewModel(

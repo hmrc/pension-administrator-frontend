@@ -17,7 +17,6 @@
 package controllers
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import forms.ConfirmDeleteFormProvider
 import identifiers.TypedIdentifier
@@ -98,8 +97,6 @@ class ConfirmDeleteControllerSpec extends ControllerSpecBase with MockitoSugar {
   private def controller(): ConfirmDeleteController =
     new ConfirmDeleteController {
       override protected def cacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
-
-      override protected def appConfig: FrontendAppConfig = frontendAppConfig
 
       override def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 

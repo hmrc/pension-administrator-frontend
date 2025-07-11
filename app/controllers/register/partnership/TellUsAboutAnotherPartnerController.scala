@@ -16,10 +16,8 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import controllers.actions._
 import identifiers.register.partnership.TellUsAboutAnotherPartnerId
-import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -28,17 +26,19 @@ import utils.Navigator
 import utils.annotations.PartnershipPartner
 import views.html.register.partnership.tellUsAboutAnotherPartner
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class TellUsAboutAnotherPartnerController @Inject()(appConfig: FrontendAppConfig,
-                                                    @PartnershipPartner navigator: Navigator,
-                                                    authenticate: AuthAction,
-                                                    allowAccess: AllowAccessActionProvider,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    val view: tellUsAboutAnotherPartner)(implicit val executionContext: ExecutionContext)
-    extends FrontendBaseController
+class TellUsAboutAnotherPartnerController @Inject()(
+                                                     @PartnershipPartner navigator: Navigator,
+                                                     authenticate: AuthAction,
+                                                     allowAccess: AllowAccessActionProvider,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     val view: tellUsAboutAnotherPartner
+                                                   )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {

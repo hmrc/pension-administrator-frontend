@@ -18,13 +18,12 @@ package controllers.register
 
 import audit.{AuditService, PSAStartEvent}
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.{BusinessTypeId, RegisterAsBusinessId, RegistrationInfoId}
+import models.Mode
 import models.RegistrationCustomerType.UK
-import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -34,16 +33,17 @@ import views.html.register.registerAsBusiness
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
-                                             override val messagesApi: MessagesApi,
-                                             @AuthWithNoIV authenticate: AuthAction,
-                                             allowAccess: AllowAccessActionProvider,
-                                             getData: DataRetrievalAction,
-                                             cache: UserAnswersCacheConnector,
-                                             auditService: AuditService,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             val view: registerAsBusiness
-                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class RegisterAsBusinessController @Inject()(
+                                              override val messagesApi: MessagesApi,
+                                              @AuthWithNoIV authenticate: AuthAction,
+                                              allowAccess: AllowAccessActionProvider,
+                                              getData: DataRetrievalAction,
+                                              cache: UserAnswersCacheConnector,
+                                              auditService: AuditService,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val view: registerAsBusiness
+                                            )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 
@@ -57,7 +57,7 @@ class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
       Ok(view(preparedForm))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         errors =>
@@ -72,7 +72,7 @@ class RegisterAsBusinessController @Inject()(appConfig: FrontendAppConfig,
               val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
               (businessType, customerType) match {
                 case (Some(_), Some(UK)) => Redirect(routes.ContinueWithRegistrationController.onPageLoad())
-                case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad(NormalMode))
+                case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad())
               }
             } else {
               Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())

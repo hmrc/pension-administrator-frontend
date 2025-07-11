@@ -16,12 +16,10 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.{MoreThanTenController, Retrievals}
 import identifiers.register.partnership.MoreThanTenPartnersId
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,17 +28,18 @@ import utils.annotations.PartnershipPartner
 import viewmodels.MoreThanTenViewModel
 import views.html.moreThanTen
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class MoreThanTenPartnersController @Inject()(val appConfig: FrontendAppConfig,
-                                              override val cacheConnector: UserAnswersCacheConnector,
-                                              @PartnershipPartner val navigator: Navigator,
-                                              authenticate: AuthAction,
-                                              allowAccess: AllowAccessActionProvider,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val view: moreThanTen
+class MoreThanTenPartnersController @Inject()(
+                                               override val cacheConnector: UserAnswersCacheConnector,
+                                               @PartnershipPartner val navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               allowAccess: AllowAccessActionProvider,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: moreThanTen
                                              )(implicit val executionContext: ExecutionContext) extends MoreThanTenController with Retrievals {
 
   def viewModel(mode: Mode)(implicit request: DataRequest[AnyContent]): MoreThanTenViewModel =

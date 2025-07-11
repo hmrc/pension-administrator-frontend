@@ -16,13 +16,10 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{Retrievals, Variations}
 import identifiers.register.partnership.partners._
-
-import javax.inject.Inject
 import models.Mode.checkMode
 import models._
 import models.requests.DataRequest
@@ -37,25 +34,26 @@ import utils.dataCompletion.DataCompletion
 import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersController @Inject()(appConfig: FrontendAppConfig,
-                                           authenticate: AuthAction,
-                                           @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                           getData: DataRetrievalAction,
-                                           requireData: DataRequiredAction,
-                                           dataCompletion: DataCompletion,
-                                           @PartnershipPartner navigator: Navigator,
-                                           implicit val countryOptions: CountryOptions,
-                                           override val cacheConnector: UserAnswersCacheConnector,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           val view: check_your_answers
+class CheckYourAnswersController @Inject()(
+                                            authenticate: AuthAction,
+                                            @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                            getData: DataRetrievalAction,
+                                            requireData: DataRequiredAction,
+                                            dataCompletion: DataCompletion,
+                                            @PartnershipPartner navigator: Navigator,
+                                            implicit val countryOptions: CountryOptions,
+                                            override val cacheConnector: UserAnswersCacheConnector,
+                                            val controllerComponents: MessagesControllerComponents,
+                                            val view: check_your_answers
                                           )(implicit val executionContext: ExecutionContext)
-                                            extends FrontendBaseController with Retrievals with Variations with I18nSupport {
+  extends FrontendBaseController with Retrievals with Variations with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      retrievePartnerName(mode, index) {_ =>
+      retrievePartnerName(mode, index) { _ =>
         loadCyaPage(index, mode)
       }
   }

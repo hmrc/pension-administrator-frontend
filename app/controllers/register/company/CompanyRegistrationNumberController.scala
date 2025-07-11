@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -35,17 +34,17 @@ import views.html.register.company.enterNumber
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyRegistrationNumberController @Inject()(val appConfig: FrontendAppConfig,
-                                                    val cacheConnector: UserAnswersCacheConnector,
-                                                    @RegisterCompany val navigator: Navigator,
-                                                    @RegisterCompanyV2 val navigatorV2: Navigator,
-                                                    authenticate: AuthAction,
-                                                    allowAccess: AllowAccessActionProvider,
-                                                    getData: DataRetrievalAction,
-                                                    requireData: DataRequiredAction,
-                                                    formProvider: CompanyRegistrationNumberFormProvider,
-                                                    val controllerComponents: MessagesControllerComponents,
-                                                    val view: enterNumber
+class CompanyRegistrationNumberController @Inject()(
+                                                     val cacheConnector: UserAnswersCacheConnector,
+                                                     @RegisterCompany val navigator: Navigator,
+                                                     @RegisterCompanyV2 val navigatorV2: Navigator,
+                                                     authenticate: AuthAction,
+                                                     allowAccess: AllowAccessActionProvider,
+                                                     getData: DataRetrievalAction,
+                                                     requireData: DataRequiredAction,
+                                                     formProvider: CompanyRegistrationNumberFormProvider,
+                                                     val controllerComponents: MessagesControllerComponents,
+                                                     val view: enterNumber
                                                    )(implicit val executionContext: ExecutionContext) extends EnterNumberController with Retrievals {
 
   private val form = formProvider()

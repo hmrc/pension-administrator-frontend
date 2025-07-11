@@ -114,7 +114,7 @@ class ConfirmPartnershipDetailsController @Inject()(
         userAnswers => fn(userAnswers)
       )
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[?]) =>

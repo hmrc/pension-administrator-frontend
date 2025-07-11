@@ -17,9 +17,8 @@
 package controllers
 
 import base.SpecBase
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.FakeAllowAccessProvider
+import controllers.actions.{AllowAccessActionProvider, FakeAllowAccessProvider}
 import identifiers.TypedIdentifier
 import models.{NormalMode, PersonName}
 import play.api.i18n.MessagesApi
@@ -54,7 +53,6 @@ class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControl
 
   def createController(base: ControllerSpecBase)(connector: UserAnswersCacheConnector, nav: Navigator): PersonNameController = {
     new PersonNameController {
-      override def appConfig: FrontendAppConfig = base.frontendAppConfig
 
       override def cacheConnector: UserAnswersCacheConnector = connector
 
@@ -62,7 +60,7 @@ class PersonNameControllerSpec extends ControllerSpecBase with PersonNameControl
 
       override def messagesApi: MessagesApi = base.messagesApi
 
-      override val allowAccess = FakeAllowAccessProvider(config = frontendAppConfig)
+      override val allowAccess: AllowAccessActionProvider = FakeAllowAccessProvider(config = frontendAppConfig)
 
       implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 

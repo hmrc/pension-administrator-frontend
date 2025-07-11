@@ -48,7 +48,6 @@ class PartnershipReviewControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new PartnershipReviewController(
-      frontendAppConfig,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
@@ -71,7 +70,7 @@ class PartnershipReviewControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page on submit" in {
-      val result = controller().onSubmit(NormalMode)(fakeRequest)
+      val result = controller().onSubmit()(fakeRequest)
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }

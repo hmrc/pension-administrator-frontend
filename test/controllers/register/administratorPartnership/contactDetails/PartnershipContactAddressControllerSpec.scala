@@ -59,7 +59,6 @@ class PartnershipContactAddressControllerSpec
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipContactAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAllowAccessProvider(config = frontendAppConfig),

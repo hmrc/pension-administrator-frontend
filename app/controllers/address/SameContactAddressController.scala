@@ -16,7 +16,6 @@
 
 package controllers.address
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import identifiers.TypedIdentifier
@@ -35,8 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait SameContactAddressController extends FrontendBaseController with Retrievals with I18nSupport {
   implicit val executionContext: ExecutionContext
-
-  protected def appConfig: FrontendAppConfig
 
   protected def dataCacheConnector: UserAnswersCacheConnector
 

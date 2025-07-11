@@ -107,7 +107,6 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with M
   private val isUkHintText = true
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipPreviousAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAllowAccessProvider(config = frontendAppConfig),

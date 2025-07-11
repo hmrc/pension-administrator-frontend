@@ -16,7 +16,6 @@
 
 package utils.navigators
 
-import config.FrontendAppConfig
 import controllers.register.individual.routes
 import identifiers.Identifier
 import identifiers.register._
@@ -27,8 +26,7 @@ import utils.{Navigator, UserAnswers}
 
 import javax.inject.Inject
 
-class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
-                                 ) extends Navigator {
+class RegisterNavigator @Inject() extends Navigator {
 
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case AreYouInUKId => countryOfRegistrationRoutes(ua)
@@ -124,7 +122,7 @@ class RegisterNavigator @Inject()(appConfig: FrontendAppConfig
     userAnswers.get(RegisterAsBusinessId) match {
       case None => controllers.routes.SessionExpiredController.onPageLoad
       case Some(true) =>
-        controllers.register.routes.WhatYouWillNeedController.onPageLoad(NormalMode)
+        controllers.register.routes.WhatYouWillNeedController.onPageLoad()
       case _ =>
         routes.WhatYouWillNeedController.onPageLoad()
     }

@@ -56,7 +56,7 @@ class HasPartnershipVATControllerSpec extends ControllerWithCommonBehaviour {
     view(form, viewModel(NormalMode))(fakeRequest, messages).toString
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =
-    new HasPartnershipVATController(frontendAppConfig,
+    new HasPartnershipVATController(
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

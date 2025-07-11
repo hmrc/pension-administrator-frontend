@@ -16,7 +16,6 @@
 
 package controllers.register.individual
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions._
@@ -24,24 +23,21 @@ import controllers.address.AddressListController
 import forms.address.AddressListFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualContactAddressPostCodeLookupId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import utils.Navigator
-import utils.annotations.Individual
-import utils.annotations.NoRLSCheck
+import utils.annotations.{Individual, NoRLSCheck}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualContactAddressListController @Inject()(@Individual override val navigator: Navigator,
-                                                       override val appConfig: FrontendAppConfig,
                                                        override val cacheConnector: UserAnswersCacheConnector,
                                                        authenticate: AuthAction,
                                                        @NoRLSCheck override val allowAccess: AllowAccessActionProvider,

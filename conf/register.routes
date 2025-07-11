@@ -10,7 +10,7 @@ GET         /:mode/business-type                            controllers.register
 POST        /:mode/business-type                            controllers.register.BusinessTypeController.onSubmit(mode: Mode)
 
 GET         /what-kind-of-business                          controllers.register.NonUKBusinessTypeController.onPageLoad(mode: Mode = NormalMode)
-POST        /what-kind-of-business                          controllers.register.NonUKBusinessTypeController.onSubmit(mode: Mode = NormalMode)
+POST        /what-kind-of-business                          controllers.register.NonUKBusinessTypeController.onSubmit()
 
 GET         /working-knowledge-pensions                     controllers.register.DeclarationWorkingKnowledgeController.onPageLoad(mode: Mode = NormalMode)
 POST        /working-knowledge-pensions                     controllers.register.DeclarationWorkingKnowledgeController.onSubmit(mode: Mode = NormalMode)
@@ -39,7 +39,7 @@ GET         /:mode/is-company-or-partnership-in-uk          controllers.register
 POST        /:mode/is-company-or-partnership-in-uk          controllers.register.BusinessTypeAreYouInUKController.onSubmit(mode: Mode)
 
 GET         /what-to-register                               controllers.register.RegisterAsBusinessController.onPageLoad(mode: Mode = NormalMode)
-POST        /what-to-register                               controllers.register.RegisterAsBusinessController.onSubmit(mode: Mode = NormalMode)
+POST        /what-to-register                               controllers.register.RegisterAsBusinessController.onSubmit()
 
 GET         /details-updated                                controllers.register.PSAVarianceSuccessController.onPageLoad(mode: Mode = UpdateMode)
 
@@ -59,8 +59,7 @@ GET         /on-click-declare-after-changing-details        controllers.register
 
 GET         /incomplete-changes                             controllers.register.IncompleteChangesController.onPageLoad(mode: Mode = UpdateMode)
 
-GET         /what-you-will-need                             controllers.register.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
-GET         /what-you-will-need                             controllers.register.WhatYouWillNeedController.onPageLoad(mode: Mode = UpdateMode)
+GET         /what-you-will-need                             controllers.register.WhatYouWillNeedController.onPageLoad()
 
 GET         /continue-with-registration                     controllers.register.ContinueWithRegistrationController.onPageLoad()
 POST        /continue-with-registration                     controllers.register.ContinueWithRegistrationController.onSubmit()

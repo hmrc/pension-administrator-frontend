@@ -68,7 +68,6 @@ class CompanyUTRControllerSpec extends ControllerSpecBase with UTRControllerBeha
                         dataRetrievalAction: DataRetrievalAction
                       )(connector: UserAnswersCacheConnector, nav: Navigator): CompanyUTRController =
     new CompanyUTRController(
-      appConfig = base.frontendAppConfig,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,

@@ -16,11 +16,9 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.SameContactAddressController
-import controllers.register.company.routes.CompanySameContactAddressController
 import forms.address.SameContactAddressFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
@@ -29,7 +27,7 @@ import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.RegisterCompany
 import utils.countryOptions.CountryOptions
@@ -42,7 +40,6 @@ import scala.concurrent.ExecutionContext
 
 @Singleton()
 class CompanySameContactAddressController @Inject()(@RegisterCompany val navigator: Navigator,
-                                                    val appConfig: FrontendAppConfig,
                                                     override val messagesApi: MessagesApi,
                                                     val dataCacheConnector: UserAnswersCacheConnector,
                                                     authenticate: AuthAction,
@@ -57,7 +54,7 @@ class CompanySameContactAddressController @Inject()(@RegisterCompany val navigat
 
   def form(name: String)(implicit request: DataRequest[AnyContent]): Form[Boolean] = formProvider(Message("same.contact.address.error").withArgs(name))
 
-  private[controllers] val postCall = CompanySameContactAddressController.onSubmit _
+  private[controllers] lazy val postCall: Mode => Call = routes.CompanySameContactAddressController.onSubmit
   private[controllers] val title: Message = "company.same.contact.address.title"
   private[controllers] val heading: Message = "company.same.contact.address.heading"
   private[controllers] val confirmText: Message = "same.contact.address.confirm.text"

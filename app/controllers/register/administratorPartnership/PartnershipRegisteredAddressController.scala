@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership
 
-import config.FrontendAppConfig
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -41,7 +40,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnershipRegisteredAddressController @Inject()(
-                                                        override val appConfig: FrontendAppConfig,
                                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                                         override val registrationConnector: RegistrationConnector,
                                                         @PartnershipV2 val navigator: Navigator,
@@ -53,12 +51,12 @@ class PartnershipRegisteredAddressController @Inject()(
                                                         val countryOptions: CountryOptions,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         val view: nonukAddress
-                                                      )(implicit val executionContext: ExecutionContext
-                                                      ) extends NonUKAddressController with Retrievals {
+                                                      )(implicit val executionContext: ExecutionContext)
+  extends NonUKAddressController with Retrievals {
 
   protected val form: Form[Address] = formProvider()
 
-  protected override def createView(appConfig: FrontendAppConfig, preparedForm: Form[?], viewModel: ManualAddressViewModel)(
+  protected override def createView(preparedForm: Form[?], viewModel: ManualAddressViewModel)(
     implicit request: Request[?], messages: Messages): () => HtmlFormat.Appendable = () =>
     view(preparedForm, viewModel)(request, messages)
 
@@ -78,7 +76,7 @@ class PartnershipRegisteredAddressController @Inject()(
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
       BusinessNameId.retrieve.map { name =>
         post(name, PartnershipRegisteredAddressId, addressViewModel(name), RegistrationLegalStatus.Partnership)

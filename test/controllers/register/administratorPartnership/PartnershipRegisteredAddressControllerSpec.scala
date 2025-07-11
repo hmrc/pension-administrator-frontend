@@ -47,7 +47,6 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipRegisteredAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       fakeRegistrationConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -119,7 +118,7 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
         "country" -> "IN"
       )
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -129,7 +128,7 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
@@ -146,7 +145,7 @@ class PartnershipRegisteredAddressControllerSpec extends NonUKAddressControllerD
         }
         "POST" in {
           val postRequest = fakeRequest.withFormUrlEncodedBody()
-          val result = controller(dontGetAnyData).onSubmit(NormalMode)(postRequest)
+          val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)

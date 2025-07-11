@@ -16,15 +16,11 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.EnterUTRController
 import controllers.actions._
-import controllers.register.partnership.partners.routes.PartnerEnterUTRController
 import forms.EnterUTRFormProvider
 import identifiers.register.partnership.partners.{PartnerEnterUTRId, PartnerNameId}
-
-import javax.inject.Inject
 import models.requests.DataRequest
 import models.{Index, Mode, ReferenceValue}
 import play.api.data.Form
@@ -35,10 +31,10 @@ import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterUTR
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnerEnterUTRController @Inject()(@PartnershipPartner val navigator: Navigator,
-                                          val appConfig: FrontendAppConfig,
                                           val cacheConnector: UserAnswersCacheConnector,
                                           authenticate: AuthAction,
                                           @NoRLSCheck val allowAccess: AllowAccessActionProvider,
@@ -70,7 +66,7 @@ class PartnerEnterUTRController @Inject()(@PartnershipPartner val navigator: Nav
 
   private def viewModel(mode: Mode, index: Index, partnerName: String) =
     CommonFormWithHintViewModel(
-      postCall = PartnerEnterUTRController.onSubmit(mode, index),
+      postCall = routes.PartnerEnterUTRController.onSubmit(mode, index),
       title = Message("enterUTR.heading", Message("thePartner")),
       heading = Message("enterUTR.heading", partnerName),
       mode = mode,

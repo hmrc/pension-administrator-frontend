@@ -17,7 +17,6 @@
 package controllers
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -26,7 +25,6 @@ import views.html.useOrganisationCredentials
 import scala.concurrent.ExecutionContext
 
 class UseOrganisationCredentialsController @Inject()(
-                                                     appConfig: FrontendAppConfig,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      view: useOrganisationCredentials
                                                    )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {

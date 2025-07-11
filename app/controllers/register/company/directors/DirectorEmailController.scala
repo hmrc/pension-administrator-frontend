@@ -16,7 +16,6 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
@@ -35,7 +34,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigator,
-                                        val appConfig: FrontendAppConfig,
                                         val cacheConnector: UserAnswersCacheConnector,
                                         authenticate: AuthAction,
                                         val allowAccess: AllowAccessActionProvider,
@@ -51,7 +49,7 @@ class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigato
   def onPageLoad(mode: Mode, index: Index): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        get(DirectorEmailId(index), form, viewModel(mode, index, entityName(index), Some(companyTaskListUrl()) ))
+        get(DirectorEmailId(index), form, viewModel(mode, index, entityName(index), Some(companyTaskListUrl())))
     }
 
   def onSubmit(mode: Mode, index: Index): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
@@ -66,7 +64,7 @@ class DirectorEmailController @Inject()(@CompanyDirector val navigator: Navigato
     request.userAnswers.get(BusinessNameId).getOrElse(Message("theCompany"))
 
   private def viewModel(mode: Mode, index: Index, directorName: String, returnLink: Option[String])
-                       (implicit request: DataRequest[AnyContent])=
+                       (implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
       postCall = routes.DirectorEmailController.onSubmit(mode, index),
       title = Message("email.title", Message("theDirector")),

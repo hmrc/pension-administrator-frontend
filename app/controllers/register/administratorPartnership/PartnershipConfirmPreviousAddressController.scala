@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.address.ConfirmPreviousAddressController
@@ -36,18 +35,18 @@ import views.html.address.sameContactAddress
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnershipConfirmPreviousAddressController @Inject()(val appConfig: FrontendAppConfig,
-                                                            val dataCacheConnector: UserAnswersCacheConnector,
-                                                            @PartnershipV2 val navigator: Navigator,
-                                                            authenticate: AuthAction,
-                                                            @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                                            getData: DataRetrievalAction,
-                                                            requireData: DataRequiredAction,
-                                                            val countryOptions: CountryOptions,
-                                                            val controllerComponents: MessagesControllerComponents,
-                                                            val view: sameContactAddress
-                                                           )(implicit val executionContext: ExecutionContext
-                                                           ) extends ConfirmPreviousAddressController with I18nSupport {
+class PartnershipConfirmPreviousAddressController @Inject()(
+                                                             val dataCacheConnector: UserAnswersCacheConnector,
+                                                             @PartnershipV2 val navigator: Navigator,
+                                                             authenticate: AuthAction,
+                                                             @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                                             getData: DataRetrievalAction,
+                                                             requireData: DataRequiredAction,
+                                                             val countryOptions: CountryOptions,
+                                                             val controllerComponents: MessagesControllerComponents,
+                                                             val view: sameContactAddress
+                                                           )(implicit val executionContext: ExecutionContext)
+  extends ConfirmPreviousAddressController with I18nSupport {
 
   private[controllers] val postCall = routes.PartnershipConfirmPreviousAddressController.onSubmit _
   private[controllers] val title: Message = "confirmPreviousAddress.title"

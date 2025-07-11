@@ -17,7 +17,6 @@
 package controllers.register.partnership.partners
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
@@ -38,7 +37,6 @@ import views.html.address.postcodeLookup
 import scala.concurrent.ExecutionContext
 
 class PartnerAddressPostCodeLookupController @Inject()(
-                                                        override val appConfig: FrontendAppConfig,
                                                         override val cacheConnector: UserAnswersCacheConnector,
                                                         override val addressLookupConnector: AddressLookupConnector,
                                                         @PartnershipPartner override val navigator: Navigator,

@@ -16,11 +16,9 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
-import controllers.register.administratorPartnership.partners.routes.HasPartnerUTRController
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.partnership.partners.{HasPartnerUTRId, PartnerNameId}
 import models.requests.DataRequest
@@ -35,21 +33,21 @@ import views.html.hasReferenceNumber
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HasPartnerUTRController @Inject()(override val appConfig: FrontendAppConfig,
-                                        override val dataCacheConnector: UserAnswersCacheConnector,
-                                        @PartnershipPartnerV2 override val navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        @NoRLSCheck allowAccess: AllowAccessActionProvider,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: HasReferenceNumberFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        val view: hasReferenceNumber
+class HasPartnerUTRController @Inject()(
+                                         override val dataCacheConnector: UserAnswersCacheConnector,
+                                         @PartnershipPartnerV2 override val navigator: Navigator,
+                                         authenticate: AuthAction,
+                                         @NoRLSCheck allowAccess: AllowAccessActionProvider,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: HasReferenceNumberFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: hasReferenceNumber
                                        )(implicit val executionContext: ExecutionContext) extends HasReferenceNumberController {
 
   private def viewModel(mode: Mode, entityName: String, index: Index)(implicit request: DataRequest[AnyContent]): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = HasPartnerUTRController.onSubmit(mode, index),
+      postCall = routes.HasPartnerUTRController.onSubmit(mode, index),
       title = Message("hasUTR.heading", Message("thePartner")),
       heading = Message("hasUTR.heading", entityName),
       mode = mode,

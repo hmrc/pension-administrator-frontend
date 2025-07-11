@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{PersonNameController, Retrievals}
@@ -33,7 +32,7 @@ import views.html.personName
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnerNameController @Inject()(val appConfig: FrontendAppConfig,
+class PartnerNameController @Inject()(
                                       val cacheConnector: UserAnswersCacheConnector,
                                       @PartnershipPartnerV2 val navigator: Navigator,
                                       @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
@@ -42,7 +41,8 @@ class PartnerNameController @Inject()(val appConfig: FrontendAppConfig,
                                       requireData: DataRequiredAction,
                                       val controllerComponents: MessagesControllerComponents,
                                       val view: personName
-                                     )(implicit val executionContext: ExecutionContext) extends PersonNameController with Retrievals with I18nSupport {
+                                     )(implicit val executionContext: ExecutionContext)
+  extends PersonNameController with Retrievals with I18nSupport {
 
   private[partners] def viewModel(mode: Mode, index: Index, name: String) =
     CommonFormWithHintViewModel(

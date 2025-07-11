@@ -48,7 +48,6 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IndividualAreYouInUKController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAllowAccessProvider(config = frontendAppConfig),

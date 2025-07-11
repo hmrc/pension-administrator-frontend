@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.EmailAddressController
@@ -35,7 +34,6 @@ import scala.concurrent.ExecutionContext
 
 class CompanyEmailController @Inject()(@RegisterCompany val navigator: Navigator,
                                        @RegisterContactV2 val navigatorV2: Navigator,
-                                       val appConfig: FrontendAppConfig,
                                        val cacheConnector: UserAnswersCacheConnector,
                                        authenticate: AuthAction,
                                        @NoRLSCheck val allowAccess: AllowAccessActionProvider,

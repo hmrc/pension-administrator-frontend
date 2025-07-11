@@ -16,7 +16,6 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
@@ -36,7 +35,7 @@ import views.html.hasReferenceNumber
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class HasCompanyCRNController @Inject()(override val appConfig: FrontendAppConfig,
+class HasCompanyCRNController @Inject()(
                                         override val dataCacheConnector: UserAnswersCacheConnector,
                                         @RegisterCompany override val navigator: Navigator,
                                         @RegisterCompanyV2 val navigatorV2: Navigator,

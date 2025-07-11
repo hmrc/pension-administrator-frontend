@@ -16,21 +16,19 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.BusinessNameController
 import forms.BusinessNameFormProvider
-import javax.inject.Inject
 import play.api.mvc.{Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.Partnership
 import views.html.register.businessName
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnershipNameController @Inject()(
-                                       override val appConfig: FrontendAppConfig,
                                        override val cacheConnector: UserAnswersCacheConnector,
                                        @Partnership override val navigator: Navigator,
                                        override val authenticate: AuthAction,

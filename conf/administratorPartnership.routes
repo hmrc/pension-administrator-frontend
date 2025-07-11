@@ -6,7 +6,7 @@ GET         /:mode/contact-address-1-year                 controllers.register.a
 POST        /:mode/contact-address-1-year                 controllers.register.administratorPartnership.contactDetails.PartnershipAddressYearsController.onSubmit(mode: Mode)
 
 GET         /confirm-partnership-address                  controllers.register.administratorPartnership.ConfirmPartnershipDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST        /confirm-partnership-address                  controllers.register.administratorPartnership.ConfirmPartnershipDetailsController.onSubmit(mode: Mode = NormalMode)
+POST        /confirm-partnership-address                  controllers.register.administratorPartnership.ConfirmPartnershipDetailsController.onSubmit()
 
 GET         /select-contact-address                       controllers.register.administratorPartnership.contactDetails.PartnershipContactAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST        /select-contact-address                       controllers.register.administratorPartnership.contactDetails.PartnershipContactAddressListController.onSubmit(mode: Mode = NormalMode)
@@ -75,17 +75,15 @@ GET         /:mode/add-partners                           controllers.register.a
 POST        /:mode/add-partners                           controllers.register.administratorPartnership.AddPartnerController.onSubmit(mode: Mode)
 
 GET         /review                                       controllers.register.administratorPartnership.PartnershipReviewController.onPageLoad(mode: Mode = NormalMode)
-POST        /review                                       controllers.register.administratorPartnership.PartnershipReviewController.onSubmit(mode: Mode = NormalMode)
+POST        /review                                       controllers.register.administratorPartnership.PartnershipReviewController.onSubmit()
 
 GET         /outside-eu-eea                               controllers.register.administratorPartnership.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
 
 GET         /non-uk-partnership-name                      controllers.register.administratorPartnership.PartnershipRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /non-uk-partnership-name                      controllers.register.administratorPartnership.PartnershipRegisteredNameController.onSubmit(mode: Mode = NormalMode)
-GET         /non-uk-partnership-name                      controllers.register.administratorPartnership.PartnershipRegisteredNameController.onPageLoad(mode: Mode = NormalMode)
-POST        /non-uk-partnership-name                      controllers.register.administratorPartnership.PartnershipRegisteredNameController.onSubmit(mode: Mode = NormalMode)
+POST        /non-uk-partnership-name                      controllers.register.administratorPartnership.PartnershipRegisteredNameController.onSubmit()
 
 GET         /enter-registered-address                     controllers.register.administratorPartnership.PartnershipRegisteredAddressController.onPageLoad(mode: Mode = NormalMode)
-POST        /enter-registered-address                     controllers.register.administratorPartnership.PartnershipRegisteredAddressController.onSubmit(mode: Mode = NormalMode)
+POST        /enter-registered-address                     controllers.register.administratorPartnership.PartnershipRegisteredAddressController.onSubmit()
 
 GET         /is-this-previous-address                     controllers.register.administratorPartnership.PartnershipConfirmPreviousAddressController.onPageLoad(mode: Mode = UpdateMode)
 POST        /is-this-previous-address                     controllers.register.administratorPartnership.PartnershipConfirmPreviousAddressController.onSubmit(mode: Mode = UpdateMode)

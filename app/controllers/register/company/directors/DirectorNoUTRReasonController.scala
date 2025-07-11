@@ -16,11 +16,9 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
-import controllers.register.company.directors.routes.DirectorNoUTRReasonController
 import forms.UTRReasonFormProvider
 import identifiers.register.company.directors.{DirectorNameId, DirectorNoUTRReasonId}
 import models.requests.DataRequest
@@ -36,7 +34,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Navigator,
-                                              val appConfig: FrontendAppConfig,
                                               val dataCacheConnector: UserAnswersCacheConnector,
                                               authenticate: AuthAction,
                                               val allowAccess: AllowAccessActionProvider,
@@ -67,9 +64,9 @@ class DirectorNoUTRReasonController @Inject()(@CompanyDirector val navigator: Na
     request.userAnswers.get(DirectorNameId(index)).map(_.fullName).getOrElse(Message("theDirector"))
 
   private def viewModel(mode: Mode, index: Index, returnLink: Option[String])
-                       (implicit request: DataRequest[AnyContent])=
+                       (implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
-      postCall = DirectorNoUTRReasonController.onSubmit(mode, index),
+      postCall = routes.DirectorNoUTRReasonController.onSubmit(mode, index),
       title = Message("whyNoUTR.heading", Message("theDirector")),
       heading = Message("whyNoUTR.heading", entityName(index)),
       mode = mode,

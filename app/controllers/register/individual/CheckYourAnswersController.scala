@@ -17,7 +17,6 @@
 package controllers.register.individual
 
 import com.google.inject.{Inject, Singleton}
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.individual.routes._
@@ -40,7 +39,6 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class CheckYourAnswersController @Inject()(
-                                            appConfig: FrontendAppConfig,
                                             @AuthWithIV authenticate: AuthAction,
                                             allowAccess: AllowAccessActionProvider,
                                             getData: DataRetrievalAction,
@@ -51,10 +49,10 @@ class CheckYourAnswersController @Inject()(
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: check_your_answers
-                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with
-  Retrievals with I18nSupport with Enumerable.Implicits {
+                                          )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with Retrievals with I18nSupport with Enumerable.Implicits {
 
-  import CheckYourAnswersController._
+  lazy val postUrl: Call = routes.CheckYourAnswersController.onSubmit()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
     implicit request =>
@@ -93,8 +91,4 @@ class CheckYourAnswersController @Inject()(
     val sections = Seq(individualDetails)
     Ok(view(sections, postUrl, None, mode, dataCompletion.isIndividualComplete(request.userAnswers, mode)))
   }
-}
-
-object CheckYourAnswersController {
-  lazy val postUrl: Call = routes.CheckYourAnswersController.onSubmit()
 }

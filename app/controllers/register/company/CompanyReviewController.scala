@@ -16,12 +16,10 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyReviewId
-import javax.inject.Inject
 import models.{Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,17 +28,19 @@ import utils.Navigator
 import utils.annotations.RegisterCompany
 import views.html.register.company.companyReview
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyReviewController @Inject()(appConfig: FrontendAppConfig,
-                                        @RegisterCompany navigator: Navigator,
-                                        authenticate: AuthAction,
-                                        allowAccess: AllowAccessActionProvider,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        val view: companyReview
-                                       )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals with I18nSupport {
+class CompanyReviewController @Inject()(
+                                         @RegisterCompany navigator: Navigator,
+                                         authenticate: AuthAction,
+                                         allowAccess: AllowAccessActionProvider,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         val view: companyReview
+                                       )(implicit val executionContext: ExecutionContext)
+  extends FrontendBaseController with Retrievals with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

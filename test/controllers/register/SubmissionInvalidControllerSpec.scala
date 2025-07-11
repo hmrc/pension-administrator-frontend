@@ -28,7 +28,6 @@ class SubmissionInvalidControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new SubmissionInvalidController(
-      frontendAppConfig,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,

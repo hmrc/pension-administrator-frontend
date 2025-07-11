@@ -16,11 +16,9 @@
 
 package controllers.register.company.directors
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.EnterUTRController
 import controllers.actions._
-import controllers.register.company.directors.routes.DirectorEnterUTRController
 import forms.EnterUTRFormProvider
 import identifiers.register.company.directors.{DirectorEnterUTRId, DirectorNameId}
 import models.requests.DataRequest
@@ -36,7 +34,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navigator,
-                                           val appConfig: FrontendAppConfig,
                                            val cacheConnector: UserAnswersCacheConnector,
                                            authenticate: AuthAction,
                                            val allowAccess: AllowAccessActionProvider,
@@ -67,7 +64,7 @@ class DirectorEnterUTRController @Inject()(@CompanyDirector val navigator: Navig
 
   private def viewModel(mode: Mode, index: Index, directorName: String, returnLink: Option[String])(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
-      postCall = DirectorEnterUTRController.onSubmit(mode, index),
+      postCall = routes.DirectorEnterUTRController.onSubmit(mode, index),
       title = Message("enterUTR.heading", Message("theDirector")),
       heading = Message("enterUTR.heading", directorName),
       mode = mode,

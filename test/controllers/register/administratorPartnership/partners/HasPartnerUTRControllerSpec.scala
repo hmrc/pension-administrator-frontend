@@ -35,7 +35,7 @@ class HasPartnerUTRControllerSpec extends ControllerWithCommonBehaviour {
   private val hasReferenceNumberForm = formProvider("error.required", partnerName)
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasPartnerUTRController(
-    frontendAppConfig, FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
+    FakeUserAnswersCacheConnector, new FakeNavigator(onwardRoute), FakeAuthAction, FakeAllowAccessProvider(config = frontendAppConfig),
     dataRetrievalAction, new DataRequiredActionImpl, formProvider,
     controllerComponents,
     view)

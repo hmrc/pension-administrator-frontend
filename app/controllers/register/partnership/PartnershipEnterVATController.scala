@@ -16,13 +16,11 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.VATNumberController
 import forms.register.EnterVATFormProvider
 import identifiers.register.{BusinessNameId, EnterVATId}
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -32,18 +30,19 @@ import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterVAT
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class PartnershipEnterVATController @Inject()(val appConfig: FrontendAppConfig,
-                                              val cacheConnector: UserAnswersCacheConnector,
-                                              @Partnership val navigator: Navigator,
-                                              authenticate: AuthAction,
-                                              allowAccess: AllowAccessActionProvider,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: EnterVATFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              val view: enterVAT
+class PartnershipEnterVATController @Inject()(
+                                               val cacheConnector: UserAnswersCacheConnector,
+                                               @Partnership val navigator: Navigator,
+                                               authenticate: AuthAction,
+                                               allowAccess: AllowAccessActionProvider,
+                                               getData: DataRetrievalAction,
+                                               requireData: DataRequiredAction,
+                                               formProvider: EnterVATFormProvider,
+                                               val controllerComponents: MessagesControllerComponents,
+                                               val view: enterVAT
                                              )(implicit val executionContext: ExecutionContext) extends VATNumberController {
 
   private def form(partnershipName: String)

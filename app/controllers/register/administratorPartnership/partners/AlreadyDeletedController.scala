@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
 import identifiers.register.partnership.partners.PartnerNameId
@@ -31,14 +30,15 @@ import views.html.alreadyDeleted
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class AlreadyDeletedController @Inject()(appConfig: FrontendAppConfig,
-                                         authenticate: AuthAction,
-                                         allowAccess: AllowAccessActionProvider,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         val view: alreadyDeleted
-                                        ) extends FrontendBaseController with Retrievals with Enumerable.Implicits with I18nSupport {
+class AlreadyDeletedController @Inject()(
+                                          authenticate: AuthAction,
+                                          allowAccess: AllowAccessActionProvider,
+                                          getData: DataRetrievalAction,
+                                          requireData: DataRequiredAction,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          val view: alreadyDeleted
+                                        )
+  extends FrontendBaseController with Retrievals with Enumerable.Implicits with I18nSupport {
 
   def onPageLoad(index: Index, mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>

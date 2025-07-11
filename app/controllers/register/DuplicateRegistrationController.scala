@@ -16,27 +16,27 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions._
-import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.duplicateRegistration
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
-class DuplicateRegistrationController @Inject()(appConfig: FrontendAppConfig,
-                                                authenticate: AuthAction,
-                                                allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                val view: duplicateRegistration
-                                               ) extends FrontendBaseController with I18nSupport with Retrievals {
+class DuplicateRegistrationController @Inject()(
+                                                 authenticate: AuthAction,
+                                                 allowAccess: AllowAccessActionProvider,
+                                                 getData: DataRetrievalAction,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 val view: duplicateRegistration
+                                               )
+  extends FrontendBaseController with I18nSupport with Retrievals {
 
-  def onPageLoad(mode:Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>
       Future.successful(Ok(view()))
   }

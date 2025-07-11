@@ -37,7 +37,6 @@ class DirectorEnterNINOControllerSpec extends ControllerWithCommonBehaviour {
   val view: enterNINO = app.injector.instanceOf[enterNINO]
   private def controller(dataRetrievalAction: DataRetrievalAction) = new DirectorEnterNINOController(
     new FakeNavigator(onwardRoute),
-    frontendAppConfig,
     FakeUserAnswersCacheConnector,
     FakeAuthAction,
     FakeAllowAccessProvider(config = frontendAppConfig),

@@ -45,7 +45,6 @@ class CompanyContactAddressControllerSpec extends ControllerSpecBase with ScalaF
 
   def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
     new CompanyContactAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

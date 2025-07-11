@@ -17,7 +17,6 @@
 package controllers.register.administratorPartnership
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
@@ -34,7 +33,7 @@ import views.html.register.isRegisteredName
 
 import scala.concurrent.ExecutionContext
 
-class PartnershipIsRegisteredNameController @Inject()(override val appConfig: FrontendAppConfig,
+class PartnershipIsRegisteredNameController @Inject()(
                                                       override val cacheConnector: UserAnswersCacheConnector,
                                                       @PartnershipV2 val navigator: Navigator,
                                                       authenticate: AuthAction,

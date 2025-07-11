@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
@@ -36,7 +35,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnerNoNINOReasonController @Inject()(@PartnershipPartnerV2 val navigator: Navigator,
-                                              val appConfig: FrontendAppConfig,
                                               val dataCacheConnector: UserAnswersCacheConnector,
                                               authenticate: AuthAction,
                                               @NoRLSCheck val allowAccess: AllowAccessActionProvider,

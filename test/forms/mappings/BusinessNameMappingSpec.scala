@@ -24,12 +24,10 @@ class BusinessNameMappingSpec extends StringFieldBehaviours with BusinessNameMap
 
   private val requiredKey = "common.radio.error.required"
   private val businessNameLengthKey = "common.error.vat.length"
-  private val invalidBusinessNameKey = "common.error.vat.invalid"
 
   "BusinessNameMapping " should {
     val mapping = nameMapping(
       requiredKey,
-      invalidBusinessNameKey,
       businessNameLengthKey
     )
     val fieldName = "value"

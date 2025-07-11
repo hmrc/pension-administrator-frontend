@@ -37,7 +37,6 @@ class HasDirectorUTRControllerSpec extends ControllerWithCommonBehaviour {
   val view: hasReferenceNumber = app.injector.instanceOf[hasReferenceNumber]
 
   private def controller(dataRetrievalAction: DataRetrievalAction) = new HasDirectorUTRController(
-    frontendAppConfig,
     FakeUserAnswersCacheConnector,
     new FakeNavigator(onwardRoute),
     FakeAuthAction,

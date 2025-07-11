@@ -51,7 +51,7 @@ class HasCompanyVATControllerSpec extends ControllerSpecBase {
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new HasCompanyVATController(frontendAppConfig,
+    new HasCompanyVATController(
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

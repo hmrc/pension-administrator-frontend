@@ -16,14 +16,11 @@
 
 package controllers.register.partnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.{DOBController, Retrievals}
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.partners.{PartnerDOBId, PartnerNameId}
-
-import javax.inject.Inject
 import models.{Index, Mode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.Navigator
@@ -31,17 +28,18 @@ import utils.annotations.{NoRLSCheck, PartnershipPartner}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.dob
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnerDOBController @Inject()(val appConfig: FrontendAppConfig,
-                                     val cacheConnector: UserAnswersCacheConnector,
-                                     @PartnershipPartner val navigator: Navigator,
-                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
-                                     authenticate: AuthAction,
-                                     getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     val view: dob
+class PartnerDOBController @Inject()(
+                                      val cacheConnector: UserAnswersCacheConnector,
+                                      @PartnershipPartner val navigator: Navigator,
+                                      @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
+                                      authenticate: AuthAction,
+                                      getData: DataRetrievalAction,
+                                      requireData: DataRequiredAction,
+                                      val controllerComponents: MessagesControllerComponents,
+                                      val view: dob
                                     )(implicit val executionContext: ExecutionContext) extends DOBController with Retrievals {
 
   private[partners] def viewModel(mode: Mode,

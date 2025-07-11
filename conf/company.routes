@@ -39,7 +39,7 @@ GET         /:mode/other-directors                        controllers.register.c
 POST        /:mode/other-directors                        controllers.register.company.MoreThanTenDirectorsController.onSubmit(mode: Mode)
 
 GET         /confirm-address                              controllers.register.company.ConfirmCompanyDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST        /confirm-address                              controllers.register.company.ConfirmCompanyDetailsController.onSubmit(mode: Mode = NormalMode)
+POST        /confirm-address                              controllers.register.company.ConfirmCompanyDetailsController.onSubmit()
 
 GET         /update-missing-address-fields                controllers.register.company.AddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /update-missing-address-fields                controllers.register.company.AddressController.onSubmit(mode: Mode = NormalMode)

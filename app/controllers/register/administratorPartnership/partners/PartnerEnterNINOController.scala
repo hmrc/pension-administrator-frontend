@@ -16,7 +16,6 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions._
 import controllers.register.NINOController
@@ -36,7 +35,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnerEnterNINOController @Inject()(@PartnershipPartnerV2 val navigator: Navigator,
-                                           val appConfig: FrontendAppConfig,
                                            val cacheConnector: UserAnswersCacheConnector,
                                            authenticate: AuthAction,
                                            @NoRLSCheck val allowAccess: AllowAccessActionProvider,
@@ -45,7 +43,8 @@ class PartnerEnterNINOController @Inject()(@PartnershipPartnerV2 val navigator: 
                                            formProvider: NINOFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            val view: enterNINO
-                                          )(implicit val executionContext: ExecutionContext) extends NINOController with I18nSupport {
+                                          )(implicit val executionContext: ExecutionContext)
+  extends NINOController with I18nSupport {
 
   private def form(partnerName: String)
                   (implicit request: DataRequest[AnyContent]): Form[ReferenceValue] = formProvider(partnerName)

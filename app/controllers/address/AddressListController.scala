@@ -16,7 +16,6 @@
 
 package controllers.address
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Variations
 import controllers.actions.AllowAccessActionProvider
@@ -37,8 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 trait AddressListController extends FrontendBaseController with I18nSupport with Variations {
 
   implicit val executionContext: ExecutionContext
-
-  protected def appConfig: FrontendAppConfig
 
   protected def cacheConnector: UserAnswersCacheConnector
 

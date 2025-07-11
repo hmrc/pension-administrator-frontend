@@ -16,13 +16,11 @@
 
 package controllers.register.partnership
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.HasReferenceNumberController
 import controllers.actions._
 import forms.HasReferenceNumberFormProvider
 import identifiers.register.{BusinessNameId, HasPAYEId}
-import javax.inject.Inject
 import models.Mode
 import models.requests.DataRequest
 import play.api.data.Form
@@ -32,9 +30,10 @@ import utils.annotations.Partnership
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.hasReferenceNumber
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class HasPartnershipPAYEController @Inject()(override val appConfig: FrontendAppConfig,
+class HasPartnershipPAYEController @Inject()(
                                              override val dataCacheConnector: UserAnswersCacheConnector,
                                              @Partnership override val navigator: Navigator,
                                              authenticate: AuthAction,

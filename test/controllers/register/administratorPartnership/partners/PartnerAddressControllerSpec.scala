@@ -120,7 +120,6 @@ class PartnerAddressControllerSpec extends ControllerSpecBase with ScalaFutures 
   private val isUkHintText = false
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new PartnerAddressController(
-      frontendAppConfig,
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeAuthAction,

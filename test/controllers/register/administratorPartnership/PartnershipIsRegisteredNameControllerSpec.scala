@@ -76,7 +76,6 @@ class PartnershipIsRegisteredNameControllerSpec extends ControllerSpecBase with 
                         dataRetrievalAction: DataRetrievalAction
                       )(connector: UserAnswersCacheConnector, nav: Navigator): PartnershipIsRegisteredNameController =
     new PartnershipIsRegisteredNameController(
-      appConfig = frontendAppConfig,
       cacheConnector = connector,
       navigator = nav,
       authenticate = FakeAuthAction,

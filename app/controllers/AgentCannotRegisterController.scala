@@ -17,13 +17,12 @@
 package controllers
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.agentCannotRegister
 
-class AgentCannotRegisterController @Inject()(frontendAppConfig: FrontendAppConfig,
+class AgentCannotRegisterController @Inject()(
                                               val controllerComponents: MessagesControllerComponents,
                                               val view: agentCannotRegister) extends FrontendBaseController with I18nSupport {
 

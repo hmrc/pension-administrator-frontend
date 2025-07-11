@@ -16,11 +16,9 @@
 
 package controllers.register.administratorPartnership.partners
 
-import config.FrontendAppConfig
 import connectors.cache.UserAnswersCacheConnector
 import controllers.ReasonController
 import controllers.actions._
-import controllers.register.administratorPartnership.partners.routes.PartnerNoUTRReasonController
 import forms.UTRReasonFormProvider
 import identifiers.register.partnership.partners.{PartnerNameId, PartnerNoUTRReasonId}
 import models.requests.DataRequest
@@ -36,7 +34,6 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class PartnerNoUTRReasonController @Inject()(@PartnershipPartnerV2 val navigator: Navigator,
-                                             val appConfig: FrontendAppConfig,
                                              val dataCacheConnector: UserAnswersCacheConnector,
                                              authenticate: AuthAction,
                                              @NoRLSCheck val allowAccess: AllowAccessActionProvider,
@@ -68,7 +65,7 @@ class PartnerNoUTRReasonController @Inject()(@PartnershipPartnerV2 val navigator
 
   private def viewModel(mode: Mode, index: Index, partnerName: String)(implicit request: DataRequest[AnyContent]) =
     CommonFormWithHintViewModel(
-      postCall = PartnerNoUTRReasonController.onSubmit(mode, index),
+      postCall = routes.PartnerNoUTRReasonController.onSubmit(mode, index),
       title = Message("whyNoUTR.heading", Message("thePartner")),
       heading = Message("whyNoUTR.heading", partnerName),
       mode = mode,

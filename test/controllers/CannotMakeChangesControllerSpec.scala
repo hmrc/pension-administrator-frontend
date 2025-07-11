@@ -55,7 +55,6 @@ class CannotMakeChangesControllerSpec extends ControllerSpecBase {
 
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new CannotMakeChangesController(
-      frontendAppConfig,
       FakeAuthAction(UserType.Individual),
       dataRetrievalAction,
       new DataRequiredActionImpl,

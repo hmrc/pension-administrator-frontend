@@ -16,7 +16,6 @@
 
 package controllers.register
 
-import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
 import controllers.actions._
@@ -36,7 +35,6 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
   private val form: Form[?] = new VariationDeclarationFitAndProperFormProvider()()
 
-  private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
   val view: variationDeclarationFitAndProper = app.injector.instanceOf[variationDeclarationFitAndProper]
 
@@ -90,7 +88,6 @@ class VariationDeclarationFitAndProperControllerSpec extends ControllerSpecBase 
                           fakeUserAnswersCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
                         ) =
     new VariationDeclarationFitAndProperController(
-      appConfig,
       FakeAuthAction(userType),
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,

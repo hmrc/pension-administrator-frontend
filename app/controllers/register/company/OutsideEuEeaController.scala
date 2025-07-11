@@ -16,12 +16,10 @@
 
 package controllers.register.company
 
-import config.FrontendAppConfig
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.BusinessNameId
 import identifiers.register.company.CompanyAddressId
-import javax.inject.Inject
 import models.Mode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -29,16 +27,17 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import views.html.register.outsideEuEea
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
-class OutsideEuEeaController @Inject()(appConfig: FrontendAppConfig,
-                                       authenticate: AuthAction,
-                                       allowAccess: AllowAccessActionProvider,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       countryOptions: CountryOptions,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       val view: outsideEuEea
+class OutsideEuEeaController @Inject()(
+                                        authenticate: AuthAction,
+                                        allowAccess: AllowAccessActionProvider,
+                                        getData: DataRetrievalAction,
+                                        requireData: DataRequiredAction,
+                                        countryOptions: CountryOptions,
+                                        val controllerComponents: MessagesControllerComponents,
+                                        val view: outsideEuEea
                                       ) extends FrontendBaseController with I18nSupport with Retrievals {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {

@@ -51,7 +51,7 @@ class HasCompanyCRNControllerSpec extends ControllerSpecBase {
     )
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getCompany) =
-    new HasCompanyCRNController(frontendAppConfig,
+    new HasCompanyCRNController(
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
       new FakeNavigator(desiredRoute = onwardRoute),
