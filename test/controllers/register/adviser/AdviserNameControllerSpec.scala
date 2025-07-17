@@ -26,7 +26,7 @@ import models.{NormalMode, RegistrationIdType, RegistrationInfo}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator, UserAnswerOps, UserAnswers}
 import views.html.register.adviser.adviserName
 
 class AdviserNameControllerSpec extends ControllerWithQuestionPageBehaviours {

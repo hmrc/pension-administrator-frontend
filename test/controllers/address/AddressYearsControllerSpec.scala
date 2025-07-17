@@ -25,19 +25,19 @@ import forms.address.AddressYearsFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.DirectorsOrPartnersChangedId
 import identifiers.register.partnership.partners.PartnerAddressYearsId
-import models._
+import models.*
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.{eq as eqTo, *}
+import org.mockito.Mockito.when
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -75,9 +75,9 @@ object AddressYearsControllerSpec {
 
 }
 
-class AddressYearsControllerSpec extends SpecBase with Matchers with OptionValues with ScalaFutures with MockitoSugar {
+class AddressYearsControllerSpec extends SpecBase with Matchers with OptionValues with ScalaFutures {
 
-  import AddressYearsControllerSpec._
+  import AddressYearsControllerSpec.*
 
   val view: addressYears = app.injector.instanceOf[addressYears]
 
@@ -134,7 +134,7 @@ class AddressYearsControllerSpec extends SpecBase with Matchers with OptionValue
 
     "return a redirect when the submitted data is valid" in {
 
-      import play.api.inject._
+      import play.api.inject.*
 
       val cacheConnector = mock[UserAnswersCacheConnector]
 
@@ -145,7 +145,7 @@ class AddressYearsControllerSpec extends SpecBase with Matchers with OptionValue
         app =>
           when(cacheConnector.save[AddressYears, FakeIdentifier.type](
             eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> AddressYears.OverAYear.toString
@@ -160,7 +160,7 @@ class AddressYearsControllerSpec extends SpecBase with Matchers with OptionValue
 
     "save the change flag in update mode" in {
 
-      import play.api.inject._
+      import play.api.inject.*
 
       val cacheConnector = FakeUserAnswersCacheConnector
 

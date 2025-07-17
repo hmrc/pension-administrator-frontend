@@ -22,7 +22,7 @@ import controllers.ControllerSpecBase
 import forms.address.PostCodeLookupFormProvider
 import models.{Mode, NormalMode, TolerantAddress}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -37,7 +37,7 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.Future
 
-class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with MockitoSugar {
+class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   private val mockAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
@@ -75,9 +75,9 @@ class AdviserAddressPostCodeLookupControllerSpec extends ControllerSpecBase with
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Adviser]).toInstance(new FakeNavigator(onwardRoute)),
           bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
           bind[AddressLookupConnector].toInstance(mockAddressLookupConnector)
-        ):_*)) {
+        )*)) {
         app =>
-          when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())) thenReturn Future.successful(Seq(address))
+          when(mockAddressLookupConnector.addressLookupByPostCode(any())(any(), any())).thenReturn(Future.successful(Seq(address)))
           val controller = app.injector.instanceOf[AdviserAddressPostCodeLookupController]
 
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "ZZ1 1ZZ")

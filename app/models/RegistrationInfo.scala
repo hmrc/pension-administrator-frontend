@@ -49,7 +49,7 @@ object RegistrationLegalStatus extends Enumerable.Implicits {
   )
 
   implicit val enumerable: Enumerable[RegistrationLegalStatus] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 
 }
 
@@ -75,7 +75,7 @@ object RegistrationCustomerType extends Enumerable.Implicits {
   )
 
   implicit val enumerable: Enumerable[RegistrationCustomerType] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 
 }
 
@@ -93,6 +93,6 @@ object RegistrationIdType extends Enumerable.Implicits {
   )
 
   implicit val enumerable: Enumerable[RegistrationIdType] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 
 }

@@ -16,14 +16,37 @@
 
 package models.enumeration
 
-import models.enumeration.binders.EnumPathBinder
 import play.api.mvc.PathBindable
 
-object JourneyType extends Enumeration {
-  type Name = Value
-  val PSA = Value("PSA")
-  val INVITE = Value("PSAInvite")
-  val VARIATION = Value("Variation")
+enum JourneyType extends Enum[JourneyType] {
+  case PSA
+  case INVITE
+  case VARIATION
 
-  implicit val journeyTypePathBinder: PathBindable[Name] = EnumPathBinder.pathBinder(this)
+  override def toString: String = this.name() match {
+    case "PSA" => "PSA"
+    case "INVITE" => "PSAInvite"
+    case "VARIATION" => "Variation"
+  }
+}
+
+object JourneyType {
+  implicit def pathBinder(implicit stringBinder: PathBindable[String]): PathBindable[JourneyType] =
+    new PathBindable[JourneyType] {
+      override def bind(key: String, value: String): Either[String, JourneyType] =
+        value match {
+          case "PSA" => Right(JourneyType.PSA)
+          case "PSAInvite" => Right(JourneyType.INVITE)
+          case "Variation" => Right(JourneyType.VARIATION)
+          case _ => Left("Invalid JourneyType")
+        }
+
+      override def unbind(key: String, value: JourneyType): String =
+        value match {
+          case JourneyType.PSA => "PSA"
+          case JourneyType.INVITE => "PSAInvite"
+          case JourneyType.VARIATION => "Variation"
+        }
+    }
+
 }

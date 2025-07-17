@@ -28,7 +28,6 @@ import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.Individual
 import models._
 import models.requests.AuthenticatedRequest
-import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -41,7 +40,7 @@ import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with MockitoSugar {
+class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 

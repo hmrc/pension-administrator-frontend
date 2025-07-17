@@ -20,7 +20,8 @@ import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import identifiers.TypedIdentifier
 import play.api.http.Status.{NOT_FOUND, OK}
-import play.api.libs.json._
+import play.api.libs.json.*
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw

@@ -17,15 +17,16 @@
 package controllers.register.administratorPartnership.contactDetails
 
 import controllers.ControllerSpecBase
-import controllers.actions._
-import models._
+import controllers.actions.*
+import models.*
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Call, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.{FakeCountryOptions, UserAnswers}
+import utils.{FakeCountryOptions, UserAnswerOps, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 

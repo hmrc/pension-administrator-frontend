@@ -24,7 +24,7 @@ import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.UserAnswers
+import utils.{UserAnswerOps, UserAnswers}
 import views.html.register.variationNoLongerFitAndProper
 
 class VariationNoLongerFitAndProperControllerSpec extends ControllerSpecBase {

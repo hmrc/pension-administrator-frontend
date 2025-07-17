@@ -24,7 +24,7 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import utils.checkyouranswers.Ops._
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, UserAnswers}
+import utils.{FakeCountryOptions, UserAnswerOps, UserAnswers}
 import viewmodels.{AnswerRow, Link, Message}
 
 class DirectorPreviousAddressIdSpec extends SpecBase {

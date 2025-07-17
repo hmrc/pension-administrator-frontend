@@ -21,7 +21,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.UKAddressFormProvider
 import models._
-import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -36,7 +35,6 @@ import views.html.address.manualAddress
 
 class PartnershipContactAddressControllerSpec
   extends ControllerSpecBase
-    with MockitoSugar
     with ScalaFutures
     with OptionValues {
 

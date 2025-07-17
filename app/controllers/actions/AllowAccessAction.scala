@@ -19,14 +19,14 @@ package controllers.actions
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import connectors.MinimalPsaConnector
-import models._
+import models.*
 import models.requests.AuthenticatedRequest
-import play.api.mvc.Results._
-import play.api.mvc.{Call, Request, Result, ActionFilter}
+import play.api.mvc.Results.*
+import play.api.mvc.{ActionFilter, Call, Request, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
-import scala.concurrent.{Future, ExecutionContext}
+import scala.concurrent.{ExecutionContext, Future}
 
 class AllowAccessAction(
                          mode: Mode,
@@ -37,7 +37,7 @@ class AllowAccessAction(
   protected def redirects()(implicit hc: HeaderCarrier):Future[Option[Result]] = {
     minimalPsaConnector.getMinimalPsaDetails().map { minimalPSA =>
       if (minimalPSA.isPsaSuspended) {
-        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad))
+        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
       } else if (minimalPSA.deceasedFlag) {
         Some(Redirect(config.youMustContactHMRCUrl))
       } else if (minimalPSA.rlsFlag) {
@@ -79,7 +79,7 @@ class AllowAccessActionNoRLSCheck(
   override protected def redirects()(implicit hc: HeaderCarrier):Future[Option[Result]] = {
     minimalPsaConnector.getMinimalPsaDetails().map { minimalPSA =>
       if (minimalPSA.isPsaSuspended) {
-        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad))
+        Some(Redirect(controllers.routes.CannotMakeChangesController.onPageLoad()))
       } else {
         None
       }

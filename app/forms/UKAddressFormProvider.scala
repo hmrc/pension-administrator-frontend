@@ -34,7 +34,7 @@ class UKAddressFormProvider @Inject()(countryOptions: CountryOptions) extends Ad
       "addressLine4" -> optionalAddressLineMapping("error.address_line_4.length", "error.address_line_4.invalid"),
       "postCode" -> postCodeWithCountryMapping("error.postcode.required", "error.postcode.invalid", "error.postcode.nonUK.length"),
       "country" -> ukCountryMapping(countryOptions, requiredCountry, "error.country.invalid.uk")
-    )(Address.apply)(Address.unapply)
+    )(Address.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
 }

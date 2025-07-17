@@ -23,7 +23,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.AddressFormProvider
 import models.{Address, NormalMode, TolerantAddress}
-import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -35,7 +34,7 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class AdviserAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
+class AdviserAddressControllerSpec extends ControllerSpecBase with ScalaFutures with OptionValues {
 
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 

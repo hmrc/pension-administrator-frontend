@@ -18,16 +18,15 @@ package controllers.register
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions._
-import identifiers.register._
-import models._
-import org.mockito.MockitoSugar
-import play.api.test.Helpers.{contentAsString, _}
+import controllers.actions.*
+import identifiers.register.*
+import models.*
+import play.api.test.Helpers.{contentAsString, *}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.FakeNavigator
 import views.html.register.declarationFitAndProper
 
-class DeclarationFitAndProperControllerSpec extends ControllerSpecBase with MockitoSugar {
+class DeclarationFitAndProperControllerSpec extends ControllerSpecBase {
 
   private val onwardRoute = controllers.routes.IndexController.onPageLoad
   private val fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)

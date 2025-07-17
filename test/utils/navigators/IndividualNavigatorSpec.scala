@@ -26,7 +26,7 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswerOps, UserAnswers}
 
 class IndividualNavigatorSpec extends SpecBase with NavigatorBehaviour {
 

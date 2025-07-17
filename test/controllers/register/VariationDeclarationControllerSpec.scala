@@ -34,7 +34,7 @@ import models.UserType.UserType
 import models._
 import models.enumeration.JourneyType
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -47,7 +47,6 @@ import scala.concurrent.Future
 
 class VariationDeclarationControllerSpec
   extends ControllerSpecBase
-    with MockitoSugar
     with BeforeAndAfterEach {
 
   val email = "test@test.com"
@@ -185,7 +184,7 @@ class VariationDeclarationControllerSpec
         status(result) mustBe SEE_OTHER
 
         verify(mockConnector, times(1)).updatePsa(eqTo(answers))(any(), any())
-       verify(mockEmailConnector, times(1))
+        verify(mockEmailConnector, times(1))
         .sendEmail(eqTo(email), any(),
           eqTo(Map("psaName" -> businessName)), eqTo(PsaId("A1212128")),eqTo(JourneyType.VARIATION))(any(), any())
         fakeAuditService.verifySent(expectedAuditEvent) mustBe true

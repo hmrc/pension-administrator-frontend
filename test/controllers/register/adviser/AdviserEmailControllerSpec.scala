@@ -20,7 +20,7 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.actions._
 import controllers.behaviours.ControllerWithCommonBehaviour
 import forms.EmailFormProvider
-import models.{Index, Mode, NormalMode}
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -45,7 +45,7 @@ class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
     view
   )
 
-  private def emailView(form: Form[?]): String = view(form, viewModel(NormalMode, index), None)(fakeRequest, messages).toString
+  private def emailView(form: Form[?]): String = view(form, viewModel(NormalMode), None)(fakeRequest, messages).toString
 
   "AdviserEmail Controller" must {
 
@@ -63,11 +63,10 @@ class AdviserEmailControllerSpec extends ControllerWithCommonBehaviour {
 object AdviserEmailControllerSpec {
   private val formProvider = new EmailFormProvider()
   private val emailForm = formProvider()
-  private val index = 0
   private val adviserName = "Test Adviser Name"
   private val postRequest = FakeRequest().withFormUrlEncodedBody(("value", "test@test.com"))
 
-  private def viewModel(mode: Mode, index: Index) =
+  private def viewModel(mode: Mode) =
     CommonFormWithHintViewModel(
       postCall = routes.AdviserEmailController.onSubmit(mode),
       title = Message("email.title", Message("theAdviser")),

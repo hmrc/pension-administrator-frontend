@@ -17,26 +17,26 @@
 package controllers
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import identifiers.register.individual.{IndividualContactAddressId, IndividualDetailsId}
-import models._
+import models.*
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsNull, Json}
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.PsaDetailsService
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator, UserAnswerOps, UserAnswers}
 import views.html.updateContactAddress
 
 import scala.concurrent.Future
 
-class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with MockitoSugar{
+class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 
-  import UpdateContactAddressControllerSpec._
+  import UpdateContactAddressControllerSpec.*
 
   override protected def beforeEach(): Unit = {
     reset(mockUserAnswersCacheConnector)
@@ -73,7 +73,7 @@ class UpdateContactAddressControllerSpec extends ControllerSpecBase with BeforeA
     )
 }
 
-object UpdateContactAddressControllerSpec extends ControllerSpecBase with MockitoSugar {
+object UpdateContactAddressControllerSpec extends ControllerSpecBase {
 
   private val onwardRoute = "/url"
   private val navigator = new FakeNavigator(Call("GET", onwardRoute))

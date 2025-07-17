@@ -20,11 +20,10 @@ import base.SpecBase
 import com.typesafe.config.ConfigException
 import config.FrontendAppConfig
 import models.InternationalRegion._
-import org.mockito.MockitoSugar
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 
-class CountryOptionsSpec extends SpecBase with MockitoSugar {
+class CountryOptionsSpec extends SpecBase {
 
   "Country Options" must {
 

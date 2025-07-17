@@ -17,34 +17,21 @@
 package controllers.deregister
 
 import controllers.ControllerSpecBase
-import org.mockito.MockitoSugar
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import views.html.deregister.successful_deregistration
 
 
 class SuccessfulDeregistrationControllerSpec extends ControllerSpecBase {
 
-  import SuccessfulDeregistrationControllerSpec._
+  private val view: successful_deregistration = app.injector.instanceOf[successful_deregistration]
+
+  private val controller = app.injector.instanceOf[SuccessfulDeregistrationController]
 
   "Successful Deregistration Controller" must {
     "return OK and the correct view for a GET" in {
       val result = controller.onPageLoad()(fakeRequest)
       status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+      contentAsString(result) mustBe view()(fakeRequest, messages).toString
     }
   }
-}
-
-object SuccessfulDeregistrationControllerSpec extends ControllerSpecBase with MockitoSugar {
-
-  val view: successful_deregistration = app.injector.instanceOf[successful_deregistration]
-
-  private def controller =
-    new SuccessfulDeregistrationController(
-      controllerComponents,
-      view
-    )
-
-  private def viewAsString() =
-    view()(fakeRequest, messages).toString
 }

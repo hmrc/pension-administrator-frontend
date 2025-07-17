@@ -25,23 +25,23 @@ class OrganisationSpec extends AsyncFlatSpec with Matchers {
   private val organisationName = "test-org-name"
 
   "Organisation" should "match LimitedCompany to CorporateBody" in {
-    Organisation(organisationName, LimitedCompany).organisationType shouldBe OrganisationTypeEnum.CorporateBody
+    Organisation(organisationName, LimitedCompany).organisationType shouldBe OrganisationType.CorporateBody
   }
 
   it should "match BusinessPartnership to Partnership" in {
-    Organisation(organisationName, BusinessPartnership).organisationType shouldBe OrganisationTypeEnum.Partnership
+    Organisation(organisationName, BusinessPartnership).organisationType shouldBe OrganisationType.Partnership
   }
 
   it should "match LimitedPartnership to Partnership" in {
-    Organisation(organisationName, LimitedPartnership).organisationType shouldBe OrganisationTypeEnum.Partnership
+    Organisation(organisationName, LimitedPartnership).organisationType shouldBe OrganisationType.Partnership
   }
 
   it should "match LimitedLiabilityPartnership to LLP" in {
-    Organisation(organisationName, LimitedLiabilityPartnership).organisationType shouldBe OrganisationTypeEnum.LLP
+    Organisation(organisationName, LimitedLiabilityPartnership).organisationType shouldBe OrganisationType.LLP
   }
 
   it should "match UnlimitedCompany to CorporateBody" in {
-    Organisation(organisationName, UnlimitedCompany).organisationType shouldBe OrganisationTypeEnum.CorporateBody
+    Organisation(organisationName, UnlimitedCompany).organisationType shouldBe OrganisationType.CorporateBody
   }
 
   it should "not match OverseasCompany, throwing IllegalArgumentException" in {

@@ -38,7 +38,7 @@ object Message {
         case r@Resolvable(_,_) => r.resolve
         case x => x
       }
-      messages(key, transformedArgs: _*)
+      messages(key, transformedArgs*)
     }
 
     override def withArgs(args: Any*): Message =

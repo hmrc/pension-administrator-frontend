@@ -18,16 +18,16 @@ package controllers.register.administratorPartnership.contactDetails
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.address.AddressListFormProvider
 import identifiers.register.partnership.PartnershipPreviousAddressPostCodeLookupId
 import models.{NormalMode, TolerantAddress}
 import play.api.inject.bind
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.annotations.Partnership
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswerOps, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList

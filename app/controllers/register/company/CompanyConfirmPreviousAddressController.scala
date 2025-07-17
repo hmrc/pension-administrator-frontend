@@ -17,14 +17,14 @@
 package controllers.register.company
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import controllers.address.ConfirmPreviousAddressController
 import identifiers.UpdateContactAddressId
 import identifiers.register.BusinessNameId
-import identifiers.register.company._
+import identifiers.register.company.*
 import models.Mode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.{NoRLSCheck, RegisterCompany}
 import utils.countryOptions.CountryOptions
@@ -48,7 +48,7 @@ class CompanyConfirmPreviousAddressController @Inject()(
                                                        )(implicit val executionContext: ExecutionContext)
   extends ConfirmPreviousAddressController with I18nSupport {
 
-  private[controllers] val postCall = routes.CompanyConfirmPreviousAddressController.onSubmit _
+  private[controllers] lazy val postCall: Call = routes.CompanyConfirmPreviousAddressController.onSubmit()
   private[controllers] val title: Message = "confirmPreviousAddress.title"
   private[controllers] val heading: Message = "confirmPreviousAddress.heading"
 
@@ -57,7 +57,7 @@ class CompanyConfirmPreviousAddressController @Inject()(
       (BusinessNameId and ExistingCurrentAddressId).retrieve.map {
         case name ~ address =>
           SameContactAddressViewModel(
-            postCall(),
+            postCall,
             title = Message(title),
             heading = Message(heading, name),
             hint = None,

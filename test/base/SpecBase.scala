@@ -17,10 +17,10 @@
 package base
 
 import config.FrontendAppConfig
-import org.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterAll
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice._
+import org.scalatestplus.play.guice.*
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder

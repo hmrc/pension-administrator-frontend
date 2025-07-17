@@ -20,8 +20,8 @@ import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.NormalMode
 import models.register.{Task, TaskList}
-import play.api.test.Helpers._
-import utils.UserAnswers
+import play.api.test.Helpers.*
+import utils.{UserAnswerOps, UserAnswers}
 import views.html.register.taskList
 
 class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase {
