@@ -43,7 +43,7 @@
     name = field.name,
     classes = if(inline) "govuk-radios--inline" else "",
     errorMessage = field.error match {
-        case Some(e) => Some(ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
+        case Some(e) => Some(ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args*))))
         case None => None
     },
     hint = if(hint.isDefined) Some(Hint(content = Text(hint.get))) else None,

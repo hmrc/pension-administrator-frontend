@@ -24,7 +24,7 @@ import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualAddressId, IndividualDateOfBirthId, IndividualDetailsId}
 import models._
 import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{atLeastOnce, never, when, verify}
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -36,7 +36,7 @@ import views.html.register.individual.individualDateOfBirth
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class IndividualDateOfBirthControllerSpec extends ControllerSpecBase with MockitoSugar {
+class IndividualDateOfBirthControllerSpec extends ControllerSpecBase {
 
 
   private val formProvider = new IndividualDateOfBirthFormProvider()

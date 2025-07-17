@@ -20,13 +20,14 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import models._
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator, UserAnswerOps, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 

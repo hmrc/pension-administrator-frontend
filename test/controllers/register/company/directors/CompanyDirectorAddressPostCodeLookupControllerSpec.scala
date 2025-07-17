@@ -23,7 +23,8 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.company.directors.{CompanyDirectorAddressPostCodeLookupId, DirectorNameId}
 import models._
-import org.mockito.{ArgumentMatchers, MockitoSugar}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -35,7 +36,7 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.Future
 
-class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecBase with MockitoSugar {
+class CompanyDirectorAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute = controllers.routes.IndexController.onPageLoad
 

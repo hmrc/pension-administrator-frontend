@@ -16,13 +16,13 @@
 
 package connectors
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.PsaSubscription.PsaSubscription
-import play.api.Logger
-import play.api.http.Status._
-import play.api.libs.json.{JsError, JsResultException, JsSuccess, JsValue}
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import play.api.Logging
+import play.api.http.Status.*
+import play.api.libs.json.JsValue
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.{HttpResponseHelper, UserAnswers}
@@ -40,58 +40,50 @@ class PsaIdNotFoundSubscriptionException extends SubscriptionException
 
 case class InvalidSubscriptionPayloadException() extends SubscriptionException
 
-@ImplementedBy(classOf[SubscriptionConnectorImpl])
-trait SubscriptionConnector {
+class SubscriptionConnector @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
+  extends HttpResponseHelper
+    with Logging {
 
-  def getSubscriptionDetailsSelf()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue]
-
-  def getSubscriptionModel()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription]
-
-  def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit]
-}
-
-class SubscriptionConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
-  extends SubscriptionConnector
-    with HttpResponseHelper {
-
-  private val logger = Logger(classOf[SubscriptionConnectorImpl])
-
-  override def getSubscriptionDetailsSelf()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
-
-    val subscriptionDetailsSelfUrl = url"${config.subscriptionDetailsSelfUrl}"
-
-    httpV2Client.get(subscriptionDetailsSelfUrl).execute[HttpResponse] map { response =>
-      response.status match {
-        case OK => response.json
-        case BAD_REQUEST if response.body.contains("INVALID_PSAID") => throw new PsaIdInvalidSubscriptionException
-        case BAD_REQUEST if response.body.contains("INVALID_CORRELATIONID") => throw new CorrelationIdInvalidSubscriptionException
-        case NOT_FOUND => throw new PsaIdNotFoundSubscriptionException
-        case _ => handleErrorResponse("GET", subscriptionDetailsSelfUrl.toString)(response)
+  def getSubscriptionDetailsSelf(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] =
+    httpV2Client
+      .get(url"${config.subscriptionDetailsSelfUrl}")
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK =>
+            response.json
+          case BAD_REQUEST if response.body.contains("INVALID_PSAID") =>
+            throw new PsaIdInvalidSubscriptionException
+          case BAD_REQUEST if response.body.contains("INVALID_CORRELATIONID") =>
+            throw new CorrelationIdInvalidSubscriptionException
+          case NOT_FOUND =>
+            throw new PsaIdNotFoundSubscriptionException
+          case _ =>
+            handleErrorResponse("GET", config.subscriptionDetailsSelfUrl)(response)
+        }
       }
-    } andThen {
-      case Failure(t: Throwable) => logger.warn("Unable to get PSA subscription details", t)
-    }
-
-  }
-
-  override def getSubscriptionModel()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscription] = {
-    getSubscriptionDetailsSelf().map(_.validate[PsaSubscription] match {
-      case JsSuccess(value, _) => value
-      case JsError(errors) => throw JsResultException(errors)
-    })
-  }
-
-  def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
-    val url = url"${config.updateSubscriptionDetailsUrl}"
-
-    httpV2Client.put(url).withBody(answers.json).execute[HttpResponse] map { response =>
-      response.status match {
-        case OK => ()
-        case BAD_REQUEST if response.body.contains("INVALID_PAYLOAD") => throw InvalidSubscriptionPayloadException()
-        case _ => handleErrorResponse("PUT", config.updateSubscriptionDetailsUrl)(response)
+      .andThen {
+        case Failure(t: Throwable) =>
+          logger.warn("Unable to get PSA subscription details", t)
       }
-    } andThen {
-      case Failure(t: Throwable) => logger.warn("Unable to update PSA subscription details", t)
-    }
-  }
+
+  def updateSubscriptionDetails(answers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
+    httpV2Client
+      .put(url"${config.updateSubscriptionDetailsUrl}")
+      .withBody(answers.json)
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK =>
+            ()
+          case BAD_REQUEST if response.body.contains("INVALID_PAYLOAD") =>
+            throw InvalidSubscriptionPayloadException()
+          case _ =>
+            handleErrorResponse("PUT", config.updateSubscriptionDetailsUrl)(response)
+        }
+      }
+      .andThen {
+        case Failure(t: Throwable) =>
+          logger.warn("Unable to update PSA subscription details", t)
+      }
 }

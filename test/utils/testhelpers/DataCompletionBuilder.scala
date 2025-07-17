@@ -19,7 +19,7 @@ package utils.testhelpers
 import models._
 import models.register.BusinessType
 import org.scalatest.OptionValues
-import utils.UserAnswers
+import utils.{UserAnswerOps, UserAnswers}
 
 import java.time.LocalDate
 

@@ -46,5 +46,5 @@
         ))
     )),
     hint = hint.map(hintValue => Hint(content = Text(hintValue))),
-    errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args:_*))))
+    errorMessage = field.error.map(e => ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args*))))
 ).withDayMonthYearFormField(field))

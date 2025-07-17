@@ -23,7 +23,7 @@ import models._
 import models.requests.DataRequest
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import utils.UserAnswers
+import utils.{UserAnswers, UserAnswerOps}
 import views.html.register.incompleteChanges
 
 class IncompleteChangesControllerSpec extends ControllerSpecBase {

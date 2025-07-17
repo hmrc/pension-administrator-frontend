@@ -17,11 +17,12 @@
 package forms
 
 import forms.mappings.AddressMapping
-import javax.inject.Inject
 import models.Address
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import utils.countryOptions.CountryOptions
+
+import javax.inject.Inject
 
 class AddressFormProvider @Inject()(countryOptions: CountryOptions) extends AddressMapping {
 
@@ -33,7 +34,7 @@ class AddressFormProvider @Inject()(countryOptions: CountryOptions) extends Addr
       "addressLine4" -> optionalAddressLineMapping("error.address_line_4.length", "error.address_line_4.invalid"),
       "postCode" -> postCodeWithCountryMapping("error.postcode.required", "error.postcode.invalid", "error.postcode.nonUK.length"),
       "country" -> countryMapping(countryOptions, requiredCountry, "error.country.invalid")
-    )(Address.apply)(Address.unapply)
+    )(Address.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
 }

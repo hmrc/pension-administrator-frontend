@@ -22,16 +22,16 @@ import connectors.SessionDataCacheConnector
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.routes
 import identifiers.AdministratorOrPractitionerId
-import models._
+import models.*
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
@@ -40,9 +40,9 @@ import utils.UserAnswers
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionSpec extends SpecBase with MockitoSugar {
+class AuthActionSpec extends SpecBase {
 
-  import AuthActionSpec._
+  import AuthActionSpec.*
 
   private val minimalPsa = MinimalPSA(
     email = "a@a.c",
@@ -75,7 +75,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
       "have access to PSA page when he has chosen to act as a PSA" in {
         val optionUAJson = UserAnswers()
           .set(AdministratorOrPractitionerId)(AdministratorOrPractitioner.Administrator).asOpt.map(_.json)
-        when(mockSessionDataCacheConnector.fetch()(any(), any())).thenReturn(Future.successful(optionUAJson))
+        when(mockSessionDataCacheConnector.fetch(any(), any())).thenReturn(Future.successful(optionUAJson))
         val retrievalResult = authRetrievals(enrolments = bothEnrolments)
         val authAction = new AuthenticationAction(fakeAuthConnector(retrievalResult), frontendAppConfig,
            mockSessionDataCacheConnector,
@@ -90,7 +90,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
       "redirect to cannot access as practitioner when trying to access PSA page when chosen to act as a PSP" in {
         val optionUAJson = UserAnswers()
           .set(AdministratorOrPractitionerId)(AdministratorOrPractitioner.Practitioner).asOpt.map(_.json)
-        when(mockSessionDataCacheConnector.fetch()(any(), any())).thenReturn(Future.successful(optionUAJson))
+        when(mockSessionDataCacheConnector.fetch(any(), any())).thenReturn(Future.successful(optionUAJson))
         val retrievalResult = authRetrievals(enrolments = bothEnrolments)
         val authAction = new AuthenticationAction(fakeAuthConnector(retrievalResult), frontendAppConfig,
            mockSessionDataCacheConnector,
@@ -105,7 +105,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
       "redirect to administrator or practitioner page when trying to access PSA page when not chosen a role" in {
         val optionUAJson = Some(Json.obj())
-        when(mockSessionDataCacheConnector.fetch()(any(), any())).thenReturn(Future.successful(optionUAJson))
+        when(mockSessionDataCacheConnector.fetch(any(), any())).thenReturn(Future.successful(optionUAJson))
         val retrievalResult = authRetrievals(enrolments = bothEnrolments)
         val authAction = new AuthenticationAction(fakeAuthConnector(retrievalResult), frontendAppConfig,
            mockSessionDataCacheConnector,
@@ -339,7 +339,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
 
         val result = controller.onPageLoad()(fakeRequest)
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.UseOrganisationCredentialsController.onPageLoad.url)
+        redirectLocation(result) mustBe Some(routes.UseOrganisationCredentialsController.onPageLoad().url)
       }
     }
   }
@@ -361,7 +361,7 @@ class AuthActionSpec extends SpecBase with MockitoSugar {
   }
 }
 
-object AuthActionSpec extends SpecBase with BeforeAndAfterEach with MockitoSugar {
+object AuthActionSpec extends SpecBase with BeforeAndAfterEach {
   private val psaId = "A0000000"
 
   private val mockSessionDataCacheConnector = mock[SessionDataCacheConnector]

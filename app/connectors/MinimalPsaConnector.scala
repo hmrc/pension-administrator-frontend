@@ -19,11 +19,11 @@ package connectors
 import com.google.inject.{ImplementedBy, Inject}
 import config.FrontendAppConfig
 import models.MinimalPSA
-import play.api.Logger
-import play.api.http.Status._
+import play.api.Logging
+import play.api.http.Status.*
 import play.api.libs.json.{JsError, JsResultException, JsSuccess, Json}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import utils.HttpResponseHelper
 
@@ -37,28 +37,29 @@ trait MinimalPsaConnector {
 
 class MinimalPsaConnectorImpl @Inject()(httpV2Client: HttpClientV2, config: FrontendAppConfig)
   extends MinimalPsaConnector
-    with HttpResponseHelper {
+    with HttpResponseHelper
+    with Logging {
 
-  private val logger = Logger(classOf[MinimalPsaConnectorImpl])
-
-  override def getMinimalPsaDetails()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] = {
-    val headers: Seq[(String, String)] = Seq(("loggedInAsPsa", "true"))
-
-    httpV2Client.get(url"${config.minimalPsaDetailsUrl}")
-      .setHeader(headers: _*)
-      .execute[HttpResponse] map { response =>
-
-      response.status match {
-        case OK =>
-          Json.parse(response.body).validate[MinimalPSA] match {
-            case JsSuccess(value, _) => value
-            case JsError(errors) => throw JsResultException(errors)
-          }
-
-        case _ => handleErrorResponse("GET", config.minimalPsaDetailsUrl)(response)
+  override def getMinimalPsaDetails()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MinimalPSA] =
+    httpV2Client
+      .get(url"${config.minimalPsaDetailsUrl}")
+      .setHeader(Seq(("loggedInAsPsa", "true")) *)
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK =>
+            Json.parse(response.body).validate[MinimalPSA] match {
+              case JsSuccess(value, _) =>
+                value
+              case JsError(errors) =>
+                throw JsResultException(errors)
+            }
+          case _ =>
+            handleErrorResponse("GET", config.minimalPsaDetailsUrl)(response)
+        }
       }
-    } andThen {
-      case Failure(t: Throwable) => logger.warn("Unable to invite PSA to administer scheme", t)
-    }
-  }
+      .andThen {
+        case Failure(t: Throwable) =>
+          logger.warn("Unable to invite PSA to administer scheme", t)
+      }
 }

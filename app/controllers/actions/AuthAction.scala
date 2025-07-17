@@ -25,11 +25,11 @@ import models.AdministratorOrPractitioner.Practitioner
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UserType}
-import play.api.mvc.Results._
-import play.api.mvc._
-import uk.gov.hmrc.auth.core.AffinityGroup._
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve._
+import play.api.mvc.*
+import play.api.mvc.Results.*
+import uk.gov.hmrc.auth.core.*
+import uk.gov.hmrc.auth.core.AffinityGroup.*
+import uk.gov.hmrc.auth.core.retrieve.*
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.{HeaderCarrier, UnauthorizedException}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
@@ -99,8 +99,8 @@ protected class FullAuthentication @Inject()(override val authConnector: AuthCon
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     (enrolments.getEnrolment("HMRC-PODS-ORG"), enrolments.getEnrolment("HMRC-PODSPP-ORG")) match {
       case (Some(_), Some(_)) =>
-        sessionDataCacheConnector.fetch().flatMap { optionJsValue =>
-          optionJsValue.map(UserAnswers).flatMap(_.get(AdministratorOrPractitionerId)) match {
+        sessionDataCacheConnector.fetch.flatMap { optionJsValue =>
+          optionJsValue.map(UserAnswers.apply).flatMap(_.get(AdministratorOrPractitionerId)) match {
             case None => Future.successful(Some(Redirect(config.administratorOrPractitionerUrl)))
             case Some(Practitioner) =>
               Future.successful(Some(Redirect(Call("GET",
@@ -133,7 +133,7 @@ protected class FullAuthentication @Inject()(override val authConnector: AuthCon
         case Agent =>
           Some(Redirect(routes.AgentCannotRegisterController.onPageLoad))
         case Individual if !alreadyEnrolledInPODS(enrolments) =>
-          Some(Redirect(routes.UseOrganisationCredentialsController.onPageLoad))
+          Some(Redirect(routes.UseOrganisationCredentialsController.onPageLoad()))
         case _ =>
           None
       }
@@ -183,7 +183,7 @@ protected class FullAuthentication @Inject()(override val authConnector: AuthCon
     }
   }
 
-  protected def getPSAId(enrolments: Enrolments): String =
+  private def getPSAId(enrolments: Enrolments): String =
     enrolments.getEnrolment("HMRC-PODS-ORG").flatMap(_.getIdentifier("PSAID")).map(_.value)
       .getOrElse(throw new RuntimeException("PSA ID missing"))
 }

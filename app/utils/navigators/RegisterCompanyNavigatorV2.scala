@@ -243,7 +243,7 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
         case UK => controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => routes.WhatYouWillNeedController.onPageLoad()
         case RestOfTheWorld => routes.OutsideEuEeaController.onPageLoad()
-        case _ => controllers.routes.SessionExpiredController.onPageLoad
+        case null => controllers.routes.SessionExpiredController.onPageLoad
       }
     } getOrElse controllers.routes.SessionExpiredController.onPageLoad
   }

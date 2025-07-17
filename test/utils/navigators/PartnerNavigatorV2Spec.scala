@@ -23,14 +23,13 @@ import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
 import models._
 import models.requests.IdentifiedRequest
-import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
-class PartnerNavigatorV2Spec extends SpecBase with MockitoSugar with NavigatorBehaviour {
+class PartnerNavigatorV2Spec extends SpecBase with NavigatorBehaviour {
 
   import PartnerNavigatorV2Spec._
   

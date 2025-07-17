@@ -23,7 +23,7 @@ import identifiers.register.individual.IndividualDetailsId
 import models.requests.DataRequest
 import models.{NormalMode, PSAUser, TolerantIndividual, UserType}
 import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{times, verify, when}
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.test.Helpers._
@@ -32,7 +32,7 @@ import views.html.register.psaVarianceSuccess
 
 import scala.concurrent.Future
 
-class PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoSugar {
+class PSAVarianceSuccessControllerSpec extends ControllerSpecBase {
 
   private val fakeUserAnswersCacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
   private val psaUser = PSAUser(UserType.Individual, None, isExistingPSA = false, None, None, "")
@@ -46,7 +46,7 @@ class PSAVarianceSuccessControllerSpec extends ControllerSpecBase with MockitoSu
 
     "return OK and the correct view for a GET" in {
 
-      when(fakeUserAnswersCacheConnector.removeAll(any(), any())) thenReturn Future.successful(Ok)
+      when(fakeUserAnswersCacheConnector.removeAll(any(), any())).thenReturn(Future.successful(Ok))
 
       val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 

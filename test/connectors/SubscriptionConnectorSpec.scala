@@ -17,13 +17,12 @@
 package connectors
 
 import base.JsonFileReader
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
-import play.api.http.Status._
-import play.api.libs.json.{JsResultException, JsValue, Json}
+import play.api.http.Status.*
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
-import utils.testhelpers.PsaSubscriptionBuilder._
 import utils.{UserAnswers, WireMockHelper}
 
 class SubscriptionConnectorSpec
@@ -35,7 +34,7 @@ class SubscriptionConnectorSpec
 
   lazy val connector: SubscriptionConnector = injector.instanceOf[SubscriptionConnector]
 
-  import SubscriptionConnectorSpec._
+  import SubscriptionConnectorSpec.*
 
   "calling getSubscriptionDetails" should "return 200" in {
 
@@ -47,7 +46,7 @@ class SubscriptionConnectorSpec
         )
     )
 
-    connector.getSubscriptionDetailsSelf().map {
+    connector.getSubscriptionDetailsSelf.map {
       result =>
         result shouldBe individualJsonResponse
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
@@ -65,7 +64,7 @@ class SubscriptionConnectorSpec
     )
 
     recoverToExceptionIf[PsaIdInvalidSubscriptionException] {
-      connector.getSubscriptionDetailsSelf()
+      connector.getSubscriptionDetailsSelf
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
@@ -82,7 +81,7 @@ class SubscriptionConnectorSpec
     )
 
     recoverToExceptionIf[CorrelationIdInvalidSubscriptionException] {
-      connector.getSubscriptionDetailsSelf()
+      connector.getSubscriptionDetailsSelf
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
@@ -98,7 +97,7 @@ class SubscriptionConnectorSpec
     )
 
     recoverToExceptionIf[PsaIdNotFoundSubscriptionException] {
-      connector.getSubscriptionDetailsSelf()
+      connector.getSubscriptionDetailsSelf
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
@@ -114,7 +113,7 @@ class SubscriptionConnectorSpec
     )
 
     recoverToExceptionIf[UpstreamErrorResponse] {
-      connector.getSubscriptionDetailsSelf()
+      connector.getSubscriptionDetailsSelf
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
@@ -130,48 +129,11 @@ class SubscriptionConnectorSpec
     )
 
     recoverToExceptionIf[Exception] {
-      connector.getSubscriptionDetailsSelf()
+      connector.getSubscriptionDetailsSelf
     } map {
       _ =>
         server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
     }
-  }
-
-  "getSubscriptionModel" should "return 200" in {
-
-    server.stubFor(
-      get(urlEqualTo(subscriptionDetailsSelfUrl))
-        .willReturn(
-          aResponse()
-            .withStatus(OK).withBody(Json.toJson(psaSubscriptionIndividual).toString())
-        )
-    )
-
-    connector.getSubscriptionModel().map {
-      result =>
-        result shouldBe psaSubscriptionIndividual
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
-    }
-
-  }
-
-  it should "throw exception if failed to parse the json" in {
-
-    server.stubFor(
-      get(urlEqualTo(subscriptionDetailsSelfUrl))
-        .willReturn(
-          aResponse()
-            .withStatus(OK).withBody(invalidResponse)
-        )
-    )
-
-    recoverToExceptionIf[JsResultException] {
-      connector.getSubscriptionModel()
-    } map {
-      _ =>
-        server.findAll(getRequestedFor(urlEqualTo(subscriptionDetailsSelfUrl))).size() shouldBe 1
-    }
-
   }
 
   "updateSubscriptionDetails" should "return successfully when received success response from DES" in {

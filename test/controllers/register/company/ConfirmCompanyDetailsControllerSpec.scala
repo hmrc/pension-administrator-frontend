@@ -78,7 +78,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
     Some("GB")
   )
 
-  val organisation = Organisation("MyOrganisation", OrganisationTypeEnum.CorporateBody)
+  val organisation = Organisation("MyOrganisation", OrganisationType.CorporateBody)
 
   private val data = Json.obj(
     BusinessTypeId.toString -> LimitedCompany.toString,
@@ -299,10 +299,10 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
         Some(utr)
       )
 
-      if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationTypeEnum.CorporateBody) {
+      if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationType.CorporateBody) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), info))
       }
-      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationTypeEnum.Partnership) {
+      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationType.Partnership) {
         Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), info))
       }
       else {

@@ -28,7 +28,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswerOps, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressListViewModel
 import views.html.address.addressList
@@ -81,7 +81,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
 
     "return Ok and the correct view on a GET request" in {
       running(_.overrides(modules(dataRetrievalAction) ++
-        Seq[GuiceableModule](): _*)) {
+        Seq[GuiceableModule]()*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]
           val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -95,7 +95,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
 
     "redirect to Company Address Post Code Lookup if no address data on a GET request" in {
       running(_.overrides(modules(getEmptyData) ++
-        Seq[GuiceableModule](): _*)) {
+        Seq[GuiceableModule]()*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]
           val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -107,7 +107,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired controller when no session data exists on a GET request" in {
       running(_.overrides(modules(dontGetAnyData) ++
-        Seq[GuiceableModule](): _*)) {
+        Seq[GuiceableModule]()*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]
           val result = controller.onPageLoad(NormalMode)(fakeRequest)
@@ -120,7 +120,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
     "redirect to the next page on POST of valid data" in {
       running(_.overrides(modules(dataRetrievalAction) ++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
@@ -133,7 +133,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
     "redirect to Session Expired controller when no session data exists on a POST request" in {
       running(_.overrides(modules(dontGetAnyData)++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
@@ -146,7 +146,7 @@ class CompanyContactAddressListControllerSpec extends ControllerSpecBase {
     "redirect to Company Address Post Code Lookup if no address data on a POST request" in {
       running(_.overrides(modules(getEmptyData)++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)),
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))*)) {
         app =>
           val controller = app.injector.instanceOf[CompanyContactAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")

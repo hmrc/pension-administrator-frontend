@@ -16,7 +16,7 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import config.FrontendAppConfig
 import models.Deregistration
 import org.scalatest.flatspec.AsyncFlatSpec
@@ -134,7 +134,7 @@ class DeregistrationConnectorSpec extends AsyncFlatSpec with Matchers with WireM
   "Delete" should "return FORBIDDEN with PSA_ACTIVE_RELATIONSHIP_EXISTS when PsaActiveRelationshipExistsException is thrown" in {
     val mockHttpClient = injector.instanceOf[HttpClientV2]
     val mockConfig = injector.instanceOf[FrontendAppConfig]
-    val connector = new DeregistrationConnectorImpl(httpV2Client = mockHttpClient, config = mockConfig) {
+    val connector = new DeregistrationConnector(httpV2Client = mockHttpClient, config = mockConfig) {
       override def stopBeingPSA(psaId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
         Future.failed(new PsaActiveRelationshipExistsException("PSA active relationship exists"))
           .recover {

@@ -133,8 +133,7 @@ POST        /:mode/trading-time                           controllers.register.c
 
 GET         /task-list                                    controllers.register.company.CompanyRegistrationTaskListController.onPageLoad(mode: Mode = NormalMode)
 
-GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad
-GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad
+GET         /pensionadvisor/what-you-will-need            controllers.register.company.workingknowledge.WhatYouWillNeedController.onPageLoad()
 
 GET         /business-matching/check-your-answers         controllers.register.company.BusinessMatchingCheckYourAnswersController.onPageLoad()
 POST        /business-matching/check-your-answers         controllers.register.company.BusinessMatchingCheckYourAnswersController.onSubmit()

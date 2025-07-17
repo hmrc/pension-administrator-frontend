@@ -189,7 +189,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
   }
 
   def set[A: Writes](path: JsPath)(value: A): JsResult[UserAnswers] =
-    JsLens.fromPath(path).set(Json.toJson(value), json).map(UserAnswers)
+    JsLens.fromPath(path).set(Json.toJson(value), json).map(UserAnswers.apply)
 
   def setAllFlagsToValue[I <: TypedIdentifier[Boolean]](ids: List[I], value: Boolean)(implicit writes: Writes[Boolean]): JsResult[UserAnswers] = {
 

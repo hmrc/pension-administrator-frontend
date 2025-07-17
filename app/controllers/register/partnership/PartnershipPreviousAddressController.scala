@@ -17,9 +17,8 @@
 package controllers.register.partnership
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import controllers.address.ManualAddressController
-import controllers.register.partnership.routes._
 import forms.UKAddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId}
@@ -27,7 +26,7 @@ import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.{NoRLSCheck, Partnership}
 import utils.countryOptions.CountryOptions
@@ -51,9 +50,9 @@ class PartnershipPreviousAddressController @Inject()(
                                                       val view: manualAddress
                                                     )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
-  private[controllers] val postCall = PartnershipPreviousAddressController.onSubmit _
+  private[controllers] def postCall(mode: Mode): Call = routes.PartnershipPreviousAddressController.onSubmit(mode)
   private val isUkHintText = true
-  protected val form: Form[Address] = formProvider("error.country.invalid")
+  protected val form: Form[Address] = formProvider()
 
   private def viewmodel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),

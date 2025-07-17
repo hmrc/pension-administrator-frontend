@@ -17,23 +17,23 @@
 package utils.navigators
 
 import base.SpecBase
-import identifiers.register._
+import identifiers.register.*
 import identifiers.register.adviser.{AdviserNameId, ConfirmDeleteAdviserId}
 import identifiers.register.company.CompanyContactAddressId
 import identifiers.register.individual.{IndividualContactAddressId, IndividualDetailsId}
 import identifiers.register.partnership.PartnershipContactAddressId
 import identifiers.{Identifier, UpdateContactAddressId}
-import models._
+import models.*
 import models.requests.IdentifiedRequest
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswerOps, UserAnswers}
 
 class VariationsNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
-  import VariationsNavigatorSpec._
+  import VariationsNavigatorSpec.*
 
   val navigator: Navigator = injector.instanceOf[VariationsNavigator]
 

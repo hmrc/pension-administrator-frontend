@@ -23,7 +23,6 @@ import forms.register.DeclarationWorkingKnowledgeFormProvider
 import identifiers.register.DeclarationWorkingKnowledgeId
 import models.NormalMode
 import models.register.DeclarationWorkingKnowledge
-import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.mvc.Call
@@ -31,7 +30,7 @@ import play.api.test.Helpers._
 import utils.FakeNavigator
 import views.html.register.declarationWorkingKnowledge
 
-class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase with MockitoSugar {
+class DeclarationWorkingKnowledgeControllerSpec extends ControllerSpecBase {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 

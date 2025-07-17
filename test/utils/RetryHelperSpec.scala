@@ -17,7 +17,6 @@
 package utils
 
 import base.SpecBase
-import org.mockito.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Seconds, Span}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -30,7 +29,7 @@ import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class RetryHelperSpec extends SpecBase with MockitoSugar with ScalaFutures with GuiceOneAppPerSuite {
+class RetryHelperSpec extends SpecBase with ScalaFutures with GuiceOneAppPerSuite {
 
   private val MAX_ATTEMPTS:Int = 10
   private val INITIAL_WAIT:Int = 10

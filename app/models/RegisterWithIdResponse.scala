@@ -16,13 +16,14 @@
 
 package models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
+@annotation.nowarn
 abstract class RegisterWithIdResponse(address: TolerantAddress)
 
-case class OrganizationRegisterWithIdResponse(organisation: Organisation, address: TolerantAddress) extends RegisterWithIdResponse(address = address)
+case class OrganizationRegisterWithIdResponse(organisation: Organisation, address: TolerantAddress) extends RegisterWithIdResponse(address)
 
-case class IndividualRegisterWithIdResponse(individual: TolerantIndividual, address: TolerantAddress) extends RegisterWithIdResponse(address = address)
+case class IndividualRegisterWithIdResponse(individual: TolerantIndividual, address: TolerantAddress) extends RegisterWithIdResponse(address)
 
 sealed trait OrganizationRegistrationStatus
 case class OrganizationRegistration(response: OrganizationRegisterWithIdResponse, info: RegistrationInfo) extends OrganizationRegistrationStatus

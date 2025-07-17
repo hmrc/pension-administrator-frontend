@@ -90,7 +90,7 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase wit
     "redirect to the next page on a POST request" in {
       running(_.overrides(modules(retrieval) ++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(FakeNavigator),
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)): _*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))*)) {
         app =>
           val controller = app.injector.instanceOf[PartnershipContactAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")

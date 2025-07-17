@@ -18,26 +18,26 @@ package controllers.register.administratorPartnership
 
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.register.AddEntityFormProvider
 import identifiers.register.company.AddCompanyDirectorsId
 import identifiers.register.partnership.AddPartnersId
 import identifiers.register.partnership.partners.PartnerNameId
-import models._
+import models.*
 import models.requests.DataRequest
 import play.api.data.Form
-import play.api.libs.json._
+import play.api.libs.json.*
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator, UserAnswerOps, UserAnswers}
 import viewmodels.{EntityViewModel, Message, Person}
 import views.html.register.addToListEntity
 
 class AddPartnerControllerSpec extends ControllerSpecBase {
 
-  import AddPartnerControllerSpec._
+  import AddPartnerControllerSpec.*
 
   override def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "/")
   "AddPartner Controller" must {
@@ -65,7 +65,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when less than maximum partners exist and valid data is submitted" in {
-      val getRelevantData = dataRetrievalAction(Seq.fill(maxPartners - 1)(johnDoe): _*)
+      val getRelevantData = dataRetrievalAction(Seq.fill(maxPartners - 1)(johnDoe)*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
@@ -111,7 +111,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
     "redirect to the next page when maximum active partners exist and the user submits" in {
       val partnerDetails = Seq.fill(maxPartners)(johnDoe) ++ Seq(joeBloggs.copy(isDeleted = true))
 
-      val getRelevantData = dataRetrievalAction(partnerDetails: _*)
+      val getRelevantData = dataRetrievalAction(partnerDetails*)
 
       val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
 

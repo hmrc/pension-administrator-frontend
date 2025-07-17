@@ -86,9 +86,9 @@ class RegisterNavigator @Inject() extends Navigator {
   private def declarationWorkingKnowledgeWhatYouWillRoutes(userAnswers: UserAnswers) = {
     userAnswers.get(BusinessTypeId) match {
       case Some(BusinessType.LimitedCompany) | Some(BusinessType.UnlimitedCompany) =>
-        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
+        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad()
       case Some(BusinessType.BusinessPartnership) | Some(BusinessType.LimitedPartnership) | Some(BusinessType.LimitedLiabilityPartnership) =>
-        controllers.register.administratorPartnership.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
+        controllers.register.administratorPartnership.workingknowledge.routes.WhatYouWillNeedController.onPageLoad()
       case None => // Must be individual
         controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
       case _ => controllers.routes.SessionExpiredController.onPageLoad

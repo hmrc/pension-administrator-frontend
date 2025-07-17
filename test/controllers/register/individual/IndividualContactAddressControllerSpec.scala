@@ -22,7 +22,6 @@ import controllers.actions._
 import forms.AddressFormProvider
 import identifiers.register.AreYouInUKId
 import models.{Address, NormalMode}
-import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -35,7 +34,7 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class IndividualContactAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
+class IndividualContactAddressControllerSpec extends ControllerSpecBase with ScalaFutures with OptionValues {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 

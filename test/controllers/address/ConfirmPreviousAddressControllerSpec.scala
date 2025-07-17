@@ -23,16 +23,16 @@ import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import forms.address.{ConfirmPreviousAddressFormProvider, SameContactAddressFormProvider}
 import identifiers.TypedIdentifier
 import identifiers.register.individual.IndividualSameContactAddressId
-import models._
+import models.*
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.{eq as eqTo, *}
+import org.mockito.Mockito.{times, verify, when}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.countryOptions.CountryOptions
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.address.SameContactAddressViewModel
@@ -40,10 +40,9 @@ import views.html.address.sameContactAddress
 
 import scala.concurrent.{ExecutionContext, Future}
 
+class ConfirmPreviousAddressControllerSpec extends SpecBase {
 
-class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
-
-  import ConfirmPreviousAddressControllerSpec._
+  import ConfirmPreviousAddressControllerSpec.*
 
   "get" must {
 
@@ -100,11 +99,11 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
             eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, PreviousAddressId.type](
             eqTo(PreviousAddressId), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "true"
@@ -129,11 +128,11 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
         app =>
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
             eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, PreviousAddressId.type](
             eqTo(PreviousAddressId), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "false"
@@ -150,7 +149,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
 
     "return a redirect and save the data when the there is no existing data" in {
 
-      import play.api.inject._
+      import play.api.inject.*
 
       val cacheConnector = mock[UserAnswersCacheConnector]
       val userAnswers = UserAnswers().set(IndividualSameContactAddressId)(true).asOpt.value.json
@@ -164,11 +163,11 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
 
           when(cacheConnector.save[Boolean, FakeIdentifier.type](
             eqTo(FakeIdentifier), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           when(cacheConnector.save[Address, PreviousAddressId.type](
             eqTo(PreviousAddressId), any())(any(), any(), any())
-          ) thenReturn Future.successful(Json.obj())
+          ).thenReturn(Future.successful(Json.obj()))
 
           val request = FakeRequest().withFormUrlEncodedBody(
             "value" -> "true"
@@ -208,7 +207,7 @@ class ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
 }
 
 
-object ConfirmPreviousAddressControllerSpec extends SpecBase with MockitoSugar {
+object ConfirmPreviousAddressControllerSpec extends SpecBase {
 
   object FakeIdentifier extends TypedIdentifier[Boolean]
 

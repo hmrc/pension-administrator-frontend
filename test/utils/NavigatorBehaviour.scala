@@ -32,7 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 
 trait NavigatorBehaviour extends ScalaCheckPropertyChecks with OptionValues {
-  this: AnyWordSpecLike with Matchers =>
+  this: AnyWordSpecLike & Matchers =>
 
   protected val emptyAnswers: UserAnswers = UserAnswers(Json.obj())
 

@@ -50,7 +50,7 @@ object DeclarationWorkingKnowledge extends Enumerable.Implicits {
   }
 
   implicit val enumerable: Enumerable[DeclarationWorkingKnowledge] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+    Enumerable(values.map(v => v.toString -> v)*)
 
   def declarationWorkingKnowledge(workingKnowledge: Boolean, isRegistrationToggleEnabled: Boolean): DeclarationWorkingKnowledge = {
     (isRegistrationToggleEnabled, workingKnowledge) match {

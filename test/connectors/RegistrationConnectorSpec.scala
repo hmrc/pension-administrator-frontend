@@ -576,7 +576,7 @@ object RegistrationConnectorSpec extends OptionValues {
   private val noIdIndividualPath = "/pension-administrator/register-with-no-id/individual"
   private val individualPath = "/pension-administrator/register-with-id/individual"
 
-  private val organisation = Organisation("Test Ltd", OrganisationTypeEnum.CorporateBody)
+  private val organisation = Organisation("Test Ltd", OrganisationType.CorporateBody)
   private val firstName = "John"
   private val lastName = "Doe"
   private val individualDateOfBirth = LocalDate.now()

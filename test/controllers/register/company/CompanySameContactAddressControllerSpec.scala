@@ -77,7 +77,7 @@ class CompanySameContactAddressControllerSpec extends ControllerSpecBase {
     running(_.overrides(modules(dataRetrieval) ++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(postCall)),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-      ): _*)) {
+      )*)) {
       app =>
         val controller = app.injector.instanceOf[CompanySameContactAddressController]
 

@@ -42,7 +42,7 @@ object MappingsSpec {
     val values: Set[Foo] = Set(Bar, Baz)
 
     implicit val fooEnumerable: Enumerable[Foo] =
-      Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+      Enumerable(values.toSeq.map(v => v.toString -> v)*)
   }
 
 }
@@ -293,10 +293,10 @@ class MappingsSpec extends AnyWordSpecLike with Matchers with OptionValues with 
   "date" must {
     case class TestClass(date: LocalDate)
 
-    val testForm = Form(
+    val testForm: Form[TestClass] = Form(
       mapping(
         "date" -> date("error.invalid")
-      )(TestClass.apply)(TestClass.unapply)
+      )(TestClass.apply)(o => Some(o.date))
     )
 
     // scalastyle:off magic.number

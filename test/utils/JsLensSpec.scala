@@ -27,7 +27,7 @@ class JsLensSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks
 
   val jsLeafGen: Gen[JsValue] = {
     Gen.frequency(
-      10 -> Gen.alphaNumStr.map(JsString),
+      10 -> Gen.alphaNumStr.map(JsString.apply),
       10 -> Gen.chooseNum(1, 9999).map(JsNumber(_)),
       3 -> Gen.oneOf(true, false).map(JsBoolean)
     )
@@ -560,7 +560,7 @@ class JsLensSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks
       "fail to insert into a new array when the index is greater than 0" in {
 
         val json = Json.obj()
-        val lens = JsLens.atKey("abc") andThen JsLens.atIndex(1)
+        val lens = JsLens.atKey("abc").andThen(JsLens.atIndex(1))
 
         lens.set(JsString("foo"), json).isError mustEqual true
       }

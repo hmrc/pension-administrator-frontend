@@ -47,10 +47,7 @@ class BusinessMatchingCheckYourAnswersController @Inject()(
 
       val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
 
-
-  Ok(checkYourAnswersView(sections, routes.PartnershipRegistrationTaskListController.onPageLoad(), None, NormalMode, isComplete = true, Some(partnershipName)))
-
-
+      Ok(checkYourAnswersView(sections, routes.PartnershipRegistrationTaskListController.onPageLoad(), None, NormalMode, isComplete = true, Some(partnershipName)))
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>

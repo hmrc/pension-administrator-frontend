@@ -23,9 +23,9 @@ import forms.address.SameContactAddressFormProvider
 import models.{AddressYears, NormalMode, TolerantAddress}
 import play.api.data.Form
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.countryOptions.CountryOptions
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator, UserAnswerOps, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.SameContactAddressViewModel
 import views.html.address.sameContactAddress

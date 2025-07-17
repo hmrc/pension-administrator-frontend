@@ -19,18 +19,18 @@ package controllers
 import base.SpecBase
 import config.FrontendAppConfig
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.actions._
+import controllers.actions.*
 import identifiers.register.adviser.AdviserNameId
 import identifiers.register.company.directors.DirectorNameId
 import identifiers.register.individual.IndividualDetailsId
 import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.register.{AreYouInUKId, BusinessNameId, BusinessTypeId, RegistrationInfoId}
-import models._
+import models.*
 import models.register.BusinessType
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.libs.json.Json
-import utils.UserAnswers
+import utils.{UserAnswerOps, UserAnswers}
 
 import scala.concurrent.ExecutionContext
 

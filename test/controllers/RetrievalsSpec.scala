@@ -19,17 +19,17 @@ package controllers
 import com.google.inject.Inject
 import identifiers.TypedIdentifier
 import identifiers.register.partnership.partners.PartnerNameId
-import models._
+import models.*
 import models.requests.DataRequest
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Results._
+import play.api.mvc.Results.*
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.UserAnswers
+import utils.{UserAnswerOps, UserAnswers}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -45,7 +45,7 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
 
   val controller = new TestController(controllerComponents)
 
-  val success: String => Future[Result] = { _: String =>
+  val success: String => Future[Result] = { (_: String) =>
     Future.successful(Ok("Success"))
   }
 
@@ -205,8 +205,8 @@ class RetrievalsSpec extends ControllerSpecBase with Retrievals with EitherValue
 
     "retrieve PSA email for an individual" in {
       val userAnswers = UserAnswers().registrationInfo(RegistrationInfo(
-        RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None)).
-        individualDetails(TolerantIndividual(Some("test"), None, Some("last"))).individualEmail(email)
+        RegistrationLegalStatus.Individual, "", noIdentifier = false, RegistrationCustomerType.UK, None, None))
+          .individualDetails(TolerantIndividual(Some("test"), None, Some("last"))).individualEmail(email)
 
       implicit val request: DataRequest[AnyContent] = DataRequest(FakeRequest("", ""), "",
         PSAUser(UserType.Individual, None, isExistingPSA = false, None), userAnswers)

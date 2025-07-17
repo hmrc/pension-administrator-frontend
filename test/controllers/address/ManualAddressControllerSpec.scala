@@ -23,20 +23,19 @@ import controllers.actions.FakeAllowAccessProvider
 import forms.AddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.individual.{IndividualAddressChangedId, IndividualContactAddressId}
-import models._
+import models.*
 import models.requests.DataRequest
-import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.inject._
-import play.api.mvc._
+import play.api.inject.*
+import play.api.mvc.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import utils._
+import play.api.test.Helpers.*
+import utils.*
 import utils.countryOptions.CountryOptions
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
@@ -87,9 +86,9 @@ object ManualAddressControllerSpec extends SpecBase {
 
 }
 
-class ManualAddressControllerSpec extends AnyWordSpecLike with Matchers with MockitoSugar with ScalaFutures with OptionValues {
+class ManualAddressControllerSpec extends AnyWordSpecLike with Matchers with ScalaFutures with OptionValues {
 
-  import ManualAddressControllerSpec._
+  import ManualAddressControllerSpec.*
 
   val addressData: Map[String, String] = Map(
     "addressLine1" -> "address line 1",
@@ -142,7 +141,7 @@ class ManualAddressControllerSpec extends AnyWordSpecLike with Matchers with Moc
 
         val onwardRoute = Call("GET", "/")
 
-        val navigator = new FakeNavigator(onwardRoute, NormalMode)
+        val navigator = new FakeNavigator(onwardRoute)
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],
@@ -181,7 +180,7 @@ class ManualAddressControllerSpec extends AnyWordSpecLike with Matchers with Moc
 
         val onwardRoute = Call("GET", "/")
 
-        val navigator = new FakeNavigator(onwardRoute, NormalMode)
+        val navigator = new FakeNavigator(onwardRoute)
 
         running(_.overrides(
           bind[CountryOptions].to[FakeCountryOptions],

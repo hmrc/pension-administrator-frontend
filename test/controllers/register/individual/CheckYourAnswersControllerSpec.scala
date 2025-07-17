@@ -17,13 +17,14 @@
 package controllers.register.individual
 
 import controllers.ControllerSpecBase
-import controllers.actions._
-import models._
+import controllers.actions.*
+import models.*
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Call, Result}
-import play.api.test.Helpers._
-import utils._
+import play.api.test.Helpers.*
+import utils.*
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps

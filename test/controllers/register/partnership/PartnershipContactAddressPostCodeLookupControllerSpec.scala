@@ -88,7 +88,7 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(new FakeNavigator(onwardRoute)),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
-      ):_*)) {
+      )*)) {
       app =>
         val controller = app.injector.instanceOf[PartnershipContactAddressPostCodeLookupController]
 

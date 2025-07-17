@@ -19,6 +19,7 @@ package forms
 import forms.behaviours.{AddressBehaviours, FormBehaviours}
 import forms.mappings.AddressMapping
 import models.Address
+import play.api.data.Form
 import utils.FakeCountryOptions
 
 import scala.util.Random
@@ -45,7 +46,7 @@ class AddressFormProviderSpec extends FormBehaviours with FormSpec with AddressB
     "country" -> "GB"
   )
 
-  val form = new AddressFormProvider(countryOptions)()
+  val form: Form[Address] = new AddressFormProvider(countryOptions)()
 
   "Address form" must {
     behave like questionForm(Address(

@@ -37,7 +37,7 @@ trait FormSpec extends AnyWordSpecLike with OptionValues with Matchers with Guic
         for (error <- expectedErrors) formWithErrors.errors should contain(FormError(error.key, error.message, error.args))
         formWithErrors.errors.size shouldBe expectedErrors.size
       },
-      form => {
+      _ => {
         fail("Expected a validation error when binding the form, but it was bound successfully.")
       }
     )

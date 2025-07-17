@@ -20,24 +20,23 @@ import base.SpecBase
 import com.google.inject.Inject
 import connectors.AddressLookupConnector
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions.FakeAllowAccessProvider
+import controllers.actions.{AllowAccessActionProvider, FakeAllowAccessProvider}
 import forms.address.PostCodeLookupFormProvider
 import identifiers.TypedIdentifier
-import models._
+import models.*
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.{eq => eqTo, _}
-import org.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.{eq as eqTo, *}
+import org.mockito.Mockito.{verifyNoMoreInteractions, when}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject._
+import play.api.inject.*
 import play.api.libs.json.Json
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HttpException
 import utils.{FakeNavigator, Navigator, UserAnswers}
 import viewmodels.Message
@@ -46,45 +45,16 @@ import views.html.address.postcodeLookup
 
 import scala.concurrent.{ExecutionContext, Future}
 
-object PostcodeLookupControllerSpec extends SpecBase {
+class PostcodeLookupControllerSpec extends SpecBase with Matchers with ScalaFutures with OptionValues {
 
-  object FakeIdentifier extends TypedIdentifier[Seq[TolerantAddress]]
+  import PostcodeLookupControllerSpec.*
 
   val postCall: Call = Call("POST", "www.example.com")
   val manualCall: Call = Call("GET", "www.example.com")
 
   val view: postcodeLookup = app.injector.instanceOf[postcodeLookup]
 
-  class TestController @Inject()(
-                                  override val messagesApi: MessagesApi,
-                                  override val cacheConnector: UserAnswersCacheConnector,
-                                  override val addressLookupConnector: AddressLookupConnector,
-                                  override val navigator: Navigator,
-                                  formProvider: PostCodeLookupFormProvider,
-                                  val view: postcodeLookup
-                                )(implicit val executionContext: ExecutionContext) extends PostcodeLookupController {
-
-    override val allowAccess = FakeAllowAccessProvider(config = frontendAppConfig)
-
-    def onPageLoad(viewmodel: PostcodeLookupViewModel, answers: UserAnswers): Future[Result] =
-      get(viewmodel, NormalMode)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers))
-
-    def onSubmit(viewmodel: PostcodeLookupViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
-      post(FakeIdentifier, viewmodel, NormalMode, invalidError)(DataRequest(request,
-        "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers))
-
-    private val invalidError: Message = "foo"
-
-    override protected def form: Form[String] = formProvider()
-
-    override protected def controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
-  }
-
-}
-
-class PostcodeLookupControllerSpec extends AnyWordSpecLike with Matchers with MockitoSugar with ScalaFutures with OptionValues {
-
-  val viewmodel = PostcodeLookupViewModel(
+  val viewmodel: PostcodeLookupViewModel = PostcodeLookupViewModel(
     Call("GET", "www.example.com"),
     Call("POST", "www.example.com"),
     "test-title",
@@ -92,8 +62,6 @@ class PostcodeLookupControllerSpec extends AnyWordSpecLike with Matchers with Mo
     "test-enter-postcode",
     Some("test-enter-postcode-link")
   )
-
-  import PostcodeLookupControllerSpec._
 
   "get" must {
     "return a successful result" in {
@@ -124,13 +92,11 @@ class PostcodeLookupControllerSpec extends AnyWordSpecLike with Matchers with Mo
 
       val address = TolerantAddress(Some(""), Some(""), None, None, None, Some("GB"))
 
-      when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any())) thenReturn Future.successful {
-        Seq(address)
-      }
+      when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any()))
+        .thenReturn(Future.successful(Seq(address)))
 
-      when(cacheConnector.save(eqTo(FakeIdentifier), eqTo(Seq(address)))(any(), any(), any())) thenReturn Future.successful {
-        Json.obj()
-      }
+      when(cacheConnector.save(eqTo(FakeIdentifier), eqTo(Seq(address)))(any(), any(), any()))
+        .thenReturn(Future.successful(Json.obj()))
 
       running(_.overrides(
         bind[Navigator].toInstance(FakeNavigator),
@@ -154,9 +120,8 @@ class PostcodeLookupControllerSpec extends AnyWordSpecLike with Matchers with Mo
         val cacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
         val addressConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
-        when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any())) thenReturn
-          Future.failed(new HttpException("Failed", INTERNAL_SERVER_ERROR))
-
+        when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any()))
+          .thenReturn(Future.failed(new HttpException("Failed", INTERNAL_SERVER_ERROR)))
         running(_.overrides(
           bind[Navigator].toInstance(FakeNavigator),
           bind[UserAnswersCacheConnector].toInstance(cacheConnector),
@@ -211,9 +176,8 @@ class PostcodeLookupControllerSpec extends AnyWordSpecLike with Matchers with Mo
           val cacheConnector: UserAnswersCacheConnector = mock[UserAnswersCacheConnector]
           val addressConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
-          when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any())) thenReturn Future.successful {
-            Seq.empty
-          }
+          when(addressConnector.addressLookupByPostCode(eqTo("ZZ1 1ZZ"))(any(), any()))
+            .thenReturn(Future.successful(Seq.empty))
 
           running(_.overrides(
             bind[Navigator].toInstance(FakeNavigator),
@@ -237,5 +201,35 @@ class PostcodeLookupControllerSpec extends AnyWordSpecLike with Matchers with Mo
         }
       }
     }
+  }
+}
+
+object PostcodeLookupControllerSpec {
+
+  object FakeIdentifier extends TypedIdentifier[Seq[TolerantAddress]]
+
+  class TestController @Inject()(
+                                  override val messagesApi: MessagesApi,
+                                  override val cacheConnector: UserAnswersCacheConnector,
+                                  override val addressLookupConnector: AddressLookupConnector,
+                                  override val navigator: Navigator,
+                                  formProvider: PostCodeLookupFormProvider,
+                                  val view: postcodeLookup
+                                )(implicit val executionContext: ExecutionContext) extends PostcodeLookupController {
+
+    override val allowAccess: AllowAccessActionProvider = FakeAllowAccessProvider(config = SpecBase.frontendAppConfig)
+
+    def onPageLoad(viewmodel: PostcodeLookupViewModel, answers: UserAnswers): Future[Result] =
+      get(viewmodel, NormalMode)(DataRequest(FakeRequest(), "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None), answers))
+
+    def onSubmit(viewmodel: PostcodeLookupViewModel, answers: UserAnswers, request: Request[AnyContent] = FakeRequest()): Future[Result] =
+      post(FakeIdentifier, viewmodel, NormalMode, invalidError)(DataRequest(request,
+        "cacheId", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None, ""), answers))
+
+    private val invalidError: Message = "foo"
+
+    override protected def form: Form[String] = formProvider()
+
+    override protected def controllerComponents: MessagesControllerComponents = SpecBase.controllerComponents
   }
 }

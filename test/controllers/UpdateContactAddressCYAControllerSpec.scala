@@ -21,6 +21,7 @@ import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito.when
 import play.api.mvc.{AnyContent, BodyParser, Request, Result}
 import play.api.test.Helpers.{contentAsString, status, _}
 import services.PsaDetailsService

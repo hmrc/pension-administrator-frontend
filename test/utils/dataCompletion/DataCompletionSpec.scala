@@ -24,7 +24,7 @@ import models.register.DeclarationWorkingKnowledge
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import utils.UserAnswers
+import utils.{UserAnswerOps, UserAnswers}
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues {
@@ -34,28 +34,28 @@ class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues
   "DataCompletion" when {
     "calling isComplete" must {
       "return true only when all the values in list are true" in {
-        DataCompletion.isComplete(Seq(Some(true), Some(true), Some(true))).value mustBe true
-        DataCompletion.isComplete(Seq(Some(true), Some(false), Some(true))).value mustBe false
+        DataCompletion.isComplete(Seq(Some(true), Some(true), Some(true))).value.mustBe(true)
+        DataCompletion.isComplete(Seq(Some(true), Some(false), Some(true))).value.mustBe(false)
       }
 
       "return None only when all the values in list are None" in {
-        DataCompletion.isComplete(Seq(None, None, None, None)) mustBe None
-        DataCompletion.isComplete(Seq(None, Some(false), Some(true))) mustBe Some(false)
+        DataCompletion.isComplete(Seq(None, None, None, None)).mustBe(None)
+        DataCompletion.isComplete(Seq(None, Some(false), Some(true))).mustBe(Some(false))
       }
 
       "return false in every other case" in {
-        DataCompletion.isComplete(Seq(Some(true), None, Some(false), None)) mustBe Some(false)
-        DataCompletion.isComplete(Seq(None, Some(true), Some(true))) mustBe Some(false)
+        DataCompletion.isComplete(Seq(Some(true), None, Some(false), None)).mustBe(Some(false))
+        DataCompletion.isComplete(Seq(None, Some(true), Some(true))).mustBe(Some(false))
       }
     }
 
     "calling isListComplete" must {
       "return true only when all values in list are true" in {
-        DataCompletion.isListComplete(Seq(true, true, true)) mustBe true
+        DataCompletion.isListComplete(Seq(true, true, true)).mustBe(true)
       }
 
       "return false in every other case" in {
-        DataCompletion.isListComplete(Seq(true, false, true)) mustBe false
+        DataCompletion.isListComplete(Seq(true, false, true)).mustBe(false)
       }
     }
 
@@ -66,26 +66,25 @@ class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues
 
         "when current Address is missing" in {
           DataCompletion.isAddressComplete(UserAnswers(), CompanyContactAddressId, CompanyPreviousAddressId,
-            CompanyAddressYearsId, Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId) mustBe None
+            CompanyAddressYearsId, Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).mustBe(None)
         }
 
         "when current address is present but address years is missing" in {
           DataCompletion.isAddressComplete(userAnswers, CompanyContactAddressId, CompanyPreviousAddressId,
-            CompanyAddressYearsId, Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value mustBe false
+            CompanyAddressYearsId, Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value.mustBe(false)
         }
 
         "when current address is present, address years is under a year but no previous address present" in {
           DataCompletion.isAddressComplete(userAnswers.companyAddressYears(AddressYears.UnderAYear),
             CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
-            CompanyConfirmPreviousAddressId).value mustBe false
+            CompanyConfirmPreviousAddressId).value.mustBe(false)
         }
-
 
 
         "when current address is present, address years is under a year, trading over a years is yes but no previous address present" in {
           DataCompletion.isAddressComplete(userAnswers.companyAddressYears(AddressYears.UnderAYear).companyTradingOverAYear(flag = true),
             CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
-            CompanyConfirmPreviousAddressId).value mustBe false
+            CompanyConfirmPreviousAddressId).value.mustBe(false)
         }
 
         "when current address is present, is this previous address true and previous address is not present" in {
@@ -93,7 +92,7 @@ class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues
             companyIsThisPreviousAddress(flag = true)
 
           DataCompletion.isAddressComplete(ua, CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
-            Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value mustBe false
+            Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value.mustBe(false)
         }
 
         "when current address is present, is this previous address false and previous address is not present" in {
@@ -101,7 +100,7 @@ class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues
             companyIsThisPreviousAddress(flag = false)
 
           DataCompletion.isAddressComplete(ua, CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
-            Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value mustBe false
+            Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value.mustBe(false)
         }
 
         "when current address is present, address years is under a year, trading time is present and true but no previous address present" in {
@@ -110,7 +109,7 @@ class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues
             companyTradingOverAYear(true)
           DataCompletion.isAddressComplete(ua.companyAddressYears(AddressYears.UnderAYear),
             CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
-            CompanyConfirmPreviousAddressId).value mustBe false
+            CompanyConfirmPreviousAddressId).value.mustBe(false)
         }
 
       }
@@ -120,20 +119,20 @@ class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues
 
         "when current address is present and address years is over a year" in {
           DataCompletion.isAddressComplete(userAnswers.companyAddressYears(AddressYears.OverAYear), CompanyContactAddressId, CompanyPreviousAddressId,
-            CompanyAddressYearsId, Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value mustBe true
+            CompanyAddressYearsId, Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value.mustBe(true)
         }
 
         "when current address is present, address years is under a year and trading over a year is false" in {
           DataCompletion.isAddressComplete(userAnswers.companyAddressYears(AddressYears.UnderAYear).
             companyTradingOverAYear(flag = false), CompanyContactAddressId, CompanyPreviousAddressId,
-            CompanyAddressYearsId, Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value mustBe true
+            CompanyAddressYearsId, Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value.mustBe(true)
         }
 
         "when current address is present, address years is under a year, trading over a year is true and previous address is present" in {
           DataCompletion.isAddressComplete(userAnswers.companyAddressYears(AddressYears.UnderAYear).
             companyTradingOverAYear(flag = true).companyPreviousAddress(address),
             CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
-            CompanyConfirmPreviousAddressId).value mustBe true
+            CompanyConfirmPreviousAddressId).value.mustBe(true)
         }
 
         "when current address is present, is this previous address true and previous address is present" in {
@@ -141,7 +140,7 @@ class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues
             companyIsThisPreviousAddress(flag = true).companyPreviousAddress(address)
 
           DataCompletion.isAddressComplete(ua, CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
-            Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value mustBe true
+            Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value.mustBe(true)
         }
 
         "when current address is present, is this previous address false and previous address is present" in {
@@ -149,17 +148,17 @@ class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues
             companyIsThisPreviousAddress(flag = false).companyPreviousAddress(address)
 
           DataCompletion.isAddressComplete(ua, CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
-            Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value mustBe true
+            Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId).value.mustBe(true)
         }
 
-      "when current address is present, address years is under a year but a previous address present" in {
-            val ua = userAnswers.companyAddressYears(AddressYears.UnderAYear).
-              companyContactAddress(address).
-              companyPreviousAddress(address)
+        "when current address is present, address years is under a year but a previous address present" in {
+          val ua = userAnswers.companyAddressYears(AddressYears.UnderAYear).
+            companyContactAddress(address).
+            companyPreviousAddress(address)
           DataCompletion.isAddressComplete(ua.companyAddressYears(AddressYears.UnderAYear),
-          CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
-          CompanyConfirmPreviousAddressId).value mustBe true
-      }
+            CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
+            CompanyConfirmPreviousAddressId).value.mustBe(true)
+        }
 
         "when current address is present, address years is under a year, trading time is present and false but no previous address present" in {
           val ua = userAnswers.companyAddressYears(AddressYears.UnderAYear).
@@ -167,7 +166,7 @@ class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues
             companyTradingOverAYear(false)
           DataCompletion.isAddressComplete(ua.companyAddressYears(AddressYears.UnderAYear),
             CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId, Some(CompanyTradingOverAYearId),
-            CompanyConfirmPreviousAddressId).value mustBe true
+            CompanyConfirmPreviousAddressId).value.mustBe(true)
         }
       }
     }

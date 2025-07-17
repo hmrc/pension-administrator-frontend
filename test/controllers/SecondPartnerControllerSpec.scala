@@ -17,23 +17,23 @@
 package controllers
 
 import connectors.cache.FakeUserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import forms.register.YesNoFormProvider
 import models.UserType.Organisation
 import models.{PersonName, UpdateMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.PsaDetailsService
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator, UserAnswers, UserAnswerOps}
 import views.html.secondPartner
 
 import scala.concurrent.Future
 
-class SecondPartnerControllerSpec extends ControllerSpecBase with MockitoSugar with BeforeAndAfterEach {
+class SecondPartnerControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 
   private val partnerName = "test partner"
   val view: secondPartner = app.injector.instanceOf[secondPartner]

@@ -21,7 +21,6 @@ import controllers.ControllerSpecBase
 import controllers.actions._
 import forms.UKAddressFormProvider
 import models.{Address, NormalMode}
-import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -33,13 +32,13 @@ import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with MockitoSugar with ScalaFutures with OptionValues {
+class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with ScalaFutures with OptionValues {
 
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
   val messagePrefix = "enter.previous.address"
   val formProvider = new UKAddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
-  val form: Form[Address] = formProvider("error.country.invalid")
+  val form: Form[Address] = formProvider()
   private val isUkHintText = true
   val viewmodel = ManualAddressViewModel(
     postCall = routes.PartnershipPreviousAddressController.onSubmit(NormalMode),

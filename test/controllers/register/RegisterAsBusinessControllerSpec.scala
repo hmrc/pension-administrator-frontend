@@ -18,21 +18,20 @@ package controllers.register
 
 import audit.testdoubles.StubSuccessfulAuditService
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import controllers.actions._
+import controllers.actions.*
 import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.RegisterAsBusinessId
 import models.NormalMode
-import org.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{status, _}
-import utils.UserAnswers
-import utils.testhelpers.DataCompletionBuilder._
+import play.api.test.Helpers.{status, *}
+import utils.testhelpers.DataCompletionBuilder.*
+import utils.{UserAnswerOps, UserAnswers}
 import views.html.register.registerAsBusiness
 
-class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours with MockitoSugar {
+class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours {
 
   val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 
@@ -72,24 +71,24 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
 
         val formWithErrors = form.bind(Map.empty[String, String])
 
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) mustBe viewAsString(formWithErrors)
+        status(result).mustBe(BAD_REQUEST)
+        contentAsString(result).mustBe(viewAsString(formWithErrors))
       }
 
       "route to the company 'before you start' page when the registration is for a company / partnership" in {
         val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
           onSubmit()(postRequestTrue)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad().url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(routes.WhatYouWillNeedController.onPageLoad().url))
       }
 
       "route to the individual 'before you start' page when the registration is NOT for a company / partnership" in {
         val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
           onSubmit()(postRequestFalse)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(individual.routes.WhatYouWillNeedController.onPageLoad().url)
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(Some(individual.routes.WhatYouWillNeedController.onPageLoad().url))
       }
 
       "send a PSAStart audit event" in {
@@ -99,8 +98,8 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
         val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
           onSubmit()(postRequestTrue)
 
-        status(result) mustBe SEE_OTHER
-        auditService.verifyNothingSent() mustBe false
+        status(result).mustBe(SEE_OTHER)
+        auditService.verifyNothingSent().mustBe(false)
       }
 
       "when the registration is for a company / partnership" must {
@@ -111,8 +110,8 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
           val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
             onSubmit()(postRequestTrue)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.ContinueWithRegistrationController.onPageLoad().url)
+          status(result).mustBe(SEE_OTHER)
+          redirectLocation(result).mustBe(Some(routes.ContinueWithRegistrationController.onPageLoad().url))
         }
 
         "route to the company 'before you start' page when the registration is for a non-UK company" in {
@@ -121,8 +120,8 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
           val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector).
             onSubmit()(postRequestTrue)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.WhatYouWillNeedController.onPageLoad().url)
+          status(result).mustBe(SEE_OTHER)
+          redirectLocation(result).mustBe(Some(routes.WhatYouWillNeedController.onPageLoad().url))
         }
       }
     }

@@ -26,9 +26,10 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.config.AuditingConfig
-import uk.gov.hmrc.play.audit.http.connector._
+import uk.gov.hmrc.play.audit.http.connector.*
 import uk.gov.hmrc.play.audit.model.DataEvent
 
+import scala.compiletime.uninitialized
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuditServiceSpec extends AsyncFlatSpec with Matchers with Inside {
@@ -93,7 +94,7 @@ object AuditServiceSpec {
 //noinspection ScalaDeprecation
 object FakeAuditConnector extends AuditConnector {
 
-  private var sentEvent: DataEvent = _
+  private var sentEvent: DataEvent = uninitialized
 
   override def auditingConfig: AuditingConfig = AuditingConfig(None, false, "test audit source", false)
 

@@ -71,7 +71,7 @@ class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSp
           bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
           bind[AuthAction].qualifiedWith(classOf[AuthWithIV]).to(FakeAuthAction),
           bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
-        ):_*)) {
+        )*)) {
         app =>
           val controller = app.injector.instanceOf[IndividualPreviousAddressPostCodeLookupController]
 
@@ -91,7 +91,7 @@ class IndividualPreviousAddressPostCodeLookupControllerSpec extends ControllerSp
           bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
           bind[AuthAction].qualifiedWith(classOf[AuthWithIV]).to(FakeAuthAction),
           bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
-        ):_*)) {
+        )*)) {
         app =>
           val controller = app.injector.instanceOf[IndividualPreviousAddressPostCodeLookupController]
 

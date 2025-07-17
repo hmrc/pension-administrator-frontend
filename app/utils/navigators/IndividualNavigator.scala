@@ -183,7 +183,7 @@ class IndividualNavigator @Inject()(countryOptions: CountryOptions) extends Navi
         case UK => IndividualAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => IndividualDateOfBirthController.onPageLoad(NormalMode)
         case RestOfTheWorld => OutsideEuEeaController.onPageLoad()
-        case _ => controllers.routes.SessionExpiredController.onPageLoad
+        case null => controllers.routes.SessionExpiredController.onPageLoad
       }
     )
   }

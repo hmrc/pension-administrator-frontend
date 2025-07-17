@@ -28,7 +28,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswerOps, UserAnswers}
 import viewmodels.{CommonFormWithHintViewModel, Message}
 import views.html.enterPAYE
 
@@ -64,7 +64,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
     "on a GET" must {
       "return OK and the correct view for a GET" in {
         running(_.overrides(modules(UserAnswers().businessName(companyName).dataRetrievalAction)
-          ++ Seq[GuiceableModule](): _*
+          ++ Seq[GuiceableModule]()*
         )) {
           app =>
             val controller = app.injector.instanceOf[CompanyEnterPAYEController]
@@ -77,7 +77,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
 
       "redirect to Session Expired if no existing data is found" in {
         running(
-          _.overrides(modules(dontGetAnyData): _*)
+          _.overrides(modules(dontGetAnyData)*)
         ) {
           app =>
             val controller = app.injector.instanceOf[CompanyEnterPAYEController]
@@ -93,7 +93,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
       "return a redirect when the submitted data is valid" in {
         running(_.overrides(modules(UserAnswers().businessName().dataRetrievalAction) ++
           Seq[GuiceableModule](bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
-            bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute))): _*
+            bind(classOf[Navigator]).qualifiedWith(classOf[RegisterCompany]).toInstance(new FakeNavigator(onwardRoute)))*
         )) {
           app =>
             val request = FakeRequest().withFormUrlEncodedBody(("value", payeNumber))
@@ -109,7 +109,7 @@ class CompanyEnterPAYEControllerSpec extends ControllerSpecBase {
       "redirect to Session Expired if no existing data is found" in {
         running(
           _.overrides(modules(dontGetAnyData) ++
-            Seq[GuiceableModule](): _*)
+            Seq[GuiceableModule]()*)
         ) {
           app =>
             val request = FakeRequest().withFormUrlEncodedBody(("value", payeNumber))

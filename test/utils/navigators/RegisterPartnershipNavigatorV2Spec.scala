@@ -17,23 +17,23 @@
 package utils.navigators
 
 import base.SpecBase
-import controllers.register.administratorPartnership.contactDetails.routes._
-import controllers.register.administratorPartnership.partnershipDetails.routes._
-import controllers.register.administratorPartnership.routes._
-import identifiers.register._
-import identifiers.register.partnership._
+import controllers.register.administratorPartnership.contactDetails.routes.*
+import controllers.register.administratorPartnership.partnershipDetails.routes.*
+import controllers.register.administratorPartnership.routes.*
+import identifiers.register.*
+import identifiers.register.partnership.*
 import identifiers.register.partnership.partners.PartnerNameId
 import identifiers.{Identifier, UpdateContactAddressId}
-import models._
+import models.*
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswerOps, UserAnswers}
 
 class RegisterPartnershipNavigatorV2Spec extends SpecBase with NavigatorBehaviour {
 
-  import RegisterPartnershipNavigatorV2Spec._
+  import RegisterPartnershipNavigatorV2Spec.*
 
   val navigator: Navigator = injector.instanceOf[RegisterPartnershipNavigatorV2]
 

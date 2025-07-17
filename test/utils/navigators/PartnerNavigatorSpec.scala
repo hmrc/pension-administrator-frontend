@@ -23,14 +23,13 @@ import identifiers.register.partnership.partners._
 import identifiers.register.partnership.{AddPartnersId, MoreThanTenPartnersId}
 import models._
 import models.requests.IdentifiedRequest
-import org.mockito.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import utils.{Navigator, NavigatorBehaviour, UserAnswers}
 
-class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBehaviour {
+class PartnerNavigatorSpec extends SpecBase with NavigatorBehaviour {
 
   import PartnerNavigatorSpec._
   
@@ -58,13 +57,13 @@ class PartnerNavigatorSpec extends SpecBase with MockitoSugar with NavigatorBeha
       (CheckYourAnswersId, onlyOnePartner, tellUsAboutAnotherPartnerPage(NormalMode)),
       (CheckYourAnswersId, twoPartners, addPartnersPage(NormalMode)),
       (AddPartnersId, addPartnersFalse, tellUsAboutAnotherPartnerPage(NormalMode)),
-      (AddPartnersId, moreThan1PartnerAddPartnerFalse, partnershipReviewPage(NormalMode)),
+      (AddPartnersId, moreThan1PartnerAddPartnerFalse, partnershipReviewPage()),
       (PartnerEnterNINOId(0), emptyAnswers, partnerHasUtrPage(NormalMode)),
       (PartnerNoNINOReasonId(0), emptyAnswers, partnerHasUtrPage(NormalMode)),
       (PartnerEnterUTRId(0), emptyAnswers, addressPostCodePage(NormalMode)),
       (PartnerNoUTRReasonId(0), emptyAnswers, addressPostCodePage(NormalMode)),
       (PartnerAddressId(0), emptyAnswers, partnerAddressYearsPage(NormalMode)),
-      (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage(NormalMode))
+      (MoreThanTenPartnersId, emptyAnswers, partnershipReviewPage())
 
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, NormalMode)
@@ -165,7 +164,7 @@ object PartnerNavigatorSpec extends OptionValues {
 
   private def checkYourAnswersPage(mode: Mode) = routes.CheckYourAnswersController.onPageLoad(0, mode)
 
-  private def partnershipReviewPage(mode: Mode) = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
+  private def partnershipReviewPage() = controllers.register.partnership.routes.PartnershipReviewController.onPageLoad()
 
   private def tellUsAboutAnotherPartnerPage(mode: Mode) = controllers.register.partnership.routes.TellUsAboutAnotherPartnerController.onPageLoad(mode)
 
@@ -256,10 +255,10 @@ object PartnerNavigatorSpec extends OptionValues {
     .set(HasPartnerNINOId(0))(value = false).asOpt.value
 
   private def confirmPreviousAddressSame(index: Int) = existingPartnerInUpdate(0)
-    .set(PartnerConfirmPreviousAddressId(0))(true).asOpt.value
+    .set(PartnerConfirmPreviousAddressId(index))(true).asOpt.value
 
   private def confirmPreviousAddressNotSame(index: Int) = existingPartnerInUpdate(0)
-    .set(PartnerConfirmPreviousAddressId(0))(false).asOpt.value
+    .set(PartnerConfirmPreviousAddressId(index))(false).asOpt.value
 
   val addPartnersMoreThan10 = UserAnswers(Json.obj(
     "partners" -> createPartners(numberOfPartnersToCreate = 10)))

@@ -29,7 +29,7 @@ trait HttpResponseHelper extends HttpErrorFunctions {
       case NOT_FOUND =>
         throw new NotFoundException(notFoundMessage(httpMethod, url, response.body))
       case FORBIDDEN if response.body.contains(PSA_ACTIVE_RELATIONSHIP_EXISTS) =>
-        throw new PsaActiveRelationshipExistsException(forbiddenMessage(httpMethod, url, response.body))
+        throw new PsaActiveRelationshipExistsException(s"$httpMethod to $url returned 403. Response body: '${response.body}'")
       case status if is4xx(status) =>
         throw UpstreamErrorResponse(upstreamResponseMessage(httpMethod, url, status, response.body), status, status, response.headers)
       case status if is5xx(status) =>
@@ -37,9 +37,6 @@ trait HttpResponseHelper extends HttpErrorFunctions {
       case _ =>
         throw new UnrecognisedHttpResponseException(httpMethod, url, response)
     }
-
-    private def forbiddenMessage(httpMethod: String, url: String, responseBody: String): String =
-      s"$httpMethod to $url returned 403. Response body: '$responseBody'"
 }
 
 class PsaActiveRelationshipExistsException(message: String) extends Exception(message)

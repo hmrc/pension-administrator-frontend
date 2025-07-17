@@ -18,7 +18,7 @@ package controllers.register.administratorPartnership.contactDetails
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.address.AddressYearsFormProvider
 import models.{AddressYears, NormalMode}
 import play.api.Application
@@ -26,9 +26,9 @@ import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.annotations.PartnershipV2
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswerOps, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -65,7 +65,7 @@ class PartnershipAddressYearsControllerSpec extends ControllerSpecBase {
     running(_.overrides(modules(dataRetrieval)++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[PartnershipV2]).toInstance(FakeNavigator),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-      ):_*)) {
+      )*)) {
       app =>
         val controller = app.injector.instanceOf[PartnershipAddressYearsController]
 

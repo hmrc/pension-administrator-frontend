@@ -64,7 +64,7 @@ class RegisterNavigatorV2 @Inject() extends Navigator {
       case Some(DeclarationWorkingKnowledge.Adviser) =>
         controllers.register.adviser.routes.AdviserNameController.onPageLoad(NormalMode)
       case Some(DeclarationWorkingKnowledge.WhatYouWillNeed) =>
-        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad
+        controllers.register.company.workingknowledge.routes.WhatYouWillNeedController.onPageLoad()
       case Some(DeclarationWorkingKnowledge.TaskList) =>
         controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
       case None => controllers.routes.SessionExpiredController.onPageLoad

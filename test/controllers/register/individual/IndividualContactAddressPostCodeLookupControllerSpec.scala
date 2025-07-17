@@ -59,7 +59,7 @@ class IndividualContactAddressPostCodeLookupControllerSpec extends ControllerSpe
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector),
         bind[AuthAction].qualifiedWith(classOf[AuthWithIV]).to(FakeAuthAction),
         bind[AddressLookupConnector].toInstance(fakeAddressLookupConnector)
-      ):_*)) {
+      )*)) {
       app =>
         val controller = app.injector.instanceOf[IndividualContactAddressPostCodeLookupController]
 

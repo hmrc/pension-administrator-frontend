@@ -31,7 +31,7 @@ import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator, UserAnswerOps, UserAnswers}
 import viewmodels.{EntityViewModel, Message, Person}
 import views.html.register.addEntity
 
@@ -65,7 +65,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when less than maximum partners exist and valid data is submitted" in {
-      val getRelevantData = dataRetrievalAction(Seq.fill(maxPartners - 1)(johnDoe): _*)
+      val getRelevantData = dataRetrievalAction(Seq.fill(maxPartners - 1)(johnDoe)*)
 
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
@@ -111,7 +111,7 @@ class AddPartnerControllerSpec extends ControllerSpecBase {
     "redirect to the next page when maximum active partners exist and the user submits" in {
       val partnerDetails = Seq.fill(maxPartners)(johnDoe) ++ Seq(joeBloggs.copy(isDeleted = true))
 
-      val getRelevantData = dataRetrievalAction(partnerDetails: _*)
+      val getRelevantData = dataRetrievalAction(partnerDetails*)
 
       val result = controller(getRelevantData).onSubmit(NormalMode)(fakeRequest)
 

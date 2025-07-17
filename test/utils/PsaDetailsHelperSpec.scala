@@ -19,77 +19,20 @@ package utils
 import base.SpecBase
 import models.PsaSubscription.PsaSubscription
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-import utils.PsaDetailsHelper._
-import utils.PsaDetailsHelperSpec.actualSeqAnswerRow
+import utils.PsaDetailsHelper.*
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.PsaSubscriptionBuilder
-import utils.testhelpers.PsaSubscriptionBuilder._
+import utils.testhelpers.PsaSubscriptionBuilder.*
 import viewmodels.{AnswerRow, SuperSection}
 
-class PsaDetailsHelperSpec extends AnyWordSpecLike with Matchers {
-
-  def validSection(testName: String, headingKey: Option[String], result: Seq[SuperSection], expectedAnswerRows: Seq[AnswerRow]): Unit = {
-    s"display Individual details section with correct labels for $testName" in {
-      val actualLabels = actualSeqAnswerRow(result, headingKey).map(_.label).toSet
-      val expectedLabels = expectedAnswerRows.map(_.label).toSet
-
-      actualLabels mustBe expectedLabels
-    }
-
-    s"display Individual details section with correct values for $testName" in {
-      val actualValues = actualSeqAnswerRow(result, headingKey).map(_.answer).toSet
-      val expectedValues = expectedAnswerRows.map(_.answer).toSet
-
-      actualValues mustBe expectedValues
-    }
-  }
-
-  import PsaDetailsHelperSpec._
-
-  "PsaDetailsHelper" must {
-
-    behave like validSection(testName = "individual details", headingKey = None, result = individualResult, expectedAnswerRows = individualExpectedAnswerRows)
-
-    behave like validSection(testName = "company details", headingKey = None, result = companyResult, expectedAnswerRows = companyExpectedAnswerRows)
-
-    "have a supersection heading for directors" in {
-      companyResult.exists(_.headingKey == directorDetailsSuperSectionKey) mustBe true
-    }
-
-    behave like validSection(testName = "director details", headingKey = directorDetailsSuperSectionKey,
-      result = companyResult, expectedAnswerRows = directorOrPartnerExpectedAnswerRows)
-
-    behave like validSection(testName = "partnership details", headingKey = None,
-      result = partnershipResult, expectedAnswerRows = partnershipExpectedAnswerRows)
-
-    "have a supersection heading for partners" in {
-      partnershipResult.exists(_.headingKey == partnerDetailsSuperSectionKey) mustBe true
-    }
-
-    behave like validSection(testName = "partner details", headingKey = partnerDetailsSuperSectionKey,
-      result = partnershipResult, expectedAnswerRows = directorOrPartnerExpectedAnswerRows)
-
-    "have a supersection heading for pension advisor" in {
-      partnershipResult.exists(_.headingKey == pensionAdvisorSuperSectionKey) mustBe true
-    }
-
-    behave like validSection(testName = "pension advisor details", headingKey = pensionAdvisorSuperSectionKey,
-      result = partnershipResult, expectedAnswerRows = pensionAdvisorExpectedAnswerRows)
-
-    behave like validSection(testName = "pension advisor details sub-section where there are none", headingKey = pensionAdvisorSuperSectionKey,
-      result = psaDetailsHelper(psaSubscriptionPartnership copy(pensionAdvisor=None)).organisationSections,
-      expectedAnswerRows = Seq.empty)
-  }
-}
-
-object PsaDetailsHelperSpec extends SpecBase {
+class PsaDetailsHelperSpec extends SpecBase with Matchers {
 
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   private def psaDetailsHelper(psaSubscription: PsaSubscription) = new PsaDetailsHelper(psaSubscription, countryOptions)
 
   private val individualDateOfBirth = AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None)
+
   private def psaAddress(addressLabelKey: String) = AnswerRow(addressLabelKey, addressAnswer(psaSubscriptionIndividual.address, countryOptions), false, None)
 
   private val psaPreviousAddress = AnswerRow("common.previousAddress.checkyouranswers",
@@ -105,7 +48,7 @@ object PsaDetailsHelperSpec extends SpecBase {
 
   private val crn = AnswerRow("crn.label", Seq("1234567890"), false, None)
 
-  private val utr = AnswerRow("utr.label",Seq("121414151"),false,None)
+  private val utr = AnswerRow("utr.label", Seq("121414151"), false, None)
 
   private def directorOrPartnerDob =
     AnswerRow("cya.label.dob", Seq("1950-03-29"), false, None)
@@ -183,4 +126,55 @@ object PsaDetailsHelperSpec extends SpecBase {
 
   private def actualSeqAnswerRow(result: Seq[SuperSection], headingKey: Option[String]): Seq[AnswerRow] =
     result.filter(_.headingKey == headingKey).flatMap(_.sections).take(1).flatMap(_.rows)
+
+  def validSection(testName: String, headingKey: Option[String], result: Seq[SuperSection], expectedAnswerRows: Seq[AnswerRow]): Unit = {
+    s"display Individual details section with correct labels for $testName" in {
+      val actualLabels = actualSeqAnswerRow(result, headingKey).map(_.label).toSet
+      val expectedLabels = expectedAnswerRows.map(_.label).toSet
+
+      actualLabels mustBe expectedLabels
+    }
+
+    s"display Individual details section with correct values for $testName" in {
+      val actualValues = actualSeqAnswerRow(result, headingKey).map(_.answer).toSet
+      val expectedValues = expectedAnswerRows.map(_.answer).toSet
+
+      actualValues mustBe expectedValues
+    }
+  }
+
+  "PsaDetailsHelper" must {
+
+    behave like validSection(testName = "individual details", headingKey = None, result = individualResult, expectedAnswerRows = individualExpectedAnswerRows)
+
+    behave like validSection(testName = "company details", headingKey = None, result = companyResult, expectedAnswerRows = companyExpectedAnswerRows)
+
+    "have a supersection heading for directors" in {
+      companyResult.exists(_.headingKey == directorDetailsSuperSectionKey) mustBe true
+    }
+
+    behave like validSection(testName = "director details", headingKey = directorDetailsSuperSectionKey,
+      result = companyResult, expectedAnswerRows = directorOrPartnerExpectedAnswerRows)
+
+    behave like validSection(testName = "partnership details", headingKey = None,
+      result = partnershipResult, expectedAnswerRows = partnershipExpectedAnswerRows)
+
+    "have a supersection heading for partners" in {
+      partnershipResult.exists(_.headingKey == partnerDetailsSuperSectionKey) mustBe true
+    }
+
+    behave like validSection(testName = "partner details", headingKey = partnerDetailsSuperSectionKey,
+      result = partnershipResult, expectedAnswerRows = directorOrPartnerExpectedAnswerRows)
+
+    "have a supersection heading for pension advisor" in {
+      partnershipResult.exists(_.headingKey == pensionAdvisorSuperSectionKey) mustBe true
+    }
+
+    behave like validSection(testName = "pension advisor details", headingKey = pensionAdvisorSuperSectionKey,
+      result = partnershipResult, expectedAnswerRows = pensionAdvisorExpectedAnswerRows)
+
+    behave like validSection(testName = "pension advisor details sub-section where there are none", headingKey = pensionAdvisorSuperSectionKey,
+      result = psaDetailsHelper(psaSubscriptionPartnership.copy(pensionAdvisor = None)).organisationSections,
+      expectedAnswerRows = Seq.empty)
+  }
 }

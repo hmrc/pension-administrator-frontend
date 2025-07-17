@@ -127,7 +127,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
     "redirect to the next page on POST of valid data" in {
       running(_.overrides(modules(dataRetrievalAction)++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))*)) {
         app =>
           val controller = app.injector.instanceOf[IndividualContactAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
@@ -141,7 +141,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired controller when no session data exists on a POST request" in {
-      running(_.overrides(modules(dontGetAnyData):_*)) {
+      running(_.overrides(modules(dontGetAnyData)*)) {
         app =>
           val controller = app.injector.instanceOf[IndividualContactAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")
@@ -157,7 +157,7 @@ class IndividualContactAddressListControllerSpec extends ControllerSpecBase {
     "redirect to Individual Address Post Code Lookup if no address data on a POST request" in {
       running(_.overrides(modules(getEmptyData)++
         Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[Individual]).toInstance(new FakeNavigator(onwardRoute)),
-          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)):_*)) {
+          bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector))*)) {
         app =>
           val controller = app.injector.instanceOf[IndividualContactAddressListController]
           val request = FakeRequest().withFormUrlEncodedBody("value" -> "0")

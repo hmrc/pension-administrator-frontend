@@ -20,12 +20,13 @@ import controllers.actions.{AuthAction, DataRetrievalAction, FakeAllowAccessProv
 import models.UserType.UserType
 import models.requests.AuthenticatedRequest
 import models.{PSAUser, UpdateMode, UserType}
-import org.mockito.ArgumentMatchers._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.when
 import play.api.mvc.{AnyContent, BodyParser, Request, Result}
-import play.api.test.Helpers.{contentAsString, status, _}
+import play.api.test.Helpers.{contentAsString, status, *}
 import services.PsaDetailsService
 import utils.FakeNavigator
-import utils.testhelpers.ViewPsaDetailsBuilder._
+import utils.testhelpers.ViewPsaDetailsBuilder.*
 import viewmodels.{PsaViewDetailsViewModel, SuperSection}
 import views.html.psa_details
 

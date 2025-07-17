@@ -30,7 +30,7 @@ import play.api.test.CSRFTokenHelper.addCSRFToken
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.annotations.RegisterCompany
-import utils.{FakeNavigator, Navigator, UserAnswers}
+import utils.{FakeNavigator, Navigator, UserAnswerOps, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.AddressYearsViewModel
 import views.html.address.addressYears
@@ -50,7 +50,7 @@ class CompanyAddressYearsControllerSpec extends ControllerSpecBase {
     running(_.overrides(modules(dataRetrieval) ++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[RegisterCompany]).toInstance(FakeNavigator),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-      ): _*)) {
+      )*)) {
       app =>
         val controller = app.injector.instanceOf[CompanyAddressYearsController]
 
