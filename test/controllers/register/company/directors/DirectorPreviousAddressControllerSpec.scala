@@ -20,14 +20,14 @@ import audit.testdoubles.StubSuccessfulAuditService
 import audit.{AddressAction, AddressEvent}
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.AddressFormProvider
-import models._
+import models.*
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator, UserAnswerOps, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress

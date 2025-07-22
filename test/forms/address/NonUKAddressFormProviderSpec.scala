@@ -20,6 +20,7 @@ import forms.FormSpec
 import forms.behaviours.{AddressBehaviours, FormBehaviours}
 import forms.mappings.AddressMapping
 import models.Address
+import play.api.data.Form
 import utils.FakeCountryOptions
 
 import scala.util.Random
@@ -44,7 +45,7 @@ class NonUKAddressFormProviderSpec extends FormBehaviours with FormSpec with Add
     "country" -> "IN"
   )
 
-  val form = new NonUKAddressFormProvider(countryOptions)()
+  val form: Form[Address] = new NonUKAddressFormProvider(countryOptions)()
 
   "Non UK address form" must {
     behave like questionForm(Address(

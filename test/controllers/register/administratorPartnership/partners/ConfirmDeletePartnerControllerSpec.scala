@@ -78,7 +78,7 @@ class ConfirmDeletePartnerControllerSpec extends ControllerSpecBase {
     running(_.overrides(modules(dataRetrieval)++
       Seq[GuiceableModule](bind[Navigator].qualifiedWith(classOf[PartnershipPartnerV2]).toInstance(new FakeNavigator(postUrl)),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-      ):_*)) {
+      )*)) {
       app =>
         val controller = app.injector.instanceOf[ConfirmDeletePartnerController]
 

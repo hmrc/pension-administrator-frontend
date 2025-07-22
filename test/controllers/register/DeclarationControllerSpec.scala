@@ -17,29 +17,29 @@
 package controllers.register
 
 import config.FrontendAppConfig
-import connectors._
-import controllers.register.routes.InvalidEmailAddressController
-import controllers.routes._
+import connectors.*
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
+import controllers.register.routes.InvalidEmailAddressController
+import controllers.routes.*
+import identifiers.register.*
 import identifiers.register.partnership.PartnershipEmailId
-import identifiers.register._
 import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.{Individual, Partnership}
 import models.UserType.UserType
 import models.enumeration.JourneyType
-import models.register.{DeclarationWorkingKnowledge, KnownFact, KnownFacts, PsaSubscriptionResponse, RegistrationStatus}
+import models.register.*
 import models.{NormalMode, RegistrationInfo, UserType}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.domain.PsaId
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import utils.{FakeNavigator, KnownFactsRetrieval}
 import views.html.register.declaration
 
@@ -47,7 +47,6 @@ import scala.concurrent.Future
 
 class DeclarationControllerSpec
   extends ControllerSpecBase
-    with MockitoSugar
     with BeforeAndAfterEach {
 
   private val onwardRoute: Call = IndexController.onPageLoad

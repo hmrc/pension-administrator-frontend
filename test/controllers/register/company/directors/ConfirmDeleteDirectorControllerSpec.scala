@@ -50,7 +50,7 @@ class ConfirmDeleteDirectorControllerSpec extends ControllerSpecBase {
       Seq[GuiceableModule](bind[Navigator].toInstance(
         new FakeNavigator(controllers.register.company.routes.AddCompanyDirectorsController.onPageLoad(NormalMode))),
         bind[UserAnswersCacheConnector].toInstance(FakeUserAnswersCacheConnector)
-      ): _*)) {
+      )*)) {
       app =>
         val controller = app.injector.instanceOf[ConfirmDeleteDirectorController]
 

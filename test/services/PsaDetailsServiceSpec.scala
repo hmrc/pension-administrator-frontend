@@ -19,17 +19,17 @@ package services
 import base.SpecBase
 import connectors.SubscriptionConnector
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
-import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId => DirectorsExistingCurrentAddressId}
-import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId => CompanyExistingCurrentAddressId}
-import identifiers.register.individual._
-import identifiers.register.partnership.partners.{PartnerAddressId, ExistingCurrentAddressId => PartnersExistingCurrentAddressId}
+import identifiers.register.company.directors.{DirectorAddressId, ExistingCurrentAddressId as DirectorsExistingCurrentAddressId}
+import identifiers.register.company.{CompanyContactAddressChangedId, CompanyContactAddressId, CompanyContactDetailsChangedId, CompanyPreviousAddressChangedId, ExistingCurrentAddressId as CompanyExistingCurrentAddressId}
+import identifiers.register.individual.*
+import identifiers.register.partnership.partners.{PartnerAddressId, ExistingCurrentAddressId as PartnersExistingCurrentAddressId}
 import identifiers.register.partnership.{PartnershipContactAddressChangedId, PartnershipContactAddressId, PartnershipContactDetailsChangedId, PartnershipPreviousAddressChangedId}
 import identifiers.register.{DeclarationChangedId, DirectorsOrPartnersChangedId, MoreThanTenDirectorsOrPartnersChangedId}
 import identifiers.{IndexId, UpdateModeId}
 import models.requests.OptionalDataRequest
 import models.{PSAUser, UpdateMode, UserType}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.*
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.libs.json.{JsValue, Json}
@@ -45,9 +45,9 @@ import viewmodels.{AnswerRow, AnswerSection, PsaViewDetailsViewModel, SuperSecti
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class PsaDetailsServiceSpec extends SpecBase with OptionValues with ScalaFutures with BeforeAndAfterEach {
 
-  import PsaDetailsServiceSpec._
+  import PsaDetailsServiceSpec.*
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   implicit val request: OptionalDataRequest[?] = OptionalDataRequest(fakeRequest, "cacheId", PSAUser(UserType.Organisation, None, false, Some("test Psa id")),
@@ -70,7 +70,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
     "return the correct PSA individual view model with correct can de register flag and existing current address id" in {
       val expectedAddress = UserAnswers(individualUserAnswers).get(IndividualContactAddressId).get.toTolerantAddress
 
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any()))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any()))
         .thenReturn(Future.successful(individualUserAnswers))
 
       val result = service().retrievePsaDataAndGenerateViewModel
@@ -86,7 +86,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       val companyExpectedAddress = UserAnswers(companyUserAnswers).get(CompanyContactAddressId).get.toTolerantAddress
       val directorExpectedAddress = UserAnswers(companyUserAnswers).get(DirectorAddressId(0)).get.toTolerantAddress
 
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any()))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any()))
         .thenReturn(Future.successful(companyUserAnswers))
 
       val result = service().retrievePsaDataAndGenerateViewModel
@@ -104,7 +104,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       val partnershipExpectedAddress = UserAnswers(partnershipUserAnswers).get(PartnershipContactAddressId).get.toTolerantAddress
       val partnerExpectedAddress = UserAnswers(partnershipUserAnswers).get(PartnerAddressId(0)).get.toTolerantAddress
 
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any()))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any()))
         .thenReturn(Future.successful(partnershipUserAnswers))
       when(mockDataCompletion.psaUpdateDetailsInCompleteAlert(any())).thenReturn(Some("incomplete.alert.message"))
 
@@ -122,12 +122,12 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       reset(mockUserAnswersConnector, mockSubscriptionConnector)
       when(mockUserAnswersConnector.fetch(any(), any())).thenReturn(Future.successful(None))
       when(mockUserAnswersConnector.upsert(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
       val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel
       whenReady(result) { _ =>
         verify(mockUserAnswersConnector, never).removeAll(any(), any())
-        verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf()(any(), any())
+        verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf(any(), any())
       }
     }
 
@@ -136,12 +136,12 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       when(mockUserAnswersConnector.fetch(any(), any())).thenReturn(Future.successful(Some(Json.obj(IndexId.toString -> "index"))))
       when(mockUserAnswersConnector.upsert(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       when(mockUserAnswersConnector.removeAll(any(), any())).thenReturn(Future.successful(Ok))
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
       val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateViewModel
       whenReady(result) { _ =>
         verify(mockUserAnswersConnector, times(1)).removeAll(any(), any())
-        verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf()(any(), any())
+        verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf(any(), any())
       }
     }
 
@@ -149,7 +149,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       reset(mockUserAnswersConnector, mockSubscriptionConnector)
 
       when(mockUserAnswersConnector.fetch(any(), any())).thenReturn(Future.successful(None))
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
       val result = service(mockUserAnswersConnector).getUserAnswers
       whenReady(result) { userAnswers =>
@@ -173,7 +173,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
   "retrievePsaDataAndGenerateContactDetailsOnlyViewModel" must {
 
     "return the correct PSA individual view model and page title" in {
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any()))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any()))
         .thenReturn(Future.successful(individualUserAnswers))
 
       val result = service().retrievePsaDataAndGenerateContactDetailsOnlyViewModel("A2100005", mode)
@@ -184,7 +184,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
     }
 
     "return the correct PSA company view model and page title" in {
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any()))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any()))
         .thenReturn(Future.successful(companyUserAnswers))
 
       val result = service().retrievePsaDataAndGenerateContactDetailsOnlyViewModel("A2100005", mode)
@@ -195,7 +195,7 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
     }
 
     "return the correct PSA partnership view model and page title" in {
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any()))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any()))
         .thenReturn(Future.successful(partnershipUserAnswers))
       when(mockDataCompletion.psaUpdateDetailsInCompleteAlert(any())).thenReturn(Some("incomplete.alert.message"))
 
@@ -211,12 +211,12 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       reset(mockUserAnswersConnector, mockSubscriptionConnector)
       when(mockUserAnswersConnector.fetch(any(), any())).thenReturn(Future.successful(None))
       when(mockUserAnswersConnector.upsert(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
       val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateContactDetailsOnlyViewModel("A2100005", mode)
       whenReady(result) { _ =>
         verify(mockUserAnswersConnector, never).removeAll(any(), any())
-        verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf()(any(), any())
+        verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf(any(), any())
       }
     }
 
@@ -225,19 +225,19 @@ class PsaDetailsServiceSpec extends SpecBase with OptionValues with MockitoSugar
       when(mockUserAnswersConnector.fetch(any(), any())).thenReturn(Future.successful(Some(Json.obj(IndexId.toString -> "index"))))
       when(mockUserAnswersConnector.upsert(any())(any(), any())).thenReturn(Future.successful(Json.obj()))
       when(mockUserAnswersConnector.removeAll(any(), any())).thenReturn(Future.successful(Ok))
-      when(mockSubscriptionConnector.getSubscriptionDetailsSelf()(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
+      when(mockSubscriptionConnector.getSubscriptionDetailsSelf(any(), any())).thenReturn(Future.successful(partnershipUserAnswers))
 
       val result = service(mockUserAnswersConnector).retrievePsaDataAndGenerateContactDetailsOnlyViewModel("A2100005", mode)
       whenReady(result) { _ =>
         verify(mockUserAnswersConnector, times(1)).removeAll(any(), any())
-        verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf()(any(), any())
+        verify(mockSubscriptionConnector, times(1)).getSubscriptionDetailsSelf(any(), any())
       }
     }
   }
 
 }
 
-object PsaDetailsServiceSpec extends SpecBase with MockitoSugar {
+object PsaDetailsServiceSpec extends SpecBase {
 
   private val mockSubscriptionConnector: SubscriptionConnector = mock[SubscriptionConnector]
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)

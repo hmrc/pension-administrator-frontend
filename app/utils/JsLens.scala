@@ -16,7 +16,7 @@
 
 package utils
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 trait JsLens {
   self =>
@@ -122,11 +122,11 @@ object JsLens {
         case IdxPathNode(idx) =>
           JsLens.atIndex(idx)
         case RecursiveSearch(key) =>
-          JsLens.atAllIndices andThen JsLens.atKey(key)
+          JsLens.atAllIndices.andThen(JsLens.atKey(key))
       }
     }
 
-    path.path.map(toLens).reduceLeft(_ andThen _)
+    path.path.map(toLens).reduceLeft(_.andThen(_))
   }
 
   def atKey(key: String): JsLens =
@@ -194,7 +194,7 @@ object JsLens {
       }
     }
 
-  def atAllIndices: JsLens =
+  private def atAllIndices: JsLens =
     new JsLens {
 
       override def getAll(s: JsValue): JsResult[Seq[JsValue]] =

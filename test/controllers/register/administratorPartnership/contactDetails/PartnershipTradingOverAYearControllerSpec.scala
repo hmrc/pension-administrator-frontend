@@ -46,10 +46,10 @@ class PartnershipTradingOverAYearControllerSpec extends ControllerWithCommonBeha
 
   private def viewModel(mode: Mode): CommonFormWithHintViewModel =
     CommonFormWithHintViewModel(
-      postCall = routes.PartnershipTradingOverAYearController.onSubmit(NormalMode),
+      postCall = routes.PartnershipTradingOverAYearController.onSubmit(mode),
       title = Message("trading.title", Message("thePartnership")),
       heading = Message("trading.title", name),
-      mode = NormalMode,
+      mode = mode,
       hint = None,
       entityName = name,
       returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)

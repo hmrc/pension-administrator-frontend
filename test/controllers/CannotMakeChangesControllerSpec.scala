@@ -16,13 +16,13 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.*
 import identifiers.register.individual.IndividualDetailsId
-import models._
+import models.*
 import models.requests.DataRequest
 import play.api.libs.json.Json
-import play.api.test.Helpers._
-import utils.UserAnswers
+import play.api.test.Helpers.*
+import utils.{UserAnswerOps, UserAnswers}
 import views.html.cannotMakeChanges
 
 class CannotMakeChangesControllerSpec extends ControllerSpecBase {

@@ -223,7 +223,7 @@ class PartnershipNavigator @Inject()(
         case UK => BusinessTypeAreYouInUKController.onPageLoad(CheckMode)
         case EuEea => controllers.register.partnership.routes.PartnershipSameContactAddressController.onPageLoad(NormalMode)
         case RestOfTheWorld => OutsideEuEeaController.onPageLoad()
-        case _ => SessionExpiredController.onPageLoad
+        case null => SessionExpiredController.onPageLoad
       }
     } getOrElse SessionExpiredController.onPageLoad
   }

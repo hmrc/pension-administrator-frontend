@@ -21,6 +21,7 @@ import controllers.actions._
 import identifiers.register.adviser.{AdviserAddressId, AdviserEmailId, AdviserNameId, AdviserPhoneId}
 import models.{Address, CheckMode, NormalMode}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsObject, Json}
 import play.api.test.Helpers._

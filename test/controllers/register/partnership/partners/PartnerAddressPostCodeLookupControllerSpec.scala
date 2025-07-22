@@ -23,7 +23,8 @@ import controllers.actions._
 import forms.address.PostCodeLookupFormProvider
 import identifiers.register.partnership.partners.{PartnerAddressPostCodeLookupId, PartnerNameId}
 import models._
-import org.mockito.{ArgumentMatchers, MockitoSugar}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.data.{Form, FormError}
 import play.api.libs.json._
 import play.api.test.Helpers._
@@ -38,6 +39,8 @@ import scala.concurrent.Future
 class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
 
   import PartnerAddressPostCodeLookupControllerSpec._
+
+  private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getRequiredData) = new PartnerAddressPostCodeLookupController(
     FakeUserAnswersCacheConnector,
@@ -138,8 +141,7 @@ class PartnerAddressPostCodeLookupControllerSpec extends ControllerSpecBase {
   }
 }
 
-object PartnerAddressPostCodeLookupControllerSpec extends MockitoSugar {
-  private val fakeAddressLookupConnector: AddressLookupConnector = mock[AddressLookupConnector]
+object PartnerAddressPostCodeLookupControllerSpec {
   private val onwardRoute = controllers.routes.IndexController.onPageLoad
 
   private val formProvider = new PostCodeLookupFormProvider()

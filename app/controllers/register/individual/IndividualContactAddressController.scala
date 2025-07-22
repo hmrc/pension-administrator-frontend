@@ -17,17 +17,17 @@
 package controllers.register.individual
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import controllers.address.ManualAddressController
 import forms.AddressFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId}
-import models.{Address, Mode}
 import models.requests.DataRequest
+import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import utils.Navigator
 import utils.annotations.{AuthWithIV, Individual, NoRLSCheck}
 import utils.countryOptions.CountryOptions
@@ -51,7 +51,7 @@ class IndividualContactAddressController @Inject()(
                                                    val view: manualAddress
                                                   )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
-  private[controllers] val postCall = routes.IndividualContactAddressController.onSubmit _
+  private[controllers] def postCall(mode: Mode): Call = routes.IndividualContactAddressController.onSubmit(mode)
   private val isUkHintText = false
   protected val form: Form[Address] = formProvider("error.country.invalid")
 

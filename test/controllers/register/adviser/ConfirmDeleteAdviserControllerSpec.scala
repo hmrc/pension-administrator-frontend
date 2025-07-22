@@ -29,6 +29,7 @@ import play.api.test.Helpers._
 import utils.{FakeNavigator, UserAnswers}
 import viewmodels.{ConfirmDeleteViewModel, Message}
 import views.html.confirmDelete
+import utils.UserAnswerOps
 
 class ConfirmDeleteAdviserControllerSpec extends ControllerWithQuestionPageBehaviours {
 

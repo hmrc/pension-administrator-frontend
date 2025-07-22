@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{Format, JsPath}
 
 case class TolerantIndividual(firstName: Option[String], middleName: Option[String], lastName: Option[String]) {
@@ -29,7 +29,7 @@ object TolerantIndividual {
     (JsPath \ "firstName").formatNullable[String] and
       (JsPath \ "middleName").formatNullable[String] and
       (JsPath \ "lastName").formatNullable[String]
-    ) (TolerantIndividual.apply, unlift(TolerantIndividual.unapply))
+    ) (TolerantIndividual.apply, t => Tuple.fromProductTyped(t))
 
   def applyNonUK(firstName: String, lastName: String): TolerantIndividual = {
     new TolerantIndividual(Some(firstName), None, Some(lastName))

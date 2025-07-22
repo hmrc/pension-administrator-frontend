@@ -23,7 +23,7 @@ import models.{PSAUser, UserType}
 import play.api.libs.json.Json
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import utils.UserAnswers
+import utils.{UserAnswerOps, UserAnswers}
 import utils.checkyouranswers.Ops._
 import viewmodels.{AnswerRow, Link, Message}
 

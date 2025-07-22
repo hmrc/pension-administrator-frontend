@@ -17,8 +17,8 @@
 package models
 
 import play.api.Logger
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 import utils.countryOptions.CountryOptions
 
 import scala.language.implicitConversions
@@ -182,7 +182,7 @@ object TolerantAddress {
       (JsPath \ "addressLine4").formatNullable[String] and
       (JsPath \ "postalCode").formatNullable[String] and
       (JsPath \ "countryCode").formatNullable[String]
-    ) (TolerantAddress.apply, unlift(TolerantAddress.unapply))
+    ) (TolerantAddress.apply, t => Tuple.fromProductTyped(t))
 
   implicit def convert(tolerant: TolerantAddress): Option[Address] = {
     for {

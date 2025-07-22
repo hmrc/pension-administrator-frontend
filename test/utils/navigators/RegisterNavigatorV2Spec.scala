@@ -19,7 +19,7 @@ package utils.navigators
 import base.SpecBase
 import controllers.register.routes
 import identifiers.Identifier
-import identifiers.register._
+import identifiers.register.*
 import models.register.{BusinessType, DeclarationWorkingKnowledge, NonUKBusinessType}
 import models.requests.IdentifiedRequest
 import models.{CheckMode, NormalMode}
@@ -27,11 +27,11 @@ import org.scalatest.OptionValues
 import org.scalatest.prop.TableFor3
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import utils.{Navigator, NavigatorBehaviour, UserAnswers}
+import utils.{Navigator, NavigatorBehaviour, UserAnswerOps, UserAnswers}
 
 class RegisterNavigatorV2Spec extends SpecBase with NavigatorBehaviour {
 
-  import RegisterNavigatorV2Spec._
+  import RegisterNavigatorV2Spec.*
 
   val navigator: Navigator = injector.instanceOf[RegisterNavigatorV2]
 

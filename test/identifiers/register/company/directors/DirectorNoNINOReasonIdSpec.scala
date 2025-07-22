@@ -21,7 +21,7 @@ import models._
 import models.requests.DataRequest
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
-import utils.UserAnswers
+import utils.{UserAnswerOps, UserAnswers}
 import utils.checkyouranswers.Ops._
 import viewmodels.{AnswerRow, Link, Message}
 
