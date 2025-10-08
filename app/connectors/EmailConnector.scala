@@ -24,7 +24,8 @@ import play.api.Logging
 import play.api.http.Status.*
 import play.api.libs.json.Json
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
-import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
+import uk.gov.hmrc.crypto.PlainText
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.ApplicationCrypto
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
