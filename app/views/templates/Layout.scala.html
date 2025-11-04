@@ -77,15 +77,30 @@
         </div>
 }
 
+@headerBlock = @{
+    if (appConfig.forceServiceNavigation) {
+        hmrcStandardHeader(
+            serviceNavigation = Some(ServiceNavigation(
+                serviceName = Some(messages("site.service_name")),
+                serviceUrl = Some(controllers.register.routes.RegisterAsBusinessController.onPageLoad().url)
+            )),
+            signOutUrl  = if(canSignOut) Some(routes.LogoutController.onPageLoad.url) else None,
+            phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl))
+        )
+    } else {
+        hmrcStandardHeader(
+            serviceName = Some(messages("site.service_name")),
+            serviceUrl  = Some(controllers.register.routes.RegisterAsBusinessController.onPageLoad().url),
+            signOutUrl  = if(canSignOut) Some(routes.LogoutController.onPageLoad.url) else None,
+            phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl))
+        )
+    }
+}
+
 @govukLayout(
     pageTitle = Some(pageTitle + " - " + Messages("pension.scheme.administrator.title")),
     headBlock = Some(hmrcHead(headBlock = Some(headScripts))),
-    headerBlock = Some(hmrcStandardHeader(
-        serviceName = Some(messages("site.service_name")),
-        serviceUrl = Some(controllers.register.routes.RegisterAsBusinessController.onPageLoad().url),
-        signOutUrl = if(canSignOut) Some(routes.LogoutController.onPageLoad.url) else None,
-        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUnauthenticatedUrl))
-    )),
+    headerBlock = Some(headerBlock),
     beforeContentBlock = Some(beforeContentBlock),
     scriptsBlock = Some(scripts),
     mainContentLayout = if(fullWidthLayout) None else Some(defaultMainContentLayout(_)),

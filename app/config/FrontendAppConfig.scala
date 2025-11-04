@@ -157,4 +157,6 @@ class FrontendAppConfig @Inject()(runModeConfiguration: Configuration, servicesC
     url + query
   }
 
+  lazy val forceServiceNavigation: Boolean = runModeConfiguration.getOptional[Boolean]("play-frontend-hmrc.forceServiceNavigation").getOrElse(false)
+  
 }
