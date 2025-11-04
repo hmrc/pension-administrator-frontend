@@ -3,7 +3,7 @@ $hmrc-assets-path: "/register-as-pension-scheme-administrator/assets/lib/hmrc-fr
 
 @import "lib/govuk-frontend/dist/govuk/base";
 @import 'location-autocomplete.min';
-@import "_timeout-dialog.scss";
+@import "lib/hmrc-frontend/hmrc/components/timeout-dialog/_timeout-dialog.scss";
 
 .autocomplete__wrapper ul, .autocomplete__wrapper li {
   font-family: "nta",Arial,sans-serif;
