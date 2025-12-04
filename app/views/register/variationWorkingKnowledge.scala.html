@@ -56,7 +56,7 @@
 
         @psaNameOpt.map{ psaName =>
             @if(mode == UpdateMode | mode == CheckUpdateMode) {
-                <p class="govuk-margin-top-7">
+                <p class="govuk-margin-top-8 govuk-body">
                     <a id="return-link" class="govuk-link" href="@controllers.routes.PsaDetailsController.onPageLoad().url">@messages("site.return.psa_details", psaName)</a>
                 </p>
             }
