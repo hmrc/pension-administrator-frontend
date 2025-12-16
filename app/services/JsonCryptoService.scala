@@ -21,7 +21,7 @@ import play.api.Configuration
 import uk.gov.hmrc.crypto.{Crypted, Decrypter, Encrypter, PlainContent, SymmetricCryptoFactory}
 
 class JsonCryptoService @Inject()(config: Configuration) {
-  val jsonCrypto: Encrypter & Decrypter =
+  private lazy val jsonCrypto: Encrypter & Decrypter =
     SymmetricCryptoFactory.aesCryptoFromConfig(baseConfigKey = "queryParameter.encryption", config = config.underlying)
 
   def encrypt(value: PlainContent): String = jsonCrypto.encrypt(value).value

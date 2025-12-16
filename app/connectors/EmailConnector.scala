@@ -48,7 +48,7 @@ class EmailConnector @Inject()(
                               ) extends Logging {
   
   private def callBackUrl(psaId: PsaId, journeyType: JourneyType): String = {
-    val encryptedPsaId = URLEncoder.encode(crypto.jsonCrypto.encrypt(PlainText(psaId.value)).value, StandardCharsets.UTF_8.toString)
+    val encryptedPsaId = URLEncoder.encode(crypto.encrypt(PlainText(psaId.value)), StandardCharsets.UTF_8.toString)
     appConfig.psaEmailCallback(encryptedPsaId, journeyType.toString)
   }
 
