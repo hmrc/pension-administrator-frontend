@@ -17,24 +17,33 @@
 package controllers.register
 
 import controllers.actions.AuthAction
-import controllers.register.routes._
+import controllers.register.routes.*
 import models.NormalMode
+import models.admin.ukResidencyToggle
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.register.whatYouWillNeed
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYouWillNeedController @Inject()(
-                                          authenticate: AuthAction,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          val view: whatYouWillNeed
+                                           authenticate: AuthAction,
+                                           val controllerComponents: MessagesControllerComponents,
+                                           val view: whatYouWillNeed,
+                                           featureFlagService: FeatureFlagService
                                          )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
-  def onPageLoad(): Action[AnyContent] = authenticate {
+  def onPageLoad(): Action[AnyContent] = authenticate.async {
     implicit request =>
-      Ok(view(BusinessTypeAreYouInUKController.onPageLoad(NormalMode)))
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        if (ukResidency.isEnabled) {
+          Future.successful(Ok(view(BusinessTypeController.onPageLoad(NormalMode), ukResidency._2)))
+        } else {
+          Future.successful(Ok(view(BusinessTypeAreYouInUKController.onPageLoad(NormalMode), ukResidency._2)))
+        }
+      }
   }
 }
