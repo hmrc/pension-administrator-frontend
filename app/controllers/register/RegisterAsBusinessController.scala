@@ -22,11 +22,13 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.{BusinessTypeId, RegisterAsBusinessId, RegistrationInfoId}
-import models.Mode
 import models.RegistrationCustomerType.UK
+import models.admin.ukResidencyToggle
+import models.{Mode, NormalMode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
 import views.html.register.registerAsBusiness
@@ -40,6 +42,7 @@ class RegisterAsBusinessController @Inject()(
                                               getData: DataRetrievalAction,
                                               cache: UserAnswersCacheConnector,
                                               auditService: AuditService,
+                                              featureFlagService: FeatureFlagService,
                                               val controllerComponents: MessagesControllerComponents,
                                               val view: registerAsBusiness
                                             )(implicit val executionContext: ExecutionContext)
@@ -59,26 +62,41 @@ class RegisterAsBusinessController @Inject()(
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        errors =>
-          Future.successful(BadRequest(view(errors))),
-        isBusiness => {
-          for {
-            _ <- cache.save(RegisterAsBusinessId, isBusiness)
-            _ = PSAStartEvent.sendEvent(auditService)
-          } yield {
-            if (isBusiness) {
-              val businessType = request.userAnswers.flatMap(_.get(BusinessTypeId))
-              val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
-              (businessType, customerType) match {
-                case (Some(_), Some(UK)) => Redirect(routes.ContinueWithRegistrationController.onPageLoad())
-                case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad())
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        form.bindFromRequest().fold(
+          errors =>
+            Future.successful(BadRequest(view(errors))),
+          isBusiness => {
+            for {
+              _ <- cache.save(RegisterAsBusinessId, isBusiness)
+              _ = PSAStartEvent.sendEvent(auditService)
+            } yield {
+              if (isBusiness) {
+                val businessType = request.userAnswers.flatMap(_.get(BusinessTypeId))
+                val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
+                if (ukResidency.isEnabled) {
+                  (businessType, customerType) match {
+                    case (Some(_), Some(UK)) => Redirect(routes.ContinueWithRegistrationController.onPageLoad())
+                    case _ => Redirect(routes.IsBusinessIncorporatedInUKController.onPageLoad(NormalMode))
+                  }
+                } else {
+                  (businessType, customerType) match {
+                    case (Some(_), Some(UK)) => Redirect(routes.ContinueWithRegistrationController.onPageLoad())
+                    case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad())
+                  }
+                }
+              } else {
+                if (ukResidency.isEnabled) {
+                  Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())
+                } else {
+                  Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())
+                }
               }
-            } else {
-              Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())
             }
+
           }
-        }
-      )
+        )
+      }
   }
 }
+

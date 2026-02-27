@@ -491,6 +491,13 @@ whatYouWillNeed.main.body.item3 = the details of all the directors or partners a
 whatYouWillNeed.main.body.hint = Once we have confirmed your identity, the information you enter will be saved as you progress. If you sign out, the information you have already entered will be saved for 28 days. After that time you will need to enter all of the information again.
 whatYouWillNeed.main.body.hint.company = Once we have confirmed the identity of the business, the information you enter will be saved as you progress.  If you sign out, the information you have already entered will be saved for 28 days. After that time you will need to enter all of the information again.
 
+# new content
+whatYouWillNeed.ukResidency.main.body.item1 = the business name and registered UK address
+whatYouWillNeed.ukResidency.main.body.item2 = previous addresses in the last year
+whatYouWillNeed.ukResidency.main.body.item3 = VAT and PAYE references
+whatYouWillNeed.ukResidency.main.body.item4 = business contact phone number and email address
+whatYouWillNeed.ukResidency.main.body.item5 = details of all directors or partners associated with the business, including their Unique Taxpayer Reference (UTR) and National Insurance number
+
 individualDetailsCorrect.title = Is this your name and address?
 individualDetailsCorrect.heading = Is this your name and address?
 individualDetailsCorrect.checkYourAnswersLabel = Are your details correct?
@@ -883,6 +890,18 @@ business.areYouInUK.error.required = Select yes if the company or partnership is
 areYouInUK.check.selectedUkAddress = You selected that you are not based in the UK but have given a UK address.
 areYouInUK.check.provideNonUkAddress = If you are not based in the UK, you need to give an address that is not in the UK.
 
+# New page - Is business incorporated in UK
+isBusinessIncorporatedInUk.title = Is the company or partnership incorporated in the UK?
+isBusinessIncorporatedInUk.heading = Is the company or partnership incorporated in the UK?
+isBusinessIncorporatedInUk.hint = Your business is incorporated in the UK if it is registered with Companies House.
+isBusinessIncorporatedInUk.error.required = Select yes if your business is incorporated in the UK.
+
+# New page - Is business resident in UK
+isBusinessResidentInUk.title = Is the company or partnership resident in the UK?
+isBusinessResidentInUk.heading = Is the company or partnership resident in the UK?
+isBusinessResidentInUk.hint = Your company is resident in the UK if the central management and control of the company is carried out in the UK.
+isBusinessResidentInUk.error.required = Select yes if your company is resident in the UK.
+
 companyNameNonUk.title = What is the company’s name?
 companyNameNonUk.heading = What is the company’s name?
 
@@ -908,6 +927,12 @@ nonUKAdministrator.p2.1             = Please email
 nonUKAdministrator.p2.email         = administrationpensions@hmrc.gov.uk
 nonUKAdministrator.p2.emailSubject  = ?subject=Non-UK
 nonUKAdministrator.p2.2             = and include ‘Non-UK’ in the title.
+
+# New content - company/partnership cannot register
+nonUKCompanyPartnershipAdministrator.title            = Your company or partnership cannot register as a pension scheme administrator
+nonUKCompanyPartnershipAdministrator.heading          = Your company or partnership cannot register as a pension scheme administrator
+nonUKCompanyPartnershipAdministrator.p1               = Your company or partnership must be incorporated or resident in the UK to
+nonUKCompanyPartnershipAdministrator.p1.link-text     = register as a pension scheme administrator
 
 registerAsBusiness.title = What do you want to register as the scheme administrator?
 registerAsBusiness.heading = What do you want to register as the scheme administrator?

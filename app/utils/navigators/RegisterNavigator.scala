@@ -30,6 +30,8 @@ class RegisterNavigator @Inject() extends Navigator {
 
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case AreYouInUKId => countryOfRegistrationRoutes(ua)
+    case IsBusinessIncorporatedInUKId => isBusinessIncorporatedInUKRoutes(ua)
+    case IsBusinessResidentInUKId => isBusinessResidentInUKIdRoutes(ua)
     case RegisterAsBusinessId => individualOrOganisationRoutes(ua)
     case BusinessTypeId => businessTypeRoutes(ua)
     case DeclarationWorkingKnowledgeId => declarationWorkingKnowledgeRoutes(ua)
@@ -101,6 +103,27 @@ class RegisterNavigator @Inject() extends Navigator {
         controllers.register.routes.NonUKAdministratorController.onPageLoad()
       case Some(true) =>
         controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
+      case _ =>
+        controllers.routes.SessionExpiredController.onPageLoad
+    }
+  }
+
+  private def isBusinessIncorporatedInUKRoutes(userAnswers: UserAnswers): Call = {
+    userAnswers.get(IsBusinessIncorporatedInUKId) match {
+      case Some(false) =>
+        controllers.register.routes.IsBusinessResidentInUKController.onPageLoad(NormalMode)
+      case Some(true) =>
+        controllers.register.routes.WhatYouWillNeedController.onPageLoad()
+      case _ =>
+        controllers.routes.SessionExpiredController.onPageLoad
+    }
+  }
+  private def isBusinessResidentInUKIdRoutes(userAnswers: UserAnswers): Call = {
+    userAnswers.get(IsBusinessResidentInUKId) match {
+      case Some(false) =>
+        controllers.register.routes.NonUKAdministratorController.onPageLoad()
+      case Some(true) =>
+        controllers.register.routes.WhatYouWillNeedController.onPageLoad()
       case _ =>
         controllers.routes.SessionExpiredController.onPageLoad
     }
