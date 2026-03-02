@@ -36,10 +36,15 @@ class PartnershipNavigator @Inject()(
                                       countryOptions: CountryOptions
                                     ) extends Navigator {
 
-  private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
-    ua.get(AreYouInUKId) match {
-      case Some(true) => call
-      case _ => controllers.register.routes.NonUKAdministratorController.onPageLoad()
+  private def getUA(ua: UserAnswers): Option[Boolean] =
+    ua.get(AreYouInUKId).orElse(ua.get(IsBusinessIncorporatedInUKId))
+
+  private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call =
+    (ua: UserAnswers, call: Call) => {
+      getUA(ua) match {
+        case Some(true) => call
+        case _ => controllers.register.routes.NonUKAdministratorController.onPageLoad()
+      }
     }
 
   //scalastyle:off cyclomatic.complexity

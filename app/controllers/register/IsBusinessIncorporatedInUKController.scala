@@ -45,9 +45,9 @@ class IsBusinessIncorporatedInUKController @Inject()(
                                                       val view: isBusinessIncorporatedInUK
                                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  protected val form: Form[Boolean] = formProvider("isBusinessIncorporatedInUk.error.required ")
+  private val form: Form[Boolean] = formProvider("isBusinessIncorporatedInUk.error.required")
 
-  protected def viewmodel(mode: Mode) =
+  private def viewmodel(mode: Mode) =
     AreYouInUKViewModel(mode,
       postCall = controllers.register.routes.IsBusinessIncorporatedInUKController.onSubmit(mode),
       title = Message("isBusinessIncorporatedInUk.title"),

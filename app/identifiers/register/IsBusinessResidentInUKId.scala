@@ -27,7 +27,7 @@ import play.api.libs.json.JsResult
 import utils.UserAnswers
 
 case object IsBusinessResidentInUKId extends TypedIdentifier[Boolean] {
-  override def toString: String = "isBusinessIncorporatedInUK"
+  override def toString: String = "isBusinessResidentInUK"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
