@@ -31,17 +31,6 @@ import utils.{Navigator, UserAnswers}
 @Singleton
 class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Navigator {
 
-  private def getUA(ua: UserAnswers): Option[Boolean] =
-    ua.get(AreYouInUKId).orElse(ua.get(IsBusinessIncorporatedInUKId))
-
-  private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call =
-    (ua: UserAnswers, call: Call) => {
-      getUA(ua) match {
-        case Some(true) => call
-        case _ => controllers.register.routes.NonUKAdministratorController.onPageLoad()
-      }
-    }
-
   // scalastyle:off cyclomatic.complexity
   // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
