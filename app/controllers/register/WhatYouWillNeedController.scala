@@ -31,9 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYouWillNeedController @Inject()(
                                            authenticate: AuthAction,
+                                           featureFlagService: FeatureFlagService,
                                            val controllerComponents: MessagesControllerComponents,
-                                           val view: whatYouWillNeed,
-                                           featureFlagService: FeatureFlagService
+                                           val view: whatYouWillNeed
                                          )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
   def onPageLoad(): Action[AnyContent] = authenticate.async {
