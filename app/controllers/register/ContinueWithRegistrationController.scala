@@ -20,11 +20,14 @@ import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AuthAction, DataRetrievalAction}
 import forms.register.YesNoFormProvider
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
+import models.NormalMode
 import models.RegistrationCustomerType.UK
+import models.admin.ukResidencyToggle
 import models.register.BusinessType.{LimitedCompany, UnlimitedCompany}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
 import views.html.register.continueWithRegistration
@@ -38,7 +41,8 @@ class ContinueWithRegistrationController @Inject()(
                                                     getData: DataRetrievalAction,
                                                     continueWithRegistration: continueWithRegistration,
                                                     yesNoFormProvider: YesNoFormProvider,
-                                                    cache: UserAnswersCacheConnector
+                                                    cache: UserAnswersCacheConnector,
+                                                    featureFlagService: FeatureFlagService
                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
   val form: Form[Boolean] = yesNoFormProvider()
 
@@ -52,24 +56,34 @@ class ContinueWithRegistrationController @Inject()(
   }
 
   def onSubmit(): Action[AnyContent] = (authenticate andThen getData).async { implicit request =>
-    form.bindFromRequest().fold(
-      errors => Future.successful(BadRequest(continueWithRegistration(errors))),
-      continueRegistration => if (continueRegistration) {
-        val businessType = request.userAnswers.flatMap(_.get(BusinessTypeId))
-        val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
-        val result = (businessType, customerType) match {
-          case (Some(LimitedCompany) | Some(UnlimitedCompany), Some(UK)) =>
-            Redirect(company.routes.CompanyRegistrationTaskListController.onPageLoad())
-          case (Some(_), Some(UK)) =>
-            Redirect(administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
-          case _ => Redirect(routes.WhatYouWillNeedController.onPageLoad())
-        }
-        Future.successful(result)
-      } else {
-        cache.removeAll.map(_ =>
+    featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+      val ukResidencyToggleRedirect =
+        if (ukResidency.isEnabled) {
+          Redirect(routes.IsBusinessIncorporatedInUKController.onPageLoad(NormalMode))
+        } else {
           Redirect(routes.WhatYouWillNeedController.onPageLoad())
-        )
-      }
-    )
+        }
+      form.bindFromRequest().fold(
+        errors => Future.successful(BadRequest(continueWithRegistration(errors))),
+        continueRegistration =>
+          if (continueRegistration) {
+            val businessType = request.userAnswers.flatMap(_.get(BusinessTypeId))
+            val customerType = request.userAnswers.flatMap(_.get(RegistrationInfoId).map(_.customerType))
+
+            val result = (businessType, customerType) match {
+              case (Some(LimitedCompany) | Some(UnlimitedCompany), Some(UK)) =>
+                Redirect(company.routes.CompanyRegistrationTaskListController.onPageLoad())
+              case (Some(_), Some(UK)) =>
+                Redirect(administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
+              case _ =>
+                ukResidencyToggleRedirect
+            }
+
+            Future.successful(result)
+          } else {
+            cache.removeAll.map(_ => ukResidencyToggleRedirect)
+          }
+      )
+    }
   }
 }

@@ -53,7 +53,7 @@ abstract class Navigator {
 
   def getUA(ua: UserAnswers): Option[Boolean] = {
     Some(List(AreYouInUKId, IsBusinessIncorporatedInUKId, IsBusinessResidentInUKId)
-      .exists(x => ua.get(x).contains(true)))
+      .exists(id => ua.get(id).contains(true)))
   }
 
   val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call =
