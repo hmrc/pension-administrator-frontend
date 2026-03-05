@@ -29,7 +29,7 @@ import play.api.test.Helpers.*
 import utils.FeatureFlagMockHelper
 import views.html.register.whatYouWillNeed
 
-class WhatYouWillNeedControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with FeatureFlagMockHelper {
+class WhatYouWillNeedTestControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with FeatureFlagMockHelper {
 
   val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
 
