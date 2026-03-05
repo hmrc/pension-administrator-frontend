@@ -40,9 +40,9 @@ class WhatYouWillNeedController @Inject()(
     implicit request =>
       featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
         if (ukResidency.isEnabled) {
-          Future.successful(Ok(view(BusinessTypeController.onPageLoad(NormalMode), ukResidency._2)))
+          Future.successful(Ok(view(BusinessTypeController.onPageLoad(NormalMode), ukResidencyToggle = true)))
         } else {
-          Future.successful(Ok(view(BusinessTypeAreYouInUKController.onPageLoad(NormalMode), ukResidency._2)))
+          Future.successful(Ok(view(BusinessTypeAreYouInUKController.onPageLoad(NormalMode), ukResidencyToggle = false)))
         }
       }
   }
