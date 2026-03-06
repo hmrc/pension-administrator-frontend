@@ -16,27 +16,33 @@
 
 package controllers.register.individual
 
+import controllers.Execution.trampoline
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import models.Mode
+import models.admin.ukResidencyToggle
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
-import views.html.register.individual.nonUKAdministrator
+import views.html.register.individual.{individualNonUKAdministrator, nonUKAdministrator}
 
 import javax.inject.Inject
-import scala.concurrent.Future
 
 class NonUKAdministratorController @Inject()(
-                                             @AuthWithNoIV authenticate: AuthAction,
-                                             allowAccess: AllowAccessActionProvider,
-                                             getData: DataRetrievalAction,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             val view: nonUKAdministrator
-                                      ) extends FrontendBaseController with I18nSupport with Retrievals {
+                                              @AuthWithNoIV authenticate: AuthAction,
+                                              allowAccess: AllowAccessActionProvider,
+                                              getData: DataRetrievalAction,
+                                              featureFlagService: FeatureFlagService,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              val view: nonUKAdministrator,
+                                              val nonUkResidencyView: individualNonUKAdministrator
+                                            ) extends FrontendBaseController with I18nSupport with Retrievals {
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>
-      Future.successful(Ok(view()))
+      featureFlagService.get(ukResidencyToggle).map { ukResidency =>
+        if (ukResidency.isEnabled) Ok(nonUkResidencyView()) else Ok(view())
+      }
   }
 }

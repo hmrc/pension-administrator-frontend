@@ -482,6 +482,13 @@ whatYouWillNeed.company.body.item1 = the company name, address, previous address
 whatYouWillNeed.company.body.item2 = the telephone number and email address of the contact within the company
 whatYouWillNeed.company.body.item3 = the details of all the directors in the company
 
+# new content - individual what you will need
+whatYouWillNeed.individual.body.text = To register as a pension scheme administrator, you will need your:
+whatYouWillNeed.individual.body.item1 = name, address and any previous addresses in the last year
+whatYouWillNeed.individual.body.item2 = National Insurance number
+whatYouWillNeed.individual.body.item3 = phone number and email address
+
+
 whatYouWillNeed.main.title = What you will need
 whatYouWillNeed.main.heading = What you will need
 whatYouWillNeed.main.body.text = To register a business as a pension scheme administrator, you will need:
@@ -933,6 +940,12 @@ nonUKCompanyPartnershipAdministrator.title            = Your company or partners
 nonUKCompanyPartnershipAdministrator.heading          = Your company or partnership cannot register as a pension scheme administrator
 nonUKCompanyPartnershipAdministrator.p1               = Your company or partnership must be incorporated or resident in the UK to
 nonUKCompanyPartnershipAdministrator.p1.link-text     = register as a pension scheme administrator
+
+# New content - individual cannot register
+nonUKAdministrator.individual.title            = You cannot register as a pension scheme administrator
+nonUKAdministrator.individual.heading          = You cannot register as a pension scheme administrator
+nonUKAdministrator.individual.p1               = You must be a resident in the UK to
+nonUKAdministrator.individual.p1.link-text     = register as a pension scheme administrator
 
 registerAsBusiness.title = What do you want to register as the scheme administrator?
 registerAsBusiness.heading = What do you want to register as the scheme administrator?

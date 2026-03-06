@@ -87,7 +87,7 @@ class RegisterAsBusinessController @Inject()(
                 }
               } else {
                 if (ukResidency.isEnabled) {
-                  Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())
+                  Redirect(individual.routes.IndividualAreYouInUKController.onPageLoad(NormalMode))
                 } else {
                   Redirect(individual.routes.WhatYouWillNeedController.onPageLoad())
                 }
