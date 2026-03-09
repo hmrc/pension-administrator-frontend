@@ -19,20 +19,23 @@ package controllers.register.individual
 import connectors.RegistrationConnector
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions._
+import controllers.actions.*
 import forms.AddressFormProvider
 import forms.register.individual.IndividualDetailsCorrectFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
+import models.*
 import models.RegistrationIdType.Nino
-import models.{Address, Mode}
+import models.admin.ukResidencyToggle
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.{AuthWithIV, Individual}
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, Navigator, UserAnswers}
+import views.html.index
 import views.html.register.individual.individualDetailsCorrect
 
 import javax.inject.Inject
@@ -49,8 +52,10 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
                                                    addressFormProvider: AddressFormProvider,
                                                    registrationConnector: RegistrationConnector,
                                                    countryOptions: CountryOptions,
+                                                   featureFlagService: FeatureFlagService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    val view: individualDetailsCorrect,
+                                                   val newView: index, /* TODO add new view for kickout page */
                                                    addressHelper: AddressHelper
                                                   )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Retrievals {
@@ -59,30 +64,38 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
+      def isUkAddress(address: Address): Boolean = address.country == "GB"
 
-      val preparedForm = request.userAnswers.get(IndividualDetailsCorrectId) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      request.user.nino match {
-        case None => Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad))
-        case Some(nino) =>
-          (request.userAnswers.get(IndividualDetailsId), request.userAnswers.get(IndividualAddressId), request.userAnswers.get(RegistrationInfoId)) match {
-            case (Some(individual), Some(address), Some(info)) if info.idType.contains(Nino) && info.idNumber.contains(nino.value) =>
-              Future.successful(Ok(view(preparedForm, mode, individual, address, countryOptions)))
-            case _ =>
-              for {
-                registration <- registrationConnector.registerWithIdIndividual(nino)
-                _ <- dataCacheConnector.save(IndividualDetailsId, registration.response.individual)
-                _ <- dataCacheConnector.save(IndividualAddressId, registration.response.address)
-                _ <- dataCacheConnector.save(RegistrationInfoId, registration.info)
-              } yield {
-                Ok(view(preparedForm, mode, registration.response.individual, registration.response.address, countryOptions))
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        val preparedForm = request.userAnswers.get(IndividualDetailsCorrectId).map(form.fill).getOrElse(form)
+        request.user.nino match {
+          case None =>
+            Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad))
+          case Some(nino) =>
+            def correctView(individual: TolerantIndividual, address: TolerantAddress): Result = {
+              if (ukResidency.isEnabled && !isUkAddress(address.toPrepopAddress)) {
+                Ok(newView())
+              } else {
+                Ok(view(preparedForm, mode, individual, address, countryOptions))
               }
-          }
-      }
+            }
 
+            (request.userAnswers.get(IndividualDetailsId), request.userAnswers.get(IndividualAddressId), request.userAnswers.get(RegistrationInfoId)) match {
+              case (Some(individual), Some(address), Some(info))
+                if info.idType.contains(Nino) && info.idNumber.contains(nino.value) =>
+                Future.successful(correctView(individual, address))
+              case _ =>
+                for {
+                  registration <- registrationConnector.registerWithIdIndividual(nino)
+                  _ <- dataCacheConnector.save(IndividualDetailsId, registration.response.individual)
+                  _ <- dataCacheConnector.save(IndividualAddressId, registration.response.address)
+                  _ <- dataCacheConnector.save(RegistrationInfoId, registration.info)
+                } yield {
+                  correctView(registration.response.individual, registration.response.address)
+                }
+            }
+        }
+      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
