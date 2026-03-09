@@ -24,7 +24,6 @@ import models.admin.ukResidencyToggle
 import models.{Mode, NormalMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
@@ -35,8 +34,6 @@ import utils.navigators.IndividualNavigatorV2
 import utils.{FakeNavigator, FeatureFlagMockHelper, UserAnswers}
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
-
-import scala.concurrent.Future
 
 class IndividualAreYouInUKControllerSpec extends ControllerSpecBase with MockitoSugar with BeforeAndAfterEach with FeatureFlagMockHelper {
 
@@ -112,7 +109,6 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase with Mockito
       featureFlagMock(ukResidencyToggle, true)
       val data = new FakeDataRetrievalAction(Some(Json.obj()))
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "true")
-      val ua = UserAnswers(Json.obj())
 
       when(navigatorV2.nextPage(any(), any(), any())).thenReturn(onwardRoute)
 
