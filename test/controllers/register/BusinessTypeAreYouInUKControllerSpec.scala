@@ -29,6 +29,7 @@ import utils.navigators.IndividualNavigatorV2
 import utils.{FakeNavigator, FeatureFlagMockHelper}
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
+import utils.navigators.IndividualNavigatorV2
 
 class BusinessTypeAreYouInUKControllerSpec extends ControllerSpecBase with FeatureFlagMockHelper{
 
