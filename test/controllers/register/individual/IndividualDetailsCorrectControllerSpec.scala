@@ -19,28 +19,31 @@ package controllers.register.individual
 import connectors.RegistrationConnector
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.AddressFormProvider
 import forms.register.individual.IndividualDetailsCorrectFormProvider
 import identifiers.register.RegistrationInfoId
 import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCorrectId, IndividualDetailsId}
+import models.*
 import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.Individual
-import models._
+import models.admin.ukResidencyToggle
 import models.requests.AuthenticatedRequest
+import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc._
-import play.api.test.Helpers._
+import play.api.mvc.*
+import play.api.test.Helpers.*
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{AddressHelper, FakeNavigator}
 import utils.countryOptions.CountryOptions
+import utils.{AddressHelper, FakeNavigator, FeatureFlagMockHelper}
+import views.html.index
 import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
+class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with FeatureFlagMockHelper with BeforeAndAfterEach {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
@@ -51,6 +54,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
   val addressFormProvider = new AddressFormProvider(countryOptions)
   val addressForm: Form[Address] = addressFormProvider()
   val addressHelper: AddressHelper = inject[AddressHelper]
+  val individualUpdateNonUKAddressView: index = app.injector.instanceOf[index]
 
   private val nino = Nino("AB123456C")
   private val sapNumber = "test-sap-number"
@@ -58,8 +62,14 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
   private val fakeAuthAction: AuthAction = new AuthAction {
     val parser: BodyParser[AnyContent] = controllerComponents.parsers.defaultBodyParser
     implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), isExistingPSA = false, None, None, "")))
+  }
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    featureFlagMock(ukResidencyToggle)
   }
 
   private val registrationInfo = RegistrationInfo(
@@ -92,6 +102,9 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
     Some("GB")
   )
 
+  private val nonUkAddress: TolerantAddress =
+    address.copy(countryOpt = Some("FR"))
+
   private object FakeRegistrationConnector {
 
     def apply(individual: TolerantIndividual = individual,
@@ -116,8 +129,10 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
       addressFormProvider,
       registrationConnector,
       countryOptions,
+      mockFeatureFlagService,
       controllerComponents,
       view,
+      individualUpdateNonUKAddressView,
       addressHelper
     )
 
@@ -135,6 +150,36 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
   "IndividualDetailsCorrectController" must {
 
     "return OK and the correct view for a GET" in {
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString()
+    }
+
+    "render the individualUpdateNonUKAddressView when toggle enabled and address is non GB" in {
+
+      featureFlagMock(ukResidencyToggle, isEnabled = true)
+
+      val nonGbAddress = address.copy(countryOpt = Some("FR"))
+
+      val data = Json.obj(
+        IndividualDetailsId.toString -> individual,
+        IndividualAddressId.toString -> nonGbAddress,
+        RegistrationInfoId.toString -> registrationInfo
+      )
+
+      val getRelevantData = new FakeDataRetrievalAction(Some(data))
+
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe individualUpdateNonUKAddressView()(fakeRequest, messages).toString
+    }
+
+    "render normal view when toggle enabled and address is GB" in {
+
+      featureFlagMock(ukResidencyToggle, isEnabled = true)
+
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
@@ -172,7 +217,7 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
     }
 
     "use existing individual details, address data and registrationInfo if present" in {
-      val registrationInfo = RegistrationInfo(Individual, "", noIdentifier=false, UK, Some(RegistrationIdType.Nino), Some("AB121212C"))
+      val registrationInfo = RegistrationInfo(Individual, "", noIdentifier = false, UK, Some(RegistrationIdType.Nino), Some("AB121212C"))
       val data = Json.obj(
         IndividualDetailsId.toString -> individual,
         IndividualAddressId.toString -> address,
