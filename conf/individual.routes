@@ -12,6 +12,8 @@ POST        /your-name-address                            controllers.register.i
 GET         /:mode/your-name-address                      controllers.register.individual.IndividualDetailsCorrectController.onPageLoad(mode: Mode)
 POST        /:mode/your-name-address                      controllers.register.individual.IndividualDetailsCorrectController.onSubmit(mode: Mode)
 
+GET         /update-non-uk-address                        controllers.register.individual.IndividualUpdateNonUKAddressController.onPageLoad(mode: Mode = NormalMode)
+
 GET         /update-missing-address-fields                controllers.register.individual.AddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /update-missing-address-fields                controllers.register.individual.AddressController.onSubmit(mode: Mode = NormalMode)
 
