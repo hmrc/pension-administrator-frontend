@@ -64,7 +64,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      def isUkAddress(address: Address): Boolean = address.country == "GB"
+      def isUkAddress(address: TolerantAddress): Boolean = address.countryOpt.contains("GB")
 
       featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
         val preparedForm = request.userAnswers.get(IndividualDetailsCorrectId).map(form.fill).getOrElse(form)
@@ -73,7 +73,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
             Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad))
           case Some(nino) =>
             def correctView(individual: TolerantIndividual, address: TolerantAddress): Result = {
-              if (ukResidency.isEnabled && !isUkAddress(address.toPrepopAddress)) {
+              if (ukResidency.isEnabled && !isUkAddress(address)) {
                 Ok(newView())
               } else {
                 Ok(view(preparedForm, mode, individual, address, countryOptions))
