@@ -46,6 +46,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with FeatureFlagMockHelper with BeforeAndAfterEach {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
+  private def nonUKKickOut: Call = controllers.register.individual.routes.IndividualUpdateNonUKAddressController.onPageLoad()
 
   private val formProvider = new IndividualDetailsCorrectFormProvider()
   private val form = formProvider()
@@ -54,7 +55,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Fea
   val addressFormProvider = new AddressFormProvider(countryOptions)
   val addressForm: Form[Address] = addressFormProvider()
   val addressHelper: AddressHelper = inject[AddressHelper]
-  val individualUpdateNonUKAddressView: index = app.injector.instanceOf[index]
 
   private val nino = Nino("AB123456C")
   private val sapNumber = "test-sap-number"
@@ -132,7 +132,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Fea
       mockFeatureFlagService,
       controllerComponents,
       view,
-      individualUpdateNonUKAddressView,
       addressHelper
     )
 
@@ -172,8 +171,8 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Fea
 
       val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe individualUpdateNonUKAddressView()(fakeRequest, messages).toString
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(nonUKKickOut.url)
     }
 
     "render normal view when toggle enabled and address is GB" in {

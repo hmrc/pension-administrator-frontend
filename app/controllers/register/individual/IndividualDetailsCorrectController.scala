@@ -55,7 +55,6 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
                                                    featureFlagService: FeatureFlagService,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    val view: individualDetailsCorrect,
-                                                   val newView: index, /* TODO add new view for kickout page */
                                                    addressHelper: AddressHelper
                                                   )(implicit val executionContext: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Retrievals {
@@ -74,7 +73,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
           case Some(nino) =>
             def correctView(individual: TolerantIndividual, address: TolerantAddress): Result = {
               if (ukResidency.isEnabled && !isUkAddress(address)) {
-                Ok(newView())
+                Redirect(controllers.register.individual.routes.IndividualUpdateNonUKAddressController.onPageLoad())
               } else {
                 Ok(view(preparedForm, mode, individual, address, countryOptions))
               }
