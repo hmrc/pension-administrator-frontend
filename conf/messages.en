@@ -1135,14 +1135,14 @@ individualPreviousAddressPostCodeLookup.enterPostcode = You can {0}
 individualPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 individualPreviousAddressPostCodeLookup.formLabel = Postcode
 
-individual.postcode.lookup.heading = What is your postcode?
-individual.previous.postcode.lookup.heading = What was your previous postcode?
+individual.postcode.lookup.heading = What is the postcode of your contact address?
+individual.previous.postcode.lookup.heading = What was the postcode of your previous contact address?
 
-individual.select.address.heading = What is your address?
-individual.select.previous.address.heading = What was your previous address?
+individual.select.address.heading = What is your contact address?
+individual.select.previous.address.heading = What was your previous contact address?
 
-individual.enter.address.heading = Enter your address
-individual.enter.previous.address.heading = Enter your previous address
+individual.enter.address.heading = Enter your contact address
+individual.enter.previous.address.heading = Enter your previous contact address
 
 postcode.lookup.heading = What is {0}’s postcode?
 previous.postcode.lookup.heading = What was {0}’s previous postcode?

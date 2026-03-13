@@ -35,7 +35,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.{AuthWithIV, Individual}
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, Navigator, UserAnswers}
-import views.html.index
 import views.html.register.individual.individualDetailsCorrect
 
 import javax.inject.Inject
