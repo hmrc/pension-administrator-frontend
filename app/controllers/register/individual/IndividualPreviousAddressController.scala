@@ -19,12 +19,12 @@ package controllers.register.individual
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.*
 import controllers.address.ManualAddressController
-import forms.AddressFormProvider
+import forms.{AddressFormProvider, UKOnlyAddressFormProvider}
 import identifiers.UpdateContactAddressId
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId}
 import models.requests.DataRequest
-import models.{Address, Mode}
+import models.{Address, AddressUKOnly, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -46,6 +46,7 @@ class IndividualPreviousAddressController @Inject()(
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: AddressFormProvider,
+                                                     formProviderUKOnly: UKOnlyAddressFormProvider,
                                                      val countryOptions: CountryOptions,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      val view: manualAddress
@@ -53,7 +54,8 @@ class IndividualPreviousAddressController @Inject()(
 
   private[controllers] def postCall(mode: Mode): Call = routes.IndividualPreviousAddressController.onSubmit(mode)
   private val isUkHintText = false
-  protected val form: Form[Address] = formProvider("error.country.invalid")
+  protected val form: Form[Address] = formProvider()
+  protected val formUK: Form[AddressUKOnly] = formProviderUKOnly()
 
   private def viewmodel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),

@@ -48,7 +48,7 @@ class CompanyContactAddressController @Inject()(
                                                 val view: manualAddress
                                                )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
 
-  override protected val form: Form[Address] = formProvider("error.country.invalid")
+  override protected val form: Form[Address] = formProvider()
   private val isUkHintText = true
   private def addressViewModel(mode: Mode, returnLink: Option[String]): Retrieval[ManualAddressViewModel] =
     Retrieval(

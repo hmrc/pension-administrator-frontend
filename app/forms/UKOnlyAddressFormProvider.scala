@@ -17,24 +17,23 @@
 package forms
 
 import forms.mappings.AddressMapping
-import models.Address
+import models.{Address, AddressUKOnly}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import utils.countryOptions.CountryOptions
 
 import javax.inject.Inject
 
-class AddressFormProvider @Inject()(countryOptions: CountryOptions) extends AddressMapping {
+class UKOnlyAddressFormProvider @Inject() extends AddressMapping {
 
-  def apply(requiredCountry: String = "error.country.invalid"): Form[Address] = Form(
+  def apply(): Form[AddressUKOnly] = Form(
     mapping(
       "addressLine1" -> addressLineMapping("error.address_line_1.required", "error.address_line_1.length", "error.address_line_1.invalid"),
       "addressLine2" -> addressLineMapping("error.address_line_2.required", "error.address_line_2.length", "error.address_line_2.invalid"),
       "addressLine3" -> optionalAddressLineMapping("error.address_line_3.length", "error.address_line_3.invalid"),
       "addressLine4" -> optionalAddressLineMapping("error.address_line_4.length", "error.address_line_4.invalid"),
-      "postCode" -> postCodeWithCountryMapping("error.postcode.required", "error.postcode.invalid", "error.postcode.nonUK.length"),
-      "country" -> countryMapping(countryOptions, requiredCountry, "error.country.invalid")
-    )(Address.apply)(o => Some(Tuple.fromProductTyped(o)))
+      "postCode" -> postCodeWithCountryMapping("error.postcode.required", "error.postcode.invalid", "error.postcode.nonUK.length")
+    )(AddressUKOnly.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   }

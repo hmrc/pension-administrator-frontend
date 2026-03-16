@@ -54,6 +54,7 @@ case class TolerantAddress(addressLine1: Option[String],
       postcode,
       countryOpt.getOrElse("")
     )
+    
 
   def toPrepopAddress: Address = toAddress.getOrElse(prepopAddress)
 
