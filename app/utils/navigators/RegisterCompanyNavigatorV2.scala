@@ -31,12 +31,6 @@ import utils.{Navigator, UserAnswers}
 @Singleton
 class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Navigator {
 
-  private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
-    ua.get(AreYouInUKId) match {
-      case Some(true) => call
-      case _ => controllers.register.routes.NonUKAdministratorController.onPageLoad()
-    }
-
   // scalastyle:off cyclomatic.complexity
   // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
@@ -196,7 +190,7 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
   }
 
   private def hasBeenTradingIdRoutes(answers: UserAnswers): Call = {
-    (answers.get(CompanyTradingOverAYearId), answers.get(AreYouInUKId)) match {
+    (answers.get(CompanyTradingOverAYearId), getUA(answers)) match {
       case (Some(true), Some(true)) =>
         routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)
       case (Some(true), Some(false)) =>
@@ -209,7 +203,7 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
   }
 
   private def hasBeenTradingCheckIdRoutes(answers: UserAnswers): Call = {
-    (answers.get(CompanyTradingOverAYearId), answers.get(AreYouInUKId)) match {
+    (answers.get(CompanyTradingOverAYearId), getUA(answers)) match {
       case (Some(true), Some(true)) =>
         routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode)
       case (Some(true), Some(false)) =>
@@ -229,7 +223,7 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
     }
 
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Call = {
-    (answers.get(CompanySameContactAddressId), answers.get(AreYouInUKId)) match {
+    (answers.get(CompanySameContactAddressId), getUA(answers)) match {
       case (Some(true), _) => routes.CompanyAddressYearsController.onPageLoad(mode)
       case (Some(false), Some(false)) => routes.CompanyContactAddressController.onPageLoad(mode)
       case (Some(false), Some(true)) => routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode)
@@ -257,7 +251,7 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
   }
 
   private def regionBasedNameNavigation(answers: UserAnswers): Call = {
-    answers.get(AreYouInUKId) match {
+    getUA(answers) match {
       case Some(false) => routes.CompanyRegisteredAddressController.onPageLoad()
       case Some(true) => routes.CompanyIsRegisteredNameController.onPageLoad
       case _ => controllers.routes.SessionExpiredController.onPageLoad

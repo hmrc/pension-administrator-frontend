@@ -35,14 +35,8 @@ import utils.{Navigator, UserAnswers}
 @Singleton
 class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Navigator {
 
-  private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
-    ua.get(AreYouInUKId) match {
-      case Some(true) => call
-      case _ => controllers.register.routes.NonUKAdministratorController.onPageLoad()
-    }
-
-//  scalastyle:off cyclomatic.complexity
-// scalastyle:off method.length
+  //  scalastyle:off cyclomatic.complexity
+  // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
 
     case BusinessUTRId => nextPageOrNonUkRedirect(ua, PartnershipNameController.onPageLoad)
@@ -150,7 +144,8 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
     }
   }
 
-  private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+  private def updateContactAddressCYAPage(): Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
+
   private def detailsCYA: Call =
     controllers.register.administratorPartnership.partnershipDetails.routes.CheckYourAnswersController.onPageLoad()
 
@@ -186,7 +181,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
   }
 
   private def hasBeenTradingIdRoutes(answers: UserAnswers): Call = {
-    (answers.get(PartnershipTradingOverAYearId), answers.get(AreYouInUKId)) match {
+    (answers.get(PartnershipTradingOverAYearId), getUA(answers)) match {
       case (Some(true), Some(true)) =>
         PartnershipPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)
       case (Some(true), Some(false)) =>
@@ -199,7 +194,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
   }
 
   private def hasBeenTradingCheckIdRoutes(answers: UserAnswers): Call = {
-    (answers.get(PartnershipTradingOverAYearId), answers.get(AreYouInUKId)) match {
+    (answers.get(PartnershipTradingOverAYearId), getUA(answers)) match {
       case (Some(true), Some(true)) =>
         PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode)
       case (Some(true), Some(false)) =>
@@ -219,7 +214,7 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
     }
 
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Call = {
-    (answers.get(PartnershipSameContactAddressId), answers.get(AreYouInUKId)) match {
+    (answers.get(PartnershipSameContactAddressId), getUA(answers)) match {
       case (Some(true), _) => PartnershipAddressYearsController.onPageLoad(mode)
       case (Some(false), Some(false)) => PartnershipContactAddressController.onPageLoad(mode)
       case (Some(false), Some(true)) => PartnershipContactAddressPostCodeLookupController.onPageLoad(mode)

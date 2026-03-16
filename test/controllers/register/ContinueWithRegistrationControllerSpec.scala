@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,20 +22,27 @@ import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.YesNoFormProvider
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import models.*
+import models.admin.ukResidencyToggle
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
+import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import utils.testhelpers.DataCompletionBuilder.*
-import utils.{UserAnswerOps, UserAnswers}
+import utils.{FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
 import views.html.register.continueWithRegistration
 
-class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageBehaviours {
+class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageBehaviours with FeatureFlagMockHelper with BeforeAndAfterEach {
 
   import ContinueWithRegistrationControllerSpec.*
 
   private val view: continueWithRegistration = app.injector.instanceOf[continueWithRegistration]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    featureFlagMock(ukResidencyToggle)
+  }
 
   "ContinueWithRegistrationController" must {
 
@@ -110,7 +117,37 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
         status(result).mustBe(SEE_OTHER)
         redirectLocation(result).mustBe(Some(routes.WhatYouWillNeedController.onPageLoad().url))
       }
+
+      "redirect to 'is business incorporated in UK' when feature flag enabled and customer type NON UK" in {
+
+        featureFlagMock(ukResidencyToggle, isEnabled = true)
+
+        val userAnswers = validData
+          .setOrException(RegistrationInfoId)(registrationInfo(RegistrationCustomerType.NonUK))
+
+        val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
+          .onSubmit()(postRequestTrue)
+
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(
+          Some(routes.IsBusinessIncorporatedInUKController.onPageLoad(NormalMode).url)
+        )
+      }
+
+      "redirect to 'is business incorporated in UK' when form value is false and feature flag enabled" in {
+
+        featureFlagMock(ukResidencyToggle, isEnabled = true)
+
+        val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
+          .onSubmit()(postRequestFalse)
+
+        status(result).mustBe(SEE_OTHER)
+        redirectLocation(result).mustBe(
+          Some(routes.IsBusinessIncorporatedInUKController.onPageLoad(NormalMode).url)
+        )
+      }
     }
+
   }
 
   private def controller(
@@ -124,7 +161,8 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
       dataRetrievalAction,
       view,
       new YesNoFormProvider(),
-      cache
+      cache,
+      mockFeatureFlagService
     )
 
   private def onPageLoadAction(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =

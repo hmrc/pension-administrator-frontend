@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,32 +19,71 @@ package controllers.register
 import controllers.ControllerSpecBase
 import controllers.actions.FakeAuthAction
 import models.NormalMode
+import models.admin.ukResidencyToggle
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import utils.FeatureFlagMockHelper
 import views.html.register.whatYouWillNeed
 
-class WhatYouWillNeedControllerSpec extends ControllerSpecBase {
+class WhatYouWillNeedControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with FeatureFlagMockHelper {
 
   val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
 
   private def onwardRoute: Call = controllers.register.routes.BusinessTypeAreYouInUKController.onPageLoad(NormalMode)
 
+  private def onwardRouteUkResidency: Call = controllers.register.routes.BusinessTypeController.onPageLoad(NormalMode)
+
+  override def beforeEach(): Unit = {
+    featureFlagMock(ukResidencyToggle)
+  }
+
   private def controller() =
     new WhatYouWillNeedController(
       FakeAuthAction,
+      mockFeatureFlagService,
       controllerComponents,
       view
     )
 
-  private def viewAsString(): String = view(onwardRoute)(fakeRequest, messages).toString
+  private def viewAsString(): String = view(onwardRoute, false)(fakeRequest, messages).toString
+
+  private def viewUkResidency(): String = view(onwardRouteUkResidency, true)(fakeRequest, messages).toString
+
+  private def doc: () => Document = () => Jsoup.parse(viewAsString())
+
+  private def docUkResidency: () => Document = () => Jsoup.parse(viewUkResidency())
 
   "WhatYouWillNeed Controller" must {
 
-    "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+    "return OK and the correct view for a GET" when {
+      "ukResidencyToggle is disabled" in {
+        val result = controller().onPageLoad()(fakeRequest)
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString()
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+        doc().getElementById("li-1").text() shouldBe "the business name, address, previous address, VAT and PAYE references of the business you’re registering"
+        doc().getElementById("li-2").text() shouldBe "the phone number and email address of a contactable person within the business"
+        doc().getElementById("li-3").text() shouldBe "the details of all the directors or partners associated with the business, " +
+          "including their Unique Taxpayer Reference (UTR) and National Insurance number"
+      }
+      "ukResidencyToggle is enabled" in {
+        featureFlagMock(ukResidencyToggle, true)
+        val result = controller().onPageLoad()(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewUkResidency()
+
+        docUkResidency().getElementById("li-1").text() shouldBe "the business name and registered UK address"
+        docUkResidency().getElementById("li-2").text() shouldBe "previous addresses in the last year"
+        docUkResidency().getElementById("li-3").text() shouldBe "VAT and PAYE references"
+        docUkResidency().getElementById("li-4").text() shouldBe "business contact phone number and email address"
+        docUkResidency().getElementById("li-5").text() shouldBe "details of all directors or partners associated with the business, " +
+          "including their Unique Taxpayer Reference (UTR) and National Insurance number"
+      }
     }
   }
 }

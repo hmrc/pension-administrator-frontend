@@ -36,12 +36,6 @@ class PartnershipNavigator @Inject()(
                                       countryOptions: CountryOptions
                                     ) extends Navigator {
 
-  private val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call = (ua: UserAnswers, call: Call) =>
-    ua.get(AreYouInUKId) match {
-      case Some(true) => call
-      case _ => controllers.register.routes.NonUKAdministratorController.onPageLoad()
-    }
-
   //scalastyle:off cyclomatic.complexity
   //scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {

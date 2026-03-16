@@ -15,12 +15,12 @@
  *@
 
 @this(
-    layout: templates.Layout,
-    inset_text: components.inset_text,
-    button_link: components.button_link
+        layout: templates.Layout,
+        inset_text: components.inset_text,
+        button_link: components.button_link
 )
 
-@(href: Call)(implicit request: Request[?], messages: Messages)
+@(href: Call, ukResidencyToggle: Boolean)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = s"${messages("whatYouWillNeed.main.title")}") {
 
@@ -28,11 +28,21 @@
 
     <p class="govuk-body">@messages("whatYouWillNeed.main.body.text")</p>
 
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("whatYouWillNeed.main.body.item1")</li>
-        <li>@messages("whatYouWillNeed.main.body.item2")</li>
-        <li>@messages("whatYouWillNeed.main.body.item3")</li>
-    </ul>
+    @if(ukResidencyToggle) {
+        <ul class="govuk-list govuk-list--bullet">
+            <li id="li-1">@messages("whatYouWillNeed.ukResidency.main.body.item1")</li>
+            <li id="li-2">@messages("whatYouWillNeed.ukResidency.main.body.item2")</li>
+            <li id="li-3">@messages("whatYouWillNeed.ukResidency.main.body.item3")</li>
+            <li id="li-4">@messages("whatYouWillNeed.ukResidency.main.body.item4")</li>
+            <li id="li-5">@messages("whatYouWillNeed.ukResidency.main.body.item5")</li>
+        </ul>
+    } else {
+        <ul class="govuk-list govuk-list--bullet">
+            <li id="li-1">@messages("whatYouWillNeed.main.body.item1")</li>
+            <li id="li-2">@messages("whatYouWillNeed.main.body.item2")</li>
+            <li id="li-3">@messages("whatYouWillNeed.main.body.item3")</li>
+        </ul>
+    }
 
     @inset_text(
         content = messages("whatYouWillNeed.main.body.hint.company")

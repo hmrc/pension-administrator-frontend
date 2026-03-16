@@ -23,6 +23,7 @@ import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.RegisterAsBusinessFormProvider
 import identifiers.register.RegisterAsBusinessId
 import models.NormalMode
+import models.admin.ukResidencyToggle
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -30,8 +31,11 @@ import play.api.test.Helpers.{status, *}
 import utils.testhelpers.DataCompletionBuilder.*
 import utils.{UserAnswerOps, UserAnswers}
 import views.html.register.registerAsBusiness
+import org.scalatest.BeforeAndAfterEach
+import utils.FeatureFlagMockHelper
 
-class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours {
+
+class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehaviours with BeforeAndAfterEach with FeatureFlagMockHelper {
 
   val form: Form[Boolean] = new RegisterAsBusinessFormProvider().apply()
 
@@ -43,7 +47,11 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
 
   val postRequestTrue: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", true.toString))
   val postRequestFalse: FakeRequest[AnyContentAsFormUrlEncoded] = FakeRequest().withFormUrlEncodedBody(("value", false.toString))
-
+  
+  override def beforeEach(): Unit = {
+    featureFlagMock(ukResidencyToggle)
+  }
+  
   "RegisterAsBusinessController" must {
 
     behave like controllerWithOnPageLoadMethod(
@@ -137,13 +145,13 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
     controller(cache = cache).onSubmit()
 
   def viewAsString(form: Form[?]): String =
-      view(form)(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
+    view(form)(fakeRequest, messagesApi.preferred(fakeRequest)).toString()
 
   private def controller(
-    dataRetrievalAction: DataRetrievalAction = getEmptyData,
-    authAction: AuthAction = FakeAuthAction,
-    cache: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
-  ): RegisterAsBusinessController =
+                          dataRetrievalAction: DataRetrievalAction = getEmptyData,
+                          authAction: AuthAction = FakeAuthAction,
+                          cache: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
+                        ): RegisterAsBusinessController =
     new RegisterAsBusinessController(
       messagesApi,
       authAction,
@@ -151,6 +159,7 @@ class RegisterAsBusinessControllerSpec extends ControllerWithQuestionPageBehavio
       dataRetrievalAction,
       cache,
       auditService,
+      mockFeatureFlagService,
       controllerComponents,
       view
     )

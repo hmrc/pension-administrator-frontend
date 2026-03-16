@@ -17,7 +17,8 @@
 package utils
 
 import identifiers.Identifier
-import models._
+import identifiers.register.{AreYouInUKId, IsBusinessIncorporatedInUKId, IsBusinessResidentInUKId}
+import models.*
 import play.api.Logger
 import play.api.mvc.Call
 
@@ -49,4 +50,17 @@ abstract class Navigator {
     logger.warn(s"No navigation defined for id $id in mode $mode")
     controllers.routes.IndexController.onPageLoad
   }
+
+  def getUA(ua: UserAnswers): Option[Boolean] = {
+    Some(List(AreYouInUKId, IsBusinessIncorporatedInUKId, IsBusinessResidentInUKId)
+      .exists(id => ua.get(id).contains(true)))
+  }
+
+  val nextPageOrNonUkRedirect: (UserAnswers, Call) => Call =
+    (ua: UserAnswers, call: Call) => {
+      getUA(ua) match {
+        case Some(true) => call
+        case _ => controllers.register.routes.NonUKAdministratorController.onPageLoad()
+      }
+    }
 }

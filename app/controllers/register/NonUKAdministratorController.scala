@@ -19,23 +19,29 @@ package controllers.register
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import models.Mode
+import models.admin.ukResidencyToggle
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.register.nonUKAdministrator
+import views.html.register.{nonUKAdministrator, nonUKCompanyPartnershipAdministrator}
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 class NonUKAdministratorController @Inject()(
                                               authenticate: AuthAction,
                                               allowAccess: AllowAccessActionProvider,
                                               getData: DataRetrievalAction,
+                                              featureFlagService: FeatureFlagService,
                                               val controllerComponents: MessagesControllerComponents,
-                                              val view: nonUKAdministrator
-                                            ) extends FrontendBaseController with I18nSupport with Retrievals {
+                                              val view: nonUKAdministrator,
+                                              val nonUkResidencyView: nonUKCompanyPartnershipAdministrator
+                                            )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
     implicit request =>
-      Future.successful(Ok(view()))
+      featureFlagService.get(ukResidencyToggle).map { ukResidency =>
+        if (ukResidency.isEnabled) Ok(nonUkResidencyView()) else Ok(view())
+      }
   }
 }
