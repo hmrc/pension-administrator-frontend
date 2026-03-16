@@ -17,10 +17,9 @@
 package forms
 
 import forms.mappings.AddressMapping
-import models.{Address, AddressUKOnly}
+import models.AddressUKOnly
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import utils.countryOptions.CountryOptions
 
 import javax.inject.Inject
 
