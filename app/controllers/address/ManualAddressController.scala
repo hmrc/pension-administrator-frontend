@@ -19,7 +19,6 @@ package controllers.address
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.AllowAccessActionProvider
 import controllers.{Retrievals, Variations}
-import forms.UKOnlyAddressFormProvider
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
 import models.{Address, AddressUKOnly, Mode, TolerantAddress}

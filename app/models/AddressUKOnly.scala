@@ -17,7 +17,6 @@
 package models
 
 import play.api.libs.json.*
-import utils.countryOptions.CountryOptions
 
 case class AddressRecordUKOnly(address: AddressUKOnly)
 
