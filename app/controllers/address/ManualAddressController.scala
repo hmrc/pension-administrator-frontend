@@ -83,6 +83,7 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
                       id: TypedIdentifier[Address],
                       viewModel: ManualAddressViewModel,
                       mode: Mode,
+                      nav: Navigator,
                       isUkHintText: Boolean = false
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
@@ -103,6 +104,7 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
                       id: TypedIdentifier[AddressUKOnly],
                       viewModel: ManualAddressViewModel,
                       mode: Mode,
+                      nav: Navigator,
                       isUkHintText: Boolean = false,
                       formUK: Form[AddressUKOnly]
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
