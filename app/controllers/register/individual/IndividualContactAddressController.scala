@@ -33,7 +33,7 @@ import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import utils.Navigator
 import utils.annotations.{AuthWithIV, Individual, NoRLSCheck}
 import utils.countryOptions.CountryOptions
-import utils.navigators.{IndividualNavigator, IndividualNavigatorV2}
+import utils.navigators.IndividualNavigatorV2
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
