@@ -41,7 +41,7 @@ class IndividualNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Na
     case IndividualSameContactAddressId => contactAddressRoutes(ua, NormalMode)
 
     case IndividualContactAddressPostCodeLookupId => IndividualContactAddressListController.onPageLoad(NormalMode)
-    case IndividualContactAddressId => IndividualAddressYearsController.onPageLoad(NormalMode)
+    case IndividualUKContactAddressId => IndividualAddressYearsController.onPageLoad(NormalMode)
     case IndividualAddressYearsId => addressYearsRoutes(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(NormalMode)
     case IndividualPreviousAddressId => IndividualEmailController.onPageLoad(NormalMode)
@@ -60,7 +60,7 @@ class IndividualNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Na
     case IndividualDateOfBirthId => checkYourAnswers
     case IndividualSameContactAddressId => contactAddressRoutes(ua, CheckMode)
     case IndividualContactAddressPostCodeLookupId => IndividualContactAddressListController.onPageLoad(CheckMode)
-    case IndividualContactAddressId => IndividualAddressYearsController.onPageLoad(CheckMode)
+    case IndividualUKContactAddressId => IndividualAddressYearsController.onPageLoad(CheckMode)
     case IndividualAddressYearsId => addressYearsRouteCheckMode(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(CheckMode)
     case IndividualPreviousAddressId => checkYourAnswers
@@ -72,7 +72,7 @@ class IndividualNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Na
   //noinspection ScalaStyle
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
     case IndividualContactAddressPostCodeLookupId => IndividualContactAddressListController.onPageLoad(UpdateMode)
-    case IndividualContactAddressId => IndividualConfirmPreviousAddressController.onPageLoad()
+    case IndividualUKContactAddressId => IndividualConfirmPreviousAddressController.onPageLoad()
     case IndividualAddressYearsId => addressYearsRoutesUpdateMode(ua)
     case IndividualConfirmPreviousAddressId => confirmPreviousAddressRoutes(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(UpdateMode)
@@ -148,7 +148,7 @@ class IndividualNavigatorV2 @Inject()(countryOptions: CountryOptions) extends Na
 
 
   private def contactAddressCompletionBasedNav(answers: UserAnswers, mode: Mode): Call =
-    answers.get(IndividualContactAddressId) match {
+    answers.get(IndividualUKContactAddressId) match {
       case None => IndividualContactAddressController.onPageLoad(mode)
       case Some(_) => IndividualAddressYearsController.onPageLoad(mode)
     }
