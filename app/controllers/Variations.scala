@@ -41,6 +41,7 @@ trait Variations extends FrontendBaseController {
   implicit val executionContext: ExecutionContext
 
   private val changeIds: Map[TypedIdentifier[?], TypedIdentifier[Boolean]] = Map(
+    IndividualUKContactAddressId -> IndividualUKAddressChangedId,
     IndividualContactAddressId -> IndividualAddressChangedId,
     IndividualPreviousAddressId -> IndividualPreviousAddressChangedId,
     CompanyContactAddressId -> CompanyContactAddressChangedId,

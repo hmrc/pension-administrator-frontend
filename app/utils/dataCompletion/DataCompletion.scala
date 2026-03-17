@@ -76,6 +76,29 @@ class DataCompletion {
     }
   }
 
+  def isAddressUKComplete(userAnswers: UserAnswers,
+                        currentAddressId: TypedIdentifier[AddressUKOnly],
+                        previousAddressId: TypedIdentifier[Address],
+                        timeAtAddress: TypedIdentifier[AddressYears],
+                        tradingTime: Option[TypedIdentifier[Boolean]],
+                        confirmPreviousAddress: TypedIdentifier[Boolean]
+                       ): Option[Boolean] = {
+    (userAnswers.get(currentAddressId), userAnswers.get(timeAtAddress), userAnswers.get(confirmPreviousAddress)) match {
+      case (None, _, _) => None
+      case (Some(_), _, Some(_)) =>
+        userAnswers.get(previousAddressId) match {
+          case Some(_) => Some(true)
+          case _ => Some(false)
+        }
+      case (Some(_), Some(AddressYears.OverAYear), _) =>
+        Some(true)
+      case (Some(_), Some(AddressYears.UnderAYear), _) =>
+        isAddressCompleteUnderAYear(userAnswers, previousAddressId, tradingTime)
+      case _ =>
+        Some(false)
+    }
+  }
+
   private def isAddressCompleteUnderAYear(userAnswers: UserAnswers,
                                           previousAddressId: TypedIdentifier[Address],
                                           tradingTime: Option[TypedIdentifier[Boolean]]): Option[Boolean] = {
@@ -215,6 +238,25 @@ class DataCompletion {
         isAnswerComplete(ua, IndividualDetailsId),
         isAnswerComplete(ua, IndividualDateOfBirthId),
         isAddressComplete(ua, IndividualContactAddressId, IndividualPreviousAddressId, IndividualAddressYearsId, None, IndividualConfirmPreviousAddressId),
+        isAnswerComplete(ua, IndividualEmailId),
+        isAnswerComplete(ua, IndividualPhoneId)
+      ) ++ (
+        if (mode == NormalMode) {
+          Seq(isAnswerComplete(ua, IndividualAddressId),
+            isAnswerComplete(ua, IndividualSameContactAddressId))
+        } else {
+          Nil
+        })
+    ).getOrElse(false)
+  }
+
+  def isIndividualUKComplete(ua: UserAnswers, mode: Mode): Boolean = {
+    isComplete(
+      Seq(
+        isAnswerComplete(ua, RegistrationInfoId),
+        isAnswerComplete(ua, IndividualDetailsId),
+        isAnswerComplete(ua, IndividualDateOfBirthId),
+        isAddressUKComplete(ua, IndividualUKContactAddressId, IndividualPreviousAddressId, IndividualAddressYearsId, None, IndividualConfirmPreviousAddressId),
         isAnswerComplete(ua, IndividualEmailId),
         isAnswerComplete(ua, IndividualPhoneId)
       ) ++ (
