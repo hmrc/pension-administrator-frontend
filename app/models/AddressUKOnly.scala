@@ -28,7 +28,7 @@ case class AddressUKOnly(addressLine1: String,
                    addressLine2: String,
                    addressLine3: Option[String],
                    addressLine4: Option[String],
-                   postcode: Option[String]
+                   postcode: String
                   ) {
 
   def lines: Seq[String] = {
@@ -37,7 +37,7 @@ case class AddressUKOnly(addressLine1: String,
       Some(addressLine2),
       addressLine3,
       addressLine4,
-      postcode
+      Some(postcode)
     ).flatten
   }
 
@@ -47,7 +47,7 @@ case class AddressUKOnly(addressLine1: String,
       Some(addressLine2),
       addressLine3,
       addressLine4,
-      postcode,
+      Some(postcode),
       None
     )
   }
@@ -60,11 +60,11 @@ object AddressUKOnly {
                  addressLine2: String,
                  addressLine3: Option[String],
                  addressLine4: Option[String],
-                 postcode: Option[String]
+                 postcode: String
                  ): AddressUKOnly = new AddressUKOnly(addressLine1, addressLine2, addressLine3, addressLine4, postcode)
 
-  def unapplyUK(address: AddressUKOnly): Option[(String, String, Option[String], Option[String])] = {
-    Some((address.addressLine1, address.addressLine2, address.addressLine3, address.addressLine4))
+  def unapplyUK(address: AddressUKOnly): Option[(String, String, Option[String], Option[String], String)] = {
+    Some((address.addressLine1, address.addressLine2, address.addressLine3, address.addressLine4, address.postcode))
   }
 
   def fromTolerant(t: TolerantAddress): AddressUKOnly =
@@ -73,7 +73,7 @@ object AddressUKOnly {
       t.addressLine2.getOrElse(""),
       t.addressLine3,
       t.addressLine4,
-      t.postcode
+      t.postcode.getOrElse("")
     )
 
   implicit val formatsAddress: Format[AddressUKOnly] = Json.format[AddressUKOnly]
