@@ -83,7 +83,6 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
                       id: TypedIdentifier[Address],
                       viewModel: ManualAddressViewModel,
                       mode: Mode,
-                      nav: Navigator,
                       isUkHintText: Boolean = false
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
@@ -115,7 +114,7 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
           saveChangeFlag(mode, id)
             .flatMap {
               _ =>
-                Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(userAnswersJson))))
+                Future.successful(Redirect(nav.nextPage(id, mode, UserAnswers(userAnswersJson))))
             }
         }
       }

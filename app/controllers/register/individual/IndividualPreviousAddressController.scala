@@ -19,12 +19,12 @@ package controllers.register.individual
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.*
 import controllers.address.ManualAddressController
-import forms.{AddressFormProvider, UKOnlyAddressFormProvider}
+import forms.AddressFormProvider
 import identifiers.UpdateContactAddressId
 import identifiers.register.AreYouInUKId
 import identifiers.register.individual.{IndividualPreviousAddressId, IndividualPreviousAddressListId}
 import models.requests.DataRequest
-import models.{Address, AddressUKOnly, Mode}
+import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}

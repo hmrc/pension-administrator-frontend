@@ -44,7 +44,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class IndividualContactAddressController @Inject()(
                                                     val cacheConnector: UserAnswersCacheConnector,
                                                     @Individual val navigator: Navigator,
-                                                    individualNavigator: IndividualNavigator,
                                                     individualNavigatorV2: IndividualNavigatorV2,
                                                     @AuthWithIV authenticate: AuthAction,
                                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
@@ -91,11 +90,11 @@ class IndividualContactAddressController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-        val nav = if(ukResidency.isEnabled) individualNavigatorV2 else individualNavigator
+        val nav = if(ukResidency.isEnabled) individualNavigatorV2 else navigator
         if (ukResidency.isEnabled) {
           postUKOnly(IndividualUKContactAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, nav, isUkHintText, formUK)
         } else {
-          post(IndividualContactAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, nav, isUkHintText)
+          post(IndividualContactAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText)
         }
       }
   }
