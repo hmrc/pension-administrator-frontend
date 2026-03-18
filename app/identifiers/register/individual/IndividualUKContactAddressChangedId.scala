@@ -19,8 +19,8 @@ package identifiers.register.individual
 import identifiers._
 import play.api.libs.json.JsPath
 
-case object IndividualUKAddressChangedId extends TypedIdentifier[Boolean] {
-  override def path: JsPath = JsPath \ "individualUKContactAddress" \ IndividualUKAddressChangedId.toString
+case object IndividualUKContactAddressChangedId extends TypedIdentifier[Boolean] {
+  override def path: JsPath = JsPath \ "individualUKContactAddress" \ IndividualUKContactAddressChangedId.toString
 
   override def toString: String = "isChanged"
 }
