@@ -36,7 +36,7 @@ import utils.countryOptions.CountryOptions
 import utils.navigators.IndividualNavigatorV2
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
-import views.html.address.manualAddress
+import views.html.address.{manualAddress, manualAddressUKOnly}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,7 +54,8 @@ class IndividualContactAddressController @Inject()(
                                                     featureFlagService: FeatureFlagService,
                                                     val countryOptions: CountryOptions,
                                                     val controllerComponents: MessagesControllerComponents,
-                                                    val view: manualAddress
+                                                    val view: manualAddress,
+                                                    val viewUKOnly: manualAddressUKOnly
                                                   )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] def postCall(mode: Mode): Call = routes.IndividualContactAddressController.onSubmit(mode)
@@ -77,7 +78,7 @@ class IndividualContactAddressController @Inject()(
         request.userAnswers.get(AreYouInUKId) match {
           case Some(true) =>
             if (ukResidency.isEnabled) {
-              getUKOnly(IndividualUKContactAddressId, IndividualContactAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText, formUK)
+              getUKOnly(IndividualUKContactAddressId, IndividualContactAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText, formUK, viewUKOnly)
             } else {
               get(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText)
             }
@@ -92,7 +93,7 @@ class IndividualContactAddressController @Inject()(
       featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
         val nav = if(ukResidency.isEnabled) individualNavigatorV2 else navigator
         if (ukResidency.isEnabled) {
-          postUKOnly(IndividualUKContactAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, nav, isUkHintText, formUK)
+          postUKOnly(IndividualUKContactAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, nav, isUkHintText, formUK, viewUKOnly)
         } else {
           post(IndividualContactAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText)
         }
