@@ -122,9 +122,11 @@ class UKOnlyAddressFormProviderSpec extends FormBehaviours with FormSpec with Ad
 
       "transform the Post Code value correctly" in {
         val untransformedPostCode = "  zz11zz  "
-        val boundForm = form.bind(Map("postCode" -> untransformedPostCode,
+        val boundForm = form.bind(Map(
           "addressLine1" -> addressLine1,
-          "addressLine2" -> addressLine2))
+          "addressLine2" -> addressLine2,
+          "postCode" -> untransformedPostCode
+        ))
 
         boundForm.errors shouldBe empty
 
