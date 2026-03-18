@@ -18,23 +18,32 @@ package controllers.register.individual
 
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
-import forms.AddressFormProvider
+import controllers.actions.*
+import forms.{AddressFormProvider, UKOnlyAddressFormProvider}
 import identifiers.register.AreYouInUKId
-import models.{Address, NormalMode}
-import org.scalatest.OptionValues
+import models.admin.ukResidencyToggle
+import models.{Address, AddressUKOnly, NormalMode}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.JsResult
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswers}
+import utils.navigators.IndividualNavigatorV2
+import utils.{FakeCountryOptions, FakeNavigator, FeatureFlagMockHelper, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class IndividualContactAddressControllerSpec extends ControllerSpecBase with ScalaFutures with OptionValues {
+class IndividualContactAddressControllerSpec
+  extends ControllerSpecBase
+    with ScalaFutures
+    with OptionValues
+    with FeatureFlagMockHelper
+    with BeforeAndAfterEach {
 
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
@@ -43,9 +52,13 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Sca
   val messagePrefix = "individual.enter.address"
 
   val formProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
-  val form: Form[Address] = formProvider("error.country.invalid")
+  val form: Form[Address] = formProvider()
+  val ukFormProvider = new UKOnlyAddressFormProvider()
+  val formUK: Form[AddressUKOnly] = ukFormProvider()
 
-  val viewmodel = ManualAddressViewModel(
+  val navigatorV2: IndividualNavigatorV2 = mock[IndividualNavigatorV2]
+
+  val viewmodel: ManualAddressViewModel = ManualAddressViewModel(
     postCall = routes.IndividualContactAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.heading"),
@@ -56,11 +69,14 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Sca
     new IndividualContactAddressController(
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
+      navigatorV2,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
+      ukFormProvider,
+      mockFeatureFlagService,
       countryOptions,
       controllerComponents,
       view
@@ -73,7 +89,13 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Sca
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
 
   def viewAsString(form: Form[?] = form): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
+  def viewAsStringToggleEnabled(form: Form[?] = formUK): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+    featureFlagMock(ukResidencyToggle)
+  }
+  
   "IndividualContactAddress Controller" must {
 
     "return OK and the correct view for a GET" in {
@@ -81,6 +103,14 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Sca
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
+    }
+
+    "return OK and the correct view for a GET when toggle is enabled" in {
+      featureFlagMock(ukResidencyToggle, isEnabled = true)
+      val result = controller(getRelevantData).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsStringToggleEnabled()
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -97,7 +127,24 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Sca
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
-    "return a Bad Request and errors when invalid data is submitted" in {
+    "redirect to the next page when valid data is submitted with toggle enabled" in {
+      featureFlagMock(ukResidencyToggle, isEnabled = true)
+      when(navigatorV2.nextPage(any(), any(), any()))
+        .thenReturn(onwardRoute)
+      
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        ("postCode", "NE1 1NE")
+      )
+
+      val result = controller().onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
+    }
+
+      "return a Bad Request and errors when invalid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
@@ -106,6 +153,18 @@ class IndividualContactAddressControllerSpec extends ControllerSpecBase with Sca
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)
     }
+
+      "return a Bad Request and errors when invalid data is submitted with toggle enabled" in {
+        featureFlagMock(ukResidencyToggle, isEnabled = true)
+        
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
+        val boundForm = formUK.bind(Map("value" -> "invalid value"))
+
+        val result = controller().onSubmit(NormalMode)(postRequest)
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) mustBe viewAsStringToggleEnabled(boundForm)
+      }
 
     "redirect to Session Expired" when {
       "no existing data is found" when {
