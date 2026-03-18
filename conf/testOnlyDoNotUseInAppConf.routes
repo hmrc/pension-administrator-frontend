@@ -1,4 +1,4 @@
-->        /                             prod.Routes
+->        /                                                prod.Routes
 
 
-->        /pension-administrator        mongoFeatureTogglesTestOnly.Routes
+->        /register-as-pension-scheme-administrator        mongoFeatureTogglesTestOnly.Routes
