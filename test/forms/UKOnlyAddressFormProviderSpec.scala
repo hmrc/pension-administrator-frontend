@@ -120,7 +120,17 @@ class UKOnlyAddressFormProviderSpec extends FormBehaviours with FormSpec with Ad
         FormError(postCode, "error.postcode.invalid", Seq(postCodeRegex))
       )
 
-      //TODO transform test for postcode
+      "transform the Post Code value correctly" in {
+        val untransformedPostCode = "  zz11zz  "
+        val boundForm = form.bind(Map("postCode" -> untransformedPostCode,
+          "addressLine1" -> addressLine1,
+          "addressLine2" -> addressLine2))
+
+        boundForm.errors shouldBe empty
+
+        val result = boundForm.get
+        result.postcode shouldBe "ZZ1 1ZZ"
+      }
     }
   }
 }
