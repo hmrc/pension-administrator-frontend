@@ -19,6 +19,7 @@ package controllers.register.individual
 import controllers.ControllerSpecBase
 import controllers.actions.*
 import models.*
+import models.admin.ukResidencyToggle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -27,6 +28,7 @@ import play.api.test.Helpers.*
 import utils.*
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
+import utils.navigators.IndividualNavigatorV2
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
@@ -34,10 +36,17 @@ import views.html.check_your_answers
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with FeatureFlagMockHelper with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    featureFlagMock(ukResidencyToggle)
+
     when(mockDataCompletion.isIndividualComplete(any(), any())).thenReturn(true)
+    when(mockDataCompletion.isIndividualUKComplete(any(), any())).thenReturn(true)
+
+    when(navigatorV2.nextPage(any(), any(), any())).thenReturn(onwardRoute)
   }
 
   "CheckYourAnswersController" when {
@@ -49,6 +58,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
         val sections = Seq(AnswerSection(None, answerRows()))
         testRenderedView(sections, result)
+      }
+
+      "render the view correctly when feature flag is enabled" in {
+        featureFlagMock(ukResidencyToggle, isEnabled = true)
+
+        val retrievalAction = UserAnswers().completeIndividual.dataRetrievalAction
+        val result = controller(retrievalAction).onPageLoad(NormalMode)(fakeRequest)
+
+        status(result) mustBe OK
       }
 
       "render the view correctly - including a change link for contact address - for all the rows of answer section " +
@@ -90,6 +108,15 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
         redirectLocation(result) mustBe Some(onwardRoute.url)
       }
 
+      "redirect using navigator V2 when data is complete and flag is enabled" in {
+        featureFlagMock(ukResidencyToggle, isEnabled = true)
+
+        val result = controller().onSubmit(NormalMode)(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
+
       "load the same cya page when data is not complete" in {
         when(mockDataCompletion.isIndividualComplete(any(), any())).thenReturn(false)
         val retrievalAction = UserAnswers().completeIndividual.dataRetrievalAction
@@ -97,6 +124,18 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
         val sections = Seq(AnswerSection(None, answerRows()))
         testRenderedView(sections, result, isComplete = false)
+      }
+
+      "load cya page when UK data is not complete and flag is enabled" in {
+        featureFlagMock(ukResidencyToggle, isEnabled = true)
+
+        when(mockDataCompletion.isIndividualUKComplete(any(), any()))
+          .thenReturn(false)
+
+        val retrievalAction = UserAnswers().completeIndividual.dataRetrievalAction
+        val result = controller(retrievalAction).onSubmit(NormalMode)(fakeRequest)
+
+        status(result) mustBe OK
       }
 
       "redirect to Session expired if there is no cached data" in {
@@ -122,6 +161,8 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
 
   private def fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
+  private val navigatorV2: IndividualNavigatorV2 = mock[IndividualNavigatorV2]
+
   private val mockDataCompletion = mock[DataCompletion]
 
   private def controller(getData: DataRetrievalAction = getIndividual): CheckYourAnswersController = {
@@ -132,9 +173,11 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAf
       requireData = new DataRequiredActionImpl(),
       mockDataCompletion,
       navigator = fakeNavigator,
+      navigatorV2,
       messagesApi = messagesApi,
       countryOptions = countryOptions,
       controllerComponents = controllerComponents,
+      mockFeatureFlagService,
       view = cyaView
     )
   }
