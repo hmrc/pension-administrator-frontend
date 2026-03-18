@@ -31,7 +31,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.*
 import utils.navigators.IndividualNavigatorV2
-import utils.{FakeNavigator, FeatureFlagMockHelper, UserAnswers}
+import utils.{FakeNavigator, FeatureFlagMockHelper}
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
