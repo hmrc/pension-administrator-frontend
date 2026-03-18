@@ -164,8 +164,6 @@ object IndividualNavigatorV2Spec extends OptionValues {
   lazy private val anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   lazy private val confirmPreviousAddress = routes.IndividualConfirmPreviousAddressController.onPageLoad()
 
-  private def whatYouWillNeedPage(mode: Mode) = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad()
-
   private def addressYearsPage(mode: Mode) = routes.IndividualAddressYearsController.onPageLoad(mode)
 
   private def contactAddressPage(mode: Mode) = routes.IndividualContactAddressController.onPageLoad(mode)

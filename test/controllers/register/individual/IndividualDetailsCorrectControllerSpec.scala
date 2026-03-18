@@ -38,7 +38,6 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, FakeNavigator, FeatureFlagMockHelper}
-import views.html.index
 import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -101,9 +100,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Fea
     Some("ZZ1 1ZZ"),
     Some("GB")
   )
-
-  private val nonUkAddress: TolerantAddress =
-    address.copy(countryOpt = Some("FR"))
 
   private object FakeRegistrationConnector {
 
