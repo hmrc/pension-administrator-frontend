@@ -28,7 +28,7 @@ import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.ManualAddressViewModel
-import views.html.address.manualAddress
+import views.html.address.{manualAddress, manualAddressUKOnly}
 
 import scala.concurrent.Future
 
@@ -67,7 +67,8 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
                        viewModel: ManualAddressViewModel,
                        mode: Mode,
                        isUkHintText: Boolean = false,
-                       formUK: Form[AddressUKOnly]
+                       formUK: Form[AddressUKOnly],
+                       viewUKOnly: manualAddressUKOnly
                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val preparedForm = request.userAnswers.get(id) match {
       case None => request.userAnswers.get(selectedId) match {
@@ -76,7 +77,7 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
       }
       case Some(value) => formUK.fill(value)
     }
-    Future.successful(Ok(view(preparedForm, viewModel, mode, isUkHintText)))
+    Future.successful(Ok(viewUKOnly(preparedForm, viewModel, mode, isUkHintText)))
   }
 
   protected def post(
@@ -105,10 +106,11 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
                       mode: Mode,
                       nav: Navigator,
                       isUkHintText: Boolean = false,
-                      formUK: Form[AddressUKOnly]
+                      formUK: Form[AddressUKOnly],
+                      viewUKOnly: manualAddressUKOnly
                     )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     formUK.bindFromRequest().fold(
-      (formWithError: Form[?]) => Future.successful(BadRequest(view(formWithError, viewModel, mode, isUkHintText))),
+      (formWithError: Form[?]) => Future.successful(BadRequest(viewUKOnly(formWithError, viewModel, mode, isUkHintText))),
       address => {
         cacheConnector.save(id, address).flatMap { userAnswersJson =>
           saveChangeFlag(mode, id)

@@ -36,7 +36,7 @@ import utils.navigators.IndividualNavigatorV2
 import utils.{FakeCountryOptions, FakeNavigator, FeatureFlagMockHelper, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
-import views.html.address.manualAddress
+import views.html.address.{manualAddress, manualAddressUKOnly}
 
 class IndividualContactAddressControllerSpec
   extends ControllerSpecBase
@@ -79,17 +79,19 @@ class IndividualContactAddressControllerSpec
       mockFeatureFlagService,
       countryOptions,
       controllerComponents,
-      view
+      view,
+      viewUKOnly
     )
   private val isUkHintText = false
   val view: manualAddress = app.injector.instanceOf[manualAddress]
+  val viewUKOnly: manualAddressUKOnly = app.injector.instanceOf[manualAddressUKOnly]
 
   val validData: JsResult[UserAnswers] = UserAnswers()
     .set(AreYouInUKId)(true)
   val getRelevantData = new FakeDataRetrievalAction(Some(validData.get.json))
 
   def viewAsString(form: Form[?] = form): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
-  def viewAsStringToggleEnabled(form: Form[?] = formUK): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
+  def viewAsStringToggleEnabled(form: Form[?] = formUK): String = viewUKOnly(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
