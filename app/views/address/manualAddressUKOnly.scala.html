@@ -41,6 +41,8 @@
 
         @components.heading(viewmodel.heading)
 
+        <p class="govuk-body" id="paragraph">@messages("manual.enter.address.para")</p>
+
         @viewmodel.hint.map{hintText =>
             <p class="govuk-body">@messages(hintText)</p>
         }
