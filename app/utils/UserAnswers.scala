@@ -257,10 +257,6 @@ case class UserAnswers(json: JsValue = Json.obj()) {
     removeRec(ids, JsSuccess(this))
   }
   def isUserAnswerUpdated: Boolean = {
-    val individualContactUpdated: Option[Boolean] =
-      get[Boolean](IndividualContactAddressChangedId)
-        .orElse(get[Boolean](IndividualUKContactAddressChangedId))
-
     List(
       get[Boolean](DeclarationChangedId),
       get[Boolean](DirectorsOrPartnersChangedId),
@@ -268,7 +264,7 @@ case class UserAnswers(json: JsValue = Json.obj()) {
       get[Boolean](CompanyContactAddressChangedId),
       get[Boolean](CompanyContactDetailsChangedId),
       get[Boolean](CompanyPreviousAddressChangedId),
-      individualContactUpdated,
+      get[Boolean](IndividualContactAddressChangedId),
       get[Boolean](IndividualContactDetailsChangedId),
       get[Boolean](IndividualPreviousAddressChangedId),
       get[Boolean](PartnershipContactAddressChangedId),
