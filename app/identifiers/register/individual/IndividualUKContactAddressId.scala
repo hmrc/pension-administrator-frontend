@@ -25,7 +25,7 @@ import viewmodels.{AnswerRow, Link}
 
 case object IndividualUKContactAddressId extends TypedIdentifier[AddressUKOnly] {
   self =>
-  override def toString: String = "individualUKContactAddress"
+  override def toString: String = "individualContactAddress"
 
   implicit def cya(implicit countryOptions: CountryOptions): CheckYourAnswers[self.type] =
     new CheckYourAnswers[self.type] {
