@@ -18,14 +18,14 @@ package controllers.register
 
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.register.BusinessTypeFormProvider
 import identifiers.register.BusinessTypeId
 import models.NormalMode
 import models.register.BusinessType
 import play.api.data.Form
-import play.api.libs.json._
-import play.api.test.Helpers._
+import play.api.libs.json.*
+import play.api.test.Helpers.*
 import utils.FakeNavigator
 import views.html.register.businessType
 

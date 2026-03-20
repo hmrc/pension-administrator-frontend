@@ -14,29 +14,38 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF => PlayFrontendFormWithCSRF}
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF as PlayFrontendFormWithCSRF
 
 @this(
-    layout: templates.Layout,
-    formHelper: PlayFrontendFormWithCSRF,
-    inset_text: components.inset_text,
-    submit_button: components.submit_button
+        layout: templates.Layout,
+        formHelper: PlayFrontendFormWithCSRF,
+        inset_text: components.inset_text,
+        submit_button: components.submit_button
 )
 
-@()(implicit request: Request[?], messages: Messages)
+@(ukResidencyToggle: Boolean)(implicit request: Request[?], messages: Messages)
 
 @layout(pageTitle = messages("whatYouWillNeed.title")) {
 
     @formHelper(action = controllers.register.individual.routes.WhatYouWillNeedController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @components.heading(messages("whatYouWillNeed.heading"))
+        @if(ukResidencyToggle) {
+            <p class="govuk-body">@messages("whatYouWillNeed.individual.body.text")</p>
 
-        <p class="govuk-body">@messages("whatYouWillNeed.body.text")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li id="li-1">@messages("whatYouWillNeed.individual.body.item1")</li>
+                <li id="li-2">@messages("whatYouWillNeed.individual.body.item2")</li>
+                <li id="li-3">@messages("whatYouWillNeed.individual.body.item3")</li>
+            </ul>
+        } else {
+            <p class="govuk-body">@messages("whatYouWillNeed.body.text")</p>
 
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("whatYouWillNeed.body.item1")</li>
-            <li>@messages("whatYouWillNeed.body.item2")</li>
-        </ul>
+            <ul class="govuk-list govuk-list--bullet">
+                <li id="li-1">@messages("whatYouWillNeed.body.item1")</li>
+                <li id="li-2">@messages("whatYouWillNeed.body.item2")</li>
+            </ul>
+        }
 
         @inset_text(
             content = messages("whatYouWillNeed.main.body.hint")

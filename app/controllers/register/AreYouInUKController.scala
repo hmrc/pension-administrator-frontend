@@ -17,14 +17,17 @@
 package controllers.register
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import forms.register.YesNoFormProvider
 import identifiers.register.AreYouInUKId
 import models.Mode
+import models.admin.ukResidencyToggle
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.navigators.IndividualNavigatorV2
 import utils.{Navigator, UserAnswers}
 import viewmodels.AreYouInUKViewModel
 import views.html.register.areYouInUK
@@ -35,11 +38,14 @@ trait AreYouInUKController extends FrontendBaseController with I18nSupport {
   implicit val executionContext: ExecutionContext
   protected val dataCacheConnector: UserAnswersCacheConnector
   protected val navigator: Navigator
+  protected val navigatorV2: IndividualNavigatorV2
   protected val authenticate: AuthAction
   protected val allowAccess: AllowAccessActionProvider
   protected val getData: DataRetrievalAction
   protected val requireData: DataRequiredAction
+  protected val featureFlagService: FeatureFlagService
   protected val formProvider: YesNoFormProvider
+
   protected def view: areYouInUK
 
   protected val form: Form[Boolean] = formProvider()
@@ -77,8 +83,15 @@ trait AreYouInUKController extends FrontendBaseController with I18nSupport {
               dataCacheConnector.save(AreYouInUKId, value)
                 .map(_ => Redirect(controllers.register.individual.routes.NonUKAdministratorController.onPageLoad()))
             } else {
-              dataCacheConnector.save(AreYouInUKId, value).map(cacheMap =>
-                Redirect(navigator.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap))))
+              featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+                dataCacheConnector.save(AreYouInUKId, value).map(cacheMap =>
+                  if (ukResidency.isEnabled) {
+                    Redirect(navigatorV2.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap)))
+                  } else {
+                    Redirect(navigator.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap)))
+                  }
+                )
+              }
             }
           }
         )

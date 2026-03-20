@@ -17,14 +17,16 @@
 package controllers.register.individual
 
 import connectors.cache.UserAnswersCacheConnector
-import controllers.actions._
+import controllers.actions.*
 import controllers.register.AreYouInUKController
 import forms.register.YesNoFormProvider
 import models.Mode
 import play.api.data.Form
 import play.api.mvc.MessagesControllerComponents
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import utils.Navigator
 import utils.annotations.{AuthWithNoIV, Individual}
+import utils.navigators.IndividualNavigatorV2
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
@@ -32,15 +34,17 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class IndividualAreYouInUKController @Inject()(
-                                               override val dataCacheConnector: UserAnswersCacheConnector,
-                                               @Individual override val navigator: Navigator,
-                                               override val allowAccess: AllowAccessActionProvider,
-                                               @AuthWithNoIV override val authenticate: AuthAction,
-                                               override val getData: DataRetrievalAction,
-                                               override val requireData: DataRequiredAction,
-                                               override val formProvider: YesNoFormProvider,
-                                               val controllerComponents: MessagesControllerComponents,
-                                               val view: areYouInUK
+                                                override val dataCacheConnector: UserAnswersCacheConnector,
+                                                @Individual override val navigator: Navigator,
+                                                override val navigatorV2: IndividualNavigatorV2,
+                                                override val allowAccess: AllowAccessActionProvider,
+                                                @AuthWithNoIV override val authenticate: AuthAction,
+                                                override val getData: DataRetrievalAction,
+                                                override val requireData: DataRequiredAction,
+                                                override val featureFlagService: FeatureFlagService,
+                                                override val formProvider: YesNoFormProvider,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                val view: areYouInUK
                                               )(implicit val executionContext: ExecutionContext) extends AreYouInUKController {
 
   protected override val form: Form[Boolean] = formProvider("areYouInUKIndividual.error.required")
