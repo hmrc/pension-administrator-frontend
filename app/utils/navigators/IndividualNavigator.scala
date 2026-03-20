@@ -42,6 +42,7 @@ class IndividualNavigator @Inject()(countryOptions: CountryOptions) extends Navi
 
     case IndividualContactAddressPostCodeLookupId => IndividualContactAddressListController.onPageLoad(NormalMode)
     case IndividualContactAddressId => IndividualAddressYearsController.onPageLoad(NormalMode)
+    case IndividualUKContactAddressId => IndividualAddressYearsController.onPageLoad(NormalMode)
     case IndividualAddressYearsId => addressYearsRoutes(ua)
     case IndividualPreviousAddressPostCodeLookupId => IndividualPreviousAddressListController.onPageLoad(NormalMode)
     case IndividualPreviousAddressId => IndividualEmailController.onPageLoad(NormalMode)

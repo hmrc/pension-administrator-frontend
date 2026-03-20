@@ -17,8 +17,9 @@
 package controllers.register.company
 
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import identifiers.register._
-import identifiers.register.company.{CompanyContactAddressId, CompanyEmailId, CompanyPhoneId, MoreThanTenDirectorsId}
+import identifiers.register.*
+import identifiers.register.company.{CompanyContactAddressId, CompanyUKContactAddressId, CompanyEmailId, CompanyPhoneId, MoreThanTenDirectorsId}
+import models.admin.ukResidencyToggle
 import models.register.{Task, TaskList}
 import models.{Mode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
@@ -29,9 +30,10 @@ import utils.annotations.AuthWithNoIV
 import utils.dataCompletion.DataCompletion.isAdviserComplete
 import utils.{DateHelper, UserAnswers}
 import views.html.register.taskList
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyRegistrationTaskListController @Inject()(
                                                        val controllerComponents: MessagesControllerComponents,
@@ -39,23 +41,26 @@ class CompanyRegistrationTaskListController @Inject()(
                                                        allowAccess: AllowAccessActionProvider,
                                                        getData: DataRetrievalAction,
                                                        requireData: DataRequiredAction,
+                                                       featureFlagService: FeatureFlagService,
                                                        taskList: taskList
-                                                     )
+                                                     )(implicit val ec: ExecutionContext)
   extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async { implicit request =>
-    val expireAt = DateHelper.fromMillis(request.userAnswers.expireAt)
-    Future.successful(Ok(taskList(buildTaskList(request.userAnswers), expireAt)))
+    featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+      val expireAt = DateHelper.fromMillis(request.userAnswers.expireAt)
+      Future.successful(Ok(taskList(buildTaskList(request.userAnswers, ukResidency.isEnabled), expireAt)))
+    }
   }
 
-  private def buildTaskList(userAnswers: UserAnswers)(implicit messages: Messages): TaskList = {
+  private def buildTaskList(userAnswers: UserAnswers, ukResidency: Boolean)(implicit messages: Messages): TaskList = {
     val businessName = userAnswers.get(BusinessNameId).fold(messages("site.company"))(identity)
     val declarationUrl = controllers.register.routes.DeclarationFitAndProperController.onPageLoad().url
 
     TaskList(businessName, declarationUrl, List(
       buildBasicDetailsTask(userAnswers),
       buildCompanyDetails(userAnswers),
-      buildContactDetails(userAnswers),
+      buildContactDetails(userAnswers, ukResidency),
       buildDirectorDetails(userAnswers),
       buildWorkingKnowledgeTask(userAnswers))
     )
@@ -79,8 +84,9 @@ class CompanyRegistrationTaskListController @Inject()(
     Task(messages("taskList.companyDetails"), isCompleted, url)
   }
 
-  private def buildContactDetails(userAnswers: UserAnswers)(implicit messages: Messages): Task = {
-    val isContactAddressCompleted = userAnswers.get(CompanyContactAddressId).isDefined
+  private def buildContactDetails(userAnswers: UserAnswers, ukResidency: Boolean)(implicit messages: Messages): Task = {
+    val companyAddressUA = if (ukResidency) userAnswers.get(CompanyUKContactAddressId) else userAnswers.get(CompanyContactAddressId)
+    val isContactAddressCompleted = companyAddressUA.isDefined
     val isEmailCompleted = userAnswers.get(CompanyEmailId).isDefined
     val isPhoneCompleted = userAnswers.get(CompanyPhoneId).isDefined
     val isCompleted = isContactAddressCompleted && isEmailCompleted && isPhoneCompleted

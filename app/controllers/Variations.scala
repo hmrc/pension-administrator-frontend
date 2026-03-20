@@ -45,6 +45,7 @@ trait Variations extends FrontendBaseController {
     IndividualUKContactAddressId -> IndividualAddressChangedId,
     IndividualPreviousAddressId -> IndividualPreviousAddressChangedId,
     CompanyContactAddressId -> CompanyContactAddressChangedId,
+    CompanyUKContactAddressId -> CompanyContactAddressChangedId,
     CompanyPreviousAddressId -> CompanyPreviousAddressChangedId,
     CompanyEmailId -> CompanyContactDetailsChangedId,
     CompanyPhoneId -> CompanyContactDetailsChangedId,

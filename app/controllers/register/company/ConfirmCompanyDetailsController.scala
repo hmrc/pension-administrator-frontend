@@ -37,7 +37,7 @@ import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, UserAnswers}
-import views.html.register.company.{companyUpdateNonUKAddress, confirmCompanyDetails}
+import views.html.register.company.confirmCompanyDetails
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

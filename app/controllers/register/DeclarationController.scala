@@ -18,15 +18,16 @@ package controllers.register
 
 import com.google.inject.Singleton
 import config.FrontendAppConfig
-import connectors._
+import connectors.*
 import connectors.cache.UserAnswersCacheConnector
 import controllers.Retrievals
-import controllers.actions._
-import controllers.register.routes._
-import controllers.routes._
-import identifiers.register._
+import controllers.actions.*
+import controllers.register.routes.*
+import controllers.routes.*
+import identifiers.register.*
+import identifiers.register.individual.IndividualUKContactAddressId
 import models.enumeration.JourneyType
-import models.register.BusinessType._
+import models.register.BusinessType.*
 import models.register.RegistrationStatus
 import models.requests.DataRequest
 import models.{ExistingPSA, Mode, NormalMode}
@@ -39,6 +40,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declaration
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
+import models.admin.ukResidencyToggle
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -58,6 +61,7 @@ class DeclarationController @Inject()(
     enrolments: TaxEnrolmentsConnector,
     emailConnector: EmailConnector,
     val controllerComponents: MessagesControllerComponents,
+    featureFlagService: FeatureFlagService,
     val view: declaration
 )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
@@ -79,36 +83,39 @@ class DeclarationController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen allowDeclaration(mode) andThen requireData).async {
       implicit request =>
-        dataCacheConnector.save(
-          id      = DeclarationId,
-          value   = true
-        ) flatMap { cacheMap =>
-          val answers =
-            UserAnswers(cacheMap)
-              .set(ExistingPSAId)(
-                ExistingPSA(
-                  isExistingPSA = request.user.isExistingPSA,
-                  existingPSAId = request.user.existingPSAId
-                )
-              )
-              .asOpt
-              .getOrElse(UserAnswers(cacheMap))
+        featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+          dataCacheConnector.save(
+            id = DeclarationId,
+            value = true
+          ) flatMap { cacheMap =>
 
-          (for {
-            psaResponse <- pensionAdministratorConnector.registerPsa(answers)
-            cacheMap    <- dataCacheConnector.save(PsaSubscriptionResponseId, psaResponse)
-            _           <- enrol(psaResponse.psaId)
-            emailStatus <- sendEmail(psaResponse.psaId)
-          } yield {
-            if (emailStatus == EmailNotSent) {
-              Redirect(controllers.register.routes.InvalidEmailAddressController.onPageLoad(
-                getBusinessType(UserAnswers(cacheMap)))
-              )
-            } else {
-              Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
-            }
-          }) recoverWith handleOnSubmitErrors
+            val answers =
+              UserAnswers(cacheMap)
+                .set(ExistingPSAId)(
+                  ExistingPSA(
+                    isExistingPSA = request.user.isExistingPSA,
+                    existingPSAId = request.user.existingPSAId
+                  )
+                )
+                .asOpt
+                .getOrElse(UserAnswers(cacheMap))
+            (for {
+              psaResponse <- pensionAdministratorConnector.registerPsa(answers, ukResidency.isEnabled)
+              cacheMap <- dataCacheConnector.save(PsaSubscriptionResponseId, psaResponse)
+              _ <- enrol(psaResponse.psaId)
+              emailStatus <- sendEmail(psaResponse.psaId)
+            } yield {
+              if (emailStatus == EmailNotSent) {
+                Redirect(controllers.register.routes.InvalidEmailAddressController.onPageLoad(
+                  getBusinessType(UserAnswers(cacheMap)))
+                )
+              } else {
+                Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
+              }
+            }) recoverWith handleOnSubmitErrors
+          }
         }
+       
     }
 
   // Handle errors during the process
