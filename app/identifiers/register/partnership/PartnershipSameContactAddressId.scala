@@ -26,6 +26,7 @@ case object PartnershipSameContactAddressId extends TypedIdentifier[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = value match {
     case Some(_) => userAnswers
       .remove(PartnershipContactAddressId)
+      .flatMap(_.remove(PartnershipUKContactAddressId))
       .flatMap(_.remove(PartnershipContactAddressPostCodeLookupId))
     case _ => super.cleanup(value, userAnswers)
   }

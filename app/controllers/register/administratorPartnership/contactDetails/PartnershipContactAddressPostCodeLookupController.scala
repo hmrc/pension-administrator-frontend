@@ -57,8 +57,8 @@ class PartnershipContactAddressPostCodeLookupController @Inject()(
         PostcodeLookupViewModel(
           routes.PartnershipContactAddressPostCodeLookupController.onSubmit(mode),
           routes.PartnershipContactAddressController.onPageLoad(mode),
-          Message("postcode.lookup.heading", Message("thePartnership")),
-          Message("postcode.lookup.heading").withArgs(name),
+          Message("contactAddressPostCodeLookup.companyPartnership.heading", Message("thePartnership")),
+          Message("contactAddressPostCodeLookup.companyPartnership.heading").withArgs(name),
           Message("manual.entry.text"),
           Some(Message("manual.entry.link")),
           psaName = psaName(),
