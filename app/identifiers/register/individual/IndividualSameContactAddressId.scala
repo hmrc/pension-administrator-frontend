@@ -36,6 +36,7 @@ case object IndividualSameContactAddressId extends TypedIdentifier[Boolean] {
   override def cleanup(value: Option[Boolean], answers: UserAnswers): JsResult[UserAnswers] = {
     answers
       .remove(IndividualContactAddressId)
+      .flatMap(_.remove(IndividualUKContactAddressId))
       .flatMap(_.remove(IndividualContactAddressPostCodeLookupId))
       .flatMap(_.remove(IndividualAddressYearsId))
       .flatMap(_.remove(IndividualPreviousAddressPostCodeLookupId))

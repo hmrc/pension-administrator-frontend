@@ -256,7 +256,6 @@ case class UserAnswers(json: JsValue = Json.obj()) {
 
     removeRec(ids, JsSuccess(this))
   }
-
   def isUserAnswerUpdated: Boolean = {
     List(
       get[Boolean](DeclarationChangedId),

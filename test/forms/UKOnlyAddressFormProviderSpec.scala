@@ -1,0 +1,138 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package forms
+
+import forms.behaviours.{AddressBehaviours, FormBehaviours}
+import forms.mappings.AddressMapping
+import models.AddressUKOnly
+import play.api.data.{Form, FormError}
+import wolfendale.scalacheck.regexp.RegexpGen
+
+import scala.util.Random
+
+class UKOnlyAddressFormProviderSpec extends FormBehaviours with FormSpec with AddressBehaviours {
+
+  private def alphaString(max: Int = AddressMapping.maxAddressLineLength) =
+    Random.alphanumeric take Random.shuffle(Range(1, max).toList).head mkString ""
+
+  private val addressLine1 = alphaString()
+  private val addressLine2 = alphaString()
+  private val addressLine3 = alphaString()
+  private val addressLine4 = alphaString()
+  private val postCode = "ZZ1 1ZZ"
+
+  val validData: Map[String, String] = Map(
+    "addressLine1" -> addressLine1,
+    "addressLine2" -> addressLine2,
+    "addressLine3" -> addressLine3,
+    "addressLine4" -> addressLine4,
+    "postCode" -> postCode
+  )
+
+  val form: Form[AddressUKOnly] = new UKOnlyAddressFormProvider()()
+
+  "AddressUKOnly form" must {
+    behave like questionForm(AddressUKOnly(
+      addressLine1,
+      addressLine2,
+      Some(addressLine3),
+      Some(addressLine4),
+      postCode
+    ))
+
+    "behave like a form with address lines" when {
+
+      behave like formWithAddressField(
+        form,
+        "addressLine1",
+        "error.address_line_1.required",
+        "error.address_line_1.length",
+        "error.address_line_1.invalid"
+      )
+
+      behave like formWithAddressField(
+        form,
+        "addressLine2",
+        "error.address_line_2.required",
+        "error.address_line_2.length",
+        "error.address_line_2.invalid"
+      )
+
+      behave like formWithOptionalAddressField(
+        form,
+        "addressLine3",
+        "error.address_line_3.length",
+        "error.address_line_3.invalid",
+        validData,
+        (model: AddressUKOnly) => model.addressLine3
+      )
+
+      behave like formWithOptionalAddressField(
+        form,
+        "addressLine4",
+        "error.address_line_4.length",
+        "error.address_line_4.invalid",
+        validData,
+        (model: AddressUKOnly) => model.addressLine4
+      )
+    }
+
+    "postCode" when {
+      val postCode = "postCode"
+
+      behave like fieldThatBindsValidData(
+        form,
+        postCode,
+        RegexpGen.from(postCodeRegex)
+      )
+
+      behave like fieldWithMaxLength(
+        form,
+        postCode,
+        maxLength = AddressMapping.maxPostCodeLength,
+        lengthError = FormError(postCode, "error.postcode.length", Seq(AddressMapping.maxPostCodeLength))
+      )
+
+      behave like mandatoryField(
+        form,
+        postCode,
+        requiredError = FormError(postCode, "error.postcode.required")
+      )
+
+      behave like fieldWithRegex(
+        form,
+        postCode,
+        "12AB AB1",
+        FormError(postCode, "error.postcode.invalid", Seq(postCodeRegex))
+      )
+
+      "transform the Post Code value correctly" in {
+        val untransformedPostCode = "  zz11zz  "
+        val boundForm = form.bind(Map(
+          "addressLine1" -> addressLine1,
+          "addressLine2" -> addressLine2,
+          "postCode" -> untransformedPostCode
+        ))
+
+        boundForm.errors shouldBe empty
+
+        val result = boundForm.get
+        result.postcode shouldBe "ZZ1 1ZZ"
+      }
+    }
+  }
+}

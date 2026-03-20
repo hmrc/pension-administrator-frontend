@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ class IndividualNavigatorV2Spec extends SpecBase with NavigatorBehaviour {
       (IndividualSameContactAddressId, sameContactAddressIncompleteNonUk, contactAddressPage(NormalMode)),
 
       (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(NormalMode)),
-      (IndividualContactAddressId, emptyAnswers, addressYearsPage(NormalMode)),
+      (IndividualUKContactAddressId, emptyAnswers, addressYearsPage(NormalMode)),
 
       (IndividualAddressYearsId, ukAddressYearsOverAYear, emailPage(NormalMode)),
       (IndividualAddressYearsId, nonUkAddressYearsOverAYear, emailPage(NormalMode)),
@@ -102,7 +102,7 @@ class IndividualNavigatorV2Spec extends SpecBase with NavigatorBehaviour {
       (IndividualSameContactAddressId, sameContactAddressIncompleteNonUk, contactAddressPage(CheckMode)),
 
       (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(CheckMode)),
-      (IndividualContactAddressId, emptyAnswers, addressYearsPage(CheckMode)),
+      (IndividualUKContactAddressId, emptyAnswers, addressYearsPage(CheckMode)),
 
       (IndividualAddressYearsId, ukAddressYearsOverAYear, checkYourAnswersPage),
       (IndividualAddressYearsId, nonUkAddressYearsOverAYear, checkYourAnswersPage),
@@ -124,7 +124,7 @@ class IndividualNavigatorV2Spec extends SpecBase with NavigatorBehaviour {
     def routes(): TableFor3[Identifier, UserAnswers, Call] = Table(
       ("Id", "User Answers", "Next Page"),
       (IndividualContactAddressPostCodeLookupId, emptyAnswers, contactAddressListPage(UpdateMode)),
-      (IndividualContactAddressId, emptyAnswers, confirmPreviousAddress),
+      (IndividualUKContactAddressId, emptyAnswers, confirmPreviousAddress),
       (IndividualAddressYearsId, ukAddressYearsOverAYear, anyMoreChanges),
       (IndividualAddressYearsId, ukAddressYearsUnderAYear, confirmPreviousAddress),
       (IndividualAddressYearsId, emptyAnswers, sessionExpiredPage),
@@ -164,8 +164,6 @@ object IndividualNavigatorV2Spec extends OptionValues {
   lazy private val anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   lazy private val confirmPreviousAddress = routes.IndividualConfirmPreviousAddressController.onPageLoad()
 
-//  private def whatYouWillNeedPage(mode: Mode) = controllers.register.individual.routes.WhatYouWillNeedController.onPageLoad(mode)
-
   private def addressYearsPage(mode: Mode) = routes.IndividualAddressYearsController.onPageLoad(mode)
 
   private def contactAddressPage(mode: Mode) = routes.IndividualContactAddressController.onPageLoad(mode)
@@ -190,7 +188,7 @@ object IndividualNavigatorV2Spec extends OptionValues {
 
   private def sameContactAddress(areYouInUk: Boolean) = UserAnswers(Json.obj()).areYouInUk(areYouInUk).set(
     IndividualSameContactAddressId)(true)
-    .flatMap(_.set(IndividualContactAddressId)(Address("foo", "bar", None, None, None, "GB")))
+    .flatMap(_.set(IndividualUKContactAddressId)(AddressUKOnly("foo", "bar", None, None,"ZZ11ZZ")))
     .asOpt.value
 
   private val sameContactAddressUk = sameContactAddress(areYouInUk = true)
