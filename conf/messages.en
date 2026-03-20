@@ -562,6 +562,16 @@ businessType.overseasCompany.lc = overseas company
 nonUKBusinessType.company.lc = company
 nonUKBusinessType.businessPartnership.lc = partnership
 
+# new content - partnership update non-uk address
+updateNonUKAddress.partnership.title = You need to update the partnership՚s address details before registering
+updateNonUKAddress.partnership.h1 = You need to update the partnership՚s address details before registering
+updateNonUKAddress.partnership.p1 = Your partnership must be incorporated or resident in the UK to
+updateNonUKAddress.partnership.p1.link-text = register as a pension scheme administrator
+updateNonUKAddress.partnership.p2 = You can
+updateNonUKAddress.partnership.p2.link-text = tell HMRC about a change of address
+updateNonUKAddress.partnership.p2.part-2 = if you are a limited partnership or limited liability partnership (LLP).
+
+
 companyAddress.title = Company address
 companyAddress.heading = Company address
 companyAddress.error.required = Select yes if this is the registered address
