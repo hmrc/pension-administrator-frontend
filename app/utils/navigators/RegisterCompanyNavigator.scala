@@ -76,6 +76,8 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
 
     case CompanyContactAddressId => nextPageOrNonUkRedirect(ua, routes.CompanyAddressYearsController.onPageLoad(NormalMode))
 
+    case CompanyUKContactAddressId => nextPageOrNonUkRedirect(ua, routes.CompanyAddressYearsController.onPageLoad(NormalMode))
+
     case CompanyAddressYearsId => nextPageOrNonUkRedirect(ua, companyAddressYearsIdRoutes(ua))
 
     case CompanyTradingOverAYearId => nextPageOrNonUkRedirect(ua, hasBeenTradingIdRoutes(ua))
@@ -122,6 +124,8 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
       routes.CompanyContactAddressListController.onPageLoad(CheckMode)
     case CompanyContactAddressId =>
       checkYourAnswers
+    case CompanyUKContactAddressId =>
+      checkYourAnswers
     case CompanyAddressYearsId =>
       companyAddressYearsCheckIdRoutes(ua)
     case CompanyTradingOverAYearId =>
@@ -140,6 +144,8 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
     case CompanyContactAddressPostCodeLookupId =>
       routes.CompanyContactAddressListController.onPageLoad(UpdateMode)
     case CompanyContactAddressId =>
+      routes.CompanyConfirmPreviousAddressController.onPageLoad()
+    case CompanyUKContactAddressId =>
       routes.CompanyConfirmPreviousAddressController.onPageLoad()
     case CompanyAddressYearsId =>
       companyAddressYearsUpdateIdRoutes(ua)

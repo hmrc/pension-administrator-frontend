@@ -25,17 +25,19 @@ import forms.register.company.CompanyAddressFormProvider
 import identifiers.TypedIdentifier
 import identifiers.register.company.ConfirmCompanyAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
-import models._
+import models.*
+import models.admin.ukResidencyToggle
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import utils.{AddressHelper, UserAnswers}
-import views.html.register.company.confirmCompanyDetails
+import views.html.register.company.{companyUpdateNonUKAddress, confirmCompanyDetails}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -51,6 +53,7 @@ class ConfirmCompanyDetailsController @Inject()(
                                                  addressFormProvider: AddressFormProvider,
                                                  countryOptions: CountryOptions,
                                                  val controllerComponents: MessagesControllerComponents,
+                                                 featureFlagService: FeatureFlagService,
                                                  val view: confirmCompanyDetails,
                                                  addressHelper: AddressHelper
                                                )(implicit val executionContext: ExecutionContext)
@@ -65,21 +68,26 @@ class ConfirmCompanyDetailsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        getCompanyDetails {
-          case registration@(_: OrganizationRegistration) =>
-            upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
-              upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
-                upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
-                  dataCacheConnector.upsert(userAnswers.json).flatMap { _ =>
-
-                    Future.successful(Ok(view(
-                      form, registration.response.address, registration.response.organisation.organisationName, countryOptions
-                    )))
+        def isUkAddress(address: TolerantAddress): Boolean = address.countryOpt.contains("GB")
+        featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+          getCompanyDetails {
+            case registration@(_: OrganizationRegistration) =>
+              def correctView(address: TolerantAddress): Result = if (ukResidency.isEnabled && !isUkAddress(address)) {
+                Redirect(controllers.register.company.routes.CompanyUpdateNonUKAddressController.onPageLoad())
+              } else {
+                Ok(view(form, registration.response.address, registration.response.organisation.organisationName, countryOptions))
+              }
+              upsert(request.userAnswers, ConfirmCompanyAddressId)(registration.response.address) { userAnswers =>
+                upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
+                  upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
+                    dataCacheConnector.upsert(userAnswers.json).flatMap { _ =>
+                      Future.successful(correctView(registration.response.address))
+                    }
                   }
                 }
               }
-            }
-          case _ => Future.successful(Redirect(routes.CompanyNotFoundController.onPageLoad()))
+            case _ => Future.successful(Redirect(routes.CompanyNotFoundController.onPageLoad()))
+          }
         }
     }
 

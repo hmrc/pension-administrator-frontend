@@ -56,8 +56,8 @@ class CompanyContactAddressPostCodeLookupController @Inject()(
         PostcodeLookupViewModel(
           routes.CompanyContactAddressPostCodeLookupController.onSubmit(mode),
           routes.CompanyContactAddressController.onSubmit(mode),
-          Message("contactAddressPostCodeLookup.heading", Message("theCompany")),
-          Message("contactAddressPostCodeLookup.heading").withArgs(businessName),
+          Message("contactAddressPostCodeLookup.companyPartnership.heading", Message("theCompany")),
+          Message("contactAddressPostCodeLookup.companyPartnership.heading").withArgs(businessName),
           Message("common.postcodeLookup.enterPostcode"),
           Some(Message("common.postcodeLookup.enterPostcode.link")),
           psaName = psaName(),

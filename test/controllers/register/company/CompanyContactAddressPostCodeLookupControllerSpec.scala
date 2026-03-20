@@ -66,8 +66,8 @@ class CompanyContactAddressPostCodeLookupControllerSpec extends ControllerSpecBa
   val viewModel: PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.CompanyContactAddressPostCodeLookupController.onSubmit(NormalMode),
     routes.CompanyContactAddressController.onPageLoad(NormalMode),
-    Message("contactAddressPostCodeLookup.heading", Message("theCompany")),
-    Message("contactAddressPostCodeLookup.heading").withArgs(companyName),
+    Message("contactAddressPostCodeLookup.companyPartnership.heading", Message("theCompany")),
+    Message("contactAddressPostCodeLookup.companyPartnership.heading").withArgs(companyName),
     Message("common.postcodeLookup.enterPostcode"),
     Some(Message("common.postcodeLookup.enterPostcode.link"))
   )
