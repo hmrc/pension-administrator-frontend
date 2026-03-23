@@ -17,7 +17,7 @@
 package identifiers.register.partnership
 
 import identifiers.TypedIdentifier
-import models.{Address, AddressUKOnly}
+import models.AddressUKOnly
 import play.api.i18n.Messages
 import utils.checkyouranswers.{CheckYourAnswers, CheckYourAnswersBusiness}
 import utils.countryOptions.CountryOptions
