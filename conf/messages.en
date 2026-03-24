@@ -1162,8 +1162,8 @@ previous.postcode.lookup.heading = What was {0}’s previous postcode?
 select.address.heading = What is {0}’s address?
 select.previous.address.heading = What was {0}’s previous address?
 
-enter.address.heading = Enter {0}’s address
-enter.previous.address.heading = Enter {0}’s previous address
+enter.address.heading = Enter {0}’s contact address
+enter.previous.address.heading = Enter {0}’s previous contact address
 
 manual.entry.text = You can {0}
 manual.entry.link = enter the address manually.
