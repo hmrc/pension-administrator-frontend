@@ -146,6 +146,12 @@ class DataCompletion {
     isCompanyDetailsComplete(ua) && allDirectorsCompleted
   }
 
+  def isCompanyUKComplete(ua: UserAnswers, mode: Mode): Boolean = {
+    val allDirectorsCompleted = ua.allDirectorsAfterDelete(mode).nonEmpty &
+      ua.allDirectorsAfterDelete(mode).forall(_.isComplete)
+    isCompanyUKDetailsComplete(ua) && allDirectorsCompleted
+  }
+
   def isPartnershipComplete(ua: UserAnswers, mode: Mode): Boolean = {
     val allPartnersCompleted = ua.allPartnersAfterDelete(mode).nonEmpty &
       ua.allPartnersAfterDelete(mode).forall(_.isComplete)
@@ -157,6 +163,31 @@ class DataCompletion {
       isAnswerComplete(ua, RegistrationInfoId),
       isAnswerComplete(ua, BusinessNameId),
       isAddressComplete(ua, CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
+        Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId),
+      isContactDetailsComplete(ua, CompanyEmailId, CompanyPhoneId)
+    ) ++ (
+      if (ua.get(AreYouInUKId).contains(true)) {
+        Seq(
+          isAnswerComplete(ua, BusinessUTRId),
+          isAnswerComplete(ua, HasCompanyCRNId, CompanyRegistrationNumberId, None),
+          isAnswerComplete(ua, HasPAYEId, EnterPAYEId, None),
+          isAnswerComplete(ua, HasVATId, EnterVATId, None)
+        )
+      } else {
+        Seq(
+          isAnswerComplete(ua, CompanyAddressId)
+        )
+      }
+      )
+    logger.debug(s"User answers company details complete: $allAnswers")
+    isComplete(allAnswers).getOrElse(false)
+  }
+
+  def isCompanyUKDetailsComplete(ua: UserAnswers): Boolean = {
+    val allAnswers = Seq(
+      isAnswerComplete(ua, RegistrationInfoId),
+      isAnswerComplete(ua, BusinessNameId),
+      isAddressUKComplete(ua, CompanyUKContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
         Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId),
       isContactDetailsComplete(ua, CompanyEmailId, CompanyPhoneId)
     ) ++ (

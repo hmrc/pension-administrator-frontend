@@ -43,7 +43,8 @@ class AllowDeclarationAction(mode: Mode, dataCompletion: DataCompletion, feature
           if(ukResidency.isEnabled) { dataCompletion.isIndividualUKComplete(userAnswers, mode) }
           else { dataCompletion.isIndividualComplete(userAnswers, mode) }
         case Some(LimitedCompany) =>
-          dataCompletion.isCompanyComplete(userAnswers, mode)
+          if(ukResidency.isEnabled) {dataCompletion.isCompanyUKComplete(userAnswers, mode)}
+          else {dataCompletion.isCompanyComplete(userAnswers, mode)}
         case Some(Partnership) =>
           dataCompletion.isPartnershipComplete(userAnswers, mode)
         case _ =>
