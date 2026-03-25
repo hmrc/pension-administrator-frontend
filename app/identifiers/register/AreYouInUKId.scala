@@ -16,12 +16,12 @@
 
 package identifiers.register
 
-import identifiers._
-import identifiers.register.adviser._
-import identifiers.register.company._
+import identifiers.*
+import identifiers.register.adviser.*
+import identifiers.register.company.*
 import identifiers.register.company.directors.DirectorId
-import identifiers.register.individual._
-import identifiers.register.partnership._
+import identifiers.register.individual.*
+import identifiers.register.partnership.*
 import identifiers.register.partnership.partners.PartnerId
 import play.api.libs.json.JsResult
 import utils.UserAnswers
@@ -73,17 +73,19 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
   }
 
   private def removePartnershipData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
-    userAnswers.removeAllOf(List(BusinessNameId, BusinessUTRId, PartnershipSameContactAddressId,
-      PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
-      PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
-      PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
+    userAnswers.removeAllOf(List(
+        BusinessNameId, BusinessUTRId, PartnershipSameContactAddressId,
+        PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
+        PartnershipUKContactAddressId, PartnershipAddressYearsId, PartnershipPreviousAddressId,
+        PartnershipPreviousAddressPostCodeLookupId, PartnershipPreviousAddressListId,
+        PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
       .flatMap(_.remove(PartnerId))
   }
 
   private def removeCompanyData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(BusinessNameId, BusinessUTRId, CompanySameContactAddressId,
-      CompanyAddressListId, CompanyContactAddressId, CompanyContactAddressListId, CompanyAddressYearsId, CompanyPreviousAddressId,
-      CompanyPreviousAddressPostCodeLookupId, CompanyEmailId, CompanyPhoneId, MoreThanTenDirectorsId))
+        CompanyAddressListId, CompanyContactAddressId, CompanyContactAddressListId, CompanyAddressYearsId, CompanyPreviousAddressId,
+        CompanyPreviousAddressPostCodeLookupId, CompanyEmailId, CompanyPhoneId, MoreThanTenDirectorsId))
       .flatMap(_.remove(DirectorId))
   }
 }

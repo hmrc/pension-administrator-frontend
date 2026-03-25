@@ -19,14 +19,16 @@ package controllers.register.administratorPartnership.contactDetails
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.*
 import controllers.address.ManualAddressController
-import forms.UKAddressFormProvider
+import forms.{AddressFormProvider, UKAddressFormProvider}
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId}
+import models.admin.ukResidencyToggle
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import utils.Navigator
 import utils.annotations.{NoRLSCheck, PartnershipV2}
 import utils.countryOptions.CountryOptions
@@ -45,15 +47,20 @@ class PartnershipPreviousAddressController @Inject()(
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
                                                       formProvider: UKAddressFormProvider,
+                                                      allCountriesformProvider: AddressFormProvider,
                                                       val countryOptions: CountryOptions,
                                                       val controllerComponents: MessagesControllerComponents,
+                                                      featureFlagService: FeatureFlagService,
                                                       val view: manualAddress
                                                     )(implicit val executionContext: ExecutionContext)
   extends ManualAddressController with I18nSupport {
 
   private[controllers] def postCall(mode: Mode): Call = routes.PartnershipPreviousAddressController.onSubmit(mode)
+
   private val isUkHintText = true
-  protected val form: Form[Address] = formProvider()
+
+  override protected val form: Form[Address] = formProvider()
+  private val formAllCountries: Form[Address] = allCountriesformProvider()
 
   private def viewmodel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
@@ -67,15 +74,27 @@ class PartnershipPreviousAddressController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.map { name =>
-        get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode, isUkHintText)
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        BusinessNameId.retrieve.map { name =>
+          if (ukResidency.isEnabled) {
+            getWithForm(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode, formAllCountries)
+          } else {
+            get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode, isUkHintText)
+          }
+        }
       }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      BusinessNameId.retrieve.map { name =>
-        post(PartnershipPreviousAddressId, viewmodel(mode, name), mode, isUkHintText)
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        BusinessNameId.retrieve.map { name =>
+          if (ukResidency.isEnabled) {
+            postWithForm(PartnershipPreviousAddressId, viewmodel(mode, name), mode, formAllCountries)
+          } else {
+            post(PartnershipPreviousAddressId, viewmodel(mode, name), mode, isUkHintText)
+          }
+        }
       }
   }
 

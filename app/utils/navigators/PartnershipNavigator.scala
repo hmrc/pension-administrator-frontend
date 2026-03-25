@@ -18,14 +18,14 @@ package utils.navigators
 
 import com.google.inject.{Inject, Singleton}
 import connectors.cache.UserAnswersCacheConnector
-import controllers.register.partnership.routes._
-import controllers.register.routes._
-import controllers.routes._
-import identifiers.register.partnership._
-import identifiers.register._
+import controllers.register.partnership.routes.*
+import controllers.register.routes.*
+import controllers.routes.*
+import identifiers.register.*
+import identifiers.register.partnership.*
 import identifiers.{Identifier, UpdateContactAddressId}
+import models.*
 import models.InternationalRegion.{EuEea, RestOfTheWorld, UK}
-import models._
 import play.api.mvc.Call
 import utils.countryOptions.CountryOptions
 import utils.{Navigator, UserAnswers}
@@ -63,7 +63,7 @@ class PartnershipNavigator @Inject()(
     case PartnershipContactAddressPostCodeLookupId => nextPageOrNonUkRedirect(ua, PartnershipContactAddressListController.onPageLoad(NormalMode))
 
     case PartnershipContactAddressId => nextPageOrNonUkRedirect(ua, PartnershipAddressYearsController.onPageLoad(NormalMode))
-    
+
     case PartnershipUKContactAddressId => nextPageOrNonUkRedirect(ua, PartnershipAddressYearsController.onPageLoad(NormalMode))
 
     case PartnershipAddressYearsId => nextPageOrNonUkRedirect(ua, addressYearsRoutes(ua, NormalMode))
@@ -170,7 +170,7 @@ class PartnershipNavigator @Inject()(
   private def hasPaye(ua: UserAnswers): Boolean = ua.get(HasPAYEId).getOrElse(false)
 
   private def tradingOverAYearRoutes(answers: UserAnswers, mode: Mode): Call = {
-    (answers.get(PartnershipTradingOverAYearId), answers.get(AreYouInUKId)) match {
+    (answers.get(PartnershipTradingOverAYearId), getUA(answers)) match {
       case (Some(true), Some(false)) =>
         mode match {
           case NormalMode | CheckMode =>
@@ -200,7 +200,7 @@ class PartnershipNavigator @Inject()(
   }
 
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Call = {
-    (answers.get(PartnershipSameContactAddressId), answers.get(AreYouInUKId)) match {
+    (answers.get(PartnershipSameContactAddressId), getUA(answers)) match {
       case (Some(true), _) => PartnershipAddressYearsController.onPageLoad(mode)
       case (Some(false), Some(false)) => PartnershipContactAddressController.onPageLoad(mode)
       case (Some(false), Some(true)) => PartnershipContactAddressPostCodeLookupController.onPageLoad(mode)
@@ -210,7 +210,7 @@ class PartnershipNavigator @Inject()(
 
 
   private def regionBasedNameNavigation(answers: UserAnswers): Call = {
-    answers.get(AreYouInUKId) match {
+    getUA(answers) match {
       case Some(false) => PartnershipRegisteredAddressController.onPageLoad()
       case Some(true) => PartnershipIsRegisteredNameController.onPageLoad
       case _ => SessionExpiredController.onPageLoad
