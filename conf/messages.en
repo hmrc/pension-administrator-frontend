@@ -564,13 +564,12 @@ nonUKBusinessType.company.lc = company
 nonUKBusinessType.businessPartnership.lc = partnership
 
 # new content - company update non-uk address kick out page
-updateNonUKAddress.company.title = You need to update the company՚s address details before registering
+updateNonUKAddress.company.title = The company cannot register as a pension scheme administrator
 updateNonUKAddress.company.h1 = You need to update the company՚s address details before registering
-updateNonUKAddress.company.p1 = Your company must be incorporated or resident in the UK to
+updateNonUKAddress.company.p1 = The company’s address is not in the UK. The company must be resident in the UK to
 updateNonUKAddress.company.p1.link-text = register as a pension scheme administrator
-updateNonUKAddress.company.p2 = You can
+updateNonUKAddress.company.p2 = If the company is resident in the UK,
 updateNonUKAddress.company.p2.link-text = tell HMRC about a change of address
-updateNonUKAddress.company.p2.part-2 = if you are a limited company or limited liability partnership (LLP).
 
 companyAddress.title = Company address
 companyAddress.heading = Company address
