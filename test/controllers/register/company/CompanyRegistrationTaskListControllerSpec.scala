@@ -19,21 +19,49 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.NormalMode
+import models.admin.ukResidencyToggle
 import models.register.{Task, TaskList}
+import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers.*
-import utils.{UserAnswerOps, UserAnswers}
+import utils.{FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
 import views.html.register.taskList
 
-class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase {
+class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase with FeatureFlagMockHelper with BeforeAndAfterEach {
 
   private val view: taskList = app.injector.instanceOf[taskList]
   private val validData = UserAnswers()
   private val expiryDateMillis = 1653326181964L
   private val expiryDate = "23 May 2022"
 
+  override def beforeEach(): Unit = {
+    featureFlagMock(ukResidencyToggle)
+  }
+
   "CompanyRegistrationTaskListController" must {
     "onPageLoad" must {
       "return OK and the correct view for a GET" in {
+        val userAnswers = validData.businessName(companyName).setExpiryDate(expiryDateMillis).asOpt.value
+        val result = controller(userAnswers.dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+
+        val expectedTaskList = TaskList(companyName, "", List(
+          Task(messages("taskList.basicDetails"), isCompleted = false,
+            "/register-as-pension-scheme-administrator/register/company/business-matching/check-your-answers"),
+          Task(messages("taskList.companyDetails"), isCompleted = false,
+            "/register-as-pension-scheme-administrator/register/company/details-what-you-will-need"),
+          Task(messages("taskList.contactDetails"), isCompleted = false,
+            "/register-as-pension-scheme-administrator/register/company/contact-what-you-will-need"),
+          Task(messages("taskList.directors"), isCompleted = false,
+            "/register-as-pension-scheme-administrator/register/company/directors/what-you-will-need"),
+          Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false,
+            "/register-as-pension-scheme-administrator/register/working-knowledge-pensions")
+        ))
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString(expectedTaskList)
+      }
+
+      "return OK and the correct view for a GET when toggle is enabled" in {
+        featureFlagMock(ukResidencyToggle, true)
         val userAnswers = validData.businessName(companyName).setExpiryDate(expiryDateMillis).asOpt.value
         val result = controller(userAnswers.dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
@@ -63,6 +91,7 @@ class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
+      mockFeatureFlagService,
       view
     )
 

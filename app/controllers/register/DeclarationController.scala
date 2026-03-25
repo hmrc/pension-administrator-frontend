@@ -25,7 +25,7 @@ import controllers.actions.*
 import controllers.register.routes.*
 import controllers.routes.*
 import identifiers.register.*
-import identifiers.register.individual.IndividualUKContactAddressId
+import models.admin.ukResidencyToggle
 import models.enumeration.JourneyType
 import models.register.BusinessType.*
 import models.register.RegistrationStatus
@@ -36,12 +36,11 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
 import views.html.register.declaration
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
-import models.admin.ukResidencyToggle
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
