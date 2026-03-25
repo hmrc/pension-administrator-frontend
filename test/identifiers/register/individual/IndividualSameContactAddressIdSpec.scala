@@ -31,7 +31,14 @@ class IndividualSameContactAddressIdSpec extends AnyWordSpecLike with Matchers w
       .set(IndividualSameContactAddressId)(false)
       .flatMap(_.set(IndividualContactAddressPostCodeLookupId)(Seq.empty))
       .flatMap(_.set(IndividualContactAddressId)(Address("foo", "bar", None, None, None, "GB")))
+      .flatMap(_.set(IndividualPreviousAddressPostCodeLookupId)(Seq.empty))
+      .flatMap(_.set(IndividualPreviousAddressId)(Address("previous-foo", "previous-bar", None, None, None, "GB")))
+      .asOpt.value
+
+    val answersWithUKContactAddress = UserAnswers(Json.obj())
+      .set(IndividualSameContactAddressId)(false)
       .flatMap(_.set(IndividualUKContactAddressId)(AddressUKOnly("foo", "bar", None, None, "ZZ11ZZ")))
+      .flatMap(_.set(IndividualContactAddressPostCodeLookupId)(Seq.empty))
       .flatMap(_.set(IndividualPreviousAddressPostCodeLookupId)(Seq.empty))
       .flatMap(_.set(IndividualPreviousAddressId)(Address("previous-foo", "previous-bar", None, None, None, "GB")))
       .asOpt.value
@@ -39,72 +46,84 @@ class IndividualSameContactAddressIdSpec extends AnyWordSpecLike with Matchers w
     "`IndividualSameContactAddress` is set to `true`" must {
 
       val result: UserAnswers = answersWithContactAddress.set(IndividualSameContactAddressId)(true).asOpt.value
+      val res: UserAnswers = answersWithUKContactAddress.set(IndividualSameContactAddressId)(true).asOpt.value
 
       "remove the data for `IndividualContactAddress`" in {
         result.get(IndividualContactAddressId) mustNot be(defined)
       }
 
       "remove the data for `IndividualUKContactAddress`" in {
-        result.get(IndividualUKContactAddressId) mustNot be(defined)
+        res.get(IndividualUKContactAddressId) mustNot be(defined)
       }
 
       "remove the data for `IndividualContactAddressPostCodeLookup`" in {
         result.get(IndividualContactAddressPostCodeLookupId) mustNot be(defined)
+        res.get(IndividualContactAddressPostCodeLookupId) mustNot be(defined)
       }
 
       "remove the data for `PreviousPostCodeLookup`" in {
         result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
+        res.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
       }
 
       "remove the data for `PreviousAddress`" in {
         result.get(IndividualPreviousAddressId) mustNot be(defined)
+        res.get(IndividualPreviousAddressId) mustNot be(defined)
       }
 
       "remove the data for `AddressYears`" in {
         result.get(IndividualAddressYearsId) mustNot be(defined)
+        res.get(IndividualAddressYearsId) mustNot be(defined)
       }
     }
 
     "`IndividualSameContactAddress` is set to `false` (when it is already false)" must {
 
       val result: UserAnswers = answersWithContactAddress.set(IndividualSameContactAddressId)(false).asOpt.value
+      val res: UserAnswers = answersWithUKContactAddress.set(IndividualSameContactAddressId)(false).asOpt.value
 
-      //TODO fix this test
-//      "not remove the data for `IndividualContactAddress`" in {
-//        result.get(IndividualContactAddressId) must be(defined)
-//      }
+      "not remove the data for `IndividualContactAddress`" in {
+        result.get(IndividualContactAddressId) must be(defined)
+      }
 
       "not remove the data for `IndividualUKContactAddress`" in {
-        result.get(IndividualUKContactAddressId) must be(defined)
+        res.get(IndividualUKContactAddressId) must be(defined)
       }
 
       "not remove the data for `IndividualContactAddressPostCodeLookup`" in {
         result.get(IndividualContactAddressPostCodeLookupId) must be(defined)
+        res.get(IndividualContactAddressPostCodeLookupId) must be(defined)
       }
 
       "not remove the data for `PreviousPostCodeLookup`" in {
         result.get(IndividualPreviousAddressPostCodeLookupId) must be(defined)
+        res.get(IndividualPreviousAddressPostCodeLookupId) must be(defined)
       }
 
       "not remove the data for `PreviousAddress`" in {
         result.get(IndividualPreviousAddressId) must be(defined)
+        res.get(IndividualPreviousAddressId) must be(defined)
       }
     }
 
     "`IndividualSameContactAddress` is removed" must {
 
       val result: UserAnswers = answersWithContactAddress.remove(IndividualSameContactAddressId).asOpt.value
+      val res: UserAnswers = answersWithUKContactAddress.set(IndividualSameContactAddressId)(true).asOpt.value
 
       "remove the data for `PreviousPostCodeLookup`" in {
         result.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
+        res.get(IndividualPreviousAddressPostCodeLookupId) mustNot be(defined)
       }
 
       "remove the data for `PreviousAddress`" in {
         result.get(IndividualPreviousAddressId) mustNot be(defined)
+        res.get(IndividualPreviousAddressId) mustNot be(defined)
       }
 
       "remove the data for `AddressYears`" in {
         result.get(IndividualAddressYearsId) mustNot be(defined)
+        res.get(IndividualAddressYearsId) mustNot be(defined)
       }
     }
   }
