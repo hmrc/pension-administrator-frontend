@@ -19,12 +19,11 @@ package controllers.actions
 import models.requests.OptionalDataRequest
 import models.{Mode, NormalMode}
 import play.api.mvc.Result
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
+import utils.FeatureFlagMockHelper
 import utils.dataCompletion.DataCompletion
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import utils.FeatureFlagMockHelper
 
 class FakeAllowDeclarationAction(mode: Mode, featureFlagHelper: FeatureFlagMockHelper = new FeatureFlagMockHelper {})
   extends AllowDeclarationAction(mode, new DataCompletion,  featureFlagHelper.mockFeatureFlagService) {
