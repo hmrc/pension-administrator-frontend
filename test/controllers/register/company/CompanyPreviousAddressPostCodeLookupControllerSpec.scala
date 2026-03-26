@@ -80,8 +80,8 @@ class CompanyPreviousAddressPostCodeLookupControllerSpec extends ControllerSpecB
   def viewModel(mode: Mode, name: String): PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.CompanyPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.CompanyPreviousAddressController.onPageLoad(mode),
-    Message("previous.postcode.lookup.heading", Message("theCompany")),
-    Message("previous.postcode.lookup.heading", name),
+    Message("company.previous.postcode.lookup.heading", Message("theCompany")),
+    Message("company.previous.postcode.lookup.heading", name),
     Message("manual.entry.text"),
     Some(Message("manual.entry.link")),
     psaName = Some(companyName),
