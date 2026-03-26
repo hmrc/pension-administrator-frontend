@@ -1156,7 +1156,11 @@ individual.enter.previous.address.heading = Enter your previous contact address
 manual.enter.address.para = The address must be in the UK.
 
 postcode.lookup.heading = What is {0}’s postcode?
-previous.postcode.lookup.heading = What is the postcode of {0}’s previous contact address?
+previous.postcode.lookup.heading = What was {0}’s previous postcode?
+
+#new headings company
+company.postcode.lookup.heading = What is {0}’s postcode?
+company.previous.postcode.lookup.heading = What is the postcode of {0}’s previous contact address?
 
 select.address.heading = What is {0}’s address?
 select.previous.address.heading = What was {0}’s previous address?
