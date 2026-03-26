@@ -66,6 +66,8 @@ class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
       routes.CompanyContactAddressListController.onPageLoad(NormalMode)
     case CompanyContactAddressId =>
       routes.CompanyAddressYearsController.onPageLoad(NormalMode)
+    case CompanyUKContactAddressId =>
+      routes.CompanyAddressYearsController.onPageLoad(NormalMode)
     case CompanyAddressYearsId =>
       companyAddressYearsIdRoutes(ua)
     case CompanyTradingOverAYearId =>
@@ -113,6 +115,8 @@ class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
       routes.CompanyContactAddressListController.onPageLoad(CheckMode)
     case CompanyContactAddressId =>
       checkYourAnswers
+    case CompanyUKContactAddressId =>
+      checkYourAnswers
     case CompanyAddressYearsId =>
       companyAddressYearsCheckIdRoutes(ua)
     case CompanyTradingOverAYearId =>
@@ -131,6 +135,8 @@ class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
     case CompanyContactAddressPostCodeLookupId =>
       routes.CompanyContactAddressListController.onPageLoad(UpdateMode)
     case CompanyContactAddressId =>
+      routes.CompanyConfirmPreviousAddressController.onPageLoad()
+    case CompanyUKContactAddressId =>
       routes.CompanyConfirmPreviousAddressController.onPageLoad()
     case CompanyAddressYearsId =>
       companyAddressYearsUpdateIdRoutes(ua)
@@ -187,7 +193,7 @@ class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
   }
 
   private def hasBeenTradingIdRoutes(answers: UserAnswers): Call = {
-    (answers.get(CompanyTradingOverAYearId), answers.get(AreYouInUKId)) match {
+    (answers.get(CompanyTradingOverAYearId), getUA(answers)) match {
       case (Some(true), Some(true)) =>
         routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(NormalMode)
       case (Some(true), Some(false)) =>
@@ -200,7 +206,7 @@ class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
   }
 
   private def hasBeenTradingCheckIdRoutes(answers: UserAnswers): Call = {
-    (answers.get(CompanyTradingOverAYearId), answers.get(AreYouInUKId)) match {
+    (answers.get(CompanyTradingOverAYearId), getUA(answers)) match {
       case (Some(true), Some(true)) =>
         routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode)
       case (Some(true), Some(false)) =>
@@ -220,7 +226,7 @@ class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
     }
 
   private def sameContactAddress(mode: Mode, answers: UserAnswers): Call = {
-    (answers.get(CompanySameContactAddressId), answers.get(AreYouInUKId)) match {
+    (answers.get(CompanySameContactAddressId), getUA(answers)) match {
       case (Some(true), _) => routes.CompanyAddressYearsController.onPageLoad(mode)
       case (Some(false), Some(false)) => routes.CompanyContactAddressController.onPageLoad(mode)
       case (Some(false), Some(true)) => routes.CompanyContactAddressPostCodeLookupController.onPageLoad(mode)
@@ -248,7 +254,7 @@ class RegisterContactNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
   }
 
   private def regionBasedNameNavigation(answers: UserAnswers): Call = {
-    answers.get(AreYouInUKId) match {
+    getUA(answers) match {
       case Some(false) => routes.CompanyRegisteredAddressController.onPageLoad()
       case Some(true) => routes.CompanyIsRegisteredNameController.onPageLoad
       case _ => controllers.routes.SessionExpiredController.onPageLoad

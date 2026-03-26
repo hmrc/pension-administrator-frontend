@@ -53,7 +53,7 @@ class IndividualPreviousAddressController @Inject()(
 
   private[controllers] def postCall(mode: Mode): Call = routes.IndividualPreviousAddressController.onSubmit(mode)
   private val isUkHintText = false
-  protected val form: Form[Address] = formProvider("error.country.invalid")
+  protected val form: Form[Address] = formProvider()
 
   private def viewmodel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),

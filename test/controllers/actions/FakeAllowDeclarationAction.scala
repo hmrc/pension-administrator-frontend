@@ -19,12 +19,14 @@ package controllers.actions
 import models.requests.OptionalDataRequest
 import models.{Mode, NormalMode}
 import play.api.mvc.Result
+import utils.FeatureFlagMockHelper
 import utils.dataCompletion.DataCompletion
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class FakeAllowDeclarationAction(mode: Mode) extends AllowDeclarationAction(mode, new DataCompletion) {
+class FakeAllowDeclarationAction(mode: Mode, featureFlagHelper: FeatureFlagMockHelper = new FeatureFlagMockHelper {})
+  extends AllowDeclarationAction(mode, new DataCompletion,  featureFlagHelper.mockFeatureFlagService) {
 
   override def filter[A](request: OptionalDataRequest[A]): Future[Option[Result]] =
     Future.successful(None)

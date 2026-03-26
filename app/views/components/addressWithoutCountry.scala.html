@@ -1,0 +1,61 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import _root_.utils.InputOption
+
+@this(
+    govukInput: GovukInput,
+    govukSelect : GovukSelect
+)
+
+@(form: Form[?], isUkHintText: Boolean)(implicit messages: Messages)
+
+@govukInput(
+    Input(
+        label = Label(content = Text(messages("address.line.1"))),
+        classes = "govuk-!-width-two-thirds"
+    ).withFormField(form("addressLine1"))
+)
+
+@govukInput(
+    Input(
+        label = Label(content = Text(messages("address.line.2"))),
+        classes = "govuk-!-width-two-thirds"
+    ).withFormField(form("addressLine2"))
+)
+
+@govukInput(
+    Input(
+        label = Label(content = Text(messages("address.line.3"))),
+        classes = "govuk-!-width-one-half"
+    ).withFormField(form("addressLine3"))
+)
+
+@govukInput(
+    Input(
+        label = Label(content = Text(messages("address.line.4"))),
+        classes = "govuk-!-width-one-half"
+    ).withFormField(form("addressLine4"))
+)
+
+@govukInput(
+    Input(
+        label = Label(content = Text(messages("address.postcode"))),
+        classes = "govuk-!-width-one-quarter"
+    ).withFormField(form("postCode"))
+)

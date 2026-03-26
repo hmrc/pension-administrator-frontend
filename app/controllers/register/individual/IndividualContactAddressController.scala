@@ -19,61 +19,84 @@ package controllers.register.individual
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.*
 import controllers.address.ManualAddressController
-import forms.AddressFormProvider
+import forms.{AddressFormProvider, UKOnlyAddressFormProvider}
 import identifiers.UpdateContactAddressId
 import identifiers.register.AreYouInUKId
-import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId}
+import identifiers.register.individual.{IndividualContactAddressId, IndividualContactAddressListId, IndividualUKContactAddressId}
+import models.admin.ukResidencyToggle
 import models.requests.DataRequest
-import models.{Address, Mode}
+import models.{Address, AddressUKOnly, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import utils.Navigator
 import utils.annotations.{AuthWithIV, Individual, NoRLSCheck}
 import utils.countryOptions.CountryOptions
+import utils.navigators.IndividualNavigatorV2
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
-import views.html.address.manualAddress
+import views.html.address.{manualAddress, manualAddressUKOnly}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualContactAddressController @Inject()(
-                                                   val cacheConnector: UserAnswersCacheConnector,
-                                                   @Individual val navigator: Navigator,
-                                                   @AuthWithIV authenticate: AuthAction,
-                                                   @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
-                                                   getData: DataRetrievalAction,
-                                                   requireData: DataRequiredAction,
-                                                   formProvider: AddressFormProvider,
-                                                   val countryOptions: CountryOptions,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   val view: manualAddress
+                                                    val cacheConnector: UserAnswersCacheConnector,
+                                                    @Individual val navigator: Navigator,
+                                                    individualNavigatorV2: IndividualNavigatorV2,
+                                                    @AuthWithIV authenticate: AuthAction,
+                                                    @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
+                                                    getData: DataRetrievalAction,
+                                                    requireData: DataRequiredAction,
+                                                    formProvider: AddressFormProvider,
+                                                    formProviderUKOnly: UKOnlyAddressFormProvider,
+                                                    featureFlagService: FeatureFlagService,
+                                                    val countryOptions: CountryOptions,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    val view: manualAddress,
+                                                    val viewUKOnly: manualAddressUKOnly
                                                   )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
   private[controllers] def postCall(mode: Mode): Call = routes.IndividualContactAddressController.onSubmit(mode)
+
   private val isUkHintText = false
-  protected val form: Form[Address] = formProvider("error.country.invalid")
+  protected val form: Form[Address] = formProvider()
+  val formUK: Form[AddressUKOnly] = formProviderUKOnly()
 
   private def viewmodel(mode: Mode, displayReturnLink: Boolean)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
     countryOptions.options,
     title = Message("individual.enter.address.heading"),
     heading = Message("individual.enter.address.heading"),
-    psaName = if(displayReturnLink) psaName() else None
+    psaName = if (displayReturnLink) psaName() else None
   )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
-    implicit request =>
-      request.userAnswers.get(AreYouInUKId) match {
-        case Some(true) => get(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText)
-        case _ => Future.successful(Redirect(controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(mode)))
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async { implicit request =>
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        request.userAnswers.get(AreYouInUKId) match {
+          case Some(true) =>
+            if (ukResidency.isEnabled) {
+              getUKOnly(IndividualUKContactAddressId, IndividualContactAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText, formUK, viewUKOnly)
+            } else {
+              get(IndividualContactAddressId, IndividualContactAddressListId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText)
+            }
+          case _ =>
+            Future.successful(Redirect(controllers.register.individual.routes.IndividualAreYouInUKController.onPageLoad(mode)))
+        }
       }
-
-  }
+    }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      post(IndividualContactAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText)
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        val nav = if(ukResidency.isEnabled) individualNavigatorV2 else navigator
+        if (ukResidency.isEnabled) {
+          postUKOnly(IndividualUKContactAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, nav, isUkHintText, formUK, viewUKOnly)
+        } else {
+          post(IndividualContactAddressId, viewmodel(mode, request.userAnswers.get(UpdateContactAddressId).isEmpty), mode, isUkHintText)
+        }
+      }
   }
 }

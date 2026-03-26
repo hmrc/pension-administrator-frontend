@@ -21,14 +21,14 @@ import controllers.actions.AllowAccessActionProvider
 import controllers.{Retrievals, Variations}
 import identifiers.TypedIdentifier
 import models.requests.DataRequest
-import models.{Address, Mode, TolerantAddress}
+import models.{Address, AddressUKOnly, Mode, TolerantAddress}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Navigator, UserAnswers}
 import viewmodels.address.ManualAddressViewModel
-import views.html.address.manualAddress
+import views.html.address.{manualAddress, manualAddressUKOnly}
 
 import scala.concurrent.Future
 
@@ -61,6 +61,43 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
     Future.successful(Ok(view(preparedForm, viewModel, mode, isUkHintText)))
   }
 
+  protected def getWithForm(
+                            id: TypedIdentifier[Address],
+                            selectedId: TypedIdentifier[TolerantAddress],
+                            viewModel: ManualAddressViewModel,
+                            mode: Mode,
+                            euAndUKForm: Form[Address],
+                            isUkHintText: Boolean = false
+                          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val preparedForm = request.userAnswers.get(id) match {
+      case None => request.userAnswers.get(selectedId) match {
+        case Some(value) => form.fill(value.toPrepopAddress)
+        case None => form
+      }
+      case Some(value) => form.fill(value)
+    }
+    Future.successful(Ok(view(preparedForm, viewModel, mode, isUkHintText)))
+  }
+
+  protected def getUKOnly(
+                           id: TypedIdentifier[AddressUKOnly],
+                           selectedId: TypedIdentifier[TolerantAddress],
+                           viewModel: ManualAddressViewModel,
+                           mode: Mode,
+                           isUkHintText: Boolean = false,
+                           formUK: Form[AddressUKOnly],
+                           viewUKOnly: manualAddressUKOnly
+                         )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val preparedForm = request.userAnswers.get(id) match {
+      case None => request.userAnswers.get(selectedId) match {
+        case Some(value) => formUK.fill(AddressUKOnly.fromTolerant(value))
+        case None => formUK
+      }
+      case Some(value) => formUK.fill(value)
+    }
+    Future.successful(Ok(viewUKOnly(preparedForm, viewModel, mode, isUkHintText)))
+  }
+
   protected def post(
                       id: TypedIdentifier[Address],
                       viewModel: ManualAddressViewModel,
@@ -75,6 +112,50 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
             .flatMap {
               _ =>
                 Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(userAnswersJson))))
+            }
+        }
+      }
+    )
+  }
+
+  protected def postWithForm(
+                      id: TypedIdentifier[Address],
+                      viewModel: ManualAddressViewModel,
+                      mode: Mode,
+                      form: Form[Address],
+                      isUkHintText: Boolean = false
+                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    form.bindFromRequest().fold(
+      (formWithError: Form[?]) => Future.successful(BadRequest(view(formWithError, viewModel, mode, isUkHintText))),
+      address => {
+        cacheConnector.save(id, address).flatMap { userAnswersJson =>
+          saveChangeFlag(mode, id)
+            .flatMap {
+              _ =>
+                Future.successful(Redirect(navigator.nextPage(id, mode, UserAnswers(userAnswersJson))))
+            }
+        }
+      }
+    )
+  }
+
+  protected def postUKOnly(
+                            id: TypedIdentifier[AddressUKOnly],
+                            viewModel: ManualAddressViewModel,
+                            mode: Mode,
+                            nav: Navigator,
+                            isUkHintText: Boolean = false,
+                            formUK: Form[AddressUKOnly],
+                            viewUKOnly: manualAddressUKOnly
+                          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    formUK.bindFromRequest().fold(
+      (formWithError: Form[?]) => Future.successful(BadRequest(viewUKOnly(formWithError, viewModel, mode, isUkHintText))),
+      address => {
+        cacheConnector.save(id, address).flatMap { userAnswersJson =>
+          saveChangeFlag(mode, id)
+            .flatMap {
+              _ =>
+                Future.successful(Redirect(nav.nextPage(id, mode, UserAnswers(userAnswersJson))))
             }
         }
       }

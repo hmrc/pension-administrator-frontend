@@ -62,14 +62,14 @@ object CountryOptions {
     }
   }
 
-  def getCountryCodes(environment: Environment, fileName: String) : Seq[String] = {
+  def getCountryCodes(environment: Environment, fileName: String): Seq[String] = {
     environment.resourceAsStream(fileName).map { in =>
-        val locationJsValue = Json.parse(in)
-        Json.fromJson[Seq[Seq[String]]](locationJsValue).asOpt.map {
-          _.map { countryList =>
-            countryList(1).replaceAll("country:", "")
-          }
-        }.fold[Seq[String]](List.empty)(identity)
+      val locationJsValue = Json.parse(in)
+      Json.fromJson[Seq[Seq[String]]](locationJsValue).asOpt.map {
+        _.map { countryList =>
+          countryList(1).replaceAll("country:", "")
+        }
+      }.fold[Seq[String]](List.empty)(identity)
     }.getOrElse {
       throw new ConfigException.BadValue(fileName, "country json does not exist")
     }
@@ -77,7 +77,7 @@ object CountryOptions {
 
   def getInternationalRegion(environment: Environment, config: FrontendAppConfig, countryCode: String): InternationalRegion = {
     val regionEuEea = getCountryCodes(environment, config.locationCanonicalListEUAndEEA)
-      countryCode match {
+    countryCode match {
       case "GB" => UK
       case code if regionEuEea.contains(code) => EuEea
       case _ => RestOfTheWorld

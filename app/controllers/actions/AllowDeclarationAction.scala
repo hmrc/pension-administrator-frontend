@@ -25,38 +25,45 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 import utils.UserAnswers
 import utils.dataCompletion.DataCompletion
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
+import models.admin.ukResidencyToggle
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AllowDeclarationAction(mode: Mode, dataCompletion: DataCompletion)
+class AllowDeclarationAction(mode: Mode, dataCompletion: DataCompletion, featureFlagService: FeatureFlagService)
                             (implicit val executionContext: ExecutionContext) extends ActionFilter[OptionalDataRequest] {
 
   override protected def filter[A](request: OptionalDataRequest[A]): Future[Option[Result]] = {
-    val userAnswers = request.userAnswers.getOrElse(UserAnswers())
+    featureFlagService.get(ukResidencyToggle).map { ukResidency =>
+      
+      val userAnswers = request.userAnswers.getOrElse(UserAnswers())
 
-    val isComplete = userAnswers.get(RegistrationInfoId).map(_.legalStatus) match {
-      case Some(Individual) =>
-        dataCompletion.isIndividualComplete(userAnswers, mode)
-      case Some(LimitedCompany) =>
-        dataCompletion.isCompanyComplete(userAnswers, mode)
-      case Some(Partnership) =>
-        dataCompletion.isPartnershipComplete(userAnswers, mode)
-      case _ =>
-        true
-    }
+      val isComplete = userAnswers.get(RegistrationInfoId).map(_.legalStatus) match {
+        case Some(Individual) =>
+          if(ukResidency.isEnabled) { dataCompletion.isIndividualUKComplete(userAnswers, mode) }
+          else { dataCompletion.isIndividualComplete(userAnswers, mode) }
+        case Some(LimitedCompany) =>
+          if(ukResidency.isEnabled) {dataCompletion.isCompanyUKComplete(userAnswers, mode)}
+          else {dataCompletion.isCompanyComplete(userAnswers, mode)}
+        case Some(Partnership) =>
+          dataCompletion.isPartnershipComplete(userAnswers, mode)
+        case _ =>
+          true
+      }
 
-    if (isComplete && dataCompletion.isAdviserComplete(userAnswers, mode)) {
-      Future(None)
-    } else {
-      Future.successful(Some(Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())))
+      if (isComplete && dataCompletion.isAdviserComplete(userAnswers, mode)) {
+        None
+      } else {
+        Some(Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad()))
+      }
     }
   }
 }
 
-class AllowDeclarationActionProviderImpl @Inject()(dataCompletion: DataCompletion)
+class AllowDeclarationActionProviderImpl @Inject()(dataCompletion: DataCompletion, featureFlagService: FeatureFlagService)
                                                   (implicit executionContext: ExecutionContext) extends AllowDeclarationActionProvider {
   def apply(mode: Mode): AllowDeclarationAction = {
-    new AllowDeclarationAction(mode, dataCompletion)
+    new AllowDeclarationAction(mode, dataCompletion, featureFlagService)
   }
 }
 

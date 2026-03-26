@@ -174,7 +174,7 @@ trait Constraints {
       case _ => Invalid(errorKey)
     }
 
-  protected def notBeforeYear(errorKey: String, year:Int): Constraint[LocalDate] =
+  protected def notBeforeYear(errorKey: String, year: Int): Constraint[LocalDate] =
     Constraint {
       case date if date.getYear >= year => Valid
       case _ => Invalid(errorKey)

@@ -100,6 +100,32 @@ case class AddressCYA[I <: TypedIdentifier[Address]](label: String = "cya.label.
   }
 }
 
+case class UKAddressCYA[I <: TypedIdentifier[AddressUKOnly]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None,
+                                                     isMandatory: Boolean = true) {
+  def apply()(implicit rds: Reads[AddressUKOnly]): CheckYourAnswers[I] = {
+    new CheckYourAnswers[I] {
+      override def row(id: I)(changeUrl: Option[Link], userAnswers: UserAnswers): Seq[AnswerRow] = {
+        userAnswers.get(id).map { address =>
+          Seq(AnswerRow(
+            label,
+            address.lines,
+            answerIsMessageKey = false,
+            changeUrl,
+            visuallyHiddenText = hiddenLabel
+          ))
+        } getOrElse {
+          if (isMandatory) {
+            Seq(AnswerRow(label, Seq("site.not_entered"),
+              answerIsMessageKey = true, changeUrl.map(link => Link(link.url, "site.add")), hiddenLabel))
+          } else {
+            Seq.empty[AnswerRow]
+          }
+        }
+      }
+    }
+  }
+}
+
 case class TolerantAddressCYA[I <: TypedIdentifier[TolerantAddress]](label: String = "cya.label.address", hiddenLabel: Option[Message] = None,
                                                      isMandatory: Boolean = true) {
   def apply()(implicit rds: Reads[TolerantAddress], countryOptions: CountryOptions): CheckYourAnswers[I] = {

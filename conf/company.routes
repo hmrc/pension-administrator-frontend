@@ -59,6 +59,8 @@ GET         /company-not-found                            controllers.register.c
 GET         /what-you-will-need                           controllers.register.company.WhatYouWillNeedController.onPageLoad(mode: Mode = NormalMode)
 POST        /what-you-will-need                           controllers.register.company.WhatYouWillNeedController.onSubmit(mode: Mode = NormalMode)
 
+GET         /update-non-uk-address                        controllers.register.company.CompanyUpdateNonUKAddressController.onPageLoad(mode: Mode = NormalMode)
+
 GET         /use-as-contact-address                       controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode = NormalMode)
 POST        /use-as-contact-address                       controllers.register.company.CompanySameContactAddressController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/use-as-contact-address                 controllers.register.company.CompanySameContactAddressController.onPageLoad(mode: Mode)

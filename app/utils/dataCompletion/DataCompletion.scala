@@ -76,6 +76,29 @@ class DataCompletion {
     }
   }
 
+  def isAddressUKComplete(userAnswers: UserAnswers,
+                        currentAddressId: TypedIdentifier[AddressUKOnly],
+                        previousAddressId: TypedIdentifier[Address],
+                        timeAtAddress: TypedIdentifier[AddressYears],
+                        tradingTime: Option[TypedIdentifier[Boolean]],
+                        confirmPreviousAddress: TypedIdentifier[Boolean]
+                       ): Option[Boolean] = {
+    (userAnswers.get(currentAddressId), userAnswers.get(timeAtAddress), userAnswers.get(confirmPreviousAddress)) match {
+      case (None, _, _) => None
+      case (Some(_), _, Some(_)) =>
+        userAnswers.get(previousAddressId) match {
+          case Some(_) => Some(true)
+          case _ => Some(false)
+        }
+      case (Some(_), Some(AddressYears.OverAYear), _) =>
+        Some(true)
+      case (Some(_), Some(AddressYears.UnderAYear), _) =>
+        isAddressCompleteUnderAYear(userAnswers, previousAddressId, tradingTime)
+      case _ =>
+        Some(false)
+    }
+  }
+
   private def isAddressCompleteUnderAYear(userAnswers: UserAnswers,
                                           previousAddressId: TypedIdentifier[Address],
                                           tradingTime: Option[TypedIdentifier[Boolean]]): Option[Boolean] = {
@@ -123,6 +146,12 @@ class DataCompletion {
     isCompanyDetailsComplete(ua) && allDirectorsCompleted
   }
 
+  def isCompanyUKComplete(ua: UserAnswers, mode: Mode): Boolean = {
+    val allDirectorsCompleted = ua.allDirectorsAfterDelete(mode).nonEmpty &
+      ua.allDirectorsAfterDelete(mode).forall(_.isComplete)
+    isCompanyUKDetailsComplete(ua) && allDirectorsCompleted
+  }
+
   def isPartnershipComplete(ua: UserAnswers, mode: Mode): Boolean = {
     val allPartnersCompleted = ua.allPartnersAfterDelete(mode).nonEmpty &
       ua.allPartnersAfterDelete(mode).forall(_.isComplete)
@@ -134,6 +163,31 @@ class DataCompletion {
       isAnswerComplete(ua, RegistrationInfoId),
       isAnswerComplete(ua, BusinessNameId),
       isAddressComplete(ua, CompanyContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
+        Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId),
+      isContactDetailsComplete(ua, CompanyEmailId, CompanyPhoneId)
+    ) ++ (
+      if (ua.get(AreYouInUKId).contains(true)) {
+        Seq(
+          isAnswerComplete(ua, BusinessUTRId),
+          isAnswerComplete(ua, HasCompanyCRNId, CompanyRegistrationNumberId, None),
+          isAnswerComplete(ua, HasPAYEId, EnterPAYEId, None),
+          isAnswerComplete(ua, HasVATId, EnterVATId, None)
+        )
+      } else {
+        Seq(
+          isAnswerComplete(ua, CompanyAddressId)
+        )
+      }
+      )
+    logger.debug(s"User answers company details complete: $allAnswers")
+    isComplete(allAnswers).getOrElse(false)
+  }
+
+  def isCompanyUKDetailsComplete(ua: UserAnswers): Boolean = {
+    val allAnswers = Seq(
+      isAnswerComplete(ua, RegistrationInfoId),
+      isAnswerComplete(ua, BusinessNameId),
+      isAddressUKComplete(ua, CompanyUKContactAddressId, CompanyPreviousAddressId, CompanyAddressYearsId,
         Some(CompanyTradingOverAYearId), CompanyConfirmPreviousAddressId),
       isContactDetailsComplete(ua, CompanyEmailId, CompanyPhoneId)
     ) ++ (
@@ -215,6 +269,25 @@ class DataCompletion {
         isAnswerComplete(ua, IndividualDetailsId),
         isAnswerComplete(ua, IndividualDateOfBirthId),
         isAddressComplete(ua, IndividualContactAddressId, IndividualPreviousAddressId, IndividualAddressYearsId, None, IndividualConfirmPreviousAddressId),
+        isAnswerComplete(ua, IndividualEmailId),
+        isAnswerComplete(ua, IndividualPhoneId)
+      ) ++ (
+        if (mode == NormalMode) {
+          Seq(isAnswerComplete(ua, IndividualAddressId),
+            isAnswerComplete(ua, IndividualSameContactAddressId))
+        } else {
+          Nil
+        })
+    ).getOrElse(false)
+  }
+
+  def isIndividualUKComplete(ua: UserAnswers, mode: Mode): Boolean = {
+    isComplete(
+      Seq(
+        isAnswerComplete(ua, RegistrationInfoId),
+        isAnswerComplete(ua, IndividualDetailsId),
+        isAnswerComplete(ua, IndividualDateOfBirthId),
+        isAddressUKComplete(ua, IndividualUKContactAddressId, IndividualPreviousAddressId, IndividualAddressYearsId, None, IndividualConfirmPreviousAddressId),
         isAnswerComplete(ua, IndividualEmailId),
         isAnswerComplete(ua, IndividualPhoneId)
       ) ++ (
