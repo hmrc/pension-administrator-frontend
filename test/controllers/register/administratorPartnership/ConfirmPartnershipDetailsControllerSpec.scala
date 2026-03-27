@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,18 +23,22 @@ import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import models.*
+import models.admin.ukResidencyToggle
 import models.register.BusinessType.BusinessPartnership
+import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json.*
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
-import utils.{FakeNavigator, UserAnswers}
+import utils.{FakeNavigator, FeatureFlagMockHelper, UserAnswers}
 import views.html.register.administratorPartnership.confirmPartnershipDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
+class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase
+  with FeatureFlagMockHelper with BeforeAndAfterEach {
 
   private val testLimitedCompanyAddress = TolerantAddress(
     Some("Some Building"),
@@ -42,7 +46,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     Some("Some Village"),
     Some("Some Town"),
     Some("ZZ1 1ZZ"),
-    Some("UK")
+    Some("GB")
   )
 
   private val testBusinessPartnershipAddress = TolerantAddress(
@@ -51,7 +55,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
     Some("Some Village"),
     Some("Some Town"),
     Some("ZZ1 1ZZ"),
-    Some("UK")
+    Some("GB")
   )
 
   private val validLimitedCompanyUtr = "1234567890"
@@ -87,172 +91,231 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   val view: confirmPartnershipDetails = app.injector.instanceOf[confirmPartnershipDetails]
 
+  private def nonUKKickOut: Call = controllers.register.administratorPartnership.routes.PartnershipUpdateNonUKAddressController.onPageLoad()
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    FakeUserAnswersCacheConnector.reset()
+    featureFlagMock(ukResidencyToggle)
+  }
+
   "ConfirmPartnershipDetails Controller" must {
 
-    "return OK and the correct view for a GET" in {
-      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+    "return OK and the correct view for a GET" when {
+      "ukResidencyToggle is disabled" in {
+        val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString()
+      }
+      "ukResidencyToggle is enabled and address is GB" in {
+        featureFlagMock(ukResidencyToggle, isEnabled = true)
+        val result = controller(
+          dataRetrievalAction,
+          FakeUserAnswersCacheConnector,
+          fakeRegistrationConnector()
+        ).onPageLoad(NormalMode)(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString()
+      }
     }
 
-    "correctly map the Business Type to Organisation Type for the call to API4" in {
+    "redirect on a GET when the address returned is not GB and toggle enabled" in {
+      featureFlagMock(ukResidencyToggle, isEnabled = true)
 
-      val partnershipName = "MyPartnership"
-
-      val data = Json.obj(
-        BusinessTypeId.toString -> BusinessPartnership.toString,
-        BusinessNameId.toString -> partnershipName,
-        BusinessUTRId.toString -> validBusinessPartnershipUtr
+      val customConnector = fakeRegistrationConnector(
+        (_, _) => Some(testLimitedCompanyAddress.copy(countryOpt = Some("FR")))
       )
-      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString(partnershipName, testBusinessPartnershipAddress)
-    }
-
-    "redirect to the next page when the UTR is invalid" in {
-      val data = Json.obj(
-        BusinessTypeId.toString -> BusinessPartnership.toString,
-        BusinessNameId.toString -> "MyPartnership",
-        BusinessUTRId.toString -> invalidUtr
-      )
-      val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+      val result = controller(
+        dataRetrievalAction,
+        FakeUserAnswersCacheConnector,
+        customConnector
+      ).onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.register.administratorPartnership.routes.PartnershipCompanyNotFoundController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(nonUKKickOut.url)
     }
+  }
 
-    "data is saved on page load" in {
-      val dataCacheConnector = FakeUserAnswersCacheConnector
 
-      val expectedJson =
-        UserAnswers(data)
-          .set(PartnershipRegisteredAddressId)(testBusinessPartnershipAddress)
-          .flatMap(_.set(RegistrationInfoId)(regInfo))
-          .asOpt
-          .value
-          .json
-      val result = controller(dataRetrievalAction, dataCacheConnector).onPageLoad(NormalMode)(fakeRequest)
+  "correctly map the Business Type to Organisation Type for the call to API4" in {
 
-      status(result) mustBe OK
-      dataCacheConnector.lastUpsert.value mustBe expectedJson
-    }
+    val partnershipName = "MyPartnership"
 
-    "valid data is submitted" when {
-      "yes" which {
-        "upsert address and organisation name from api response" in {
-          val dataCacheConnector = FakeUserAnswersCacheConnector
+    val data = Json.obj(
+      BusinessTypeId.toString -> BusinessPartnership.toString,
+      BusinessNameId.toString -> partnershipName,
+      BusinessUTRId.toString -> validBusinessPartnershipUtr
+    )
+    val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+    val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-          val expectedJson =
-            UserAnswers(data)
-              .set(PartnershipRegisteredAddressId)(testBusinessPartnershipAddress)
-              .flatMap(_.set(RegistrationInfoId)(regInfo))
-              .asOpt
-              .value
-              .json
+    status(result) mustBe OK
+    contentAsString(result) mustBe viewAsString(partnershipName, testBusinessPartnershipAddress)
+  }
 
-          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+  "redirect to the next page when the UTR is invalid" in {
+    val data = Json.obj(
+      BusinessTypeId.toString -> BusinessPartnership.toString,
+      BusinessNameId.toString -> "MyPartnership",
+      BusinessUTRId.toString -> invalidUtr
+    )
+    val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+    val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
-          val result = controller(dataRetrievalAction, dataCacheConnector).onSubmit()(postRequest)
+    status(result) mustBe SEE_OTHER
+    redirectLocation(result) mustBe Some(controllers.register.administratorPartnership.routes.PartnershipCompanyNotFoundController.onPageLoad().url)
+  }
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(onwardRoute.url)
-          dataCacheConnector.lastUpsert.value mustBe expectedJson
-        }
-      }
-      "no" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
+  "data is saved on page load" in {
+    val dataCacheConnector = FakeUserAnswersCacheConnector
 
-        val result = controller(dataRetrievalAction).onSubmit()(postRequest)
+    val expectedJson =
+      UserAnswers(data)
+        .set(PartnershipRegisteredAddressId)(testBusinessPartnershipAddress)
+        .flatMap(_.set(RegistrationInfoId)(regInfo))
+        .asOpt
+        .value
+        .json
+    val result = controller(dataRetrievalAction, dataCacheConnector).onPageLoad(NormalMode)(fakeRequest)
+
+    status(result) mustBe OK
+    dataCacheConnector.lastUpsert.value mustBe expectedJson
+  }
+
+  "valid data is submitted" when {
+    "yes" which {
+      "upsert address and organisation name from api response" in {
+        val dataCacheConnector = FakeUserAnswersCacheConnector
+
+        val expectedJson =
+          UserAnswers(data)
+            .set(PartnershipRegisteredAddressId)(testBusinessPartnershipAddress)
+            .flatMap(_.set(RegistrationInfoId)(regInfo))
+            .asOpt
+            .value
+            .json
+
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+
+        val result = controller(dataRetrievalAction, dataCacheConnector).onSubmit()(postRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+        dataCacheConnector.lastUpsert.value mustBe expectedJson
       }
     }
+    "no" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
-    "redirect to Session Expired" when {
-      "GET" when {
-        "no business details data is found" in {
-          val data = Json.obj(
-            BusinessTypeId.toString -> BusinessPartnership.toString
-          )
+      val result = controller(dataRetrievalAction).onSubmit()(postRequest)
 
-          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
-        }
-        "no business type data is found" in {
-          val data = Json.obj(
-            BusinessNameId.toString -> "MyPartnership"
-          )
-
-          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
-        }
-
-        "no existing data is found" in {
-          val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
-        }
-      }
-      "POST" when {
-        "no business details data is found" in {
-          val data = Json.obj(
-            BusinessTypeId.toString -> BusinessPartnership.toString
-          )
-
-          val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
-          val result = controller(dataRetrievalAction).onSubmit()(fakeRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
-        }
-
-        "no existing data is found" in {
-          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
-          val result = controller(dontGetAnyData).onSubmit()(postRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
-        }
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad().url)
     }
-
   }
+
+  "redirect to Session Expired" when {
+    "GET" when {
+      "no business details data is found" in {
+        val data = Json.obj(
+          BusinessTypeId.toString -> BusinessPartnership.toString
+        )
+
+        val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+        val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+      }
+      "no business type data is found" in {
+        val data = Json.obj(
+          BusinessNameId.toString -> "MyPartnership"
+        )
+
+        val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+        val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+      }
+
+      "no existing data is found" in {
+        val result = controller(dontGetAnyData).onPageLoad(NormalMode)(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+      }
+    }
+    "POST" when {
+      "no business details data is found" in {
+        val data = Json.obj(
+          BusinessTypeId.toString -> BusinessPartnership.toString
+        )
+
+        val dataRetrievalAction = new FakeDataRetrievalAction(Some(data))
+        val result = controller(dataRetrievalAction).onSubmit()(fakeRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+      }
+
+      "no existing data is found" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+        val result = controller(dontGetAnyData).onSubmit()(postRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.SessionExpiredController.onPageLoad.url)
+      }
+    }
+  }
+
 
   private def onwardRoute = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
 
-  private def fakeRegistrationConnector = new FakeRegistrationConnector {
-    override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistrationStatus] = {
+  private def fakeRegistrationConnector(addressOverride: (String, Organisation) => Option[TolerantAddress] =
+                                        (_, organisation) => organisation.organisationType match {
+                                          case OrganisationType.CorporateBody => Some(testLimitedCompanyAddress)
+                                          case OrganisationType.Partnership => Some(testBusinessPartnershipAddress)
+                                          case _ => None
+                                        }) = new FakeRegistrationConnector {
+    override def registerWithIdOrganisation(utr: String,
+                                            organisation: Organisation,
+                                            legalStatus: RegistrationLegalStatus
+                                           )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistrationStatus] = {
+      val regInfo: RegistrationInfo = RegistrationInfo(
+        RegistrationLegalStatus.Partnership,
+        sapNumber,
+        noIdentifier = false,
+        RegistrationCustomerType.UK,
+        Some(RegistrationIdType.UTR),
+        Some(utr)
+      )
+      def build(addr: TolerantAddress): OrganizationRegistrationStatus =
+        OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, addr), regInfo)
 
-      if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationType.CorporateBody) {
-        Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), regInfo))
-      }
-      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationType.Partnership) {
-        Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), regInfo))
-      }
-      else {
-        Future.successful(OrganisationNotFound)
+      (utr, organisation.organisationType) match {
+        case (`validLimitedCompanyUtr`, OrganisationType.CorporateBody) =>
+          addressOverride(utr, organisation) match {
+            case Some(addr) => Future.successful(build(addr))
+            case None => Future.successful(OrganisationNotFound)
+          }
+        case (`validBusinessPartnershipUtr`, OrganisationType.Partnership) =>
+          addressOverride(utr, organisation) match {
+            case Some(addr) => Future.successful(build(addr))
+            case None => Future.successful(OrganisationNotFound)
+          }
+        case _ => Future.successful(OrganisationNotFound)
       }
     }
   }
 
   private def controller(
-    dataRetrievalAction: DataRetrievalAction,
-    dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
-  ) =
+                          dataRetrievalAction: DataRetrievalAction,
+                          dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
+                          registrationConnector: FakeRegistrationConnector = fakeRegistrationConnector()
+                        ) =
     new ConfirmPartnershipDetailsController(
       dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -260,9 +323,10 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      fakeRegistrationConnector,
+      registrationConnector,
       formProvider,
       countryOptions,
+      mockFeatureFlagService,
       controllerComponents,
       view
     )

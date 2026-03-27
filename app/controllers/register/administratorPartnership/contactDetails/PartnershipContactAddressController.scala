@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.address.ManualAddressController
-import forms.{AddressFormProvider, UKOnlyAddressFormProvider}
+import forms.{UKAddressFormProvider, UKOnlyAddressFormProvider}
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipUKContactAddressId}
 import models.admin.ukResidencyToggle
@@ -46,7 +46,7 @@ class PartnershipContactAddressController @Inject()(
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
-                                                     formProvider: AddressFormProvider,
+                                                     formProvider: UKAddressFormProvider,
                                                      formProviderUKOnly: UKOnlyAddressFormProvider,
                                                      featureFlagService: FeatureFlagService,
                                                      val countryOptions: CountryOptions,

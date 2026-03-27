@@ -47,7 +47,7 @@ class PartnershipPreviousAddressController @Inject()(
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
                                                       formProvider: UKAddressFormProvider,
-                                                      allCountriesformProvider: AddressFormProvider,
+                                                      allCountriesFormProvider: AddressFormProvider,
                                                       val countryOptions: CountryOptions,
                                                       val controllerComponents: MessagesControllerComponents,
                                                       featureFlagService: FeatureFlagService,
@@ -60,7 +60,7 @@ class PartnershipPreviousAddressController @Inject()(
   private val isUkHintText = true
 
   override protected val form: Form[Address] = formProvider()
-  private val formAllCountries: Form[Address] = allCountriesformProvider()
+  private val formAllCountries: Form[Address] = allCountriesFormProvider()
 
   private def viewmodel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
     postCall(mode),
