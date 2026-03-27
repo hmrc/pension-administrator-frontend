@@ -268,6 +268,7 @@ companyPreviousAddressPostCodeLookup.enterPostcode = You can {0}
 companyPreviousAddressPostCodeLookup.enterPostcode.link = enter the address manually
 
 contactAddressPostCodeLookup.heading = What is {0}’s postcode?
+contactAddressPostCodeLookup.companyPartnership.heading = What is the postcode of {0}’s contact address?
 
 companyAddressList.checkYourAnswersLabel = companyAddressList
 
@@ -561,6 +562,14 @@ businessType.unlimitedCompany.lc = unlimited company
 businessType.overseasCompany.lc = overseas company
 nonUKBusinessType.company.lc = company
 nonUKBusinessType.businessPartnership.lc = partnership
+
+# new content - company update non-uk address kick out page
+updateNonUKAddress.company.title = The company cannot register as a pension scheme administrator
+updateNonUKAddress.company.h1 = You need to update the company՚s address details before registering
+updateNonUKAddress.company.p1 = The company’s address is not in the UK. The company must be resident in the UK to
+updateNonUKAddress.company.p1.link-text = register as a pension scheme administrator
+updateNonUKAddress.company.p2 = If the company is resident in the UK,
+updateNonUKAddress.company.p2.link-text = tell HMRC about a change of address
 
 # new content - partnership update non-uk address
 updateNonUKAddress.partnership.title = The partnership cannot register as a pension scheme administrator
@@ -1157,11 +1166,15 @@ manual.enter.address.para = The address must be in the UK.
 postcode.lookup.heading = What is {0}’s postcode?
 previous.postcode.lookup.heading = What was {0}’s previous postcode?
 
+#new headings company
+company.postcode.lookup.heading = What is {0}’s postcode?
+company.previous.postcode.lookup.heading = What is the postcode of {0}’s previous contact address?
+
 select.address.heading = What is {0}’s address?
 select.previous.address.heading = What was {0}’s previous address?
 
-enter.address.heading = Enter {0}’s address
-enter.previous.address.heading = Enter {0}’s previous address
+enter.address.heading = Enter {0}’s contact address
+enter.previous.address.heading = Enter {0}’s previous contact address
 
 manual.entry.text = You can {0}
 manual.entry.link = enter the address manually.

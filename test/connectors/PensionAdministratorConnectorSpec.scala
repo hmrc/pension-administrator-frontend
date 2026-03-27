@@ -17,14 +17,17 @@
 package connectors
 
 import com.fasterxml.jackson.core.JsonParseException
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import identifiers.register.BusinessTypeId
+import identifiers.register.company.CompanyUKContactAddressId
+import identifiers.register.individual.IndividualUKContactAddressId
+import models.AddressUKOnly
 import models.register.{BusinessType, PsaSubscriptionResponse}
 import org.scalatest.OptionValues
 import org.scalatest.flatspec.AsyncFlatSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.Application
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsResultException, Json}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
@@ -32,7 +35,7 @@ import utils.{UnrecognisedHttpResponseException, UserAnswers, WireMockHelper}
 
 class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with WireMockHelper {
 
-  import PensionAdministratorConnectorSpec._
+  import PensionAdministratorConnectorSpec.*
 
   override protected lazy val app: Application =
     new GuiceApplicationBuilder()
@@ -59,10 +62,52 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
 
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
-    connector.registerPsa(userAnswers).map(subscription =>
+    connector.registerPsa(userAnswers, ukResidency = false).map(subscription =>
       subscription shouldBe psaSubscriptionResponse
     )
 
+  }
+
+  it should "add countryCode=GB to address fields when ukResidency is true for Individual address" in {
+    val userAnswersWithAddress = UserAnswers()
+      .set(IndividualUKContactAddressId)(AddressUKOnly("line1", "line2", Some("line3"), Some("line4"), "NE1 1NE")).asOpt.value
+    server.stubFor(
+      post(urlEqualTo(registerPsaUrl))
+        .withHeader("Content-Type", equalTo("application/json"))
+        .withRequestBody(matchingJsonPath("$.individualContactAddress.countryCode", equalTo("GB")))
+        .willReturn(
+          ok(validResponse)
+            .withHeader("Content-Type", "application/json")
+        )
+    )
+
+    val connector = injector.instanceOf[PensionAdministratorConnector]
+
+    connector.registerPsa(userAnswersWithAddress, ukResidency = true).map { response =>
+      response shouldBe psaSubscriptionResponse
+    }
+  }
+
+  it should "add countryCode=GB to address fields when ukResidency is true for Company address" in {
+    val userAnswersWithAddress = UserAnswers()
+      .set(BusinessTypeId)(BusinessType.LimitedCompany).asOpt.value
+      .set(CompanyUKContactAddressId)(AddressUKOnly("line1", "line2", Some("line3"), Some("line4"), "NE1 1NE")).asOpt.value
+
+    server.stubFor(
+      post(urlEqualTo(registerPsaUrl))
+        .withHeader("Content-Type", equalTo("application/json"))
+        .withRequestBody(matchingJsonPath("$.companyContactAddress.countryCode", equalTo("GB")))
+        .willReturn(
+          ok(validResponse)
+            .withHeader("Content-Type", "application/json")
+        )
+    )
+
+    val connector = injector.instanceOf[PensionAdministratorConnector]
+
+    connector.registerPsa(userAnswersWithAddress, ukResidency = true).map { response =>
+      response shouldBe psaSubscriptionResponse
+    }
   }
 
   it should "throw IllegalArgumentException if the response status is not 200 OK" in {
@@ -79,7 +124,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[UnrecognisedHttpResponseException] {
-      connector.registerPsa(userAnswers)
+      connector.registerPsa(userAnswers, ukResidency = false)
     }
 
   }
@@ -97,7 +142,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[JsonParseException] {
-      connector.registerPsa(userAnswers)
+      connector.registerPsa(userAnswers, ukResidency = false)
     }
 
   }
@@ -115,7 +160,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[JsResultException] {
-      connector.registerPsa(userAnswers)
+      connector.registerPsa(userAnswers, ukResidency = false)
     }
 
   }
@@ -133,7 +178,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[BadRequestException] {
-      connector.registerPsa(userAnswers)
+      connector.registerPsa(userAnswers, ukResidency = false)
     }
   }
 

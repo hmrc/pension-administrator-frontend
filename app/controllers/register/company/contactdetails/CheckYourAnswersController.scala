@@ -19,10 +19,12 @@ package controllers.register.company.contactdetails
 import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.company
-import identifiers.register.company._
+import identifiers.register.company.*
+import models.admin.ukResidencyToggle
 import models.{CheckMode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 import utils.annotations.AuthWithNoIV
@@ -31,34 +33,45 @@ import viewmodels.{AnswerSection, Link, Section}
 import views.html.check_your_answers
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             @AuthWithNoIV authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
+                                            featureFlagService: FeatureFlagService,
                                             checkYourAnswersView: check_your_answers
                                           )
-                                          (implicit countryOptions: CountryOptions) extends FrontendBaseController
+                                          (implicit countryOptions: CountryOptions,
+                                           val executionContext: ExecutionContext) extends FrontendBaseController
   with I18nSupport with Retrievals {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
-      Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage,
-        Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl()))
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
+        Future.successful(Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers, ukResidency.isEnabled), nextPage,
+          Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl())))
+      }
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>
     Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
   }
 
-  private def checkYourAnswersSummary(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
-    import company.routes._
+  private def checkYourAnswersSummary(userAnswers: UserAnswers, ukResidency: Boolean)(implicit messages: Messages): Seq[Section] = {
+    import company.routes.*
     val isCompanyTradingOverAYear = userAnswers.get(CompanyTradingOverAYearId).isDefined
+    val companyContactAddress = if (ukResidency) {
+      CompanyUKContactAddressId.cya.row(CompanyUKContactAddressId)
+    }
+    else {
+      CompanyContactAddressId.cya.row(CompanyContactAddressId)
+    }
     Seq(
       AnswerSection(None,
-        CompanyContactAddressId.cya.row(CompanyContactAddressId)(Some(Link(CompanySameContactAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
+        companyContactAddress(Some(Link(CompanySameContactAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
           CompanyAddressYearsId.cya.row(CompanyAddressYearsId)(Some(Link(CompanyAddressYearsController.onPageLoad(CheckMode).url)), userAnswers) ++
           (if (isCompanyTradingOverAYear) {
             CompanyTradingOverAYearId.cya.row(CompanyTradingOverAYearId)(Some(Link(CompanyTradingOverAYearController.onPageLoad(CheckMode).url)), userAnswers)

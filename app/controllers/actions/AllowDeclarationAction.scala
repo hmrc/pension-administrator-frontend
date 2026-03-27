@@ -27,6 +27,8 @@ import play.api.mvc.{ActionFilter, Result}
 import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import utils.UserAnswers
 import utils.dataCompletion.DataCompletion
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
+import models.admin.ukResidencyToggle
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,13 +37,22 @@ class AllowDeclarationAction(mode: Mode, dataCompletion: DataCompletion, feature
 
   override protected def filter[A](request: OptionalDataRequest[A]): Future[Option[Result]] = {
     featureFlagService.get(ukResidencyToggle).map { ukResidency =>
+
       val userAnswers = request.userAnswers.getOrElse(UserAnswers())
 
       val isComplete = userAnswers.get(RegistrationInfoId).map(_.legalStatus) match {
         case Some(Individual) =>
-          dataCompletion.isIndividualComplete(userAnswers, mode)
+          if (ukResidency.isEnabled) {
+            dataCompletion.isIndividualUKComplete(userAnswers, mode)
+          } else {
+            dataCompletion.isIndividualComplete(userAnswers, mode)
+          }
         case Some(LimitedCompany) =>
-          dataCompletion.isCompanyComplete(userAnswers, mode)
+          if (ukResidency.isEnabled) {
+            dataCompletion.isCompanyUKComplete(userAnswers, mode)
+          } else {
+            dataCompletion.isCompanyComplete(userAnswers, mode)
+          }
         case Some(Partnership) =>
           if (ukResidency.isEnabled) {
             dataCompletion.isPartnershipUKComplete(userAnswers, mode)

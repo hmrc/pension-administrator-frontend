@@ -18,31 +18,34 @@ package controllers.register.company
 
 import connectors.cache.{FakeUserAnswersCacheConnector, UserAnswersCacheConnector}
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import forms.AddressFormProvider
 import forms.register.company.CompanyAddressFormProvider
-import identifiers.register.company._
+import identifiers.register.company.*
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
-import models._
+import models.*
+import models.admin.ukResidencyToggle
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import play.api.test.Helpers.*
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
-import utils.{AddressHelper, UserAnswers}
+import utils.{AddressHelper, FeatureFlagMockHelper, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
-import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
+class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with FeatureFlagMockHelper {
 
   override protected def beforeEach(): Unit = {
+    featureFlagMock(ukResidencyToggle)
     FakeUserAnswersCacheConnector.reset()
   }
+
+  private def nonUKKickOut: Call = controllers.register.company.routes.CompanyUpdateNonUKAddressController.onPageLoad()
 
   val view: confirmCompanyDetails = app.injector.instanceOf[confirmCompanyDetails]
 
@@ -117,6 +120,50 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
     }
 
+    "return OK when address is GB and toggle enabled" in {
+      featureFlagMock(ukResidencyToggle, isEnabled = true)
+
+      val result = controller(
+        dataRetrievalAction,
+        FakeUserAnswersCacheConnector,
+        fakeRegistrationConnector()
+      ).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString()
+    }
+
+    "redirect on a GET when the address returned is not GB and toggle enabled" in {
+      featureFlagMock(ukResidencyToggle, isEnabled = true)
+
+      val customConnector = fakeRegistrationConnector(
+        (_, _) => Some(testLimitedCompanyAddress.copy(countryOpt = Some("FR")))
+      )
+
+      val result = controller(
+        dataRetrievalAction,
+        FakeUserAnswersCacheConnector,
+        customConnector
+      ).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(nonUKKickOut.url)
+    }
+
+    "NOT redirect when address is non-GB and toggle disabled" in {
+      val customConnector = fakeRegistrationConnector(
+        (_, _) => Some(testLimitedCompanyAddress.copy(countryOpt = Some("FR")))
+      )
+
+      val result = controller(
+        new FakeDataRetrievalAction(Some(data)),
+        FakeUserAnswersCacheConnector,
+        customConnector
+      ).onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+    }
+
     "correctly map the Business Type to Organisation Type for the call to API4" in {
 
       val companyName = "MyPartnership"
@@ -164,14 +211,14 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
     "valid data is submitted" when {
       "yes must redirect to next page" in {
-          val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
-          val result = controller(dataRetrievalActionForPost).onSubmit()(postRequest)
+        val result = controller(dataRetrievalActionForPost).onSubmit()(postRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(onwardRoute.url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
 
-        }
+      }
       "yes must redirect to the address page when a field is missing" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
 
@@ -278,18 +325,41 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
         }
       }
     }
+    "return BAD_REQUEST when invalid form submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid"))
+
+      val result = controller(dataRetrievalActionForPost).onSubmit()(postRequest)
+
+      status(result) mustBe BAD_REQUEST
+
+      val boundForm = form.bind(Map("value" -> "invalid"))
+
+      contentAsString(result) mustBe view(
+        boundForm,
+        testLimitedCompanyAddress,
+        companyName,
+        countryOptions
+      )(fakeRequest, messages).toString
+    }
 
   }
 
   private def onwardRoute: Call = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
 
-
-
-  private def fakeRegistrationConnector = new FakeRegistrationConnector {
-    override def registerWithIdOrganisation
-    (utr: String, organisation: Organisation, legalStatus: RegistrationLegalStatus)
-    (implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[OrganizationRegistrationStatus] = {
-
+  private def fakeRegistrationConnector(
+                                         addressOverride: (String, Organisation) => Option[TolerantAddress] =
+                                         (_, organisation) =>
+                                           organisation.organisationType match {
+                                             case OrganisationType.CorporateBody => Some(testLimitedCompanyAddress)
+                                             case OrganisationType.Partnership => Some(testBusinessPartnershipAddress)
+                                             case _ => None
+                                           }
+                                       ) = new FakeRegistrationConnector {
+    override def registerWithIdOrganisation(
+                                             utr: String,
+                                             organisation: Organisation,
+                                             legalStatus: RegistrationLegalStatus
+                                           )(implicit hc: HeaderCarrier, executionContext: ExecutionContext): Future[OrganizationRegistrationStatus] = {
       val info = RegistrationInfo(
         RegistrationLegalStatus.LimitedCompany,
         sapNumber,
@@ -298,39 +368,45 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
         Some(RegistrationIdType.UTR),
         Some(utr)
       )
-
-      if (utr == validLimitedCompanyUtr && organisation.organisationType == OrganisationType.CorporateBody) {
-        Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testLimitedCompanyAddress), info))
-      }
-      else if (utr == validBusinessPartnershipUtr && organisation.organisationType == OrganisationType.Partnership) {
-        Future.successful(OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, testBusinessPartnershipAddress), info))
-      }
-      else {
-        Future.successful(OrganisationNotFound)
+      def build(addr: TolerantAddress): OrganizationRegistrationStatus =
+        OrganizationRegistration(
+          OrganizationRegisterWithIdResponse(organisation, addr),
+          info
+        )
+      (utr, organisation.organisationType) match {
+        case (`validLimitedCompanyUtr`, OrganisationType.CorporateBody) =>
+          addressOverride(utr, organisation) match {
+            case Some(addr) => Future.successful(build(addr))
+            case None => Future.successful(OrganisationNotFound)
+          }
+        case (`validBusinessPartnershipUtr`, OrganisationType.Partnership) =>
+          addressOverride(utr, organisation) match {
+            case Some(addr) => Future.successful(build(addr))
+            case None => Future.successful(OrganisationNotFound)
+          }
+        case _ =>
+          Future.successful(OrganisationNotFound)
       }
     }
-
-    override def registerWithNoIdIndividual(firstName: String, lastName: String, address: Address, dateOfBirth: LocalDate
-                                           )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RegistrationInfo] =
-      Future.failed(new NotFoundException(s"Unknown UTR"))
   }
 
-
   private def controller(
-    dataRetrievalAction: DataRetrievalAction,
-    dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector
-  ) =
+                          dataRetrievalAction: DataRetrievalAction,
+                          dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
+                          registrationConnector: FakeRegistrationConnector = fakeRegistrationConnector()
+                        ) =
     new ConfirmCompanyDetailsController(
       dataCacheConnector,
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      fakeRegistrationConnector,
+      registrationConnector,
       formProvider,
       addressFormProvider,
       countryOptions,
       controllerComponents,
+      mockFeatureFlagService,
       view,
       addressHelper
     )

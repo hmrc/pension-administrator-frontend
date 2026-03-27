@@ -84,8 +84,8 @@ case object AreYouInUKId extends TypedIdentifier[Boolean] {
 
   private def removeCompanyData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(BusinessNameId, BusinessUTRId, CompanySameContactAddressId,
-        CompanyAddressListId, CompanyContactAddressId, CompanyContactAddressListId, CompanyAddressYearsId, CompanyPreviousAddressId,
-        CompanyPreviousAddressPostCodeLookupId, CompanyEmailId, CompanyPhoneId, MoreThanTenDirectorsId))
+      CompanyAddressListId, CompanyContactAddressId, CompanyUKContactAddressId, CompanyContactAddressListId, CompanyAddressYearsId, CompanyPreviousAddressId,
+      CompanyPreviousAddressPostCodeLookupId, CompanyEmailId, CompanyPhoneId, MoreThanTenDirectorsId))
       .flatMap(_.remove(DirectorId))
   }
 }

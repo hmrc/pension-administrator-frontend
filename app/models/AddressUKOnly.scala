@@ -32,6 +32,7 @@ case class AddressUKOnly(addressLine1: String,
                   ) {
 
   def lines: Seq[String] = {
+
     Seq(
       Some(addressLine1),
       Some(addressLine2),

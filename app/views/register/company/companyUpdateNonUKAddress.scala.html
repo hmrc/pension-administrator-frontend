@@ -1,0 +1,59 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import components.link
+@import config.FrontendAppConfig
+
+@this(
+        layout: templates.Layout,
+        link: link,
+        appConfig: FrontendAppConfig
+)
+
+@()(implicit request: Request[?], messages: Messages)
+
+@layout(pageTitle = messages("updateNonUKAddress.company.title")) {
+
+    @components.heading(messages("updateNonUKAddress.company.h1"))
+
+    <p class="govuk-body">
+        @messages("updateNonUKAddress.company.p1")
+        @link(
+            link = appConfig.registerAdministratorGuidanceUrl,
+            messageKey = messages("updateNonUKAddress.company.p1.link-text"),
+            id = Some("company-non-uk-administrator"),
+            fullStop = true,
+            inParagraph = true
+        )
+    </p>
+
+    <p class="govuk-body">
+        @messages("updateNonUKAddress.company.p2")
+        @link(
+            link = appConfig.tellHMRCCompanyAddressChangeUrl,
+            messageKey = messages("updateNonUKAddress.company.p2.link-text"),
+            id = Some("company-change-of-address"),
+            inParagraph = true
+        )
+    </p>
+
+    @link(
+        link = appConfig.govUkUrl,
+        messageKey = messages("site.return.govuk"),
+        id = Some("return-gov-uk")
+    )
+
+}

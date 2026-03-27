@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @ImplementedBy(classOf[PensionAdministratorConnectorImpl])
 trait PensionAdministratorConnector {
 
-  def registerPsa(answers: UserAnswers)
+  def registerPsa(answers: UserAnswers, ukResidency: Boolean)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse]
 
   def updatePsa(answers: UserAnswers)
@@ -46,13 +46,32 @@ class PensionAdministratorConnectorImpl @Inject()(httpV2Client: HttpClientV2, co
     with HttpResponseHelper
     with Logging {
 
-  def registerPsa(answers: UserAnswers)
+  private val addressPath = Seq(
+    __ \ "individualContactAddress",
+    __ \ "companyContactAddress",
+    __ \ "partnershipContactAddress"
+  )
+  
+  private def addCountryCode(json: JsValue): JsValue = {
+    addressPath.foldLeft(json) { (acc, path) =>
+      acc.transform(
+        path.json.update(
+          __.read[JsObject].map { obj =>
+            obj + ("countryCode" -> obj.value.getOrElse("countryCode", JsString("GB")))
+          }
+        )
+      ).getOrElse(acc)
+    }
+  }
+
+  def registerPsa(answers: UserAnswers, ukResidency: Boolean)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
     val url = url"${config.registerPsaUrl}"
-
+    
+    val jsonPayload = if(ukResidency) addCountryCode(answers.json) else answers.json
     httpV2Client
       .post(url)
-      .withBody(answers.json)
+      .withBody(jsonPayload)
       .execute[HttpResponse]
       .map { response =>
         response.status match {

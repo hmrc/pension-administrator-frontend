@@ -28,6 +28,7 @@ case object CompanySameContactAddressId extends TypedIdentifier[Boolean] {
   override def cleanup(value: Option[Boolean], answers: UserAnswers): JsResult[UserAnswers] = {
     answers
       .remove(CompanyContactAddressId)
+      .flatMap(_.remove(CompanyUKContactAddressId))
       .flatMap(_.remove(CompanyContactAddressPostCodeLookupId))
       .flatMap(_.remove(CompanyAddressYearsId))
       .flatMap(_.remove(CompanyPreviousAddressPostCodeLookupId))

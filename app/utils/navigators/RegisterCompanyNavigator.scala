@@ -30,7 +30,7 @@ import utils.{Navigator, UserAnswers}
 
 @Singleton
 class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends Navigator {
-  
+
   // scalastyle:off cyclomatic.complexity
   // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
@@ -65,6 +65,8 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
     case CompanyContactAddressPostCodeLookupId => nextPageOrNonUkRedirect(ua, routes.CompanyContactAddressListController.onPageLoad(NormalMode))
 
     case CompanyContactAddressId => nextPageOrNonUkRedirect(ua, routes.CompanyAddressYearsController.onPageLoad(NormalMode))
+
+    case CompanyUKContactAddressId => nextPageOrNonUkRedirect(ua, routes.CompanyAddressYearsController.onPageLoad(NormalMode))
 
     case CompanyAddressYearsId => nextPageOrNonUkRedirect(ua, companyAddressYearsIdRoutes(ua))
 
@@ -112,6 +114,8 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
       routes.CompanyContactAddressListController.onPageLoad(CheckMode)
     case CompanyContactAddressId =>
       checkYourAnswers
+    case CompanyUKContactAddressId =>
+      checkYourAnswers
     case CompanyAddressYearsId =>
       companyAddressYearsCheckIdRoutes(ua)
     case CompanyTradingOverAYearId =>
@@ -130,6 +134,8 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
     case CompanyContactAddressPostCodeLookupId =>
       routes.CompanyContactAddressListController.onPageLoad(UpdateMode)
     case CompanyContactAddressId =>
+      routes.CompanyConfirmPreviousAddressController.onPageLoad()
+    case CompanyUKContactAddressId =>
       routes.CompanyConfirmPreviousAddressController.onPageLoad()
     case CompanyAddressYearsId =>
       companyAddressYearsUpdateIdRoutes(ua)

@@ -62,13 +62,13 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
   }
 
   protected def getWithForm(
-                             id: TypedIdentifier[Address],
-                             selectedId: TypedIdentifier[TolerantAddress],
-                             viewModel: ManualAddressViewModel,
-                             mode: Mode,
-                             euAndUKForm: Form[Address],
-                             isUkHintText: Boolean = false
-                           )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+                            id: TypedIdentifier[Address],
+                            selectedId: TypedIdentifier[TolerantAddress],
+                            viewModel: ManualAddressViewModel,
+                            mode: Mode,
+                            euAndUKForm: Form[Address],
+                            isUkHintText: Boolean = false
+                          )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val preparedForm = request.userAnswers.get(id) match {
       case None => request.userAnswers.get(selectedId) match {
         case Some(value) => form.fill(value.toPrepopAddress)
@@ -119,14 +119,12 @@ trait ManualAddressController extends FrontendBaseController with Retrievals wit
   }
 
   protected def postWithForm(
-                              id: TypedIdentifier[Address],
-                              viewModel: ManualAddressViewModel,
-                              mode: Mode,
-                              form: Form[Address],
-                              isUkHintText: Boolean = false
-
-
-                            )(implicit request: DataRequest[AnyContent]): Future[Result] = {
+                      id: TypedIdentifier[Address],
+                      viewModel: ManualAddressViewModel,
+                      mode: Mode,
+                      form: Form[Address],
+                      isUkHintText: Boolean = false
+                    )(implicit request: DataRequest[AnyContent]): Future[Result] = {
     form.bindFromRequest().fold(
       (formWithError: Form[?]) => Future.successful(BadRequest(view(formWithError, viewModel, mode, isUkHintText))),
       address => {
