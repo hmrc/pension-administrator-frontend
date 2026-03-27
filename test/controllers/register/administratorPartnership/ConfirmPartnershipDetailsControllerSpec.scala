@@ -95,7 +95,6 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    FakeUserAnswersCacheConnector.reset()
     featureFlagMock(ukResidencyToggle)
   }
 
@@ -284,14 +283,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase
                                             organisation: Organisation,
                                             legalStatus: RegistrationLegalStatus
                                            )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[OrganizationRegistrationStatus] = {
-      val regInfo: RegistrationInfo = RegistrationInfo(
-        RegistrationLegalStatus.Partnership,
-        sapNumber,
-        noIdentifier = false,
-        RegistrationCustomerType.UK,
-        Some(RegistrationIdType.UTR),
-        Some(utr)
-      )
+
       def build(addr: TolerantAddress): OrganizationRegistrationStatus =
         OrganizationRegistration(OrganizationRegisterWithIdResponse(organisation, addr), regInfo)
 
