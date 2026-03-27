@@ -27,8 +27,6 @@ import play.api.mvc.{ActionFilter, Result}
 import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import utils.UserAnswers
 import utils.dataCompletion.DataCompletion
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
-import models.admin.ukResidencyToggle
 
 import scala.concurrent.{ExecutionContext, Future}
 

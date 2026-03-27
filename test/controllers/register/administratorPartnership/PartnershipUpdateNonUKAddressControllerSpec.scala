@@ -16,16 +16,17 @@
 
 package controllers.register.administratorPartnership
 
-import base.SpecBase
-import controllers.actions.{DataRequiredActionImpl, FakeAllowAccessProvider, FakeAuthAction}
+import controllers.ControllerSpecBase
+import models.NormalMode
+import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import play.api.test.Helpers.*
 import views.html.register.administratorPartnership.partnershipUpdateNonUKAddress
 
-class PartnershipUpdateNonUKAddressControllerSpec extends SpecBase {
+class PartnershipUpdateNonUKAddressControllerSpec extends ControllerSpecBase {
 
   val view: partnershipUpdateNonUKAddress = app.injector.instanceOf[partnershipUpdateNonUKAddress]
 
-  def controller: PartnershipUpdateNonUKAddressController =
+  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData): PartnershipUpdateNonUKAddressController = {
     new PartnershipUpdateNonUKAddressController(
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
@@ -34,14 +35,13 @@ class PartnershipUpdateNonUKAddressControllerSpec extends SpecBase {
       controllerComponents,
       view
     )
+  }
 
-  def viewAsString: String =
-    view()(fakeRequest, messages).toString()
+  def viewAsString: String = view()(fakeRequest, messages).toString()
 
   "PartnershipUpdateNonUKAddressController" must {
     "return OK and the correct view" in {
-
-      val result = controller.onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString
