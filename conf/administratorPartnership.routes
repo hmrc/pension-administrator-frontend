@@ -8,6 +8,8 @@ POST        /:mode/contact-address-1-year                 controllers.register.a
 GET         /confirm-partnership-address                  controllers.register.administratorPartnership.ConfirmPartnershipDetailsController.onPageLoad(mode: Mode = NormalMode)
 POST        /confirm-partnership-address                  controllers.register.administratorPartnership.ConfirmPartnershipDetailsController.onSubmit()
 
+GET         /update-non-uk-address                        controllers.register.administratorPartnership.PartnershipUpdateNonUKAddressController.onPageLoad(mode: Mode = NormalMode)
+
 GET         /select-contact-address                       controllers.register.administratorPartnership.contactDetails.PartnershipContactAddressListController.onPageLoad(mode: Mode = NormalMode)
 POST        /select-contact-address                       controllers.register.administratorPartnership.contactDetails.PartnershipContactAddressListController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/select-contact-address                 controllers.register.administratorPartnership.contactDetails.PartnershipContactAddressListController.onPageLoad(mode: Mode)

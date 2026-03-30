@@ -58,8 +58,8 @@ class PartnershipContactAddressListController @Inject()(
         routes.PartnershipContactAddressListController.onSubmit(mode),
         routes.PartnershipContactAddressController.onPageLoad(mode),
         addresses,
-        Message("select.address.heading", Message("thePartnership")),
-        Message("select.address.heading", entityName),
+        Message("companyPartnership.select.contact.address.heading", Message("thePartnership")),
+        Message("companyPartnership.select.contact.address.heading", entityName),
         psaName = psaName(),
         partnershipName = Some(entityName),
         returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)

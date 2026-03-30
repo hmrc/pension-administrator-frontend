@@ -18,29 +18,37 @@ package controllers.register.administratorPartnership.contactDetails
 
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
-import controllers.actions._
-import forms.UKAddressFormProvider
+import controllers.actions.*
+import forms.{AddressFormProvider, UKAddressFormProvider}
+import models.admin.ukResidencyToggle
 import models.{Address, NormalMode}
-import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.data.Form
 import play.api.mvc.Call
-import play.api.test.Helpers.{contentAsString, _}
-import utils._
+import play.api.test.Helpers.{contentAsString, *}
+import utils.*
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
-class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with ScalaFutures with OptionValues {
+class PartnershipPreviousAddressControllerSpec
+  extends ControllerSpecBase
+    with ScalaFutures
+    with OptionValues
+    with FeatureFlagMockHelper
+    with BeforeAndAfterEach {
 
   val view: manualAddress = app.injector.instanceOf[manualAddress]
 
   val messagePrefix = "enter.previous.address"
   val formProvider = new UKAddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
-  val form: Form[Address] = formProvider("error.country.invalid")
+  val allCountriesFormProvider = new AddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
+  val form: Form[Address] = formProvider()
+  val formAllCountries: Form[Address] = allCountriesFormProvider()
 
-  def viewmodel = ManualAddressViewModel(
+  def viewModel = ManualAddressViewModel(
     postCall = routes.PartnershipPreviousAddressController.onSubmit(NormalMode),
     countryOptions = countryOptions.options,
     title = Message(s"$messagePrefix.heading", Message("thePartnership")),
@@ -49,36 +57,87 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with S
     returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )
 
+
+  private def viewAsStringAllCountries(form: Form[?] = formAllCountries) =
+    view(
+      form,
+      viewModel,
+      NormalMode,
+      isUkHintText = false
+    )(fakeRequest, messages).toString()
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    featureFlagMock(ukResidencyToggle)
+  }
+
   "PartnershipPreviousAddress Controller" must {
-    "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+    "return OK and the correct view for a GET" when {
+      "ukResidency toggle is disabled" in {
+        val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString()
+      }
+      "ukResidency toggle is enabled" in {
+        featureFlagMock(ukResidencyToggle, true)
+        val result = controller().onPageLoad(NormalMode)(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsStringAllCountries()
+      }
     }
 
-    "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("addressLine1", "value 1"),
-        ("addressLine2", "value 2"),
-        ("postCode", "NE1 1NE"),
-        "country" -> "GB"
-      )
+    "redirect to the next page when valid data is submitted" when {
+      "ukResidency toggle is disabled" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(
+          ("addressLine1", "value 1"),
+          ("addressLine2", "value 2"),
+          ("postCode", "NE1 1NE"),
+          "country" -> "GB"
+        )
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+        val result = controller().onSubmit(NormalMode)(postRequest)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
+      "ukResidency toggle is enabled" in {
+        featureFlagMock(ukResidencyToggle, true)
+        val postRequest = fakeRequest.withFormUrlEncodedBody(
+          ("addressLine1", "value 1"),
+          ("addressLine2", "value 2"),
+          ("postCode", "NE1 1NE"),
+          "country" -> "GB"
+        )
+
+        val result = controller().onSubmit(NormalMode)(postRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(onwardRoute.url)
+      }
     }
 
-    "return a Bad Request and errors when invalid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+    "return a Bad Request and errors when invalid data is submitted" when {
+      "ukResidency toggle is disabled" in {
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val result = controller().onSubmit(NormalMode)(postRequest)
+        val result = controller().onSubmit(NormalMode)(postRequest)
 
-      status(result) mustBe BAD_REQUEST
-      contentAsString(result) mustBe viewAsString(boundForm)
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) mustBe viewAsString(boundForm)
+      }
+      "ukResidency toggle is enabled" in {
+        featureFlagMock(ukResidencyToggle, true)
+        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
+        val boundForm = formAllCountries.bind(Map("value" -> "invalid value"))
+
+        val result = controller().onSubmit(NormalMode)(postRequest)
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) mustBe viewAsStringAllCountries(boundForm)
+      }
     }
 
     "redirect to Session Expired" when {
@@ -103,7 +162,9 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with S
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
+
   private val isUkHintText = true
+
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership) =
     new PartnershipPreviousAddressController(
       FakeUserAnswersCacheConnector,
@@ -113,10 +174,12 @@ class PartnershipPreviousAddressControllerSpec extends ControllerSpecBase with S
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
+      allCountriesFormProvider,
       countryOptions,
       controllerComponents,
+      mockFeatureFlagService,
       view
     )
 
-  def viewAsString(form: Form[?] = form): String = view(form, viewmodel, NormalMode, isUkHintText)(fakeRequest, messages).toString
+  def viewAsString(form: Form[?] = form): String = view(form, viewModel, NormalMode, isUkHintText)(fakeRequest, messages).toString
 }

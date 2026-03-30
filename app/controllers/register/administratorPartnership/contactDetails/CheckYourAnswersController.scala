@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@ package controllers.register.administratorPartnership.contactDetails
 
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership._
+import identifiers.register.partnership.*
+import models.admin.ukResidencyToggle
 import models.{CheckMode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 import utils.annotations.AuthWithNoIV
@@ -30,20 +32,25 @@ import viewmodels.{AnswerSection, Link, Message, Section}
 import views.html.check_your_answers
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             @AuthWithNoIV authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
+                                            featureFlagService: FeatureFlagService,
                                             checkYourAnswersView: check_your_answers
-                                          )(implicit countryOptions: CountryOptions) extends FrontendBaseController with I18nSupport {
+                                          )(implicit countryOptions: CountryOptions, val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val nextPage = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
-      val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
-      Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage, None, NormalMode, isComplete = true, Some(partnershipName)))
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        val nextPage = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
+        val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
+        Future.successful(Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers, ukResidency.isEnabled), nextPage, None, NormalMode, isComplete = true, Some(partnershipName))))
+
+      }
 
   }
 
@@ -51,22 +58,27 @@ class CheckYourAnswersController @Inject()(
     Redirect(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
   }
 
-  private def checkYourAnswersSummary(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
+  private def checkYourAnswersSummary(userAnswers: UserAnswers, ukResidency: Boolean)(implicit messages: Messages): Seq[Section] = {
     val isPartnershipTradingOverAYear = userAnswers.get(PartnershipTradingOverAYearId).isDefined
+    val partnershipContactAddress = if (ukResidency) {
+      PartnershipUKContactAddressId.cya.row(PartnershipUKContactAddressId)
+    } else {
+      PartnershipContactAddressId.cya.row(PartnershipContactAddressId)
+    }
     Seq(
       AnswerSection(None,
-        PartnershipContactAddressId.cya.row(PartnershipContactAddressId)
-        (Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
+        partnershipContactAddress
+          (Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
           PartnershipAddressYearsId.cya.row(PartnershipAddressYearsId)
-          (Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)), userAnswers) ++
+            (Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)), userAnswers) ++
           (if (isPartnershipTradingOverAYear) {
             PartnershipTradingOverAYearId.cya.row(PartnershipTradingOverAYearId)(Some
-            (Link(routes.PartnershipTradingOverAYearController.onPageLoad(CheckMode).url)), userAnswers)
+              (Link(routes.PartnershipTradingOverAYearController.onPageLoad(CheckMode).url)), userAnswers)
           } else {
             Nil
           }) ++
           PartnershipPreviousAddressId.cya.row(PartnershipPreviousAddressId)(Some
-          (Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)), userAnswers) ++
+            (Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)), userAnswers) ++
           PartnershipEmailId.cya.row(PartnershipEmailId)(Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url)), userAnswers) ++
           PartnershipPhoneId.cya.row(PartnershipPhoneId)(Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)), userAnswers)
       )

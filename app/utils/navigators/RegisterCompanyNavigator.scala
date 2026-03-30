@@ -30,7 +30,7 @@ import utils.{Navigator, UserAnswers}
 
 @Singleton
 class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends Navigator {
- 
+
   // scalastyle:off cyclomatic.complexity
   // scalastyle:off method.length
   override protected def routeMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {

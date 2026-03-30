@@ -75,8 +75,9 @@ case object IsBusinessIncorporatedInUKId extends TypedIdentifier[Boolean] {
   private def removePartnershipData(userAnswers: UserAnswers): JsResult[UserAnswers] = {
     userAnswers.removeAllOf(List(BusinessNameId, BusinessUTRId, PartnershipSameContactAddressId,
         PartnershipContactAddressPostCodeLookupId, PartnershipContactAddressListId, PartnershipContactAddressId,
-        PartnershipAddressYearsId, PartnershipPreviousAddressId, PartnershipPreviousAddressPostCodeLookupId,
-        PartnershipPreviousAddressListId, PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
+        PartnershipUKContactAddressId, PartnershipAddressYearsId, PartnershipPreviousAddressId,
+        PartnershipPreviousAddressPostCodeLookupId, PartnershipPreviousAddressListId,
+        PartnershipEmailId, PartnershipPhoneId, MoreThanTenPartnersId))
       .flatMap(_.remove(PartnerId))
   }
 

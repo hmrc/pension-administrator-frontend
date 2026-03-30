@@ -62,6 +62,8 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
     case PartnershipContactAddressPostCodeLookupId => nextPageOrNonUkRedirect(ua, PartnershipContactAddressListController.onPageLoad(NormalMode))
 
     case PartnershipContactAddressId => nextPageOrNonUkRedirect(ua, PartnershipAddressYearsController.onPageLoad(NormalMode))
+    
+    case PartnershipUKContactAddressId => nextPageOrNonUkRedirect(ua, PartnershipAddressYearsController.onPageLoad(NormalMode))
 
     case PartnershipAddressYearsId => nextPageOrNonUkRedirect(ua, partnershipAddressYearsIdRoutes(ua))
 
@@ -107,6 +109,8 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
       PartnershipContactAddressListController.onPageLoad(CheckMode)
     case PartnershipContactAddressId =>
       contactDetailsCYA
+    case PartnershipUKContactAddressId =>
+      contactDetailsCYA
     case PartnershipAddressYearsId =>
       partnershipAddressYearsCheckIdRoutes(ua)
     case PartnershipTradingOverAYearId =>
@@ -125,6 +129,8 @@ class RegisterPartnershipNavigatorV2 @Inject()(countryOptions: CountryOptions) e
     case PartnershipContactAddressPostCodeLookupId =>
       PartnershipContactAddressListController.onPageLoad(UpdateMode)
     case PartnershipContactAddressId =>
+      PartnershipConfirmPreviousAddressController.onPageLoad()
+    case PartnershipUKContactAddressId =>
       PartnershipConfirmPreviousAddressController.onPageLoad()
     case PartnershipAddressYearsId =>
       partnershipAddressYearsUpdateIdRoutes(ua)
