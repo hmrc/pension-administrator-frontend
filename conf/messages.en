@@ -619,6 +619,18 @@ declaration.statement5b = I don’t have a working knowledge of pension scheme a
 declaration.agree = I agree
 declaration.invalid = You need to agree to all the declarations before you can continue
 
+# new content - declaration
+ukResidency.declaration.title = Declaration
+ukResidency.declaration.heading = Declaration
+ukResidency.declaration.declaration = By continuing you declare that:
+ukResidency.declaration.statement1 = the information shown is complete and correct and that I may be liable to a penalty if a false statement is made in this registration, and that any false statement may also lead to prosecution
+ukResidency.declaration.statement2 = I understand that as a scheme administrator I am responsible for discharging the functions conferred or imposed on the scheme administrator of a pension scheme by the Finance Act 2004, and I intend to discharge those functions at all times
+ukResidency.declaration.statement3 = I will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — I understand that I may be liable to a penalty and where the scheme is registered the pension scheme may be de-registered if I fail to discharge those functions properly
+ukResidency.declaration.statement4 = I understand that as scheme administrator I must make returns of information to HMRC, when they are reasonably required; provide information to members to enable them to meet their own tax obligations and pay any tax charges due to be paid by the scheme administrators under part 4 of the Finance Act 2004
+ukResidency.declaration.statement5 = I understand that where HMRC believes that a scheme administrator, or one of the persons that make up the scheme administrator of the pension scheme,  is not a fit and proper person to be a scheme administrator, HMRC may refuse to register a scheme, or if the scheme is already registered,  HMRC may de-register a scheme
+ukResidency.declaration.statement6a = I have a working knowledge of pension scheme administrator duties and liabilities
+ukResidency.declaration.statement6b = I don’t have a working knowledge of pension scheme administrator duties and liabilities. I have appointed an adviser who does have that knowledge
+
 adviserName.title = Who has working knowledge of pensions and pensions tax legislation?
 adviserName.heading = Who has working knowledge of pensions and pensions tax legislation?
 adviserName.label = Name

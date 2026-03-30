@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,42 +40,49 @@ import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
-import views.html.register.declaration
+import views.html.register.{declaration, ukResidencyDeclaration}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeclarationController @Inject()(
-    appConfig: FrontendAppConfig,
-    authenticate: AuthAction,
-    allowAccess: AllowAccessActionProvider,
-    getData: DataRetrievalAction,
-    requireData: DataRequiredAction,
-    allowDeclaration: AllowDeclarationActionProvider,
-    @Register navigator: Navigator,
-    dataCacheConnector: UserAnswersCacheConnector,
-    pensionAdministratorConnector: PensionAdministratorConnector,
-    knownFactsRetrieval: KnownFactsRetrieval,
-    enrolments: TaxEnrolmentsConnector,
-    emailConnector: EmailConnector,
-    val controllerComponents: MessagesControllerComponents,
-    featureFlagService: FeatureFlagService,
-    val view: declaration
-)(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
+                                       appConfig: FrontendAppConfig,
+                                       authenticate: AuthAction,
+                                       allowAccess: AllowAccessActionProvider,
+                                       getData: DataRetrievalAction,
+                                       requireData: DataRequiredAction,
+                                       allowDeclaration: AllowDeclarationActionProvider,
+                                       @Register navigator: Navigator,
+                                       dataCacheConnector: UserAnswersCacheConnector,
+                                       pensionAdministratorConnector: PensionAdministratorConnector,
+                                       knownFactsRetrieval: KnownFactsRetrieval,
+                                       enrolments: TaxEnrolmentsConnector,
+                                       emailConnector: EmailConnector,
+                                       val controllerComponents: MessagesControllerComponents,
+                                       featureFlagService: FeatureFlagService,
+                                       val view: declaration,
+                                       val ukResidencyView: ukResidencyDeclaration
+                                     )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val logger = Logger(classOf[DeclarationController])
 
-  def isPsaTypeCompany(userAnswers:UserAnswers): Boolean = {
+  def isPsaTypeCompany(userAnswers: UserAnswers): Boolean = {
     userAnswers.get(RegisterAsBusinessId).getOrElse(false)
   }
 
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen allowDeclaration(mode) andThen requireData).async {
       implicit request =>
-        DeclarationWorkingKnowledgeId.retrieve.map {
-          workingKnowledge =>
-            Future.successful(Ok(view(workingKnowledge.hasWorkingKnowledge)))
+        featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+          DeclarationWorkingKnowledgeId.retrieve.map {
+            workingKnowledge =>
+              if (ukResidency.isEnabled) {
+                Future.successful(Ok(ukResidencyView(workingKnowledge.hasWorkingKnowledge)))
+              } else {
+                Future.successful(Ok(view(workingKnowledge.hasWorkingKnowledge)))
+              }
+          }
         }
     }
 
@@ -114,7 +121,7 @@ class DeclarationController @Inject()(
             }) recoverWith handleOnSubmitErrors
           }
         }
-       
+
     }
 
   // Handle errors during the process
@@ -140,23 +147,24 @@ class DeclarationController @Inject()(
     (psaEmail, psaName()) match {
       case (Some(email), Some(name)) =>
         emailConnector.sendEmail(
-          emailAddress   = email,
-          templateName   = emailTemplateName(request.userAnswers),
+          emailAddress = email,
+          templateName = emailTemplateName(request.userAnswers),
           templateParams = Map("psaName" -> name),
-          psaId          = PsaId(psaId),
-          journeyType    = JourneyType.PSA
+          psaId = PsaId(psaId),
+          journeyType = JourneyType.PSA
         )
       case _ =>
         Future.successful(EmailNotSent)
     }
 
-  private def emailTemplateName(userAnswers:UserAnswers):String ={
-     if(isPsaTypeCompany(userAnswers)) {
-       appConfig.companyEmailTemplateId
-     } else {
-       appConfig.emailTemplateId
-     }
+  private def emailTemplateName(userAnswers: UserAnswers): String = {
+    if (isPsaTypeCompany(userAnswers)) {
+      appConfig.companyEmailTemplateId
+    } else {
+      appConfig.emailTemplateId
+    }
   }
+
   private def enrol(psaId: String)
                    (implicit hc: HeaderCarrier, request: DataRequest[AnyContent]): Future[HttpResponse] =
     knownFactsRetrieval.retrieve(psaId) map {
