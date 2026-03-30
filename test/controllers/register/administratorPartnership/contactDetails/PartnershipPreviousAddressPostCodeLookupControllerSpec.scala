@@ -113,8 +113,8 @@ class PartnershipPreviousAddressPostCodeLookupControllerSpec extends ControllerS
   def viewModel(mode: Mode): PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.PartnershipPreviousAddressPostCodeLookupController.onSubmit(mode),
     routes.PartnershipPreviousAddressController.onPageLoad(mode),
-    Message("previous.postcode.lookup.heading", Message("thePartnership")),
-    Message("previous.postcode.lookup.heading", "Test Partnership Name"),
+    Message("company.previous.postcode.lookup.heading", Message("thePartnership")),
+    Message("company.previous.postcode.lookup.heading", "Test Partnership Name"),
     Message("manual.entry.text"),
     Some(Message("manual.entry.link")),
     partnershipName = Some("Test Partnership Name"),

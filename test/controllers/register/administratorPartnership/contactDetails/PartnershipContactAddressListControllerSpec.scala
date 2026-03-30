@@ -67,8 +67,8 @@ class PartnershipContactAddressListControllerSpec extends ControllerSpecBase {
     routes.PartnershipContactAddressListController.onSubmit(NormalMode),
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
     addresses,
-    Message("select.address.heading", Message("thePartnership")),
-    Message("select.address.heading", testName),
+    Message("companyPartnership.select.contact.address.heading", Message("thePartnership")),
+    Message("companyPartnership.select.contact.address.heading", testName),
     partnershipName = Some(testName),
     returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
   )

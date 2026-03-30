@@ -48,8 +48,8 @@ class PartnershipContactAddressPostCodeLookupControllerSpec extends ControllerSp
   def viewModel: PostcodeLookupViewModel = PostcodeLookupViewModel(
     routes.PartnershipContactAddressPostCodeLookupController.onSubmit(NormalMode),
     routes.PartnershipContactAddressController.onPageLoad(NormalMode),
-    Message("postcode.lookup.heading", Message("thePartnership")),
-    Message("postcode.lookup.heading").withArgs(partnershipName),
+    Message("contactAddressPostCodeLookup.companyPartnership.heading", Message("thePartnership")),
+    Message("contactAddressPostCodeLookup.companyPartnership.heading").withArgs(partnershipName),
     Message("manual.entry.text"),
     Some(Message("manual.entry.link")),
     partnershipName = Some(partnershipName),

@@ -19,6 +19,7 @@ package controllers.register.administratorPartnership.contactDetails
 import controllers.ControllerSpecBase
 import controllers.actions.*
 import models.*
+import models.admin.ukResidencyToggle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -26,7 +27,7 @@ import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.*
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.{FakeCountryOptions, UserAnswerOps, UserAnswers}
+import utils.{FakeCountryOptions, FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
@@ -34,10 +35,12 @@ import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec
   extends ControllerSpecBase
-    with BeforeAndAfterEach {
+    with BeforeAndAfterEach
+    with FeatureFlagMockHelper {
 
   override def beforeEach(): Unit = {
     when(mockDataCompletion.isPartnershipDetailsComplete(any())).thenReturn(true)
+    featureFlagMock(ukResidencyToggle)
   }
 
   private def onwardRoute: Call = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
@@ -56,6 +59,7 @@ class CheckYourAnswersControllerSpec
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
+      mockFeatureFlagService,
       view
     )(new FakeCountryOptions(environment, frontendAppConfig))
 

@@ -42,7 +42,7 @@ case object CompanyTradingOverAYearId extends TypedIdentifier[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): JsResult[UserAnswers] = {
     value match {
-      case Some(true) =>
+      case Some(false) =>
         userAnswers
           .remove(CompanyPreviousAddressPostCodeLookupId)
           .flatMap(_.remove(CompanyPreviousAddressId))

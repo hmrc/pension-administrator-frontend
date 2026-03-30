@@ -571,6 +571,14 @@ updateNonUKAddress.company.p1.link-text = register as a pension scheme administr
 updateNonUKAddress.company.p2 = If the company is resident in the UK,
 updateNonUKAddress.company.p2.link-text = tell HMRC about a change of address
 
+# new content - partnership update non-uk address
+updateNonUKAddress.partnership.title = The partnership cannot register as a pension scheme administrator
+updateNonUKAddress.partnership.h1 = The partnership cannot register as a pension scheme administrator
+updateNonUKAddress.partnership.p1 = The partnership’s address is not in the UK. The partnership must be resident in the UK to
+updateNonUKAddress.partnership.p1.link-text = register as a pension scheme administrator
+updateNonUKAddress.partnership.p2 = If the partnership is resident in the UK
+updateNonUKAddress.partnership.p2.link-text = tell HMRC about a change of address
+
 companyAddress.title = Company address
 companyAddress.heading = Company address
 companyAddress.error.required = Select yes if this is the registered address
@@ -1176,6 +1184,9 @@ company.previous.postcode.lookup.heading = What is the postcode of {0}’s previ
 
 select.address.heading = What is {0}’s address?
 select.previous.address.heading = What was {0}’s previous address?
+
+companyPartnership.select.contact.address.heading = What is {0}’s contact address?
+companyPartnership.select.contact.previous.address.heading = What was {0}’s previous contact address?
 
 enter.address.heading = Enter {0}’s contact address
 enter.previous.address.heading = Enter {0}’s previous contact address

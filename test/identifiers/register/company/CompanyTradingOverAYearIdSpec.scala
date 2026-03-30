@@ -27,24 +27,24 @@ class CompanyTradingOverAYearIdSpec extends AnyWordSpecLike with Matchers with O
 
   "Cleanup" when {
     "CompanyTradingOverAYearId is set to 'true'" must {
-      "remove 'CompanyPreviousAddressPostCodeLookupId' and 'CompanyPreviousAddressId' when true" in {
-        val ua = UserAnswers(Json.obj(
-          CompanyPreviousAddressPostCodeLookupId.toString -> Seq(TolerantAddress(None, None, None, None, None, None)),
-          CompanyPreviousAddressId.toString -> Address("", "", None, None, None, ""))
-        )
-
-        val result = CompanyTradingOverAYearId.cleanup(Some(true), ua).asOpt.value
-        result.get(CompanyPreviousAddressPostCodeLookupId) mustBe None
-        result.get(CompanyPreviousAddressId) mustBe None
-      }
-
-      "not remove 'CompanyPreviousAddressPostCodeLookupId' and 'CompanyPreviousAddressId' when false" in {
+      "remove 'CompanyPreviousAddressPostCodeLookupId' and 'CompanyPreviousAddressId' when false" in {
         val ua = UserAnswers(Json.obj(
           CompanyPreviousAddressPostCodeLookupId.toString -> Seq(TolerantAddress(None, None, None, None, None, None)),
           CompanyPreviousAddressId.toString -> Address("", "", None, None, None, ""))
         )
 
         val result = CompanyTradingOverAYearId.cleanup(Some(false), ua).asOpt.value
+        result.get(CompanyPreviousAddressPostCodeLookupId) mustBe None
+        result.get(CompanyPreviousAddressId) mustBe None
+      }
+
+      "not remove 'CompanyPreviousAddressPostCodeLookupId' and 'CompanyPreviousAddressId' when true" in {
+        val ua = UserAnswers(Json.obj(
+          CompanyPreviousAddressPostCodeLookupId.toString -> Seq(TolerantAddress(None, None, None, None, None, None)),
+          CompanyPreviousAddressId.toString -> Address("", "", None, None, None, ""))
+        )
+
+        val result = CompanyTradingOverAYearId.cleanup(Some(true), ua).asOpt.value
         result.get(CompanyPreviousAddressPostCodeLookupId) mustBe Some(Seq(TolerantAddress(None, None, None, None, None, None)))
         result.get(CompanyPreviousAddressId) mustBe Some(Address("", "", None, None, None, ""))
       }
