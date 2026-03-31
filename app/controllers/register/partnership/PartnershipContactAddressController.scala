@@ -50,7 +50,7 @@ class PartnershipContactAddressController @Inject()(
                                                     val view: manualAddress
                                                    )(implicit val executionContext: ExecutionContext) extends ManualAddressController with I18nSupport {
 
-  protected val form: Form[Address] = formProvider("error.country.invalid")
+  protected val form: Form[Address] = formProvider()
   private val isUkHintText = true
 
   def viewmodel(mode: Mode, partnershipName: String)(implicit request: DataRequest[AnyContent]) =

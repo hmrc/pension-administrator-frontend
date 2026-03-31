@@ -106,6 +106,14 @@ class PartnershipContactAddressControllerSpec
       contentAsString(result) mustBe viewAsString()
     }
 
+    "return OK and the correct view for a GET when toggle is enabled" in {
+      featureFlagMock(ukResidencyToggle, true)
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+
+      status(result) mustBe OK
+      contentAsString(result) mustBe ukOnlyViewAsString()
+    }
+
     "redirect to the next page when valid data is submitted" when {
       "ukResidency toggle is disabled" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(
