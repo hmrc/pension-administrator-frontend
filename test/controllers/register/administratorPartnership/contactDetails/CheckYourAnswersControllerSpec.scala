@@ -50,6 +50,7 @@ class CheckYourAnswersControllerSpec
   private val email = "test@test.com"
   private val phone = "111"
   private val address = Address("Telford1", "Telford2", None, None, Some("TF3 4ER"), "Country of GB")
+  private val addressUK = AddressUKOnly("Telford1", "Telford2", None, None, "TF3 4ER")
   private val view: check_your_answers = app.injector.instanceOf[check_your_answers]
   private val mockDataCompletion: DataCompletion = mock[DataCompletion]
 
@@ -94,56 +95,72 @@ class CheckYourAnswersControllerSpec
       )(fakeRequest, messages).toString()
   }
 
-  private val answerRows = Seq(
-    answerRow(
-      label = Message("cya.label.contact.address", defaultPartnership),
-      answer = Seq(
-        address.addressLine1,
-        address.addressLine2,
-        address.postcode.value,
-        address.country
+  private def answerRows(ukResidency: Boolean) = {
+    val contactAddress = if (ukResidency) {
+      answerRow(
+        label = Message("cya.label.contact.address", defaultPartnership),
+        answer = Seq(
+          addressUK.addressLine1,
+          addressUK.addressLine2,
+          addressUK.postcode,
+        ),
+        changeUrl = Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)),
+        visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultPartnership))
+      )
+    } else {
+      answerRow(
+        label = Message("cya.label.contact.address", defaultPartnership),
+        answer = Seq(
+          address.addressLine1,
+          address.addressLine2,
+          address.postcode.value,
+          address.country
+        ),
+        changeUrl = Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)),
+        visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultPartnership))
+      )
+    }
+    Seq(
+      contactAddress,
+      answerRow(
+        label = Message("addressYears.heading", defaultPartnership),
+        answer = Seq(s"common.addressYears.${addressYears.toString}"),
+        answerIsMessageKey = true,
+        changeUrl = Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)),
+        visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", defaultPartnership))
       ),
-      changeUrl = Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultPartnership))
-    ),
-    answerRow(
-      label = Message("addressYears.heading", defaultPartnership),
-      answer = Seq(s"common.addressYears.${addressYears.toString}"),
-      answerIsMessageKey = true,
-      changeUrl = Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", defaultPartnership))
-    ),
-    answerRow(
-      label = Message("trading.title", defaultPartnership),
-      answer = Seq("site.yes"),
-      answerIsMessageKey = true,
-      changeUrl = Some(Link(routes.PartnershipTradingOverAYearController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("trading.visuallyHidden.text", defaultPartnership))
-    ),
-    answerRow(
-      label = Message("previousAddress.checkYourAnswersLabel", defaultPartnership),
-      answer = Seq(
-        address.addressLine1,
-        address.addressLine2,
-        address.postcode.value,
-        address.country
+      answerRow(
+        label = Message("trading.title", defaultPartnership),
+        answer = Seq("site.yes"),
+        answerIsMessageKey = true,
+        changeUrl = Some(Link(routes.PartnershipTradingOverAYearController.onPageLoad(CheckMode).url)),
+        visuallyHiddenLabel = Some(Message("trading.visuallyHidden.text", defaultPartnership))
       ),
-      changeUrl = Some(Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultPartnership))
-    ),
-    answerRow(
-      label = messages("email.title", defaultPartnership),
-      answer = Seq(email),
-      changeUrl = Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultPartnership))
-    ),
-    answerRow(
-      label = messages("phone.title", defaultPartnership),
-      answer = Seq(phone),
-      changeUrl = Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultPartnership))
+      answerRow(
+        label = Message("previousAddress.checkYourAnswersLabel", defaultPartnership),
+        answer = Seq(
+          address.addressLine1,
+          address.addressLine2,
+          address.postcode.value,
+          address.country
+        ),
+        changeUrl = Some(Link(routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
+        visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultPartnership))
+      ),
+      answerRow(
+        label = messages("email.title", defaultPartnership),
+        answer = Seq(email),
+        changeUrl = Some(Link(routes.PartnershipEmailController.onPageLoad(CheckMode).url)),
+        visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultPartnership))
+      ),
+      answerRow(
+        label = messages("phone.title", defaultPartnership),
+        answer = Seq(phone),
+        changeUrl = Some(Link(routes.PartnershipPhoneController.onPageLoad(CheckMode).url)),
+        visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultPartnership))
+      )
     )
-  )
+  }
 
 
   "CheckYourAnswers Controller" when {
@@ -154,7 +171,15 @@ class CheckYourAnswersControllerSpec
         val retrievalAction = UserAnswers().completePartnershipContactDetailsUK.dataRetrievalAction
         val result = controller(retrievalAction).onPageLoad()(fakeRequest)
 
-        val sections = Seq(AnswerSection(None, answerRows))
+        val sections = Seq(AnswerSection(None, answerRows(false)))
+        testRenderedView(sections, result)
+      }
+      "render the view correctly for all the rows of answer section if business name and utr is present for UK when toggle enabled" in {
+        featureFlagMock(ukResidencyToggle, true)
+        val retrievalAction = UserAnswers().completePartnershipContactDetailsUKResidency.dataRetrievalAction
+        val result = controller(retrievalAction).onPageLoad()(fakeRequest)
+
+        val sections = Seq(AnswerSection(None, answerRows(true)))
         testRenderedView(sections, result)
       }
     }
