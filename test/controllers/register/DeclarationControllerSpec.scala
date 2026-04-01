@@ -42,7 +42,7 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.*
 import utils.{FakeNavigator, FeatureFlagMockHelper, KnownFactsRetrieval}
-import views.html.register.declaration
+import views.html.register.{declaration, ukResidencyDeclaration}
 
 import scala.concurrent.Future
 
@@ -73,6 +73,7 @@ class DeclarationControllerSpec
   )
 
   val view: declaration = app.injector.instanceOf[declaration]
+  val ukResidencyView: ukResidencyDeclaration = app.injector.instanceOf[ukResidencyDeclaration]
 
   private val validPsaResponse = PsaSubscriptionResponse("A0123456")
   private val knownFacts =
@@ -102,11 +103,21 @@ class DeclarationControllerSpec
 
   "Declaration Controller" must {
 
-    "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+    "return OK and the correct view for a GET" when {
+      "ukResidency toggle is disabled" in {
+        val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
+        status(result) mustBe OK
+        contentAsString(result) mustBe viewAsString()
+      }
+
+      "ukResidencyToggle is enabled" in {
+        featureFlagMock(ukResidencyToggle, isEnabled = true)
+        val result = controller().onPageLoad(NormalMode)(fakeRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) mustBe ukResidencyViewAsString()
+      }
     }
 
     "redirect to Session Expired on a GET request if no cached data is found" in {
@@ -362,10 +373,14 @@ class DeclarationControllerSpec
       emailConnector = mockEmailConnector,
       controllerComponents = controllerComponents,
       mockFeatureFlagService,
-      view = view
+      view = view,
+      ukResidencyView
     )
 
   private def viewAsString(): String =
     view(workingKnowledge = true)(fakeRequest, messages).toString
+
+  private def ukResidencyViewAsString(): String =
+    ukResidencyView(workingKnowledge = true)(fakeRequest, messages).toString
 
 }
