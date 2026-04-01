@@ -16,7 +16,7 @@
 
 package identifiers.register.partnership
 
-import models.{Address, TolerantAddress}
+import models.{Address, AddressUKOnly, TolerantAddress}
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -33,9 +33,19 @@ class PartnershipSameContactAddressIdSpec extends AnyWordSpecLike with OptionVal
       .flatMap(_.set(PartnershipContactAddressPostCodeLookupId)(Seq(tolerantAddress)))
       .asOpt.value
 
+    val partnershipUKUserAnswers = UserAnswers()
+      .set(PartnershipUKContactAddressId)(AddressUKOnly("address1", "address2", None, None, "ZZ11ZZ"))
+      .flatMap(_.set(PartnershipContactAddressPostCodeLookupId)(Seq(tolerantAddress)))
+      .asOpt.value
+
+
     "false" must {
 
       val result = partnershipUserAnswers
+        .set(PartnershipSameContactAddressId)(false)
+        .asOpt.value
+
+      val res = partnershipUKUserAnswers
         .set(PartnershipSameContactAddressId)(false)
         .asOpt.value
 
@@ -45,15 +55,25 @@ class PartnershipSameContactAddressIdSpec extends AnyWordSpecLike with OptionVal
 
       }
 
+      "delete 'PartnershipUKContactAddress'" in {
+
+        res.get(PartnershipUKContactAddressId) must not be defined
+
+      }
+
       "delete 'PartnershipPostcodeLookup'" in {
 
         result.get(PartnershipContactAddressPostCodeLookupId) must not be defined
+        res.get(PartnershipContactAddressPostCodeLookupId) must not be defined
       }
     }
 
     "true" must {
 
       val result = partnershipUserAnswers
+        .set(PartnershipSameContactAddressId)(true)
+        .asOpt.value
+      val res = partnershipUKUserAnswers
         .set(PartnershipSameContactAddressId)(true)
         .asOpt.value
 
@@ -63,9 +83,16 @@ class PartnershipSameContactAddressIdSpec extends AnyWordSpecLike with OptionVal
 
       }
 
+      "delete 'PartnershipUKContactAddress'" in {
+
+        res.get(PartnershipUKContactAddressId) must not be defined
+
+      }
+
       "delete 'PartnershipPostcodeLookup'" in {
 
         result.get(PartnershipContactAddressPostCodeLookupId) must not be defined
+        res.get(PartnershipContactAddressPostCodeLookupId) must not be defined
 
       }
     }

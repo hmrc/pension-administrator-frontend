@@ -27,6 +27,7 @@ object DataCompletionBuilder {
 
   implicit class DataCompletionUserAnswerOps(answers: UserAnswers) extends OptionValues {
     private val address = Address("Telford1", "Telford2", None, None, Some("TF3 4ER"), "GB")
+    private val addressUK = AddressUKOnly("Telford1", "Telford2", None, None, "TF3 4ER")
     private val email = "test@test.com"
     private val phone = "111"
     private val reason = "not available"
@@ -141,6 +142,27 @@ object DataCompletionBuilder {
         .companyPhone(phone)
         .businessName()
 
+    def completeCompanyDetailsUKResidency: UserAnswers =
+      answers
+        .areYouInUk(answer = true)
+        .businessType(BusinessType.LimitedCompany)
+        .regInfo(RegistrationLegalStatus.LimitedCompany)
+        .hasVat(true)
+        .enterVat("test-vat")
+        .companyHasCrn(true)
+        .businessUtr()
+        .companyCrn(crn = "test-crn")
+        .hasPaye(flag = true)
+        .enterPaye(paye = "test-paye")
+        .companyUKContactAddress(addressUK)
+        .companyAddressYears(AddressYears.UnderAYear)
+        .companyTradingOverAYear(flag = true)
+        .companyPreviousAddress(address)
+        .companyEmail(email)
+        .companyPhone(phone)
+        .businessName()
+
+
     def completePartnershipDetailsUK: UserAnswers =
       answers
         .areYouInUk(answer = true)
@@ -172,6 +194,21 @@ object DataCompletionBuilder {
         .partnershipEmail(email)
         .partnershipPhone(phone)
         .businessName("limited partnership")
+
+    def completePartnershipContactDetailsUKResidency: UserAnswers =
+      answers
+        .areYouInUk(answer = true)
+        .businessType(BusinessType.LimitedPartnership)
+        .regInfo(RegistrationLegalStatus.Partnership)
+        .businessUtr()
+        .partnershipUKContactAddress(addressUK)
+        .partnershipAddressYears(AddressYears.UnderAYear)
+        .partnershipTradingOverAYear(flag = true)
+        .partnershipPreviousAddress(address)
+        .partnershipEmail(email)
+        .partnershipPhone(phone)
+        .businessName("limited partnership")
+
 
     def completePartnershipDetailsUKV2: UserAnswers =
       answers
