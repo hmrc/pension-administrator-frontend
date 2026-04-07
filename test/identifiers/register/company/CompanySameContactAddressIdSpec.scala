@@ -16,7 +16,7 @@
 
 package identifiers.register.company
 
-import models.Address
+import models.{Address, AddressUKOnly}
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -35,20 +35,36 @@ class CompanySameContactAddressIdSpec extends AnyWordSpecLike with Matchers with
       .flatMap(_.set(CompanyPreviousAddressId)(Address("previous-foo", "previous-bar", None, None, None, "GB")))
       .asOpt.value
 
+    val answersWithUKContactAddress = UserAnswers(Json.obj())
+      .set(CompanySameContactAddressId)(false)
+      .flatMap(_.set(CompanyContactAddressPostCodeLookupId)(Seq.empty))
+      .flatMap(_.set(CompanyUKContactAddressId)(AddressUKOnly("foo", "bar", None, None, "ZZ11ZZ")))
+      .flatMap(_.set(CompanyPreviousAddressPostCodeLookupId)(Seq.empty))
+      .flatMap(_.set(CompanyPreviousAddressId)(Address("previous-foo", "previous-bar", None, None, None, "GB")))
+      .asOpt.value
+
     "`CompanySameContactAddress` is set to `true`" must {
 
       val result: UserAnswers = answersWithContactAddress.set(CompanySameContactAddressId)(true).asOpt.value
+      val res: UserAnswers = answersWithUKContactAddress.set(CompanySameContactAddressId)(true).asOpt.value
 
       "remove the data for `CompanyContactAddress`" in {
         result.get(CompanyContactAddressId) mustNot be(defined)
       }
 
+      "remove the data for `CompanyUKContactAddress`" in {
+        res.get(CompanyUKContactAddressId) mustNot be(defined)
+      }
+
       "remove the data for `CompanyContactAddressPostCodeLookup`" in {
         result.get(CompanyContactAddressPostCodeLookupId) mustNot be(defined)
+        res.get(CompanyContactAddressPostCodeLookupId) mustNot be(defined)
+
       }
 
       "remove the data for `PreviousPostCodeLookup`" in {
         result.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
+        res.get(CompanyPreviousAddressPostCodeLookupId) mustNot be(defined)
       }
 
       "remove the data for `PreviousAddress`" in {
@@ -57,27 +73,36 @@ class CompanySameContactAddressIdSpec extends AnyWordSpecLike with Matchers with
 
       "remove the data for `AddressYears`" in {
         result.get(CompanyAddressYearsId) mustNot be(defined)
+        res.get(CompanyAddressYearsId) mustNot be(defined)
       }
     }
 
     "`CompanySameContactAddress` is set to `false` (when already set to false)" must {
 
       val result: UserAnswers = answersWithContactAddress.set(CompanySameContactAddressId)(false).asOpt.value
+      val res: UserAnswers = answersWithUKContactAddress.set(CompanySameContactAddressId)(false).asOpt.value
 
       "not remove the data for `CompanyContactAddress`" in {
         result.get(CompanyContactAddressId) must be(defined)
       }
 
+      "not remove the data for `CompanyUKContactAddress`" in {
+        res.get(CompanyUKContactAddressId) must be(defined)
+      }
+
       "not remove the data for `CompanyContactAddressPostCodeLookup`" in {
         result.get(CompanyContactAddressPostCodeLookupId) must be(defined)
+        res.get(CompanyContactAddressPostCodeLookupId) must be(defined)
       }
 
       "not remove the data for `PreviousPostCodeLookup`" in {
         result.get(CompanyPreviousAddressPostCodeLookupId) must be(defined)
+        res.get(CompanyPreviousAddressPostCodeLookupId) must be(defined)
       }
 
       "not remove the data for `PreviousAddress`" in {
         result.get(CompanyPreviousAddressId) must be(defined)
+        res.get(CompanyPreviousAddressId) must be(defined)
       }
     }
 

@@ -147,6 +147,10 @@ package object utils {
       answers.set(CompanyContactAddressId)(address).asOpt.value
     }
 
+    def companyUKContactAddress(address: AddressUKOnly): UserAnswers = {
+      answers.set(CompanyUKContactAddressId)(address).asOpt.value
+    }
+
     def companyContactAddressList(address: TolerantAddress): UserAnswers = {
       answers.set(CompanyContactAddressListId)(address).asOpt.value
     }
@@ -309,6 +313,10 @@ package object utils {
 
     def partnershipContactAddress(address: Address): UserAnswers = {
       answers.set(PartnershipContactAddressId)(address).asOpt.value
+    }
+
+    def partnershipUKContactAddress(address: AddressUKOnly): UserAnswers = {
+      answers.set(PartnershipUKContactAddressId)(address).asOpt.value
     }
 
     def partnershipRegisteredAddress(address: TolerantAddress): UserAnswers = {
