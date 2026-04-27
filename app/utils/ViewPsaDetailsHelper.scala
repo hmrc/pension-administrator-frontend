@@ -320,6 +320,45 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
         )
     })
 
+  private def directorNino(index: Int): Option[AnswerRow] =
+    (
+      userAnswers.get(HasDirectorNINOId(index)),
+      userAnswers.get(DirectorEnterNINOId(index))
+    ) match {
+      case (Some(false), _) =>
+        directorNoNinoReason(index)
+      case (Some(true), None) =>
+        Some(AnswerRow(
+          label = "common.nino",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        ))
+      case _ =>
+        None
+    }
+
+  private def directorNoNinoReason(index: Index): Option[AnswerRow] =
+    Some(userAnswers.get(DirectorNoNINOReasonId(index)) match {
+      case Some(reason) =>
+        AnswerRow(
+          label = "directorNino.checkYourAnswersLabel.reason",
+          answer = Seq(reason),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, index).url)),
+          visuallyHiddenText = None
+        )
+      case _ =>
+        AnswerRow(
+          label = "directorNino.checkYourAnswersLabel.reason",
+          answer = Seq(messages("site.not_entered")),
+          answerIsMessageKey = false,
+          changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, index).url, "site.add")),
+          visuallyHiddenText = None
+        )
+    })
+
   private def directorHasUtr(index: Index): Option[AnswerRow] =
     Some((
       userAnswers.get(HasDirectorUTRId(index)),
@@ -492,6 +531,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       rows = Seq(
         directorDob(i),
         directorHasNino(i),
+        directorNino(i),
         directorHasUtr(i),
         directorUtr(i),
         directorAddress(i, countryOptions),

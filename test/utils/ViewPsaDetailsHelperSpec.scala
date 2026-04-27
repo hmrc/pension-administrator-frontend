@@ -17,17 +17,19 @@
 package utils
 
 import base.{JsonFileReader, SpecBase}
-import controllers.register.company.routes._
-import controllers.register.partnership.routes._
-import identifiers.register.company.directors._
-import identifiers.register.partnership.partners._
-import models._
+import controllers.register.company.directors.routes.DirectorNoNINOReasonController
+import controllers.register.company.directors.routes.HasDirectorNINOController
+import controllers.register.company.routes.*
+import controllers.register.partnership.routes.*
+import identifiers.register.company.directors.*
+import identifiers.register.partnership.partners.*
+import models.*
 import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.{JsBoolean, JsObject, Json}
 import utils.countryOptions.CountryOptions
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.testhelpers.ViewPsaDetailsBuilder._
-import viewmodels._
+import utils.testhelpers.ViewPsaDetailsBuilder.*
+import viewmodels.*
 
 import java.time.LocalDate
 
@@ -237,6 +239,178 @@ class ViewPsaDetailsHelperSpec extends SpecBase with Matchers {
       result = partnershipResult,
       expectedAnswerRows = pensionAdviserSeqAnswers
     )
+
+    "DirectorNinoDetails" must {
+
+      "directorHasNino" must {
+
+        "show 'Yes' when HasDirectorNINOId is true" in {
+          val ua: UserAnswers = UserAnswers(Json.obj())
+            .set(DirectorNameId(0))(PersonName("Test", "User"))
+            .flatMap(_.set(HasDirectorNINOId(0))(true)).asOpt.value
+
+          val result = new ViewPsaDetailsHelper(ua, countryOptions).companySections
+
+          val directorRows = result(1).sections.head.rows
+
+          directorRows must contain(
+            AnswerRow(
+              label = "directorNino.checkYourAnswersLabel",
+              answer = Seq(messages("site.yes")),
+              answerIsMessageKey = false,
+              changeUrl = Some(Link(HasDirectorNINOController.onPageLoad(UpdateMode, 0).url)),
+              visuallyHiddenText = None
+            )
+          )
+        }
+
+        "show 'No' when HasDirectorNINOId is false" in {
+          val ua: UserAnswers = UserAnswers(Json.obj())
+            .set(DirectorNameId(0))(PersonName("Test", "User"))
+            .flatMap(_.set(HasDirectorNINOId(0))(false)).asOpt.value
+
+          val result = new ViewPsaDetailsHelper(ua, countryOptions).companySections
+
+          val directorRows = result(1).sections.head.rows
+
+          directorRows must contain(
+            AnswerRow(
+              label = "directorNino.checkYourAnswersLabel",
+              answer = Seq(messages("site.no")),
+              answerIsMessageKey = false,
+              changeUrl = Some(Link(HasDirectorNINOController.onPageLoad(UpdateMode, 0).url)),
+              visuallyHiddenText = None
+            )
+          )
+        }
+
+        "show 'Not entered' with add link when neither HasDirectorNINOId nor DirectorEnterNINOId exists" in {
+          val ua: UserAnswers = UserAnswers(Json.obj())
+            .set(DirectorNameId(0))(PersonName("Test", "User")).asOpt.value
+
+          val result = new ViewPsaDetailsHelper(ua, countryOptions).companySections
+
+          val directorRows = result(1).sections.head.rows
+
+          directorRows must contain(
+            AnswerRow(
+              label = "directorNino.checkYourAnswersLabel",
+              answer = Seq(messages("site.not_entered")),
+              answerIsMessageKey = false,
+              changeUrl = Some(Link(HasDirectorNINOController.onPageLoad(UpdateMode, 0).url, "site.add")),
+              visuallyHiddenText = None
+            )
+          )
+        }
+      }
+
+      "directorNino" must {
+
+        "show no nino reason when HasDirectorNINOId is false and reason exists" in {
+          val reason = "Does not have a NINO"
+
+          val ua: UserAnswers = UserAnswers(Json.obj())
+            .set(DirectorNameId(0))(PersonName("Test", "User"))
+            .flatMap(_.set(HasDirectorNINOId(0))(false))
+            .flatMap(_.set(DirectorNoNINOReasonId(0))(reason)).asOpt.value
+
+          val result = new ViewPsaDetailsHelper(ua, countryOptions).companySections
+
+          val directorRows = result(1).sections.head.rows
+
+          directorRows must contain(
+            AnswerRow(
+              label = "directorNino.checkYourAnswersLabel.reason",
+              answer = Seq(reason),
+              answerIsMessageKey = false,
+              changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, 0).url)),
+              visuallyHiddenText = None
+            )
+          )
+        }
+
+        "show 'Not entered' with add link when HasDirectorNINOId is false but reason is missing" in {
+          val ua: UserAnswers = UserAnswers(Json.obj())
+            .set(DirectorNameId(0))(PersonName("Test", "User"))
+            .flatMap(_.set(HasDirectorNINOId(0))(false)).asOpt.value
+
+          val result = new ViewPsaDetailsHelper(ua, countryOptions).companySections
+
+          val directorRows = result(1).sections.head.rows
+
+          directorRows must contain(
+            AnswerRow(
+              label = "directorNino.checkYourAnswersLabel.reason",
+              answer = Seq(messages("site.not_entered")),
+              answerIsMessageKey = false,
+              changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, 0).url, "site.add")),
+              visuallyHiddenText = None
+            )
+          )
+        }
+      }
+
+      "directorNoNinoReason" must {
+
+        "show no nino reason when present" in {
+          val reason = "No NINO available"
+
+          val ua: UserAnswers = UserAnswers(Json.obj())
+            .set(DirectorNameId(0))(PersonName("Test", "User"))
+            .flatMap(_.set(HasDirectorNINOId(0))(false))
+            .flatMap(_.set(DirectorNoNINOReasonId(0))(reason)).asOpt.value
+
+          val result = new ViewPsaDetailsHelper(ua, countryOptions).companySections
+          val directorRows = result(1).sections.head.rows
+
+          directorRows must contain(
+            AnswerRow(
+              label = "directorNino.checkYourAnswersLabel.reason",
+              answer = Seq(reason),
+              answerIsMessageKey = false,
+              changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, 0).url)),
+              visuallyHiddenText = None
+            )
+          )
+        }
+
+        "show not entered with add link when reason is missing" in {
+          val ua: UserAnswers = UserAnswers(Json.obj())
+            .set(DirectorNameId(0))(PersonName("Test", "User"))
+            .flatMap(_.set(HasDirectorNINOId(0))(false)).asOpt.value
+
+          val result = new ViewPsaDetailsHelper(ua, countryOptions).companySections
+          val directorRows = result(1).sections.head.rows
+
+          directorRows must contain(
+            AnswerRow(
+              label = "directorNino.checkYourAnswersLabel.reason",
+              answer = Seq(messages("site.not_entered")),
+              answerIsMessageKey = false,
+              changeUrl = Some(
+                Link(
+                  DirectorNoNINOReasonController.onPageLoad(UpdateMode, 0).url,
+                  "site.add"
+                )
+              ),
+              visuallyHiddenText = None
+            )
+          )
+        }
+
+        "dont show nino reason when HasDirectorNINOId is true" in {
+          val ua: UserAnswers = UserAnswers(Json.obj())
+            .set(DirectorNameId(0))(PersonName("Test", "User"))
+            .flatMap(_.set(HasDirectorNINOId(0))(true))
+            .flatMap(_.set(DirectorNoNINOReasonId(0))("Should not show")).asOpt.value
+
+          val result = new ViewPsaDetailsHelper(ua, countryOptions).companySections
+          val directorRows = result(1).sections.head.rows
+
+          directorRows.map(_.label) must not contain "directorNino.checkYourAnswersLabel.reason"
+        }
+      }
+    }
 
   }
 }
