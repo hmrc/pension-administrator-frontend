@@ -332,8 +332,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
           label = "common.nino",
           answer = Seq(messages("site.not_entered")),
           answerIsMessageKey = false,
-          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add")),
-          visuallyHiddenText = None
+          changeUrl = Some(Link(DirectorEnterNINOController.onPageLoad(UpdateMode, index).url, "site.add"))
         ))
       case _ =>
         None
@@ -346,8 +345,7 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
           label = "directorNino.checkYourAnswersLabel.reason",
           answer = Seq(reason),
           answerIsMessageKey = false,
-          changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, index).url)),
-          visuallyHiddenText = None
+          changeUrl = Some(Link(DirectorNoNINOReasonController.onPageLoad(UpdateMode, index).url))
         )
       case _ =>
         AnswerRow(
