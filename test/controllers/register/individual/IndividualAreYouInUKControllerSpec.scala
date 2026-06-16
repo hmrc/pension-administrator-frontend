@@ -20,22 +20,19 @@ import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.*
 import identifiers.register.AreYouInUKId
-import models.admin.ukResidencyToggle
 import models.{Mode, NormalMode}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers.*
 import utils.navigators.IndividualNavigatorV2
-import utils.{FakeNavigator, FeatureFlagMockHelper}
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
-class IndividualAreYouInUKControllerSpec extends ControllerSpecBase with MockitoSugar with BeforeAndAfterEach with FeatureFlagMockHelper {
+class IndividualAreYouInUKControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   private val onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
@@ -48,27 +45,18 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase with Mockito
   private def viewmodel(mode: Mode) =
     AreYouInUKViewModel(
       mode,
-      postCall = routes.IndividualAreYouInUKController.onSubmitIndividual(mode),
+      postCall = routes.IndividualAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUKIndividual.title"),
       heading = Message("areYouInUKIndividual.heading")
     )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    featureFlagMock(ukResidencyToggle)
-    reset(navigatorV2)
-  }
-
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new IndividualAreYouInUKController(
       FakeUserAnswersCacheConnector,
-      new FakeNavigator(desiredRoute = onwardRoute),
       navigatorV2,
       FakeAllowAccessProvider(config = frontendAppConfig),
       FakeAuthAction,
       dataRetrievalAction,
-      new DataRequiredActionImpl,
-      mockFeatureFlagService,
       formProvider,
       controllerComponents,
       view
@@ -95,24 +83,13 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase with Mockito
       contentAsString(result) mustBe viewAsString(form.fill(true))
     }
 
-    "redirect to the next page for POST when toggle is disabled" in {
-      val data = new FakeDataRetrievalAction(Some(Json.obj()))
-
-      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "true")
-      val result = controller(data).onSubmitIndividual(NormalMode)(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "redirect to the v2 navigator when toggle is enabled" in {
-      featureFlagMock(ukResidencyToggle, true)
+    "redirect to the next page for POST" in {
       val data = new FakeDataRetrievalAction(Some(Json.obj()))
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "true")
 
       when(navigatorV2.nextPage(any(), any(), any())).thenReturn(onwardRoute)
 
-      val result = controller(data).onSubmitIndividual(NormalMode)(postRequest)
+      val result = controller(data).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
@@ -122,7 +99,7 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase with Mockito
       val data = new FakeDataRetrievalAction(Some(Json.obj()))
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "false")
 
-      val result = controller(data).onSubmitIndividual(NormalMode)(postRequest)
+      val result = controller(data).onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(controllers.register.individual.routes.NonUKAdministratorController.onPageLoad().url)
@@ -132,7 +109,7 @@ class IndividualAreYouInUKControllerSpec extends ControllerSpecBase with Mockito
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "xxx")
       val boundForm = form.bind(Map("value" -> "xxx"))
 
-      val result = controller().onSubmitIndividual(NormalMode)(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
       status(result) mustBe BAD_REQUEST
       contentAsString(result) mustBe viewAsString(boundForm)

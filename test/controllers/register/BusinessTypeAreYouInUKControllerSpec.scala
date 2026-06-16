@@ -25,7 +25,6 @@ import models.{CheckMode, Mode, NormalMode}
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.test.Helpers.*
-import utils.navigators.IndividualNavigatorV2
 import utils.{FakeNavigator, FeatureFlagMockHelper}
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
@@ -37,19 +36,15 @@ class BusinessTypeAreYouInUKControllerSpec extends ControllerSpecBase with Featu
   private val formProvider = new YesNoFormProvider()
   private val form = formProvider()
 
-  private val navigatorV2 = mock[IndividualNavigatorV2]
   val view: areYouInUK = app.injector.instanceOf[areYouInUK]
 
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new BusinessTypeAreYouInUKController(
       FakeUserAnswersCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
-      navigatorV2,
       FakeAllowAccessProvider(config = frontendAppConfig),
       FakeAuthAction,
       dataRetrievalAction,
-      new DataRequiredActionImpl,
-      mockFeatureFlagService,
       formProvider,
       controllerComponents,
       view
