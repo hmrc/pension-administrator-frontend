@@ -20,8 +20,7 @@ object AppDependencies {
     "org.scalatestplus"       %% "scalacheck-1-17"                                 % "3.2.18.0",
     "org.scalatestplus.play"  %% "scalatestplus-play"                              % "7.0.2",
     "io.github.wolfendale"    %% "scalacheck-gen-regexp"                           % "1.1.0",
-    "uk.gov.hmrc"             %% s"mongo-feature-toggles-client-test-$playVersion" % mongoFeatureTogglesClientVersion,
-    "org.jsoup"                % "jsoup"                                           % "1.22.1"
+    "uk.gov.hmrc"             %% s"mongo-feature-toggles-client-test-$playVersion" % mongoFeatureTogglesClientVersion
    
   ).map(_ % "test")
 
