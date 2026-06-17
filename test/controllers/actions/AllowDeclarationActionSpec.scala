@@ -37,7 +37,7 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures with Feature
 
   private val mockDataCompletion = mock[DataCompletion]
 
-  class TestAllowDeclarationAction(mode: Mode) extends AllowDeclarationAction(mode, mockDataCompletion, mockFeatureFlagService) {
+  class TestAllowDeclarationAction(mode: Mode) extends AllowDeclarationAction(mode, mockDataCompletion) {
     override def filter[A](request: OptionalDataRequest[A]): Future[Option[Result]] = super.filter(request)
   }
 
@@ -69,7 +69,7 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures with Feature
 
       featureFlagMock(ukResidencyToggle, isEnabled = true)
 
-      when(mockDataCompletion.isIndividualUKComplete(any(), any())).thenReturn(true)
+      when(mockDataCompletion.isIndividualComplete(any(), any())).thenReturn(true)
       when(mockDataCompletion.isAdviserComplete(any(), any())).thenReturn(true)
 
       val action = new TestAllowDeclarationAction(NormalMode)
@@ -99,7 +99,7 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures with Feature
 
       featureFlagMock(ukResidencyToggle, isEnabled = true)
 
-      when(mockDataCompletion.isCompanyUKComplete(any(), any())).thenReturn(true)
+      when(mockDataCompletion.isCompanyComplete(any(), any())).thenReturn(true)
       when(mockDataCompletion.isAdviserComplete(any(), any())).thenReturn(true)
 
       val action = new TestAllowDeclarationAction(NormalMode)
