@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,48 +19,45 @@ package controllers.register.administratorPartnership.contactDetails
 import com.google.inject.Inject
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.address.ManualAddressController
-import forms.{UKAddressFormProvider, UKOnlyAddressFormProvider}
+import controllers.{Retrievals, Variations}
+import forms.UKOnlyAddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipContactAddressListId, PartnershipUKContactAddressId}
-import models.admin.ukResidencyToggle
+import identifiers.register.partnership.{PartnershipContactAddressListId, PartnershipUKContactAddressId}
 import models.requests.DataRequest
-import models.{Address, AddressUKOnly, Mode}
+import models.{AddressUKOnly, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
-import utils.Navigator
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.{NoRLSCheck, PartnershipV2}
 import utils.countryOptions.CountryOptions
+import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
-import views.html.address.{manualAddress, manualAddressUKOnly}
+import views.html.address.manualAddressUKOnly
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipContactAddressController @Inject()(
                                                      val cacheConnector: UserAnswersCacheConnector,
                                                      @PartnershipV2 val navigator: Navigator,
-                                                     @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
+                                                     @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                                      authenticate: AuthAction,
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
-                                                     formProvider: UKAddressFormProvider,
-                                                     formProviderUKOnly: UKOnlyAddressFormProvider,
-                                                     featureFlagService: FeatureFlagService,
+                                                     formProvider: UKOnlyAddressFormProvider,
                                                      val countryOptions: CountryOptions,
                                                      val controllerComponents: MessagesControllerComponents,
-                                                     val view: manualAddress,
-                                                     val viewUKOnly: manualAddressUKOnly
+                                                     val view: manualAddressUKOnly
                                                    )(implicit val executionContext: ExecutionContext)
-  extends ManualAddressController with I18nSupport {
+  extends FrontendBaseController with I18nSupport with Retrievals with Variations {
 
-  private val isUkHintText = true
-  protected val form: Form[Address] = formProvider()
-  val formUK: Form[AddressUKOnly] = formProviderUKOnly()
+  private val form: Form[AddressUKOnly] = formProvider()
 
-  def viewmodel(mode: Mode, partnershipName: String)(implicit request: DataRequest[AnyContent]) =
+  private def viewmodel(
+                         mode: Mode,
+                         partnershipName: String
+                       )(implicit request: DataRequest[AnyContent]): ManualAddressViewModel =
     ManualAddressViewModel(
       postCall = routes.PartnershipContactAddressController.onSubmit(mode),
       countryOptions = countryOptions.options,
@@ -68,61 +65,45 @@ class PartnershipContactAddressController @Inject()(
       heading = Message("enter.address.heading").withArgs(partnershipName),
       psaName = psaName(),
       partnershipName = Some(partnershipName),
-      returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
+      returnLink = Some(
+        controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url
+      )
     )
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
-    implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-        BusinessNameId.retrieve.map {
-          name =>
-            if (ukResidency.isEnabled) {
-              getUKOnly(
-                PartnershipUKContactAddressId,
-                PartnershipContactAddressListId,
-                viewmodel(mode, name),
-                mode,
-                false,
-                formUK,
-                viewUKOnly
-              )
-            } else {
-              get(
-                PartnershipContactAddressId,
-                PartnershipContactAddressListId,
-                viewmodel(mode, name),
-                mode,
-                isUkHintText
-              )
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+      implicit request =>
+        BusinessNameId.retrieve.map { name =>
+          val preparedForm =
+            request.userAnswers.get(PartnershipUKContactAddressId) match {
+              case Some(address) =>
+                form.fill(address)
+              case None =>
+                request.userAnswers.get(PartnershipContactAddressListId) match {
+                  case Some(address) =>
+                    form.fill(AddressUKOnly.fromTolerant(address))
+                  case None =>
+                    form
+                }
             }
+          Future.successful(Ok(view(preparedForm, viewmodel(mode, name), mode, false)))
         }
-      }
-  }
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-        BusinessNameId.retrieve.map {
-          name =>
-            if (ukResidency.isEnabled) {
-              postUKOnly(
-                PartnershipUKContactAddressId,
-                viewmodel(mode, name),
-                mode,
-                navigator,
-                false,
-                formUK,
-                viewUKOnly
-              )
-            } else {
-              post(
-                PartnershipContactAddressId,
-                viewmodel(mode, name),
-                mode,
-                isUkHintText
-              )
-            }
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
+        BusinessNameId.retrieve.map { name =>
+          form.bindFromRequest().fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, viewmodel(mode, name), mode, false))),
+            address =>
+              cacheConnector.save(PartnershipUKContactAddressId, address).flatMap { userAnswersJson =>
+                saveChangeFlag(mode, PartnershipUKContactAddressId).map { _ =>
+                  Redirect(navigator.nextPage(PartnershipUKContactAddressId, mode, UserAnswers(userAnswersJson)))
+                }
+              }
+          )
         }
-      }
-  }
+    }
 }

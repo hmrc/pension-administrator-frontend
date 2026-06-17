@@ -23,22 +23,19 @@ import forms.register.partnership.ConfirmPartnershipDetailsFormProvider
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import models.*
-import models.admin.ukResidencyToggle
 import models.register.BusinessType.BusinessPartnership
-import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json.*
 import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
-import utils.{FakeNavigator, FeatureFlagMockHelper, UserAnswers}
+import utils.{FakeNavigator, UserAnswers}
 import views.html.register.administratorPartnership.confirmPartnershipDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase
-  with FeatureFlagMockHelper with BeforeAndAfterEach {
+class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase {
 
   private val testLimitedCompanyAddress = TolerantAddress(
     Some("Some Building"),
@@ -93,22 +90,12 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase
 
   private def nonUKKickOut: Call = controllers.register.administratorPartnership.routes.PartnershipUpdateNonUKAddressController.onPageLoad()
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    featureFlagMock(ukResidencyToggle)
-  }
 
   "ConfirmPartnershipDetails Controller" must {
 
     "return OK and the correct view for a GET" when {
-      "ukResidencyToggle is disabled" in {
-        val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
-
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString()
-      }
-      "ukResidencyToggle is enabled and address is GB" in {
-        featureFlagMock(ukResidencyToggle, isEnabled = true)
+     
+      "if address is GB" in {
         val result = controller(
           dataRetrievalAction,
           FakeUserAnswersCacheConnector,
@@ -120,8 +107,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase
       }
     }
 
-    "redirect on a GET when the address returned is not GB and toggle enabled" in {
-      featureFlagMock(ukResidencyToggle, isEnabled = true)
+    "redirect on a GET when the address returned is not GB" in {
 
       val customConnector = fakeRegistrationConnector(
         (_, _) => Some(testLimitedCompanyAddress.copy(countryOpt = Some("FR")))
@@ -307,7 +293,7 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase
                           dataRetrievalAction: DataRetrievalAction,
                           dataCacheConnector: UserAnswersCacheConnector = FakeUserAnswersCacheConnector,
                           registrationConnector: FakeRegistrationConnector = fakeRegistrationConnector()
-                        ) =
+                        ): ConfirmPartnershipDetailsController =
     new ConfirmPartnershipDetailsController(
       dataCacheConnector,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -318,7 +304,6 @@ class ConfirmPartnershipDetailsControllerSpec extends ControllerSpecBase
       registrationConnector,
       formProvider,
       countryOptions,
-      mockFeatureFlagService,
       controllerComponents,
       view
     )

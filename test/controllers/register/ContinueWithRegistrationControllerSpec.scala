@@ -22,7 +22,6 @@ import controllers.behaviours.ControllerWithQuestionPageBehaviours
 import forms.register.YesNoFormProvider
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import models.*
-import models.admin.ukResidencyToggle
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
@@ -33,16 +32,12 @@ import utils.testhelpers.DataCompletionBuilder.*
 import utils.{FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
 import views.html.register.continueWithRegistration
 
-class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageBehaviours with FeatureFlagMockHelper with BeforeAndAfterEach {
+class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageBehaviours {
 
   import ContinueWithRegistrationControllerSpec.*
 
   private val view: continueWithRegistration = app.injector.instanceOf[continueWithRegistration]
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    featureFlagMock(ukResidencyToggle)
-  }
 
   "ContinueWithRegistrationController" must {
 
@@ -118,10 +113,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
         redirectLocation(result).mustBe(Some(routes.WhatYouWillNeedController.onPageLoad().url))
       }
 
-      "redirect to 'is business incorporated in UK' when feature flag enabled and customer type NON UK" in {
-
-        featureFlagMock(ukResidencyToggle, isEnabled = true)
-
+      "redirect to 'is business incorporated in UK' when customer type NON UK" in {
         val userAnswers = validData
           .setOrException(RegistrationInfoId)(registrationInfo(RegistrationCustomerType.NonUK))
 
@@ -134,10 +126,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
         )
       }
 
-      "redirect to 'is business incorporated in UK' when form value is false and feature flag enabled" in {
-
-        featureFlagMock(ukResidencyToggle, isEnabled = true)
-
+      "redirect to 'is business incorporated in UK' when form value is false" in {
         val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
           .onSubmit()(postRequestFalse)
 
@@ -161,8 +150,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
       dataRetrievalAction,
       view,
       new YesNoFormProvider(),
-      cache,
-      mockFeatureFlagService
+      cache
     )
 
   private def onPageLoadAction(dataRetrievalAction: DataRetrievalAction, authAction: AuthAction): Action[AnyContent] =
