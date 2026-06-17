@@ -23,13 +23,12 @@ import forms.register.YesNoFormProvider
 import identifiers.register.{BusinessTypeId, RegistrationInfoId}
 import models.*
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
-import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import utils.testhelpers.DataCompletionBuilder.*
-import utils.{FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
+import utils.{UserAnswerOps, UserAnswers}
 import views.html.register.continueWithRegistration
 
 class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageBehaviours {
@@ -94,7 +93,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
         redirectLocation(result).mustBe(Some(administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url))
       }
 
-      "redirect to WYWN page when form value is true when customer type is NON UK" in {
+      "redirect to 'is business incorporated in UK' when the form value is true and customer is non-UK" in {
         val userAnswers = validData
           .setOrException(RegistrationInfoId)(registrationInfo(RegistrationCustomerType.NonUK))
 
@@ -102,28 +101,7 @@ class ContinueWithRegistrationControllerSpec extends ControllerWithQuestionPageB
           .onSubmit()(postRequestTrue)
 
         status(result).mustBe(SEE_OTHER)
-        redirectLocation(result).mustBe(Some(routes.WhatYouWillNeedController.onPageLoad().url))
-      }
-
-      "redirect to company 'before you begin' page when form value is false" in {
-        val result = controller(validData.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
-          .onSubmit()(postRequestFalse)
-
-        status(result).mustBe(SEE_OTHER)
-        redirectLocation(result).mustBe(Some(routes.WhatYouWillNeedController.onPageLoad().url))
-      }
-
-      "redirect to 'is business incorporated in UK' when customer type NON UK" in {
-        val userAnswers = validData
-          .setOrException(RegistrationInfoId)(registrationInfo(RegistrationCustomerType.NonUK))
-
-        val result = controller(userAnswers.dataRetrievalAction, FakeAuthAction, FakeUserAnswersCacheConnector)
-          .onSubmit()(postRequestTrue)
-
-        status(result).mustBe(SEE_OTHER)
-        redirectLocation(result).mustBe(
-          Some(routes.IsBusinessIncorporatedInUKController.onPageLoad(NormalMode).url)
-        )
+        redirectLocation(result).mustBe(Some(routes.IsBusinessIncorporatedInUKController.onPageLoad(NormalMode).url))
       }
 
       "redirect to 'is business incorporated in UK' when form value is false" in {

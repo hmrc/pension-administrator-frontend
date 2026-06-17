@@ -18,43 +18,68 @@ package controllers.register.individual
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.*
-import controllers.register.AreYouInUKController
 import forms.register.YesNoFormProvider
+import identifiers.register.AreYouInUKId
 import models.Mode
 import play.api.data.Form
-import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
-import utils.Navigator
-import utils.annotations.{AuthWithNoIV, Individual}
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.UserAnswers
+import utils.annotations.AuthWithNoIV
 import utils.navigators.IndividualNavigatorV2
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndividualAreYouInUKController @Inject()(
-                                                override val dataCacheConnector: UserAnswersCacheConnector,
-                                                @Individual override val navigator: Navigator,
-                                                override val navigatorV2: IndividualNavigatorV2,
-                                                override val allowAccess: AllowAccessActionProvider,
-                                                @AuthWithNoIV override val authenticate: AuthAction,
-                                                override val getData: DataRetrievalAction,
-                                                override val requireData: DataRequiredAction,
-                                                override val featureFlagService: FeatureFlagService,
-                                                override val formProvider: YesNoFormProvider,
+                                                dataCacheConnector: UserAnswersCacheConnector,
+                                                val navigatorV2: IndividualNavigatorV2,
+                                                allowAccess: AllowAccessActionProvider,
+                                                @AuthWithNoIV val authenticate: AuthAction,
+                                                getData: DataRetrievalAction,
+                                                formProvider: YesNoFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 val view: areYouInUK
-                                              )(implicit val executionContext: ExecutionContext) extends AreYouInUKController {
+                                              )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  protected override val form: Form[Boolean] = formProvider("areYouInUKIndividual.error.required")
+  private val form: Form[Boolean] = formProvider("areYouInUKIndividual.error.required")
 
-  protected def viewmodel(mode: Mode): AreYouInUKViewModel =
+  private def viewModel(mode: Mode): AreYouInUKViewModel =
     AreYouInUKViewModel(mode,
-      postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmitIndividual(mode),
+      postCall = controllers.register.individual.routes.IndividualAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUKIndividual.title"),
       heading = Message("areYouInUKIndividual.heading"),
       p1 = Some("areYouInUKIndividual.check.selectedUkAddress"),
       p2 = Some("areYouInUKIndividual.check.provideNonUkAddress")
     )
+
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
+    implicit request =>
+      val preparedForm = request.userAnswers match {
+        case None => form
+        case Some(userAnswers) =>
+          userAnswers.get(AreYouInUKId).fold(form)(v => form.fill(v))
+      }
+      Ok(view(preparedForm, viewModel(mode)))
+  }
+
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async { implicit request =>
+    form.bindFromRequest().fold((formWithErrors: Form[?]) =>
+      Future.successful(BadRequest(view(formWithErrors, viewModel(mode)))),
+      value => {
+        if (!value) {
+          dataCacheConnector.save(AreYouInUKId, value)
+            .map(_ => Redirect(controllers.register.individual.routes.NonUKAdministratorController.onPageLoad()))
+        } else {
+          dataCacheConnector.save(AreYouInUKId, value).map(cacheMap =>
+            Redirect(navigatorV2.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap)))
+          )
+        }
+      }
+    )
+  }
+
 }
