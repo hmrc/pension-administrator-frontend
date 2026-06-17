@@ -131,15 +131,14 @@ class DataCompletion {
 
   def isCompanyDetailsComplete(ua: UserAnswers): Boolean = {
     val companyContactAddressComplete =
-      Seq(
-        isAddressComplete(
-          ua,
-          CompanyContactAddressId,
-          CompanyPreviousAddressId,
-          CompanyAddressYearsId,
-          Some(CompanyTradingOverAYearId),
-          CompanyConfirmPreviousAddressId
-        ),
+      isAddressComplete(
+        ua,
+        CompanyContactAddressId,
+        CompanyPreviousAddressId,
+        CompanyAddressYearsId,
+        Some(CompanyTradingOverAYearId),
+        CompanyConfirmPreviousAddressId
+      ).orElse(
         isAddressComplete(
           ua,
           CompanyUKContactAddressId,
@@ -148,11 +147,7 @@ class DataCompletion {
           Some(CompanyTradingOverAYearId),
           CompanyConfirmPreviousAddressId
         )
-      ) match {
-        case results if results.contains(Some(true)) => Some(true)
-        case results if results.forall(_.isEmpty) => None
-        case _ => Some(false)
-      }
+      )
 
     val allAnswers = Seq(
       isAnswerComplete(ua, RegistrationInfoId),
