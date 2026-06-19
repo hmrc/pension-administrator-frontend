@@ -17,16 +17,18 @@
 package controllers.register.company
 
 import controllers.Retrievals
-import controllers.actions._
-import identifiers.register._
-import identifiers.register.company.{CompanyPhoneId, _}
+import controllers.actions.*
+import identifiers.register.*
+import identifiers.register.company.{CompanyPhoneId, *}
+import models.admin.ukResidencyToggle
 import models.requests.DataRequest
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.RegisterCompany
-import utils.checkyouranswers.Ops._
+import utils.checkyouranswers.Ops.*
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import utils.{Enumerable, Navigator, UserAnswers}
@@ -34,7 +36,7 @@ import viewmodels.{AnswerSection, Link}
 import views.html.check_your_answers
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject()(
                                             authenticate: AuthAction,
@@ -45,26 +47,31 @@ class CheckYourAnswersController @Inject()(
                                             @RegisterCompany navigator: Navigator,
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
+                                            featureFlagService: FeatureFlagService,
                                             val view: check_your_answers
                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals
   with I18nSupport with Enumerable.Implicits {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      if (isMandatoryDataPresent(request.userAnswers)) {
-        loadCyaPage(mode)
-      } else {
-        Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad())
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        if (isMandatoryDataPresent(request.userAnswers)) {
+          Future.successful(loadCyaPage(mode, ukResidency.isEnabled))
+        } else {
+          Future.successful(Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad()))
+        }
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData) {
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      val isDataComplete = dataCompletion.isCompanyDetailsComplete(request.userAnswers)
-      if (isDataComplete) {
-        Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers))
-      } else {
-        loadCyaPage(mode)
+      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+        val isDataComplete = dataCompletion.isCompanyDetailsComplete(request.userAnswers)
+        if (isDataComplete) {
+          Future.successful(Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers)))
+        } else {
+          Future.successful(loadCyaPage(mode, ukResidency.isEnabled))
+        }
       }
   }
 
@@ -77,9 +84,14 @@ class CheckYourAnswersController @Inject()(
     }
   }
 
-  private def loadCyaPage(mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
+  private def loadCyaPage(mode: Mode, ukResidency: Boolean)(implicit request: DataRequest[AnyContent]): Result = {
+    val correctContactAddress = if (ukResidency) {
+      CompanyUKContactAddressId.row(Some(Link(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(CheckMode).url)))
+    } else {
+      CompanyContactAddressId.row(Some(Link(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(CheckMode).url)))
+    }
     val answerSection = AnswerSection(None, Seq(
-      BusinessNameId.row(None)(request, implicitly),
+      BusinessNameId.row(None),
       BusinessUTRId.row(None),
       HasCompanyCRNId.row(Some(Link(routes.HasCompanyCRNController.onPageLoad(CheckMode).url))),
       CompanyRegistrationNumberId.row(Some(Link(routes.CompanyRegistrationNumberController.onPageLoad(CheckMode).url))),
@@ -87,7 +99,7 @@ class CheckYourAnswersController @Inject()(
       EnterPAYEId.row(Some(Link(routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url))),
       HasVATId.row(Some(Link(routes.HasCompanyVATController.onPageLoad(CheckMode).url))),
       EnterVATId.row(Some(Link(routes.CompanyEnterVATController.onPageLoad(CheckMode).url))),
-      CompanyContactAddressId.row(Some(Link(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
+      correctContactAddress,
       CompanyAddressYearsId.row(Some(Link(routes.CompanyAddressYearsController.onPageLoad(CheckMode).url))),
       CompanyPreviousAddressId.row(Some(Link(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
       CompanyEmailId.row(Some(Link(routes.CompanyEmailController.onPageLoad(CheckMode).url))),
