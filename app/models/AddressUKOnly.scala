@@ -77,6 +77,22 @@ object AddressUKOnly {
       t.postcode.getOrElse("")
     )
 
-  implicit val formatsAddress: Format[AddressUKOnly] = Json.format[AddressUKOnly]
+
+  implicit val reads: Reads[AddressUKOnly] =
+    Json.reads[AddressUKOnly]
+
+  implicit val writes: Writes[AddressUKOnly] =
+    Writes { address =>
+      Json.obj(
+        "addressLine1" -> address.addressLine1,
+        "addressLine2" -> address.addressLine2,
+        "addressLine3" -> address.addressLine3,
+        "addressLine4" -> address.addressLine4,
+        "postcode"     -> address.postcode,
+        "countryCode"  -> "GB"
+      )
+    }
+
+  implicit val format: Format[AddressUKOnly] = Format(reads, writes)
 
 }
