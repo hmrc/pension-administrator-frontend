@@ -245,6 +245,13 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     addressRow(CompanyContactAddressId, CompanyUKContactAddressId, "company.address.label",
       CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)
 
+
+
+  userAnswers.get(CompanyContactAddressId) map { address =>
+    AnswerRow("company.address.label", addressAnswer(address), answerIsMessageKey = false,
+      Some(Link(CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
+  }
+
   private def companyPreviousAddress: Option[AnswerRow] = {
     (userAnswers.get(CompanyConfirmPreviousAddressId), userAnswers.get(CompanyPreviousAddressId)) match {
       case (Some(false), None) =>
@@ -909,13 +916,27 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       .find(_.value == address.country)
       .map(_.label)
       .getOrElse(address.country)
-    Seq(Some(address.addressLine1), Some(address.addressLine2), address.addressLine3, address.addressLine4,
-      address.postcode, Some(country)).flatten
+
+    Seq(
+      Some(s"${address.addressLine1},"),
+      Some(s"${address.addressLine2},"),
+      address.addressLine3.map(line3 => s"$line3,"),
+      address.addressLine4.map(line4 => s"$line4,"),
+      address.postcode.map(postcode => s"$postcode,"),
+      Some(country)
+    ).flatten
   }
 
-  private def addressAnswer(address: AddressUKOnly): Seq[String] =
-    Seq(Some(address.addressLine1), Some(address.addressLine2), address.addressLine3,
-      address.addressLine4, Some(address.postcode), Some("United Kingdom")).flatten
+  private def addressAnswer(address: AddressUKOnly): Seq[String] = {
+    Seq(
+      Some(s"${address.addressLine1},"),
+      Some(s"${address.addressLine2},"),
+      address.addressLine3.map(line3 => s"$line3,"),
+      address.addressLine4.map(line4 => s"$line4,"),
+      address.postcode.map(postcode => s"$postcode,"),
+      None
+    ).flatten
+  }
 
   private def addressRow(addressId: TypedIdentifier[Address], ukAddressId: TypedIdentifier[AddressUKOnly],
                          label: String, changeUrl: String): Option[AnswerRow] = {
