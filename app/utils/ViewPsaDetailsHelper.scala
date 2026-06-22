@@ -933,8 +933,8 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       Some(s"${address.addressLine2},"),
       address.addressLine3.map(line3 => s"$line3,"),
       address.addressLine4.map(line4 => s"$line4,"),
-      address.postcode.map(postcode => s"$postcode,"),
-      None
+      Some(s"${address.postcode},"),
+      Some("United Kingdom")
     ).flatten
   }
 
