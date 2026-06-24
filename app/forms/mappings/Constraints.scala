@@ -16,8 +16,9 @@
 
 package forms.mappings
 
-import java.time.LocalDate
+import com.networknt.org.apache.commons.validator.routines.EmailValidator
 
+import java.time.LocalDate
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.domain.Nino
 import utils.countryOptions.CountryOptions
@@ -28,11 +29,6 @@ trait Constraints {
 
   protected val crnRegex = """^[A-Za-z0-9 -]{8}$"""
   protected val utrRegex = """^([kK]{0,1}\d{10})$|^(\d{10}[kK]{0,1})$|^([kK]{0,1}\d{13})$|^(\d{13}[kK]{0,1})$"""
-  protected val emailRestrictiveRegex: String = "^(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"" +
-    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" +
-    "@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?|" +
-    "\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-zA-Z0-9-]*[a-zA-Z0-9]:" +
-    "(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$"
   protected val phoneNumberRegex = """^[0-9 ()+--]{1,24}$"""
   protected val vatRegex = """^\d{9}$"""
   protected val payeRegex = """^[0-9]{3}[0-9A-Za-z]{1,13}$"""
@@ -43,6 +39,8 @@ trait Constraints {
   protected val addressLineRegex = """^[A-Za-z0-9 &!'‘’\"“”(),./—–‐-]{1,35}$"""
   protected val businessNameRegex = """^[a-zA-Z0-9- '&\\/]{1,105}$"""
   protected val adviserNameRegex = """^[a-zA-Z &?*()_À-ÿ '‘’—–‐-]{1,107}$"""
+
+  protected val emailValidator: EmailValidator = EmailValidator.getInstance()
 
   protected def firstError[A](constraints: Constraint[A]*): Constraint[A] =
     Constraint {
@@ -121,7 +119,12 @@ trait Constraints {
 
   protected def uniqueTaxReference(errorKey: String): Constraint[String] = regexp(utrRegex, errorKey)
 
-  protected def emailAddressRestrictive(errorKey: String): Constraint[String] = regexp(emailRestrictiveRegex, errorKey)
+  protected def emailAddressRestrictive(errorKey: String): Constraint[String] = {
+    Constraint {
+      case str if emailValidator.isValid(str) => Valid
+      case _ => Invalid(errorKey)
+    }
+  }
 
   protected def phoneNumber(errorKey: String): Constraint[String] = regexp(phoneNumberRegex, errorKey)
 
