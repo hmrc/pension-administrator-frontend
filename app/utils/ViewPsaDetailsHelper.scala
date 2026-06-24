@@ -245,13 +245,6 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
     addressRow(CompanyContactAddressId, CompanyUKContactAddressId, "company.address.label",
       CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)
 
-
-
-  userAnswers.get(CompanyContactAddressId) map { address =>
-    AnswerRow("company.address.label", addressAnswer(address), answerIsMessageKey = false,
-      Some(Link(CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url)))
-  }
-
   private def companyPreviousAddress: Option[AnswerRow] = {
     (userAnswers.get(CompanyConfirmPreviousAddressId), userAnswers.get(CompanyPreviousAddressId)) match {
       case (Some(false), None) =>
