@@ -218,7 +218,7 @@ class ConstraintsSpec extends FormSpec with Constraints with RegexBehaviourSpec 
     val validEmail = Table(
       "ema.il@cd.com",
       "a@email.com",
-      "1.2.3@4.5.6"
+      "AÀ@v.com"
     )
 
     val invalidEmail = Table(
@@ -229,12 +229,12 @@ class ConstraintsSpec extends FormSpec with Constraints with RegexBehaviourSpec 
       ".df@com",
       "123 2@s.com",
       "xyz;a@v",
-      "AÀ@v.com"
+      "1.2.3@4.5.6"
     )
 
     val invalidMsg = "contactDetails.error.email.valid"
 
-    behave like regexWithValidAndInvalidExamples(emailAddressRestrictive, validEmail, invalidEmail, invalidMsg, emailRestrictiveRegex)
+    behave like regexWithValidAndInvalidExamples(emailAddressRestrictive, validEmail, invalidEmail, invalidMsg)
   }
 
   "phoneNumber" must {

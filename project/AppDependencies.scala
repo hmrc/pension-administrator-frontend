@@ -11,7 +11,8 @@ object AppDependencies {
     "uk.gov.hmrc"                   %% s"play-frontend-hmrc-$playVersion"           % "12.32.0",
     "uk.gov.hmrc"                   %% s"domain-$playVersion"                       % "13.0.0",
     "com.fasterxml.jackson.module"  %% "jackson-module-scala"                       % "2.21.1",
-    "uk.gov.hmrc"                   %% s"mongo-feature-toggles-client-$playVersion" % mongoFeatureTogglesClientVersion
+    "uk.gov.hmrc"                   %% s"mongo-feature-toggles-client-$playVersion" % mongoFeatureTogglesClientVersion,
+    "com.networknt"                 %  "json-schema-validator"                      % "1.5.8",
   )
 
   val test: Seq[ModuleID] = Seq(
