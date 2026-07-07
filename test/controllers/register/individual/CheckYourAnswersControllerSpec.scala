@@ -44,7 +44,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with FeatureFlag
     featureFlagMock(ukResidencyToggle)
 
     when(mockDataCompletion.isIndividualComplete(any(), any())).thenReturn(true)
-    when(mockDataCompletion.isIndividualUKComplete(any(), any())).thenReturn(true)
 
     when(navigatorV2.nextPage(any(), any(), any())).thenReturn(onwardRoute)
   }
@@ -129,7 +128,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with FeatureFlag
       "load cya page when UK data is not complete and flag is enabled" in {
         featureFlagMock(ukResidencyToggle, isEnabled = true)
 
-        when(mockDataCompletion.isIndividualUKComplete(any(), any()))
+        when(mockDataCompletion.isIndividualComplete(any(), any()))
           .thenReturn(false)
 
         val retrievalAction = UserAnswers().completeIndividual.dataRetrievalAction

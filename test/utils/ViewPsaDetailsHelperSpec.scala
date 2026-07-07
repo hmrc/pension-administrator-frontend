@@ -21,7 +21,10 @@ import controllers.register.company.directors.routes.DirectorNoNINOReasonControl
 import controllers.register.company.directors.routes.HasDirectorNINOController
 import controllers.register.company.routes.*
 import controllers.register.partnership.routes.*
+import identifiers.register.company.{CompanyContactAddressId, CompanyUKContactAddressId}
 import identifiers.register.company.directors.*
+import identifiers.register.individual.{IndividualContactAddressId, IndividualUKContactAddressId}
+import identifiers.register.partnership.{PartnershipContactAddressId, PartnershipUKContactAddressId}
 import identifiers.register.partnership.partners.*
 import models.*
 import org.scalatest.matchers.must.Matchers
@@ -82,6 +85,13 @@ class ViewPsaDetailsHelperSpec extends SpecBase with Matchers {
     )
 
     behave like validSection(
+      testName = "individual contact details only (having address as AddressUKOnly) ",
+      headingKey = None,
+      result = individualContactOnlyResultWithAddressUKOnly,
+      expectedAnswerRows = individualContactOnlySeqAnswersWithAddressUKOnly()
+    )
+
+    behave like validSection(
       testName = "individual details with add link",
       headingKey = None,
       result = individualResultWithAddLink,
@@ -96,10 +106,17 @@ class ViewPsaDetailsHelperSpec extends SpecBase with Matchers {
     )
 
     behave like validSection(
-      testName = "company contact details only",
+      testName = "company contact details only ",
       headingKey = None,
       result = companyContactOnlyResult,
       expectedAnswerRows = companyContactOnlySeqAnswers()
+    )
+
+    behave like validSection(
+      testName = "company contact details only (having address as AddressUKOnly) ",
+      headingKey = None,
+      result = companyContactOnlyResultWithAddressUKOnly,
+      expectedAnswerRows = companyContactOnlySeqAnswersWithAddressUKOnly()
     )
 
     behave like validSection(
@@ -121,6 +138,13 @@ class ViewPsaDetailsHelperSpec extends SpecBase with Matchers {
       headingKey = None,
       result = partnershipContactOnlyResult,
       expectedAnswerRows = partnershipContactOnlySeqAnswers()
+    )
+
+    behave like validSection(
+      testName = "partnership contact details only (having address as AddressUKOnly)",
+      headingKey = None,
+      result = partnershipContactOnlyResultWithAddressUKOnly,
+      expectedAnswerRows = partnershipContactOnlySeqAnswersWithAddressUKOnly()
     )
 
     behave like validSection(
@@ -416,17 +440,28 @@ class ViewPsaDetailsHelperSpec extends SpecBase with Matchers {
 }
 
 object ViewPsaDetailsHelperSpec extends JsonFileReader {
+
+  private val addressUKOnly: AddressUKOnly = AddressUKOnly("Telford1", "Telford2", Some("Telford3"), Some("Telford4"), "TF3 4ER")
+
   private val countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
   private def psaDetailsHelper(userAnswers: UserAnswers) = new ViewPsaDetailsHelper(userAnswers, countryOptions)
 
   private val individualUserAnswers = readJsonFromFile("/data/psaIndividualUserAnswers.json")
 
+  private val individualUserAnswersWithAddressUKOnly =
+    readJsonFromFile("/data/psaIndividualUserAnswers.json").as[JsObject]
+      - IndividualContactAddressId.toString + (IndividualUKContactAddressId.toString -> Json.toJson(addressUKOnly))
+
   private val individualUserAnswersWithoutPrevAddr =
     readJsonFromFile("/data/psaIndividualUserAnswers.json").as[JsObject] - "individualPreviousAddress"
 
   private val companyUserAnswers =
     readJsonFromFile("/data/psaCompanyUserAnswers.json")
+
+  private val companyUserAnswersWithAddressUKOnly =
+    readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject]
+      - CompanyContactAddressId.toString + (CompanyUKContactAddressId.toString -> Json.toJson(addressUKOnly))
 
   private val companyUserAnswersIncomplete = readJsonFromFile("/data/psaCompanyUserAnswers.json").as[JsObject] -
     "directors" + ("directors" -> Json.arr(
@@ -451,6 +486,9 @@ object ViewPsaDetailsHelperSpec extends JsonFileReader {
     )
   ))
   private val partnershipUserAnswers = readJsonFromFile("/data/psaPartnershipUserAnswers.json")
+
+  private val partnershipUserAnswersWithAddressUKOnly = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject]
+    - PartnershipContactAddressId.toString + (PartnershipUKContactAddressId.toString -> Json.toJson(addressUKOnly))
 
   private val partnershipUserAnswersIncomplete = readJsonFromFile("/data/psaPartnershipUserAnswers.json").as[JsObject] - "partners" +
     ("partners" -> Json.arr(
@@ -480,15 +518,14 @@ object ViewPsaDetailsHelperSpec extends JsonFileReader {
     )
   ))
 
-  val address: Address = Address("Telford1", "Telford2", Some("Telford3"), Some("Telford4"), Some("TF3 4ER"), "GB")
-  val psaAddress: Address = Address("addline1", "addline2", Some("addline3"), Some("addline4"), Some("56765"), "AD")
-  val previousAddress: Address = Address("London1", "London2", Some("London3"), Some("London4"), Some("LN12 4DC"), "GB")
-
   private val individualResult: Seq[SuperSection] =
     psaDetailsHelper(UserAnswers(individualUserAnswers)).individualSections
 
   private def individualContactOnlyResult: Seq[SuperSection] =
     psaDetailsHelper(UserAnswers(individualUserAnswers)).individualContactOnlySections("A2100005")
+
+  private def individualContactOnlyResultWithAddressUKOnly: Seq[SuperSection] =
+    psaDetailsHelper(UserAnswers(individualUserAnswersWithAddressUKOnly)).individualContactOnlySections("A2100005")
 
   private val individualResultWithAddLink: Seq[SuperSection] =
     psaDetailsHelper(UserAnswers(individualUserAnswersWithoutPrevAddr)).individualSections
@@ -496,6 +533,8 @@ object ViewPsaDetailsHelperSpec extends JsonFileReader {
     psaDetailsHelper(UserAnswers(companyUserAnswers)).companySections
   private val companyContactOnlyResult: Seq[SuperSection] =
     psaDetailsHelper(UserAnswers(companyUserAnswers)).companyContactOnlySections("A2100005")
+  private val companyContactOnlyResultWithAddressUKOnly: Seq[SuperSection] =
+    psaDetailsHelper(UserAnswers(companyUserAnswersWithAddressUKOnly)).companyContactOnlySections("A2100005")
   private val companyResultIncomplete: Seq[SuperSection] =
     psaDetailsHelper(UserAnswers(companyUserAnswersIncomplete)).companySections
   private val companyResultWithTwoDirectors: Seq[SuperSection] =
@@ -508,6 +547,8 @@ object ViewPsaDetailsHelperSpec extends JsonFileReader {
     psaDetailsHelper(UserAnswers(partnershipUserAnswers)).partnershipSections
   private val partnershipContactOnlyResult: Seq[SuperSection] =
     psaDetailsHelper(UserAnswers(partnershipUserAnswers)).partnershipContactOnlySections("A2100005")
+  private val partnershipContactOnlyResultWithAddressUKOnly: Seq[SuperSection] =
+    psaDetailsHelper(UserAnswers(partnershipUserAnswersWithAddressUKOnly)).partnershipContactOnlySections("A2100005")
   private val partnershipResultIncomplete: Seq[SuperSection] =
     psaDetailsHelper(UserAnswers(partnershipUserAnswersIncomplete)).partnershipSections
   private val partnershipResultWithTwoPartners: Seq[SuperSection] =
