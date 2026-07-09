@@ -18,9 +18,10 @@ package controllers.actions
 
 import com.google.inject.Inject
 import identifiers.register.RegistrationInfoId
-import models.Mode
+import models.{Mode, RegistrationLegalStatus}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
 import models.requests.OptionalDataRequest
+import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
 import utils.UserAnswers
@@ -29,27 +30,40 @@ import utils.dataCompletion.DataCompletion
 import scala.concurrent.{ExecutionContext, Future}
 
 class AllowDeclarationAction(mode: Mode, dataCompletion: DataCompletion)
-                            (implicit val executionContext: ExecutionContext) extends ActionFilter[OptionalDataRequest] {
+                            (implicit val executionContext: ExecutionContext)
+  extends ActionFilter[OptionalDataRequest]
+    with Logging {
 
   override protected def filter[A](request: OptionalDataRequest[A]): Future[Option[Result]] = {
 
-    val userAnswers = request.userAnswers.getOrElse(UserAnswers())
+    val userAnswers: UserAnswers =
+      request.userAnswers.getOrElse(UserAnswers())
 
-    val isComplete = userAnswers.get(RegistrationInfoId).map(_.legalStatus) match {
-      case Some(Individual) =>
-        dataCompletion.isIndividualComplete(userAnswers, mode)
-      case Some(LimitedCompany) =>
-        dataCompletion.isCompanyComplete(userAnswers, mode)
-      case Some(Partnership) =>
-        dataCompletion.isPartnershipComplete(userAnswers, mode)
-      case _ =>
-        true
-    }
+    val legalStatus: Option[RegistrationLegalStatus] =
+      userAnswers.get(RegistrationInfoId).map(_.legalStatus)
+
+    val isComplete: Boolean =
+      legalStatus match {
+        case Some(Individual) =>
+          dataCompletion.isIndividualComplete(userAnswers, mode)
+        case Some(LimitedCompany) =>
+          dataCompletion.isCompanyComplete(userAnswers, mode)
+        case Some(Partnership) =>
+          dataCompletion.isPartnershipComplete(userAnswers, mode)
+        case _ =>
+          true
+      }
+
+    val isAdviserComplete: Boolean =
+      dataCompletion.isAdviserComplete(userAnswers, mode)
 
     Future.successful {
-      if (isComplete && dataCompletion.isAdviserComplete(userAnswers, mode)) {
+      if (isComplete && isAdviserComplete) {
         None
       } else {
+        logger.error(
+          s"$legalStatus isComplete: $isComplete \n isAdviserComplete: $isAdviserComplete "
+        )
         Some(Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad()))
       }
     }
