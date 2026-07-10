@@ -167,8 +167,9 @@ class DataCompletion {
           isAnswerComplete(ua, CompanyAddressId)
         )
       }
-      )
-    logger.debug(s"User answers company details complete: $allAnswers")
+    )
+
+    logger.warn(s"User answers company details complete: $allAnswers")
     isComplete(allAnswers).getOrElse(false)
   }
 
@@ -209,9 +210,9 @@ class DataCompletion {
           isAnswerComplete(ua, PartnershipRegisteredAddressId)
         )
       }
-      )
+    )
 
-    logger.debug(s"User answers partnership details complete: $allAnswers")
+    logger.warn(s"User answers partnership details complete: $allAnswers")
     isComplete(allAnswers).getOrElse(false)
   }
 
@@ -265,22 +266,23 @@ class DataCompletion {
         )
       }
 
-    isComplete(
-      Seq(
-        isAnswerComplete(ua, RegistrationInfoId),
-        isAnswerComplete(ua, IndividualDetailsId),
-        isAnswerComplete(ua, IndividualDateOfBirthId),
-        contactAddressComplete,
-        isAnswerComplete(ua, IndividualEmailId),
-        isAnswerComplete(ua, IndividualPhoneId)
-      ) ++
-        (if (mode == NormalMode)
-          Seq(
-            isAnswerComplete(ua, IndividualAddressId),
-            isAnswerComplete(ua, IndividualSameContactAddressId)
-          )
-        else Nil)
-    ).getOrElse(false)
+    val allAnswers = Seq(
+      isAnswerComplete(ua, RegistrationInfoId),
+      isAnswerComplete(ua, IndividualDetailsId),
+      isAnswerComplete(ua, IndividualDateOfBirthId),
+      contactAddressComplete,
+      isAnswerComplete(ua, IndividualEmailId),
+      isAnswerComplete(ua, IndividualPhoneId)
+    ) ++
+      (if (mode == NormalMode)
+        Seq(
+          isAnswerComplete(ua, IndividualAddressId),
+          isAnswerComplete(ua, IndividualSameContactAddressId)
+        )
+      else Nil)
+
+    logger.warn(s"User answers individual details complete: $allAnswers")
+    isComplete(allAnswers).getOrElse(false)
   }
 
   def isAdviserComplete(ua: UserAnswers, mode: Mode): Boolean = {
@@ -293,6 +295,7 @@ class DataCompletion {
     if (isWkYes) {
       true
     } else {
+      logger.warn("working knowledge false")
       ua.get(AdviserEmailId).nonEmpty && ua.get(AdviserPhoneId).nonEmpty &&
         ua.get(AdviserNameId).nonEmpty && ua.get(AdviserAddressId).nonEmpty
     }
