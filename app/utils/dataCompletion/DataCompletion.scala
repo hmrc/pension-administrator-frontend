@@ -169,7 +169,27 @@ class DataCompletion {
       }
     )
 
-    logger.warn(s"User answers company details complete: $allAnswers")
+    val allAnswersWithKeys = Seq(
+      ("registrationInfo", isAnswerComplete(ua, RegistrationInfoId)),
+      ("businessName", isAnswerComplete(ua, BusinessNameId)),
+      ("companyAddress", companyContactAddressComplete),
+      ("contactDetails", isContactDetailsComplete(ua, CompanyEmailId, CompanyPhoneId))
+    ) ++ (
+      if (ua.get(AreYouInUKId).contains(true)) {
+        Seq(
+          ("UTR", isAnswerComplete(ua, BusinessUTRId)),
+          ("CRN", isAnswerComplete(ua, HasCompanyCRNId, CompanyRegistrationNumberId, None)),
+          ("PAYE", isAnswerComplete(ua, HasPAYEId, EnterPAYEId, None)),
+          ("VAT", isAnswerComplete(ua, HasVATId, EnterVATId, None))
+        )
+      } else {
+        Seq(
+          ("companyAddressId", isAnswerComplete(ua, CompanyAddressId))
+        )
+      }
+    )
+
+    logger.warn(s"User answers company details complete: ${allAnswersWithKeys.map(y => s"${y._1} = ${y._2}")}")
     isComplete(allAnswers).getOrElse(false)
   }
 
