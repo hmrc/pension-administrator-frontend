@@ -23,6 +23,7 @@ import models.admin.ukResidencyToggle
 import models.register.{Task, TaskList}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers.*
+import utils.dataCompletion.DataCompletion
 import utils.{FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
 import views.html.register.taskList
 
@@ -83,7 +84,7 @@ class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase with 
       }
     }
   }
-
+  private val mockDataCompletion = mock[DataCompletion]
   private def controller(dataRetrievalAction: DataRetrievalAction) =
     new CompanyRegistrationTaskListController(
       controllerComponents,
@@ -91,8 +92,8 @@ class CompanyRegistrationTaskListControllerSpec extends ControllerSpecBase with 
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      mockFeatureFlagService,
-      view
+      view,
+      mockDataCompletion
     )
 
   private def viewAsString(taskList: TaskList): String =
