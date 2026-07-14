@@ -17,17 +17,18 @@
 package controllers.register.company
 
 import controllers.ControllerSpecBase
-import controllers.actions._
-import models._
+import controllers.actions.*
+import models.*
+import models.admin.ukResidencyToggle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Call, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.{FakeCountryOptions, FakeNavigator, UserAnswerOps, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator, FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
@@ -35,9 +36,10 @@ import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec
   extends ControllerSpecBase
-    with BeforeAndAfterEach {
+    with BeforeAndAfterEach with FeatureFlagMockHelper {
 
   override def beforeEach(): Unit = {
+    featureFlagMock(ukResidencyToggle)
     when(mockDataCompletion.isCompanyDetailsComplete(any())).thenReturn(true)
   }
 
@@ -65,6 +67,7 @@ class CheckYourAnswersControllerSpec
       new FakeNavigator(desiredRoute = onwardRoute),
       countryOptions,
       controllerComponents,
+      mockFeatureFlagService,
       view
     )
 

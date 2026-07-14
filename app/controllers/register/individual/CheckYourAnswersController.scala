@@ -75,11 +75,7 @@ class CheckYourAnswersController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
       featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-        val isDataComplete: Boolean = if(ukResidency.isEnabled) {
-          dataCompletion.isIndividualUKComplete(request.userAnswers, mode)
-        } else {
-          dataCompletion.isIndividualComplete(request.userAnswers, mode)
-        }
+        val isDataComplete: Boolean = dataCompletion.isIndividualComplete(request.userAnswers, mode)
         (isDataComplete, ukResidency.isEnabled) match {
           case (true, true) => Future.successful(Redirect(individualNavigatorV2.nextPage(CheckYourAnswersId, mode, request.userAnswers)))
           case (true, false) => Future.successful(Redirect(navigator.nextPage(CheckYourAnswersId, mode, request.userAnswers)))
@@ -107,12 +103,7 @@ class CheckYourAnswersController @Inject()(
         IndividualEmailId.row(Some(Link(IndividualEmailController.onPageLoad(checkMode(mode)).url))),
         IndividualPhoneId.row(Some(Link(IndividualPhoneController.onPageLoad(checkMode(mode)).url)))
       ).flatten)
-      val sections = Seq(individualDetails)
-      val dataComplete = if(ukResidency) {
-        dataCompletion.isIndividualUKComplete(request.userAnswers, mode)
-      } else {
-        dataCompletion.isIndividualComplete(request.userAnswers, mode)
-      }
-      Ok(view(sections, postUrl, None, mode, dataComplete))
+
+      Ok(view(Seq(individualDetails), postUrl, None, mode, dataCompletion.isIndividualComplete(request.userAnswers, mode)))
     }
 }

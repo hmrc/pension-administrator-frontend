@@ -18,62 +18,62 @@ package controllers.actions
 
 import com.google.inject.Inject
 import identifiers.register.RegistrationInfoId
-import models.Mode
+import models.{Mode, RegistrationLegalStatus}
 import models.RegistrationLegalStatus.{Individual, LimitedCompany, Partnership}
-import models.admin.ukResidencyToggle
 import models.requests.OptionalDataRequest
+import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFilter, Result}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import utils.UserAnswers
 import utils.dataCompletion.DataCompletion
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AllowDeclarationAction(mode: Mode, dataCompletion: DataCompletion, featureFlagService: FeatureFlagService)
-                            (implicit val executionContext: ExecutionContext) extends ActionFilter[OptionalDataRequest] {
+class AllowDeclarationAction(mode: Mode, dataCompletion: DataCompletion)
+                            (implicit val executionContext: ExecutionContext)
+  extends ActionFilter[OptionalDataRequest]
+    with Logging {
 
   override protected def filter[A](request: OptionalDataRequest[A]): Future[Option[Result]] = {
-    featureFlagService.get(ukResidencyToggle).map { ukResidency =>
 
-      val userAnswers = request.userAnswers.getOrElse(UserAnswers())
+    val userAnswers: UserAnswers =
+      request.userAnswers.getOrElse(UserAnswers())
 
-      val isComplete = userAnswers.get(RegistrationInfoId).map(_.legalStatus) match {
+    val legalStatus: Option[RegistrationLegalStatus] =
+      userAnswers.get(RegistrationInfoId).map(_.legalStatus)
+
+    val isComplete: Boolean =
+      legalStatus match {
         case Some(Individual) =>
-          if (ukResidency.isEnabled) {
-            dataCompletion.isIndividualUKComplete(userAnswers, mode)
-          } else {
-            dataCompletion.isIndividualComplete(userAnswers, mode)
-          }
+          dataCompletion.isIndividualComplete(userAnswers, mode)
         case Some(LimitedCompany) =>
-          if (ukResidency.isEnabled) {
-            dataCompletion.isCompanyUKComplete(userAnswers, mode)
-          } else {
-            dataCompletion.isCompanyComplete(userAnswers, mode)
-          }
+          dataCompletion.isCompanyComplete(userAnswers, mode)
         case Some(Partnership) =>
-          if (ukResidency.isEnabled) {
-            dataCompletion.isPartnershipUKComplete(userAnswers, mode)
-          } else {
-            dataCompletion.isPartnershipComplete(userAnswers, mode)
-          }
+          dataCompletion.isPartnershipComplete(userAnswers, mode)
         case _ =>
           true
       }
 
-      if (isComplete && dataCompletion.isAdviserComplete(userAnswers, mode)) {
+    val isAdviserComplete: Boolean =
+      dataCompletion.isAdviserComplete(userAnswers, mode)
+
+    Future.successful {
+      if (isComplete && isAdviserComplete) {
         None
       } else {
+        logger.error(
+          s"$legalStatus isComplete: $isComplete \n isAdviserComplete: $isAdviserComplete "
+        )
         Some(Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad()))
       }
     }
   }
 }
 
-class AllowDeclarationActionProviderImpl @Inject()(dataCompletion: DataCompletion, featureFlagService: FeatureFlagService)
+class AllowDeclarationActionProviderImpl @Inject()(dataCompletion: DataCompletion)
                                                   (implicit executionContext: ExecutionContext) extends AllowDeclarationActionProvider {
   def apply(mode: Mode): AllowDeclarationAction = {
-    new AllowDeclarationAction(mode, dataCompletion, featureFlagService)
+    new AllowDeclarationAction(mode, dataCompletion)
   }
 }
 

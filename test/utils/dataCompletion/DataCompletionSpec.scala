@@ -30,6 +30,7 @@ import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   val address = Address("Telford1", "Telford2", Some("Telford3"), Some("Telford4"), Some("TF3 4ER"), "GB")
+  val addressUK = AddressUKOnly("Telford1", "Telford2", None, None, "TF3 4ER")
 
   "DataCompletion" when {
     "calling isComplete" must {
@@ -169,8 +170,33 @@ class DataCompletionSpec extends AnyWordSpecLike with Matchers with OptionValues
             CompanyConfirmPreviousAddressId).value.mustBe(true)
         }
       }
-    }
 
+      "When a UK-only address is stored in UserAnswers" when {
+        val userAnswers = UserAnswers().companyUKContactAddress(addressUK)
+
+        "return None when checking address completion using CompanyContactAddressId" in {
+          DataCompletion.isAddressComplete(
+            userAnswers.companyAddressYears(AddressYears.OverAYear),
+            CompanyContactAddressId,
+            CompanyPreviousAddressId,
+            CompanyAddressYearsId,
+            Some(CompanyTradingOverAYearId),
+            CompanyConfirmPreviousAddressId
+          ).mustBe(None)
+        }
+
+        "return true when checking address completion using CompanyUKContactAddressId" in {
+          DataCompletion.isAddressComplete(
+            userAnswers.companyAddressYears(AddressYears.OverAYear),
+            CompanyUKContactAddressId,
+            CompanyPreviousAddressId,
+            CompanyAddressYearsId,
+            Some(CompanyTradingOverAYearId),
+            CompanyConfirmPreviousAddressId
+          ).mustBe(Some(true))
+        }
+      }
+    }
 
     "isAnswerComplete" must {
       "return None when answer is missing" in {

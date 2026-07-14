@@ -55,7 +55,7 @@ trait EmailBehaviours extends FormSpec with StringFieldBehaviours with Constrain
         form,
         fieldName,
         "ABC",
-        FormError(fieldName, keyEmailInvalid, Seq(emailRestrictiveRegex))
+        FormError(fieldName, keyEmailInvalid, Seq.empty)
       )
 
     }

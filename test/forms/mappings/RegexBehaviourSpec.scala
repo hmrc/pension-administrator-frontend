@@ -30,7 +30,7 @@ trait RegexBehaviourSpec extends TableDrivenPropertyChecks {
                                         constraint: String => Constraint[String],
                                         valid: TableFor1[String], invalid: TableFor1[String],
                                         invalidMsg: String,
-                                        regexString: String): Unit = {
+                                        regexString: String = ""): Unit = {
     "Accept all valid examples" in {
       forAll(valid) { value =>
         constraint(invalidMsg)(value).shouldBe(Valid)
@@ -39,7 +39,8 @@ trait RegexBehaviourSpec extends TableDrivenPropertyChecks {
 
     "Reject all invalid examples" in {
       forAll(invalid) { value =>
-        constraint(invalidMsg)(value).shouldBe(Invalid(invalidMsg, regexString))
+        val invalid = if(regexString.isEmpty) Invalid(invalidMsg) else Invalid(invalidMsg, regexString)
+        constraint(invalidMsg)(value).shouldBe(invalid)
       }
     }
   }
