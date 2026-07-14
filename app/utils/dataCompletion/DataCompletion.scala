@@ -62,10 +62,14 @@ class DataCompletion {
                        )(using Reads[A]): Option[Boolean] = {
     (userAnswers.get(currentAddressId), userAnswers.get(timeAtAddress), userAnswers.get(confirmPreviousAddress)) match {
       case (None, _, _) => None
-      case (Some(_), _, Some(_)) =>
+      case (Some(_), Some(addressYears), Some(_)) =>
         userAnswers.get(previousAddressId) match {
           case Some(_) => Some(true)
-          case _ => Some(false)
+          case None =>
+            addressYears match {
+              case AddressYears.OverAYear  => Some(true)
+              case _ => Some(false)
+            }
         }
       case (Some(_), Some(AddressYears.OverAYear), _) =>
         Some(true)
