@@ -59,26 +59,25 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      def isUkAddress(address: TolerantAddress): Boolean = address.countryOpt.contains("GB")
-
-      val preparedForm = request.userAnswers.get(IndividualDetailsCorrectId).map(form.fill).getOrElse(form)
-
       request.user.nino match {
         case None =>
           Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad))
         case Some(nino) =>
-          def correctView(individual: TolerantIndividual, address: TolerantAddress): Result = {
-            if (!isUkAddress(address)) {
-              Redirect(controllers.register.individual.routes.IndividualUpdateNonUKAddressController.onPageLoad())
-            } else {
+          def isUkAddress(address: TolerantAddress): Boolean = address.countryOpt.contains("GB")
+          val preparedForm = request.userAnswers.get(IndividualDetailsCorrectId).map(form.fill).getOrElse(form)
+
+          def viewOrRedirect(individual: TolerantIndividual, address: TolerantAddress): Result = {
+            if (isUkAddress(address)) {
               Ok(view(preparedForm, mode, individual, address, countryOptions))
+            } else {
+              Redirect(controllers.register.individual.routes.IndividualUpdateNonUKAddressController.onPageLoad())
             }
           }
 
           (request.userAnswers.get(IndividualDetailsId), request.userAnswers.get(IndividualAddressId), request.userAnswers.get(RegistrationInfoId)) match {
             case (Some(individual), Some(address), Some(info))
               if info.idType.contains(Nino) && info.idNumber.contains(nino.value) =>
-              Future.successful(correctView(individual, address))
+              Future.successful(viewOrRedirect(individual, address))
             case _ =>
               for {
                 registration <- registrationConnector.registerWithIdIndividual(nino)
@@ -86,7 +85,7 @@ class IndividualDetailsCorrectController @Inject()(@Individual navigator: Naviga
                 _ <- dataCacheConnector.save(IndividualAddressId, registration.response.address)
                 _ <- dataCacheConnector.save(RegistrationInfoId, registration.info)
               } yield {
-                correctView(registration.response.individual, registration.response.address)
+                viewOrRedirect(registration.response.individual, registration.response.address)
               }
           }
       }

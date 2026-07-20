@@ -64,33 +64,33 @@ class ConfirmPartnershipDetailsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        def isUkAddress(address: TolerantAddress): Boolean = address.countryOpt.contains("GB")
-          getPartnershipDetails {
-            case registration@(_: OrganizationRegistration) =>
-              def correctView(address: TolerantAddress): Result = {
-                if (!isUkAddress(address)) {
-                  Redirect(controllers.register.administratorPartnership.routes.PartnershipUpdateNonUKAddressController.onPageLoad())
-                } else {
-                  Ok(view(
-                    form,
-                    registration.response.organisation.organisationName,
-                    registration.response.address,
-                    countryOptions)
-                  )
-                }
-              }
+        getPartnershipDetails {
+          case registration@(_: OrganizationRegistration) =>
+            val address = registration.response.address
+            val organisationName = registration.response.organisation.organisationName
 
-              upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
-                upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
-                  upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
-                    dataCacheConnector.upsert(userAnswers.json).map { _ =>
-                      correctView(registration.response.address)
+            upsert(request.userAnswers, PartnershipRegisteredAddressId)(address) { userAnswers =>
+              upsert(userAnswers, BusinessNameId)(organisationName) { userAnswers =>
+                upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
+                  dataCacheConnector.upsert(userAnswers.json).map { _ =>
+                    def isUkAddress(address: TolerantAddress): Boolean = address.countryOpt.contains("GB")
+
+                    if (isUkAddress(address)) {
+                      Ok(view(
+                        form,
+                        organisationName,
+                        address,
+                        countryOptions
+                      ))
+                    } else {
+                      Redirect(controllers.register.administratorPartnership.routes.PartnershipUpdateNonUKAddressController.onPageLoad())
                     }
                   }
                 }
               }
-            case _ => Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
-          }
+            }
+          case _ => Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
+        }
     }
 
 
