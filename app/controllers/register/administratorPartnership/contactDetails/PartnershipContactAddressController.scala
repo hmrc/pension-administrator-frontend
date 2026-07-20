@@ -54,7 +54,7 @@ class PartnershipContactAddressController @Inject()(
 
   private val form: Form[AddressUKOnly] = formProvider()
 
-  private def viewmodel(
+  private def viewModel(
                          mode: Mode,
                          partnershipName: String
                        )(implicit request: DataRequest[AnyContent]): ManualAddressViewModel =
@@ -86,7 +86,7 @@ class PartnershipContactAddressController @Inject()(
                     form
                 }
             }
-          Future.successful(Ok(view(preparedForm, viewmodel(mode, name), mode, false)))
+          Future.successful(Ok(view(preparedForm, viewModel(mode, name), mode)))
         }
     }
 
@@ -96,7 +96,7 @@ class PartnershipContactAddressController @Inject()(
         BusinessNameId.retrieve.map { name =>
           form.bindFromRequest().fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, viewmodel(mode, name), mode, false))),
+              Future.successful(BadRequest(view(formWithErrors, viewModel(mode, name), mode))),
             address =>
               cacheConnector.save(PartnershipUKContactAddressId, address).flatMap { userAnswersJson =>
                 saveChangeFlag(mode, PartnershipUKContactAddressId).map { _ =>

@@ -19,18 +19,18 @@ package controllers.register.administratorPartnership.contactDetails
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.*
-import forms.{UKAddressFormProvider, UKOnlyAddressFormProvider}
+import forms.UKOnlyAddressFormProvider
 import models.*
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers.*
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, FeatureFlagMockHelper}
+import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
-import views.html.address.{manualAddress, manualAddressUKOnly}
+import views.html.address.manualAddressUKOnly
 
 
 class PartnershipContactAddressControllerSpec
@@ -47,7 +47,6 @@ class PartnershipContactAddressControllerSpec
   private val messagePrefix = "enter.address"
   private val formProvider = new UKOnlyAddressFormProvider()
   private val form: Form[AddressUKOnly] = formProvider()
-  private val isUkHintText = true
 
   private def viewModel = ManualAddressViewModel(
     postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode),
@@ -76,8 +75,7 @@ class PartnershipContactAddressControllerSpec
     view(
       form,
       viewModel,
-      NormalMode,
-      isUkHintText
+      NormalMode
     )(fakeRequest, messages).toString()
 
 
