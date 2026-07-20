@@ -24,7 +24,6 @@ import forms.register.company.CompanyAddressFormProvider
 import identifiers.register.company.*
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import models.*
-import models.admin.ukResidencyToggle
 import models.register.BusinessType.{BusinessPartnership, LimitedCompany}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
@@ -33,15 +32,14 @@ import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
-import utils.{AddressHelper, FeatureFlagMockHelper, UserAnswers}
+import utils.{AddressHelper, UserAnswers}
 import views.html.register.company.confirmCompanyDetails
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with FeatureFlagMockHelper {
+class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 
   override protected def beforeEach(): Unit = {
-    featureFlagMock(ukResidencyToggle)
     FakeUserAnswersCacheConnector.reset()
   }
 
@@ -111,17 +109,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
   "CompanyAddress Controller" must {
 
-    "return OK and the correct view for a GET" in {
-
-      val result = controller(dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
-
-    }
-
-    "return OK when address is GB and toggle enabled" in {
-      featureFlagMock(ukResidencyToggle, isEnabled = true)
+    "return OK and the correct view for a GET, when address is GB" in {
 
       val result = controller(
         dataRetrievalAction,
@@ -133,8 +121,7 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       contentAsString(result) mustBe viewAsString()
     }
 
-    "redirect on a GET when the address returned is not GB and toggle enabled" in {
-      featureFlagMock(ukResidencyToggle, isEnabled = true)
+    "redirect on a GET when the address returned is not GB" in {
 
       val customConnector = fakeRegistrationConnector(
         (_, _) => Some(testLimitedCompanyAddress.copy(countryOpt = Some("FR")))
@@ -148,20 +135,6 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(nonUKKickOut.url)
-    }
-
-    "NOT redirect when address is non-GB and toggle disabled" in {
-      val customConnector = fakeRegistrationConnector(
-        (_, _) => Some(testLimitedCompanyAddress.copy(countryOpt = Some("FR")))
-      )
-
-      val result = controller(
-        new FakeDataRetrievalAction(Some(data)),
-        FakeUserAnswersCacheConnector,
-        customConnector
-      ).onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe OK
     }
 
     "correctly map the Business Type to Organisation Type for the call to API4" in {
@@ -406,7 +379,6 @@ class ConfirmCompanyDetailsControllerSpec extends ControllerSpecBase with Before
       addressFormProvider,
       countryOptions,
       controllerComponents,
-      mockFeatureFlagService,
       view,
       addressHelper
     )
