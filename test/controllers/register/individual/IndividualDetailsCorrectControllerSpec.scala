@@ -28,7 +28,6 @@ import models.*
 import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.Individual
 import models.requests.AuthenticatedRequest
-import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.*
@@ -36,7 +35,7 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
-import utils.{AddressHelper, FakeNavigator, FeatureFlagMockHelper}
+import utils.{AddressHelper, FakeNavigator}
 import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.{ExecutionContext, Future}

@@ -19,7 +19,7 @@ package controllers.register.administratorPartnership.contactDetails
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.*
-import forms.{AddressFormProvider, UKAddressFormProvider}
+import forms.{AddressFormProvider}
 import models.{Address, NormalMode}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.OptionValues
@@ -114,8 +114,6 @@ class PartnershipPreviousAddressControllerSpec
   def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
-
-  private val isUkHintText = true
 
   def controller(dataRetrievalAction: DataRetrievalAction = getPartnership): PartnershipPreviousAddressController =
     new PartnershipPreviousAddressController(

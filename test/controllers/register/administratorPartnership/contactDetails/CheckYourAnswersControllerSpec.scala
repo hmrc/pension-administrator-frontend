@@ -19,7 +19,6 @@ package controllers.register.administratorPartnership.contactDetails
 import controllers.ControllerSpecBase
 import controllers.actions.*
 import models.*
-import models.admin.ukResidencyToggle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -27,7 +26,7 @@ import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.*
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.{FakeCountryOptions, FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
+import utils.{FakeCountryOptions, UserAnswerOps, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
