@@ -19,13 +19,11 @@ package controllers.register.company
 import controllers.Retrievals
 import controllers.actions.*
 import identifiers.register.*
-import identifiers.register.company.{CompanyPhoneId, *}
-import models.admin.ukResidencyToggle
+import identifiers.register.company.*
 import models.requests.DataRequest
 import models.{CheckMode, Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.RegisterCompany
 import utils.checkyouranswers.Ops.*
@@ -47,33 +45,28 @@ class CheckYourAnswersController @Inject()(
                                             @RegisterCompany navigator: Navigator,
                                             implicit val countryOptions: CountryOptions,
                                             val controllerComponents: MessagesControllerComponents,
-                                            featureFlagService: FeatureFlagService,
                                             val view: check_your_answers
                                           )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with Retrievals
   with I18nSupport with Enumerable.Implicits {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
         if (isMandatoryDataPresent(request.userAnswers)) {
-          Future.successful(loadCyaPage(mode, ukResidency.isEnabled))
+          Future.successful(loadCyaPage(mode))
         } else {
           Future.successful(Redirect(controllers.register.routes.RegisterAsBusinessController.onPageLoad()))
         }
-      }
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
         val isDataComplete = dataCompletion.isCompanyDetailsComplete(request.userAnswers)
         if (isDataComplete) {
           Future.successful(Redirect(navigator.nextPage(CheckYourAnswersId, NormalMode, request.userAnswers)))
         } else {
-          Future.successful(loadCyaPage(mode, ukResidency.isEnabled))
+          Future.successful(loadCyaPage(mode))
         }
       }
-  }
 
   private def isMandatoryDataPresent(userAnswers: UserAnswers): Boolean = {
     val isRegInfoComplete = userAnswers.get(BusinessNameId).nonEmpty && userAnswers.get(RegistrationInfoId).nonEmpty
@@ -84,12 +77,7 @@ class CheckYourAnswersController @Inject()(
     }
   }
 
-  private def loadCyaPage(mode: Mode, ukResidency: Boolean)(implicit request: DataRequest[AnyContent]): Result = {
-    val correctContactAddress = if (ukResidency) {
-      CompanyUKContactAddressId.row(Some(Link(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(CheckMode).url)))
-    } else {
-      CompanyContactAddressId.row(Some(Link(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(CheckMode).url)))
-    }
+  private def loadCyaPage(mode: Mode)(implicit request: DataRequest[AnyContent]): Result = {
     val answerSection = AnswerSection(None, Seq(
       BusinessNameId.row(None),
       BusinessUTRId.row(None),
@@ -99,7 +87,7 @@ class CheckYourAnswersController @Inject()(
       EnterPAYEId.row(Some(Link(routes.CompanyEnterPAYEController.onPageLoad(CheckMode).url))),
       HasVATId.row(Some(Link(routes.HasCompanyVATController.onPageLoad(CheckMode).url))),
       EnterVATId.row(Some(Link(routes.CompanyEnterVATController.onPageLoad(CheckMode).url))),
-      correctContactAddress,
+      CompanyUKContactAddressId.row(Some(Link(routes.CompanyContactAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
       CompanyAddressYearsId.row(Some(Link(routes.CompanyAddressYearsController.onPageLoad(CheckMode).url))),
       CompanyPreviousAddressId.row(Some(Link(routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url))),
       CompanyEmailId.row(Some(Link(routes.CompanyEmailController.onPageLoad(CheckMode).url))),

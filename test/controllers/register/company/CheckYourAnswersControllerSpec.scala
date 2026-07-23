@@ -19,7 +19,6 @@ package controllers.register.company
 import controllers.ControllerSpecBase
 import controllers.actions.*
 import models.*
-import models.admin.ukResidencyToggle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -28,7 +27,7 @@ import play.api.test.Helpers.*
 import utils.countryOptions.CountryOptions
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.{FakeCountryOptions, FakeNavigator, FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
+import utils.{FakeCountryOptions, FakeNavigator, UserAnswerOps, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
@@ -36,10 +35,9 @@ import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec
   extends ControllerSpecBase
-    with BeforeAndAfterEach with FeatureFlagMockHelper {
+    with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
-    featureFlagMock(ukResidencyToggle)
     when(mockDataCompletion.isCompanyDetailsComplete(any())).thenReturn(true)
   }
 
@@ -67,7 +65,6 @@ class CheckYourAnswersControllerSpec
       new FakeNavigator(desiredRoute = onwardRoute),
       countryOptions,
       controllerComponents,
-      mockFeatureFlagService,
       view
     )
 
@@ -155,8 +152,7 @@ class CheckYourAnswersControllerSpec
       answer = Seq(
         address.addressLine1,
         address.addressLine2,
-        address.postcode.value,
-        address.country
+        address.postcode.value
       ),
       changeUrl = Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
       visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultCompany))
@@ -253,26 +249,9 @@ class CheckYourAnswersControllerSpec
         testRenderedView(sections, result)
       }
 
-      "render the view correctly for all the rows of answer section if business name and address is present for NON UK" in {
-        val retrievalAction = UserAnswers().completeCompanyDetailsNonUK.dataRetrievalAction
-        val result = controller(retrievalAction).onPageLoad(NormalMode)(fakeRequest)
-
-        val sections = Seq(AnswerSection(None, answerRowsNonUK))
-        testRenderedView(sections, result)
-      }
-
       "redirect to register as business page when business name, registration info and utr is not present for UK" in {
         val result =
           controller(UserAnswers().areYouInUk(answer = true).dataRetrievalAction)
-            .onPageLoad(NormalMode)(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.register.routes.RegisterAsBusinessController.onPageLoad().url)
-      }
-
-      "redirect to register as business page when business name, registration info and address is not present for NON UK" in {
-        val result =
-          controller(UserAnswers().areYouInUk(answer = false).dataRetrievalAction)
             .onPageLoad(NormalMode)(fakeRequest)
 
         status(result) mustBe SEE_OTHER

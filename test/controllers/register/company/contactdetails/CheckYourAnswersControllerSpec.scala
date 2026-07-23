@@ -19,7 +19,6 @@ package controllers.register.company.contactdetails
 import controllers.ControllerSpecBase
 import controllers.actions.*
 import models.*
-import models.admin.ukResidencyToggle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -27,7 +26,7 @@ import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.*
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.{FakeCountryOptions, FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
+import utils.{FakeCountryOptions, UserAnswerOps, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
@@ -35,12 +34,10 @@ import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec
   extends ControllerSpecBase
-    with BeforeAndAfterEach
-    with FeatureFlagMockHelper {
+    with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     when(mockDataCompletion.isCompanyDetailsComplete(any())).thenReturn(true)
-    featureFlagMock(ukResidencyToggle)
   }
 
   private def onwardRoute: Call = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
@@ -60,7 +57,6 @@ class CheckYourAnswersControllerSpec
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      mockFeatureFlagService,
       view
     )(new FakeCountryOptions(environment, frontendAppConfig))
 
@@ -96,31 +92,18 @@ class CheckYourAnswersControllerSpec
       )(fakeRequest, messages).toString()
   }
 
-  private def answerRows(ukResidency: Boolean) =
-    val contactAddress = if(ukResidency)  {answerRow(
-      label = Message("cya.label.contact.address", defaultCompany),
-      answer = Seq(
-        addressUK.addressLine1,
-        addressUK.addressLine2,
-        addressUK.postcode,
-      ),
-      changeUrl = Some(Link(controllers.register.company.routes.CompanySameContactAddressController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultCompany))
-    )} else {
+  private def answerRows =
+    Seq(
       answerRow(
         label = Message("cya.label.contact.address", defaultCompany),
         answer = Seq(
-          address.addressLine1,
-          address.addressLine2,
-          address.postcode.value,
-          address.country
+          addressUK.addressLine1,
+          addressUK.addressLine2,
+          addressUK.postcode,
         ),
         changeUrl = Some(Link(controllers.register.company.routes.CompanySameContactAddressController.onPageLoad(CheckMode).url)),
         visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultCompany))
-      )
-    }
-    Seq(
-      contactAddress,
+      ),
       answerRow(
         label = Message("addressYears.heading", defaultCompany),
         answer = Seq(s"common.addressYears.${addressYears.toString}"),
@@ -166,19 +149,11 @@ class CheckYourAnswersControllerSpec
     "on GET" must {
 
       "render the view correctly for all the rows of answer section if business name and utr is present for UK" in {
-        val retrievalAction = UserAnswers().completeCompanyDetailsUK.dataRetrievalAction
-        val result = controller(retrievalAction).onPageLoad()(fakeRequest)
-
-        val sections = Seq(AnswerSection(None, answerRows(false)))
-        testRenderedView(sections, result)
-      }
-      "render the view correctly for all the rows of answer section if business name and utr is present for UK when toggle enabled" in {
-        featureFlagMock(ukResidencyToggle, true)
         val retrievalAction = UserAnswers().completeCompanyDetailsUKResidency.dataRetrievalAction
         val result = controller(retrievalAction).onPageLoad()(fakeRequest)
 
-        val sections = Seq(AnswerSection(None, answerRows(true)))
-        testRenderedView(sections, result)
+        val sections = Seq(AnswerSection(None, answerRows))
+          testRenderedView(sections, result)
       }
     }
 

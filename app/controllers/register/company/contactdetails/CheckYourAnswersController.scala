@@ -20,11 +20,9 @@ import controllers.Retrievals
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import controllers.register.company
 import identifiers.register.company.*
-import models.admin.ukResidencyToggle
 import models.{CheckMode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 import utils.annotations.AuthWithNoIV
@@ -40,7 +38,6 @@ class CheckYourAnswersController @Inject()(
                                             @AuthWithNoIV authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            featureFlagService: FeatureFlagService,
                                             checkYourAnswersView: check_your_answers
                                           )
                                           (implicit countryOptions: CountryOptions,
@@ -49,29 +46,21 @@ class CheckYourAnswersController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-        val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
-        Future.successful(Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers, ukResidency.isEnabled), nextPage,
-          Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl())))
-      }
+      val nextPage = controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad()
+      Future.successful(Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage,
+        Some(companyName), NormalMode, isComplete = true, returnLink = taskListReturnLinkUrl())))
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>
     Redirect(controllers.register.company.routes.CompanyRegistrationTaskListController.onPageLoad())
   }
 
-  private def checkYourAnswersSummary(userAnswers: UserAnswers, ukResidency: Boolean)(implicit messages: Messages): Seq[Section] = {
+  private def checkYourAnswersSummary(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
     import company.routes.*
     val isCompanyTradingOverAYear = userAnswers.get(CompanyTradingOverAYearId).isDefined
-    val companyContactAddress = if (ukResidency) {
-      CompanyUKContactAddressId.cya.row(CompanyUKContactAddressId)
-    }
-    else {
-      CompanyContactAddressId.cya.row(CompanyContactAddressId)
-    }
     Seq(
       AnswerSection(None,
-        companyContactAddress(Some(Link(CompanySameContactAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
+        CompanyUKContactAddressId.cya.row(CompanyUKContactAddressId)(Some(Link(CompanySameContactAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
           CompanyAddressYearsId.cya.row(CompanyAddressYearsId)(Some(Link(CompanyAddressYearsController.onPageLoad(CheckMode).url)), userAnswers) ++
           (if (isCompanyTradingOverAYear) {
             CompanyTradingOverAYearId.cya.row(CompanyTradingOverAYearId)(Some(Link(CompanyTradingOverAYearController.onPageLoad(CheckMode).url)), userAnswers)
