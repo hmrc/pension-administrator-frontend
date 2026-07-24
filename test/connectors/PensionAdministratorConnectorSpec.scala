@@ -62,13 +62,13 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
 
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
-    connector.registerPsa(userAnswers, ukResidency = false).map(subscription =>
+    connector.registerPsa(userAnswers).map(subscription =>
       subscription shouldBe psaSubscriptionResponse
     )
 
   }
 
-  it should "add countryCode=GB to address fields when ukResidency is true for Individual address" in {
+  it should "add countryCode=GB to address fields for Individual address" in {
     val userAnswersWithAddress = UserAnswers()
       .set(IndividualUKContactAddressId)(AddressUKOnly("line1", "line2", Some("line3"), Some("line4"), "NE1 1NE")).asOpt.value
     server.stubFor(
@@ -83,12 +83,12 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
 
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
-    connector.registerPsa(userAnswersWithAddress, ukResidency = true).map { response =>
+    connector.registerPsa(userAnswersWithAddress).map { response =>
       response shouldBe psaSubscriptionResponse
     }
   }
 
-  it should "add countryCode=GB to address fields when ukResidency is true for Company address" in {
+  it should "add countryCode=GB to address fields for Company address" in {
     val userAnswersWithAddress = UserAnswers()
       .set(BusinessTypeId)(BusinessType.LimitedCompany).asOpt.value
       .set(CompanyUKContactAddressId)(AddressUKOnly("line1", "line2", Some("line3"), Some("line4"), "NE1 1NE")).asOpt.value
@@ -105,7 +105,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
 
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
-    connector.registerPsa(userAnswersWithAddress, ukResidency = true).map { response =>
+    connector.registerPsa(userAnswersWithAddress).map { response =>
       response shouldBe psaSubscriptionResponse
     }
   }
@@ -124,7 +124,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[UnrecognisedHttpResponseException] {
-      connector.registerPsa(userAnswers, ukResidency = false)
+      connector.registerPsa(userAnswers)
     }
 
   }
@@ -142,7 +142,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[JsonParseException] {
-      connector.registerPsa(userAnswers, ukResidency = false)
+      connector.registerPsa(userAnswers)
     }
 
   }
@@ -160,7 +160,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[JsResultException] {
-      connector.registerPsa(userAnswers, ukResidency = false)
+      connector.registerPsa(userAnswers)
     }
 
   }
@@ -178,7 +178,7 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
     val connector = injector.instanceOf[PensionAdministratorConnector]
 
     recoverToSucceededIf[BadRequestException] {
-      connector.registerPsa(userAnswers, ukResidency = false)
+      connector.registerPsa(userAnswers)
     }
   }
 

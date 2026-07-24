@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @ImplementedBy(classOf[PensionAdministratorConnectorImpl])
 trait PensionAdministratorConnector {
 
-  def registerPsa(answers: UserAnswers, ukResidency: Boolean)
+  def registerPsa(answers: UserAnswers)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse]
 
   def updatePsa(answers: UserAnswers)
@@ -64,11 +64,11 @@ class PensionAdministratorConnectorImpl @Inject()(httpV2Client: HttpClientV2, co
     }
   }
 
-  def registerPsa(answers: UserAnswers, ukResidency: Boolean)
+  def registerPsa(answers: UserAnswers)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PsaSubscriptionResponse] = {
     val url = url"${config.registerPsaUrl}"
     
-    val jsonPayload = if(ukResidency) addCountryCode(answers.json) else answers.json
+    val jsonPayload = addCountryCode(answers.json)
     httpV2Client
       .post(url)
       .withBody(jsonPayload)

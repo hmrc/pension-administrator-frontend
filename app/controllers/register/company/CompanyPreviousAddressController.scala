@@ -103,5 +103,5 @@ class CompanyPreviousAddressController @Inject()(
           )
         }
     }
-  
+
 }
