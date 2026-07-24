@@ -25,7 +25,6 @@ import controllers.actions.*
 import controllers.register.routes.*
 import controllers.routes.*
 import identifiers.register.*
-import models.admin.ukResidencyToggle
 import models.enumeration.JourneyType
 import models.register.BusinessType.*
 import models.register.RegistrationStatus
@@ -36,11 +35,10 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpException, HttpResponse, UpstreamErrorResponse}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.Register
 import utils.{KnownFactsRetrieval, Navigator, UserAnswers}
-import views.html.register.{declaration, ukResidencyDeclaration}
+import views.html.register.declaration
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -60,9 +58,7 @@ class DeclarationController @Inject()(
                                        enrolments: TaxEnrolmentsConnector,
                                        emailConnector: EmailConnector,
                                        val controllerComponents: MessagesControllerComponents,
-                                       featureFlagService: FeatureFlagService,
-                                       val view: declaration,
-                                       val ukResidencyView: ukResidencyDeclaration
+                                       val view: declaration
                                      )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals {
 
   private val logger = Logger(classOf[DeclarationController])
@@ -74,53 +70,46 @@ class DeclarationController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen allowDeclaration(mode) andThen requireData).async {
       implicit request =>
-        featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-          DeclarationWorkingKnowledgeId.retrieve.map {
-            workingKnowledge =>
-              if (ukResidency.isEnabled) {
-                Future.successful(Ok(ukResidencyView(workingKnowledge.hasWorkingKnowledge)))
-              } else {
-                Future.successful(Ok(view(workingKnowledge.hasWorkingKnowledge)))
-              }
-          }
+        DeclarationWorkingKnowledgeId.retrieve.map {
+          workingKnowledge =>
+            Future.successful(Ok(view(workingKnowledge.hasWorkingKnowledge)))
         }
     }
 
   def onSubmit(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen allowDeclaration(mode) andThen requireData).async {
       implicit request =>
-        featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-          dataCacheConnector.save(
-            id = DeclarationId,
-            value = true
-          ) flatMap { cacheMap =>
+        dataCacheConnector.save(
+          id = DeclarationId,
+          value = true
+        ) flatMap { cacheMap =>
 
-            val answers =
-              UserAnswers(cacheMap)
-                .set(ExistingPSAId)(
-                  ExistingPSA(
-                    isExistingPSA = request.user.isExistingPSA,
-                    existingPSAId = request.user.existingPSAId
-                  )
+          val answers =
+            UserAnswers(cacheMap)
+              .set(ExistingPSAId)(
+                ExistingPSA(
+                  isExistingPSA = request.user.isExistingPSA,
+                  existingPSAId = request.user.existingPSAId
                 )
-                .asOpt
-                .getOrElse(UserAnswers(cacheMap))
-            (for {
-              psaResponse <- pensionAdministratorConnector.registerPsa(answers, ukResidency.isEnabled)
-              cacheMap <- dataCacheConnector.save(PsaSubscriptionResponseId, psaResponse)
-              _ <- enrol(psaResponse.psaId)
-              emailStatus <- sendEmail(psaResponse.psaId)
-            } yield {
-              if (emailStatus == EmailNotSent) {
-                Redirect(controllers.register.routes.InvalidEmailAddressController.onPageLoad(
-                  getBusinessType(UserAnswers(cacheMap)))
-                )
-              } else {
-                Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
-              }
-            }) recoverWith handleOnSubmitErrors
-          }
+              )
+              .asOpt
+              .getOrElse(UserAnswers(cacheMap))
+          (for {
+            psaResponse <- pensionAdministratorConnector.registerPsa(answers)
+            cacheMap <- dataCacheConnector.save(PsaSubscriptionResponseId, psaResponse)
+            _ <- enrol(psaResponse.psaId)
+            emailStatus <- sendEmail(psaResponse.psaId)
+          } yield {
+            if (emailStatus == EmailNotSent) {
+              Redirect(controllers.register.routes.InvalidEmailAddressController.onPageLoad(
+                getBusinessType(UserAnswers(cacheMap)))
+              )
+            } else {
+              Redirect(navigator.nextPage(DeclarationId, NormalMode, UserAnswers(cacheMap)))
+            }
+          }) recoverWith handleOnSubmitErrors
         }
+
 
     }
 
