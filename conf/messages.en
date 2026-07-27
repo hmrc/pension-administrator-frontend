@@ -505,7 +505,6 @@ individualDetailsCorrect.error.required = Select yes if this is your name and ad
 individualDetailsCorrect.name = Name
 individualDetailsCorrect.address = Address
 
-# new content - individual update non-uk address
 updateNonUKAddress.individual.title = You cannot register as a pension scheme administrator
 updateNonUKAddress.individual.h1 = You cannot register as a pension scheme administrator
 updateNonUKAddress.individual.p1 = Your address is not in the UK. You must be resident in the UK to
@@ -555,7 +554,6 @@ businessType.overseasCompany.lc = overseas company
 nonUKBusinessType.company.lc = company
 nonUKBusinessType.businessPartnership.lc = partnership
 
-# new content - company update non-uk address kick out page
 updateNonUKAddress.company.title = The company cannot register as a pension scheme administrator
 updateNonUKAddress.company.h1 = You need to update the company՚s address details before registering
 updateNonUKAddress.company.p1 = The company’s address is not in the UK. The company must be resident in the UK to
@@ -563,7 +561,6 @@ updateNonUKAddress.company.p1.link-text = register as a pension scheme administr
 updateNonUKAddress.company.p2 = If the company is resident in the UK,
 updateNonUKAddress.company.p2.link-text = tell HMRC about a change of address
 
-# new content - partnership update non-uk address
 updateNonUKAddress.partnership.title = The partnership cannot register as a pension scheme administrator
 updateNonUKAddress.partnership.h1 = The partnership cannot register as a pension scheme administrator
 updateNonUKAddress.partnership.p1 = The partnership’s address is not in the UK. The partnership must be resident in the UK to
@@ -949,13 +946,11 @@ nonUKAdministrator.p2.email         = administrationpensions@hmrc.gov.uk
 nonUKAdministrator.p2.emailSubject  = ?subject=Non-UK
 nonUKAdministrator.p2.2             = and include ‘Non-UK’ in the title.
 
-# New content - company/partnership cannot register
-nonUKCompanyPartnershipAdministrator.title            = Your company or partnership cannot register as a pension scheme administrator
-nonUKCompanyPartnershipAdministrator.heading          = Your company or partnership cannot register as a pension scheme administrator
-nonUKCompanyPartnershipAdministrator.p1               = Your company or partnership must be incorporated or resident in the UK to
-nonUKCompanyPartnershipAdministrator.p1.link-text     = register as a pension scheme administrator
+nonUKAdministrator.companyPartnership.title            = Your company or partnership cannot register as a pension scheme administrator
+nonUKAdministrator.companyPartnership.heading          = Your company or partnership cannot register as a pension scheme administrator
+nonUKAdministrator.companyPartnership.p1               = Your company or partnership must be incorporated or resident in the UK to
+nonUKAdministrator.companyPartnership.p1.link-text     = register as a pension scheme administrator
 
-# New content - individual cannot register
 nonUKAdministrator.individual.title            = You cannot register as a pension scheme administrator
 nonUKAdministrator.individual.heading          = You cannot register as a pension scheme administrator
 nonUKAdministrator.individual.p1               = You must be a resident in the UK to
