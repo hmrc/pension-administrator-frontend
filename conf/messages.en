@@ -478,34 +478,25 @@ enterMissingAddressFields.heading = There are fields missing from your address
 whatYouWillNeed.title = What you will need
 whatYouWillNeed.heading = What you will need
 whatYouWillNeed.body.text = To register as a pension scheme administrator, you will need:
-whatYouWillNeed.body.item1 = your name, address, previous addresses and National Insurance number
-whatYouWillNeed.body.item2 = your contact phone number and email address
 whatYouWillNeed.company.body.item1 = the company name, address, previous address, VAT and PAYE numbers of the PSA company
 whatYouWillNeed.company.body.item2 = the telephone number and email address of the contact within the company
 whatYouWillNeed.company.body.item3 = the details of all the directors in the company
 
-# new content - individual what you will need
 whatYouWillNeed.individual.body.text = To register as a pension scheme administrator, you will need your:
 whatYouWillNeed.individual.body.item1 = name, address and any previous addresses in the last year
 whatYouWillNeed.individual.body.item2 = National Insurance number
 whatYouWillNeed.individual.body.item3 = phone number and email address
 
-
 whatYouWillNeed.main.title = What you will need
 whatYouWillNeed.main.heading = What you will need
 whatYouWillNeed.main.body.text = To register a business as a pension scheme administrator, you will need:
-whatYouWillNeed.main.body.item1 = the business name, address, previous address, VAT and PAYE references of the business you’re registering
-whatYouWillNeed.main.body.item2 = the phone number and email address of a contactable person within the business
-whatYouWillNeed.main.body.item3 = the details of all the directors or partners associated with the business, including their Unique Taxpayer Reference (UTR) and National Insurance number
+whatYouWillNeed.main.body.item1 = the business name and registered UK address
+whatYouWillNeed.main.body.item2 = previous addresses in the last year
+whatYouWillNeed.main.body.item3 = VAT and PAYE references
+whatYouWillNeed.main.body.item4 = business contact phone number and email address
+whatYouWillNeed.main.body.item5 = details of all directors or partners associated with the business, including their Unique Taxpayer Reference (UTR) and National Insurance number
 whatYouWillNeed.main.body.hint = Once we have confirmed your identity, the information you enter will be saved as you progress. If you sign out, the information you have already entered will be saved for 28 days. After that time you will need to enter all of the information again.
 whatYouWillNeed.main.body.hint.company = Once we have confirmed the identity of the business, the information you enter will be saved as you progress.  If you sign out, the information you have already entered will be saved for 28 days. After that time you will need to enter all of the information again.
-
-# new content - what you will need
-whatYouWillNeed.ukResidency.main.body.item1 = the business name and registered UK address
-whatYouWillNeed.ukResidency.main.body.item2 = previous addresses in the last year
-whatYouWillNeed.ukResidency.main.body.item3 = VAT and PAYE references
-whatYouWillNeed.ukResidency.main.body.item4 = business contact phone number and email address
-whatYouWillNeed.ukResidency.main.body.item5 = details of all directors or partners associated with the business, including their Unique Taxpayer Reference (UTR) and National Insurance number
 
 individualDetailsCorrect.title = Is this your name and address?
 individualDetailsCorrect.heading = Is this your name and address?
