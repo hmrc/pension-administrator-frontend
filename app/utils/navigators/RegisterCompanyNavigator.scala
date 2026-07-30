@@ -93,29 +93,29 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
     case HasCompanyCRNId if hasCrn(ua) =>
       routes.CompanyRegistrationNumberController.onPageLoad(CheckMode)
     case HasCompanyCRNId =>
-      checkYourAnswers
+      companyDetailsCYA
     case CompanyRegistrationNumberId =>
-      checkYourAnswers
+      companyDetailsCYA
     case HasPAYEId if hasPaye(ua) =>
       routes.CompanyEnterPAYEController.onPageLoad(CheckMode)
     case HasPAYEId =>
-      checkYourAnswers
+      companyDetailsCYA
     case EnterPAYEId =>
-      checkYourAnswers
+      companyDetailsCYA
     case HasVATId if hasVat(ua) =>
       routes.CompanyEnterVATController.onPageLoad(CheckMode)
     case HasVATId =>
-      checkYourAnswers
+      companyDetailsCYA
     case EnterVATId =>
-      checkYourAnswers
+      companyDetailsCYA
     case CompanySameContactAddressId =>
       sameContactAddress(CheckMode, ua)
     case CompanyContactAddressPostCodeLookupId =>
       routes.CompanyContactAddressListController.onPageLoad(CheckMode)
     case CompanyContactAddressId =>
-      checkYourAnswers
+      contactDetailsCYA
     case CompanyUKContactAddressId =>
-      checkYourAnswers
+      contactDetailsCYA
     case CompanyAddressYearsId =>
       companyAddressYearsCheckIdRoutes(ua)
     case CompanyTradingOverAYearId =>
@@ -123,11 +123,11 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
     case CompanyPreviousAddressPostCodeLookupId =>
       routes.CompanyAddressListController.onPageLoad(CheckMode)
     case CompanyPreviousAddressId =>
-      checkYourAnswers
+      contactDetailsCYA
     case CompanyEmailId =>
-      checkYourAnswers
+      contactDetailsCYA
     case CompanyPhoneId =>
-      checkYourAnswers
+      contactDetailsCYA
   }
 
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
@@ -159,8 +159,11 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
 
   private def updateContactAddressCYAPage(): Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
 
-  private def checkYourAnswers: Call =
-    controllers.register.company.routes.CheckYourAnswersController.onPageLoad()
+  private def companyDetailsCYA: Call =
+    controllers.register.company.companydetails.routes.CheckYourAnswersController.onPageLoad()
+
+  private def contactDetailsCYA: Call =
+    controllers.register.company.contactdetails.routes.CheckYourAnswersController.onPageLoad()
 
   private def hasPaye(answers: UserAnswers): Boolean = answers.get(HasPAYEId).getOrElse(false)
 

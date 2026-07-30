@@ -97,24 +97,24 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
       ("Id", "User Answers", "Next Page"),
 
       (HasCompanyCRNId, hasCRN(true), companyRegistrationNumberPage(CheckMode)),
-      (HasCompanyCRNId, hasCRN(false), checkYourAnswersPage),
-      (CompanyRegistrationNumberId, emptyAnswers, checkYourAnswersPage),
+      (HasCompanyCRNId, hasCRN(false), companyDetailsCYAPage),
+      (CompanyRegistrationNumberId, emptyAnswers, companyDetailsCYAPage),
 
       (HasPAYEId, hasPAYEYes,payePage(CheckMode)),
-      (HasPAYEId, hasPAYENo, checkYourAnswersPage),
-      (EnterPAYEId, emptyAnswers, checkYourAnswersPage),
+      (HasPAYEId, hasPAYENo, companyDetailsCYAPage),
+      (EnterPAYEId, emptyAnswers, companyDetailsCYAPage),
 
       (HasVATId, hasVATYes, vatPage(CheckMode)),
-      (HasVATId, hasVATNo, checkYourAnswersPage),
+      (HasVATId, hasVATNo, companyDetailsCYAPage),
 
-      (EnterVATId, emptyAnswers, checkYourAnswersPage),
+      (EnterVATId, emptyAnswers, companyDetailsCYAPage),
 
       (CompanySameContactAddressId, isSameContactAddress, companyAddressYearsPage(CheckMode)),
       (CompanySameContactAddressId, notSameContactAddressUk, contactAddressPostCode(CheckMode)),
       (CompanySameContactAddressId, notSameContactAddressNonUk, contactAddress(CheckMode)),
 
       (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(CheckMode)),
-      (CompanyContactAddressId, emptyAnswers, checkYourAnswersPage),
+      (CompanyContactAddressId, emptyAnswers, contactDetailsCYAPage),
 
       (CompanyAddressYearsId, addressYearsOverAYear, checkYourAnswersPage),
       (CompanyAddressYearsId, addressYearsUnderAYear, hasBeenTradingPage(CheckMode)),
@@ -124,11 +124,11 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (CompanyTradingOverAYearId, tradingUnderAYear, checkYourAnswersPage),
 
       (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(CheckMode)),
-      (CompanyPreviousAddressId, emptyAnswers, checkYourAnswersPage),
+      (CompanyPreviousAddressId, emptyAnswers, contactDetailsCYAPage),
 
-      (CompanyEmailId, emptyAnswers, checkYourAnswersPage),
-      (CompanyPhoneId, uk, checkYourAnswersPage),
-      (CompanyPhoneId, nonUk, checkYourAnswersPage)
+      (CompanyEmailId, emptyAnswers, contactDetailsCYAPage),
+      (CompanyPhoneId, uk, contactDetailsCYAPage),
+      (CompanyPhoneId, nonUk, contactDetailsCYAPage)
     )
     behave like navigatorWithRoutesWithMode(navigator, routes(), dataDescriber, CheckMode)
   }
@@ -172,6 +172,8 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def confirmPreviousAddressPage = routes.CompanyConfirmPreviousAddressController.onPageLoad()
   private lazy val updateContactAddressCYAPage:Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
   private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
+  private def companyDetailsCYAPage = controllers.register.company.companydetails.routes.CheckYourAnswersController.onPageLoad()
+  private def contactDetailsCYAPage = controllers.register.company.contactdetails.routes.CheckYourAnswersController.onPageLoad()
 
   private val updatingContactAddressForRLS = UserAnswers(Json.obj()).set(UpdateContactAddressId)(true).asOpt.value
 
