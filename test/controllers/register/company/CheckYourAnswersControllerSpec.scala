@@ -189,54 +189,6 @@ class CheckYourAnswersControllerSpec
     )
   )
 
-  private val answerRowsNonUK = Seq(
-    answerRow(
-      label = Message("businessName.heading", Message("businessType.limitedCompany.lc")),
-      answer = Seq("test company")
-    ),
-    answerRow(
-      label = Message("cya.label.contact.address", defaultCompany),
-      answer = Seq(
-        address.addressLine1,
-        address.addressLine2,
-        address.postcode.value,
-        address.country
-      ),
-      changeUrl = Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultCompany))
-    ),
-    answerRow(
-      label = Message("addressYears.heading", defaultCompany),
-      answer = Seq(s"common.addressYears.${addressYears.toString}"),
-      answerIsMessageKey = true,
-      changeUrl = Some(Link(controllers.register.company.routes.CompanyAddressYearsController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("addressYears.visuallyHidden.text", defaultCompany))
-    ),
-    answerRow(
-      label = Message("previousAddress.checkYourAnswersLabel", defaultCompany),
-      answer = Seq(
-        address.addressLine1,
-        address.addressLine2,
-        address.postcode.value,
-        address.country
-      ),
-      changeUrl = Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("previousAddress.visuallyHidden.text", defaultCompany))
-    ),
-    answerRow(
-      label = messages("email.title", defaultCompany),
-      answer = Seq(email),
-      changeUrl = Some(Link(controllers.register.company.routes.CompanyEmailController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("email.visuallyHidden.text", defaultCompany))
-    ),
-    answerRow(
-      label = messages("phone.title", defaultCompany),
-      answer = Seq(phone),
-      changeUrl = Some(Link(controllers.register.company.routes.CompanyPhoneController.onPageLoad(CheckMode).url)),
-      visuallyHiddenLabel = Some(Message("phone.visuallyHidden.text", defaultCompany))
-    )
-  )
-
   "CheckYourAnswers Controller" when {
 
     "on a GET" must {

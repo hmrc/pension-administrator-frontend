@@ -57,21 +57,7 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures {
         } mustBe None
       }
     }
-
-    "allow access when uk residency enabled and individual UK data is complete" in {
-      val ua = UserAnswers().regInfo(RegistrationLegalStatus.Individual)
-
-      when(mockDataCompletion.isIndividualComplete(any(), any())).thenReturn(true)
-      when(mockDataCompletion.isAdviserComplete(any(), any())).thenReturn(true)
-
-      val action = new TestAllowDeclarationAction(NormalMode)
-      val result = action.filter(optionalRequest(ua))
-
-      whenReady(result) { res =>
-        res mustBe None
-      }
-    }
-
+    
     "allow access to declaration pages when all the data is complete for company and adviser" in {
       val ua = UserAnswers().regInfo(RegistrationLegalStatus.LimitedCompany)
       when(mockDataCompletion.isCompanyComplete(any(), any())).thenReturn(true)
@@ -83,20 +69,6 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures {
         result.map {
           _.header.status
         } mustBe None
-      }
-    }
-
-    "allow access when uk residency enabled and company UK data is complete" in {
-      val ua = UserAnswers().regInfo(RegistrationLegalStatus.LimitedCompany)
-
-      when(mockDataCompletion.isCompanyComplete(any(), any())).thenReturn(true)
-      when(mockDataCompletion.isAdviserComplete(any(), any())).thenReturn(true)
-
-      val action = new TestAllowDeclarationAction(NormalMode)
-      val result = action.filter(optionalRequest(ua))
-
-      whenReady(result) { res =>
-        res mustBe None
       }
     }
 
