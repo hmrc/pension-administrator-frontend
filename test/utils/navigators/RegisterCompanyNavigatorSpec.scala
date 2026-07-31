@@ -80,7 +80,7 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (CompanyPreviousAddressId, uk, emailPage(NormalMode)),
 
       (CompanyEmailId, uk, phonePage(NormalMode)),
-      (CompanyPhoneId, uk, checkYourAnswersPage),
+      (CompanyPhoneId, uk, contactDetailsCYAPage),
 
       (CheckYourAnswersId, uk, whatYouWillNeedDirectorPage),
       (CheckYourAnswersId, hasDirector, addCompanyDirectors(NormalMode)),
@@ -116,12 +116,12 @@ class RegisterCompanyNavigatorSpec extends SpecBase with NavigatorBehaviour {
       (CompanyContactAddressPostCodeLookupId, emptyAnswers, contactAddressList(CheckMode)),
       (CompanyContactAddressId, emptyAnswers, contactDetailsCYAPage),
 
-      (CompanyAddressYearsId, addressYearsOverAYear, checkYourAnswersPage),
+      (CompanyAddressYearsId, addressYearsOverAYear, contactDetailsCYAPage),
       (CompanyAddressYearsId, addressYearsUnderAYear, hasBeenTradingPage(CheckMode)),
 
       (CompanyTradingOverAYearId, tradingOverAYearUk, paPostCodePage(CheckMode)),
       (CompanyTradingOverAYearId, tradingOverAYearNonUk, previousAddressPage(CheckMode)),
-      (CompanyTradingOverAYearId, tradingUnderAYear, checkYourAnswersPage),
+      (CompanyTradingOverAYearId, tradingUnderAYear, contactDetailsCYAPage),
 
       (CompanyPreviousAddressPostCodeLookupId, emptyAnswers, paAddressListPage(CheckMode)),
       (CompanyPreviousAddressId, emptyAnswers, contactDetailsCYAPage),
@@ -171,7 +171,6 @@ object RegisterCompanyNavigatorSpec extends OptionValues {
   private def anyMoreChanges = controllers.register.routes.AnyMoreChangesController.onPageLoad()
   private def confirmPreviousAddressPage = routes.CompanyConfirmPreviousAddressController.onPageLoad()
   private lazy val updateContactAddressCYAPage:Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
-  private def checkYourAnswersPage = routes.CheckYourAnswersController.onPageLoad()
   private def companyDetailsCYAPage = controllers.register.company.companydetails.routes.CheckYourAnswersController.onPageLoad()
   private def contactDetailsCYAPage = controllers.register.company.contactdetails.routes.CheckYourAnswersController.onPageLoad()
 

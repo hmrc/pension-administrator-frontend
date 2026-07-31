@@ -78,7 +78,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
 
     case CompanyEmailId => nextPageOrNonUkRedirect(ua, routes.CompanyPhoneController.onPageLoad(NormalMode))
 
-    case CompanyPhoneId => nextPageOrNonUkRedirect(ua, routes.CheckYourAnswersController.onPageLoad())
+    case CompanyPhoneId => nextPageOrNonUkRedirect(ua, contactDetailsCYA)
 
     case CheckYourAnswersId => nextPageOrNonUkRedirect(ua, directorRoutes(ua, NormalMode))
 
@@ -189,7 +189,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
       case Some(AddressYears.UnderAYear) =>
         routes.CompanyTradingOverAYearController.onPageLoad(CheckMode)
       case Some(AddressYears.OverAYear) =>
-        routes.CheckYourAnswersController.onPageLoad()
+        contactDetailsCYA
       case _ =>
         controllers.routes.SessionExpiredController.onPageLoad
     }
@@ -215,7 +215,7 @@ class RegisterCompanyNavigator @Inject()(countryOptions: CountryOptions) extends
       case (Some(true), Some(false)) =>
         routes.CompanyPreviousAddressController.onPageLoad(CheckMode)
       case (Some(false), _) =>
-        routes.CheckYourAnswersController.onPageLoad()
+        contactDetailsCYA
       case _ =>
         controllers.routes.SessionExpiredController.onPageLoad
     }
