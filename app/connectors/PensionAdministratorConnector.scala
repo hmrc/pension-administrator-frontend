@@ -90,9 +90,11 @@ class PensionAdministratorConnectorImpl @Inject()(httpV2Client: HttpClientV2, co
   }
 
   def updatePsa(answers: UserAnswers)
-               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val jsonPayload = addCountryCode(answers.json)
     httpV2Client
       .post(url"${config.updatePsaSelfUrl}")
-      .withBody(answers.json)
+      .withBody(jsonPayload)
       .execute[HttpResponse]
+  }
 }

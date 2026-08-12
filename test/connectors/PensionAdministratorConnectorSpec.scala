@@ -266,6 +266,47 @@ class PensionAdministratorConnectorSpec extends AsyncFlatSpec with Matchers with
         response.status shouldBe INTERNAL_SERVER_ERROR
     }
   }
+
+  it should "add countryCode=GB to Individual UK address fields" in {
+    val userAnswersWithAddress = UserAnswers()
+      .set(IndividualUKContactAddressId)(AddressUKOnly("line1", "line2", Some("line3"), Some("line4"), "NE1 1NE")).asOpt.value
+
+    server.stubFor(
+      post(urlEqualTo(updatePsaSelfUrl))
+        .withHeader("Content-Type", equalTo("application/json"))
+        .withRequestBody(matchingJsonPath("$.individualContactAddress.countryCode", equalTo("GB")))
+        .willReturn(
+          ok(validResponse)
+            .withHeader("Content-Type", "application/json")
+        )
+    )
+
+    val connector = injector.instanceOf[PensionAdministratorConnector]
+    connector.updatePsa(userAnswersWithAddress).map { response =>
+      response.status shouldBe OK
+    }
+  }
+
+  it should "add countryCode=GB to Company UK address fields" in {
+    val userAnswersWithAddress = UserAnswers()
+      .set(BusinessTypeId)(BusinessType.LimitedCompany).asOpt.value
+      .set(CompanyUKContactAddressId)(AddressUKOnly("line1", "line2", Some("line3"), Some("line4"), "NE1 1NE")).asOpt.value
+
+    server.stubFor(
+      post(urlEqualTo(updatePsaSelfUrl))
+        .withHeader("Content-Type", equalTo("application/json"))
+        .withRequestBody(matchingJsonPath("$.companyContactAddress.countryCode", equalTo("GB")))
+        .willReturn(
+          ok(validResponse)
+            .withHeader("Content-Type", "application/json")
+        )
+    )
+
+    val connector = injector.instanceOf[PensionAdministratorConnector]
+    connector.updatePsa(userAnswersWithAddress).map { response =>
+      response.status shouldBe OK
+    }
+  }
 }
 
 object PensionAdministratorConnectorSpec extends OptionValues {
