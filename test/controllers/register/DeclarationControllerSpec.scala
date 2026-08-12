@@ -29,7 +29,6 @@ import models.RegistrationCustomerType.UK
 import models.RegistrationIdType.UTR
 import models.RegistrationLegalStatus.{Individual, Partnership}
 import models.UserType.UserType
-import models.admin.ukResidencyToggle
 import models.enumeration.JourneyType
 import models.register.*
 import models.{NormalMode, RegistrationInfo, UserType}
@@ -41,15 +40,14 @@ import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.domain.PsaId
 import uk.gov.hmrc.http.*
-import utils.{FakeNavigator, FeatureFlagMockHelper, KnownFactsRetrieval}
-import views.html.register.{declaration, ukResidencyDeclaration}
+import utils.{FakeNavigator, KnownFactsRetrieval}
+import views.html.register.declaration
 
 import scala.concurrent.Future
 
 class DeclarationControllerSpec
   extends ControllerSpecBase
-    with BeforeAndAfterEach
-    with FeatureFlagMockHelper {
+    with BeforeAndAfterEach {
 
   private val onwardRoute: Call = IndexController.onPageLoad
 
@@ -73,7 +71,6 @@ class DeclarationControllerSpec
   )
 
   val view: declaration = app.injector.instanceOf[declaration]
-  val ukResidencyView: ukResidencyDeclaration = app.injector.instanceOf[ukResidencyDeclaration]
 
   private val validPsaResponse = PsaSubscriptionResponse("A0123456")
   private val knownFacts =
@@ -97,27 +94,17 @@ class DeclarationControllerSpec
 
   override def beforeEach(): Unit = {
     reset(mockPensionAdministratorConnector, mockEmailConnector)
-    featureFlagMock(ukResidencyToggle)
   }
 
 
   "Declaration Controller" must {
 
-    "return OK and the correct view for a GET" when {
-      "ukResidency toggle is disabled" in {
-        val result = controller().onPageLoad(NormalMode)(fakeRequest)
+    "return OK and the correct view for a GET" in {
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString()
-      }
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString()
 
-      "ukResidencyToggle is enabled" in {
-        featureFlagMock(ukResidencyToggle, isEnabled = true)
-        val result = controller().onPageLoad(NormalMode)(fakeRequest)
-
-        status(result) mustBe OK
-        contentAsString(result) mustBe ukResidencyViewAsString()
-      }
     }
 
     "redirect to Session Expired on a GET request if no cached data is found" in {
@@ -140,7 +127,7 @@ class DeclarationControllerSpec
 
           when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
             .thenReturn(Future.successful(validData))
-          when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+          when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
             .thenReturn(Future.successful(validPsaResponse))
           when(mockEmailConnector.sendEmail(
             eqTo(email),
@@ -165,7 +152,7 @@ class DeclarationControllerSpec
         }
 
         "on a valid request and not send the email" in {
-          when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+          when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
             .thenReturn(Future.successful(validPsaResponse))
           when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
             .thenReturn(Future.successful(data))
@@ -192,7 +179,7 @@ class DeclarationControllerSpec
         }
 
         "known facts cannot be retrieved" in {
-          when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+          when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
             .thenReturn(Future.successful(validPsaResponse))
           when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
             .thenReturn(Future.successful(data))
@@ -206,7 +193,7 @@ class DeclarationControllerSpec
         }
 
         "enrolment is not successful" in {
-          when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+          when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
             .thenReturn(Future.successful(validPsaResponse))
           when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
             .thenReturn(Future.successful(data))
@@ -223,7 +210,7 @@ class DeclarationControllerSpec
       }
 
       "save the answer and PSA Subscription response on a valid request" in {
-        when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+        when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
           .thenReturn(Future.successful(validPsaResponse))
         when(mockKnownFactsRetrieval.retrieve(any())(any()))
           .thenReturn(knownFacts)
@@ -238,7 +225,7 @@ class DeclarationControllerSpec
       }
 
       "redirect to Duplicate Registration if a registration already exists for the organization" in {
-        when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+        when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
           .thenReturn(Future.failed(
             UpstreamErrorResponse(
               message = "INVALID_BUSINESS_PARTNER",
@@ -254,7 +241,7 @@ class DeclarationControllerSpec
 
       "redirect to Submission Invalid" when {
         "response is BAD_REQUEST from downstream" in {
-          when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+          when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
             .thenReturn(Future.failed(new BadRequestException("INVALID_PAYLOAD")))
 
           val result = controller().onSubmit(NormalMode)(validRequest)
@@ -265,7 +252,7 @@ class DeclarationControllerSpec
       }
 
       "redirect to Your Action Was Not Processed if ETMP call fails" in {
-        when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+        when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
           .thenReturn(Future.failed(new Exception))
 
         val result = controller().onSubmit(NormalMode)(fakeRequest)
@@ -276,7 +263,7 @@ class DeclarationControllerSpec
       }
 
       "redirect to Can not  Registration Administrator if a Active PSA exists" in {
-        when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+        when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
           .thenReturn(Future.failed(
             UpstreamErrorResponse(
               message = "ACTIVE_PSAID",
@@ -291,7 +278,7 @@ class DeclarationControllerSpec
       }
 
       "redirect to Can not Registration Administrator if PsaId is invalid" in {
-        when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+        when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
           .thenReturn(Future.failed(
             UpstreamErrorResponse(
               message = "INVALID_PSAID",
@@ -324,7 +311,7 @@ class DeclarationControllerSpec
           BusinessNameId.toString -> businessName
         )
 
-        when(mockPensionAdministratorConnector.registerPsa(any(), eqTo(false))(any(), any()))
+        when(mockPensionAdministratorConnector.registerPsa(any())(any(), any()))
           .thenReturn(Future.successful(validPsaResponse))
         when(mockUserAnswersCacheConnector.save(any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(data))
@@ -372,15 +359,10 @@ class DeclarationControllerSpec
       enrolments = mockTaxEnrolmentsConnector,
       emailConnector = mockEmailConnector,
       controllerComponents = controllerComponents,
-      mockFeatureFlagService,
-      view = view,
-      ukResidencyView
+      view = view
     )
 
   private def viewAsString(): String =
     view(workingKnowledge = true)(fakeRequest, messages).toString
-
-  private def ukResidencyViewAsString(): String =
-    ukResidencyView(workingKnowledge = true)(fakeRequest, messages).toString
 
 }

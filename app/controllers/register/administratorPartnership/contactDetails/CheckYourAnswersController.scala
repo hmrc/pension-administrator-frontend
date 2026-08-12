@@ -19,11 +19,9 @@ package controllers.register.administratorPartnership.contactDetails
 import controllers.actions.{AuthAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.*
-import models.admin.ukResidencyToggle
 import models.{CheckMode, NormalMode}
 import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.UserAnswers
 import utils.annotations.AuthWithNoIV
@@ -39,35 +37,25 @@ class CheckYourAnswersController @Inject()(
                                             @AuthWithNoIV authenticate: AuthAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction,
-                                            featureFlagService: FeatureFlagService,
                                             checkYourAnswersView: check_your_answers
                                           )(implicit countryOptions: CountryOptions, val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-        val nextPage = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
-        val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
-        Future.successful(Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers, ukResidency.isEnabled), nextPage, None, NormalMode, isComplete = true, Some(partnershipName))))
-
-      }
-
+      val nextPage = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
+      val partnershipName = request.userAnswers.get(BusinessNameId).getOrElse(Message("thePartnership").resolve)
+      Future.successful(Ok(checkYourAnswersView(checkYourAnswersSummary(request.userAnswers), nextPage, None, NormalMode, isComplete = true, Some(partnershipName))))
   }
 
   def onSubmit(): Action[AnyContent] = authenticate { _ =>
     Redirect(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad())
   }
 
-  private def checkYourAnswersSummary(userAnswers: UserAnswers, ukResidency: Boolean)(implicit messages: Messages): Seq[Section] = {
+  private def checkYourAnswersSummary(userAnswers: UserAnswers)(implicit messages: Messages): Seq[Section] = {
     val isPartnershipTradingOverAYear = userAnswers.get(PartnershipTradingOverAYearId).isDefined
-    val partnershipContactAddress = if (ukResidency) {
-      PartnershipUKContactAddressId.cya.row(PartnershipUKContactAddressId)
-    } else {
-      PartnershipContactAddressId.cya.row(PartnershipContactAddressId)
-    }
     Seq(
       AnswerSection(None,
-        partnershipContactAddress
+        PartnershipUKContactAddressId.cya.row(PartnershipUKContactAddressId)
           (Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)), userAnswers) ++
           PartnershipAddressYearsId.cya.row(PartnershipAddressYearsId)
             (Some(Link(routes.PartnershipAddressYearsController.onPageLoad(CheckMode).url)), userAnswers) ++

@@ -79,7 +79,7 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
 
     case CompanyEmailId => nextPageOrNonUkRedirect(ua, routes.CompanyPhoneController.onPageLoad(NormalMode))
 
-    case CompanyPhoneId => nextPageOrNonUkRedirect(ua, routes.CheckYourAnswersController.onPageLoad())
+    case CompanyPhoneId => nextPageOrNonUkRedirect(ua, contactDetailsCYA)
 
     case CheckYourAnswersId => nextPageOrNonUkRedirect(ua, directorRoutes(ua, NormalMode))
 
@@ -97,29 +97,29 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
     case HasCompanyCRNId if hasCrn(ua) =>
       routes.CompanyRegistrationNumberController.onPageLoad(CheckMode)
     case HasCompanyCRNId =>
-      checkYourAnswers
+      companyDetailsCYA
     case CompanyRegistrationNumberId =>
-      checkYourAnswers
+      companyDetailsCYA
     case HasPAYEId if hasPaye(ua) =>
       routes.CompanyEnterPAYEController.onPageLoad(CheckMode)
     case HasPAYEId =>
-      checkYourAnswers
+      companyDetailsCYA
     case EnterPAYEId =>
-      checkYourAnswers
+      companyDetailsCYA
     case HasVATId if hasVat(ua) =>
       routes.CompanyEnterVATController.onPageLoad(CheckMode)
     case HasVATId =>
-      checkYourAnswers
+      companyDetailsCYA
     case EnterVATId =>
-      checkYourAnswers
+      companyDetailsCYA
     case CompanySameContactAddressId =>
       sameContactAddress(CheckMode, ua)
     case CompanyContactAddressPostCodeLookupId =>
       routes.CompanyContactAddressListController.onPageLoad(CheckMode)
     case CompanyContactAddressId =>
-      checkYourAnswers
+      contactDetailsCYA
     case CompanyUKContactAddressId =>
-      checkYourAnswers
+      contactDetailsCYA
     case CompanyAddressYearsId =>
       companyAddressYearsCheckIdRoutes(ua)
     case CompanyTradingOverAYearId =>
@@ -127,11 +127,11 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
     case CompanyPreviousAddressPostCodeLookupId =>
       routes.CompanyAddressListController.onPageLoad(CheckMode)
     case CompanyPreviousAddressId =>
-      checkYourAnswers
+      contactDetailsCYA
     case CompanyEmailId =>
-      checkYourAnswers
+      contactDetailsCYA
     case CompanyPhoneId =>
-      checkYourAnswers
+      contactDetailsCYA
   }
 
   override protected def updateRouteMap(ua: UserAnswers): PartialFunction[Identifier, Call] = {
@@ -162,8 +162,12 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
   }
 
   private def updateContactAddressCYAPage():Call = controllers.routes.UpdateContactAddressCYAController.onPageLoad()
-  private def checkYourAnswers: Call =
+  
+  private def companyDetailsCYA: Call =
     controllers.register.company.companydetails.routes.CheckYourAnswersController.onPageLoad()
+    
+  private def contactDetailsCYA: Call =
+    controllers.register.company.contactdetails.routes.CheckYourAnswersController.onPageLoad()
 
   private def hasPaye(answers: UserAnswers): Boolean = answers.get(HasPAYEId).getOrElse(false)
 
@@ -189,7 +193,7 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
       case Some(AddressYears.UnderAYear) =>
         routes.CompanyTradingOverAYearController.onPageLoad(CheckMode)
       case Some(AddressYears.OverAYear) =>
-        routes.CheckYourAnswersController.onPageLoad()
+        contactDetailsCYA
       case _ =>
         controllers.routes.SessionExpiredController.onPageLoad
     }
@@ -215,7 +219,7 @@ class RegisterCompanyNavigatorV2 @Inject()(countryOptions: CountryOptions) exten
       case (Some(true), Some(false)) =>
         routes.CompanyPreviousAddressController.onPageLoad(CheckMode)
       case (Some(false), _) =>
-        routes.CheckYourAnswersController.onPageLoad()
+        contactDetailsCYA
       case _ =>
         controllers.routes.SessionExpiredController.onPageLoad
     }

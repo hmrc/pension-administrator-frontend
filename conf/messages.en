@@ -478,34 +478,25 @@ enterMissingAddressFields.heading = There are fields missing from your address
 whatYouWillNeed.title = What you will need
 whatYouWillNeed.heading = What you will need
 whatYouWillNeed.body.text = To register as a pension scheme administrator, you will need:
-whatYouWillNeed.body.item1 = your name, address, previous addresses and National Insurance number
-whatYouWillNeed.body.item2 = your contact phone number and email address
 whatYouWillNeed.company.body.item1 = the company name, address, previous address, VAT and PAYE numbers of the PSA company
 whatYouWillNeed.company.body.item2 = the telephone number and email address of the contact within the company
 whatYouWillNeed.company.body.item3 = the details of all the directors in the company
 
-# new content - individual what you will need
 whatYouWillNeed.individual.body.text = To register as a pension scheme administrator, you will need your:
 whatYouWillNeed.individual.body.item1 = name, address and any previous addresses in the last year
 whatYouWillNeed.individual.body.item2 = National Insurance number
 whatYouWillNeed.individual.body.item3 = phone number and email address
 
-
 whatYouWillNeed.main.title = What you will need
 whatYouWillNeed.main.heading = What you will need
 whatYouWillNeed.main.body.text = To register a business as a pension scheme administrator, you will need:
-whatYouWillNeed.main.body.item1 = the business name, address, previous address, VAT and PAYE references of the business you’re registering
-whatYouWillNeed.main.body.item2 = the phone number and email address of a contactable person within the business
-whatYouWillNeed.main.body.item3 = the details of all the directors or partners associated with the business, including their Unique Taxpayer Reference (UTR) and National Insurance number
+whatYouWillNeed.main.body.item1 = the business name and registered UK address
+whatYouWillNeed.main.body.item2 = previous addresses in the last year
+whatYouWillNeed.main.body.item3 = VAT and PAYE references
+whatYouWillNeed.main.body.item4 = business contact phone number and email address
+whatYouWillNeed.main.body.item5 = details of all directors or partners associated with the business, including their Unique Taxpayer Reference (UTR) and National Insurance number
 whatYouWillNeed.main.body.hint = Once we have confirmed your identity, the information you enter will be saved as you progress. If you sign out, the information you have already entered will be saved for 28 days. After that time you will need to enter all of the information again.
 whatYouWillNeed.main.body.hint.company = Once we have confirmed the identity of the business, the information you enter will be saved as you progress.  If you sign out, the information you have already entered will be saved for 28 days. After that time you will need to enter all of the information again.
-
-# new content - what you will need
-whatYouWillNeed.ukResidency.main.body.item1 = the business name and registered UK address
-whatYouWillNeed.ukResidency.main.body.item2 = previous addresses in the last year
-whatYouWillNeed.ukResidency.main.body.item3 = VAT and PAYE references
-whatYouWillNeed.ukResidency.main.body.item4 = business contact phone number and email address
-whatYouWillNeed.ukResidency.main.body.item5 = details of all directors or partners associated with the business, including their Unique Taxpayer Reference (UTR) and National Insurance number
 
 individualDetailsCorrect.title = Is this your name and address?
 individualDetailsCorrect.heading = Is this your name and address?
@@ -514,7 +505,6 @@ individualDetailsCorrect.error.required = Select yes if this is your name and ad
 individualDetailsCorrect.name = Name
 individualDetailsCorrect.address = Address
 
-# new content - individual update non-uk address
 updateNonUKAddress.individual.title = You cannot register as a pension scheme administrator
 updateNonUKAddress.individual.h1 = You cannot register as a pension scheme administrator
 updateNonUKAddress.individual.p1 = Your address is not in the UK. You must be resident in the UK to
@@ -564,7 +554,6 @@ businessType.overseasCompany.lc = overseas company
 nonUKBusinessType.company.lc = company
 nonUKBusinessType.businessPartnership.lc = partnership
 
-# new content - company update non-uk address kick out page
 updateNonUKAddress.company.title = The company cannot register as a pension scheme administrator
 updateNonUKAddress.company.h1 = You need to update the company՚s address details before registering
 updateNonUKAddress.company.p1 = The company’s address is not in the UK. The company must be resident in the UK to
@@ -572,7 +561,6 @@ updateNonUKAddress.company.p1.link-text = register as a pension scheme administr
 updateNonUKAddress.company.p2 = If the company is resident in the UK,
 updateNonUKAddress.company.p2.link-text = tell HMRC about a change of address
 
-# new content - partnership update non-uk address
 updateNonUKAddress.partnership.title = The partnership cannot register as a pension scheme administrator
 updateNonUKAddress.partnership.h1 = The partnership cannot register as a pension scheme administrator
 updateNonUKAddress.partnership.p1 = The partnership’s address is not in the UK. The partnership must be resident in the UK to
@@ -614,31 +602,16 @@ declarationWorkingKnowledge.p1 = There needs to be someone with working knowledg
 declarationWorkingKnowledge.p2 = For example, if you are an employer, or a director of an employer, who has registered a pension scheme, you might not have working knowledge of pensions and pensions tax legislation.
 declarationWorkingKnowledge.p3 = If you do not have that knowledge, you must be helped by a pension practitioner or provider who has the knowledge. You will need to tell HMRC who that is.
 
-
-
 declaration.title = Declaration
 declaration.heading = Declaration
-declaration.declaration = By continuing you declare that:
-declaration.statement1 = The information shown is complete and correct and that I may be liable to a penalty if a false statement is made in this registration, and that any false statement may also lead to prosecution.
-declaration.statement2 = I understand that as a scheme administrator I am responsible for discharging the functions conferred or imposed on the scheme administrator of a pension scheme by the Finance Act 2004, and I intend to discharge those functions at all times, whether resident in the United Kingdom or another EU member state or non-member EEA state. I will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008. I understand that I may be liable to a penalty and where the scheme is registered the pension scheme may be de-registered if I fail to discharge those functions properly
-declaration.statement3 = I understand that as scheme administrator I must make returns of information to HMRC, when they are reasonably required; provide information to members to enable them to meet their own tax obligations and pay any tax charges due to be paid by the scheme administrator under part 4 of the Finance Act 2004.
-declaration.statement4 = I understand that where HMRC believes that a scheme administrator, or one of the persons that make up the scheme administrator of the pension scheme, is not a fit and proper person to be a scheme administrator, HMRC may refuse to register a scheme or, if the scheme is already registered, HMRC may de-register a scheme.
-declaration.statement5a = I have a working knowledge of pension scheme administrator duties and liabilities.
-declaration.statement5b = I don’t have a working knowledge of pension scheme administrator duties and liabilities. I have appointed an adviser who does have that knowledge
-declaration.agree = I agree
-declaration.invalid = You need to agree to all the declarations before you can continue
-
-# new content - declaration
-ukResidency.declaration.title = Declaration
-ukResidency.declaration.heading = Declaration
-ukResidency.declaration.declaration = By continuing you declare that:
-ukResidency.declaration.statement1 = the information shown is complete and correct and that I may be liable to a penalty if a false statement is made in this registration, and that any false statement may also lead to prosecution
-ukResidency.declaration.statement2 = I understand that as a scheme administrator I am responsible for discharging the functions conferred or imposed on the scheme administrator of a pension scheme by the Finance Act 2004, and I intend to discharge those functions at all times
-ukResidency.declaration.statement3 = I will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — I understand that I may be liable to a penalty and where the scheme is registered the pension scheme may be de-registered if I fail to discharge those functions properly
-ukResidency.declaration.statement4 = I understand that as scheme administrator I must make returns of information to HMRC, when they are reasonably required; provide information to members to enable them to meet their own tax obligations and pay any tax charges due to be paid by the scheme administrators under part 4 of the Finance Act 2004
-ukResidency.declaration.statement5 = I understand that where HMRC believes that a scheme administrator, or one of the persons that make up the scheme administrator of the pension scheme,  is not a fit and proper person to be a scheme administrator, HMRC may refuse to register a scheme, or if the scheme is already registered,  HMRC may de-register a scheme
-ukResidency.declaration.statement6a = I have a working knowledge of pension scheme administrator duties and liabilities
-ukResidency.declaration.statement6b = I don’t have a working knowledge of pension scheme administrator duties and liabilities. I have appointed an adviser who does have that knowledge
+declaration.declare = By continuing you declare that:
+declaration.statement1 = the information shown is complete and correct and that I may be liable to a penalty if a false statement is made in this registration, and that any false statement may also lead to prosecution
+declaration.statement2 = I understand that as a scheme administrator I am responsible for discharging the functions conferred or imposed on the scheme administrator of a pension scheme by the Finance Act 2004, and I intend to discharge those functions at all times
+declaration.statement3 = I will comply with all information notices issued to the scheme administrator under the Finance Act 2004 or the Finance Act 2008 — I understand that I may be liable to a penalty and where the scheme is registered the pension scheme may be de-registered if I fail to discharge those functions properly
+declaration.statement4 = I understand that as scheme administrator I must make returns of information to HMRC, when they are reasonably required; provide information to members to enable them to meet their own tax obligations and pay any tax charges due to be paid by the scheme administrators under part 4 of the Finance Act 2004
+declaration.statement5 = I understand that where HMRC believes that a scheme administrator, or one of the persons that make up the scheme administrator of the pension scheme,  is not a fit and proper person to be a scheme administrator, HMRC may refuse to register a scheme, or if the scheme is already registered,  HMRC may de-register a scheme
+declaration.statement6a = I have a working knowledge of pension scheme administrator duties and liabilities
+declaration.statement6b = I don’t have a working knowledge of pension scheme administrator duties and liabilities. I have appointed an adviser who does have that knowledge
 
 adviserName.title = Who has working knowledge of pensions and pensions tax legislation?
 adviserName.heading = Who has working knowledge of pensions and pensions tax legislation?
@@ -973,13 +946,11 @@ nonUKAdministrator.p2.email         = administrationpensions@hmrc.gov.uk
 nonUKAdministrator.p2.emailSubject  = ?subject=Non-UK
 nonUKAdministrator.p2.2             = and include ‘Non-UK’ in the title.
 
-# New content - company/partnership cannot register
-nonUKCompanyPartnershipAdministrator.title            = Your company or partnership cannot register as a pension scheme administrator
-nonUKCompanyPartnershipAdministrator.heading          = Your company or partnership cannot register as a pension scheme administrator
-nonUKCompanyPartnershipAdministrator.p1               = Your company or partnership must be incorporated or resident in the UK to
-nonUKCompanyPartnershipAdministrator.p1.link-text     = register as a pension scheme administrator
+nonUKAdministrator.companyPartnership.title            = Your company or partnership cannot register as a pension scheme administrator
+nonUKAdministrator.companyPartnership.heading          = Your company or partnership cannot register as a pension scheme administrator
+nonUKAdministrator.companyPartnership.p1               = Your company or partnership must be incorporated or resident in the UK to
+nonUKAdministrator.companyPartnership.p1.link-text     = register as a pension scheme administrator
 
-# New content - individual cannot register
 nonUKAdministrator.individual.title            = You cannot register as a pension scheme administrator
 nonUKAdministrator.individual.heading          = You cannot register as a pension scheme administrator
 nonUKAdministrator.individual.p1               = You must be a resident in the UK to

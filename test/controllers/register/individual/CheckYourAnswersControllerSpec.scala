@@ -19,7 +19,6 @@ package controllers.register.individual
 import controllers.ControllerSpecBase
 import controllers.actions.*
 import models.*
-import models.admin.ukResidencyToggle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -36,12 +35,10 @@ import views.html.check_your_answers
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class CheckYourAnswersControllerSpec extends ControllerSpecBase with FeatureFlagMockHelper with BeforeAndAfterEach {
+class CheckYourAnswersControllerSpec extends ControllerSpecBase with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
-    featureFlagMock(ukResidencyToggle)
 
     when(mockDataCompletion.isIndividualComplete(any(), any())).thenReturn(true)
 
@@ -59,8 +56,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with FeatureFlag
         testRenderedView(sections, result)
       }
 
-      "render the view correctly when feature flag is enabled" in {
-        featureFlagMock(ukResidencyToggle, isEnabled = true)
+      "render the view correctly" in {
 
         val retrievalAction = UserAnswers().completeIndividual.dataRetrievalAction
         val result = controller(retrievalAction).onPageLoad(NormalMode)(fakeRequest)
@@ -107,15 +103,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with FeatureFlag
         redirectLocation(result) mustBe Some(onwardRoute.url)
       }
 
-      "redirect using navigator V2 when data is complete and flag is enabled" in {
-        featureFlagMock(ukResidencyToggle, isEnabled = true)
-
-        val result = controller().onSubmit(NormalMode)(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
-
       "load the same cya page when data is not complete" in {
         when(mockDataCompletion.isIndividualComplete(any(), any())).thenReturn(false)
         val retrievalAction = UserAnswers().completeIndividual.dataRetrievalAction
@@ -125,9 +112,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with FeatureFlag
         testRenderedView(sections, result, isComplete = false)
       }
 
-      "load cya page when UK data is not complete and flag is enabled" in {
-        featureFlagMock(ukResidencyToggle, isEnabled = true)
-
+      "load cya page when UK data is not complete" in {
         when(mockDataCompletion.isIndividualComplete(any(), any()))
           .thenReturn(false)
 
@@ -158,7 +143,6 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with FeatureFlag
 
   private val cyaView: check_your_answers = app.injector.instanceOf[check_your_answers]
 
-  private def fakeNavigator = new FakeNavigator(desiredRoute = onwardRoute)
 
   private val navigatorV2: IndividualNavigatorV2 = mock[IndividualNavigatorV2]
 
@@ -171,12 +155,10 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with FeatureFlag
       getData = getData,
       requireData = new DataRequiredActionImpl(),
       mockDataCompletion,
-      navigator = fakeNavigator,
       navigatorV2,
       messagesApi = messagesApi,
       countryOptions = countryOptions,
       controllerComponents = controllerComponents,
-      mockFeatureFlagService,
       view = cyaView
     )
   }
@@ -226,8 +208,7 @@ class CheckYourAnswersControllerSpec extends ControllerSpecBase with FeatureFlag
       Seq(
         address.addressLine1,
         address.addressLine2,
-        address.postcode.value,
-        address.country
+        address.postcode.value
       ),
       changeUrl = changeUrlContactAddress
     ),

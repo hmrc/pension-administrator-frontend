@@ -63,9 +63,9 @@ GET         /:mode/use-address-for-contact                controllers.register.i
 POST        /:mode/use-address-for-contact                controllers.register.individual.IndividualSameContactAddressController.onSubmit(mode: Mode)
 
 GET         /are-you-uk-resident                          controllers.register.individual.IndividualAreYouInUKController.onPageLoad(mode: Mode = NormalMode)
-POST        /are-you-uk-resident                          controllers.register.individual.IndividualAreYouInUKController.onSubmitIndividual(mode: Mode = NormalMode)
+POST        /are-you-uk-resident                          controllers.register.individual.IndividualAreYouInUKController.onSubmit(mode: Mode = NormalMode)
 GET         /:mode/are-you-uk-resident                    controllers.register.individual.IndividualAreYouInUKController.onPageLoad(mode: Mode)
-POST        /:mode/are-you-uk-resident                    controllers.register.individual.IndividualAreYouInUKController.onSubmitIndividual(mode: Mode)
+POST        /:mode/are-you-uk-resident                    controllers.register.individual.IndividualAreYouInUKController.onSubmit(mode: Mode)
 
 GET         /outside-eu-eea                               controllers.register.individual.OutsideEuEeaController.onPageLoad(mode: Mode = NormalMode)
 GET         /non-uk-administrator                         controllers.register.individual.NonUKAdministratorController.onPageLoad(mode: Mode = NormalMode)

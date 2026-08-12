@@ -19,20 +19,12 @@ package controllers.register.individual
 import controllers.ControllerSpecBase
 import controllers.actions.{FakeAllowAccessProvider, FakeAuthAction, FakeDataRetrievalAction}
 import models.NormalMode
-import models.admin.ukResidencyToggle
-import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers.*
-import utils.FeatureFlagMockHelper
-import views.html.register.individual.{individualNonUKAdministrator, nonUKAdministrator}
+import views.html.register.individual.individualNonUKAdministrator
 
-class IndividualNonUKAdministratorControllerSpec extends ControllerSpecBase with BeforeAndAfterEach with FeatureFlagMockHelper {
+class IndividualNonUKAdministratorControllerSpec extends ControllerSpecBase {
 
-  val view: nonUKAdministrator = app.injector.instanceOf[nonUKAdministrator]
-  val ukResidencyView: individualNonUKAdministrator = app.injector.instanceOf[individualNonUKAdministrator]
-
-  override def beforeEach(): Unit = {
-    featureFlagMock(ukResidencyToggle)
-  }
+  val view: individualNonUKAdministrator = app.injector.instanceOf[individualNonUKAdministrator]
 
   val dataRetrievalAction: FakeDataRetrievalAction = getEmptyData
 
@@ -41,32 +33,19 @@ class IndividualNonUKAdministratorControllerSpec extends ControllerSpecBase with
       FakeAuthAction,
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
-      mockFeatureFlagService,
       controllerComponents,
-      view,
-      ukResidencyView
+      view
     )
 
   private def viewAsString: String = view()(fakeRequest, messages).toString
 
-  private def viewUkResidency: String = ukResidencyView()(fakeRequest, messages).toString
-
   "NonUKAdministrator Controller" must {
 
-    "return OK and the correct view for a GET" when {
-      "ukResidencyToggle is disabled" in {
-        val result = controller().onPageLoad(NormalMode)(fakeRequest)
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString
+    "return OK and the correct view for a GET" in {
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
-      }
-      "ukResidencyToggle is enabled" in {
-        featureFlagMock(ukResidencyToggle, true)
-        val result = controller().onPageLoad(NormalMode)(fakeRequest)
-
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewUkResidency
-      }
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString
     }
   }
 }

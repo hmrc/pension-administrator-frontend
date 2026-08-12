@@ -19,17 +19,13 @@ package controllers.register.administratorPartnership
 import controllers.ControllerSpecBase
 import controllers.actions.{DataRequiredActionImpl, DataRetrievalAction, FakeAllowAccessProvider, FakeAuthAction}
 import models.NormalMode
-import models.admin.ukResidencyToggle
 import models.register.{Task, TaskList}
-import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers.*
-import utils.{FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
+import utils.{UserAnswerOps, UserAnswers}
 import views.html.register.taskList
 
 class PartnershipRegistrationTaskListControllerSpec
-  extends ControllerSpecBase
-    with FeatureFlagMockHelper
-    with BeforeAndAfterEach {
+  extends ControllerSpecBase {
 
   private val view: taskList = app.injector.instanceOf[taskList]
   private val validData = UserAnswers()
@@ -37,15 +33,11 @@ class PartnershipRegistrationTaskListControllerSpec
   private val expiryDateMillis = 1653326181964L
   private val expiryDate = "23 May 2022"
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    featureFlagMock(ukResidencyToggle)
-  }
+
 
   "PartnershipRegistrationTaskListController" must {
     "onPageLoad" must {
-      "return OK and the correct view for a GET" when {
-        "ukResidency toggle is disabled" in {
+      "return OK and the correct view for a GET" in {
           val userAnswers = validData.businessName(partnershipName).setExpiryDate(expiryDateMillis).asOpt.value
           val result = controller(userAnswers.dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
 
@@ -64,28 +56,6 @@ class PartnershipRegistrationTaskListControllerSpec
 
           status(result) mustBe OK
           contentAsString(result) mustBe viewAsString(expectedTaskList)
-        }
-        "ukResidency toggle is enabled" in {
-          featureFlagMock(ukResidencyToggle, true)
-          val userAnswers = validData.businessName(partnershipName).setExpiryDate(expiryDateMillis).asOpt.value
-          val result = controller(userAnswers.dataRetrievalAction).onPageLoad(NormalMode)(fakeRequest)
-
-          val expectedTaskList = TaskList(partnershipName, "", List(
-            Task(messages("taskList.basicDetails"), isCompleted = false,
-              "/register-as-pension-scheme-administrator/register/administrator-partnership/business-matching/check-your-answers"),
-            Task(messages("taskList.partnershipDetails"), isCompleted = false,
-              "/register-as-pension-scheme-administrator/register/administrator-partnership/details-what-you-will-need"),
-            Task(messages("taskList.contactDetails"), isCompleted = false,
-              "/register-as-pension-scheme-administrator/register/administrator-partnership/contact-what-you-will-need"),
-            Task(messages("taskList.partners"), isCompleted = false,
-              "/register-as-pension-scheme-administrator/register/administrator-partnership/partner/what-you-will-need"),
-            Task(messages("taskList.workingKnowledgeDetails"), isCompleted = false,
-              "/register-as-pension-scheme-administrator/register/working-knowledge-pensions")
-          ))
-
-          status(result) mustBe OK
-          contentAsString(result) mustBe viewAsString(expectedTaskList)
-        }
       }
     }
   }
@@ -98,7 +68,6 @@ class PartnershipRegistrationTaskListControllerSpec
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      mockFeatureFlagService,
       view
     )
 

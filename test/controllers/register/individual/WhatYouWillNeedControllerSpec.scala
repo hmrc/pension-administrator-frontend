@@ -17,25 +17,19 @@
 package controllers.register.individual
 
 import controllers.ControllerSpecBase
-import controllers.actions._
+import controllers.actions.*
 import identifiers.register.individual.WhatYouWillNeedId
 import models.NormalMode
-import models.admin.ukResidencyToggle
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import play.api.mvc.Call
-import play.api.test.Helpers._
-import utils.{FakeNavigator, FeatureFlagMockHelper, UserAnswers}
+import play.api.test.Helpers.*
 import utils.navigators.IndividualNavigatorV2
+import utils.{FakeNavigator, UserAnswers}
 import views.html.register.individual.whatYouWillNeed
 
 class WhatYouWillNeedControllerSpec
-  extends ControllerSpecBase
-    with BeforeAndAfterEach
-    with FeatureFlagMockHelper {
+  extends ControllerSpecBase {
 
   val view: whatYouWillNeed = app.injector.instanceOf[whatYouWillNeed]
 
@@ -45,8 +39,6 @@ class WhatYouWillNeedControllerSpec
 
   private val ua: UserAnswers = UserAnswers(Json.obj())
 
-  override def beforeEach(): Unit = featureFlagMock(ukResidencyToggle)
-
   private def controller(dataRetrievalAction: DataRetrievalAction = getEmptyData) =
     new WhatYouWillNeedController(
       navigator,
@@ -55,74 +47,34 @@ class WhatYouWillNeedControllerSpec
       FakeAllowAccessProvider(config = frontendAppConfig),
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      mockFeatureFlagService,
       controllerComponents,
       view
     )
 
-  private def viewAsString(toggle: Boolean) =
-    view(toggle)(fakeRequest, messages).toString
+  private def viewAsString() =
+    view()(fakeRequest, messages).toString
 
-  private def doc(toggle: Boolean): Document =
-    Jsoup.parse(viewAsString(toggle))
 
   "WhatYouWillNeed Controller" must {
 
-    "render the page correctly for GET" when {
+    "render the page correctly for GET" in {
+      val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
-      "ukResidencyToggle is disabled" in {
-        val result = controller().onPageLoad(NormalMode)(fakeRequest)
-
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(false)
-
-        doc(false).getElementById("li-1").text mustBe
-          "your name, address, previous addresses and National Insurance number"
-        doc(false).getElementById("li-2").text mustBe
-          "your contact phone number and email address"
-      }
-
-      "ukResidencyToggle is enabled" in {
-        featureFlagMock(ukResidencyToggle, true)
-
-        val result = controller().onPageLoad(NormalMode)(fakeRequest)
-
-        status(result) mustBe OK
-        contentAsString(result) mustBe viewAsString(true)
-
-        doc(true).getElementById("li-1").text mustBe
-          "name, address and any previous addresses in the last year"
-        doc(true).getElementById("li-2").text mustBe
-          "National Insurance number"
-        doc(true).getElementById("li-3").text mustBe
-          "phone number and email address"
-      }
+      status(result) mustBe OK
+      contentAsString(result) mustBe viewAsString()
     }
 
-    "redirect to the next page for POST" when {
+    "redirect to the next page for POST" in {
 
-      "ukResidencyToggle is disabled" in {
-        val data = new FakeDataRetrievalAction(Some(Json.obj()))
+      val data = new FakeDataRetrievalAction(Some(Json.obj()))
 
-        val result = controller(data).onSubmit(NormalMode)(fakeRequest)
+      when(navigatorV2.nextPage(WhatYouWillNeedId, NormalMode, ua))
+        .thenReturn(onwardRoute)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
+      val result = controller(data).onSubmit(NormalMode)(fakeRequest)
 
-      "ukResidencyToggle is enabled" in {
-        featureFlagMock(ukResidencyToggle, true)
-
-        val data = new FakeDataRetrievalAction(Some(Json.obj()))
-
-        when(navigatorV2.nextPage(WhatYouWillNeedId, NormalMode, ua))
-          .thenReturn(onwardRoute)
-
-        val result = controller(data).onSubmit(NormalMode)(fakeRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
     }
   }
 }

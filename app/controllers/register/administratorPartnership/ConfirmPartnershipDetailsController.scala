@@ -25,14 +25,12 @@ import identifiers.TypedIdentifier
 import identifiers.register.partnership.PartnershipRegisteredAddressId
 import identifiers.register.{BusinessNameId, BusinessTypeId, BusinessUTRId, RegistrationInfoId}
 import models.*
-import models.admin.ukResidencyToggle
 import models.requests.DataRequest
 import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.libs.json.{JsResultException, Writes}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.PartnershipV2
 import utils.countryOptions.CountryOptions
@@ -52,7 +50,6 @@ class ConfirmPartnershipDetailsController @Inject()(
                                                      registrationConnector: RegistrationConnector,
                                                      formProvider: ConfirmPartnershipDetailsFormProvider,
                                                      countryOptions: CountryOptions,
-                                                     featureFlagService: FeatureFlagService,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      val view: confirmPartnershipDetails
                                                    )(implicit val executionContext: ExecutionContext)
@@ -67,35 +64,32 @@ class ConfirmPartnershipDetailsController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] =
     (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
       implicit request =>
-        def isUkAddress(address: TolerantAddress): Boolean = address.countryOpt.contains("GB")
+        getPartnershipDetails {
+          case registration@(_: OrganizationRegistration) =>
+            val address = registration.response.address
+            val organisationName = registration.response.organisation.organisationName
 
-        featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-          getPartnershipDetails {
-            case registration@(_: OrganizationRegistration) =>
-              def correctView(address: TolerantAddress): Result = {
-                if (ukResidency.isEnabled && !isUkAddress(address)) {
-                  Redirect(controllers.register.administratorPartnership.routes.PartnershipUpdateNonUKAddressController.onPageLoad())
-                } else {
-                  Ok(view(
-                    form,
-                    registration.response.organisation.organisationName,
-                    registration.response.address,
-                    countryOptions)
-                  )
-                }
-              }
+            upsert(request.userAnswers, PartnershipRegisteredAddressId)(address) { userAnswers =>
+              upsert(userAnswers, BusinessNameId)(organisationName) { userAnswers =>
+                upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
+                  dataCacheConnector.upsert(userAnswers.json).map { _ =>
+                    def isUkAddress(address: TolerantAddress): Boolean = address.countryOpt.contains("GB")
 
-              upsert(request.userAnswers, PartnershipRegisteredAddressId)(registration.response.address) { userAnswers =>
-                upsert(userAnswers, BusinessNameId)(registration.response.organisation.organisationName) { userAnswers =>
-                  upsert(userAnswers, RegistrationInfoId)(registration.info) { userAnswers =>
-                    dataCacheConnector.upsert(userAnswers.json).map { _ =>
-                      correctView(registration.response.address)
+                    if (isUkAddress(address)) {
+                      Ok(view(
+                        form,
+                        organisationName,
+                        address,
+                        countryOptions
+                      ))
+                    } else {
+                      Redirect(controllers.register.administratorPartnership.routes.PartnershipUpdateNonUKAddressController.onPageLoad())
                     }
                   }
                 }
               }
-            case _ => Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
-          }
+            }
+          case _ => Future.successful(Redirect(controllers.register.company.routes.CompanyUpdateDetailsController.onPageLoad()))
         }
     }
 

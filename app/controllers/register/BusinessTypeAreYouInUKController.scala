@@ -19,36 +19,34 @@ package controllers.register
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.*
 import forms.register.YesNoFormProvider
+import identifiers.register.AreYouInUKId
 import models.Mode
 import play.api.data.Form
-import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
-import utils.Navigator
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.{AuthWithNoIV, Register}
-import utils.navigators.IndividualNavigatorV2
+import utils.{Navigator, UserAnswers}
 import viewmodels.{AreYouInUKViewModel, Message}
 import views.html.register.areYouInUK
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessTypeAreYouInUKController @Inject()(
-                                                  override val dataCacheConnector: UserAnswersCacheConnector,
-                                                  @Register override val navigator: Navigator,
-                                                  override val navigatorV2: IndividualNavigatorV2,
-                                                  override val allowAccess: AllowAccessActionProvider,
-                                                  @AuthWithNoIV override val authenticate: AuthAction,
-                                                  override val getData: DataRetrievalAction,
-                                                  override val requireData: DataRequiredAction,
-                                                  override val featureFlagService: FeatureFlagService,
-                                                  override val formProvider: YesNoFormProvider,
+                                                  dataCacheConnector: UserAnswersCacheConnector,
+                                                  @Register val navigator: Navigator,
+                                                  allowAccess: AllowAccessActionProvider,
+                                                  @AuthWithNoIV val authenticate: AuthAction,
+                                                  getData: DataRetrievalAction,
+                                                  formProvider: YesNoFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   val view: areYouInUK
-                                                )(implicit val executionContext: ExecutionContext) extends AreYouInUKController {
+                                                )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  protected override val form: Form[Boolean] = formProvider("business.areYouInUK.error.required")
+  private val form: Form[Boolean] = formProvider("business.areYouInUK.error.required")
 
-  protected def viewmodel(mode: Mode) =
+  protected def viewModel(mode: Mode) =
     AreYouInUKViewModel(mode,
       postCall = controllers.register.routes.BusinessTypeAreYouInUKController.onSubmit(mode),
       title = Message("areYouInUK.title"),
@@ -56,4 +54,25 @@ class BusinessTypeAreYouInUKController @Inject()(
       p1 = Some("areYouInUK.check.selectedUkAddress"),
       p2 = Some("areYouInUK.check.provideNonUkAddress")
     )
+
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
+    implicit request =>
+      val preparedForm = request.userAnswers match {
+        case None => form
+        case Some(userAnswers) =>
+          userAnswers.get(AreYouInUKId).fold(form)(v => form.fill(v))
+      }
+      Ok(view(preparedForm, viewModel(mode)))
+  }
+
+  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
+    implicit request =>
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[?]) =>
+          Future.successful(BadRequest(view(formWithErrors, viewModel(mode)))),
+        value => {
+          dataCacheConnector.save(AreYouInUKId, value).map(cacheMap =>
+            Redirect(navigator.nextPage(AreYouInUKId, mode, UserAnswers(cacheMap))))
+        })
+  }
 }

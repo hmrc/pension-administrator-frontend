@@ -25,15 +25,15 @@
 
 @()(implicit request: Request[?], messages: Messages)
 
-@layout(pageTitle = messages("nonUKCompanyPartnershipAdministrator.title")) {
+@layout(pageTitle = messages("nonUKAdministrator.companyPartnership.title")) {
 
-    @components.heading(messages("nonUKCompanyPartnershipAdministrator.heading"))
+    @components.heading(messages("nonUKAdministrator.companyPartnership.heading"))
 
     <p class="govuk-body">
-        @messages("nonUKCompanyPartnershipAdministrator.p1")
+        @messages("nonUKAdministrator.companyPartnership.p1")
         @link(
             link = appConfig.registerAdministratorGuidanceUrl,
-            messageKey = messages("nonUKCompanyPartnershipAdministrator.p1.link-text"),
+            messageKey = messages("nonUKAdministrator.companyPartnership.p1.link-text"),
             id = Some("nonUKCompanyPartnershipAdministrator"),
             fullStop = true,
             inParagraph = true

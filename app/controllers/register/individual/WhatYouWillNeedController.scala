@@ -18,11 +18,9 @@ package controllers.register.individual
 
 import controllers.actions.*
 import identifiers.register.individual.WhatYouWillNeedId
-import models.admin.ukResidencyToggle
 import models.{Mode, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Navigator
 import utils.annotations.{AuthWithNoIV, Individual}
@@ -38,28 +36,19 @@ class WhatYouWillNeedController @Inject()(@Individual val navigator: Navigator,
                                           allowAccess: AllowAccessActionProvider,
                                           getData: DataRetrievalAction,
                                           requireData: DataRequiredAction,
-                                          featureFlagService: FeatureFlagService,
                                           val controllerComponents: MessagesControllerComponents,
                                           val view: whatYouWillNeed
                                          )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
     implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-        if (ukResidency.isEnabled) {
-          Future.successful(Ok(view(ukResidencyToggle = true)))
-        } else {
-          Future.successful(Ok(view(ukResidencyToggle = false)))
-        }
-      }
+      Ok(view())
   }
 
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-        val selectedNavigator = if (ukResidency.isEnabled) navigatorV2 else navigator
-        Future.successful(Redirect(selectedNavigator.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers)))
-      }
+      Future.successful(Redirect(navigatorV2.nextPage(WhatYouWillNeedId, NormalMode, request.userAnswers)))
   }
 }
+

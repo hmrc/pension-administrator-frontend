@@ -19,41 +19,34 @@ package controllers.register.administratorPartnership.contactDetails
 import connectors.cache.FakeUserAnswersCacheConnector
 import controllers.ControllerSpecBase
 import controllers.actions.*
-import forms.{UKAddressFormProvider, UKOnlyAddressFormProvider}
+import forms.UKOnlyAddressFormProvider
 import models.*
-import models.admin.ukResidencyToggle
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers.*
 import utils.countryOptions.CountryOptions
-import utils.{FakeCountryOptions, FakeNavigator, FeatureFlagMockHelper}
+import utils.{FakeCountryOptions, FakeNavigator}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
-import views.html.address.{manualAddress, manualAddressUKOnly}
+import views.html.address.manualAddressUKOnly
 
 
 class PartnershipContactAddressControllerSpec
   extends ControllerSpecBase
     with ScalaFutures
-    with OptionValues
-    with FeatureFlagMockHelper
-    with BeforeAndAfterEach {
+    with OptionValues {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
 
   private def countryOptions: CountryOptions = new FakeCountryOptions(environment, frontendAppConfig)
 
-  private val view: manualAddress = app.injector.instanceOf[manualAddress]
-  private val viewUKOnly: manualAddressUKOnly = app.injector.instanceOf[manualAddressUKOnly]
+  private val view: manualAddressUKOnly = app.injector.instanceOf[manualAddressUKOnly]
 
   private val messagePrefix = "enter.address"
-  private val formProvider = new UKAddressFormProvider(new FakeCountryOptions(environment, frontendAppConfig))
-  private val formProviderUKOnly = new UKOnlyAddressFormProvider()
-  private val form: Form[Address] = formProvider()
-  private val formUK: Form[AddressUKOnly] = formProviderUKOnly()
-  private val isUkHintText = true
+  private val formProvider = new UKOnlyAddressFormProvider()
+  private val form: Form[AddressUKOnly] = formProvider()
 
   private def viewModel = ManualAddressViewModel(
     postCall = routes.PartnershipContactAddressController.onSubmit(NormalMode),
@@ -73,29 +66,18 @@ class PartnershipContactAddressControllerSpec
       dataRetrievalAction,
       new DataRequiredActionImpl,
       formProvider,
-      formProviderUKOnly,
-      mockFeatureFlagService,
       countryOptions,
       controllerComponents,
-      view,
-      viewUKOnly
+      view
     )
 
-  private def viewAsString(form: Form[?] = form): String =
-    view(form, viewModel, NormalMode, isUkHintText)(fakeRequest, messages).toString
-
-  private def ukOnlyViewAsString(form: Form[?] = formUK) =
-    viewUKOnly(
+  private def viewAsString(form: Form[?] = form) =
+    view(
       form,
       viewModel,
-      NormalMode,
-      isUkHintText
+      NormalMode
     )(fakeRequest, messages).toString()
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    featureFlagMock(ukResidencyToggle)
-  }
 
   "PartnershipContactAddress Controller" must {
 
@@ -106,64 +88,27 @@ class PartnershipContactAddressControllerSpec
       contentAsString(result) mustBe viewAsString()
     }
 
-    "return OK and the correct view for a GET when toggle is enabled" in {
-      featureFlagMock(ukResidencyToggle, true)
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
+    "redirect to the next page when valid data is submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(
+        ("addressLine1", "value 1"),
+        ("addressLine2", "value 2"),
+        ("postCode", "NE1 1NE")
+      )
 
-      status(result) mustBe OK
-      contentAsString(result) mustBe ukOnlyViewAsString()
+      val result = controller().onSubmit(NormalMode)(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
-    "redirect to the next page when valid data is submitted" when {
-      "ukResidency toggle is disabled" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(
-          ("addressLine1", "value 1"),
-          ("addressLine2", "value 2"),
-          ("postCode", "NE1 1NE"),
-          "country" -> "GB"
-        )
+    "return a Bad Request and errors when invalid data is submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val result = controller().onSubmit(NormalMode)(postRequest)
+      val result = controller().onSubmit(NormalMode)(postRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
-      "ukResidency toggle is enabled" in {
-        featureFlagMock(ukResidencyToggle, isEnabled = true)
-
-        val postRequest = fakeRequest.withFormUrlEncodedBody(
-          ("addressLine1", "value 1"),
-          ("addressLine2", "value 2"),
-          ("postCode", "NE1 1NE")
-        )
-
-        val result = controller().onSubmit(NormalMode)(postRequest)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(onwardRoute.url)
-      }
-    }
-
-    "return a Bad Request and errors when invalid data is submitted" when {
-      "ukResidency toggle is disabled" in {
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val result = controller().onSubmit(NormalMode)(postRequest)
-
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) mustBe viewAsString(boundForm)
-      }
-      "ukResidency toggle is enabled" in {
-        featureFlagMock(ukResidencyToggle, isEnabled = true)
-        val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
-        val boundForm = formUK.bind(Map("value" -> "invalid value"))
-
-        val result = controller().onSubmit(NormalMode)(postRequest)
-
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) mustBe ukOnlyViewAsString(boundForm)
-      }
+      status(result) mustBe BAD_REQUEST
+      contentAsString(result) mustBe viewAsString(boundForm)
     }
     "redirect to Session Expired" when {
       "no existing data is found" when {

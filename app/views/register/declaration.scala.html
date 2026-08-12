@@ -25,18 +25,19 @@
 
     @components.heading(messages("declaration.heading"))
 
-    @components.paragraph_text(messages("declaration.declaration"))
+    @components.paragraph_text(messages("declaration.declare"))
 
     <ul class="govuk-list govuk-list--bullet">
         <li>@messages("declaration.statement1")</li>
         <li>@messages("declaration.statement2")</li>
         <li>@messages("declaration.statement3")</li>
         <li>@messages("declaration.statement4")</li>
+        <li>@messages("declaration.statement5")</li>
         <li>
             @if(workingKnowledge) {
-                @messages("declaration.statement5a")
+                @messages("declaration.statement6a")
             } else {
-                @messages("declaration.statement5b")
+                @messages("declaration.statement6b")
             }
         </li>
     </ul>

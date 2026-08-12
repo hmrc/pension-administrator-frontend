@@ -18,22 +18,20 @@ package controllers.actions
 
 import base.SpecBase
 import models.*
-import models.admin.ukResidencyToggle
 import models.requests.OptionalDataRequest
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.Result
 import play.api.test.Helpers.*
-import utils.{FeatureFlagMockHelper, UserAnswers}
+import utils.UserAnswers
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AllowDeclarationActionSpec extends SpecBase with ScalaFutures with FeatureFlagMockHelper with BeforeAndAfterEach {
+class AllowDeclarationActionSpec extends SpecBase with ScalaFutures {
 
   private val mockDataCompletion = mock[DataCompletion]
 
@@ -43,10 +41,6 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures with Feature
 
   private def optionalRequest(ua: UserAnswers) =
     OptionalDataRequest(fakeRequest, "id", PSAUser(UserType.Organisation, None, isExistingPSA = false, None, None), Some(ua))
-
-  override def beforeEach(): Unit = {
-    featureFlagMock(ukResidencyToggle)
-  }
 
   "AllowDeclarationAction" must {
 
@@ -63,23 +57,7 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures with Feature
         } mustBe None
       }
     }
-
-    "allow access when uk residency enabled and individual UK data is complete" in {
-      val ua = UserAnswers().regInfo(RegistrationLegalStatus.Individual)
-
-      featureFlagMock(ukResidencyToggle, isEnabled = true)
-
-      when(mockDataCompletion.isIndividualComplete(any(), any())).thenReturn(true)
-      when(mockDataCompletion.isAdviserComplete(any(), any())).thenReturn(true)
-
-      val action = new TestAllowDeclarationAction(NormalMode)
-      val result = action.filter(optionalRequest(ua))
-
-      whenReady(result) { res =>
-        res mustBe None
-      }
-    }
-
+    
     "allow access to declaration pages when all the data is complete for company and adviser" in {
       val ua = UserAnswers().regInfo(RegistrationLegalStatus.LimitedCompany)
       when(mockDataCompletion.isCompanyComplete(any(), any())).thenReturn(true)
@@ -91,22 +69,6 @@ class AllowDeclarationActionSpec extends SpecBase with ScalaFutures with Feature
         result.map {
           _.header.status
         } mustBe None
-      }
-    }
-
-    "allow access when uk residency enabled and company UK data is complete" in {
-      val ua = UserAnswers().regInfo(RegistrationLegalStatus.LimitedCompany)
-
-      featureFlagMock(ukResidencyToggle, isEnabled = true)
-
-      when(mockDataCompletion.isCompanyComplete(any(), any())).thenReturn(true)
-      when(mockDataCompletion.isAdviserComplete(any(), any())).thenReturn(true)
-
-      val action = new TestAllowDeclarationAction(NormalMode)
-      val result = action.filter(optionalRequest(ua))
-
-      whenReady(result) { res =>
-        res mustBe None
       }
     }
 

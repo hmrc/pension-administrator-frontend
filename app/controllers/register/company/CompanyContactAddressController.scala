@@ -18,46 +18,41 @@ package controllers.register.company
 
 import com.google.inject.Inject
 import connectors.cache.UserAnswersCacheConnector
+import controllers.{Retrievals, Variations}
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRequiredAction, DataRetrievalAction}
-import controllers.address.ManualAddressController
-import forms.{UKAddressFormProvider, UKOnlyAddressFormProvider}
+import forms.UKOnlyAddressFormProvider
 import identifiers.register.BusinessNameId
-import identifiers.register.company.*
-import identifiers.register.company.CompanyUKContactAddressId
-import models.admin.ukResidencyToggle
-import models.{Address, AddressUKOnly, Mode}
+import identifiers.register.company.{CompanyUKContactAddressId, CompanyContactAddressListId}
+import models.{AddressUKOnly, Mode}
 import play.api.data.Form
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import utils.Navigator
+import utils.{Navigator, UserAnswers}
 import utils.annotations.{NoRLSCheck, RegisterCompany}
 import utils.countryOptions.CountryOptions
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
-import views.html.address.{manualAddress, manualAddressUKOnly}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
+import views.html.address.manualAddressUKOnly
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CompanyContactAddressController @Inject()(
-                                                override val cacheConnector: UserAnswersCacheConnector,
-                                                @RegisterCompany override val navigator: Navigator,
-                                                authenticate: AuthAction,
-                                                @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
-                                                formProvider: UKAddressFormProvider,
-                                                formProviderNoCountry: UKOnlyAddressFormProvider,
-                                                val countryOptions: CountryOptions,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                featureFlagService: FeatureFlagService,
-                                                val view: manualAddress,
-                                                val viewUK: manualAddressUKOnly
-                                               )(implicit val executionContext: ExecutionContext) extends ManualAddressController {
+                                                 val cacheConnector: UserAnswersCacheConnector,
+                                                 @RegisterCompany val nav: Navigator,
+                                                 authenticate: AuthAction,
+                                                 @NoRLSCheck val allowAccess: AllowAccessActionProvider,
+                                                 getData: DataRetrievalAction,
+                                                 requireData: DataRequiredAction,
+                                                 formProvider: UKOnlyAddressFormProvider,
+                                                 val countryOptions: CountryOptions,
+                                                 val controllerComponents: MessagesControllerComponents,
+                                                 val view: manualAddressUKOnly
+                                               )(implicit val executionContext: ExecutionContext) extends FrontendBaseController with I18nSupport with Retrievals with Variations {
 
-  override protected val form: Form[Address] = formProvider()
-  val formUK: Form[AddressUKOnly] = formProviderNoCountry()
-  private val isUkHintText = true
-  private def addressViewModel(mode: Mode, returnLink: Option[String]): Retrieval[ManualAddressViewModel] =
+  val form: Form[AddressUKOnly] = formProvider()
+
+  private def viewModel(mode: Mode, returnLink: Option[String]): Retrieval[ManualAddressViewModel] =
     Retrieval(
       implicit request =>
         BusinessNameId.retrieve.map { companyName =>
@@ -74,27 +69,36 @@ class CompanyContactAddressController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
     implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-        addressViewModel(mode, Some(companyTaskListUrl())).retrieve.map(vm =>
-          if(ukResidency.isEnabled) {
-            getUKOnly(CompanyUKContactAddressId, CompanyContactAddressListId, vm, mode, false, formUK, viewUK)
-          } else {
-            get(CompanyContactAddressId, CompanyContactAddressListId, vm, mode, isUkHintText)
+      viewModel(mode, Some(companyTaskListUrl())).retrieve.map(
+        vm =>
+          val preparedForm = request.userAnswers.get(CompanyUKContactAddressId) match {
+            case None => request.userAnswers.get(CompanyContactAddressListId) match {
+              case Some(value) => form.fill(AddressUKOnly.fromTolerant(value))
+              case None => form
+            }
+            case Some(value) => form.fill(value)
           }
-        )
-      }
+          Future.successful(Ok(view(preparedForm, vm, mode)))
+      )
   }
+
 
   def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
     implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
-        addressViewModel(mode, Some(companyTaskListUrl())).retrieve.map(vm =>
-          if(ukResidency.isEnabled) {
-            postUKOnly(CompanyUKContactAddressId, vm, mode, navigator, false, formUK, viewUK)
-          } else {
-            post(CompanyContactAddressId, vm, mode, isUkHintText)
-          }
-        )
-      }
+      viewModel(mode, Some(companyTaskListUrl())).retrieve.map(
+        vm =>
+          form.bindFromRequest().fold(
+            (formWithError: Form[?]) => Future.successful(BadRequest(view(formWithError, vm, mode))),
+            address => {
+              cacheConnector.save(CompanyUKContactAddressId, address).flatMap { userAnswersJson =>
+                saveChangeFlag(mode, CompanyUKContactAddressId)
+                  .flatMap {
+                    _ =>
+                      Future.successful(Redirect(nav.nextPage(CompanyUKContactAddressId, mode, UserAnswers(userAnswersJson))))
+                  }
+              }
+            }
+          )
+      )
   }
 }

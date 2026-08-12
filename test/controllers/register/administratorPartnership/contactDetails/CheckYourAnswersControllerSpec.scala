@@ -19,7 +19,6 @@ package controllers.register.administratorPartnership.contactDetails
 import controllers.ControllerSpecBase
 import controllers.actions.*
 import models.*
-import models.admin.ukResidencyToggle
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -27,7 +26,7 @@ import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.*
 import utils.dataCompletion.DataCompletion
 import utils.testhelpers.DataCompletionBuilder.DataCompletionUserAnswerOps
-import utils.{FakeCountryOptions, FeatureFlagMockHelper, UserAnswerOps, UserAnswers}
+import utils.{FakeCountryOptions, UserAnswerOps, UserAnswers}
 import viewmodels.{AnswerRow, AnswerSection, Link, Message}
 import views.html.check_your_answers
 
@@ -35,12 +34,10 @@ import scala.concurrent.Future
 
 class CheckYourAnswersControllerSpec
   extends ControllerSpecBase
-    with BeforeAndAfterEach
-    with FeatureFlagMockHelper {
+    with BeforeAndAfterEach {
 
   override def beforeEach(): Unit = {
     when(mockDataCompletion.isPartnershipDetailsComplete(any())).thenReturn(true)
-    featureFlagMock(ukResidencyToggle)
   }
 
   private def onwardRoute: Call = controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad()
@@ -60,7 +57,6 @@ class CheckYourAnswersControllerSpec
       FakeAuthAction,
       dataRetrievalAction,
       new DataRequiredActionImpl,
-      mockFeatureFlagService,
       view
     )(new FakeCountryOptions(environment, frontendAppConfig))
 
@@ -95,33 +91,18 @@ class CheckYourAnswersControllerSpec
       )(fakeRequest, messages).toString()
   }
 
-  private def answerRows(ukResidency: Boolean) = {
-    val contactAddress = if (ukResidency) {
+  private def answerRows: Seq[AnswerRow] = {
+    Seq(
       answerRow(
         label = Message("cya.label.contact.address", defaultPartnership),
         answer = Seq(
           addressUK.addressLine1,
           addressUK.addressLine2,
-          addressUK.postcode,
+          addressUK.postcode
         ),
         changeUrl = Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)),
         visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultPartnership))
-      )
-    } else {
-      answerRow(
-        label = Message("cya.label.contact.address", defaultPartnership),
-        answer = Seq(
-          address.addressLine1,
-          address.addressLine2,
-          address.postcode.value,
-          address.country
-        ),
-        changeUrl = Some(Link(routes.PartnershipSameContactAddressController.onPageLoad(CheckMode).url)),
-        visuallyHiddenLabel = Some(Message("contactAddress.visuallyHidden.text", defaultPartnership))
-      )
-    }
-    Seq(
-      contactAddress,
+      ),
       answerRow(
         label = Message("addressYears.heading", defaultPartnership),
         answer = Seq(s"common.addressYears.${addressYears.toString}"),
@@ -166,28 +147,19 @@ class CheckYourAnswersControllerSpec
   "CheckYourAnswers Controller" when {
 
     "on GET" must {
-
       "render the view correctly for all the rows of answer section if business name and utr is present for UK" in {
-        val retrievalAction = UserAnswers().completePartnershipContactDetailsUK.dataRetrievalAction
-        val result = controller(retrievalAction).onPageLoad()(fakeRequest)
-
-        val sections = Seq(AnswerSection(None, answerRows(false)))
-        testRenderedView(sections, result)
-      }
-      "render the view correctly for all the rows of answer section if business name and utr is present for UK when toggle enabled" in {
-        featureFlagMock(ukResidencyToggle, true)
         val retrievalAction = UserAnswers().completePartnershipContactDetailsUKResidency.dataRetrievalAction
         val result = controller(retrievalAction).onPageLoad()(fakeRequest)
 
-        val sections = Seq(AnswerSection(None, answerRows(true)))
-        testRenderedView(sections, result)
+        val sections = Seq(AnswerSection(None, answerRows))
+          testRenderedView(sections, result)
       }
     }
 
 
     "on POST" must {
       "redirect to the next page when save and continue is clicked" in {
-        val retrievalAction = UserAnswers().completePartnershipContactDetailsUK.dataRetrievalAction
+        val retrievalAction = UserAnswers().completePartnershipContactDetailsUKResidency.dataRetrievalAction
         val result = controller(retrievalAction).onSubmit()(fakeRequest)
 
         status(result) mustBe SEE_OTHER

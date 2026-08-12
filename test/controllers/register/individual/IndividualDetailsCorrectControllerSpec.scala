@@ -27,9 +27,7 @@ import identifiers.register.individual.{IndividualAddressId, IndividualDetailsCo
 import models.*
 import models.RegistrationCustomerType.UK
 import models.RegistrationLegalStatus.Individual
-import models.admin.ukResidencyToggle
 import models.requests.AuthenticatedRequest
-import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.*
@@ -37,12 +35,12 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.countryOptions.CountryOptions
-import utils.{AddressHelper, FakeNavigator, FeatureFlagMockHelper}
+import utils.{AddressHelper, FakeNavigator}
 import views.html.register.individual.individualDetailsCorrect
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with FeatureFlagMockHelper with BeforeAndAfterEach {
+class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase {
 
   private def onwardRoute: Call = controllers.routes.IndexController.onPageLoad
   private def nonUKKickOut: Call = controllers.register.individual.routes.IndividualUpdateNonUKAddressController.onPageLoad()
@@ -64,11 +62,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Fea
 
     override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
       block(AuthenticatedRequest(request, "id", PSAUser(UserType.Individual, Some(nino), isExistingPSA = false, None, None, "")))
-  }
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    featureFlagMock(ukResidencyToggle)
   }
 
   private val registrationInfo = RegistrationInfo(
@@ -125,7 +118,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Fea
       addressFormProvider,
       registrationConnector,
       countryOptions,
-      mockFeatureFlagService,
       controllerComponents,
       view,
       addressHelper
@@ -144,17 +136,14 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Fea
 
   "IndividualDetailsCorrectController" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET when address is GB" in {
       val result = controller().onPageLoad(NormalMode)(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
-    "render the individualUpdateNonUKAddressView when toggle enabled and address is non GB" in {
-
-      featureFlagMock(ukResidencyToggle, isEnabled = true)
-
+    "render the individualUpdateNonUKAddressView when address is non GB" in {
       val nonGbAddress = address.copy(countryOpt = Some("FR"))
 
       val data = Json.obj(
@@ -169,16 +158,6 @@ class IndividualDetailsCorrectControllerSpec extends ControllerSpecBase with Fea
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(nonUKKickOut.url)
-    }
-
-    "render normal view when toggle enabled and address is GB" in {
-
-      featureFlagMock(ukResidencyToggle, isEnabled = true)
-
-      val result = controller().onPageLoad(NormalMode)(fakeRequest)
-
-      status(result) mustBe OK
-      contentAsString(result) mustBe viewAsString()
     }
 
     "fetch and render the correct individual information if a different nino is provided from IV" in {

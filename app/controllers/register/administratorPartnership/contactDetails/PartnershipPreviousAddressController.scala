@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,84 +18,98 @@ package controllers.register.administratorPartnership.contactDetails
 
 import connectors.cache.UserAnswersCacheConnector
 import controllers.actions.*
-import controllers.address.ManualAddressController
-import forms.{AddressFormProvider, UKAddressFormProvider}
+import controllers.{Retrievals, Variations}
+import forms.AddressFormProvider
 import identifiers.register.BusinessNameId
 import identifiers.register.partnership.{PartnershipPreviousAddressId, PartnershipPreviousAddressListId}
-import models.admin.ukResidencyToggle
 import models.requests.DataRequest
 import models.{Address, Mode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
-import utils.Navigator
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.{NoRLSCheck, PartnershipV2}
 import utils.countryOptions.CountryOptions
+import utils.{Navigator, UserAnswers}
 import viewmodels.Message
 import viewmodels.address.ManualAddressViewModel
 import views.html.address.manualAddress
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipPreviousAddressController @Inject()(
                                                       val cacheConnector: UserAnswersCacheConnector,
                                                       @PartnershipV2 val navigator: Navigator,
-                                                      @NoRLSCheck override val allowAccess: AllowAccessActionProvider,
+                                                      @NoRLSCheck val allowAccess: AllowAccessActionProvider,
                                                       authenticate: AuthAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
-                                                      formProvider: UKAddressFormProvider,
-                                                      allCountriesFormProvider: AddressFormProvider,
+                                                      formProvider: AddressFormProvider,
                                                       val countryOptions: CountryOptions,
                                                       val controllerComponents: MessagesControllerComponents,
-                                                      featureFlagService: FeatureFlagService,
                                                       val view: manualAddress
                                                     )(implicit val executionContext: ExecutionContext)
-  extends ManualAddressController with I18nSupport {
+  extends FrontendBaseController with I18nSupport with Retrievals with Variations {
 
-  private[controllers] def postCall(mode: Mode): Call = routes.PartnershipPreviousAddressController.onSubmit(mode)
+  private val form: Form[Address] = formProvider()
 
-  private val isUkHintText = true
+  private def postCall(mode: Mode): Call =
+    routes.PartnershipPreviousAddressController.onSubmit(mode)
 
-  override protected val form: Form[Address] = formProvider()
-  private val formAllCountries: Form[Address] = allCountriesFormProvider()
+  private def viewmodel(
+                         mode: Mode,
+                         name: String
+                       )(implicit request: DataRequest[AnyContent]): ManualAddressViewModel =
+    ManualAddressViewModel(
+      postCall(mode),
+      countryOptions.options,
+      title = Message("enter.previous.address.heading", Message("thePartnership")),
+      heading = Message("enter.previous.address.heading", name),
+      psaName = psaName(),
+      partnershipName = Some(name),
+      returnLink = Some(
+        controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController
+          .onPageLoad()
+          .url
+      )
+    )
 
-  private def viewmodel(mode: Mode, name: String)(implicit request: DataRequest[AnyContent]) = ManualAddressViewModel(
-    postCall(mode),
-    countryOptions.options,
-    title = Message("enter.previous.address.heading", Message("thePartnership")),
-    heading = Message("enter.previous.address.heading", name),
-    psaName = psaName(),
-    partnershipName = Some(name),
-    returnLink = Some(controllers.register.administratorPartnership.routes.PartnershipRegistrationTaskListController.onPageLoad().url)
-  )
-
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
-    implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (authenticate andThen allowAccess(mode) andThen getData andThen requireData).async {
+      implicit request =>
         BusinessNameId.retrieve.map { name =>
-          if (ukResidency.isEnabled) {
-            getWithForm(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode, formAllCountries)
-          } else {
-            get(PartnershipPreviousAddressId, PartnershipPreviousAddressListId, viewmodel(mode, name), mode, isUkHintText)
-          }
+          val preparedForm =
+            request.userAnswers.get(PartnershipPreviousAddressId) match {
+              case Some(address) =>
+                form.fill(address)
+              case None =>
+                request.userAnswers.get(PartnershipPreviousAddressListId) match {
+                  case Some(address) =>
+                    form.fill(address.toPrepopAddress)
+                  case None =>
+                    form
+                }
+            }
+          Future.successful(Ok(view(preparedForm, viewmodel(mode, name), mode, false)))
         }
-      }
-  }
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (authenticate andThen getData andThen requireData).async {
-    implicit request =>
-      featureFlagService.get(ukResidencyToggle).flatMap { ukResidency =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    (authenticate andThen getData andThen requireData).async {
+      implicit request =>
         BusinessNameId.retrieve.map { name =>
-          if (ukResidency.isEnabled) {
-            postWithForm(PartnershipPreviousAddressId, viewmodel(mode, name), mode, formAllCountries)
-          } else {
-            post(PartnershipPreviousAddressId, viewmodel(mode, name), mode, isUkHintText)
-          }
+          form.bindFromRequest().fold(
+            formWithErrors =>
+              Future.successful(
+                BadRequest(view(formWithErrors, viewmodel(mode, name), mode, false))),
+            address =>
+              cacheConnector.save(PartnershipPreviousAddressId, address).flatMap { userAnswersJson =>
+                saveChangeFlag(mode, PartnershipPreviousAddressId).map { _ =>
+                  Redirect(navigator.nextPage(PartnershipPreviousAddressId, mode, UserAnswers(userAnswersJson)))
+                }
+              }
+          )
         }
-      }
-  }
-
+    }
 }

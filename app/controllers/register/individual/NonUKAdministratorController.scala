@@ -16,17 +16,14 @@
 
 package controllers.register.individual
 
-import controllers.Execution.trampoline
 import controllers.Retrievals
 import controllers.actions.{AllowAccessActionProvider, AuthAction, DataRetrievalAction}
 import models.Mode
-import models.admin.ukResidencyToggle
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.mongoFeatureToggles.services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.annotations.AuthWithNoIV
-import views.html.register.individual.{individualNonUKAdministrator, nonUKAdministrator}
+import views.html.register.individual.individualNonUKAdministrator
 
 import javax.inject.Inject
 
@@ -34,15 +31,11 @@ class NonUKAdministratorController @Inject()(
                                               @AuthWithNoIV authenticate: AuthAction,
                                               allowAccess: AllowAccessActionProvider,
                                               getData: DataRetrievalAction,
-                                              featureFlagService: FeatureFlagService,
                                               val controllerComponents: MessagesControllerComponents,
-                                              val view: nonUKAdministrator,
-                                              val nonUkResidencyView: individualNonUKAdministrator
+                                              val view: individualNonUKAdministrator
                                             ) extends FrontendBaseController with I18nSupport with Retrievals {
-  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData).async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (authenticate andThen allowAccess(mode) andThen getData) {
     implicit request =>
-      featureFlagService.get(ukResidencyToggle).map { ukResidency =>
-        if (ukResidency.isEnabled) Ok(nonUkResidencyView()) else Ok(view())
-      }
+      Ok(view())
   }
 }
