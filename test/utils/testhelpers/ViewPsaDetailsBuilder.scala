@@ -31,7 +31,7 @@ object ViewPsaDetailsBuilder extends SpecBase {
       Some(Link(controllers.register.routes.VariationWorkingKnowledgeController.onPageLoad(UpdateMode).url))),
     AnswerRow("adviserName.heading", Seq("Pension Adviser"), false,
       None),
-    AnswerRow("cya.label.address", Seq("addline1,", "addline2,", "addline3,", "addline4,", "56765,", "Country of AD"), false,
+    AnswerRow("cya.label.address", Seq("addline1", "addline2", "addline3", "addline4", "56765", "Country of AD"), false,
       Some(Link(controllers.register.adviser.routes.AdviserAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     AnswerRow("contactDetails.email.checkYourAnswersLabel", Seq("aaa@yahoo.com"), false,
       Some(Link(controllers.register.adviser.routes.AdviserEmailController.onPageLoad(UpdateMode).url))),
@@ -53,13 +53,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
   def individualSeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false,
       None),
-    AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+    AnswerRow("cya.label.address", Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "Country of GB"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), false,
         Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
-      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"), false,
         None)
     },
     AnswerRow("email.label", Seq("aaa@aa.com"), false,
@@ -70,13 +70,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
   def individualContactOnlySeqAnswers(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None),
-    AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+    AnswerRow("cya.label.address", Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "Country of GB"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), false,
         Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
-      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"), false,
         None)
     },
     AnswerRow("email.label", Seq("aaa@aa.com"), false,
@@ -88,13 +88,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
   def individualContactOnlySeqAnswersWithAddressUKOnly(noPrevAddr: Boolean = false) = Seq(
     AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
     AnswerRow("cya.label.dob", Seq("29/03/1947"), false, None),
-    AnswerRow("cya.label.address", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "United Kingdom"), false,
+    AnswerRow("cya.label.address", Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "United Kingdom"), false,
       Some(Link(controllers.register.individual.routes.IndividualContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), false,
         Some(Link(controllers.register.individual.routes.IndividualPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
-      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"), false,
         None)
     },
     AnswerRow("email.label", Seq("aaa@aa.com"), false,
@@ -112,13 +112,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
       None),
     AnswerRow("utr.label", Seq("1234567890"), false,
       None),
-    AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+    AnswerRow("company.address.label", Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "Country of GB"), false,
       Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
         Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
-      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"), false,
         None)
     },
     AnswerRow("company.email.label", Seq("aaa@aa.com"), false,
@@ -130,13 +130,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
     AnswerRow("utr.label", Seq("1234567890"), false,
       None),
-    AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+    AnswerRow("company.address.label", Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "Country of GB"), false,
       Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
         Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
-      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"), false,
         None)
     },
     AnswerRow("company.email.label", Seq("aaa@aa.com"), false,
@@ -148,13 +148,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
     AnswerRow("utr.label", Seq("1234567890"), false,
       None),
-    AnswerRow("company.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "United Kingdom"), false,
+    AnswerRow("company.address.label", Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "United Kingdom"), false,
       Some(Link(controllers.register.company.routes.CompanyContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
         Some(Link(controllers.register.company.routes.CompanyPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
-      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"), false,
         None)
     },
     AnswerRow("company.email.label", Seq("aaa@aa.com"), false,
@@ -189,13 +189,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
     ),
     AnswerRow(
       label = "cya.label.address",
-      answer = Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"),
+      answer = Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "Country of GB"),
       answerIsMessageKey = false,
       changeUrl = Some(Link(CompanyDirectorAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url))
     ),
     AnswerRow(
       label = "common.previousAddress.checkyouranswers",
-      answer = Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"),
+      answer = Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"),
       answerIsMessageKey = false,
       changeUrl = None
     ),
@@ -221,13 +221,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
       None),
     AnswerRow("utr.label", Seq("121414151"), false,
       None),
-    AnswerRow("partnership.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+    AnswerRow("partnership.address.label", Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "Country of GB"), false,
       Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
         Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
-      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"), false,
         None)
     },
     AnswerRow("partnership.email.label", Seq("aaa@aa.com"), false,
@@ -239,13 +239,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
     AnswerRow("utr.label", Seq("121414151"), false,
       None),
-    AnswerRow("partnership.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"), false,
+    AnswerRow("partnership.address.label", Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "Country of GB"), false,
       Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
         Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
-      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"), false,
         None)
     },
     AnswerRow("partnership.email.label", Seq("aaa@aa.com"), false,
@@ -257,13 +257,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
     AnswerRow("cya.label.adminId", Seq("A2100005"), false, None),
     AnswerRow("utr.label", Seq("121414151"), false,
       None),
-    AnswerRow("partnership.address.label", Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "United Kingdom"), false,
+    AnswerRow("partnership.address.label", Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "United Kingdom"), false,
       Some(Link(controllers.register.partnership.routes.PartnershipContactAddressPostCodeLookupController.onPageLoad(UpdateMode).url))),
     if (noPrevAddr) {
       AnswerRow("common.previousAddress.checkyouranswers", Seq("site.not_entered"), true,
         Some(Link(controllers.register.partnership.routes.PartnershipPreviousAddressPostCodeLookupController.onPageLoad(UpdateMode).url, "site.add")))
     } else {
-      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"), false,
+      AnswerRow("common.previousAddress.checkyouranswers", Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"), false,
         None)
     },
     AnswerRow("partnership.email.label", Seq("aaa@aa.com"), false,
@@ -299,13 +299,13 @@ object ViewPsaDetailsBuilder extends SpecBase {
     ),
     AnswerRow(
       label = "cya.label.address",
-      answer = Seq("Telford1,", "Telford2,", "Telford3,", "Telford4,", "TF3 4ER,", "Country of GB"),
+      answer = Seq("Telford1", "Telford2", "Telford3", "Telford4", "TF3 4ER", "Country of GB"),
       answerIsMessageKey = false,
       changeUrl = Some(Link(PartnerAddressPostCodeLookupController.onPageLoad(UpdateMode, 0).url))
     ),
     AnswerRow(
       label = "common.previousAddress.checkyouranswers",
-      answer = Seq("London1,", "London2,", "London3,", "London4,", "LN12 4DC,", "Country of GB"),
+      answer = Seq("London1", "London2", "London3", "London4", "LN12 4DC", "Country of GB"),
       answerIsMessageKey = false,
       changeUrl = None
     ),

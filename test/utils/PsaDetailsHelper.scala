@@ -199,11 +199,11 @@ object PsaDetailsHelper {
       .getOrElse(address.countryCode)
 
     Seq(
-      Some(s"${address.addressLine1},"),
-      Some(s"${address.addressLine2},"),
-      address.addressLine3.map(line3 => s"$line3,"),
-      address.addressLine4.map(line4 => s"$line4,"),
-      address.postalCode.map(postcode => s"$postcode,"),
+      Some(s"${address.addressLine1}"),
+      Some(s"${address.addressLine2}"),
+      address.addressLine3.map(line3 => s"$line3"),
+      address.addressLine4.map(line4 => s"$line4"),
+      address.postalCode.map(postcode => s"$postcode"),
       Some(country)
     ).flatten
   }
