@@ -911,22 +911,22 @@ class ViewPsaDetailsHelper(userAnswers: UserAnswers,
       .getOrElse(address.country)
 
     Seq(
-      Some(s"${address.addressLine1},"),
-      Some(s"${address.addressLine2},"),
-      address.addressLine3.map(line3 => s"$line3,"),
-      address.addressLine4.map(line4 => s"$line4,"),
-      address.postcode.map(postcode => s"$postcode,"),
+      Some(s"${address.addressLine1}"),
+      Some(s"${address.addressLine2}"),
+      address.addressLine3.map(line3 => s"$line3"),
+      address.addressLine4.map(line4 => s"$line4"),
+      address.postcode.map(postcode => s"$postcode"),
       Some(country)
     ).flatten
   }
 
   private def addressAnswer(address: AddressUKOnly): Seq[String] = {
     Seq(
-      Some(s"${address.addressLine1},"),
-      Some(s"${address.addressLine2},"),
-      address.addressLine3.map(line3 => s"$line3,"),
-      address.addressLine4.map(line4 => s"$line4,"),
-      Some(s"${address.postcode},"),
+      Some(s"${address.addressLine1}"),
+      Some(s"${address.addressLine2}"),
+      address.addressLine3.map(line3 => s"$line3"),
+      address.addressLine4.map(line4 => s"$line4"),
+      Some(s"${address.postcode}"),
       Some("United Kingdom")
     ).flatten
   }
