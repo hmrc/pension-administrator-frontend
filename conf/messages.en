@@ -949,12 +949,12 @@ nonUKAdministrator.p2.2             = and include ‘Non-UK’ in the title.
 nonUKAdministrator.companyPartnership.title            = Your company or partnership cannot register as a pension scheme administrator
 nonUKAdministrator.companyPartnership.heading          = Your company or partnership cannot register as a pension scheme administrator
 nonUKAdministrator.companyPartnership.p1               = Your company or partnership must be incorporated or resident in the UK to
-nonUKAdministrator.companyPartnership.p1.link-text     = register as a pension scheme administrator
+nonUKAdministrator.companyPartnership.p1.link-text     = register as a pension scheme administrator.
 
 nonUKAdministrator.individual.title            = You cannot register as a pension scheme administrator
 nonUKAdministrator.individual.heading          = You cannot register as a pension scheme administrator
 nonUKAdministrator.individual.p1               = You must be a resident in the UK to
-nonUKAdministrator.individual.p1.link-text     = register as a pension scheme administrator
+nonUKAdministrator.individual.p1.link-text     = register as a pension scheme administrator.
 
 registerAsBusiness.title = What do you want to register as the scheme administrator?
 registerAsBusiness.heading = What do you want to register as the scheme administrator?
