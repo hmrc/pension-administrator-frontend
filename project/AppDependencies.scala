@@ -2,12 +2,12 @@ import sbt.*
 
 object AppDependencies {
   private val playVersion      = "play-30"
-  private val bootstrapVersion = "10.7.1"
+  private val bootstrapVersion = "10.8.0"
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"                   %% s"bootstrap-frontend-$playVersion"           % bootstrapVersion,
-    "uk.gov.hmrc"                   %% s"play-frontend-hmrc-$playVersion"           % "12.32.0",
+    "uk.gov.hmrc"                   %% s"play-frontend-hmrc-$playVersion"           % "13.14.0",
     "uk.gov.hmrc"                   %% s"domain-$playVersion"                       % "13.0.0",
     "com.fasterxml.jackson.module"  %% "jackson-module-scala"                       % "2.22.1",
     "com.networknt"                 %  "json-schema-validator"                      % "1.5.8"
